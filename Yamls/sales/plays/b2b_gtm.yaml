@@ -1,0 +1,136 @@
+_meta:
+  id: b2b_gtm
+  title: B2B GTM
+  description: B2B GTM Orchestration portfolio play (L1) with strategic sales plays for Marketing Orchestration, Campaign Acceleration, Content-led Growth, and B2B Commerce to align marketing and sales on a unified AI-powered platform
+  domain: sales
+  domain_type: cross_cutting
+  purpose: reference
+  version: "2.4.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Crafting Powerful Opening Plays.md"
+    - "Corpus/Research/Research - Comprehensive Audience Analysis.md"
+    - "Corpus/Research/learner_personas_for_business.md"
+    - "Corpus/Research/Research - Using SOAR Storytelling most effectively.md"
+    - "Corpus/Research/The Universal Narrative Methodology: A Framework for Crafting and Improving Stories.md"
+
+
+  relationships:
+    - target: sales/play_catalog_reference.yaml
+      type: depends_on
+      description: "Play instance references the play catalog for classification context"
+sales_play:
+  tier: L1
+  id: L1_B2B_GTM_ORCH
+  name: B2B GTM Orchestration
+  description: Align Marketing and Sales data, content, journeys and commerce on a single platform, powered by AI innovations,
+    to improve pipeline velocity and efficiency.
+  transformational_vision: Transform highly manual GTM operations into cross-functional orchestration with an agentic-ready
+    platform.
+  target_customers:
+    segment: B2B enterprise
+    account_characteristics:
+    - Complex buying groups and long sales cycles
+    - Fragmented marketing/sales systems
+    - Need for scalable personalized journeys and content
+  target_personas:
+  - persona: CMO / Marketing Leaders
+  - persona: CIO/CTO / IT Leaders
+  - persona: CRO / VP Sales / Chief Commercial Officer
+  cross_cloud_overlays:
+    DMe:
+      overlap_type: indirect (enterprise framework); no FY26 strategic-play app bundle overlap captured in current sources
+      notes: End-User Productivity and Knowledge Based Productivity appear as separate portfolio plays in the enterprise framework.
+  related_portfolio_plays:
+  - id: L1_END_USER_PRODUCTIVITY
+    name: End-User Productivity
+    notes: Separate portfolio play in FY26 enterprise framework (DMe-led).
+  - id: L1_KNOWLEDGE_BASED_PRODUCTIVITY
+    name: Knowledge Based Productivity
+    notes: Separate portfolio play in FY26 enterprise framework (DMe-led).
+  strategic_sales_plays:
+  - tier: L2
+    id: L2_B2B_MARKETING_ORCHESTRATION
+    name: Marketing Orchestration
+    value_proposition: Unified command center to plan, create, engage and optimize omnichannel campaigns; align marketing
+      and sales; embed AI agents across workflows.
+    applications_included:
+    - Real-Time CDP B2B Edition
+    - Customer Journey Analytics B2B Edition
+    - Marketo Engage
+    - Journey Optimizer B2B Edition
+    - Brand Concierge
+  - tier: L2
+    id: L2_B2B_CAMPAIGN_ACCELERATION
+    name: Campaign Acceleration
+    value_proposition: Accelerate campaign delivery by streamlining planning/approvals and scaling creation via GenAI and
+      atomization.
+    applications_included:
+    - GenStudio for Performance Marketing
+    - Workfront Planning & Workflow
+    - GenStudio for Content Marketing
+  - tier: L2
+    id: L2_B2B_CONTENT_LED_GROWTH
+    name: Content-led Growth
+    value_proposition: Structure content for AI discovery, personalize for buying groups, optimize for performance, and extend
+      into adoption across accounts.
+    applications_included:
+    - AEM Sites
+    - AEM Assets
+    - LLM Optimizer
+    - Brand Concierge
+  - tier: L2
+    id: L2_B2B_COMMERCE
+    name: B2B Commerce
+    value_proposition: Digitize B2B buying with self-service purchasing tailored to B2B workflows; simplify configuration/pricing/procurement
+      approvals.
+    applications_included:
+    - Adobe Commerce
+    - AEM Sites
+    - (optional) AJO B2B Edition
+    - (optional) Real-Time CDP B2B Edition
+  canonical_aliases:
+    portfolio_play:
+    - B2B GTM Orchestration
+
+soar_narrative_blueprint:
+  purpose: "Canonical SOAR arc and opening strategy for B2B GTM Orchestration play"
+  source: "Research - Using SOAR Storytelling most effectively.md"
+  arc_shape: man_in_hole
+
+  stages:
+    situation:
+      opening_frame: "B2B organizations now navigate buying groups of 6-10+ stakeholders with complex, multi-touch journeys spanning 6-12 months"
+      data_anchor: "Gartner: 77% of B2B buyers rate their purchase experience as extremely complex or difficult"
+      status_quo_pain: "Marketing and sales operate in silos — different data, different tools, different messaging — creating inconsistency and pipeline leakage"
+
+    opportunity:
+      villain_frame: "Fragmented marketing-sales-content infrastructure that prevents coordinated buying group engagement at the right moment with the right message"
+      pain_vocabulary:
+        - pipeline_leakage
+        - forecast_inaccuracy
+        - high_no_decision_rate
+        - siloed_data
+        - manual_orchestration
+      loss_aversion_frame: "AI-native competitors are already orchestrating buying group journeys at scale; manual GTM motions are becoming a strategic liability"
+      kairos_trigger: "Journey Optimizer B2B Edition and AI agents now make unified buying group orchestration achievable — the window to act is now"
+
+    action:
+      value_frame: "A unified AI-powered GTM platform (Marketo + RTCDP B2B + Journey Optimizer B2B) aligns marketing and sales on a single data and orchestration layer"
+      differentiation_language: "Only Adobe connects content, data, journeys, and commerce in a single platform designed for complex B2B selling motions"
+      champion_story: "Marketing Ops or CRO as champion; positions Adobe as the platform that gives them unified pipeline intelligence and control"
+
+    result:
+      proof_pattern: "Before/after: [Customer] reduced sales cycle by X% and improved win rate by Y% by unifying GTM on Adobe"
+      validated_outcome_types:
+        - pipeline_velocity_improvement
+        - win_rate_increase
+        - cac_reduction
+        - forecast_accuracy_improvement
+        - seller_non_selling_time_reduction
+
+  audience_calibration:
+    cmo: "Lead with revenue attribution and pipeline sourced from marketing; O to R frame"
+    cio: "Lead with data governance and integration architecture; A to R frame"
+    cro: "Lead with forecast accuracy and seller productivity; O to A frame"
+    marketing_ops: "Lead with workflow orchestration and campaign efficiency; S to A frame"

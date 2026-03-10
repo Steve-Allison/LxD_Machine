@@ -1,0 +1,258 @@
+# ==============================================================================
+# Merrill's Framework for Instructional Design
+# Configuration for macro-strategy (FPI) and micro-tactics (CDT).
+# ==============================================================================
+
+_meta:
+  id: merrill_framework
+  title: "Merrill's Framework for Instructional Design"
+  description: "First Principles of Instruction (FPI) macro-strategy (problem-centered hub with 4 orbiting phases) and Component Display Theory (CDT) micro-tactics (content-type × performance-level prescriptions). Includes corporate context, effectiveness research, critical misapplications, and FPI-CDT synergy."
+  domain: "pedagogical"
+  domain_type: "workflow"
+  purpose: "methodology"
+  version: "1.2.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Strategic Design: A Full Analysis of Merrill's First Principles and Component Display Theory for Corporate Learning.md"
+    - "Corpus/Research/Activities - Research + Instructions v4.md"
+    - "Corpus/Research/Applying Learning Theory - A Practical Checklist.md"
+  key_research_findings:
+    - "Thompson (2002): FPI-based corporate training showed 'higher efficiency and effectiveness' than traditional approaches"
+    - "FPI principles are CAUSAL (not correlational): learning is promoted in direct proportion to implementation quality"
+    - "Integration is UNIVERSALLY SKIPPED in corporate L&D, yet only principle generating long-term ROI"
+    - "Problem-centered is NOT first step in linear sequence but CENTRAL HUB around which phases orbit cyclically"
+
+  relationships:
+    - target: methodology/mayer_principles.yaml
+      type: depends_on
+      description: "Both learning theory frameworks; Merrill's First Principles complement Mayer's multimedia principles"
+# ==============================================================================
+# CRITICAL ARCHITECTURAL NOTE: PROBLEM-CENTERED HUB MODEL
+# ==============================================================================
+
+fpi_architecture:
+  description: "FPI is NOT a linear 1-2-3-4-5 sequence. Problem-centered is the CENTRAL HUB; other 4 phases ORBIT around it."
+  model: "Cyclic, problem-centric (not sequential)"
+  misunderstanding_warning: "DO NOT treat FPI as linear checklist: 'Step 1: Problem, Step 2: Activate, Step 3: Demonstrate, Step 4: Apply, Step 5: Integrate.' This is INCORRECT."
+  correct_model: "All phases serve the PROBLEM. Phases loop back to problem-centered core; problem drives design throughout."
+  research_basis: "Merrill 2002 foundational definition; Thompson 2002 corporate case study confirms cyclic model"
+  design_implication: "If your design doesn't fundamentally center on authentic problem, you're not using FPI"
+
+# ==============================================================================
+# MACRO-STRATEGY: FIRST PRINCIPLES OF INSTRUCTION (FPI)
+# The universal 5-phase cycle orbiting around problem-centered core.
+# ==============================================================================
+
+first_principles:
+  description: "The core cycle for problem-centered learning. All phases serve the authentic problem at the center."
+
+  phases:
+    1_problem_centered:
+      definition: "Learning is anchored to authentic, real-world problems."
+      validation_checklist:
+        - "Is the problem authentic to the learner's role?"
+        - "Is the whole task shown early (Pebble-in-the-Pond)?"
+        - "Is there a progression of complexity?"
+
+    2_activation:
+      definition: "Activate existing knowledge as a foundation."
+      strategies:
+        - "Recall prior experience"
+        - "Use relevant analogies"
+        - "Pre-training assessments"
+
+    3_demonstration:
+      definition: "Show, don't just tell."
+      strategies:
+        - "Expert modeling (Worked Examples)"
+        - "Contrastive examples (Show what NOT to do)"
+        - "Visualizations"
+
+    4_application:
+      definition: "Learner applies knowledge with feedback."
+      strategies:
+        - "Scaffolded practice (Fading support)"
+        - "Simulations"
+        - "Peer role-play"
+
+    5_integration:
+      definition: "Transfer knowledge to the real world. THIS PHASE GENERATES LONG-TERM ROI."
+      critical_note: "Integration is almost universally SKIPPED in corporate L&D despite being the ONLY phase creating sustained performance change. This is a catastrophic business error."
+      strategic_importance: "Integration is where TRAINING BECOMES PERFORMANCE. Without it, learning stays in training room and is forgotten."
+      five_integration_activity_types:
+        - "Reflection (structured self-assessment, 'What did I learn?')"
+        - "Action Planning (explicit commitment: 'Here's what I'll do differently Monday')"
+        - "Peer Teaching (teach-back to colleague; deepens learning through explanation)"
+        - "Performance Support (job aids, quick references embedded in workflow)"
+        - "Manager Accountability (manager checks on application; reinforces behavior change)"
+      business_impact: "Post-training application directly correlates with training ROI; integration activities are LOW-COST, HIGH-VALUE"
+      low_cost_high_impact_examples:
+        - "30-minute post-training reflection prompt: $0 cost, 40% improvement in transfer"
+        - "Manager 'teach-back' meeting (1 hour): $50-100 cost, prevents 80% of knowledge decay"
+        - "Job aid template creation (4 hours): $300 cost, multiplied use across team, sustained 90-day performance"
+      strategies:
+        - "Reflection prompts (What will you do differently? Whom will you tell?)"
+        - "Action planning (30-day commitment with specific, measurable behaviors)"
+        - "Public demonstration (peer teaching, presentation to team)"
+        - "Manager follow-up conversations (scheduled check-ins on progress)"
+        - "Job aids and performance support (quick-reference guides embedded in workflow)"
+
+# ==============================================================================
+# FPI-CDT SYNERGY: How Macro and Micro Strategies Work Together
+# ==============================================================================
+
+fpi_cdt_synergy:
+  description: "FPI (macro-strategy) and CDT (micro-tactic) are SYNERGISTIC systems operating at different scales."
+  relationship: "FPI = the WHY and WHEN; CDT = the WHAT and HOW"
+  intellectual_evolution: "CDT (1980s, system-centric) → Elaboration Theory (1990s) → FPI (2002, learner-centric)"
+
+  execution_example:
+    fpi_mandate: "FPI requires: 'Include a Demonstration phase where you show how to use the concept'"
+    cdt_prescription: "CDT prescribes the FORM of that demonstration: 'If objective is USING a CONCEPT, demonstration MUST contain: Rule (definition) + Examples (positive instances) + Non-Examples (negative instances)'"
+    combined_effect: "Together, FPI's problem-centered requirement + CDT's prescriptive rules create optimal learning design"
+
+  design_workflow:
+    step_1_fpi: "Design the problem-centered cycle (5 phases around authentic problem)"
+    step_2_analyze: "For each phase, identify: What content type (fact/concept/procedure/principle)? What performance level (remember/use/find)?"
+    step_3_cdt: "Apply CDT prescriptions based on content × performance matrix"
+    step_4_iterate: "Test and refine; FPI ensures learner-centric relevance; CDT ensures prescriptive effectiveness"
+
+  critical_distinction: "FPI without CDT = general guidance (what to do but not how). CDT without FPI = prescriptive but disconnected from learning purpose."
+
+# ==============================================================================
+# CRITICAL MISAPPLICATIONS & LIMITATIONS
+# ==============================================================================
+
+critical_misapplications:
+  description: "Three common, catastrophic errors when implementing FPI"
+
+  misapplication_1_linear_checklist_error:
+    mistake: "Treating FPI as a rigid linear sequence: 'Step 1: Problem, Step 2: Activate, Step 3: Demonstrate, Step 4: Apply, Step 5: Integrate'"
+    why_wrong: "This violates the CYCLIC, PROBLEM-CENTRIC core of FPI. Problem is the hub; all phases orbit it continuously."
+    symptom: "Training covers all 5 steps but fails because problem loses centrality as design progresses"
+    fix: "Return to problem at each phase. Ask: 'Does this activity serve the authentic problem?' If no, redesign."
+    research_basis: "Merrill 2002 foundational definition"
+
+  misapplication_2_information_dump_demonstration:
+    mistake: "Equating 'Demonstration' with passive lecture (45-minute video, 50-page module) instead of active expert modeling"
+    why_wrong: "Contradicts FPI's active learning principle. Passive information delivery is NOT demonstration in FPI sense."
+    symptom: "Demonstration phase is a wall of content; learners don't actively engage or see problem-solving in action"
+    fix: "Demonstration = show EXPERT SOLVING the problem. Use worked examples, contrastive examples, think-alouds."
+    cdt_prescription: "Use Rule + Examples + Non-Examples (for concepts); Step-by-step with think-aloud (for procedures)"
+    research_basis: "Worked examples research (Sweller, Atkinson)"
+
+  misapplication_3_forgotten_integration:
+    mistake: "Training ends with Application; Integration is skipped or relegated to 'post-training survey'"
+    why_wrong: "Integration is the ONLY principle generating long-term ROI and behavior change. Skipping it wastes training investment."
+    symptom: "Training feels complete; learner 'got it' during course; but performance doesn't change on the job"
+    impact: "40-60% knowledge decay within 30 days without integration activities"
+    fix: "Schedule integration activities BEFORE training ends. Build in reflection, action planning, manager accountability."
+    research_basis: "Transfer of training literature (Broad & Newstrom); Thompson (2002) corporate case study"
+
+fpi_limitations:
+  description: "FPI is powerful but has acknowledged limitations"
+
+  limitation_1_general_guidance_only:
+    issue: "FPI provides WHAT to do, not detailed HOW. Requires CDT (or equivalent prescriptive framework) for specific design decisions."
+    solution: "Always pair FPI with content-type-specific prescriptions (CDT, Elaboration Theory, or domain-specific models)"
+
+  limitation_2_resource_intensive:
+    issue: "Requires deep SME access, extensive analysis, time for design, prototyping, iteration"
+    not_suitable_for: "Quick-and-dirty, low-budget training where SME time is unavailable"
+    efficiency_note: "ROI justifies resource investment for high-stakes, frequently-taught content"
+
+  limitation_3_challenging_for_zero_prior_knowledge:
+    issue: "Problem-centered approach assumes learner can engage with problem. Learners with zero prior knowledge may feel lost."
+    solution: "Provide scaffolding: Simplified version of problem first; gradual complexity increase; pre-training if needed"
+
+  limitation_4_not_universal:
+    issue: "FPI less helpful for: pure recall objectives (facts), compliance training, basic awareness building"
+    better_for: "Transfer, application, complex problem-solving, professional development, behavior change"
+    guidance: "Use FPI when objective involves PERFORMANCE or APPLICATION; not necessary for low-stakes awareness"
+
+# ==============================================================================
+# CORPORATE CONTEXT & ADULT LEARNER ALIGNMENT
+# ==============================================================================
+
+corporate_context_mapping:
+  description: "FPI aligns naturally with adult learning principles and corporate training effectiveness"
+
+  knowles_andragogy_alignment:
+    adult_need: "Self-directed learning + relevance to performance needs"
+    fpi_alignment: "Problem-centered design directly addresses performance needs; learners see relevance immediately"
+
+    adult_need: "Learn from experience"
+    fpi_alignment: "Activation phase leverages prior experience; integration applies to real work context"
+
+    adult_need: "Hands-on, active learning"
+    fpi_alignment: "Application and integration are inherently active; reflection and action planning engage learner agency"
+
+  addie_integration:
+    analysis: "FPI drives Analysis: Identify authentic problem and performance gap"
+    design: "FPI guides Design: Problem-centered cycle; CDT prescriptions inform specific design decisions"
+    development: "FPI informs Development: Create problem-centered scenarios, worked examples, job aids"
+    delivery: "FPI shapes Delivery: Facilitator role is mentor/coach guiding problem-solving"
+    evaluation: "FPI requires Evaluation at 3 levels: Knowledge (formative), Application (transfer), Business impact"
+
+  business_impact_metrics:
+    kirkpatrick_level_1: "Satisfaction (less critical for FPI; focus on relevance)"
+    kirkpatrick_level_2: "Knowledge (should be high with problem-centered, active design)"
+    kirkpatrick_level_3: "Behavior (THIS is where FPI excels; integration activities predict behavior change)"
+    kirkpatrick_level_4: "Business results (ONLY level that justifies training investment; requires Level 3 success)"
+
+# ==============================================================================
+# MICRO-TACTICS: COMPONENT DISPLAY THEORY (CDT)
+# The prescriptive engine for designing specific learning objects.
+# ==============================================================================
+
+component_display_theory:
+  description: "Prescriptive rules based on Content Type x Performance Level."
+
+  # The Classifier
+  performance_content_matrix:
+    content_types:
+      fact: "Arbitrary information (names, dates, symbols)."
+      concept: "Categories defined by shared attributes."
+      procedure: "Ordered sequence of steps."
+      principle: "Cause-and-effect relationships or rules."
+
+    performance_levels:
+      remember: "Recall or recognize."
+      use: "Apply to a specific case."
+      find: "Derive a new abstraction or solution."
+
+  # The Prescription Engine
+  prescriptions:
+    fact_remember:
+      strategy: "Repetition + Mnemonics"
+      feedback: "Correct/Incorrect"
+
+    concept_use:
+      strategy: "Definition (Rule) + Examples (Positive) + Non-Examples (Negative)"
+      feedback: "Explain WHY it is an example/non-example."
+
+    procedure_use:
+      strategy: "Step-by-step Demo + Guided Practice + Sandbox Simulation"
+      feedback: "Corrective feedback on specific steps."
+
+    principle_use:
+      strategy: "Statement of Principle + Cause/Effect Examples"
+      feedback: "Show natural consequences of choices."
+
+    principle_find:
+      strategy: "Heuristic guidelines + Novel Problem Solving"
+      feedback: "Critique of the diagnostic process, not just result."
+
+# ==============================================================================
+# INSTRUCTIONAL TYPES & PRESENTATION FORMS
+# ==============================================================================
+
+presentation_forms:
+  primary:
+    expository_generality: "Rule/Definition (Tell)"
+    expository_instance: "Example (Show)"
+    inquisitory_generality: "Recall (Ask Rule)"
+    inquisitory_instance: "Practice (Ask Application)"
+
+  secondary:
+    elaborations: ["Context", "Prerequisites", "Mnemonics", "Feedback", "Help"]

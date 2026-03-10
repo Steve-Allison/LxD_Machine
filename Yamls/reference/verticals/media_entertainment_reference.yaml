@@ -1,0 +1,422 @@
+_meta:
+  id: media_entertainment_reference
+  title: "Media & Entertainment Vertical"
+  description: "Media & Entertainment industry configuration including sub-verticals (streaming, broadcasting, publishing, gaming, sports), terminology, value propositions, and competitive landscape."
+  domain: sales
+  domain_type: cross_cutting
+  purpose: reference
+  version: "1.3.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Crafting Powerful Opening Plays.md"
+    - "Corpus/Research/Research - Comprehensive Audience Analysis.md"
+    - "Corpus/Research/Research - Slide Deck Design Playbook Research.md"
+    - "Corpus/Research/Research - Canonical Presentation Methodology Research.md"
+    - "Corpus/Research/The Universal Narrative Methodology: A Framework for Crafting and Improving Stories.md"
+
+
+vertical:
+  id: media_entertainment
+  name: "Media & Entertainment"
+  aliases:
+    - M&E
+    - Media
+    - Entertainment
+    - Publishing
+    - Streaming
+
+# ==============================================================================
+# Sub-Verticals
+# ==============================================================================
+
+sub_verticals:
+  streaming:
+    name: "Streaming & OTT"
+    description: "Video streaming and over-the-top services"
+    key_players:
+      - Netflix
+      - Disney+
+      - Max (Warner Bros)
+      - Paramount+
+      - Peacock
+    focus_areas:
+      - Subscriber acquisition and retention
+      - Content discovery and recommendations
+      - Churn prevention
+      - Ad-supported tier growth
+
+  broadcasting:
+    name: "Broadcasting & Cable"
+    description: "Traditional TV networks and cable"
+    key_players:
+      - NBCUniversal
+      - CBS (Paramount)
+      - Fox
+      - ABC (Disney)
+      - CNN
+    focus_areas:
+      - Digital transformation
+      - Audience measurement evolution
+      - Cross-platform monetisation
+      - Local/national integration
+
+  publishing:
+    name: "Publishing & News"
+    description: "Digital and print publishers"
+    key_players:
+      - New York Times
+      - Washington Post
+      - Condé Nast
+      - Hearst
+      - Meredith
+    focus_areas:
+      - Subscription growth
+      - Advertising yield
+      - Audience engagement
+      - Content monetisation
+
+  gaming:
+    name: "Gaming"
+    description: "Video game publishers and platforms"
+    key_players:
+      - Electronic Arts
+      - Activision Blizzard
+      - Sony Interactive
+      - Microsoft Gaming
+      - Take-Two
+    focus_areas:
+      - Player acquisition
+      - In-game engagement
+      - Esports and community
+      - Cross-platform play
+
+  sports:
+    name: "Sports & Live Events"
+    description: "Sports leagues, teams, live entertainment"
+    key_players:
+      - NFL
+      - NBA
+      - MLB
+      - Live Nation
+      - IMG
+    focus_areas:
+      - Fan engagement
+      - Ticket sales and yield
+      - Sponsorship activation
+      - Second-screen experiences
+
+# ==============================================================================
+# Industry Pain Points
+# ==============================================================================
+
+pain_points:
+  strategic:
+    - id: subscriber_churn
+      description: "High churn rates in streaming services"
+      severity: critical
+      affected_personas: [cmo, vp_marketing, director_analytics]
+      related_products: [RTCDP, AJO, CJA]
+      industry_context: "Average streaming churn 5-8% monthly"
+
+    - id: content_discovery
+      description: "Helping users find content they'll love"
+      severity: high
+      affected_personas: [cmo, director_ecommerce]
+      related_products: [Target, RTCDP, Analytics]
+
+    - id: advertising_revenue
+      description: "Maximising ad revenue without harming experience"
+      severity: high
+      affected_personas: [cmo, cfo, cro]
+      related_products: [AEP, Analytics, Audience Manager]
+
+  operational:
+    - id: content_volume
+      description: "Massive content marketing needs for releases"
+      severity: high
+      affected_personas: [director_content_strategy, cmo]
+      related_products: [GenStudio, AEM Assets, Workfront]
+
+    - id: localisation_scale
+      description: "Global content requiring localisation at speed"
+      severity: high
+      affected_personas: [director_content_strategy]
+      related_products: [AEM, Workfront, GenStudio]
+
+    - id: rights_management
+      description: "Content rights and territory management"
+      severity: high
+      affected_personas: [coo, legal]
+      related_products: [AEM Assets]
+
+  technical:
+    - id: audience_fragmentation
+      description: "Audiences across many platforms and devices"
+      severity: high
+      affected_personas: [director_marketing_ops, director_analytics]
+      related_products: [RTCDP, CJA, AEP]
+
+    - id: real_time_engagement
+      description: "Need for real-time engagement during live events"
+      severity: high
+      affected_personas: [vp_marketing, it_director]
+      related_products: [AJO, RTCDP]
+
+    - id: measurement_evolution
+      description: "Changing audience measurement landscape"
+      severity: high
+      affected_personas: [director_analytics, cmo]
+      related_products: [CJA, Analytics]
+
+# ==============================================================================
+# Industry Terminology
+# ==============================================================================
+
+terminology:
+  streaming_metrics:
+    MAU:
+      full_name: "Monthly Active Users"
+      context: "Primary engagement metric"
+    DAU:
+      full_name: "Daily Active Users"
+      context: "Daily engagement metric"
+    ARPU:
+      full_name: "Average Revenue Per User"
+      context: "Monetisation efficiency"
+    LTV:
+      full_name: "Lifetime Value"
+      context: "Subscriber value over time"
+    churn_rate:
+      description: "Percentage of subscribers who cancel"
+    engagement_time:
+      description: "Time spent on platform"
+    content_hours:
+      description: "Hours of content consumed"
+
+  advertising_terms:
+    CPM:
+      full_name: "Cost Per Mille (Thousand)"
+      context: "Advertising pricing"
+    AVOD:
+      full_name: "Ad-Supported Video On Demand"
+      context: "Free, ad-supported streaming"
+    SVOD:
+      full_name: "Subscription Video On Demand"
+      context: "Paid subscription streaming"
+    FAST:
+      full_name: "Free Ad-Supported Streaming TV"
+      context: "Linear-style free streaming"
+    impression:
+      description: "Single ad view"
+    fill_rate:
+      description: "Percentage of ad inventory sold"
+    yield:
+      description: "Revenue per impression"
+
+  content_terms:
+    IP:
+      full_name: "Intellectual Property"
+      context: "Content rights and franchises"
+    originals:
+      description: "Platform-exclusive content"
+    library:
+      description: "Catalogue content"
+    windowing:
+      description: "Sequential release across channels"
+
+# ==============================================================================
+# Value Propositions
+# ==============================================================================
+
+value_propositions:
+  streaming:
+    primary:
+      - headline: "Reduce churn with predictive engagement"
+        proof_point: "25% reduction in subscriber churn"
+      - headline: "Content discovery that drives engagement"
+        proof_point: "40% increase in content consumption"
+      - headline: "Monetise ad-supported tiers effectively"
+        proof_point: "3x ARPU on hybrid subscribers"
+    differentiators:
+      - "Real-time engagement orchestration"
+      - "AI-powered content recommendations"
+      - "Cross-platform profile unification"
+
+  publishing:
+    primary:
+      - headline: "Subscription growth through personalisation"
+        proof_point: "50% improvement in trial conversion"
+      - headline: "Maximise advertising yield"
+        proof_point: "30% increase in CPMs with first-party data"
+      - headline: "Audience engagement that builds loyalty"
+        proof_point: "2x increase in articles per session"
+    differentiators:
+      - "First-party data strategy"
+      - "Paywall optimisation"
+      - "Content personalisation"
+
+  sports:
+    primary:
+      - headline: "Fan engagement that drives revenue"
+        proof_point: "25% increase in per-fan revenue"
+      - headline: "Second-screen experiences that captivate"
+        proof_point: "Real-time engagement during live events"
+      - headline: "Ticket yield optimisation"
+        proof_point: "15% improvement in ticket revenue"
+    differentiators:
+      - "Real-time event marketing"
+      - "Fan journey orchestration"
+      - "Sponsorship activation"
+
+# ==============================================================================
+# Competitive Landscape
+# ==============================================================================
+
+competitive_landscape:
+  key_competitors:
+    - name: Salesforce
+      positioning: "CRM and marketing automation"
+      strengths:
+        - CRM integration
+        - Marketing Cloud for email
+        - Large ecosystem
+      weaknesses:
+        - Weak content management
+        - Less real-time capability
+        - Complex implementation
+      adobe_advantage: "Real-time engagement and content velocity"
+
+    - name: Braze
+      positioning: "Customer engagement platform"
+      strengths:
+        - Mobile-first
+        - Real-time messaging
+        - Easy implementation
+      weaknesses:
+        - Limited content capability
+        - Less enterprise scale
+        - Point solution
+      adobe_advantage: "Full content supply chain + engagement"
+
+    - name: Amplitude
+      positioning: "Product analytics"
+      strengths:
+        - Product analytics depth
+        - Cohort analysis
+        - Self-service
+      weaknesses:
+        - Analytics only
+        - No activation
+        - Limited marketing
+      adobe_advantage: "Analytics + activation in one platform"
+
+# ==============================================================================
+# Success Stories
+# ==============================================================================
+
+success_stories:
+  - customer: "Major Streaming Service"
+    use_case: "Churn reduction through personalised engagement"
+    results:
+      - "25% reduction in subscriber churn"
+      - "40% increase in engagement time"
+      - "15% improvement in trial-to-paid conversion"
+    products: [RTCDP, AJO, CJA]
+    quotable: true
+
+  - customer: "Global Sports League"
+    use_case: "Fan engagement platform"
+    results:
+      - "30% increase in per-fan revenue"
+      - "Real-time engagement for 100M+ fans"
+      - "50% improvement in sponsorship activation"
+    products: [AEP, AJO, Analytics]
+    quotable: true
+
+  - customer: "Major Publisher"
+    use_case: "Subscription growth and engagement"
+    results:
+      - "50% improvement in paywall conversion"
+      - "2x subscriber retention"
+      - "30% increase in advertising CPMs"
+    products: [RTCDP, Target, Analytics]
+    quotable: true
+
+# ==============================================================================
+# Messaging Guidelines
+# ==============================================================================
+
+messaging:
+  tone:
+    - "Entertainment-forward"
+    - "Fan/audience-centric"
+    - "Real-time and immediate"
+    - "Creative and bold"
+    - "Data-informed"
+
+  preferred_terms:
+    - "subscriber / member / fan (context-dependent)"
+    - "engagement"
+    - "content discovery"
+    - "experience"
+    - "real-time"
+    - "personalisation"
+
+  avoid_terms:
+    - "consumer (prefer subscriber/fan/audience)"
+    - "user (prefer viewer/reader/listener)"
+    - 'targeting (prefer "reaching" or "engaging")'
+
+  key_themes:
+    - Subscriber acquisition and retention
+    - Content discovery and engagement
+    - Monetisation optimisation
+    - Real-time fan experiences
+    - First-party data strategy
+
+# ==============================================================================
+# SOAR NARRATIVE GUIDANCE — MEDIA & ENTERTAINMENT
+# Sources: Research - Canonical Presentation Methodology Research.md;
+#          The Universal Narrative Methodology.md; Crafting Powerful Opening Plays.md
+# ==============================================================================
+
+soar_narrative_guidance:
+  description: "SOAR stage framing tailored to Media & Entertainment audience expectations"
+
+  situation:
+    typical_opening_frames:
+      - "The streaming wars have fundamentally reset audience expectations: every entertainment brand is now competing not just against other broadcasters — but against Netflix, TikTok, and YouTube for attention."
+      - "Ad-supported streaming is growing, but monetisation depends on audience targeting sophistication that most M&E organisations haven't yet built."
+      - "Publishers face a dual crisis: declining third-party cookie signal and audience fragmentation across platforms."
+    data_anchors:
+      - "Average streaming subscriber churn is 35% annually — audience retention is the new acquisition (Antenna 2024)"
+      - "AVOD revenue is projected to surpass subscription revenue for most mid-tier streamers by 2027"
+
+  opportunity:
+    villain_frame: "Audience fragmentation and the death of third-party cookies — the inability to know your audience across platforms is the core villain"
+    pain_vocabulary:
+      - "Subscriber churn driven by poor content recommendation and irrelevant notifications"
+      - "Ad revenue declining as targeting signal degrades with cookie deprecation"
+      - "Content ROI unmeasurable due to fragmented attribution across streaming, social, and broadcast"
+      - "Personalisation for millions of concurrent subscribers at real-time speed not achievable with current stack"
+    loss_aversion_frame: "Every 1% increase in subscriber retention extends LTV by approximately $X per subscriber. At your scale, that is $Y annually."
+
+  action:
+    adobe_value_frame: "Adobe's Real-Time CDP enables first-party audience activation at streaming scale — building durable audience profiles from authenticated viewing behaviour, not third-party cookies"
+    differentiation_language:
+      - "Real-time audience segmentation from billions of viewing events — powering personalised recommendation, retention trigger campaigns, and AVOD ad targeting"
+      - "Adobe's server-side data collection preserves signal as third-party cookies deprecate"
+    champion_story: "The champion in M&E is typically the VP of Digital Products, VP of Audience, or Head of Growth — equip with a data-first narrative centred on audience LTV, not technology features"
+
+  result:
+    proof_pattern: "Before: [Streamer] had siloed viewing data, CRM, and ad platform. After: Real-time CDP unified profiles drove 22% reduction in voluntary churn and 18% increase in ad CPM within 9 months."
+    validated_outcome_types:
+      - "Subscriber churn reduction"
+      - "Content recommendation click-through improvement"
+      - "Ad CPM/fill-rate improvement via first-party targeting"
+      - "SVOD to AVOD conversion rate improvement"
+
+  audience_calibration:
+    economic_buyer: "CFO / CEO — frame around subscriber LTV, ARPU, and content ROI; avoid technical platform naming"
+    technical_buyer: "CTO / Head of Engineering — frame around event-stream architecture, real-time processing SLA, API-first integration"
+    champion: "VP Audience / VP Digital Products — frame around team capability uplift, speed to insight, and audience growth story"

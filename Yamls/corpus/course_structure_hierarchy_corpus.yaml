@@ -1,0 +1,2491 @@
+# ═══════════════════════════════════════════════════════════════
+# Course Structure Hierarchy Corpus v1.2.0
+# Full pipeline: Extraction → Organisation → Structuring
+# into the 6-level hierarchy: Course → Module → Topic →
+# Subtopic → Strip → Card
+# ═══════════════════════════════════════════════════════════════
+
+_meta:
+  id: course_structure_hierarchy
+  title: "Course Structure Hierarchy Corpus"
+  description: >
+    Self-contained corpus governing the full pipeline from raw content
+    extraction through logical organisation to hierarchical course structuring
+    across 6 levels (Course → Module → Topic → Subtopic → Strip → Card).
+  domain: pedagogical
+  domain_type: workflow
+  purpose: corpus
+  version: "1.2.0"
+  last_updated: "2026-03-09"
+  owner: "CoE Learning Architecture"
+  license: "CC-BY-4.0"
+  lifecycle_status: active
+  research_sources:
+    - "Corpus/Research/course_structure_hierarchy_corpus_research.md"
+    - "Content_Mining_Module.md (v6.0.0)"
+    - "Content_Detail_Mining_Module.md (v6.0.0)"
+    - "Content_Outline_Generator.md (v1.0.0)"
+    - "Course_Gold_Structure_Module.md (v3.0.0)"
+    - "Essentials_Course_Gold_Structure_AI_Course_Playbook.md"
+    - "Content Map - Instructions v3.md"
+    - "course-creation-flow.md"
+  related_configs:
+    - target: corpus/learning_design_corpus.yaml
+      type: related_to
+      description: "GGOO objectives framework; this file references GGOO for alignment"
+    - target: corpus/content_map_corpus.yaml
+      type: related_to
+      description: "Content maps and timing; this file covers the full 6-level hierarchy"
+    - target: taxonomy/content_architecture_taxonomy.yaml
+      type: related_to
+      description: "Artefact types and granularity levels; this file adds process methodology"
+    - target: methodology/pedagogical_frameworks.yaml
+      type: related_to
+      description: "Gagné, Bloom, Merrill; this file applies frameworks to hierarchy levels"
+    - target: methodology/learning_objectives_framework.yaml
+      type: related_to
+      description: "GGOO model; this file references objectives at every hierarchy level"
+    - target: corpus/descriptive_RST_corpus.yaml
+      type: related_to
+      description: "RST nuclearity principle informs content prioritisation during extraction; discourse signal taxonomy reinforces semantic-over-surface analysis"
+    - target: corpus/constructive_RST_corpus.yaml
+      type: related_to
+      description: "Planning-before-realization principle validates the extract→organise→structure pipeline architecture; root nucleus concept maps to GGOO gap anchoring"
+  changelog:
+    - version: "1.2.0"
+      date: "2026-03-09"
+      summary: "Added bp_056 (Spaced Repetition and Retrieval Practice Sequencing). Added workflow block with 3-phase pipeline sequencing, sub-steps, entry mapping, anti-pattern checkpoints, and output artefact descriptions. Added validation_rubric with 14 scored criteria and pass threshold. Total entries: 97."
+    - version: "1.1.0"
+      date: "2026-03-09"
+      summary: "Added RST-informed entries (pr_026, bp_054, bp_055) for nuclearity-based content prioritisation, discourse-aware extraction, and planning-before-realization architecture. Added cross-references to descriptive and constructive RST corpora."
+    - version: "1.0.0"
+      date: "2026-03-09"
+      summary: "Initial creation from comprehensive research compilation across 130+ source documents."
+
+schema_version: "1.0"
+domain: pedagogical
+last_updated: "2026-03-09"
+total_entries: 97
+
+tag_vocabulary:
+  - tag: extraction
+    status: active
+  - tag: organisation
+    status: active
+  - tag: structuring
+    status: active
+  - tag: hierarchy
+    status: active
+  - tag: module
+    status: active
+  - tag: topic
+    status: active
+  - tag: subtopic
+    status: active
+  - tag: strip
+    status: active
+  - tag: card
+    status: active
+  - tag: cognitive-load
+    status: active
+  - tag: bloom
+    status: active
+  - tag: scaffolding
+    status: active
+  - tag: prerequisite
+    status: active
+  - tag: sequencing
+    status: active
+  - tag: clustering
+    status: active
+  - tag: timing
+    status: active
+  - tag: assessment
+    status: active
+  - tag: threshold-concept
+    status: active
+  - tag: quality-validation
+    status: active
+  - tag: mayer-principles
+    status: active
+  - tag: merrill
+    status: active
+  - tag: gagne
+    status: active
+  - tag: adult-learning
+    status: active
+  - tag: ggoo
+    status: active
+  - tag: content-mining
+    status: active
+  - tag: reusability
+    status: active
+  - tag: naming-convention
+    status: active
+  - tag: 5-phase-cycle
+    status: active
+  - tag: source-quality
+    status: active
+  - tag: gap-analysis
+    status: active
+  - tag: asset-type
+    status: active
+
+# ═══════════════════════════════════════════════════════════════
+# WORKFLOW — Pipeline execution sequence for LLM agents
+# Process these phases IN ORDER. Within each phase, apply the
+# listed entries in the given sequence. Check anti-patterns at
+# the end of each phase before proceeding.
+# ═══════════════════════════════════════════════════════════════
+
+workflow:
+
+  - phase: 1_extraction
+    name: "Content Extraction"
+    description: >
+      Mine raw source materials to identify all topics, concepts, evidence,
+      examples, and threshold concepts. Work through the 5-stage extraction
+      pipeline (bp_004). Apply nuclearity analysis (bp_054) for long/complex
+      sources. Output: a comprehensive concept inventory with source mapping.
+    governing_principles:
+      - pr_006   # Semantic Over Surface
+      - pr_007   # Threshold Concept Priority
+      - pr_022   # Multi-Stage Extraction
+      - pr_023   # Source Attribution and Traceability
+      - pr_026   # Nuclearity — Core vs Supporting Content
+    sequence:
+      - bp_003   # 8-Criterion Source Quality Assessment (rank sources first)
+      - bp_004   # 5-Stage Extraction Pipeline (execute the pipeline)
+      - bp_001   # Semantic Content Analysis Using Kintsch Methodology
+      - bp_002   # 9 Content Types for Extraction Categorisation
+      - bp_005   # Presentation Deck Extraction (if applicable)
+      - bp_006   # Video and Transcript Extraction (if applicable)
+      - bp_007   # Document and PDF Extraction (if applicable)
+      - bp_008   # Job Aids and eLearning Extraction (if applicable)
+      - bp_054   # Nuclearity-Based Content Prioritisation
+      - bp_010   # Threshold Concept Identification and Prioritisation
+      - bp_009   # Source Mapping for Traceability
+    check_against:
+      - ap_001   # Format-Driven Mining
+      - ap_002   # Source Bias
+      - ap_003   # Threshold Concept Neglect
+      - ap_004   # Shallow Extraction
+    output_artefact: >
+      Concept inventory: a structured list of all extracted concepts, each
+      categorised by content type (bp_002), tagged as nucleus/satellite,
+      scored for quality, with source mapping (bp_009) and threshold concept
+      flags (bp_010).
+
+  - phase: 2_organisation
+    name: "Content Organisation"
+    description: >
+      Cluster extracted concepts into logical groups, map prerequisite
+      dependencies, sequence by complexity, deduplicate, and identify gaps.
+      Output: organised concept clusters ready for hierarchical structuring.
+    governing_principles:
+      - pr_008   # MECE Principle
+      - pr_009   # Prerequisite Mapping
+      - pr_010   # Complexity Progression
+      - pr_011   # Cognitive Load Theory
+    sequence:
+      - bp_011   # Semantic Clustering Process
+      - bp_014   # Deduplication and Conflict Resolution
+      - bp_012   # Prerequisite Dependency Mapping
+      - bp_016   # Bottleneck Concept Identification
+      - bp_013   # Bloom's-Aligned Complexity Sequencing
+      - bp_015   # 6-Type Gap Identification
+    check_against:
+      - ap_005   # Source-Driven Grouping
+      - ap_006   # Topic Sprawl
+      - ap_007   # Missing Prerequisites
+      - ap_008   # MECE Violation
+    output_artefact: >
+      Organised concept map: MECE clusters with descriptive labels,
+      prerequisite dependency graph, Bloom's-aligned sequence, bottleneck
+      flags, and gap analysis report.
+
+  - phase: 3_structuring
+    name: "Hierarchical Structuring"
+    description: >
+      Arrange organised concepts into the 6-level hierarchy: Course → Module →
+      Topic → Subtopic → Strip → Card. Apply the 5-phase learning cycle,
+      select strip patterns, design cards, plan assessment and scaffolding.
+      Validate the complete structure before handoff to production.
+    governing_principles:
+      - pr_001   # 6-Level Structural Hierarchy
+      - pr_002   # Duration Philosophy
+      - pr_003   # One Module, One Goal
+      - pr_004   # One Strip, One Objective
+      - pr_005   # 6-Card Canonical Model
+      - pr_012   # 5-Phase Learning Cycle
+      - pr_013   # Bloom's Revised Taxonomy
+      - pr_014   # Gagné's Nine Events
+      - pr_015   # Merrill's First Principles
+      - pr_016   # GGOO Alignment Traceability
+      - pr_017   # Adult Learning Principles
+      - pr_018   # Progressive Scaffolding Gradient
+      - pr_019   # Mayer's 15 Multimedia Principles
+      - pr_020   # Assessment Integration at Every Level
+      - pr_021   # Cognitive Alignment Matrix
+      - pr_024   # Kirkpatrick 4-Level Evaluation
+      - pr_025   # Topic Disambiguation
+    sub_steps:
+
+      - step: "3a_course_level"
+        name: "Course Architecture"
+        sequence:
+          - bp_017   # 5-Phase Course Architecture
+          - bp_018   # Module Count by Learning Goals
+          - bp_019   # Module Archetype Selection
+          - bp_020   # Module 1 Structure
+          - bp_021   # Final Module — Summative Assessment
+          - bp_055   # Planning-Before-Realization Architecture
+
+      - step: "3b_module_level"
+        name: "Module Design"
+        sequence:
+          - bp_022   # 7-Column Content Map Format
+          - bp_023   # Module Internal Flow
+          - bp_053   # ABCD Formula for Learning Objectives
+
+      - step: "3c_topic_level"
+        name: "Topic Design"
+        sequence:
+          - bp_024   # Topic Boundary Definition
+          - bp_025   # Topic Sequencing — 5 Priority Criteria
+          - bp_026   # Subtopic Usage Decision
+
+      - step: "3d_strip_level"
+        name: "Strip Design"
+        sequence:
+          - bp_027   # Intelligent Strip Planning Matrix
+          - bp_028   # Micro-Strip Pattern
+          - bp_029   # Standard Strip Pattern
+          - bp_030   # Full Strip Pattern
+          - bp_031   # Smart Card Merging Guidelines
+
+      - step: "3e_card_level"
+        name: "Card Design"
+        sequence:
+          - bp_032   # Hook Card
+          - bp_033   # Pre-Training Card
+          - bp_034   # Teach Card
+          - bp_035   # Guided Practice Card
+          - bp_036   # Independent Test Card
+          - bp_037   # Reflect & Transfer Card
+          - bp_038   # Card Specification Template
+
+      - step: "3f_cross_cutting"
+        name: "Cross-Cutting Concerns"
+        sequence:
+          - bp_039   # Session Timing Rules
+          - bp_040   # Modality-Specific Timing Adjustments
+          - bp_041   # Timing Estimation Heuristics
+          - bp_042   # Assessment Types by Hierarchy Level
+          - bp_043   # Kirkpatrick Evaluation Integration
+          - bp_044   # Formative Assessment Frequency
+          - bp_045   # Phase-Based Scaffolding Gradient
+          - bp_046   # Signal-Fade Schedule
+          - bp_056   # Spaced Repetition and Retrieval Practice
+          - bp_050   # Dot-Notation ID System
+          - bp_051   # Asset Tagging for Reuse
+          - bp_052   # Reusable Component Design
+
+      - step: "3g_validation"
+        name: "Structure Validation"
+        sequence:
+          - bp_047   # 4-Step Architecture Validation Checklist
+          - bp_048   # Strip-Level Validation Checklist
+          - bp_049   # Cross-Strip Coherence Validation
+        check_against:
+          - ap_009   # Flat Structure
+          - ap_010   # Phase Imbalance
+          - ap_011   # Objective Inflation
+          - ap_012   # Assessment Afterthought
+          - ap_013   # Cognitive Load Cliff
+          - ap_014   # Integration Neglect
+          - ap_015   # One-Size-Fits-All Strips
+
+# ═══════════════════════════════════════════════════════════════
+# VALIDATION RUBRIC — Score a completed course structure
+# Use after Phase 3 validation to produce a quality score.
+# Each criterion scores 0–3: 0=absent, 1=partial, 2=adequate, 3=exemplary
+# Maximum score: 42 (14 criteria × 3). Pass threshold: 28 (67%).
+# ═══════════════════════════════════════════════════════════════
+
+validation_rubric:
+  pass_threshold: 28
+  max_score: 42
+  criteria:
+    - id: vr_01
+      name: "5-Phase Completeness"
+      description: "All 5 learning cycle phases present with time allocations within prescribed ranges"
+      references: [pr_012, bp_017]
+
+    - id: vr_02
+      name: "Hierarchy Integrity"
+      description: "Full 6-level hierarchy used; every module contains topics, every topic contains strips, every strip contains cards"
+      references: [pr_001, ap_009]
+
+    - id: vr_03
+      name: "One-Goal-One-Module"
+      description: "Each module addresses exactly one significant learning goal; no multi-goal or empty modules"
+      references: [pr_003, bp_018]
+
+    - id: vr_04
+      name: "One-Objective-One-Strip"
+      description: "Each strip targets exactly one measurable ABCD objective; no multi-objective strips"
+      references: [pr_004, ap_011, bp_053]
+
+    - id: vr_05
+      name: "Bloom's Progression"
+      description: "Cognitive levels progress from lower to higher within modules and across the course"
+      references: [pr_010, pr_013, bp_013, ap_013]
+
+    - id: vr_06
+      name: "Prerequisite Sequencing"
+      description: "All prerequisite dependencies satisfied; no concept appears before its prerequisites"
+      references: [pr_009, bp_012, ap_007]
+
+    - id: vr_07
+      name: "Strip Pattern Justification"
+      description: "Strip patterns (Micro/Standard/Full) justified by the Intelligent Strip Planning Matrix scores"
+      references: [bp_027, bp_028, bp_029, bp_030, ap_015]
+
+    - id: vr_08
+      name: "Assessment Coverage"
+      description: "Assessment present at every hierarchy level; formative every 20–30 min; cognitive alignment matrix followed"
+      references: [pr_020, pr_021, bp_042, bp_044, ap_012]
+
+    - id: vr_09
+      name: "Scaffolding Gradient"
+      description: "Scaffolding decreases progressively across the 5-phase cycle; signal-fade schedule applied"
+      references: [pr_018, bp_045, bp_046]
+
+    - id: vr_10
+      name: "Timing Compliance"
+      description: "Topic durations 10–40 min, strip durations 5–20 min, card durations 30s–4 min; session breaks planned"
+      references: [pr_002, bp_039, bp_041]
+
+    - id: vr_11
+      name: "GGOO Traceability"
+      description: "Every level traces to GGOO: Gap → Goal → Objective → Outcome; no content without business justification"
+      references: [pr_016, bp_047, bp_053]
+
+    - id: vr_12
+      name: "Integration Presence"
+      description: "Reflect & Transfer card present in every strip (or merged in Micro-Strips); no integration neglect"
+      references: [pr_015, bp_037, ap_014]
+
+    - id: vr_13
+      name: "MECE Compliance"
+      description: "No content overlap between modules/topics; no orphan content; all extracted concepts placed"
+      references: [pr_008, bp_011, ap_008]
+
+    - id: vr_14
+      name: "Spaced Retrieval Planning"
+      description: "Retrieval touchpoints planned at expanding intervals; cross-module integration strips reference prior concepts"
+      references: [bp_056, bp_049]
+
+entries:
+
+  # ═══════════════════════════════════════════════════════════════
+  # PRINCIPLES (pr_001 – pr_026)
+  # Foundational rules underpinning the methodology
+  # ═══════════════════════════════════════════════════════════════
+
+  - id: pr_001
+    entry_type: principle
+    title: "6-Level Structural Hierarchy"
+    description: >
+      Every course is organised into exactly 6 levels: Course → Module → Topic →
+      Subtopic (optional) → Strip → Card. Each level has a defined role, containment
+      rules, and — for instructional units — cognitive-science-based duration guidance.
+    sources:
+      - "Essentials_Course_Gold_Structure_AI_Course_Playbook.md"
+      - "content_architecture_taxonomy.yaml"
+    tags:
+      - hierarchy
+      - structuring
+    added: "2026-03-09"
+    underpins:
+      - bp_017
+      - bp_024
+      - bp_027
+
+  - id: pr_002
+    entry_type: principle
+    title: "Duration Philosophy — Containers vs Instructional Units"
+    description: >
+      Duration constraints apply ONLY to instructional units (Topic: 10–40 min,
+      Strip: 5–20 min, Card: 30 sec–4 min) where cognitive science provides
+      meaningful guidance. Course, Module, and Subtopic are containers whose
+      duration is the sum of their children. A course can be anything from
+      30 minutes to hundreds of hours.
+    sources:
+      - "Essentials_Course_Gold_Structure_AI_Course_Playbook.md"
+      - "Corpus/Research/course_structure_hierarchy_corpus_research.md §2.1"
+    tags:
+      - hierarchy
+      - timing
+    added: "2026-03-09"
+    underpins:
+      - bp_039
+      - bp_041
+
+  - id: pr_003
+    entry_type: principle
+    title: "One Module, One Goal"
+    description: >
+      Each module addresses exactly one significant learning goal. If a module
+      tries to address more than one goal, split it. If a module feels too thin,
+      merge it with a related module. The number of modules is driven by the
+      content's distinct learning goals, not by arbitrary count targets.
+    sources:
+      - "content_map_corpus.yaml §1"
+      - "Course_Gold_Structure_Module.md"
+    tags:
+      - module
+      - structuring
+    added: "2026-03-09"
+    underpins:
+      - bp_018
+      - bp_019
+
+  - id: pr_004
+    entry_type: principle
+    title: "One Strip, One Objective"
+    description: >
+      A Strip is the fundamental instructional building block. Each strip
+      targets exactly one measurable learning objective, is completable in
+      5–20 minutes, and follows a clear pedagogical sequence. Assigning
+      multiple objectives to a single strip violates this principle.
+    sources:
+      - "Essentials_Course_Gold_Structure_AI_Course_Playbook.md"
+    tags:
+      - strip
+      - structuring
+    added: "2026-03-09"
+    underpins:
+      - bp_027
+      - bp_028
+      - bp_029
+      - bp_030
+
+  - id: pr_005
+    entry_type: principle
+    title: "6-Card Canonical Model"
+    description: >
+      The canonical strip contains 6 card types: Hook, Pre-Training, Teach,
+      Guided Practice, Independent Test, Reflect & Transfer. The 6-card model
+      (from Essentials Playbook) supersedes the earlier 5-card model (from
+      content_map_corpus.yaml) because Merrill's FPI research shows Integration
+      (addressed by Reflect & Transfer) is the ONLY principle generating
+      long-term ROI; omitting it causes 40–60% knowledge decay.
+    sources:
+      - "Essentials_Course_Gold_Structure_AI_Course_Playbook.md"
+      - "merrill_framework.yaml"
+      - "content_map_corpus.yaml §2 (earlier 5-card version)"
+    tags:
+      - card
+      - strip
+      - merrill
+    added: "2026-03-09"
+    underpins:
+      - bp_032
+      - bp_033
+      - bp_034
+      - bp_035
+      - bp_036
+      - bp_037
+
+  - id: pr_006
+    entry_type: principle
+    title: "Semantic Over Surface"
+    description: >
+      Meaningful structure emerges from content relationships, not surface
+      formatting. Analyse content for underlying meaning and pedagogical value
+      rather than relying on headings, bullet points, or visual layout.
+      A presentation deck's real content is often in the speaker notes and
+      narrative, not in the bullet points on screen.
+    sources:
+      - "Content_Mining_Module.md"
+      - "Kintsch, W. (1998) — Semantic Content Analysis"
+    tags:
+      - extraction
+      - content-mining
+    added: "2026-03-09"
+    underpins:
+      - bp_001
+      - bp_005
+
+  - id: pr_007
+    entry_type: principle
+    title: "Threshold Concept Priority"
+    description: >
+      Threshold concepts (Meyer & Land, 2003) — transformative, irreversible,
+      integrative, troublesome, bounded ideas — require 3× more extraction
+      attention than routine content because they are the linchpins of genuine
+      understanding. Cognitive load optimisation increases retention by 40–60%.
+    sources:
+      - "Content_Detail_Mining_Module.md"
+      - "Meyer, J. & Land, R. (2003)"
+    tags:
+      - extraction
+      - threshold-concept
+    added: "2026-03-09"
+    underpins:
+      - bp_010
+      - bp_003
+
+  - id: pr_008
+    entry_type: principle
+    title: "MECE Principle for Content Organisation"
+    description: >
+      All content clusters must be Mutually Exclusive (no concept appears in
+      two clusters) and Collectively Exhaustive (every extracted concept belongs
+      to a cluster). This principle from information architecture ensures
+      logical, non-overlapping structure with no orphan content.
+    sources:
+      - "Content_Outline_Generator.md"
+      - "Rosenfeld & Morville — Information Architecture"
+    tags:
+      - organisation
+      - clustering
+    added: "2026-03-09"
+    underpins:
+      - bp_011
+
+  - id: pr_009
+    entry_type: principle
+    title: "Prerequisite Mapping Prevents Comprehension Failure"
+    description: >
+      Prerequisite mapping prevents 70% of learning comprehension issues.
+      Content must be sequenced so that foundational knowledge appears before
+      concepts that depend on it. Four dependency types exist: hard prerequisite,
+      soft prerequisite, co-requisite, and no dependency.
+    sources:
+      - "Content_Mining_Module.md"
+      - "content_map_corpus.yaml §1"
+    tags:
+      - prerequisite
+      - sequencing
+      - organisation
+    added: "2026-03-09"
+    underpins:
+      - bp_012
+
+  - id: pr_010
+    entry_type: principle
+    title: "Complexity Progression — Simple to Complex"
+    description: >
+      Cognitive Load Theory (Sweller, 1988) requires sequencing content from
+      simple to complex. Within a Module, progress from lower to higher Bloom's
+      levels. Within a Course, early Modules address Remember/Understand, middle
+      Modules address Apply/Analyse, and late Modules address Evaluate/Create.
+      Never introduce a higher-order task before its foundational knowledge.
+    sources:
+      - "Course_Gold_Structure_Module.md"
+      - "Sweller, J. (1988)"
+    tags:
+      - sequencing
+      - cognitive-load
+      - bloom
+    added: "2026-03-09"
+    underpins:
+      - bp_013
+      - bp_025
+
+  - id: pr_011
+    entry_type: principle
+    title: "Cognitive Load Theory — Three Load Types"
+    description: >
+      Total cognitive load = intrinsic (material complexity) + extraneous
+      (poor design) + germane (productive schema-building). The goal at every
+      hierarchy level is to minimise extraneous load, manage intrinsic load
+      through segmentation and scaffolding, and maximise germane load through
+      practice, examples, and self-explanation.
+    sources:
+      - "Sweller, J. (1988)"
+      - "content_map_corpus.yaml §3"
+    tags:
+      - cognitive-load
+    added: "2026-03-09"
+    underpins:
+      - bp_039
+      - bp_027
+
+  - id: pr_012
+    entry_type: principle
+    title: "5-Phase Learning Cycle"
+    description: >
+      Every course follows a 5-phase cycle: Foundation (10–15%), Development
+      (30–40%), Integration (25–30%), Consolidation (10–15%), Assessment
+      (10–15%). This is the CoE's own framework, synthesised from Kolb's
+      Experiential Learning (1984), Dick & Carey's ISD (2015), and Merrill's
+      FPI (2002). It should NOT be confused with Kolb's 4-stage model directly.
+      Foundation and Assessment phases are MANDATORY in every course.
+    sources:
+      - "Course_Gold_Structure_Module.md"
+      - "Essentials_Course_Gold_Structure_AI_Course_Playbook.md"
+    tags:
+      - structuring
+      - 5-phase-cycle
+    added: "2026-03-09"
+    underpins:
+      - bp_017
+      - bp_045
+
+  - id: pr_013
+    entry_type: principle
+    title: "Bloom's Revised Taxonomy"
+    description: >
+      Six cognitive levels form the basis for objective writing, activity
+      selection, and assessment alignment across the hierarchy: Remember →
+      Understand → Apply → Analyse → Evaluate → Create. Each level has
+      specific action verbs, activity types, and assessment formats.
+    sources:
+      - "Bloom, B. et al. (1956)"
+      - "learning_objectives_framework.yaml"
+    tags:
+      - bloom
+      - assessment
+    added: "2026-03-09"
+    underpins:
+      - bp_019
+      - bp_025
+      - bp_042
+
+  - id: pr_014
+    entry_type: principle
+    title: "Gagné's Nine Events of Instruction"
+    description: >
+      Nine instructional events map directly to the Strip/Card structure:
+      (1) Gain attention → Hook; (2) Inform of objective → Hook/Pre-Training;
+      (3) Stimulate recall → Pre-Training; (4) Present stimulus → Teach;
+      (5) Provide guidance → Teach/Guided Practice; (6) Elicit performance →
+      Guided Practice; (7) Provide feedback → Guided Practice/Independent Test;
+      (8) Assess performance → Independent Test; (9) Enhance retention →
+      Reflect & Transfer.
+    sources:
+      - "Gagné, R. (1985)"
+      - "pedagogical_frameworks.yaml"
+    tags:
+      - gagne
+      - strip
+      - card
+    added: "2026-03-09"
+    underpins:
+      - bp_032
+      - bp_033
+      - bp_034
+      - bp_035
+      - bp_036
+      - bp_037
+
+  - id: pr_015
+    entry_type: principle
+    title: "Merrill's First Principles of Instruction"
+    description: >
+      Five principles orbit an authentic problem: (1) Problem-Centred,
+      (2) Activation, (3) Demonstration, (4) Application, (5) Integration.
+      Integration is the ONLY principle generating long-term ROI and is
+      almost universally skipped, causing 40–60% knowledge decay.
+    sources:
+      - "Merrill, M.D. (2002)"
+      - "merrill_framework.yaml"
+    tags:
+      - merrill
+    added: "2026-03-09"
+    underpins:
+      - bp_037
+
+  - id: pr_016
+    entry_type: principle
+    title: "GGOO Alignment Traceability"
+    description: >
+      Every level of the hierarchy traces back to GGOO: Gap (performance
+      problem) → Goal (business outcome, SMART+) → Objective (learner
+      behaviour during course, ABCD formula) → Outcome (on-job behaviour
+      change, Kirkpatrick L3–L4). This ensures no content exists without
+      a clear business justification.
+    sources:
+      - "learning_design_corpus.yaml"
+      - "learning_objectives_framework.yaml"
+    tags:
+      - ggoo
+      - structuring
+    added: "2026-03-09"
+    underpins:
+      - bp_047
+
+  - id: pr_017
+    entry_type: principle
+    title: "Adult Learning Principles"
+    description: >
+      Knowles' (1984) andragogy principles apply throughout the hierarchy:
+      self-direction (agency over pace/path), experience (connect to prior
+      knowledge), relevance (immediate job connection for every content piece),
+      problem-centred (realistic workplace challenges, not abstract theory),
+      and motivation (learners must understand personal benefit — WIIFM).
+    sources:
+      - "Knowles, M. (1984)"
+      - "content_map_corpus.yaml §8"
+    tags:
+      - adult-learning
+    added: "2026-03-09"
+
+  - id: pr_018
+    entry_type: principle
+    title: "Progressive Scaffolding Gradient"
+    description: >
+      Scaffolding decreases as learners progress through the 5-phase cycle,
+      mapped to phases not fixed module numbers. Foundation = HIGH scaffolding
+      (20–30% independence); Development = MEDIUM (40–60%); Integration = LOW
+      (60–80%); Consolidation = MINIMAL (80–100%); Assessment = NONE (100%
+      independence). Visual/audio cues fade on the same gradient.
+    sources:
+      - "Essentials_Course_Gold_Structure_AI_Course_Playbook.md"
+    tags:
+      - scaffolding
+      - 5-phase-cycle
+    added: "2026-03-09"
+    underpins:
+      - bp_045
+      - bp_046
+
+  - id: pr_019
+    entry_type: principle
+    title: "Mayer's 15 Multimedia Learning Principles"
+    description: >
+      Apply to all card-level content design. Organised in three groups:
+      Reducing extraneous processing (Coherence, Signalling, Redundancy,
+      Spatial Contiguity, Temporal Contiguity); Managing essential processing
+      (Segmenting, Pre-training, Modality); Fostering generative processing
+      (Multimedia, Personalisation, Voice, Image, Embodiment, Immersion,
+      Generative Activity). The full 15-principle set from the CoE corpus.
+    sources:
+      - "Mayer, R. (2009)"
+      - "mayer_principles.yaml"
+    tags:
+      - mayer-principles
+      - card
+    added: "2026-03-09"
+    underpins:
+      - bp_034
+      - bp_038
+
+  - id: pr_020
+    entry_type: principle
+    title: "Assessment Integration at Every Hierarchy Level"
+    description: >
+      Assessment is not an afterthought bolted on at the end. Each hierarchy
+      level has its own assessment type: Course = summative (final module);
+      Module = formative (end of module); Topic = knowledge check; Strip =
+      Independent Test card; Card = embedded interaction. Formative assessment
+      must appear at least every 20–30 minutes.
+    sources:
+      - "content_map_corpus.yaml §6"
+      - "assessment_taxonomy.yaml"
+    tags:
+      - assessment
+      - hierarchy
+    added: "2026-03-09"
+    underpins:
+      - bp_042
+      - bp_044
+
+  - id: pr_021
+    entry_type: principle
+    title: "Cognitive Alignment Matrix"
+    description: >
+      Assessment format must match the Bloom's level being assessed:
+      Remember/Understand → multiple choice, matching, fill-in-blank;
+      Apply/Analyse → short answer, scenario response, case analysis;
+      Evaluate/Create → performance task, portfolio, project. Misalignment
+      produces invalid assessments.
+    sources:
+      - "content_map_corpus.yaml §6"
+      - "learning_objectives_framework.yaml"
+    tags:
+      - assessment
+      - bloom
+    added: "2026-03-09"
+    underpins:
+      - bp_042
+
+  - id: pr_022
+    entry_type: principle
+    title: "Multi-Stage Extraction Prevents Cognitive Overwhelm"
+    description: >
+      Content extraction must be staged (surface scan → concept extraction →
+      relationship mapping → depth extraction → gap analysis) to prevent
+      cognitive overwhelm. Sweller's CLT shows that staged processing produces
+      higher quality output than attempting comprehensive extraction in one pass.
+    sources:
+      - "Content_Mining_Module.md"
+      - "Content_Detail_Mining_Module.md"
+      - "Sweller, J. (1988)"
+    tags:
+      - extraction
+      - cognitive-load
+    added: "2026-03-09"
+    underpins:
+      - bp_004
+
+  - id: pr_023
+    entry_type: principle
+    title: "Source Attribution and Traceability"
+    description: >
+      Every piece of extracted content must trace back to its origin source
+      document, page, and section. This enables verification, evidence-based
+      design decisions, and allows subject matter experts to validate accuracy.
+      No content should exist in the hierarchy without provenance.
+    sources:
+      - "Content_Outline_Generator.md"
+      - "Content_Mining_Module.md"
+    tags:
+      - extraction
+      - quality-validation
+    added: "2026-03-09"
+    underpins:
+      - bp_009
+
+  - id: pr_024
+    entry_type: principle
+    title: "Kirkpatrick 4-Level Evaluation"
+    description: >
+      Evaluation spans four levels: L1 Reaction (satisfaction, during/after);
+      L2 Learning (knowledge acquisition, end of course); L3 Behaviour (on-job
+      application, 30–90 days post); L4 Results (business impact, 90+ days).
+      Course-level assessment targets L2; post-course follow-up targets L3–L4.
+    sources:
+      - "Kirkpatrick, D. (2016)"
+      - "learning_design_corpus.yaml"
+    tags:
+      - assessment
+    added: "2026-03-09"
+    underpins:
+      - bp_043
+
+  - id: pr_025
+    entry_type: principle
+    title: "Topic Disambiguation — Hierarchy Level vs Content Map Column"
+    description: >
+      The word 'topic' has two senses: (1) Topic as hierarchy Level 3 — a
+      formally defined container with an ID, learning objective, and boundary;
+      (2) 'Key Topics' as a content map column — informal labels describing
+      what a module covers. During Phase 3, informal key topics are formalised
+      into structural Topics with IDs and strip breakdowns.
+    sources:
+      - "Corpus/Research/course_structure_hierarchy_corpus_research.md §2.4"
+    tags:
+      - hierarchy
+      - topic
+      - naming-convention
+    added: "2026-03-09"
+
+  - id: pr_026
+    entry_type: principle
+    title: "Nuclearity — Core vs Supporting Content"
+    description: >
+      Rhetorical Structure Theory's nucleus/satellite distinction provides a
+      principled framework for content prioritisation during extraction. A
+      nucleus is the text span central to the author's communicative intent
+      and capable of standing alone; a satellite is ancillary, supporting, or
+      contextualising information. When mining source documents, identifying
+      nuclei isolates the core instructional content while satellites provide
+      examples, background, and elaboration. In multinuclear relations (lists,
+      contrasts), multiple spans carry equal semantic weight. Crucially, only
+      8.5–22% of these relationships are signalled by explicit markers
+      ('because', 'however') — the majority must be inferred from semantic,
+      syntactic, morphological, and graphical cues.
+    sources:
+      - "corpus/descriptive_RST_corpus.yaml — pr_002, pr_004"
+      - "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+    tags:
+      - extraction
+      - content-mining
+    added: "2026-03-09"
+    underpins:
+      - bp_054
+    notes: >
+      Cross-domain application of RST nuclearity to pedagogical content mining.
+      The nucleus/satellite distinction maps to the difference between core
+      concepts (bp_002 type 1) and supporting material (types 3, 6, 7).
+
+  # ═══════════════════════════════════════════════════════════════
+  # BEST PRACTICES — PHASE 1: EXTRACTION (bp_001 – bp_010)
+  # ═══════════════════════════════════════════════════════════════
+
+  - id: bp_001
+    entry_type: best_practice
+    title: "Semantic Content Analysis Using Kintsch Methodology"
+    description: >
+      Apply Kintsch's (1998) semantic analysis: identify propositions (atomic
+      meaning units), map semantic relationships (supports, contradicts,
+      elaborates, exemplifies, prerequisites), assess semantic richness (concept
+      density), and score each source on a multi-criterion framework.
+    sources:
+      - "Content_Mining_Module.md"
+      - "Kintsch, W. (1998)"
+    tags:
+      - extraction
+      - content-mining
+    added: "2026-03-09"
+    evidence: "Content_Mining_Module.md reports 94% accuracy in structure identification using this methodology."
+    context: "Use whenever mining unstructured educational materials to identify core concepts and relationships."
+    confidence: strong
+    related_principles:
+      - pr_006
+
+  - id: bp_002
+    entry_type: best_practice
+    title: "9 Content Types for Extraction Categorisation"
+    description: >
+      Categorise all extracted content into 9 types: (1) Core Concepts,
+      (2) Detailed Explanations, (3) Examples and Cases, (4) Threshold
+      Concepts, (5) Procedures and Processes, (6) Evidence and Data,
+      (7) Visual/Media References, (8) Assessment Material,
+      (9) Misconceptions and Anti-Patterns.
+    sources:
+      - "Content_Detail_Mining_Module.md"
+      - "content_map_corpus.yaml §0"
+    tags:
+      - extraction
+      - content-mining
+    added: "2026-03-09"
+    evidence: "Content_Detail_Mining_Module.md achieves 92% extraction quality using this categorisation framework."
+    context: "Apply during Stage 2 (concept extraction) of the multi-stage pipeline to ensure comprehensive coverage."
+    confidence: strong
+    related_principles:
+      - pr_006
+      - pr_007
+
+  - id: bp_003
+    entry_type: best_practice
+    title: "8-Criterion Source Quality Assessment"
+    description: >
+      Rank every source document before extraction on 8 weighted criteria:
+      Semantic Richness (15%), Threshold Concept Coverage (20%), Pedagogical
+      Effectiveness (15%), Cognitive Load Appropriateness (15%), Structural
+      Clarity (10%), Currency and Accuracy (10%), Evidence Quality (10%),
+      Practical Applicability (5%). Score 0.0–1.0 per criterion. Sources >0.8
+      = top-tier; 0.6–0.8 = secondary; <0.6 = remediation needed.
+    sources:
+      - "Content_Detail_Mining_Module.md"
+    tags:
+      - extraction
+      - source-quality
+    added: "2026-03-09"
+    evidence: "Source ranking improves extraction efficiency and ensures high-quality materials are prioritised."
+    context: "Apply before any extraction begins. Threshold Concept Coverage has the highest weight (20%) because transformative concepts drive the greatest learning impact."
+    confidence: strong
+    related_principles:
+      - pr_007
+
+  - id: bp_004
+    entry_type: best_practice
+    title: "5-Stage Extraction Pipeline"
+    description: >
+      Extract in 5 progressive stages: (1) Surface Scan — identify structure,
+      headings, key terms, coverage breadth; (2) Concept Extraction — extract
+      discrete concepts with initial categorisation; (3) Relationship Mapping —
+      map dependencies, supports, relations, contradictions between concepts;
+      (4) Depth Extraction — detailed treatment of high-priority and threshold
+      concepts; (5) Gap Analysis — identify missing content, unexplained
+      prerequisites, absent assessment material.
+    sources:
+      - "Content_Mining_Module.md"
+      - "Content_Detail_Mining_Module.md"
+    tags:
+      - extraction
+      - content-mining
+    added: "2026-03-09"
+    evidence: "Staged processing prevents cognitive overwhelm (Sweller, 1988) and achieves 92–94% extraction quality."
+    context: "Use for any multi-document extraction task. Single-document tasks may compress stages 1–2."
+    confidence: strong
+    related_principles:
+      - pr_022
+
+  - id: bp_005
+    entry_type: best_practice
+    title: "Presentation Deck Extraction"
+    description: >
+      When mining presentation decks: use slide titles as topic indicators;
+      extract speaker notes as the primary explanatory content; analyse visual
+      layouts for concept relationships; look beyond bullet points to the
+      narrative connecting slides. The real content is often in the speaker
+      notes and delivery context, not on the slides themselves.
+    sources:
+      - "Content_Mining_Module.md"
+      - "Content_Outline_Generator.md"
+    tags:
+      - extraction
+      - asset-type
+    added: "2026-03-09"
+    evidence: "Content_Mining_Module.md identifies that surface formatting misleads; meaning lives in relationships."
+    context: "Apply specifically to PowerPoint, Keynote, or Google Slides source materials."
+    confidence: strong
+    related_principles:
+      - pr_006
+
+  - id: bp_006
+    entry_type: best_practice
+    title: "Video and Transcript Extraction"
+    description: >
+      When mining video content: extract transcripts for conceptual content;
+      identify visual segments for demonstrations; use timestamps to mark topic
+      boundaries. For transcripts: extract key statements and claims; mine Q&A
+      segments for common questions; use narrative flow as sequencing clues.
+      Filter repetition, tangents, and informal language.
+    sources:
+      - "Content_Mining_Module.md"
+    tags:
+      - extraction
+      - asset-type
+    added: "2026-03-09"
+    evidence: "Video's linear format obscures hierarchy; transcript mining reveals topic boundaries not visible in playback."
+    context: "Apply to video recordings, webinar captures, podcast episodes, and any spoken-word source materials."
+    confidence: moderate
+
+  - id: bp_007
+    entry_type: best_practice
+    title: "Document and PDF Extraction"
+    description: >
+      When mining documents/PDFs: use headings as hierarchy indicators;
+      extract paragraphs as explanatory content; mine figures and tables as
+      evidence. Distinguish core content from supplementary material. Documents
+      may be overly detailed — focus on concepts, not verbatim reproduction.
+    sources:
+      - "Content_Mining_Module.md"
+    tags:
+      - extraction
+      - asset-type
+    added: "2026-03-09"
+    evidence: "Document extraction requires distinguishing core concepts from supplementary detail to prevent information overload."
+    context: "Apply to Word documents, PDFs, technical manuals, policy documents, and research papers."
+    confidence: strong
+
+  - id: bp_008
+    entry_type: best_practice
+    title: "Job Aids and eLearning Extraction"
+    description: >
+      Job aids and infographics contain compressed, high-value content
+      (procedures, quick references, summary frameworks) but assume prior
+      knowledge and lack explanatory depth. SCORM/eLearning packages contain
+      learning objectives, assessment questions, and interaction sequences but
+      may require manual review due to locked formats.
+    sources:
+      - "Content_Mining_Module.md"
+    tags:
+      - extraction
+      - asset-type
+    added: "2026-03-09"
+    evidence: "Compressed formats are high-value for procedures but need supplementary sources for explanation."
+    context: "Use job aids as secondary sources for gap-filling, not as primary extraction targets."
+    confidence: moderate
+
+  - id: bp_009
+    entry_type: best_practice
+    title: "Source Mapping for Traceability"
+    description: >
+      Map every extracted point back to its source location using a source map
+      table: Topic | Source Document | Location (page/section/timestamp) |
+      Confidence (High/Medium/Low). This enables verification by SMEs, supports
+      evidence-based design decisions, and prevents ungrounded claims.
+    sources:
+      - "Content_Outline_Generator.md"
+      - "Content_Mining_Module.md"
+    tags:
+      - extraction
+      - quality-validation
+    added: "2026-03-09"
+    evidence: "Source mapping prevents 'invented content' and enables SME validation of all extracted material."
+    context: "Create the source map during extraction and maintain it through organisation and structuring phases."
+    confidence: strong
+    related_principles:
+      - pr_023
+
+  - id: bp_010
+    entry_type: best_practice
+    title: "Threshold Concept Identification and Prioritisation"
+    description: >
+      Identify threshold concepts using Meyer & Land's 5 criteria: transformative
+      (changes how the learner sees the domain), irreversible (once understood,
+      cannot be unlearned), integrative (connects previously unrelated ideas),
+      troublesome (often counter-intuitive), bounded (marks disciplinary borders).
+      Allocate 3× extraction attention to threshold concepts compared to routine
+      content. Flag for enhanced scaffolding during structuring.
+    sources:
+      - "Content_Detail_Mining_Module.md"
+      - "Meyer, J. & Land, R. (2003)"
+    tags:
+      - extraction
+      - threshold-concept
+    added: "2026-03-09"
+    evidence: "Threshold concept identification accuracy target: 94% (Content_Detail_Mining_Module.md); these concepts cause the most learner difficulty and greatest transformation."
+    context: "Apply during Stage 2–3 of the extraction pipeline. Threshold concepts should be prominently tagged and tracked through all subsequent phases."
+    confidence: strong
+    related_principles:
+      - pr_007
+
+  # ═══════════════════════════════════════════════════════════════
+  # BEST PRACTICES — PHASE 2: ORGANISATION (bp_011 – bp_016)
+  # ═══════════════════════════════════════════════════════════════
+
+  - id: bp_011
+    entry_type: best_practice
+    title: "Semantic Clustering Process"
+    description: >
+      Cluster extracted concepts using 5 steps: (1) Identify natural groupings
+      by shared parent idea, problem, or skill area; (2) Apply MECE — no
+      concept in two clusters, every concept in one; (3) Name each cluster with
+      a descriptive label signalling pedagogical purpose; (4) Identify orphan
+      concepts — may indicate gaps, bridges, or irrelevant content;
+      (5) Merge clusters with <2 concepts; split clusters with >7 concepts.
+    sources:
+      - "Content_Mining_Module.md"
+      - "Content_Outline_Generator.md"
+      - "Rosenfeld & Morville — Information Architecture"
+    tags:
+      - organisation
+      - clustering
+    added: "2026-03-09"
+    evidence: "Information architecture research shows semantic clustering produces more learnable structures than source-based grouping."
+    context: "Apply after extraction is complete. Cluster by conceptual similarity, NOT by source document origin."
+    confidence: strong
+    related_principles:
+      - pr_008
+
+  - id: bp_012
+    entry_type: best_practice
+    title: "Prerequisite Dependency Mapping"
+    description: >
+      Map dependencies using 5 steps: (1) For each concept, ask 'What must a
+      learner already understand to grasp this?'; (2) Trace chains to identify
+      foundational concepts (no prerequisites themselves); (3) Identify
+      bottleneck concepts (required by many downstream concepts — need extra
+      instructional attention); (4) Detect circular dependencies (indicate
+      threshold concepts needing special scaffolding); (5) Map parallel tracks
+      (concepts learnable in any order relative to each other).
+    sources:
+      - "Content_Mining_Module.md"
+      - "Course_Gold_Structure_Module.md"
+    tags:
+      - organisation
+      - prerequisite
+      - sequencing
+    added: "2026-03-09"
+    evidence: "Prerequisite mapping prevents 70% of learning comprehension issues (Content_Mining_Module.md)."
+    context: "Apply after semantic clustering. Dependency maps directly inform topic and module sequencing in Phase 3."
+    confidence: strong
+    related_principles:
+      - pr_009
+
+  - id: bp_013
+    entry_type: best_practice
+    title: "Bloom's-Aligned Complexity Sequencing"
+    description: >
+      Sequence content following Bloom's levels: within a Module, progress from
+      lower to higher cognitive levels; within a Course, early Modules target
+      Remember/Understand, middle Modules target Apply/Analyse, late Modules
+      target Evaluate/Create. Cognitive load should increase gradually with no
+      sudden jumps in complexity.
+    sources:
+      - "Course_Gold_Structure_Module.md"
+      - "learning_objectives_framework.yaml"
+    tags:
+      - organisation
+      - sequencing
+      - bloom
+    added: "2026-03-09"
+    evidence: "Bloom's taxonomy provides an empirically validated progression; Sweller's CLT shows gradual increase prevents overload."
+    context: "Apply when ordering topics within modules and when ordering modules within a course."
+    confidence: strong
+    related_principles:
+      - pr_010
+      - pr_013
+
+  - id: bp_014
+    entry_type: best_practice
+    title: "Deduplication and Conflict Resolution"
+    description: >
+      Apply 4 rules: (1) Same concept in multiple sources → merge richest
+      explanations and examples into a single canonical entry; (2) Sources
+      contradict → flag conflict, include both perspectives with authority note;
+      (3) Concept covered at different depths → keep deepest treatment,
+      reference lighter versions as supplementary; (4) Preserve source
+      attribution throughout — every content piece traces to its origin.
+    sources:
+      - "Content_Outline_Generator.md"
+      - "Content_Mining_Module.md"
+    tags:
+      - organisation
+      - content-mining
+    added: "2026-03-09"
+    evidence: "Deduplication prevents redundant content that wastes learning time; conflict resolution ensures accuracy."
+    context: "Apply after clustering, before sequencing. Use the source map (bp_009) to trace and resolve conflicts."
+    confidence: strong
+
+  - id: bp_015
+    entry_type: best_practice
+    title: "6-Type Gap Identification"
+    description: >
+      After clustering and sequencing, check for 6 gap types: (1) Prerequisite
+      gaps — required knowledge not covered; (2) Bloom's level gaps — jumps
+      without adequate intermediate content; (3) Assessment gaps — topics
+      without corresponding assessment material; (4) Example gaps — abstract
+      concepts without concrete illustrations; (5) Transfer gaps — skills
+      without workplace application guidance; (6) Audience gaps — content
+      assuming knowledge the target audience may lack.
+    sources:
+      - "Content_Detail_Mining_Module.md"
+      - "content_map_corpus.yaml §9"
+    tags:
+      - organisation
+      - gap-analysis
+    added: "2026-03-09"
+    evidence: "Systematic gap identification before structuring prevents costly rework and incomplete learning pathways."
+    context: "Apply as the final step of Phase 2, before beginning Phase 3 structuring."
+    confidence: strong
+
+  - id: bp_016
+    entry_type: best_practice
+    title: "Bottleneck Concept Identification"
+    description: >
+      During prerequisite mapping, identify bottleneck concepts — those required
+      by many downstream concepts. These need extra instructional attention
+      because failure to learn a bottleneck concept cascades into failure across
+      all dependent concepts. Flag bottlenecks for enhanced scaffolding, multiple
+      examples, and formative assessment checkpoints.
+    sources:
+      - "Content_Mining_Module.md"
+    tags:
+      - organisation
+      - prerequisite
+      - threshold-concept
+    added: "2026-03-09"
+    evidence: "Bottleneck concepts create single points of failure in the learning path; addressing them proactively prevents cascading comprehension issues."
+    context: "Apply during prerequisite dependency mapping (bp_012). Bottlenecks may or may not be threshold concepts — both need attention but for different reasons."
+    confidence: moderate
+
+  # ═══════════════════════════════════════════════════════════════
+  # BEST PRACTICES — PHASE 3: STRUCTURING (bp_017 – bp_053)
+  # ═══════════════════════════════════════════════════════════════
+
+  # --- Course Level ---
+
+  - id: bp_017
+    entry_type: best_practice
+    title: "5-Phase Course Architecture"
+    description: >
+      Structure every course using the 5-phase learning cycle: Foundation
+      (10–15%), Development (30–40%), Integration (25–30%), Consolidation
+      (10–15%), Assessment (10–15%). Foundation (introductory module) and
+      Assessment (summative module) are MANDATORY. Percentages are guidelines —
+      short courses may compress, large programmes may expand.
+    sources:
+      - "Course_Gold_Structure_Module.md"
+      - "Essentials_Course_Gold_Structure_AI_Course_Playbook.md"
+    tags:
+      - structuring
+      - 5-phase-cycle
+    added: "2026-03-09"
+    evidence: "The 5-phase cycle synthesises Kolb, Dick & Carey, and Merrill into a proven course architecture achieving 96% structure quality."
+    context: "Apply at the highest level when arranging modules into a course. Map each module to one of the 5 phases."
+    confidence: strong
+    related_principles:
+      - pr_012
+
+  - id: bp_018
+    entry_type: best_practice
+    title: "Module Count by Learning Goals"
+    description: >
+      Determine module count by counting distinct learning goals, not by
+      applying arbitrary targets. Each module addresses one significant goal.
+      A module must be substantial enough to contain at least one Topic with
+      at least one Strip, but not so large that it spans multiple unrelated
+      goals. There is no upper or lower limit beyond this heuristic.
+    sources:
+      - "content_map_corpus.yaml §1"
+      - "Course_Gold_Structure_Module.md"
+    tags:
+      - structuring
+      - module
+    added: "2026-03-09"
+    evidence: "Goal-driven module count produces better-scoped modules than duration-based count targets."
+    context: "Apply after concept clusters from Phase 2 have been mapped to learning goals."
+    confidence: strong
+    related_principles:
+      - pr_003
+
+  - id: bp_019
+    entry_type: best_practice
+    title: "Module Archetype Selection via Bloom's Alignment"
+    description: >
+      Select module archetype by Bloom's level of its objectives:
+      Remember/Understand → Core Concept module (foundational understanding);
+      Apply/Analyse → Application Practice module (theory-to-practice bridge);
+      Evaluate/Create → Integration Challenge module (multi-concept competency).
+      Plus two mandatory archetypes: Introduction (always Module 1) and
+      Summative Assessment (always final module).
+    sources:
+      - "Course_Gold_Structure_Module.md"
+      - "content_map_corpus.yaml §1"
+    tags:
+      - structuring
+      - module
+      - bloom
+    added: "2026-03-09"
+    evidence: "Archetype selection aligned to Bloom's ensures appropriate cognitive demand at each course stage."
+    context: "Apply when assigning module roles during 5-phase architecture design."
+    confidence: strong
+    related_principles:
+      - pr_003
+      - pr_013
+
+  - id: bp_020
+    entry_type: best_practice
+    title: "Module 1 Structure — Always Introductory"
+    description: >
+      Module 1 must always cover: (1) What the course is about (scope and
+      objectives); (2) Why it matters (learner relevance, WIIFM);
+      (3) Scope boundaries (what is and isn't covered); (4) Prerequisites
+      (what learners need before starting); (5) Links to related courses;
+      (6) Optional diagnostic assessment to gauge starting knowledge.
+    sources:
+      - "Content Map - Instructions v3.md"
+      - "content_map_corpus.yaml"
+    tags:
+      - structuring
+      - module
+    added: "2026-03-09"
+    evidence: "Content Map Instructions v3 mandates this structure for all courses; it sets context and motivation."
+    context: "Apply to every course regardless of size. Even a 30-minute micro-course needs a brief introduction."
+    confidence: strong
+    related_principles:
+      - pr_012
+
+  - id: bp_021
+    entry_type: best_practice
+    title: "Final Module — Always Summative Assessment"
+    description: >
+      The final module must always include summative assessment to validate
+      overall competency and provide certification or next-step guidance.
+      This module corresponds to the Assessment phase (10–15%) of the
+      5-phase learning cycle and is mandatory regardless of course size.
+    sources:
+      - "Course_Gold_Structure_Module.md"
+      - "Essentials_Course_Gold_Structure_AI_Course_Playbook.md"
+    tags:
+      - structuring
+      - module
+      - assessment
+    added: "2026-03-09"
+    evidence: "Omitting summative assessment removes the validation mechanism that confirms learning has occurred."
+    context: "Apply to every course. The assessment may be a short quiz for micro-courses or a multi-part project for extensive programmes."
+    confidence: strong
+    related_principles:
+      - pr_012
+      - pr_020
+
+  # --- Module Level ---
+
+  - id: bp_022
+    entry_type: best_practice
+    title: "7-Column Content Map Format"
+    description: >
+      Document each module using 7 columns: Module (number and title),
+      Duration (estimated time), Key Topics (subjects covered), Learning
+      Objectives (SMART, Bloom's-aligned), Activities/Assessments (learning
+      activities and formative assessment), Learning Outcomes (observable
+      post-learning behaviours), Instructional Alignment (pedagogical
+      framework justification).
+    sources:
+      - "Content Map - Instructions v3.md"
+      - "content_map_corpus.yaml §7"
+    tags:
+      - structuring
+      - module
+    added: "2026-03-09"
+    evidence: "The 7-column format ensures consistent documentation and enables alignment validation across modules."
+    context: "Generate for every module during the structuring phase. This is the primary module-level planning artefact."
+    confidence: strong
+
+  - id: bp_023
+    entry_type: best_practice
+    title: "Module Internal Flow"
+    description: >
+      Structure each module's internal flow as: Opening (5–10% of module time)
+      — context setting, objective clarity, hook; Development (70–80%) —
+      core content and practice through topics/strips/cards; Consolidation
+      (10–15%) — summary, validation, transition to next module.
+    sources:
+      - "Course_Gold_Structure_Module.md"
+    tags:
+      - structuring
+      - module
+    added: "2026-03-09"
+    evidence: "Internal flow mirrors the course-level 5-phase structure at module scale, ensuring consistent learning rhythm."
+    context: "Apply within each module when sequencing its constituent topics."
+    confidence: strong
+
+  # --- Topic Level ---
+
+  - id: bp_024
+    entry_type: best_practice
+    title: "Topic Boundary Definition"
+    description: >
+      Define topic boundaries using 5 criteria: (1) Addresses one conceptual
+      cluster from Phase 2; (2) Contains 1–3 subtopics or goes directly to
+      strips; (3) Lasts 10–40 minutes; (4) Has a clear learning objective
+      traceable to the module's goal; (5) Has identifiable prerequisite
+      dependencies on earlier topics.
+    sources:
+      - "content_map_corpus.yaml §1, §2"
+      - "Content_Mining_Module.md"
+    tags:
+      - structuring
+      - topic
+    added: "2026-03-09"
+    evidence: "Well-defined topic boundaries prevent content bleed between adjacent topics and support modular design."
+    context: "Apply when converting Phase 2 concept clusters into formal hierarchy Level 3 topics."
+    confidence: strong
+    related_principles:
+      - pr_001
+
+  - id: bp_025
+    entry_type: best_practice
+    title: "Topic Sequencing Within a Module — 5 Priority Criteria"
+    description: >
+      Sequence topics within a module using these criteria in priority order:
+      (1) Prerequisite dependencies — dependent topics come after;
+      (2) Complexity progression — simple before complex;
+      (3) Bloom's level progression — lower levels before higher;
+      (4) Narrative coherence — topics tell a logical story;
+      (5) Engagement pacing — alternate heavy conceptual content with
+      lighter application/practice.
+    sources:
+      - "content_map_corpus.yaml §1, §2"
+      - "Content_Mining_Module.md"
+    tags:
+      - structuring
+      - topic
+      - sequencing
+    added: "2026-03-09"
+    evidence: "Multi-criteria sequencing produces more learnable topic orders than single-criterion approaches."
+    context: "Apply when arranging topics within each module. Criterion 1 (prerequisites) always takes priority."
+    confidence: strong
+    related_principles:
+      - pr_009
+      - pr_010
+
+  # --- Subtopic Level ---
+
+  - id: bp_026
+    entry_type: best_practice
+    title: "Subtopic Usage Decision"
+    description: >
+      Use subtopics when: a topic contains 3+ distinct but related sub-concepts;
+      the topic would exceed 20 minutes without subdivision; different sub-concepts
+      need different instructional approaches. Do NOT use subtopics when: the
+      topic focuses on a single concept; subdivision would create fragments too
+      small to stand alone; the topic flows as a single narrative.
+    sources:
+      - "Essentials_Course_Gold_Structure_AI_Course_Playbook.md"
+    tags:
+      - structuring
+      - subtopic
+    added: "2026-03-09"
+    evidence: "Subtopics add structural clarity for complex topics but unnecessary subdivision fragments the learning experience."
+    context: "Apply as a decision gate before creating Level 4 entries. Default is no subtopics; add only when criteria are met."
+    confidence: strong
+
+  # --- Strip Level ---
+
+  - id: bp_027
+    entry_type: best_practice
+    title: "Intelligent Strip Planning Matrix"
+    description: >
+      Select strip pattern using 4 scoring dimensions (1–3 each): Content
+      Complexity, Criticality, Prior Knowledge, Application Frequency. Sum
+      score determines pattern: 4–6 = Micro-Strip (2–3 cards, 5–8 min);
+      7–9 = Standard Strip (3–4 cards, 10–15 min); 10–12 = Full Strip
+      (5–6 cards, 15–20 min).
+    sources:
+      - "Essentials_Course_Gold_Structure_AI_Course_Playbook.md"
+    tags:
+      - structuring
+      - strip
+    added: "2026-03-09"
+    evidence: "The planning matrix ensures strip investment matches the instructional need, preventing over- or under-design."
+    context: "Apply for every strip decision. Score all 4 dimensions before selecting the pattern."
+    confidence: strong
+    related_principles:
+      - pr_004
+
+  - id: bp_028
+    entry_type: best_practice
+    title: "Micro-Strip Pattern (2–3 Cards, 5–8 Minutes)"
+    description: >
+      Best for simple updates, single concepts, experienced audiences (score 4–6).
+      Three options: (A) Hook/Teach → Practice/Test → Reflect;
+      (B) Teach → Test → Transfer; (C) Hook/Pre-train → Teach/Practice →
+      Test/Reflect. Uses card merging to compress the 6-card model.
+    sources:
+      - "Essentials_Course_Gold_Structure_AI_Course_Playbook.md"
+    tags:
+      - structuring
+      - strip
+      - card
+    added: "2026-03-09"
+    evidence: "Micro-strips efficiently deliver low-complexity content without unnecessary instructional overhead."
+    context: "Use when the Strip Planning Matrix scores 4–6."
+    confidence: strong
+    related_principles:
+      - pr_004
+
+  - id: bp_029
+    entry_type: best_practice
+    title: "Standard Strip Pattern (3–4 Cards, 10–15 Minutes)"
+    description: >
+      Best for core skills, mixed audiences, moderate complexity (score 7–9).
+      Three options: (A) Hook → Teach/Practice → Test → Reflect;
+      (B) Pre-train → Teach → Practice/Test → Transfer;
+      (C) Hook/Pre-train → Teach → Practice → Test/Reflect.
+    sources:
+      - "Essentials_Course_Gold_Structure_AI_Course_Playbook.md"
+    tags:
+      - structuring
+      - strip
+      - card
+    added: "2026-03-09"
+    evidence: "Standard strips balance instructional completeness with time efficiency for the majority of learning objectives."
+    context: "Use when the Strip Planning Matrix scores 7–9. This is the most common pattern."
+    confidence: strong
+    related_principles:
+      - pr_004
+
+  - id: bp_030
+    entry_type: best_practice
+    title: "Full Strip Pattern (5–6 Cards, 15–20 Minutes)"
+    description: >
+      Best for complex skills, novice audiences, critical capabilities (score
+      10–12). Uses all 6 card types when complexity and criticality justify the
+      full investment: Hook → Pre-Training → Teach → Guided Practice →
+      Independent Test → Reflect & Transfer.
+    sources:
+      - "Essentials_Course_Gold_Structure_AI_Course_Playbook.md"
+    tags:
+      - structuring
+      - strip
+      - card
+    added: "2026-03-09"
+    evidence: "Full strips provide maximum instructional support for high-stakes, high-complexity learning objectives."
+    context: "Use when the Strip Planning Matrix scores 10–12. Reserve for genuinely critical content."
+    confidence: strong
+    related_principles:
+      - pr_004
+      - pr_005
+
+  - id: bp_031
+    entry_type: best_practice
+    title: "Smart Card Merging Guidelines"
+    description: >
+      Merge cards to compress strips: Hook + Pre-Training (when ≤3 new terms
+      and hook naturally introduces concepts); Teach + Guided Practice (when
+      demonstration includes try-it moments); Guided Practice + Independent
+      Test (progressive challenge with fading hints); Test + Reflect (when
+      reflection is brief and for building-block skills). Never merge when:
+      skills are mission-critical, compliance requires documented assessment,
+      cognitive load limits (7±2) would be exceeded, or quality would suffer.
+    sources:
+      - "Essentials_Course_Gold_Structure_AI_Course_Playbook.md"
+    tags:
+      - structuring
+      - card
+      - strip
+    added: "2026-03-09"
+    evidence: "Smart merging reduces strip duration by 20–40% without compromising learning when applied appropriately."
+    context: "Apply when designing Micro-Strip or Standard Strip patterns to compress the canonical 6-card sequence."
+    confidence: strong
+
+  # --- Card Level ---
+
+  - id: bp_032
+    entry_type: best_practice
+    title: "Hook Card Design"
+    description: >
+      The Hook card captures attention and establishes relevance in 30 sec–1 min.
+      Techniques: compelling story, surprising statistic, provocative question,
+      real-world scenario. Maps to Gagné Events 1–2. Must answer the learner's
+      implicit question 'Why should I care about this?'
+    sources:
+      - "Essentials_Course_Gold_Structure_AI_Course_Playbook.md"
+      - "Gagné, R. (1985)"
+    tags:
+      - card
+      - gagne
+    added: "2026-03-09"
+    evidence: "Attention capture within the first 30 seconds determines learner engagement for the remainder of the strip."
+    context: "Include in every strip pattern. May be merged with Pre-Training in Micro-Strips."
+    confidence: strong
+    related_principles:
+      - pr_005
+      - pr_014
+
+  - id: bp_033
+    entry_type: best_practice
+    title: "Pre-Training Card Design"
+    description: >
+      The Pre-Training card introduces essential vocabulary and mental models
+      in 1–3 min. Content: glossary of key terms, concept map overview,
+      framework introduction, prerequisite review. Maps to Gagné Event 3.
+      Implements Mayer's Pre-training Principle — introduce concepts before
+      the main lesson to reduce intrinsic load during teaching.
+    sources:
+      - "Essentials_Course_Gold_Structure_AI_Course_Playbook.md"
+      - "Mayer, R. (2009)"
+    tags:
+      - card
+      - mayer-principles
+    added: "2026-03-09"
+    evidence: "Mayer's Pre-training Principle reduces intrinsic cognitive load by preparing learners before complex instruction."
+    context: "Include in Standard and Full strips. May be merged with Hook in Micro-Strips when vocabulary is minimal."
+    confidence: strong
+    related_principles:
+      - pr_005
+      - pr_019
+
+  - id: bp_034
+    entry_type: best_practice
+    title: "Teach Card Design"
+    description: >
+      The Teach card delivers core instructional content in 3–8 min. Techniques:
+      demonstration, worked example, explanation, dual-coded delivery (words +
+      pictures). Maps to Gagné Events 4–5. Apply Mayer's Multimedia, Signalling,
+      Coherence, and Modality principles. Limit to 7±2 chunks per segment.
+    sources:
+      - "Essentials_Course_Gold_Structure_AI_Course_Playbook.md"
+      - "Mayer, R. (2009)"
+    tags:
+      - card
+      - cognitive-load
+      - mayer-principles
+    added: "2026-03-09"
+    evidence: "Dual coding (words + pictures) increases recall by 65% (Mayer & Anderson, 1991, effect size 0.89)."
+    context: "Present in every strip pattern. This is the primary knowledge-transfer card."
+    confidence: strong
+    related_principles:
+      - pr_005
+      - pr_011
+      - pr_019
+
+  - id: bp_035
+    entry_type: best_practice
+    title: "Guided Practice Card Design"
+    description: >
+      The Guided Practice card provides supported application with scaffolding
+      in 2–5 min. Techniques: step-by-step exercise, coached scenario,
+      fill-in-blank, partial worked example. Maps to Gagné Event 6. Provides
+      immediate feedback and error correction while learner independence
+      is still developing.
+    sources:
+      - "Essentials_Course_Gold_Structure_AI_Course_Playbook.md"
+      - "Gagné, R. (1985)"
+    tags:
+      - card
+      - scaffolding
+      - gagne
+    added: "2026-03-09"
+    evidence: "Guided practice with feedback accelerates skill acquisition by enabling error correction during schema formation."
+    context: "Include in Standard and Full strips. May be merged with Teach or Independent Test in compressed patterns."
+    confidence: strong
+    related_principles:
+      - pr_005
+      - pr_014
+
+  - id: bp_036
+    entry_type: best_practice
+    title: "Independent Test Card Design"
+    description: >
+      The Independent Test card requires unassisted performance in 2–5 min.
+      Techniques: quiz, scenario challenge, problem-solving without hints.
+      Maps to Gagné Events 7–8. Provides verification that learning has
+      occurred and feeds into the cognitive alignment matrix (assessment
+      format matches Bloom's level).
+    sources:
+      - "Essentials_Course_Gold_Structure_AI_Course_Playbook.md"
+      - "Gagné, R. (1985)"
+    tags:
+      - card
+      - assessment
+      - gagne
+    added: "2026-03-09"
+    evidence: "Testing without hints reveals true understanding; retrieval practice strengthens long-term retention."
+    context: "Include in every strip pattern. Assessment format must align with the Bloom's level of the strip's objective."
+    confidence: strong
+    related_principles:
+      - pr_005
+      - pr_021
+
+  - id: bp_037
+    entry_type: best_practice
+    title: "Reflect & Transfer Card Design"
+    description: >
+      The Reflect & Transfer card consolidates learning and plans real-world
+      application in 1–3 min. Techniques: action planning, commitment setting,
+      next steps, journal prompt, self-assessment. Maps to Gagné Event 9.
+      Addresses Merrill's Integration principle — the ONLY FPI principle
+      generating long-term ROI; skipping it causes 40–60% knowledge decay.
+    sources:
+      - "Essentials_Course_Gold_Structure_AI_Course_Playbook.md"
+      - "Merrill, M.D. (2002)"
+    tags:
+      - card
+      - merrill
+    added: "2026-03-09"
+    evidence: "Integration is almost universally skipped despite causing 40–60% knowledge decay without it (merrill_framework.yaml)."
+    context: "Include in every strip pattern where possible. This is the most commonly omitted card — resist the temptation to skip it."
+    confidence: strong
+    related_principles:
+      - pr_005
+      - pr_015
+
+  - id: bp_038
+    entry_type: best_practice
+    title: "Card Specification Template"
+    description: >
+      Every card should specify: card type (from 6 canonical types), duration
+      (estimated time), content description (what the learner experiences),
+      learning objective alignment (which strip objective this serves), asset
+      type required (video, interactive, text, quiz, etc.), design notes
+      (production or instructional guidance), cognitive load level (low/medium/high).
+    sources:
+      - "Essentials_Course_Gold_Structure_AI_Course_Playbook.md"
+      - "content_architecture_taxonomy.yaml"
+    tags:
+      - card
+      - structuring
+    added: "2026-03-09"
+    evidence: "Consistent card specifications enable production teams to build assets without ambiguity."
+    context: "Apply when specifying every card in every strip during the structuring phase."
+    confidence: strong
+
+  # --- Timing & Pacing ---
+
+  - id: bp_039
+    entry_type: best_practice
+    title: "Session Timing Rules"
+    description: >
+      Observe cognitive-science timing limits: max session before break = 45–60
+      min; synchronous interaction frequency = every 15–20 min; eLearning
+      interaction = every 3 min; video attention refresh = every 20–30 sec;
+      max continuous lecture = 15–20 min before activity.
+    sources:
+      - "content_map_corpus.yaml §3"
+      - "Content_Outline_Generator.md"
+    tags:
+      - timing
+      - cognitive-load
+    added: "2026-03-09"
+    evidence: "Cognitive science research on attention spans and ultradian rhythms supports these timing thresholds."
+    context: "Apply when allocating time to strips and cards, and when planning session breaks."
+    confidence: strong
+    related_principles:
+      - pr_002
+      - pr_011
+
+  - id: bp_040
+    entry_type: best_practice
+    title: "Modality-Specific Timing Adjustments"
+    description: >
+      Adjust timing by delivery modality: ILT = baseline attention and activity
+      frequency, +75% peer learning opportunity; VILT = −25% attention span,
+      +40% activity frequency; eLearning = 5–7 min max segment, 1 interaction
+      per 3 min; Microlearning = 3–7 min total with built-in check per unit.
+    sources:
+      - "content_map_corpus.yaml §3"
+    tags:
+      - timing
+      - structuring
+    added: "2026-03-09"
+    evidence: "VILT reduces effective attention by 25% compared to ILT; eLearning requires higher interaction density."
+    context: "Apply timing adjustments based on the course's delivery modality when calculating strip and session durations."
+    confidence: strong
+
+  - id: bp_041
+    entry_type: best_practice
+    title: "Timing Estimation Heuristics"
+    description: >
+      Use these heuristics for duration estimation: video narration = 150–180
+      wpm (reduce for complex content); on-screen reading = 200–250 wpm;
+      interactive exercise = 1.5–3× duration of the content it practises;
+      assessment question = 1–2 min per question depending on complexity.
+    sources:
+      - "content_map_corpus.yaml §3"
+      - "Content_Outline_Generator.md"
+    tags:
+      - timing
+    added: "2026-03-09"
+    evidence: "Word-per-minute research provides reliable estimation for audio and visual content pacing."
+    context: "Apply when calculating card and strip durations during the structuring phase."
+    confidence: moderate
+    related_principles:
+      - pr_002
+
+  # --- Assessment ---
+
+  - id: bp_042
+    entry_type: best_practice
+    title: "Assessment Types by Hierarchy Level"
+    description: >
+      Map assessment to each hierarchy level: Course = summative (final module,
+      competency validation); Module = formative (end of module, gap identification);
+      Topic = knowledge check (quick understanding validation); Strip = Independent
+      Test card (single-objective mastery); Card = embedded interaction (engagement
+      and immediate feedback).
+    sources:
+      - "content_map_corpus.yaml §6"
+      - "assessment_taxonomy.yaml"
+    tags:
+      - assessment
+      - hierarchy
+    added: "2026-03-09"
+    evidence: "Multi-level assessment ensures learning is validated at appropriate granularity throughout the hierarchy."
+    context: "Plan assessment at every level during the structuring phase, not as an afterthought."
+    confidence: strong
+    related_principles:
+      - pr_020
+      - pr_021
+
+  - id: bp_043
+    entry_type: best_practice
+    title: "Kirkpatrick Evaluation Integration"
+    description: >
+      Plan evaluation across 4 levels: L1 Reaction (satisfaction surveys, during
+      and immediately after); L2 Learning (assessment scores, pre/post comparison,
+      end of course); L3 Behaviour (manager observation, self-report, 30–90 days
+      post); L4 Results (KPI changes, ROI, 90+ days post). Course-level assessment
+      targets L2; post-course follow-up targets L3–L4.
+    sources:
+      - "Kirkpatrick, D. (2016)"
+      - "learning_design_corpus.yaml"
+    tags:
+      - assessment
+    added: "2026-03-09"
+    evidence: "The New World Kirkpatrick Model (2016) provides a backward-design approach starting from desired results."
+    context: "Plan L1–L2 during course structuring; plan L3–L4 as post-course evaluation strategy."
+    confidence: strong
+    related_principles:
+      - pr_024
+
+  - id: bp_044
+    entry_type: best_practice
+    title: "Formative Assessment Frequency"
+    description: >
+      Formative assessment must appear at least every 20–30 minutes of instruction
+      to maintain engagement and identify misunderstandings early. Frequency
+      increases for eLearning (every 3 minutes) and VILT (+40% above ILT baseline).
+    sources:
+      - "content_map_corpus.yaml §6"
+    tags:
+      - assessment
+      - timing
+    added: "2026-03-09"
+    evidence: "Regular formative assessment catches misunderstandings before they compound into larger comprehension failures."
+    context: "Apply when planning assessment placement within module timelines."
+    confidence: strong
+    related_principles:
+      - pr_020
+
+  # --- Scaffolding ---
+
+  - id: bp_045
+    entry_type: best_practice
+    title: "Phase-Based Scaffolding Gradient"
+    description: >
+      Map scaffolding to 5-phase position, not fixed module numbers: Foundation
+      = HIGH scaffolding (detailed step-by-step, directive guidance, 20–30%
+      learner independence); Development = MEDIUM (key prompts, coaching, 40–60%);
+      Integration = LOW (minimal cues, facilitative, 60–80%); Consolidation =
+      MINIMAL (self-generated, advisory, 80–100%); Assessment = NONE (fully
+      independent, evaluative, 100%).
+    sources:
+      - "Essentials_Course_Gold_Structure_AI_Course_Playbook.md"
+    tags:
+      - scaffolding
+      - 5-phase-cycle
+    added: "2026-03-09"
+    evidence: "Phase-based scaffolding works for courses of any size — a 4-module course and a 20-module course follow the same gradient."
+    context: "Apply when setting scaffolding levels for strips across the course. Determine phase position first, then set scaffolding."
+    confidence: strong
+    related_principles:
+      - pr_018
+
+  - id: bp_046
+    entry_type: best_practice
+    title: "Signal-Fade Schedule"
+    description: >
+      Visual and audio learning cues progressively fade across the 5-phase cycle:
+      Foundation & early Development = highlighted terms, annotated diagrams,
+      step-by-step walkthroughs, explicit signposting; Late Development &
+      Integration = reduced annotations, partial worked examples, strategic hints;
+      Consolidation & Assessment = clean presentation, independent application,
+      minimal cues.
+    sources:
+      - "Essentials_Course_Gold_Structure_AI_Course_Playbook.md"
+    tags:
+      - scaffolding
+      - structuring
+    added: "2026-03-09"
+    evidence: "Signal fading promotes learner independence and prevents scaffold dependency."
+    context: "Apply to card-level design notes to ensure cue density decreases appropriately across the course."
+    confidence: moderate
+    related_principles:
+      - pr_018
+
+  # --- Quality Validation ---
+
+  - id: bp_047
+    entry_type: best_practice
+    title: "4-Step Architecture Validation Checklist"
+    description: >
+      Validate course structure in 4 steps: (1) Architecture Completeness —
+      all 5 phases present, time allocations within range, each module has one
+      goal, mandatory phases exist; (2) Objective Alignment — SMART objectives,
+      ladder-up from module→topic→strip→card, Bloom's progression, GGOO
+      traceability; (3) Activity/Assessment Coverage — every objective has an
+      activity, assessment at every level, cognitive alignment matrix followed;
+      (4) Assembly — content map complete, prerequisites mapped, timing adds up,
+      no orphan or duplicate content, scaffolding gradient progressive.
+    sources:
+      - "content_map_corpus.yaml §9"
+      - "Course_Gold_Structure_Module.md"
+    tags:
+      - quality-validation
+      - structuring
+    added: "2026-03-09"
+    evidence: "Systematic validation prevents structural defects that are costly to fix after production begins."
+    context: "Run this checklist after completing the full course structure before handing off to production."
+    confidence: strong
+    related_principles:
+      - pr_016
+
+  - id: bp_048
+    entry_type: best_practice
+    title: "Strip-Level Validation Checklist"
+    description: >
+      Validate each strip: exactly ONE learning objective; 2–6 cards appropriate
+      to pattern; all card types justified by the strip pattern; scaffolding
+      level appropriate for course position; duration within 5–20 min; atomic
+      concepts limited to 3–7 per strip.
+    sources:
+      - "Essentials_Course_Gold_Structure_AI_Course_Playbook.md"
+    tags:
+      - quality-validation
+      - strip
+    added: "2026-03-09"
+    evidence: "Strip-level validation catches objective inflation and cognitive load violations before production."
+    context: "Run for every strip after structuring is complete."
+    confidence: strong
+
+  - id: bp_049
+    entry_type: best_practice
+    title: "Cross-Strip Coherence Validation"
+    description: >
+      Validate coherence across strips: consistent terminology across all strips;
+      progressive skill building from strip to strip; no unintended redundancy
+      (unless deliberate spaced repetition); narrative thread connects related
+      strips within a topic.
+    sources:
+      - "Essentials_Course_Gold_Structure_AI_Course_Playbook.md"
+    tags:
+      - quality-validation
+      - strip
+    added: "2026-03-09"
+    evidence: "Cross-strip coherence ensures the learning experience feels integrated rather than fragmented."
+    context: "Run after individual strip validation. Particularly important for topics with 3+ strips."
+    confidence: moderate
+
+  # --- Naming Convention ---
+
+  - id: bp_050
+    entry_type: best_practice
+    title: "Dot-Notation ID System"
+    description: >
+      Use flexible dot-notation for traceability. Without subtopics (3-part):
+      Module.Topic.Strip (e.g. 3.1.1); cards numbered 3.1.1-C1 through -C6.
+      With subtopics (4-part): Module.Topic.Subtopic.Strip (e.g. 3.1.2.1);
+      cards 3.1.2.1-C1 through -C6. Disambiguation: 3-part always means
+      M.T.S; 4-part always means M.T.ST.S.
+    sources:
+      - "Essentials_Course_Gold_Structure_AI_Course_Playbook.md"
+      - "Corpus/Research/course_structure_hierarchy_corpus_research.md §2.3"
+    tags:
+      - naming-convention
+      - hierarchy
+    added: "2026-03-09"
+    evidence: "Dot-notation enables precise reference to any element in the hierarchy and supports traceability audits."
+    context: "Assign IDs during the structuring phase. Choose 3-part or 4-part based on whether subtopics are used."
+    confidence: strong
+
+  # --- Reusability ---
+
+  - id: bp_051
+    entry_type: best_practice
+    title: "Asset Tagging for Reuse"
+    description: >
+      Tag every asset with: hierarchy position (course/module/topic/strip/card),
+      content type (video, interactive, text, image, quiz), Bloom's level,
+      reusability scope (strip-specific, module-wide, course-wide, cross-course),
+      source attribution. This enables asset libraries and cross-course sharing.
+    sources:
+      - "Essentials_Course_Gold_Structure_AI_Course_Playbook.md"
+      - "content_architecture_taxonomy.yaml"
+    tags:
+      - reusability
+      - structuring
+    added: "2026-03-09"
+    evidence: "Consistent asset tagging enables 30–50% time savings through reuse in subsequent course development."
+    context: "Apply during card specification. Build the tagging metadata into the card specification template."
+    confidence: moderate
+
+  - id: bp_052
+    entry_type: best_practice
+    title: "Reusable Component Design"
+    description: >
+      Design assets for reuse: Hook assets (stories, statistics, scenarios) may
+      introduce different topics; Pre-Training assets (glossaries, frameworks)
+      can be shared across modules; Practice templates (scenario shells,
+      interactive frameworks) are reused with different content; Assessment
+      items (question banks, rubrics) are sampled across course versions.
+    sources:
+      - "Essentials_Course_Gold_Structure_AI_Course_Playbook.md"
+    tags:
+      - reusability
+      - card
+    added: "2026-03-09"
+    evidence: "Reusable component design reduces production cost and ensures consistency across a course catalogue."
+    context: "Plan reusability during the card specification phase; design templates and shared assets proactively."
+    confidence: moderate
+
+  # --- GGOO Objective Formula ---
+
+  - id: bp_053
+    entry_type: best_practice
+    title: "ABCD Formula for Learning Objectives"
+    description: >
+      Write objectives using the ABCD formula: Audience (who is the learner),
+      Behaviour (observable measurable verb from Bloom's), Condition (under
+      what circumstances), Degree (to what standard). Every strip, topic, and
+      module must have objectives written to this formula with Bloom's-aligned
+      verbs. Module objectives ladder up to course objectives.
+    sources:
+      - "learning_design_corpus.yaml"
+      - "learning_objectives_framework.yaml"
+    tags:
+      - ggoo
+      - structuring
+    added: "2026-03-09"
+    evidence: "ABCD formula ensures objectives are measurable, assessable, and aligned to business outcomes."
+    context: "Write objectives for every module, topic, and strip during the structuring phase."
+    confidence: strong
+    related_principles:
+      - pr_016
+
+  # --- RST-Informed Practices ---
+
+  - id: bp_054
+    entry_type: best_practice
+    title: "Nuclearity-Based Content Prioritisation During Extraction"
+    description: >
+      When mining source documents, apply RST nuclearity analysis to distinguish
+      core instructional content (nuclei) from supporting material (satellites).
+      Nuclear content — the spans that carry the author's primary communicative
+      intent and can stand alone — maps to Core Concepts and Threshold Concepts
+      in extraction. Satellite content — background, elaboration, examples,
+      attribution — maps to supporting types (Detailed Explanations, Examples,
+      Evidence). Use this distinction to: (1) prioritise nuclear content for
+      deeper extraction; (2) identify which satellite material enriches
+      understanding vs which is dispensable; (3) detect implicit relationships
+      by looking beyond explicit markers (only 8.5–22% of discourse relations
+      are signalled explicitly) to semantic, syntactic, and structural cues.
+    sources:
+      - "corpus/descriptive_RST_corpus.yaml — pr_002, pr_004, bp_006"
+      - "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+    tags:
+      - extraction
+      - content-mining
+    added: "2026-03-09"
+    evidence: "RST nuclearity-based extractive summarisation preserves core communicative intent; RST-LoRA surpasses prior state-of-the-art for structural summarisation (descriptive_RST_corpus bp_006)."
+    context: "Apply during Stage 2–3 of the extraction pipeline when deciding what to extract deeply vs lightly. Particularly valuable for long, complex source documents where not everything can receive equal attention."
+    confidence: moderate
+    related_principles:
+      - pr_026
+      - pr_006
+
+  - id: bp_055
+    entry_type: best_practice
+    title: "Planning-Before-Realization Architecture"
+    description: >
+      The full pipeline (Extract → Organise → Structure) embodies the
+      Constructive RST principle that structural planning must strictly precede
+      content realization. Just as Constructive RST separates blueprint
+      generation from surface text production — because auto-regressive models
+      suffer logical drift without a global planner — course design separates
+      structural architecture (the hierarchy, the 5-phase cycle, the strip
+      patterns) from content production (writing the actual cards and assets).
+      The course structure IS the rhetorical blueprint; content production is
+      the realization phase. Collapsing planning and realization into a single
+      step produces incoherent courses just as it produces incoherent text.
+    sources:
+      - "corpus/constructive_RST_corpus.yaml — pr_001, pr_002, pr_003"
+      - "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+    tags:
+      - structuring
+      - quality-validation
+    added: "2026-03-09"
+    evidence: "Constructive RST research shows that without explicit structural planning, generative output degrades proportionally with length (constructive_RST_corpus pr_003). The same principle applies to course design — larger courses without upfront structural architecture become incoherent."
+    context: "Apply as an architectural principle governing the entire pipeline. Never begin content production (card writing, asset creation) until the full hierarchical structure has been validated."
+    confidence: strong
+    related_principles:
+      - pr_012
+      - pr_001
+
+  # --- Spaced Repetition & Retrieval Practice ---
+
+  - id: bp_056
+    entry_type: best_practice
+    title: "Spaced Repetition and Retrieval Practice Sequencing"
+    description: >
+      Deliberately revisit previously learned concepts at expanding intervals
+      across the course structure. Ebbinghaus's forgetting curve shows that
+      without retrieval practice, learners forget 60–70% of new information
+      within 48 hours. Counter this by: (1) embedding retrieval cues in later
+      strips that reference earlier concepts (e.g. a Pre-Training card that
+      asks 'recall what you learned about X in Module 2'); (2) designing
+      Independent Test cards that require integration of current AND prior
+      knowledge; (3) using the Integration phase (25–30%) explicitly for
+      cross-module retrieval and synthesis; (4) planning deliberate redundancy
+      in cross-strip coherence — not accidental repetition, but intentional
+      spacing. Optimal spacing follows an expanding schedule: first retrieval
+      within 24 hours, then 3 days, then 7 days, then 21 days. Map these
+      intervals to strip/topic/module positions rather than calendar time,
+      since learners progress at different rates.
+    sources:
+      - "Ebbinghaus, H. (1885) — Forgetting Curve"
+      - "Cepeda, N.J. et al. (2006) — Distributed Practice in Verbal Recall Tasks"
+      - "Roediger, H.L. & Butler, A.C. (2011) — The Critical Role of Retrieval Practice"
+      - "content_map_corpus.yaml §3, §6"
+    tags:
+      - sequencing
+      - assessment
+      - cognitive-load
+      - scaffolding
+    added: "2026-03-09"
+    evidence: "Spaced retrieval practice produces 150–200% better long-term retention than massed practice (Cepeda et al., 2006). Testing effect research shows retrieval practice is more effective than re-studying (Roediger & Karpicke, 2006)."
+    context: "Apply during Phase 3 structuring when sequencing strips and topics. Plan retrieval touchpoints at the topic, module, and course level. Particularly important for threshold concepts and bottleneck concepts identified during extraction."
+    confidence: strong
+    related_principles:
+      - pr_009
+      - pr_010
+      - pr_020
+
+  # ═══════════════════════════════════════════════════════════════
+  # ANTI-PATTERNS (ap_001 – ap_015)
+  # Common mistakes to avoid
+  # ═══════════════════════════════════════════════════════════════
+
+  # --- Extraction Anti-Patterns ---
+
+  - id: ap_001
+    entry_type: anti_pattern
+    title: "Format-Driven Mining"
+    description: >
+      Relying on headings, bullet points, and visual layout instead of semantic
+      analysis to determine content structure. Surface formatting often misleads;
+      meaning lives in conceptual relationships, not document layout.
+    sources:
+      - "Content_Mining_Module.md"
+    tags:
+      - extraction
+    added: "2026-03-09"
+    consequences: "Produces structures that mirror document formatting rather than learning logic, resulting in incoherent course flow."
+    instead: "Apply semantic analysis (bp_001) to identify relationships and meaning. Use Kintsch methodology to mine propositions and semantic connections."
+    violates:
+      - pr_006
+    severity: critical
+
+  - id: ap_002
+    entry_type: anti_pattern
+    title: "Source Bias"
+    description: >
+      Favouring one source document because it is well-structured while missing
+      important content from less polished sources. Quality of formatting does
+      not equal quality of content.
+    sources:
+      - "Content_Mining_Module.md"
+    tags:
+      - extraction
+      - source-quality
+    added: "2026-03-09"
+    consequences: "Incomplete content extraction; high-value material in poorly formatted sources is lost."
+    instead: "Apply the 8-criterion source quality assessment (bp_003) to rank sources objectively. Extract from all sources scoring >0.6."
+    severity: moderate
+
+  - id: ap_003
+    entry_type: anti_pattern
+    title: "Threshold Concept Neglect"
+    description: >
+      Treating transformative threshold concepts the same as routine content
+      during extraction. Threshold concepts are the linchpins of genuine
+      understanding and require 3× more extraction attention.
+    sources:
+      - "Content_Detail_Mining_Module.md"
+      - "Meyer, J. & Land, R. (2003)"
+    tags:
+      - extraction
+      - threshold-concept
+    added: "2026-03-09"
+    consequences: "Threshold concepts are under-documented, leading to inadequate scaffolding and learner struggles with transformative ideas."
+    instead: "Identify threshold concepts using Meyer & Land's 5 criteria (bp_010) and allocate 3× extraction attention."
+    violates:
+      - pr_007
+    severity: critical
+
+  - id: ap_004
+    entry_type: anti_pattern
+    title: "Shallow Extraction"
+    description: >
+      Pulling definitions without examples, evidence, context, or misconceptions.
+      Definitions alone do not provide enough material for effective instruction.
+    sources:
+      - "Content_Detail_Mining_Module.md"
+    tags:
+      - extraction
+      - content-mining
+    added: "2026-03-09"
+    consequences: "Insufficient material for card design; teach cards lack examples, practice cards lack scenarios, and assessment lacks context."
+    instead: "Use the 9 content types (bp_002) to ensure each concept has definitions, explanations, examples, evidence, and misconceptions extracted."
+    severity: moderate
+
+  # --- Organisation Anti-Patterns ---
+
+  - id: ap_005
+    entry_type: anti_pattern
+    title: "Source-Driven Grouping"
+    description: >
+      Organising content by which document it came from rather than by conceptual
+      relationships. This produces a structure that mirrors the source library,
+      not the learning logic.
+    sources:
+      - "Content_Mining_Module.md"
+    tags:
+      - organisation
+      - clustering
+    added: "2026-03-09"
+    consequences: "Course structure mirrors document organisation rather than learning progression; related concepts are separated across modules."
+    instead: "Cluster by semantic similarity (bp_011). Group concepts by shared ideas, problems, and skill areas regardless of source."
+    violates:
+      - pr_008
+    severity: critical
+
+  - id: ap_006
+    entry_type: anti_pattern
+    title: "Topic Sprawl"
+    description: >
+      Creating too many fine-grained clusters that fragment the learning
+      experience. Over-subdivision produces topics too small to support a
+      meaningful strip.
+    sources:
+      - "Content_Mining_Module.md"
+    tags:
+      - organisation
+      - clustering
+    added: "2026-03-09"
+    consequences: "Fragmented learning experience; learners cannot build coherent mental models from tiny disconnected pieces."
+    instead: "Merge clusters with <2 concepts; ensure each cluster is substantial enough for at least one strip (bp_011)."
+    severity: moderate
+
+  - id: ap_007
+    entry_type: anti_pattern
+    title: "Missing Prerequisites"
+    description: >
+      Sequencing advanced concepts before their foundational knowledge is covered.
+      Learners encounter content they cannot understand because prerequisites
+      were not mapped or were ignored.
+    sources:
+      - "Content_Mining_Module.md"
+      - "Course_Gold_Structure_Module.md"
+    tags:
+      - organisation
+      - prerequisite
+    added: "2026-03-09"
+    consequences: "Learner confusion; prerequisite gaps cause 70% of comprehension failures."
+    instead: "Map all prerequisite dependencies (bp_012) before sequencing. Always place foundational concepts before dependent ones."
+    violates:
+      - pr_009
+    severity: critical
+
+  - id: ap_008
+    entry_type: anti_pattern
+    title: "MECE Violation"
+    description: >
+      Allowing concepts to appear in multiple clusters (overlapping) or leaving
+      concepts unassigned to any cluster (gaps). Both violations produce
+      ambiguous, incomplete structures.
+    sources:
+      - "Content_Outline_Generator.md"
+    tags:
+      - organisation
+      - clustering
+    added: "2026-03-09"
+    consequences: "Overlap = redundant content across modules; gaps = orphan content that learners never encounter."
+    instead: "Enforce MECE (bp_011): every concept in exactly one cluster, every concept in some cluster."
+    violates:
+      - pr_008
+    severity: moderate
+
+  # --- Structuring Anti-Patterns ---
+
+  - id: ap_009
+    entry_type: anti_pattern
+    title: "Flat Structure"
+    description: >
+      Dumping all content into modules without topic, strip, and card
+      subdivision. Produces large, undifferentiated content blocks with no
+      pedagogical sequencing at the instructional level.
+    sources:
+      - "Essentials_Course_Gold_Structure_AI_Course_Playbook.md"
+    tags:
+      - structuring
+      - hierarchy
+    added: "2026-03-09"
+    consequences: "Content lacks pedagogical structure; no clear learning objectives per unit; cognitive load is unmanaged."
+    instead: "Apply the full 6-level hierarchy (pr_001): subdivide into topics, strips, and cards with clear objectives at each level."
+    violates:
+      - pr_001
+    severity: critical
+
+  - id: ap_010
+    entry_type: anti_pattern
+    title: "Phase Imbalance"
+    description: >
+      Overweighting the Development phase (all teaching, no practice) or skipping
+      Consolidation entirely. Both distort the 5-phase learning cycle and
+      compromise learning effectiveness.
+    sources:
+      - "Course_Gold_Structure_Module.md"
+    tags:
+      - structuring
+      - 5-phase-cycle
+    added: "2026-03-09"
+    consequences: "Learners receive information without practice (Development-heavy) or without consolidation, reducing retention and transfer."
+    instead: "Follow the 5-phase percentages (bp_017): Foundation 10–15%, Development 30–40%, Integration 25–30%, Consolidation 10–15%, Assessment 10–15%."
+    violates:
+      - pr_012
+    severity: critical
+
+  - id: ap_011
+    entry_type: anti_pattern
+    title: "Objective Inflation"
+    description: >
+      Assigning multiple learning objectives to a single strip. Each strip
+      must target exactly ONE measurable objective. Multi-objective strips
+      are unfocused and impossible to assess cleanly.
+    sources:
+      - "Essentials_Course_Gold_Structure_AI_Course_Playbook.md"
+    tags:
+      - structuring
+      - strip
+    added: "2026-03-09"
+    consequences: "Strips become unfocused; assessment cannot cleanly validate a single skill; learners are confused about what they should learn."
+    instead: "Enforce one-strip-one-objective (pr_004). If a strip needs multiple objectives, split it into multiple strips."
+    violates:
+      - pr_004
+    severity: critical
+
+  - id: ap_012
+    entry_type: anti_pattern
+    title: "Assessment Afterthought"
+    description: >
+      Adding assessment only at the end of the course rather than integrating
+      it throughout the hierarchy at every level. Delays detection of
+      misunderstandings until it is too late to correct them.
+    sources:
+      - "content_map_corpus.yaml §6"
+    tags:
+      - assessment
+      - structuring
+    added: "2026-03-09"
+    consequences: "Learner misunderstandings compound over time; gaps are only discovered at the final assessment when remediation is costly."
+    instead: "Integrate assessment at every hierarchy level (bp_042): embedded in cards, test in strips, knowledge checks in topics, formative in modules, summative in course."
+    violates:
+      - pr_020
+    severity: critical
+
+  - id: ap_013
+    entry_type: anti_pattern
+    title: "Cognitive Load Cliff"
+    description: >
+      Jumping from simple to very complex content without gradual progression.
+      Sudden spikes in cognitive demand overwhelm learners and cause disengagement.
+    sources:
+      - "Course_Gold_Structure_Module.md"
+      - "Sweller, J. (1988)"
+    tags:
+      - structuring
+      - cognitive-load
+      - sequencing
+    added: "2026-03-09"
+    consequences: "Learner overwhelm, disengagement, and dropout; schema construction fails when load exceeds capacity."
+    instead: "Follow complexity progression (pr_010): sequence from simple to complex with gradual Bloom's level increases."
+    violates:
+      - pr_010
+      - pr_011
+    severity: critical
+
+  - id: ap_014
+    entry_type: anti_pattern
+    title: "Integration Neglect"
+    description: >
+      Skipping the Reflect & Transfer card in strip design. This omits
+      Merrill's Integration principle — the ONLY FPI principle generating
+      long-term ROI — and causes 40–60% knowledge decay.
+    sources:
+      - "Essentials_Course_Gold_Structure_AI_Course_Playbook.md"
+      - "merrill_framework.yaml"
+    tags:
+      - card
+      - merrill
+      - strip
+    added: "2026-03-09"
+    consequences: "40–60% knowledge decay; learners cannot transfer skills to the workplace; long-term ROI is destroyed."
+    instead: "Always include the Reflect & Transfer card (bp_037), even in Micro-Strips where it can be merged with Test."
+    violates:
+      - pr_005
+      - pr_015
+    severity: critical
+
+  - id: ap_015
+    entry_type: anti_pattern
+    title: "One-Size-Fits-All Strips"
+    description: >
+      Using the Full Strip pattern (5–6 cards, 15–20 min) for every strip
+      regardless of complexity and criticality. Over-investing in simple content
+      wastes time; under-investing in complex content shortchanges learning.
+    sources:
+      - "Essentials_Course_Gold_Structure_AI_Course_Playbook.md"
+    tags:
+      - strip
+      - structuring
+    added: "2026-03-09"
+    consequences: "Inefficient use of learning time; simple content is over-taught while complex content may still be under-served."
+    instead: "Use the Intelligent Strip Planning Matrix (bp_027) to select Micro, Standard, or Full pattern based on scored complexity and criticality."
+    severity: moderate
+
+# ═══════════════════════════════════════════════════════════════
+# END OF CORPUS
+# ═══════════════════════════════════════════════════════════════

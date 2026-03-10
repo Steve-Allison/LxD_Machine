@@ -1,0 +1,1158 @@
+_meta:
+  id: audience_alignment_rubric
+  title: "Audience Alignment Rubric"
+  description: "Scoring rubric for audience alignment quality covering persona relevance, WIIFM strength, jargon calibration, expertise-level matching, and cultural sensitivity"
+  domain: audience
+  domain_type: cross_cutting
+  purpose: scoring
+  version: "1.1.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Comprehensive Audience Analysis.md"
+    - "Corpus/Research/Research - Learner Persona Research and Development.md"
+    - "Corpus/Research/Storytelling_for_Different_Business_Personas.md"
+    - "Corpus/Research/36_audience_analysis_and_persuasion.md"
+    - "Corpus/Research/audience_analysis_for_presentations__how_to_know_your_audience_a.md"
+  academic_sources:
+    - "Knowles (1980) - Andragogy: adult learning principles"
+    - "Petty & Cacioppo (1986) - Elaboration Likelihood Model"
+    - "Hofstede (2001) - Cultural Dimensions Theory"
+    - "Hall (1976) - High-context vs low-context cultures"
+  relationships:
+    - target: ../entities/audience_entities.yaml
+      type: depends_on
+      description: "Entity types for audience marker extraction"
+    - target: ../methodology/learner_profiles_framework.yaml
+      type: derived_from
+      description: "Learner profile framework informing expertise-level criteria"
+    - target: narrative_quality_rubric.yaml
+      type: related_to
+      description: "Audience fit dimension in narrative quality"
+    - target: ../sales/personas_reference.yaml
+      type: related_to
+      description: "Persona definitions for audience matching"
+
+# ==============================================================================
+# RUBRIC WEIGHTS
+# Sum must equal 1.0
+# Source: Research - Comprehensive Audience Analysis.md — persona calibration
+# drives engagement more than any single content variable
+# ==============================================================================
+
+rubric_weights:
+  persona_relevance: 0.25       # role/pain-point/KPI alignment
+  wiifm_strength: 0.25          # "What's In It For Me" customer-centricity
+  jargon_calibration: 0.20      # terminology density vs audience expertise
+  expertise_level_match: 0.15   # content depth vs audience knowledge level
+  cultural_sensitivity: 0.15    # inclusive language, globalisation, context norms
+
+# ==============================================================================
+# SCORING DIMENSIONS (1–5 scale)
+# ==============================================================================
+
+dimensions:
+
+  # ----------------------------------------------------------------------------
+  persona_relevance:
+  # ----------------------------------------------------------------------------
+    name: "Persona Relevance"
+    description: >
+      Content alignment with the target persona's role, pain points, priorities,
+      KPIs, and decision-making criteria. Covers both named personas (Marketing
+      Leader, IT Leader, etc.) and role-archetype matching for unmapped actors.
+    # Source: Storytelling_for_Different_Business_Personas.md — Adobe persona
+    # framework; Comprehensive Audience Analysis.md — segmentation by role
+    score_levels:
+      1:
+        label: "No persona alignment"
+        criteria:
+          - "Content ignores the identified audience role entirely"
+          - "Pain points referenced are not relevant to this persona"
+          - "KPIs mentioned do not match the persona's measurement framework"
+          - "No role-specific examples, scenarios, or language present"
+          - "Audience would not recognise themselves in the content"
+      2:
+        label: "Superficial alignment"
+        criteria:
+          - "Persona role is acknowledged but content is largely generic"
+          - "One relevant pain point addressed; others missed"
+          - "KPIs used inconsistently or drawn from a different persona"
+          - "Examples are industry-correct but not role-specific"
+          - "Content could be sent to a different persona with minimal change"
+      3:
+        label: "Partial alignment"
+        criteria:
+          - "Core role responsibilities reflected in framing"
+          - "2–3 pain points addressed; not all primary concerns covered"
+          - "Correct KPI vocabulary used but metrics lack specificity"
+          - "Narrative acknowledges audience context without full immersion"
+          - "Decision-making style partially respected (e.g., data provided but not framed for risk-averse buyer)"
+      4:
+        label: "Strong alignment"
+        criteria:
+          - "Role, responsibilities, and reporting lines correctly assumed"
+          - "Primary pain points addressed with persona-specific language"
+          - "KPIs are role-correct and cited with plausible benchmark figures"
+          - "Objections anticipated and addressed proactively"
+          - "Content would resonate clearly with the identified persona"
+      5:
+        label: "Exemplary alignment"
+        criteria:
+          - "Content demonstrates deep empathy for the persona's daily reality"
+          - "All primary and secondary pain points addressed"
+          - "KPIs, metrics vocabulary, and success definitions match the role exactly"
+          - "Tone calibrated to persona preference (visionary / pragmatic / confident / urgent)"
+          - "Objections pre-empted; social proof from comparable roles included"
+          - "Audience thinks: 'They understand my world'"
+
+  # ----------------------------------------------------------------------------
+  wiifm_strength:
+  # ----------------------------------------------------------------------------
+    name: "WIIFM Strength"
+    description: >
+      Quality of customer-centric framing: you/we pronoun ratio, benefit-first
+      language, protagonist positioning of the customer, and explicit articulation
+      of value in the audience's terms.
+    # Source: Comprehensive Audience Analysis.md — value proposition, aspirational
+    # needs, emotional framing; narrative_quality_rubric.yaml — audience_fit
+    score_levels:
+      1:
+        label: "Vendor-centric, no WIIFM"
+        criteria:
+          - "Content is predominantly about the vendor, product, or presenter"
+          - "We/our pronoun count exceeds you/your by more than 3:1 ratio"
+          - "Benefits framed as product features, not audience outcomes"
+          - "No explicit connection made between solution and audience goals"
+          - "Functional needs addressed; emotional and aspirational needs absent"
+      2:
+        label: "Weak WIIFM"
+        criteria:
+          - "Some audience benefit language present but buried after feature detail"
+          - "We/our outnumber you/your (2:1 to 3:1 range)"
+          - "Generic benefit claims ('save time', 'reduce costs') without specificity"
+          - "Customer positioned as passive recipient, not active beneficiary"
+          - "Aspirational framing absent; no vision of success described"
+      3:
+        label: "Moderate WIIFM"
+        criteria:
+          - "Benefit statements present in most sections"
+          - "You/your pronoun parity roughly achieved (1:1 to 1.5:1 you/we)"
+          - "At least one functional benefit translated into business impact"
+          - "Audience's goals referenced; connection to solution partially explicit"
+          - "Opening or headline reflects audience perspective, not vendor perspective"
+      4:
+        label: "Strong WIIFM"
+        criteria:
+          - "You/your pronouns outnumber we/our (target: 2:1 or better)"
+          - "Benefits lead; features follow as evidence"
+          - "Functional, emotional, and aspirational needs all addressed"
+          - "Customer positioned as protagonist and hero of the story"
+          - "Value proposition stated in audience terms: 'For [you], this means…'"
+          - "Clear answer to 'So what?' for each major claim"
+      5:
+        label: "Exemplary WIIFM"
+        criteria:
+          - "You/your ratio exceeds 3:1 versus we/our throughout"
+          - "Every section opens from the audience's perspective"
+          - "Functional, emotional, social, and aspirational needs all explicitly served"
+          - "Outcome language quantified and personalised to the persona's KPI set"
+          - "Customer is unmistakably the hero; vendor is positioned as guide or enabler"
+          - "Call-to-action framed as audience benefit, not vendor request"
+
+  # ----------------------------------------------------------------------------
+  jargon_calibration:
+  # ----------------------------------------------------------------------------
+    name: "Jargon Calibration"
+    description: >
+      Technical terminology density appropriate for the audience's expertise level.
+      Includes first-use definitions, industry-specific vocabulary appropriateness,
+      avoidance of alienating insider terms, and absence of cross-persona vocabulary
+      mismatch.
+    # Source: 36_audience_analysis_and_persuasion.md — demographic do's/don'ts;
+    # Comprehensive Audience Analysis.md — expertise level adaptation, jargon/examples
+    score_levels:
+      1:
+        label: "Severe jargon mismatch"
+        criteria:
+          - "Audience would encounter 5+ undefined acronyms or technical terms"
+          - "Insider vocabulary deployed for a non-specialist audience, or over-simplified language used for an expert audience"
+          - "No first-use definitions provided for specialised terms"
+          - "Cross-domain jargon imported without translation (e.g., engineering terms in a CMO pitch)"
+          - "Audience is likely to feel confused, excluded, or condescended to"
+      2:
+        label: "Partial calibration"
+        criteria:
+          - "Mostly appropriate terminology with 3–4 uncalibrated terms present"
+          - "Some definitions provided but inconsistently applied"
+          - "One vocabulary register dominates where multiple should coexist (e.g., all technical, no business impact language)"
+          - "Acronyms used without expansion at first use"
+      3:
+        label: "Adequate calibration"
+        criteria:
+          - "Terminology broadly appropriate; 1–2 calibration errors present"
+          - "Most acronyms expanded at first use"
+          - "Industry language used correctly; domain-specific terms match persona's frame"
+          - "Occasional over-simplification or over-complexity does not impede understanding"
+      4:
+        label: "Well-calibrated"
+        criteria:
+          - "Vocabulary consistently matched to audience expertise"
+          - "All specialised terms defined at first use"
+          - "Industry language demonstrates in-group credibility without excluding the reader"
+          - "Technical detail available for those who need it; abstracted for those who do not"
+          - "No undefined acronyms; banned terms for this persona absent"
+      5:
+        label: "Expertly calibrated"
+        criteria:
+          - "Vocabulary feels native to the target persona's professional register"
+          - "Terminology density sits within the optimal range for the expertise level"
+          - "First-use definitions provided with natural in-text phrasing, not patronising footnotes"
+          - "Where multiple expertise levels present, vocabulary registers modulate by section"
+          - "Use of industry terminology builds ethos and credibility, not confusion"
+          - "Content passes the 'peer review' test: a colleague of the audience would approve the language choices"
+
+  # ----------------------------------------------------------------------------
+  expertise_level_match:
+  # ----------------------------------------------------------------------------
+    name: "Expertise Level Match"
+    description: >
+      Content depth and explanatory scaffolding matched to the audience's prior
+      knowledge. Covers explanation depth, assumed knowledge, scaffolding for mixed
+      audiences, and Bloom's-level calibration of tasks and examples.
+    # Source: Comprehensive Audience Analysis.md — novice/intermediate/expert adaptation;
+    # Learner Persona Research.md — generational and functional learning profiles
+    score_levels:
+      1:
+        label: "Severe expertise mismatch"
+        criteria:
+          - "Content assumes advanced prior knowledge for a novice audience, or over-explains basics to an expert audience"
+          - "No scaffolding provided where foundational concepts are prerequisite"
+          - "Examples or analogies operate at the wrong abstraction level"
+          - "Task complexity or reading level mismatched by more than 2 expertise tiers"
+      2:
+        label: "Partial match"
+        criteria:
+          - "General expertise level correct but explanation depth inconsistent"
+          - "Some sections appropriately pitched; others too advanced or too elementary"
+          - "Analogies partially relevant but require audience to bridge a gap"
+          - "Assumed knowledge occasionally exceeds or falls short of audience baseline"
+      3:
+        label: "Adequate match"
+        criteria:
+          - "Content pitched at broadly the correct expertise level"
+          - "Core concepts explained; advanced detail flagged as optional or appendix"
+          - "Examples match the domain but not always the specific role's experience"
+          - "Scaffolding present for key unfamiliar concepts"
+      4:
+        label: "Strong match"
+        criteria:
+          - "Content depth precisely matched to target expertise tier (novice / intermediate / expert)"
+          - "Explanation depth scales correctly through the document"
+          - "Examples grounded in the audience's own professional context"
+          - "Scaffolding anticipates knowledge gaps identified in audience profile"
+          - "Advanced material gated behind clear signposting"
+      5:
+        label: "Exemplary match"
+        criteria:
+          - "Content reads as authored by a subject-matter expert who also deeply understands the learner"
+          - "Explanation depth is exactly right — neither over-explaining nor under-explaining"
+          - "Multiple expertise levels in mixed audiences explicitly accommodated via clear section routing"
+          - "Examples and analogies drawn from the audience's lived professional experience"
+          - "Cognitive scaffolding (worked examples, definitions, progressive elaboration) seamlessly embedded"
+          - "Audience gains insight they could not have easily found elsewhere at this calibration"
+
+  # ----------------------------------------------------------------------------
+  cultural_sensitivity:
+  # ----------------------------------------------------------------------------
+    name: "Cultural Sensitivity"
+    description: >
+      Inclusive language, cultural appropriateness, and awareness of globalisation
+      factors including high/low context communication, power distance implications,
+      and absence of alienating cultural assumptions.
+    # Source: Comprehensive Audience Analysis.md — cultural adaptation, high/low
+    # context; 36_audience_analysis_and_persuasion.md — demographic do's/don'ts
+    score_levels:
+      1:
+        label: "Culturally unaware"
+        criteria:
+          - "Content assumes a single cultural frame without acknowledgement"
+          - "Non-inclusive language present (gendered defaults, regional slang, religious assumptions)"
+          - "Examples or metaphors inaccessible or alienating to non-Western or non-native audiences"
+          - "Power distance assumptions embedded that would alienate certain hierarchical cultures"
+          - "Direct/indirect communication register inappropriate for the likely audience"
+      2:
+        label: "Partial sensitivity"
+        criteria:
+          - "Culturally problematic language largely absent but not deliberately addressed"
+          - "Inclusive language inconsistent; some gendered or exclusionary phrasing remains"
+          - "Examples or idioms work for primary audience but are opaque or alienating to secondary audiences"
+          - "High-context/low-context register not calibrated to audience's cultural expectations"
+      3:
+        label: "Adequate sensitivity"
+        criteria:
+          - "Content avoids overt cultural assumptions"
+          - "Inclusive language used consistently"
+          - "Idioms and culture-specific references avoided or explained"
+          - "Examples drawn from contexts accessible to the target culture"
+          - "Basic awareness of high/low context communication reflected in directness level"
+      4:
+        label: "Strong sensitivity"
+        criteria:
+          - "Content demonstrates active awareness of the audience's cultural frame"
+          - "High/low context communication style deliberately calibrated"
+          - "Gender-neutral, role-agnostic language throughout"
+          - "Cultural examples, social proof, and references sourced from the audience's cultural region"
+          - "Power distance and individualism/collectivism dimensions reflected in framing"
+      5:
+        label: "Exemplary cultural intelligence"
+        criteria:
+          - "Content would be received without friction by the target cultural audience"
+          - "Communication register (direct vs indirect, formal vs informal) perfectly matched to cultural norms"
+          - "Inclusive language is natural, not performative"
+          - "Examples represent the audience's own cultural and industry context"
+          - "Collectivist or individualist framing applied appropriately to the cultural context"
+          - "Power distance reflected in tone calibration (e.g., more collaborative framing for low power distance cultures)"
+
+# ==============================================================================
+# PERSONA FRAMEWORK
+# Source: Storytelling_for_Different_Business_Personas.md — Adobe persona framework
+# Source: Comprehensive Audience Analysis.md — segmentation, decision-making styles
+# ==============================================================================
+
+persona_framework:
+  marketing_leader:
+    titles: ["CMO", "Chief Business Officer", "EVP Marketing", "VP Marketing", "Director Marketing"]
+    buying_role: ["Approver", "Champion"]
+    primary_kpis: ["marketing ROI", "brand equity", "campaign time-to-market", "pipeline contribution", "market share"]
+    pain_points:
+      - "Lack of comprehensive visibility into costs and ROI"
+      - "Fragmented systems and outdated workflows"
+      - "Budget pressure to prove ROI to board"
+      - "Content demand exceeding supply at scale"
+    common_objections:
+      # Source: Storytelling_for_Different_Business_Personas.md — Marketing Leaders / Common Objections
+      - "Concern about technology overhaul leading to ballooning costs"
+      - "Lack of awareness about integrated solution capabilities"
+      - "Unclear about GenAI capabilities and potential implementation hurdles"
+    preferred_tone: "visionary"
+    decision_making_style: "outcome-oriented, strategic; responds to competitive differentiation and risk mitigation"
+    narrative_approach:
+      - "Lead with business outcomes: revenue growth, market share, brand equity"
+      - "Anchor every claim to measurable ROI with concrete metrics"
+      - "Address risk mitigation for technology investments"
+      - "Emphasise competitive advantage and market differentiation"
+    vocabulary_in: ["ROI", "brand equity", "omnichannel", "pipeline", "market share", "time-to-market", "GenAI"]
+    vocabulary_avoid: ["API", "schema", "infrastructure", "throughput", "latency"]
+
+  creative_leader:
+    titles: ["CCO", "CDO", "EVP Creative", "VP Creative", "Director Creative", "Director Design", "Director Content"]
+    buying_role: ["Champion", "Influencer"]
+    primary_kpis: ["content output volume", "brand consistency score", "rework rate", "approval cycle time", "time-to-market"]
+    pain_points:
+      - "Insufficient content volume to meet demand"
+      - "Bottlenecks in review and approval processes"
+      - "Siloed teams and legacy systems preventing scale"
+      - "Maintaining brand integrity while increasing output velocity"
+      - "Inability to iteratively plan or scale new strategies"
+    common_objections:
+      # Source: Storytelling_for_Different_Business_Personas.md — Creative Leaders / Common Objections
+      - "Shrinking or flat budgets limiting new investment"
+      - "Change management hurdles and associated costs"
+      - "Siloed business structure creating implementation challenges"
+      - "Lack of executive sponsorship for creative technology initiatives"
+    preferred_tone: "pragmatic"
+    decision_making_style: "quality-conscious, peer-influenced; responds to workflow efficiency examples and brand governance proof"
+    narrative_approach:
+      - "Emphasise creative empowerment and removal of bottlenecks"
+      - "Lead with quality-at-scale: brand integrity without sacrificing speed"
+      - "Highlight workflow collaboration improvements with concrete examples"
+      - "Address brand consistency and governance capabilities"
+    vocabulary_in: ["creative velocity", "brand governance", "content supply chain", "rework", "approval workflow"]
+    vocabulary_avoid: ["API endpoints", "SLA", "infra cost", "compute"]
+
+  operations_leader:
+    titles: ["VP Marketing Ops", "Director Marketing Ops", "Director Creative Ops", "VP Creative Ops"]
+    buying_role: ["Champion", "Influencer", "User"]
+    primary_kpis: ["process efficiency", "tool consolidation rate", "content lifecycle velocity", "compliance rate", "tech stack ROI"]
+    pain_points:
+      - "Disconnected tools creating duplicated work"
+      - "Legacy systems and manual processes"
+      - "Difficulty tracking content usage and performance"
+      - "Shrinking or flat technology budgets"
+      - "Inability to demonstrate ROI of existing tools"
+    common_objections:
+      # Source: Storytelling_for_Different_Business_Personas.md — Marketing/Creative Operations / Common Objections
+      - "Too many disconnected processes requiring significant time and resource investment to consolidate"
+      - "Inability to achieve cross-departmental consensus on new systems"
+      - "Challenges with retiring legacy technology within budget"
+    preferred_tone: "pragmatic and detailed"
+    decision_making_style: "process-oriented, data-driven; responds to integration proof and consolidation economics"
+    narrative_approach:
+      - "Lead with process optimisation and efficiency gains with specific numbers"
+      - "Emphasise integration capabilities and consolidation benefits"
+      - "Provide visibility into metrics and performance tracking"
+      - "Address change management with clear implementation paths"
+    vocabulary_in: ["integration", "consolidation", "tech stack", "workflow automation", "governance", "compliance", "KPI tracking"]
+    vocabulary_avoid: ["visionary", "transformational", "future of work" ]
+
+  it_technology_leader:
+    titles: ["CIO", "CTO", "VP IT", "Director MarTech", "Director IT"]
+    buying_role: ["Approver", "Influencer", "User"]
+    primary_kpis: ["system uptime", "security posture", "TCO", "integration success rate", "legacy debt reduction"]
+    pain_points:
+      - "Managing fragmented tech stacks and legacy systems"
+      - "Supporting fast-moving marketing teams with limited resources"
+      - "Security risks from ungoverned SaaS proliferation"
+      - "Retiring legacy systems within budget and bandwidth"
+      - "Stakeholder management gap — difficulty communicating technical debt to non-technical leaders"
+    common_objections:
+      # Source: Storytelling_for_Different_Business_Personas.md — IT/Technology Leaders / Common Objections
+      - "Flat or shrinking budgets do not allow for net-new investments"
+      - "Retiring legacy technology is costly and time-consuming given existing bandwidth"
+    trust_signals_required:
+      # Source: Research - Learner Persona Research and Development.md — Section 4.1
+      - "Acknowledge AI accuracy limitations explicitly — trust in AI code generation is at an all-time low (Stack Overflow 2025)"
+      - "Reference named security standards (SOC 2, HIPAA, ISO 27001) rather than generic 'secure'"
+      - "Cite architecture patterns and integration specifics; vague claims read as vendor over-promise"
+      - "Community and peer validation over vendor marketing — 84% of developers rely on community upvotes over official documentation (Stack Overflow 2025)"
+    learning_modality: "Sandbox environments preferred — learns by breaking and fixing. Rejects video-heavy structured courses. Primary reference is Stack Overflow community validation."
+    preferred_tone: "technical and confident"
+    decision_making_style: "risk-averse, evidence-driven; responds to architecture detail, security proof, and TCO analysis"
+    narrative_approach:
+      - "Lead with security, scalability, and compliance"
+      - "Emphasise API-first architecture and integration patterns"
+      - "Quantify total cost of ownership benefits"
+      - "Address legacy migration paths and coexistence strategies"
+    vocabulary_in: ["API", "SLA", "TCO", "security posture", "scalability", "HIPAA", "SOC 2", "enterprise-grade", "architecture"]
+    vocabulary_avoid: ["brand storytelling", "creative empowerment", "visionary narrative"]
+
+  executive_c_suite:
+    titles: ["CEO", "CFO", "President", "COO", "Board"]
+    buying_role: ["Approver", "Economic Buyer"]
+    primary_kpis: ["revenue growth", "EBITDA", "shareholder value", "competitive position", "strategic risk"]
+    pain_points:
+      - "Decision fatigue from information overload — million-dollar decisions made on imperfect information within compressed time windows"
+      - "Uncertainty about ROI of technology investments"
+      - "Black swan risks: cybersecurity, geopolitical, regulatory"
+      - "Isolation — cannot show vulnerability to team; 67% of executives report being more stressed in 2025 than prior years (Sentry 2025)"
+      - "Employee disengagement cost — $438 billion annually in lost productivity (Gallup)"
+    common_objections:
+      # Source: Storytelling_for_Different_Business_Personas.md — Executive / Common Objections
+      - "Is this a strategic priority given competing initiatives?"
+      - "What is the total cost including implementation and change management?"
+      - "How does this compare to what competitors have already done?"
+    learning_modality: "Does not 'do training.' Values executive peer groups (YPO, Chief) and executive coaching as primary development channels (ICF 2024). Content must feel like consultation, not instruction."
+    preferred_tone: "concise, strategic, peer-validated"
+    decision_making_style: "high-stakes, time-pressured; responds to peer benchmarks, concise summaries, and risk framing"
+    narrative_approach:
+      - "Provide executive summary first — one-page version"
+      - "Lead with strategic outcomes and competitive implications"
+      - "Use peer organisation benchmarks and board-level metrics"
+      - "Frame investment as risk mitigation, not cost centre"
+    vocabulary_in: ["EBITDA", "competitive moat", "board-level", "enterprise risk", "strategic initiative"]
+    vocabulary_avoid: ["feature list", "integration details", "workflow steps", "UI/UX"]
+
+# ==============================================================================
+# BUYING ROLE DEFINITIONS
+# Source: Storytelling_for_Different_Business_Personas.md — "Key Buying Personas" intro
+# ==============================================================================
+
+buying_role_definitions:
+  approver:
+    description: "Final decision authority; controls budget sign-off"
+    narrative_priority: "Strategic outcomes, ROI, risk mitigation, peer benchmarks"
+    content_depth: "L1 executive summary — one-page concision, strategic outcomes, no feature lists"
+  champion:
+    description: "Internal advocate who drives the buying process forward"
+    narrative_priority: "Operational benefit, personal credibility gain, ease of internal sell"
+    content_depth: "L2 solution overview — value proposition balanced between strategic and tactical"
+  influencer:
+    description: "Shapes the decision without final authority"
+    narrative_priority: "Domain-specific value proof, technical or process credibility"
+    content_depth: "L2–L3 — tactical with use case demonstrations and concrete examples"
+  user:
+    description: "Day-to-day operator of the solution"
+    narrative_priority: "Workflow efficiency, ease of adoption, reduction of manual effort"
+    content_depth: "L3–L4 detailed — workflow specificity, process-level examples, technical proof"
+
+# ==============================================================================
+# WIIFM ANALYSIS
+# Source: Comprehensive Audience Analysis.md — value proposition, emotional/
+# aspirational needs; narrative_quality_rubric.yaml — audience_fit dimension
+# ==============================================================================
+
+wiifm_analysis:
+  you_we_ratio:
+    target_minimum: 2.0         # you/your must be at least 2x we/our
+    excellent_threshold: 3.0    # 3:1 or better signals strong customer-centricity
+    measurement: "count second-person pronouns (you, your, you'll, you're) divided by first-person plural (we, our, us, we'll)"
+    penalty_trigger: 0.5        # ratio below 0.5 triggers vendor-hero penalty
+
+  benefit_phrase_patterns:
+    strong_patterns:
+      - "This means you can…"
+      - "You'll be able to…"
+      - "For your team, that translates to…"
+      - "So that you can focus on…"
+      - "The result for you is…"
+      - "Which gives you…"
+    weak_patterns:
+      - "Our solution provides…"
+      - "We offer…"
+      - "Adobe/[Vendor] has developed…"
+      - "The platform includes…"
+      - "We are proud to…"
+
+  customer_centric_language_checklist:
+    - "Does every major claim answer 'So what for the audience?'"
+    - "Are benefits stated before features in each section?"
+    - "Is the audience's goal named before the solution is introduced?"
+    - "Are the audience's pain points named in the audience's own language?"
+    - "Is the call-to-action framed as an audience benefit, not a vendor request?"
+
+  protagonist_framing:
+    # Source: narrative_quality_rubric.yaml — approach function: customer is hero
+    customer_as_hero: "Customer faces a challenge, makes a decision, achieves an outcome"
+    vendor_as_guide: "Vendor equips the customer with tools, insight, or support to succeed"
+    anti_pattern: "Vendor narrates its own capabilities as the story — customer is passive recipient"
+
+  needs_hierarchy:
+    # Source: Comprehensive Audience Analysis.md — functional/emotional/social/aspirational framework
+    functional: "Practical problem the audience needs to solve (required)"
+    emotional: "How the audience wants to feel: confident, safe, respected (required)"
+    social: "How the audience wants to be perceived by peers or leadership (add strength)"
+    aspirational: "Long-term vision of success the audience is working toward (differentiates excellent from good)"
+
+# ==============================================================================
+# JARGON MANAGEMENT
+# Source: 36_audience_analysis_and_persuasion.md — demographic do's/don'ts by
+# occupation, age, education; Comprehensive Audience Analysis.md — expertise adaptation
+# ==============================================================================
+
+jargon_management:
+  first_use_requirement:
+    rule: "All acronyms and specialised terms must be expanded or defined at first use"
+    format: "Write full term followed by acronym in parentheses: 'Total Cost of Ownership (TCO)'"
+    exception: "Terms universally known within the target persona's primary domain need not be defined (e.g., 'ROI' for CMO)"
+
+  density_thresholds:
+    executive_c_suite:
+      max_acronyms_per_page: 3
+      max_unexplained_technical_terms: 0
+      preferred_register: "business outcome language; avoid product and engineering terminology"
+    marketing_leader:
+      max_acronyms_per_page: 5
+      preferred_register: "marketing metrics, brand, campaign language; light technology terminology"
+    creative_leader:
+      max_acronyms_per_page: 4
+      preferred_register: "creative process, brand quality, workflow language; minimal technology"
+    operations_leader:
+      max_acronyms_per_page: 8
+      preferred_register: "process, integration, metrics, governance language; moderate technical detail"
+    it_technology_leader:
+      max_acronyms_per_page: 12
+      preferred_register: "architecture, security, infrastructure, API language; high technical detail appropriate"
+
+  alienating_vocabulary_by_persona:
+    executive_c_suite:
+      - "microservices architecture"
+      - "API endpoints"
+      - "schema migration"
+      - "throughput"
+      - "latency"
+    marketing_leader:
+      - "containerisation"
+      - "load balancing"
+      - "CI/CD pipeline"
+      - "infrastructure as code"
+    creative_leader:
+      - "API rate limits"
+      - "data pipeline"
+      - "compute costs"
+      - "SLA breach"
+    it_technology_leader:
+      - "brand storytelling arc"
+      - "visionary narrative"
+      - "creative voice"
+      - "emotional resonance"
+
+  context_switching_vocabulary:
+    description: "When content addresses multiple personas in a single document, signal vocabulary register shifts"
+    technique: "Use section headers that address the persona directly: 'For Marketing Leaders:' or 'Technical Implementation:'"
+    anti_pattern: "Mixing high-technical and high-business language in the same paragraph without transition"
+
+# ==============================================================================
+# EXPERTISE CALIBRATION
+# Source: Learner Persona Research.md — generational and functional learner profiles;
+# Comprehensive Audience Analysis.md — novice/intermediate/expert calibration
+# ==============================================================================
+
+expertise_calibration:
+  levels:
+    novice:
+      description: "Audience has limited prior knowledge of the domain or topic"
+      characteristics:
+        - "Relies on analogies from known domains"
+        - "Needs step-by-step explanation before conclusions"
+        - "Motivated by clear outcome relevance ('why this matters to you')"
+        - "Overwhelmed by extensive technical detail without framing"
+      content_requirements:
+        - "Define all domain-specific terms at first use"
+        - "Use analogies grounded in everyday professional experience"
+        - "Lead with the outcome, then explain the mechanism"
+        - "Limit conceptual density: one major new concept per section"
+      # Source: 36_audience_analysis_and_persuasion.md — education level; explain without big words
+
+    intermediate:
+      description: "Audience has working knowledge and can handle domain vocabulary"
+      characteristics:
+        - "Familiar with core concepts; needs depth on nuance and application"
+        - "Evaluates quality of argument and evidence"
+        - "Motivated by peer comparison and best-practice validation"
+        - "May be skeptical of over-simplified or over-hyped content"
+      content_requirements:
+        - "Assume foundational vocabulary without definition"
+        - "Provide worked examples and concrete application scenarios"
+        - "Support claims with quantified evidence and case studies"
+        - "Acknowledge trade-offs and complexity rather than glossing over them"
+
+    expert:
+      description: "Audience has deep domain expertise and high analytical capacity"
+      characteristics:
+        - "Detects imprecise language and unsupported claims immediately"
+        - "Requires rigorous evidence: data, methodology, sources"
+        - "Motivated by technical mastery and peer respect"
+        - "Resistant to oversimplification; views it as condescension"
+      content_requirements:
+        - "Use precise technical vocabulary without excessive definition"
+        - "Cite primary sources and data with methodology transparency"
+        - "Engage with edge cases, exceptions, and counter-arguments"
+        - "Provide appendix or reference depth for those who want it"
+
+  mixed_audience_scaffolding:
+    description: "When content must serve multiple expertise levels simultaneously"
+    # Source: Comprehensive Audience Analysis.md — segment sections for different audiences
+    techniques:
+      - "Executive summary for strategic-level audience; technical appendix for expert audience"
+      - "Section routing signals: 'For those new to X…' / 'For technical teams…'"
+      - "Progressive disclosure: high-level claim → optional detail → optional deep-dive"
+      - "Sidebar or callout boxes for prerequisite concepts without interrupting expert flow"
+
+  generational_learning_preferences:
+    # Source: Learner Persona Research.md — generational archetypes and functional persona profiles
+    gen_z_digital_pragmatist:
+      format_preferences: ["short-form video", "visual social formats", "mobile-first layouts"]
+      motivation: "Relevance and career currency — connect content to immediate professional value"
+      psychographic_context: >
+        51% report being 'highly stressed' — highest of any generation (Workplace Burnout Report 2025).
+        Under-30s earn approximately 25% less than workers over 40 (Forbes 2026), driving intense
+        certification demand. Economic precarity defines the frame; content must feel immediately applicable.
+      trust_signal: "Distrusts highly polished 'corporate' production. Responds better to direct address and informal register."
+      avoid: "Dense long-form text with no visual variation; corporate-polished tone that feels inauthentic"
+      soft_skills_gap_note: "~30% perception gap between Gen Z self-assessed proficiency in communication and employer assessment (NACE). Do not assume these skills are present."
+    millennial_overwhelmed_architect:
+      format_preferences: ["audio learning", "peer cohort formats", "flow-of-work integration"]
+      motivation: "Efficiency tools and meaningful work — respect time scarcity; 45% of Millennial managers lack resources to develop their teams effectively (D2L 2026)"
+      psychographic_context: >
+        Dominant workforce cohort (~40% globally). Positioned between executive efficiency pressure
+        and Gen Z employee expectations. Time poverty is structural. Burned-out middle managers
+        make up the largest single audience segment for B2B corporate content.
+      channel_note: "Over-indexes on podcast and audio learning — consumed during commute or household tasks."
+      avoid: "Mandatory compliance-style content; long theoretical modules without practical payoff; formats that require dedicated screen time"
+    gen_x_autonomous_specialist:
+      format_preferences: ["searchable knowledge bases", "executive summaries", "self-paced libraries"]
+      motivation: "Autonomy and competence — provide tools, not managed learning paths; values externally recognised credentials (MBAs, PMP) with tangible market value over internal badges"
+      psychographic_context: >
+        Senior leadership and specialist individual contributors. 'Latchkey' generation: self-reliant
+        and skeptical. In 2026 they are the steady operational hands as Boomers retire. Focused on
+        maximising earnings for retirement; learning ROI must be framed in terms of market value.
+      avoid: "Forced gamification; overly social learning features; corporate cheerleading; managed learning paths"
+    boomer_legacy_mentor:
+      format_preferences: ["structured linear paths", "face-to-face or synchronous sessions", "co-creation"]
+      motivation: "Respect, legacy, knowledge transfer — leverage institutional expertise; primary driver is generativity (desire to leave a legacy and pass on knowledge)"
+      psychographic_context: >
+        Value face-to-face interaction and hierarchical respect. Feel alienated by rapid digitalization.
+        Most effectively engaged by co-creating training content — validates expertise while capturing
+        institutional knowledge before retirement.
+      avoid: "Non-linear digital exploration; jargon-heavy AI content without grounding; being 'managed' rather than consulted"
+
+# ==============================================================================
+# ELABORATION LIKELIHOOD MODEL (ELM) CALIBRATION
+# Source: Comprehensive Audience Analysis.md — Petty & Cacioppo ELM reference;
+# central vs peripheral route processing
+# ==============================================================================
+
+elaboration_likelihood:
+  central_route:
+    description: "High elaboration — audience is motivated and able to process arguments deeply"
+    triggers:
+      - "Expert or technical audience with high domain involvement"
+      - "High-stakes decision context (enterprise procurement, board approval)"
+      - "Audience has prior knowledge that enables critical evaluation"
+    content_strategy:
+      - "Lead with rigorous evidence: data, methodology, case studies"
+      - "Engage with counter-arguments and acknowledge trade-offs"
+      - "Avoid peripheral cues (celebrity endorsements, superficial aesthetics)"
+      - "Provide depth and allow audience to draw their own conclusions"
+    persuasion_durability: "High — attitude change is stable and resistant to counter-persuasion"
+
+  peripheral_route:
+    description: "Low elaboration — audience is less motivated or unable to process deeply"
+    triggers:
+      - "Time-pressured executive audience (15-minute decision slots)"
+      - "Low-involvement topic outside the audience's primary expertise"
+      - "Early awareness stage where relationship and credibility matter more than detail"
+    content_strategy:
+      - "Lead with social proof: peer benchmarks, named customer logos, analyst endorsements"
+      - "Use visual cues, strong emotional framing, and compelling narrative"
+      - "Simplify argument structure; avoid overwhelming with data"
+      - "Build ethos first (credibility signals) before logos (evidence)"
+    persuasion_durability: "Lower — attitude can shift if peripheral cues are removed; reinforce with follow-up"
+
+  audience_motivation_assessment:
+    high_motivation_signals:
+      - "Audience initiated the conversation or requested detailed information"
+      - "High personal relevance (outcome directly affects their role or budget)"
+      - "Technical or specialist audience in their domain"
+    low_motivation_signals:
+      - "Content delivered in mass/broadcast format without audience selection"
+      - "Time allocation under 15 minutes"
+      - "Audience at early awareness stage, not actively evaluating"
+
+# ==============================================================================
+# CULTURAL DIMENSIONS
+# Source: Comprehensive Audience Analysis.md — cultural adaptation, high/low context,
+# power distance; Hofstede (2001); Hall (1976)
+# ==============================================================================
+
+cultural_dimensions:
+  high_vs_low_context:
+    high_context:
+      examples: ["Japan", "China", "South Korea", "Middle East", "many Latin American contexts"]
+      communication_norms:
+        - "Meaning carried in context, relationship, and nonverbal cues"
+        - "Indirect phrasing preferred over blunt negation"
+        - "Pre-meeting alignment expected before formal presentations"
+        - "Relationship trust precedes business content"
+      content_implications:
+        - "Frame feedback or challenges with diplomatic indirectness"
+        - "Allow for relationship-building preamble before business content"
+        - "Avoid confrontational objection handling; use collaborative framing"
+    low_context:
+      examples: ["USA", "Germany", "Scandinavia", "Netherlands", "Australia"]
+      communication_norms:
+        - "Meaning is explicit and direct; context assumed minimal"
+        - "Direct statements expected and valued"
+        - "Meetings efficient; small talk brief"
+        - "Written record and specificity valued"
+      content_implications:
+        - "State conclusions first; support with evidence"
+        - "Avoid excessive hedging or indirect framing — reads as evasive"
+        - "Precise data and specific claims build credibility"
+
+  power_distance:
+    high_power_distance:
+      examples: ["many Southeast Asian", "Latin American", "Eastern European contexts"]
+      implications:
+        - "Deference to hierarchy expected; challenge senior authority carefully"
+        - "Formal titles and formal register reinforce credibility"
+        - "Top-down change mandates more accepted; bottom-up consensus less expected"
+    low_power_distance:
+      examples: ["Scandinavia", "Netherlands", "Australia", "New Zealand"]
+      implications:
+        - "Participatory and collaborative framing strongly preferred"
+        - "Challenge to authority or status quo viewed positively if evidence-based"
+        - "Informal register and first-name basis builds rapport rather than undermining credibility"
+
+  individualism_vs_collectivism:
+    individualist:
+      examples: ["USA", "UK", "Australia", "Canada"]
+      message_frame: "Personal achievement, individual ROI, competitive advantage for 'you'"
+    collectivist:
+      examples: ["Japan", "China", "many Latin American and Middle Eastern contexts"]
+      message_frame: "Team success, group harmony, organisational benefit, consensus"
+
+  inclusive_language_standards:
+    # Source: 36_audience_analysis_and_persuasion.md — demographic sensitivity do's/don'ts
+    gender:
+      - "Use gender-neutral titles: 'police officer' not 'policeman'; 'flight attendant' not 'stewardess'"
+      - "Avoid default male pronouns; use 'they' or restructure sentence"
+      - "Do not assume audience gender from role title"
+    age:
+      - "Avoid age-specific slang or cultural references that exclude cohorts"
+      - "Do not use generational stereotypes to characterise learning preferences"
+    ethnicity:
+      - "Avoid attempts to use culturally specific vocabulary as in-group signalling without authentic grounding"
+      - "Use terminology the audience themselves prefer; research current usage"
+    income_and_class:
+      - "Do not assume economic access to specific tools, services, or lifestyles"
+      - "Provide accessible options alongside premium examples where relevant"
+    religion:
+      - "Avoid religious assumptions about shared holidays, practices, or values"
+      - "Frame cultural references as personal choice, not universal norm"
+
+# ==============================================================================
+# ADULT LEARNING PRINCIPLES (ANDRAGOGY)
+# Source: Knowles (1980); Learner Persona Research.md — pedagogical framework alignment
+# ==============================================================================
+
+adult_learning_principles:
+  self_directed:
+    principle: "Adults need to direct their own learning"
+    content_implication:
+      - "Provide clear learning objectives upfront so audience knows what they will gain"
+      - "Offer optional depth paths; do not force linear consumption"
+      - "Respect existing expertise rather than re-teaching what the audience already knows"
+
+  experience_based:
+    principle: "Adults bring rich experience that is a resource, not a blank slate"
+    content_implication:
+      - "Connect new concepts to scenarios the audience already navigates professionally"
+      - "Use their role's daily reality as the context for examples and case studies"
+      - "Acknowledge prior expertise explicitly; do not patronise with over-explanation"
+
+  relevance_oriented:
+    principle: "Adults learn when they see immediate applicability"
+    content_implication:
+      - "State the professional application of every concept before explaining the concept"
+      - "Frame content around current problems, not hypothetical future scenarios"
+      - "Measure content relevance by whether audience can apply it tomorrow"
+
+  problem_centred:
+    principle: "Adults are motivated by solving real problems, not absorbing subjects"
+    content_implication:
+      - "Organise content around challenges the audience faces, not topic taxonomy"
+      - "Lead with the problem; introduce the solution as the answer to a named pain"
+      - "Evaluation and assessments should test application, not recall"
+
+# ==============================================================================
+# ANTI-PATTERNS
+# Source: Storytelling_for_Different_Business_Personas.md; Comprehensive Audience
+# Analysis.md; narrative_quality_rubric.yaml
+# ==============================================================================
+
+anti_patterns:
+
+  insider_jargon:
+    description: "Using domain-specific terminology the target audience cannot decode"
+    example: "Pitching 'containerised microservices with Kubernetes orchestration' to a CMO"
+    penalty: 0.10
+    fix: "Translate to business impact: 'The system scales automatically so campaign volume spikes never cause downtime'"
+
+  vendor_hero:
+    description: "Vendor or solution positioned as the protagonist; customer is passive recipient"
+    example: "Adobe's platform delivers… / We have built… / Our solution enables…"
+    penalty: 0.12
+    fix: "Reframe with customer as protagonist: 'You'll gain… / Your team can… / This gives you…'"
+
+  generic_wiifm:
+    description: "Benefit claims too vague to carry meaning: 'save time', 'reduce costs', 'improve efficiency' without quantification or persona specificity"
+    example: "This will help you work more efficiently and save your team valuable time"
+    penalty: 0.08
+    fix: "Quantify and personalise: 'Marketing teams using X report 40% reduction in campaign approval cycles'"
+
+  expertise_mismatch:
+    description: "Content depth systematically mismatched to audience knowledge level — either condescending or inaccessible"
+    example: "Explaining what an API is to a CTO, or presenting SLA architecture diagrams to a CMO without translation"
+    penalty: 0.10
+    fix: "Segment content by expertise level using section routing or tiered summary structures"
+
+  cultural_blind_spots:
+    description: "Unexamined cultural assumptions embedded in language, examples, or communication register"
+    example: "Using sports metaphors ('home run', 'slam dunk') in content for non-American audiences; assuming Western linear communication norms for East Asian audiences"
+    penalty: 0.08
+    fix: "Audit idioms, metaphors, and examples for cultural transferability; provide localised alternatives"
+
+  persona_mismatch:
+    description: "Content written for one persona delivered unchanged to a different persona with different priorities and vocabulary"
+    example: "Delivering a technical architecture pitch deck to a CMO; delivering a brand vision narrative to a CTO"
+    penalty: 0.15
+    fix: "Identify primary audience persona before content creation; apply persona-specific vocabulary and KPI sets"
+
+  pain_point_projection:
+    description: "Assuming pain points based on persona stereotype rather than actual audience signals or research"
+    example: "Assuming all CFOs care only about cost when this CFO has a known strategic growth mandate"
+    penalty: 0.06
+    fix: "Validate pain points against known audience signals, discovery notes, or CRM context before applying"
+
+  tone_register_collision:
+    description: "Vocabulary register shifts within a single document without transition, creating cognitive dissonance"
+    example: "Opening with visionary brand language, then dropping into granular API documentation without section signposting"
+    penalty: 0.07
+    fix: "Use explicit section headers to signal register changes; segregate technical depth into clearly marked appendix sections"
+
+  age_cohort_stereotyping:
+    description: "Assuming learning format preferences or vocabulary from generational label alone"
+    example: "Assuming all Baby Boomers resist digital content or all Gen Z reject long-form material"
+    penalty: 0.05
+    fix: "Use functional role and context as primary segmentation variable; generational tendencies as secondary modifier only"
+
+  aspirational_gap:
+    description: "Addressing only functional needs while leaving emotional and aspirational needs unmet"
+    example: "Explaining what the product does without connecting it to the audience's vision of success or professional identity"
+    penalty: 0.06
+    fix: "Add a closing statement connecting the solution to the audience's long-term aspiration: 'This positions you as…'"
+
+  narrative_depth_mismatch:
+    # Source: Storytelling_for_Different_Business_Personas.md — Multi-Stakeholder Narratives
+    description: "Content delivered at an inappropriate depth level for the audience's buying role — too tactical for Approvers, or too strategic for technical Users"
+    example: "Presenting an API architecture deep-dive to a CMO Approver; providing only a one-page executive summary to a technical evaluator who requires implementation specificity"
+    penalty: 0.10
+    fix: "Map content depth to buying role: Approvers receive strategic summary (L1/L2); technical Users receive detailed specification (L3/L4)"
+
+  objection_blindness:
+    # Source: Storytelling_for_Different_Business_Personas.md — Best Practices / Anticipate Objections
+    description: "Narrative fails to anticipate or address common objections known for the target persona, leaving unresolved blockers in the audience's mind"
+    example: "Pitching GenAI transformation to a CMO without addressing the known objection about implementation costs and change management risk"
+    penalty: 0.08
+    fix: "Review persona's common_objections list; embed proactive objection handling as natural narrative moments — not defensive disclaimers"
+
+  trust_signal_omission:
+    # Source: Research - Learner Persona Research and Development.md — Section 4.1; The Trust Deficit
+    description: "Failing to include trust-building signals appropriate to the audience's validation frame before presenting content arguments"
+    example: "Presenting AI-generated content capabilities to a Technical Specialist without acknowledging AI accuracy limitations — trust in AI code generation is at an all-time low (Stack Overflow 2025)"
+    penalty: 0.08
+    fix: "Front-load the appropriate trust signals: peer validation for Gen Z, credentials for Gen X, executive peer benchmarks for C-Suite, community upvotes and technical specificity for technical specialists"
+
+# ==============================================================================
+# VALIDATION CHECKS
+# ==============================================================================
+
+checks:
+  - id: "AA-01"
+    check: "you_we_ratio_minimum"
+    description: "Second-person pronouns (you/your) must outnumber first-person plural (we/our/us)"
+    threshold: 1.5
+    severity: "warning"
+    source: "wiifm_analysis.you_we_ratio"
+
+  - id: "AA-02"
+    check: "undefined_acronym_count"
+    description: "No acronym may appear without expansion at first use for non-expert audiences"
+    threshold: 0
+    severity: "error"
+    scope: ["novice", "intermediate", "executive_c_suite"]
+
+  - id: "AA-03"
+    check: "persona_pain_point_coverage"
+    description: "At least two primary pain points from the identified persona profile must be explicitly addressed"
+    threshold: 2
+    severity: "warning"
+
+  - id: "AA-04"
+    check: "benefit_before_feature"
+    description: "Each major product or capability claim must be preceded by a benefit statement"
+    threshold: 0.8   # proportion of claims that follow benefit-first order
+    severity: "warning"
+
+  - id: "AA-05"
+    check: "inclusive_language_scan"
+    description: "Content must pass inclusive language checks: no gendered defaults, no alienating idioms"
+    severity: "error"
+
+  - id: "AA-06"
+    check: "expertise_level_declared"
+    description: "Target expertise level must be declared before scoring to enable calibration"
+    severity: "error"
+
+  - id: "AA-07"
+    check: "kpi_vocabulary_match"
+    description: "KPIs and metrics vocabulary must match the declared persona's KPI set"
+    severity: "warning"
+
+  - id: "AA-08"
+    check: "aspirational_need_present"
+    description: "At least one aspirational need statement connecting solution to audience long-term goal"
+    severity: "info"
+
+  - id: "AA-09"
+    check: "buying_role_depth_alignment"
+    description: "Content depth level (strategic/tactical/technical) must match the declared buying role (Approver/Champion+Influencer/User)"
+    severity: "warning"
+    source: "buying_role_definitions"
+
+# ==============================================================================
+# NUMERIC THRESHOLDS
+# ==============================================================================
+
+thresholds:
+  you_we_ratio:
+    minimum: 1.5
+    target: 2.0
+    excellent: 3.0
+
+  benefit_mention_frequency:
+    description: "Explicit benefit statements per 500 words"
+    minimum: 2
+    target: 4
+    excessive: 8   # above this level, content reads as hyperbolic
+
+  jargon_density_executive:
+    description: "Maximum unexplained technical terms per 100 words for executive audience"
+    maximum: 1
+
+  jargon_density_technical:
+    description: "Maximum unexplained technical terms per 100 words for technical expert audience"
+    maximum: 5    # higher allowance; domain terms do not require definition
+
+  pain_point_coverage:
+    description: "Minimum proportion of the identified persona's primary pain points addressed"
+    minimum: 0.50
+    target: 0.80
+
+  persona_kpi_match:
+    description: "Minimum proportion of metrics referenced that match declared persona's KPI set"
+    minimum: 0.70
+
+  cultural_idiom_limit:
+    description: "Maximum region-specific idioms or metaphors per 500 words for global audiences"
+    maximum: 1
+
+  acronym_expansion_rate:
+    description: "Proportion of acronyms expanded at first use (non-expert audiences)"
+    minimum: 1.0   # 100% required for executive and novice audiences
+
+# ==============================================================================
+# PENALTIES
+# ==============================================================================
+
+penalties:
+  - id: "PEN-AA-01"
+    trigger: "you_we_ratio below 0.5 — severe vendor-hero framing"
+    score_deduction: 0.15
+    dimension_affected: wiifm_strength
+
+  - id: "PEN-AA-02"
+    trigger: "persona_pain_points_coverage below 25% — pain points largely absent"
+    score_deduction: 0.12
+    dimension_affected: persona_relevance
+
+  - id: "PEN-AA-03"
+    trigger: "undefined_acronym_count above 4 for non-expert audience"
+    score_deduction: 0.10
+    dimension_affected: jargon_calibration
+
+  - id: "PEN-AA-04"
+    trigger: "expertise_level_mismatch — content 2+ tiers removed from audience level"
+    score_deduction: 0.10
+    dimension_affected: expertise_level_match
+
+  - id: "PEN-AA-05"
+    trigger: "persona_kpi_match below 0.40 — KPI vocabulary not aligned to persona"
+    score_deduction: 0.10
+    dimension_affected: persona_relevance
+
+  - id: "PEN-AA-06"
+    trigger: "gendered_default_language_detected — e.g., 'policeman', 'he assumes the role of'"
+    score_deduction: 0.08
+    dimension_affected: cultural_sensitivity
+
+  - id: "PEN-AA-07"
+    trigger: "cultural_idiom_density above 3 per 500 words for global audience"
+    score_deduction: 0.08
+    dimension_affected: cultural_sensitivity
+
+  - id: "PEN-AA-08"
+    trigger: "generic_benefit_claim_detected — 'save time', 'reduce costs' without quantification or persona context"
+    score_deduction: 0.07
+    dimension_affected: wiifm_strength
+
+  - id: "PEN-AA-09"
+    trigger: "tone_register_collision — unannounced shift between business and technical vocabulary"
+    score_deduction: 0.07
+    dimension_affected: jargon_calibration
+
+  - id: "PEN-AA-10"
+    trigger: "aspirational_need_absent — functional benefits only; no long-term vision connection"
+    score_deduction: 0.06
+    dimension_affected: wiifm_strength
+
+  - id: "PEN-AA-11"
+    trigger: "pain_point_projection_detected — pain points from template, not audience-specific signals"
+    score_deduction: 0.06
+    dimension_affected: persona_relevance
+
+  - id: "PEN-AA-12"
+    trigger: "benefit_before_feature_rate below 0.40 — features consistently precede benefits"
+    score_deduction: 0.05
+    dimension_affected: wiifm_strength
+
+  - id: "PEN-AA-13"
+    trigger: "persona_mismatch — content written for a different persona than declared audience"
+    score_deduction: 0.15
+    dimension_affected: persona_relevance
+
+  - id: "PEN-AA-14"
+    trigger: "alienating_vocabulary_detected — vocabulary from persona denylist used without translation"
+    score_deduction: 0.08
+    dimension_affected: jargon_calibration
+
+  - id: "PEN-AA-15"
+    trigger: "high_context_directness_mismatch — blunt negation used for high-context cultural audience"
+    score_deduction: 0.05
+    dimension_affected: cultural_sensitivity
+
+# ==============================================================================
+# BONUSES
+# ==============================================================================
+
+bonuses:
+  - id: "BON-AA-01"
+    trigger: "you_we_ratio exceeds 3.0 throughout — sustained customer-centric voice"
+    score_addition: 0.03
+    dimension_affected: wiifm_strength
+
+  - id: "BON-AA-02"
+    trigger: "all four needs served — functional, emotional, social, and aspirational explicitly addressed"
+    score_addition: 0.03
+    dimension_affected: wiifm_strength
+
+  - id: "BON-AA-03"
+    trigger: "persona_pain_point_coverage at 100% — all primary pain points addressed"
+    score_addition: 0.02
+    dimension_affected: persona_relevance
+
+  - id: "BON-AA-04"
+    trigger: "persona_kpi_match at 1.0 — all metrics reference the declared persona's KPI vocabulary"
+    score_addition: 0.02
+    dimension_affected: persona_relevance
+
+  - id: "BON-AA-05"
+    trigger: "cultural_context_localised — examples and social proof drawn from the audience's own cultural region"
+    score_addition: 0.02
+    dimension_affected: cultural_sensitivity
+
+  - id: "BON-AA-06"
+    trigger: "objections_proactively_addressed — known persona objections pre-empted in content"
+    score_addition: 0.02
+    dimension_affected: persona_relevance
+
+  - id: "BON-AA-07"
+    trigger: "mixed_audience_scaffolding_applied — routing signals used to address multiple expertise levels"
+    score_addition: 0.02
+    dimension_affected: expertise_level_match
+
+  - id: "BON-AA-08"
+    trigger: "social_proof_persona_matched — case study or testimonial from the same role or industry as the audience"
+    score_addition: 0.02
+    dimension_affected: persona_relevance
+
+  - id: "BON-AA-09"
+    trigger: "elm_route_calibrated — central or peripheral route evidence strategy explicitly matched to audience motivation level"
+    score_addition: 0.01
+    dimension_affected: expertise_level_match
+
+  - id: "BON-AA-10"
+    trigger: "benefit_before_feature_rate at 1.0 — every major claim leads with benefit"
+    score_addition: 0.02
+    dimension_affected: wiifm_strength
+
+  - id: "BON-AA-11"
+    trigger: "andragogy_applied — content explicitly connects to audience's existing experience and immediate application"
+    score_addition: 0.01
+    dimension_affected: expertise_level_match
+
+  - id: "BON-AA-12"
+    trigger: "inclusive_language_exemplary — proactive inclusive framing beyond baseline compliance"
+    score_addition: 0.01
+    dimension_affected: cultural_sensitivity

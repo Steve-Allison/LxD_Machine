@@ -1,0 +1,626 @@
+_meta:
+  id: ai_systems_entities
+  purpose: entity
+  version: 1.6.0
+  last_updated: '2026-03-09'
+  description: GLiNER entity definitions for AI system analysis including prompt engineering patterns, RAG components, PDL
+    constructs, LLM pipeline elements, and generation strategy markers.
+  domain: ai
+  domain_type: cross_cutting
+  corpus_sources:
+  - Corpus/Research/Context Engineering vs- Prompt Engineering- Smarter AI with RAG - Agents.md
+  - Corpus/Research/RAG vs Fine-Tuning vs Prompt Engineering- Optimizing AI Models.md
+  - Corpus/Research/RAG vs- CAG- Solving Knowledge Gaps in AI Models.md
+  - Corpus/Research/Research - AQE with LLMs via IBM PDL.md
+  - Corpus/Research/Research - Multi-step Prompting Best Practices.md
+  - Corpus/Research/Research - Zero-loss Prompt Optimisation.md
+  - Corpus/Research/Research - Best Practice Prompt writing for text.md
+  - Corpus/Research/Research - LLM Argument Mining with PDL.md
+  - Corpus/Research/Research - Model Criticism for Long-Form Text.md
+  - Corpus/Research/Research - Advanced Computational Discourse Analysis_ Operationalizing Rhetorical Structure Theory with
+    LLM.md
+  - Corpus/Research/Methodology - How do we move from this research to a sequenced A.I. Enhanced Course Pipeline_.md
+  relationships:
+  - target: ai_config/analyzer_catalog.yaml
+    type: depends_on
+    description: Analyzer definitions that consume AI entity extraction
+  - target: ai_config/analyzer_orchestration_config.yaml
+    type: depends_on
+    description: Pipeline orchestration for AI-driven analysis
+gliner_config:
+  model: urchade/gliner_multi_pii-v1
+  batch_size: 8
+  context_window: 512
+  domain_keywords:
+    primary:
+    - prompt
+    - LLM
+    - RAG
+    - PDL
+    - fine-tuning
+    - embedding
+    - context window
+    - token
+    secondary:
+    - chain of thought
+    - few-shot
+    - zero-shot
+    - retrieval
+    - vector
+    - generation
+    - inference
+entity_types:
+  prompt_technique:
+    description: Named prompting strategies and methodologies for LLM interaction
+    canonical_id: prompt_technique
+    entity_kind: ai_method
+    family: prompt_engineering
+    gliner_label: PROMPT_TECHNIQUE
+    gliner_description: Prompt engineering technique chain of thought few-shot zero-shot role prompting self-consistency tree
+      of thought
+    examples:
+    - chain-of-thought prompting
+    - few-shot learning
+    - zero-shot classification
+    - role prompting
+    - self-consistency sampling
+    - tree-of-thought reasoning
+    - ReAct prompting
+    - multi-step decomposition
+    anti_examples:
+    - chain link fence
+    - few items
+    - zero tolerance
+    confidence_threshold: 0.75
+    aliases:
+    - prompting method
+    - prompting strategy
+    - LLM technique
+    indicators:
+    - chain of thought
+    - chain-of-thought
+    - few-shot
+    - zero-shot
+    - role prompting
+    - self-consistency
+    - tree of thought
+    - ReAct
+    - multi-step
+    - prompt chaining
+    - decomposition
+    - step-by-step
+    patterns:
+    - (chain[- ]of[- ]thought|tree[- ]of[- ]thought)
+    - (few|zero|one|multi)[- ]shot
+    - (role|system|self-consistency|ReAct) prompting
+    - prompt (chaining|decomposition|engineering)
+    color: '#3498db'
+    relates_to:
+    - target: prompt_component
+      relation: contains
+      weight: required
+      description: Prompt techniques (role assignment, few-shot, chain-of-thought, constraint setting) structure LLM input
+        for better outputs
+    - target: rag_component
+      relation: bridges
+      weight: expected
+      description: 'Prompt techniques used within context engineering: role assignment and constraint setting guide RAG retrieval
+        and generation'
+    - target: generation_parameter
+      relation: enables
+      weight: optional
+      description: Prompt techniques interact with temperature and top-p parameters to control reasoning depth and output
+        determinism
+    - target: pdl_construct
+      relation: supported_by
+      weight: expected
+      description: Prompt techniques are supported by PDL constructs — IBM Prompt Declaration Language provides declarative
+        YAML-based orchestration for complex multi-turn prompt chains required in iterative discourse parsing per Advanced
+        Computational Discourse Analysis research
+    - target: instructional_strategy
+      relation: enables
+      weight: expected
+      description: "Chain-of-Thought and Prompt Chaining techniques enable SOAR instructional strategy by structuring multi-step agent orchestration"
+      target_file: pedagogical_frameworks_entities
+    taxonomy_mapping:
+    - taxonomy: ai_systems_taxonomy
+      dimension: prompt_methodology
+      values:
+      - role_assignment
+      - few_shot_prompting
+      - chain_of_thought
+      - constraint_setting
+      strength: primary
+  prompt_component:
+    description: Structural elements within a prompt template (system message, examples, constraints)
+    canonical_id: prompt_component
+    entity_kind: ai_structure
+    family: prompt_engineering
+    gliner_label: PROMPT_COMPONENT
+    gliner_description: Prompt component system message instruction context examples constraints output format persona guardrail
+    examples:
+    - system message
+    - user instruction
+    - context window
+    - few-shot examples
+    - output format specification
+    - persona definition
+    - guardrail constraint
+    - temperature setting
+    anti_examples:
+    - system administrator
+    - output device
+    confidence_threshold: 0.7
+    aliases:
+    - prompt element
+    - template section
+    indicators:
+    - system message
+    - system prompt
+    - user prompt
+    - instruction
+    - context
+    - examples
+    - constraints
+    - output format
+    - persona
+    - guardrail
+    - temperature
+    - max tokens
+    patterns:
+    - system (message|prompt|instruction)
+    - (output|response) format
+    - (persona|role) definition
+    - (guardrail|constraint|boundary)
+    color: '#2ecc71'
+    relates_to:
+    - target: prompt_technique
+      relation: enables
+      weight: required
+      description: Components (instructions, examples, formatting cues, role statement) together form complete prompt engineering
+        technique
+    - target: context_engineering_pattern
+      relation: enables
+      weight: expected
+      description: Prompt components injected at runtime with dynamic context (state, memory, RAG results) to assemble complete
+        agentic prompt
+    - target: prompt_technique
+      relation: supports
+      weight: required
+      description: "Each workflow step uses role assignment context injection and structured output format as prompt components supporting chaining technique"
+    taxonomy_mapping:
+    - taxonomy: ai_systems_taxonomy
+      dimension: prompt_structure
+      values:
+      - instruction_block
+      - example_pair
+      - role_statement
+      - formatting_specification
+      strength: primary
+    parent_entity: prompt_technique
+  rag_component:
+    description: Components of Retrieval-Augmented Generation architectures
+    canonical_id: rag_component
+    entity_kind: ai_architecture
+    family: retrieval
+    gliner_label: RAG_COMPONENT
+    gliner_description: RAG component vector store embedding retriever chunking indexing reranker knowledge base document
+      loader
+    examples:
+    - vector store
+    - embedding model
+    - document retriever
+    - chunk splitter
+    - reranker
+    - knowledge base
+    - document loader
+    - semantic search index
+    anti_examples:
+    - store manager
+    - document folder
+    confidence_threshold: 0.75
+    aliases:
+    - retrieval component
+    - RAG element
+    - knowledge pipeline
+    indicators:
+    - vector store
+    - vector database
+    - embedding
+    - retriever
+    - chunking
+    - chunk size
+    - indexing
+    - reranker
+    - knowledge base
+    - document loader
+    - semantic search
+    - similarity search
+    patterns:
+    - vector (store|database|db|index)
+    - embedding (model|space|dimension)
+    - document (retriever|loader|splitter)
+    - (semantic|similarity|hybrid) search
+    - (chunk|chunking) (size|strategy|splitter)
+    color: '#e74c3c'
+    relates_to:
+    - target: rag_strategy
+      relation: enables
+      weight: required
+      description: RAG components (hybrid search, retrieval, re-ranking, injection) operationalise RAG strategy for context-grounded
+        generation
+    - target: pdl_construct
+      relation: contains
+      weight: expected
+      description: 'RAG components orchestrated via PDL: retrieve step outputs context for subsequent LLM calls in agentic
+        workflows'
+    taxonomy_mapping:
+    - taxonomy: ai_systems_taxonomy
+      dimension: rag_architecture
+      values:
+      - hybrid_search
+      - semantic_retrieval
+      - re_ranking
+      - context_injection
+      strength: primary
+  rag_strategy:
+    description: Named RAG architectures and retrieval augmentation strategies
+    canonical_id: rag_strategy
+    entity_kind: ai_method
+    family: retrieval
+    gliner_label: RAG_STRATEGY
+    gliner_description: RAG strategy naive RAG advanced RAG modular RAG CAG contextual augmented generation hybrid search
+    examples:
+    - naive RAG
+    - advanced RAG
+    - modular RAG
+    - CAG (Contextual Augmented Generation)
+    - hybrid search RAG
+    - multi-hop retrieval
+    - self-RAG
+    - corrective RAG
+    anti_examples:
+    - rag doll
+    - rag tag
+    confidence_threshold: 0.8
+    aliases:
+    - retrieval strategy
+    - augmentation pattern
+    indicators:
+    - naive RAG
+    - advanced RAG
+    - modular RAG
+    - CAG
+    - hybrid search
+    - multi-hop
+    - self-RAG
+    - corrective RAG
+    - fine-tuning
+    - RAFT
+    patterns:
+    - (naive|advanced|modular|self|corrective)[- ]RAG
+    - (hybrid|multi-hop|dense|sparse) (search|retrieval)
+    - contextual augmented generation
+    color: '#9b59b6'
+    relates_to:
+    - target: rag_component
+      relation: contains
+      weight: required
+      description: RAG strategies (hybrid search, contextual filtering, re-ranking) implemented through specific RAG components
+    - target: context_engineering_pattern
+      relation: specialises
+      weight: expected
+      description: RAG is a core context engineering pattern connecting agents to dynamic knowledge sources reducing hallucination
+    taxonomy_mapping:
+    - taxonomy: ai_systems_taxonomy
+      dimension: rag_strategy_type
+      values:
+      - hybrid_search
+      - semantic_matching
+      - keyword_matching
+      - contextual_filtering
+      strength: primary
+  pdl_construct:
+    description: IBM Prompt Declaration Language constructs and declarative programming elements
+    canonical_id: pdl_construct
+    entity_kind: ai_structure
+    family: pdl
+    gliner_label: PDL_CONSTRUCT
+    gliner_description: IBM PDL construct declarative prompt block function call data flow variable template loop conditional
+    examples:
+    - PDL block definition
+    - declarative prompt template
+    - function call block
+    - data flow variable
+    - conditional branching
+    - loop construct
+    - model call
+    - PDL program
+    anti_examples:
+    - PDL file format
+    - block chain
+    confidence_threshold: 0.8
+    aliases:
+    - PDL element
+    - declarative construct
+    indicators:
+    - PDL
+    - Prompt Declaration Language
+    - declarative prompt
+    - block definition
+    - model call
+    - data flow
+    - function block
+    - PDL program
+    - neuro-symbolic
+    patterns:
+    - (IBM )?PDL
+    - Prompt Declaration Language
+    - (declarative|neuro-symbolic) (prompt|framework|methodology)
+    - (block|function|model) (definition|call|invocation)
+    color: '#1abc9c'
+    relates_to:
+    - target: context_engineering_pattern
+      relation: contains
+      weight: required
+      description: 'PDL YAML constructs: state initialisation, repeat loops, LLM calls, conditional branching for agentic
+        workflows'
+    - target: prompt_component
+      relation: contains
+      weight: expected
+      description: PDL constructs contain prompt components — PDL scripts define prompts as first-class citizens with explicit
+        variable bindings, control structures, and model chaining capabilities per Advanced Computational Discourse Analysis
+        research
+    - target: generation_parameter
+      relation: enables
+      weight: expected
+      description: PDL constructs enable fine-grained generation parameter control — PDL scripts explicitly specify model
+        parameters like temperature within declarative YAML blocks per Advanced Computational Discourse Analysis research
+    - target: llm_model_reference
+      relation: enables
+      weight: expected
+      description: PDL constructs enable model reference chaining — PDL native model chaining passes output of one model into
+        the prompt of another abstracting API mechanics per Advanced Computational Discourse Analysis research
+    - target: rag_component
+      relation: contains
+      weight: expected
+      description: 'PDL constructs define multi-step orchestration: state management, repeat-until loop, prompt generation,
+        LLM call, state update'
+    taxonomy_mapping:
+    - taxonomy: ai_systems_taxonomy
+      dimension: pdl_syntax
+      values:
+      - state_initialisation
+      - repeat_until_loop
+      - conditional_branch
+      - llm_call_block
+      strength: primary
+  llm_model_reference:
+    description: References to specific LLM model families, versions, or capabilities
+    canonical_id: llm_model_reference
+    entity_kind: ai_reference
+    family: llm_pipeline
+    gliner_label: LLM_MODEL_REF
+    gliner_description: LLM model reference GPT Claude Gemini Llama Mistral BERT transformer language model
+    examples:
+    - GPT-4
+    - Claude 3.5 Sonnet
+    - Gemini Pro
+    - Llama 3
+    - Mistral 7B
+    - BERT
+    - T5
+    anti_examples:
+    - GPT partition table
+    - llama animal
+    confidence_threshold: 0.85
+    aliases:
+    - language model
+    - foundation model
+    - AI model
+    indicators:
+    - GPT
+    - Claude
+    - Gemini
+    - Llama
+    - Mistral
+    - BERT
+    - T5
+    - transformer
+    - language model
+    - foundation model
+    - LLM
+    patterns:
+    - GPT-?\d
+    - Claude \d
+    - Gemini (Pro|Ultra|Flash|Nano)
+    - Llama \d
+    - Mistral \d
+    color: '#f39c12'
+    relates_to:
+    - target: generation_parameter
+      relation: enables
+      weight: expected
+      description: Model selection (Granite, OpenAI, Gemini) affects context window, parameter constraints, structured output
+        support
+    - target: context_engineering_pattern
+      relation: enables
+      weight: expected
+      description: Model choice determines schema flattening strategy, recursion bypass techniques, logit-biasing vs function-calling
+    taxonomy_mapping:
+    - taxonomy: ai_systems_taxonomy
+      dimension: model_family
+      values:
+      - ollama_model
+      - openai_gpt
+      - google_gemini
+      - anthropic_claude
+      strength: secondary
+  generation_parameter:
+    description: Configuration parameters that control LLM text generation behaviour
+    canonical_id: generation_parameter
+    entity_kind: ai_config
+    family: llm_pipeline
+    gliner_label: GENERATION_PARAM
+    gliner_description: LLM generation parameter temperature top-p top-k max tokens frequency penalty stop sequence
+    examples:
+    - temperature 0.7
+    - top_p 0.9
+    - max_tokens 4096
+    - frequency_penalty 0.5
+    - stop sequence
+    - presence penalty
+    anti_examples:
+    - room temperature
+    - top priority
+    confidence_threshold: 0.8
+    aliases:
+    - inference parameter
+    - sampling parameter
+    - generation setting
+    indicators:
+    - temperature
+    - top_p
+    - top_k
+    - max_tokens
+    - frequency_penalty
+    - presence_penalty
+    - stop sequence
+    - sampling
+    - beam search
+    - nucleus sampling
+    patterns:
+    - temperature[= :]?\s?\d
+    - top[_-]?[pk][= :]?\s?\d
+    - max[_-]?tokens[= :]?\s?\d
+    - (frequency|presence)[_-]?penalty
+    color: '#e67e22'
+    relates_to:
+    - target: prompt_technique
+      relation: bridges
+      weight: expected
+      description: 'Parameters (temperature, top_p, max_tokens) tuned per technique: temperature=0 for consistency, higher
+        for creativity'
+    - target: llm_model_reference
+      relation: enables
+      weight: expected
+      description: Parameter constraints depend on model architecture; temperature, top_p, token limits optimised per task
+        type
+    taxonomy_mapping:
+    - taxonomy: ai_systems_taxonomy
+      dimension: generation_control
+      values:
+      - temperature
+      - top_p_sampling
+      - max_tokens
+      - presence_penalty
+      strength: secondary
+  context_engineering_pattern:
+    description: Named patterns for managing and optimising LLM context windows
+    canonical_id: context_engineering_pattern
+    entity_kind: ai_method
+    family: context_management
+    gliner_label: CONTEXT_PATTERN
+    gliner_description: Context engineering pattern context window stuffing compression summarisation pruning sliding window
+    examples:
+    - context window stuffing
+    - prompt compression
+    - context summarisation
+    - sliding window attention
+    - context pruning
+    - zero-loss compacting
+    - token budgeting
+    anti_examples:
+    - window cleaning
+    - context menu
+    confidence_threshold: 0.7
+    aliases:
+    - context management
+    - context optimisation
+    indicators:
+    - context window
+    - context stuffing
+    - prompt compression
+    - context summarisation
+    - sliding window
+    - context pruning
+    - zero-loss
+    - token budget
+    - context length
+    patterns:
+    - context (window|stuffing|summarisation|pruning|length|limit)
+    - prompt (compression|compacting|optimisation)
+    - (sliding|attention) window
+    - token (budget|limit|count)
+    color: '#27ae60'
+    relates_to:
+    - target: pdl_construct
+      relation: supported_by
+      weight: required
+      description: 'Context engineering assembles everything the LLM sees at inference: prompts, retrieved docs, memory, tools,
+        state'
+    - target: rag_strategy
+      relation: contains
+      weight: required
+      description: 'RAG is a core pattern: dynamic retrieval (hybrid search) plus contextual filtering plus injection into
+        prompt assembly'
+    - target: prompt_technique
+      relation: contains
+      weight: expected
+      description: Prompt engineering (how to word instruction) is a subset of context engineering (system-level discipline
+        for all needed context
+    - target: pedagogical_sequence_marker
+      relation: enables
+      weight: expected
+      description: "Output-as-context pattern (Step N output becomes Step N+1 input) is a context engineering pattern enabling the 4-phase pedagogical sequence"
+      target_file: content_architecture_entities
+    taxonomy_mapping:
+    - taxonomy: ai_systems_taxonomy
+      dimension: context_engineering_approach
+      values:
+      - memory_management
+      - state_tracking
+      - rag_integration
+      - tool_access
+      strength: primary
+quality_indicators:
+  positive:
+  - clear prompt structure
+  - explicit output format
+  - appropriate temperature
+  - effective retrieval strategy
+  - well-defined personas
+  - robust guardrails
+  negative:
+  - prompt injection vulnerability
+  - context overflow
+  - hallucination risk
+  - missing guardrails
+  - ambiguous instructions
+  - token waste
+domain_keywords:
+  primary:
+  - prompt
+  - LLM
+  - RAG
+  - PDL
+  - fine-tuning
+  - embedding
+  - context window
+  - token
+  - chain-of-thought
+  - few-shot
+  - zero-shot
+  secondary:
+  - inference
+  - model
+  - temperature
+  - retrieval
+  - vector
+  - knowledge graph
+  - hallucination
+  - guardrail
+  - pipeline
+  - orchestration
+  - transformer
+  - attention

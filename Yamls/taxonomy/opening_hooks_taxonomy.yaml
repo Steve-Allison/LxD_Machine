@@ -1,0 +1,276 @@
+_meta:
+  id: opening_hooks_taxonomy
+  title: "Opening Hooks Taxonomy"
+  description: "Classification of presentation opening hook types by hook category, psychological mechanism, audience impact level, context suitability, and narrative function"
+  domain: narrative
+  domain_type: cross_cutting
+  purpose: taxonomy
+  version: "1.2.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Crafting Powerful Opening Plays.md"
+    - "Corpus/Research/Research - Canonical Presentation Methodology Research.md"
+    - "Corpus/Research/Research - Using Monroes Motivated Sequence.md"
+    - "Corpus/Research/Research - World-Class_Public_Speaking_FULL_RESEARCH.md"
+    - "Corpus/Research/Research - The Anatomy of Presence_ An Exhaustive Analysis of First Impressions, Enclothed Cognition, and the Mechanics of Influence.md"
+  academic_sources:
+    - "Loewenstein (1994) - The Psychology of Curiosity"
+    - "Von Restorff (1933) - Isolation Effect"
+    - "Ambady & Rosenthal (1992) - Thin slices of expressive behavior as predictors of interpersonal consequences"
+    - "Thorndike (1920) / Nisbett & Wilson (1977) - Halo Effect in person perception"
+    - "Slepian, Weisbuch, Rule & Ambady (2015) - Tough and tender: Embodied categorization of gender"
+  relationships:
+    - target: entities/opening_hooks_entities.yaml
+      type: depends_on
+      description: "Opening hook entity types for NER extraction"
+    - target: methodology/opening_hooks_framework.yaml
+      type: depends_on
+      description: "Opening hook detection patterns and scoring"
+# ==============================================================================
+# HOOK CATEGORIES
+# ==============================================================================
+
+hook_categories:
+  question:
+    label: "Question Hook"
+    description: "Opens with a question to trigger curiosity and mental engagement"
+    psychological_mechanism: "Curiosity gap (Loewenstein 1994) — unresolved questions trigger dopamine; Meisner externalised attention principle — the audience immediately focuses outward to resolve the open loop"
+    sub_types:
+      rhetorical:
+        description: "No answer expected; makes audience think"
+        example: "What if everything you knew about productivity was wrong?"
+      direct:
+        description: "Invites immediate mental response"
+        example: "How many of you have experienced this problem?"
+      provocative:
+        description: "Challenges assumptions or conventional wisdom"
+        example: "Why do 70% of digital transformations still fail?"
+      hypothetical:
+        description: "Creates imagined scenario"
+        example: "What would you do with an extra hour every day?"
+    effectiveness: high
+    versatility: high
+
+  statistic:
+    label: "Statistic Hook"
+    description: "Opens with a surprising number or data point to establish credibility and urgency"
+    psychological_mechanism: "Von Restorff isolation effect — surprising numbers stand out from surrounding text"
+    sub_types:
+      shocking_number:
+        description: "Counter-intuitive or alarming figure"
+        example: "Every 39 seconds, a company falls victim to cyberattack."
+      trend_data:
+        description: "Growth or decline trajectory"
+        example: "AI adoption has grown 270% in the last four years."
+      comparison:
+        description: "Contrasting numbers for impact"
+        example: "Companies that invest in training see 24% higher margins than those that don't."
+    effectiveness: high
+    versatility: high
+
+  story:
+    label: "Story Hook"
+    description: "Opens with a narrative that creates emotional connection and context"
+    psychological_mechanism: "Neural coupling — stories synchronise speaker and listener brain activity"
+    sub_types:
+      personal:
+        description: "Speaker's own experience"
+        example: "Three years ago, I stood in this room and made a promise..."
+      customer:
+        description: "Client or user story"
+        example: "Last month, a customer called us in a panic..."
+      historical:
+        description: "Reference to a known event or figure"
+        example: "In 1962, JFK stood before Congress and said..."
+      hypothetical:
+        description: "Constructed scenario for illustration"
+        example: "Imagine you're a new sales rep on your first day..."
+    effectiveness: very_high
+    versatility: medium
+    anti_patterns:
+      - "Starting the story before establishing audience relevance (audience disengages if they cannot see why the story matters to them)"
+      - "Over-long personal backstory that delays the point beyond 90 seconds"
+      - "Ending the story without a clear bridge to the presentation's core message"
+      - "Using a story so personal or niche that the majority of the audience cannot identify with it"
+
+  quotation:
+    label: "Quotation Hook"
+    description: "Opens with a relevant quote from an authority figure"
+    psychological_mechanism: "Authority bias — attributed quotes inherit credibility of the source"
+    sub_types:
+      famous_figure:
+        description: "Well-known person's words"
+        example: '"The only way to do great work is to love what you do." — Steve Jobs'
+      industry_leader:
+        description: "Relevant domain expert's words"
+        example: '"Data is the new oil." — Clive Humby'
+      customer_voice:
+        description: "Direct customer quotation"
+        example: '"This changed everything for our team." — CTO, Acme Corp'
+    effectiveness: medium
+    versatility: medium
+
+  bold_claim:
+    label: "Bold Claim Hook"
+    description: "Opens with a provocative, contrarian, or surprising assertion"
+    psychological_mechanism: "Cognitive dissonance — contradicts expectations, demands resolution"
+    sub_types:
+      contrarian:
+        description: "Challenges widely-held belief"
+        example: "Everything your company knows about customer retention is wrong."
+      prediction:
+        description: "Forward-looking assertion"
+        example: "Within 5 years, half of today's job titles won't exist."
+      declaration:
+        description: "Strong position statement"
+        example: "We are at the most critical inflection point in our industry's history."
+    effectiveness: high
+    versatility: low
+
+  demonstration:
+    label: "Demonstration Hook"
+    description: "Opens with a live demo, visual reveal, or interactive moment"
+    psychological_mechanism: "Experiential learning — concrete experience is more memorable than abstraction; Halo Effect (Thorndike 1920; Nisbett & Wilson 1977) — a compelling first demonstration creates a positive overall impression that biases all subsequent audience judgments of the speaker and content"
+    sub_types:
+      live_demo:
+        description: "Real-time product or skill demonstration"
+        example: "Let me show you something. [opens product and completes task in 10 seconds]"
+      visual_reveal:
+        description: "Surprising image or before/after comparison"
+        example: "[Shows two dashboards side by side] This is Monday. This is Friday."
+      audience_exercise:
+        description: "Immediate audience participation"
+        example: "Everyone stand up. Now sit down if you've never experienced..."
+    effectiveness: very_high
+    versatility: low
+
+  silence:
+    label: "Silence / Pause Hook"
+    description: "Opens with deliberate silence or extended pause to create tension"
+    psychological_mechanism: "Expectancy violation — silence in a speaking context creates heightened attention; thin-slicing (Ambady & Rosenthal 1992) — audiences form strong initial impressions within milliseconds, meaning the quality of a speaker's presence during silence communicates competence and authority before a word is spoken"
+    sub_types:
+      dramatic_pause:
+        description: "Extended silence before first words"
+        example: "[5-second pause, scanning audience] ... Let me tell you why we're here."
+      callback_pause:
+        description: "Pause following a visual cue"
+        example: "[Displays single word on screen, pauses] ... That word cost us $12 million."
+      physical_stillness:
+        description: "Complete physical stillness — no movement, steady gaze — held for several seconds to establish commanding presence before speaking; triggers thin-slicing impression formation"
+        example: "[Walks to centre stage, stands completely still for 5 seconds, makes eye contact across the room] ..."
+    effectiveness: high
+    versatility: low
+
+  entrance:
+    label: "Entrance Hook"
+    description: "The hook begins before the speaker utters a single word — the act of entering the space, walking to the stage, or taking a position constitutes the opening communication. First impressions form within milliseconds (thin-slicing; Ambady & Rosenthal 1992) and the halo effect means an authoritative entrance biases all subsequent judgments of speaker credibility."
+    psychological_mechanism: "Thin-slicing (Ambady & Rosenthal 1992) — near-complete impressions form within the first 30 seconds; Halo Effect (Thorndike 1920) — a single positive impression cascades into positive judgments across all other attributes; Enclothed cognition (Slepian et al., 2015) — physical bearing and attire shape both self-perception and audience perception"
+    sub_types:
+      walk_on:
+        description: "Controlled, purposeful walk to the speaking position — pace, posture, and route are deliberate; communicates authority and calm before any content is delivered"
+        example: "[Enters from stage left at a measured pace, no rushing, scans the audience while walking, arrives at centre and takes position before starting]"
+      planted_command:
+        description: "The speaker arrives at the position and pauses for a full 3–5 seconds before speaking, establishing presence through stillness and eye contact — 'owning the space'"
+        example: "[Arrives at lectern, looks out across the audience left-to-right, takes a breath, then begins]"
+      radiating:
+        description: "Speaker radiates attentiveness and energy from the moment they are visible, before the formal opening — natural smile, engaged gaze, embodied confidence; makes the audience feel they are already in relationship with the speaker"
+        example: "[Visible from backstage, already in a state of animated engagement; walks on still in conversation with the energy of the event]"
+    effectiveness: very_high
+    versatility: low
+
+# ==============================================================================
+# CONTEXT SUITABILITY
+# ==============================================================================
+
+context_suitability:
+  executive_briefing:
+    label: "Executive Briefing"
+    recommended_hooks: [statistic, bold_claim, quotation]
+    avoid: [audience_exercise, extended_story]
+    reason: "Time-constrained audience values directness and data"
+
+  training_session:
+    label: "Training Session"
+    recommended_hooks: [question, demonstration, story]
+    avoid: [silence, bold_claim]
+    reason: "Learning context benefits from engagement and relatability"
+
+  sales_presentation:
+    label: "Sales Presentation"
+    recommended_hooks: [story, statistic, question]
+    avoid: [silence, long_quotation]
+    reason: "Need to establish relevance and urgency quickly"
+
+  keynote:
+    label: "Keynote / Conference"
+    recommended_hooks: [entrance, story, bold_claim, demonstration, silence]
+    avoid: [dry_statistic, long_quotation]
+    reason: "Large audience needs emotional impact and memorability; the entrance itself is an opening act — the first impression is set before a word is spoken"
+
+  webinar:
+    label: "Webinar"
+    recommended_hooks: [question, statistic, story]
+    avoid: [silence, demonstration]
+    reason: "Remote audience needs immediate engagement to prevent multitasking; consider opening with a poll or digital note prompt to make the virtual entrance interactive"
+
+# ==============================================================================
+# CLASSIFICATION DIMENSIONS
+# ==============================================================================
+
+classification_dimensions:
+  hook_category:
+    name: "Hook Category"
+    description: "The primary type of opening hook"
+    values:
+      - question
+      - statistic
+      - story
+      - quotation
+      - bold_claim
+      - demonstration
+      - silence
+      - entrance
+
+  psychological_mechanism:
+    name: "Psychological Mechanism"
+    description: "The cognitive principle that makes the hook effective"
+    values:
+      - curiosity_gap
+      - isolation_effect
+      - neural_coupling
+      - authority_bias
+      - cognitive_dissonance
+      - experiential_learning
+      - expectancy_violation
+      - thin_slicing
+      - halo_effect
+
+  audience_impact:
+    name: "Audience Impact"
+    description: "The strength of the hook's effect on audience engagement"
+    values:
+      - very_high
+      - high
+      - medium
+      - low
+
+  presentation_context:
+    name: "Presentation Context"
+    description: "The setting in which the presentation is delivered"
+    values:
+      - executive_briefing
+      - training_session
+      - sales_presentation
+      - keynote
+      - webinar
+
+  narrative_function:
+    name: "Narrative Function"
+    description: "The role the hook plays in the presentation's narrative arc"
+    values:
+      - attention_capture
+      - context_setting
+      - problem_framing
+      - credibility_building
+      - emotional_priming
+      - presence_establishment

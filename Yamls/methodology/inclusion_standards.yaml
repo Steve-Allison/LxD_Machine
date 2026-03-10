@@ -1,0 +1,897 @@
+_meta:
+  id: inclusion_standards
+  title: "Inclusion Standards"
+  description: "Comprehensive standards for inclusive language, cultural intelligence, accessibility, and diverse representation in content."
+  domain: writing
+  domain_type: cross_cutting
+  purpose: methodology
+  version: "2.1.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - The Cognitive Interface - Operationalizing UxD for Documents and Reports.md"
+  relationships:
+    - target: scoring/accessibility_rubric.yaml
+      type: depends_on
+      description: "WCAG compliance scoring"
+# ==============================================================================
+# INCLUSIVE LANGUAGE
+# ==============================================================================
+
+inclusive_language:
+  description: "Standards for avoiding exclusionary, biased, or harmful terminology"
+
+  principles:
+    # ---------------------------------------------------------------------------
+    # GENDER-INCLUSIVE LANGUAGE
+    # ---------------------------------------------------------------------------
+    gender_inclusivity:
+      description: "Using gender-neutral terms and avoiding gendered assumptions"
+
+      rules:
+        - id: "gender_neutral_roles"
+          rule: "Use gender-neutral terms for roles, groups, and job titles"
+          severity: "high"
+
+        - id: "pronoun_awareness"
+          rule: "Avoid assuming pronouns; use 'they/them' for unknown individuals"
+          severity: "medium"
+
+        - id: "balanced_examples"
+          rule: "Use diverse names and scenarios in examples; avoid stereotypical roles"
+          severity: "medium"
+
+      anti_patterns:
+        terms_to_avoid:
+          - pattern: "guys"
+            replacement: "folks, team, everyone, people"
+            context: "When addressing mixed-gender groups"
+
+          - pattern: "manpower"
+            replacement: "workforce, staff, personnel, human resources"
+            context: "Resource planning discussions"
+
+          - pattern: "chairman"
+            replacement: "chairperson, chair, presiding officer"
+            context: "Leadership titles"
+
+          - pattern: "man hours"
+            replacement: "person hours, work hours, effort hours"
+            context: "Project estimation"
+
+          - pattern: "mankind"
+            replacement: "humanity, humankind, people"
+            context: "General references to humans"
+
+          - pattern: "man-made"
+            replacement: "artificial, synthetic, manufactured, human-made"
+            context: "Describing created objects"
+
+          - pattern: "layman"
+            replacement: "non-specialist, general audience, beginner"
+            context: "Describing expertise level"
+
+          - pattern: "manpower"
+            replacement: "workforce, staff capacity, headcount"
+            context: "Resource allocation"
+
+          - pattern: "fireman|policeman|businessman"
+            replacement: "firefighter, police officer, businessperson"
+            context: "Occupational titles"
+
+      detection_patterns:
+        - "(?i)\\b(guys|manpower|chairman|man hours|mankind)\\b"
+        - "(?i)\\b(fireman|policeman|businessman|salesman|mailman)\\b"
+        - "(?i)\\bhe\\b.{0,30}\\b(or she|/she)\\b"  # Clunky he/she constructions
+
+      remediation_strategies:
+        gendered_terms:
+          action: "Replace gendered terms with neutral alternatives. Change 'guys' to 'folks/team'. Change 'chairman' to 'chairperson'. Change 'man hours' to 'effort hours'."
+          priority: "high"
+
+        pronoun_assumptions:
+          action: "Use 'they/them' for individuals of unknown gender. Rephrase to avoid pronouns where natural (e.g., 'The user can update their settings' instead of 'He can update his settings')."
+          priority: "medium"
+
+    # ---------------------------------------------------------------------------
+    # ABLEIST LANGUAGE
+    # ---------------------------------------------------------------------------
+    ableism_awareness:
+      description: "Avoiding language that trivialises or stigmatises disability"
+
+      rules:
+        - id: "avoid_disability_metaphors"
+          rule: "Avoid using disability terms as negative metaphors"
+          severity: "high"
+
+        - id: "person_first_optional"
+          rule: "Respect individual preferences for person-first or identity-first language"
+          severity: "medium"
+
+        - id: "avoid_ability_assumptions"
+          rule: "Don't assume physical or cognitive abilities in instructions"
+          severity: "high"
+
+      anti_patterns:
+        terms_to_avoid:
+          - pattern: "blind spot"
+            replacement: "oversight, gap, missed area, unexamined area"
+            context: "Discussing awareness gaps"
+
+          - pattern: "deaf to"
+            replacement: "ignored, dismissed, unresponsive to, overlooked"
+            context: "Describing unresponsiveness"
+
+          - pattern: "crazy|insane"
+            replacement: "surprising, unexpected, intense, remarkable"
+            context: "Expressing emphasis or surprise"
+
+          - pattern: "crippled by"
+            replacement: "hindered by, impeded by, limited by, constrained by"
+            context: "Describing limitations"
+
+          - pattern: "lame"
+            replacement: "weak, unconvincing, unimpressive"
+            context: "Negative descriptions"
+
+          - pattern: "dumb"
+            replacement: "unwise, ill-advised, simplistic"
+            context: "Describing poor decisions"
+
+          - pattern: "turn a blind eye"
+            replacement: "ignore, overlook, disregard"
+            context: "Describing intentional ignorance"
+
+          - pattern: "falls on deaf ears"
+            replacement: "is ignored, goes unheeded, is dismissed"
+            context: "Describing unresponsiveness"
+
+          - pattern: "suffers from"
+            replacement: "has, lives with, experiences"
+            context: "Describing conditions (person-first)"
+
+      detection_patterns:
+        - "(?i)\\b(blind spot|deaf to|crazy|insane|crippled|lame|dumb)\\b"
+        - "(?i)(turn a blind eye|falls on deaf ears|suffers from)"
+        - "(?i)\\b(wheelchair-bound|confined to)\\b"
+
+      remediation_strategies:
+        ableist_metaphors:
+          action: "Replace disability-based metaphors with precise literal terms. Change 'blind spot' to 'oversight' or 'gap'. Change 'deaf to' to 'ignored' or 'dismissed'."
+          priority: "high"
+
+        ability_assumptions:
+          action: "Review instructions for assumptions about abilities. Provide alternatives for 'click', 'see', 'hear' when possible. Use 'select' instead of 'click'; 'view' instead of 'look at'."
+          priority: "medium"
+
+    # ---------------------------------------------------------------------------
+    # AGE-INCLUSIVE LANGUAGE
+    # ---------------------------------------------------------------------------
+    age_inclusivity:
+      description: "Avoiding ageist assumptions and stereotypes"
+
+      anti_patterns:
+        terms_to_avoid:
+          - pattern: "digital native"
+            replacement: "tech-savvy, digitally fluent, experienced with technology"
+            context: "Implying age-based tech ability"
+
+          - pattern: "senior moment"
+            replacement: "brief lapse, momentary forgetfulness"
+            context: "Describing forgetfulness"
+
+          - pattern: "young and dynamic"
+            replacement: "energetic, innovative, motivated"
+            context: "Job descriptions (illegal in many jurisdictions)"
+
+          - pattern: "overqualified"
+            replacement: "highly experienced"
+            context: "Often code for 'too old'"
+
+      detection_patterns:
+        - "(?i)\\b(digital native|senior moment|young and dynamic)\\b"
+        - "(?i)\\b(millennials|boomers|gen z)\\b.{0,20}\\b(always|never|all)\\b"
+
+      remediation_strategies:
+        age_stereotypes:
+          action: "Remove generational stereotypes. Focus on behaviors and skills rather than age groups. Replace 'digital natives' with 'users comfortable with technology'."
+          priority: "medium"
+
+    # ---------------------------------------------------------------------------
+    # RACIALLY & ETHNICALLY INCLUSIVE LANGUAGE
+    # ---------------------------------------------------------------------------
+    racial_ethnic_sensitivity:
+      description: "Avoiding racially charged language and cultural insensitivity"
+
+      anti_patterns:
+        terms_to_avoid:
+          - pattern: "blacklist|whitelist"
+            replacement: "blocklist/allowlist, denylist/allowlist, exclude/include list"
+            context: "Technical terminology"
+
+          - pattern: "master|slave"
+            replacement: "primary/replica, main/secondary, leader/follower, controller/worker"
+            context: "Technical terminology"
+
+          - pattern: "native"
+            replacement: "built-in, default, first-language, original"
+            context: "Technical or language contexts"
+
+          - pattern: "tribe"
+            replacement: "team, group, community, squad"
+            context: "Corporate team names"
+
+          - pattern: "powwow"
+            replacement: "meeting, discussion, sync, huddle"
+            context: "Meetings"
+
+          - pattern: "spirit animal"
+            replacement: "inspiration, role model, mascot"
+            context: "Expressing admiration"
+
+      detection_patterns:
+        - "(?i)\\b(blacklist|whitelist|master|slave)\\b"
+        - "(?i)\\b(tribe|powwow|spirit animal)\\b"
+
+      remediation_strategies:
+        technical_terminology:
+          action: "Replace racially-loaded technical terms. Use 'primary/replica' instead of 'master/slave'. Use 'allowlist/blocklist' instead of 'whitelist/blacklist'."
+          priority: "high"
+
+        cultural_appropriation:
+          action: "Avoid borrowing terms from specific cultures for casual use. Replace 'powwow' with 'meeting'. Replace 'tribe' with 'team'."
+          priority: "medium"
+
+# ==============================================================================
+# CULTURAL INTELLIGENCE
+# ==============================================================================
+
+cultural_intelligence:
+  description: "Guidelines for creating culturally appropriate content for global audiences"
+
+  # ---------------------------------------------------------------------------
+  # HOFSTEDE CULTURAL DIMENSIONS
+  # ---------------------------------------------------------------------------
+  hofstede_dimensions:
+    description: "Content adaptations based on Hofstede's cultural dimensions"
+    source: "Hofstede Insights (2023)"
+
+    power_distance:
+      description: "Acceptance of hierarchical differences"
+
+      high_power_distance:
+        regions: ["East Asia", "Latin America", "Middle East", "Africa"]
+        content_implications:
+          - "Emphasise titles, credentials, and authority"
+          - "Formal tone and address"
+          - "Top-down communication flow"
+          - "Respect for seniority in examples"
+        anti_patterns:
+          - "Overly casual address to authority figures"
+          - "Encouraging direct challenge to leadership"
+          - "First-name basis with executives in initial contact"
+
+      low_power_distance:
+        regions: ["Scandinavia", "Netherlands", "Australia", "New Zealand"]
+        content_implications:
+          - "Egalitarian tone acceptable"
+          - "Encourage two-way feedback"
+          - "Flat organisational examples"
+          - "Direct communication with leaders"
+        anti_patterns:
+          - "Excessive deference to hierarchy"
+          - "Formal titles where informality expected"
+
+    individualism_collectivism:
+      description: "Individual vs group orientation"
+
+      individualistic:
+        regions: ["USA", "UK", "Australia", "Netherlands"]
+        content_implications:
+          - "Emphasise personal achievement"
+          - "Individual recognition and rewards"
+          - "Self-directed learning"
+          - "Personal goals and ambitions"
+        anti_patterns:
+          - "Ignoring individual contributions"
+          - "Only group-based activities"
+
+      collectivist:
+        regions: ["East Asia", "Latin America", "Middle East", "Africa"]
+        content_implications:
+          - "Emphasise team success"
+          - "Group harmony and consensus"
+          - "Family and group obligations"
+          - "Collaborative activities"
+        anti_patterns:
+          - "Singling out individuals for praise/criticism"
+          - "Ignoring group dynamics"
+          - "Purely competitive scenarios"
+
+    uncertainty_avoidance:
+      description: "Comfort with ambiguity and unstructured situations"
+
+      high_uncertainty_avoidance:
+        regions: ["Japan", "France", "Germany", "Spain"]
+        content_implications:
+          - "Provide detailed instructions"
+          - "Clear rules and procedures"
+          - "Structured learning paths"
+          - "Comprehensive documentation"
+        anti_patterns:
+          - "Vague instructions"
+          - "Open-ended activities without guidance"
+          - "Minimal documentation"
+
+      low_uncertainty_avoidance:
+        regions: ["Singapore", "Jamaica", "Denmark", "Sweden"]
+        content_implications:
+          - "Flexibility in approach"
+          - "Comfort with ambiguity"
+          - "Exploratory learning"
+          - "Minimal rule emphasis"
+        anti_patterns:
+          - "Overly prescriptive content"
+          - "Excessive documentation"
+
+    masculinity_femininity:
+      description: "Achievement/competition vs care/cooperation orientation"
+
+      masculine:
+        regions: ["Japan", "Germany", "USA", "UK"]
+        content_implications:
+          - "Competition and achievement emphasis"
+          - "Clear success metrics"
+          - "Performance orientation"
+          - "Recognition for results"
+        anti_patterns:
+          - "Ignoring competitive dynamics"
+          - "No clear success criteria"
+
+      feminine:
+        regions: ["Scandinavia", "Netherlands", "Thailand"]
+        content_implications:
+          - "Work-life balance themes"
+          - "Collaboration over competition"
+          - "Quality of life emphasis"
+          - "Consensus-building"
+        anti_patterns:
+          - "Aggressive competition"
+          - "Win-lose scenarios"
+          - "Ignoring wellbeing"
+
+    long_term_orientation:
+      description: "Future planning vs short-term tradition"
+
+      long_term:
+        regions: ["East Asia", "Germany", "Netherlands"]
+        content_implications:
+          - "Future benefits and planning"
+          - "Persistence and patience"
+          - "Investment in learning"
+          - "Delayed gratification"
+        anti_patterns:
+          - "Only short-term benefits"
+          - "Quick fixes"
+
+      short_term:
+        regions: ["USA", "UK", "Australia", "Latin America"]
+        content_implications:
+          - "Immediate results"
+          - "Quick wins emphasis"
+          - "Tradition and past success"
+          - "Current performance"
+        anti_patterns:
+          - "Excessive focus on distant future"
+          - "Ignoring immediate needs"
+
+  # ---------------------------------------------------------------------------
+  # MEYER'S CULTURE MAP
+  # ---------------------------------------------------------------------------
+  meyer_dimensions:
+    description: "Content adaptations based on Erin Meyer's Culture Map"
+    source: "Erin Meyer, The Culture Map (2014)"
+
+    communication_style:
+      low_context:
+        description: "Explicit, direct communication"
+        regions: ["USA", "Germany", "Netherlands", "Scandinavia"]
+        content_implications:
+          - "State messages explicitly"
+          - "Literal language"
+          - "Clear action items"
+          - "Minimal ambiguity"
+
+      high_context:
+        description: "Implicit, nuanced communication"
+        regions: ["Japan", "Korea", "China", "India", "Middle East"]
+        content_implications:
+          - "Allow for reading between lines"
+          - "Relationship context matters"
+          - "Indirect suggestions"
+          - "Face-saving language"
+
+    feedback_style:
+      direct_negative_feedback:
+        description: "Blunt, honest criticism acceptable"
+        regions: ["Netherlands", "Germany", "Israel", "France"]
+
+      indirect_negative_feedback:
+        description: "Softened, diplomatic criticism expected"
+        regions: ["Japan", "Thailand", "Indonesia", "India", "UK"]
+        content_implications:
+          - "Sandwich feedback method"
+          - "Private correction"
+          - "Face-saving language"
+          - "Positive framing"
+
+    persuasion_style:
+      principles_first:
+        description: "Theory and principles before application"
+        regions: ["France", "Germany", "Italy", "Spain"]
+        content_implications:
+          - "Explain 'why' before 'how'"
+          - "Theoretical grounding"
+          - "Conceptual frameworks first"
+
+      applications_first:
+        description: "Practical examples before theory"
+        regions: ["USA", "UK", "Canada", "Australia"]
+        content_implications:
+          - "Start with use case"
+          - "Show then explain"
+          - "Case study approach"
+
+  # ---------------------------------------------------------------------------
+  # LOCALISATION CONSIDERATIONS
+  # ---------------------------------------------------------------------------
+  localisation:
+    description: "Practical localisation guidance for global content"
+
+    date_time_formats:
+      - region: "USA"
+        date_format: "MM/DD/YYYY"
+        time_format: "12-hour (AM/PM)"
+
+      - region: "UK/Europe"
+        date_format: "DD/MM/YYYY"
+        time_format: "24-hour"
+
+      - region: "ISO Standard"
+        date_format: "YYYY-MM-DD"
+        time_format: "24-hour"
+        note: "Preferred for technical/global content"
+
+    number_formats:
+      - region: "USA/UK"
+        decimal: "."
+        thousands: ","
+        example: "1,234.56"
+
+      - region: "Europe (most)"
+        decimal: ","
+        thousands: "."
+        example: "1.234,56"
+
+    currency_considerations:
+      - "Always specify currency code (USD, EUR, GBP)"
+      - "Be aware that $ can mean USD, CAD, AUD, NZD, etc."
+      - "Use local currency in localised content"
+      - "Provide purchasing power context where relevant"
+
+    imagery_considerations:
+      - "Hand gestures vary in meaning across cultures"
+      - "Colours have different cultural associations"
+      - "Religious and political symbols are context-sensitive"
+      - "Business dress codes vary globally"
+      - "Food imagery may have dietary/religious implications"
+
+    examples_scenarios:
+      guidance:
+        - "Use culturally neutral examples where possible"
+        - "Avoid sports metaphors (cricket vs baseball vs football)"
+        - "Be aware of holiday/calendar differences"
+        - "Business practices vary (tipping, negotiation, contracts)"
+
+      anti_patterns:
+        - "USA-centric pop culture references"
+        - "Assuming Christian/Western calendar"
+        - "Baseball/American football analogies for global audience"
+        - "Thanksgiving, Fourth of July references"
+
+# ==============================================================================
+# VISUAL REPRESENTATION & DIVERSITY
+# ==============================================================================
+
+visual_diversity:
+  description: "Standards for ensuring diverse representation in visual content"
+
+  # ---------------------------------------------------------------------------
+  # IMAGERY DIVERSITY
+  # ---------------------------------------------------------------------------
+  imagery_standards:
+    description: "Checklist for inclusive visual representation"
+
+    demographic_diversity:
+      dimensions:
+        - category: "Ethnicity/Race"
+          guidance: "Reflect the diversity of your global audience"
+          check: "Are multiple ethnicities represented across the content?"
+
+        - category: "Gender"
+          guidance: "Balance gender representation; include non-binary where appropriate"
+          check: "Is there balanced gender representation?"
+
+        - category: "Age"
+          guidance: "Include varied age ranges, not just young adults"
+          check: "Are multiple age groups represented?"
+
+        - category: "Body Type"
+          guidance: "Include diverse body types, not just idealised forms"
+          check: "Are diverse body types shown?"
+
+        - category: "Ability/Disability"
+          guidance: "Include people with visible and invisible disabilities"
+          check: "Are people with disabilities represented positively?"
+
+        - category: "Socioeconomic"
+          guidance: "Include varied professional and economic contexts"
+          check: "Are diverse socioeconomic backgrounds shown?"
+
+    role_representation:
+      guidance: "Avoid stereotypical role assignments"
+      checks:
+        - "Are diverse individuals shown in leadership positions?"
+        - "Are technical roles shown with diverse representation?"
+        - "Are care/support roles shown with diverse representation?"
+        - "Are examples avoiding gender/race stereotypes in professions?"
+
+      anti_patterns:
+        - "Only white males in executive imagery"
+        - "Women only in support/administrative roles"
+        - "Stereotypical ethnic representations"
+        - "Tokenistic inclusion (one diverse person in a group)"
+
+    context_authenticity:
+      guidance: "Ensure authentic, non-stereotypical contexts"
+      checks:
+        - "Are cultural elements used authentically, not as props?"
+        - "Are disability portrayals realistic and dignified?"
+        - "Are global locations shown with current imagery?"
+        - "Are professional contexts appropriate for the industry?"
+
+  # ---------------------------------------------------------------------------
+  # ACCESSIBILITY IN IMAGES
+  # ---------------------------------------------------------------------------
+  image_accessibility:
+    description: "Requirements for accessible image content"
+
+    alt_text:
+      requirement: "All meaningful images must have descriptive alt text"
+      guidance:
+        - "Describe the content and function of the image"
+        - "Keep alt text concise (125 characters or less)"
+        - "For decorative images, use empty alt attribute"
+        - "Include relevant text shown in image"
+        - "For complex images (charts, diagrams), provide long description"
+
+      examples:
+        good:
+          - image: "CEO speaking at conference"
+            alt: "Maria Chen, CEO, presenting company vision at annual conference"
+          - image: "Bar chart"
+            alt: "Bar chart showing sales increased 25% from Q1 to Q4 2025"
+        poor:
+          - image: "Photo of person"
+            alt: "image.jpg"
+          - image: "Complex data visualisation"
+            alt: "Chart"
+
+    colour_independence:
+      requirement: "Information must not be conveyed by colour alone"
+      guidance:
+        - "Use patterns, shapes, or labels in addition to colour"
+        - "Ensure sufficient contrast between elements"
+        - "Test with colour blindness simulators"
+      reference: "!include ../reference/accessibility_standards.yaml"
+
+  remediation_strategies:
+    homogenous_imagery:
+      action: "Audit all people-photos. Ensure a mix of demographics that reflects the global user base. Aim for representation across ethnicity, gender, age, and ability."
+      priority: "high"
+
+    stereotypical_roles:
+      action: "Review role assignments in imagery. Ensure diverse individuals appear in leadership, technical, and varied professional contexts. Avoid gender and ethnic stereotyping in professions."
+      priority: "high"
+
+    missing_alt_text:
+      action: "Add descriptive alt text to all meaningful images. Describe content and function. Use empty alt for decorative images. Provide long descriptions for complex visuals."
+      priority: "critical"
+
+# ==============================================================================
+# ACCESSIBILITY STANDARDS (WCAG)
+# ==============================================================================
+
+accessibility:
+  description: "Core accessibility requirements for inclusive content"
+  reference: "WCAG 2.1 Guidelines"
+  target_level: "AA"  # Minimum recommended
+
+  # ---------------------------------------------------------------------------
+  # PERCEIVABLE
+  # ---------------------------------------------------------------------------
+  perceivable:
+    description: "Information must be presentable in ways users can perceive"
+
+    text_alternatives:
+      requirement: "1.1.1 Non-text Content (Level A)"
+      checks:
+        - "All images have appropriate alt text"
+        - "Complex graphics have long descriptions"
+        - "Audio content has transcripts"
+        - "Video content has captions"
+
+    time_based_media:
+      requirement: "1.2 Time-based Media"
+      checks:
+        - "Pre-recorded audio has transcripts"
+        - "Pre-recorded video has captions"
+        - "Pre-recorded video has audio descriptions (AAA)"
+        - "Live audio has captions (AA)"
+
+    adaptable:
+      requirement: "1.3 Adaptable"
+      checks:
+        - "Content structure is programmatically determinable"
+        - "Reading sequence is logical"
+        - "Instructions don't rely solely on sensory characteristics"
+
+    distinguishable:
+      requirement: "1.4 Distinguishable"
+      checks:
+        - "Colour is not only means of conveying information"
+        - "Audio can be paused/stopped"
+        - "Text contrast ratio is at least 4.5:1 (AA)"
+        - "Text can be resized to 200% without loss of content"
+        - "Images of text are avoided where possible"
+
+  # ---------------------------------------------------------------------------
+  # OPERABLE
+  # ---------------------------------------------------------------------------
+  operable:
+    description: "Interface components must be operable by all users"
+
+    keyboard_accessible:
+      requirement: "2.1 Keyboard Accessible"
+      checks:
+        - "All functionality available via keyboard"
+        - "No keyboard traps"
+        - "Keyboard shortcuts don't conflict with assistive tech"
+
+    enough_time:
+      requirement: "2.2 Enough Time"
+      checks:
+        - "Time limits can be adjusted or extended"
+        - "Moving content can be paused"
+        - "No time-based interactions required"
+
+    seizure_safe:
+      requirement: "2.3 Seizures and Physical Reactions"
+      checks:
+        - "Nothing flashes more than 3 times per second"
+        - "Motion animation can be disabled"
+
+    navigable:
+      requirement: "2.4 Navigable"
+      checks:
+        - "Skip links for repetitive content"
+        - "Page titles are descriptive"
+        - "Focus order is logical"
+        - "Link purpose is clear"
+        - "Multiple ways to navigate"
+        - "Headings and labels are descriptive"
+
+  # ---------------------------------------------------------------------------
+  # UNDERSTANDABLE
+  # ---------------------------------------------------------------------------
+  understandable:
+    description: "Information and operation must be understandable"
+
+    readable:
+      requirement: "3.1 Readable"
+      checks:
+        - "Language of page is programmatically identified"
+        - "Language of parts is identified when different"
+        - "Unusual words are defined"
+        - "Abbreviations are expanded"
+
+      reading_level:
+        target: "Grade 9-10 for general audience"
+        measurement: "Flesch-Kincaid Grade Level"
+        guidance:
+          - "Use short sentences (15-20 words average)"
+          - "Use common words"
+          - "Define technical terms"
+          - "Use active voice"
+
+    predictable:
+      requirement: "3.2 Predictable"
+      checks:
+        - "Focus doesn't change context unexpectedly"
+        - "Input doesn't change context unexpectedly"
+        - "Navigation is consistent"
+        - "Components are identified consistently"
+
+    input_assistance:
+      requirement: "3.3 Input Assistance"
+      checks:
+        - "Errors are identified"
+        - "Labels and instructions provided"
+        - "Error suggestions offered"
+        - "Error prevention for important submissions"
+
+  # ---------------------------------------------------------------------------
+  # ROBUST
+  # ---------------------------------------------------------------------------
+  robust:
+    description: "Content must be robust enough for assistive technologies"
+
+    compatible:
+      requirement: "4.1 Compatible"
+      checks:
+        - "Markup is valid and well-formed"
+        - "Name, role, value are programmatically determinable"
+        - "Status messages are announced to assistive tech"
+
+  remediation_strategies:
+    missing_captions:
+      action: "Add closed captions to all video content. Ensure captions are synchronised, accurate, and include speaker identification and relevant sound effects."
+      priority: "critical"
+
+    insufficient_contrast:
+      action: "Increase text contrast to meet WCAG AA (4.5:1 for normal text, 3:1 for large text). Use a contrast checker tool. Consider colour blindness in colour combinations."
+      priority: "critical"
+
+    keyboard_inaccessible:
+      action: "Ensure all interactive elements are keyboard accessible. Test with Tab, Enter, Space, Arrow keys. Ensure visible focus indicators. Remove keyboard traps."
+      priority: "critical"
+
+    poor_reading_level:
+      action: "Simplify language to Grade 9-10 level. Shorten sentences to 15-20 words. Replace jargon with common words. Define necessary technical terms."
+      priority: "medium"
+
+# ==============================================================================
+# SCORING & DETECTION
+# ==============================================================================
+
+scoring:
+  description: "Rubric for evaluating inclusion quality"
+
+  dimensions:
+    inclusive_language:
+      weight: 0.30
+      criteria:
+        excellent: "No exclusionary language; positive, inclusive terminology throughout"
+        good: "Rare issues; quickly correctable"
+        adequate: "Some problematic terms; patterns identified for correction"
+        weak: "Multiple exclusionary terms; systemic issues"
+        poor: "Pervasive exclusionary language; fundamental revision needed"
+
+    cultural_appropriateness:
+      weight: 0.20
+      criteria:
+        excellent: "Culturally aware; appropriate for global audience; local adaptations where needed"
+        good: "Generally appropriate; minor localisation gaps"
+        adequate: "Some cultural blind spots; adaptable with effort"
+        weak: "Significant cultural insensitivity; major revision needed"
+        poor: "Culturally inappropriate; offensive content"
+
+    visual_representation:
+      weight: 0.20
+      criteria:
+        excellent: "Diverse, authentic, non-stereotypical representation"
+        good: "Good diversity; minor gaps"
+        adequate: "Some diversity; stereotypical elements present"
+        weak: "Limited diversity; noticeable gaps"
+        poor: "Homogenous or stereotypical imagery"
+
+    accessibility_compliance:
+      weight: 0.30
+      criteria:
+        excellent: "Exceeds WCAG AA; AAA in key areas"
+        good: "Meets WCAG AA fully"
+        adequate: "Mostly WCAG AA; minor gaps"
+        weak: "Significant WCAG AA gaps"
+        poor: "Fails WCAG A; inaccessible"
+
+  quality_gates:
+    wcag_failures:
+      gate: "If WCAG AA failures exist, cap inclusion score at 70"
+      severity: "hard"
+
+    offensive_content:
+      gate: "If offensive or discriminatory content detected, fail immediately"
+      severity: "critical"
+
+  score_bands:
+    excellent: [90, 100]
+    strong: [80, 89]
+    adequate: [70, 79]
+    developing: [60, 69]
+    weak: [50, 59]
+    critical: [0, 49]
+
+# ==============================================================================
+# DETECTION PATTERNS
+# ==============================================================================
+
+detection:
+  description: "Patterns for automated detection of inclusion issues"
+
+  language_patterns:
+    gender:
+      - pattern: "(?i)\\b(guys|manpower|chairman|man hours|mankind|he/she)\\b"
+        category: "gendered_language"
+        severity: "medium"
+
+    ableism:
+      - pattern: "(?i)\\b(blind spot|deaf to|crazy|insane|crippled|lame|dumb)\\b"
+        category: "ableist_language"
+        severity: "high"
+
+    technical:
+      - pattern: "(?i)\\b(blacklist|whitelist|master|slave)\\b"
+        category: "racially_loaded_technical"
+        severity: "high"
+
+    age:
+      - pattern: "(?i)\\b(digital native|senior moment|young and dynamic)\\b"
+        category: "ageist_language"
+        severity: "medium"
+
+  accessibility_checks:
+    - check: "alt_text_missing"
+      pattern: "<img[^>]*(?!alt=)[^>]*>"
+      severity: "critical"
+
+    - check: "colour_only_information"
+      pattern: "(?i)(shown in red|marked in blue|green means)"
+      severity: "high"
+
+    - check: "motion_sensitivity"
+      pattern: "(?i)(flashing|blinking|animated|auto-play)"
+      severity: "medium"
+
+# ==============================================================================
+# ENTITY EXTRACTION (GLiNER)
+# ==============================================================================
+
+entity_types:
+  inclusive_language_issue:
+    gliner_label: "INCLUSION_ISSUE"
+    gliner_description: "Exclusionary language bias gendered ableist racist stereotypical discriminatory inappropriate terminology"
+    examples:
+      - "Using 'guys' to address mixed groups"
+      - "Using 'blind spot' as a metaphor"
+      - "Using 'master/slave' in technical docs"
+    confidence_threshold: 0.7
+    color: "#e74c3c"
+
+  cultural_sensitivity_issue:
+    gliner_label: "CULTURAL_ISSUE"
+    gliner_description: "Cultural appropriation insensitivity stereotype regional assumption localisation problem global audience"
+    examples:
+      - "USA-centric pop culture references"
+      - "Assuming Western calendar/holidays"
+      - "Sports metaphors (baseball, cricket)"
+    confidence_threshold: 0.65
+    color: "#f39c12"
+
+  accessibility_violation:
+    gliner_label: "ACCESSIBILITY_ISSUE"
+    gliner_description: "WCAG violation accessibility barrier screen reader keyboard caption alt text contrast colour blindness"
+    examples:
+      - "Image without alt text"
+      - "Colour-only information"
+      - "Insufficient contrast"
+    confidence_threshold: 0.8
+    color: "#9b59b6"

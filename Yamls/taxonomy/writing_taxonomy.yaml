@@ -1,0 +1,272 @@
+_meta:
+  id: writing_taxonomy
+  title: "Writing Taxonomy"
+  description: "Classification of content writing types by writing mode, tone register, content structure, editorial quality dimension, and script format"
+  domain: writing
+  domain_type: cross_cutting
+  purpose: taxonomy
+  version: "1.2.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/tone_of_voice_guide.md"
+    - "Corpus/Research/Research - Best Practices for Writing Effective Corporate Learning Content.md"
+    - "Corpus/Research/Research - Best Practices for Writing Corporate Training Video Scripts for Adult Learners.md"
+    - "Corpus/Research/Research - Best Practice Prompt writing for text.md"
+    - "Corpus/Research/Research - Best Video Script Prompts.md"
+    - "Corpus/Research/Content_Outline_Generator.md"
+    - "Corpus/Research/Research - The Cognitive Interface - Operationalizing UxD for Documents and Reports.md"
+    - "Corpus/Research/Best-Practice Product Descriptions.md"
+    - "Corpus/Research/donald_clarks_100_tips_for_effective_learning_design.md"
+  relationships:
+    - target: entities/writing_entities.yaml
+      type: depends_on
+      description: "Writing entity types for NER extraction"
+    - target: methodology/editorial_standards.yaml
+      type: depends_on
+      description: "Editorial rules and conventions"
+    - target: methodology/style_guide_standards.yaml
+      type: depends_on
+      description: "Tone of voice and style definitions"
+# ==============================================================================
+# WRITING MODES
+# ==============================================================================
+
+writing_modes:
+  instructional:
+    label: "Instructional"
+    description: "Content designed to teach, explain, or guide learners through a process"
+    outputs:
+      - "course module text"
+      - "learning guide"
+      - "how-to article"
+      - "procedure document"
+      - "knowledge base article"
+      - "course introduction text"
+      - "spaced practice prompt"
+
+  editorial:
+    label: "Editorial"
+    description: "Content expressing a perspective, analysis, or informed opinion"
+    outputs:
+      - "thought leadership article"
+      - "executive summary"
+      - "white paper"
+      - "blog post"
+      - "newsletter"
+
+  scriptwriting:
+    label: "Scriptwriting"
+    description: "Content written for spoken delivery or multimedia production"
+    outputs:
+      - "video narration script"
+      - "podcast script"
+      - "presentation speaker notes"
+      - "voiceover script"
+      - "explainer video script"
+
+  copywriting:
+    label: "Copywriting"
+    description: "Persuasive content designed to drive action or conversion; includes product-focused writing that communicates features as benefits using precise, specific language rather than generic marketing claims"
+    outputs:
+      - "product description"
+      - "elevator pitch"
+      - "landing page copy"
+      - "email campaign"
+      - "call to action"
+      - "internal product description"
+      - "knowledge base product entry"
+
+  technical:
+    label: "Technical"
+    description: "Precise documentation of systems, processes, or specifications"
+    outputs:
+      - "API documentation"
+      - "technical specification"
+      - "release notes"
+      - "configuration guide"
+      - "architecture overview"
+
+  assessment:
+    label: "Assessment"
+    description: "Content designed to evaluate knowledge, understanding, or skill"
+    outputs:
+      - "quiz questions"
+      - "scenario prompts"
+      - "rubric descriptors"
+      - "reflection prompts"
+      - "case study briefs"
+      - "multiple choice question"
+      - "open-response question"
+      - "hinge question"
+      - "formative feedback text"
+
+# ==============================================================================
+# TONE REGISTERS
+# ==============================================================================
+
+tone_registers:
+  formal:
+    label: "Formal"
+    description: "Professional, objective, impersonal; suitable for executive audiences and regulatory content"
+    markers: ["furthermore", "pursuant to", "notwithstanding"]
+    avoid: ["contractions", "colloquialisms", "first person"]
+
+  professional:
+    label: "Professional"
+    description: "Clear, direct, authoritative but approachable; default for corporate learning"
+    markers: ["we recommend", "best practice", "consider", "present tense verbs", "active voice constructions", "third person for product references"]
+    avoid: ["slang", "excessive jargon", "hedging", "superlatives", "vague buzzwords", "marketing framing without specifics"]
+
+  conversational:
+    label: "Conversational"
+    description: "Warm, relatable, uses contractions and direct address; suitable for eLearning and video"
+    markers: ["let's", "here's the thing", "you'll find", "yes/no framing", "agree/disagree framing"]
+    avoid: ["passive voice", "abstract nouns", "bureaucratic language", "slangy phrasing", "True/False binary framing", "negative constructions (NOT)"]
+
+  inspirational:
+    label: "Inspirational"
+    description: "Motivating, visionary, aspirational; suitable for keynotes and change communication"
+    markers: ["imagine", "together we can", "the future"]
+    avoid: ["negativity", "hedging", "bureaucratic framing"]
+
+  empathetic:
+    label: "Empathetic"
+    description: "Supportive, understanding, acknowledging challenges; suitable for change management and onboarding"
+    markers: ["we understand", "it's normal to", "you're not alone"]
+    avoid: ["dismissive language", "trivialising", "corporate jargon"]
+
+# ==============================================================================
+# CONTENT STRUCTURE TYPES
+# ==============================================================================
+
+content_structures:
+  linear:
+    label: "Linear"
+    description: "Sequential progression from start to finish"
+    use_cases: ["tutorials", "procedures", "narratives"]
+
+  modular:
+    label: "Modular"
+    description: "Self-contained sections that can be consumed in any order"
+    use_cases: ["reference guides", "knowledge bases", "FAQs"]
+
+  hierarchical:
+    label: "Hierarchical"
+    description: "Top-down structure from general to specific"
+    use_cases: ["executive summaries", "course syllabi", "documentation"]
+
+  problem_solution:
+    label: "Problem-Solution"
+    description: "Establishes challenge then presents resolution"
+    use_cases: ["case studies", "sales content", "thought leadership"]
+
+  inverted_pyramid:
+    label: "Inverted Pyramid"
+    description: "Most important information first, details follow"
+    use_cases: ["news articles", "executive briefs", "abstracts"]
+
+  comparative:
+    label: "Comparative"
+    description: "Side-by-side analysis of options or approaches"
+    use_cases: ["product comparisons", "framework evaluations", "decision guides"]
+
+  definition_then_benefit:
+    label: "Definition-Then-Benefit"
+    description: "Opens with a precise factual definition of the product or concept, then immediately translates each feature into a concrete audience benefit; avoids opening with marketing claims"
+    use_cases: ["product descriptions", "knowledge base entries", "feature explainers"]
+
+# ==============================================================================
+# SCRIPT FORMAT TYPES
+# ==============================================================================
+
+script_formats:
+  two_column:
+    label: "Two-Column Script"
+    description: "Audio on left, visual/action on right; standard for corporate video"
+    columns: ["narration", "visual_action"]
+
+  full_narration:
+    label: "Full Narration Script"
+    description: "Complete voiceover text with inline production cues"
+    columns: ["narration_with_cues"]
+
+  dialogue:
+    label: "Dialogue Script"
+    description: "Character-based with speaker labels and stage directions"
+    columns: ["speaker", "dialogue", "direction"]
+
+  storyboard_script:
+    label: "Storyboard Script"
+    description: "Panel-based with visual thumbnail, narration, and timing"
+    columns: ["panel_number", "visual", "narration", "timing"]
+
+  teleprompter:
+    label: "Teleprompter Script"
+    description: "Clean reading copy formatted for on-camera delivery"
+    columns: ["narration_only"]
+
+# ==============================================================================
+# CLASSIFICATION DIMENSIONS
+# ==============================================================================
+
+classification_dimensions:
+  writing_mode:
+    name: "Writing Mode"
+    description: "The primary purpose and context of the writing"
+    values:
+      - instructional
+      - editorial
+      - scriptwriting
+      - copywriting
+      - technical
+      - assessment
+
+  tone_register:
+    name: "Tone Register"
+    description: "The voice and formality level of the writing"
+    values:
+      - formal
+      - professional
+      - conversational
+      - inspirational
+      - empathetic
+
+  content_structure:
+    name: "Content Structure"
+    description: "The organisational pattern of the written content"
+    values:
+      - linear
+      - modular
+      - hierarchical
+      - problem_solution
+      - inverted_pyramid
+      - comparative
+      - definition_then_benefit
+
+  readability_target:
+    name: "Readability Target"
+    description: "The target reading level for the audience"
+    values:
+      - grade_6_8
+      - grade_9_12
+      - undergraduate
+      - graduate_professional
+      - technical_specialist
+
+  editorial_quality:
+    name: "Editorial Quality"
+    description: "Key quality dimensions evaluated in editorial review"
+    values:
+      - clarity
+      - concision
+      - consistency
+      - accuracy
+      - tone_alignment
+      - accessibility
+      - specificity
+      - memorability
+      - inclusivity
+      - benefit_clarity
+      - diagnostic_precision
+      - distractor_plausibility
+      - feedback_quality

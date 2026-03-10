@@ -1,0 +1,429 @@
+# ==============================================================================
+# Infographic Design System
+# 8-phase workflow and design patterns for infographic creation
+# ==============================================================================
+
+_meta:
+  id: infographic_design_framework
+  title: Infographic Design System
+  description: Comprehensive infographic design workflow, structure types, and visual
+    patterns
+  domain: visual
+  domain_type: cross_cutting
+  purpose: methodology
+  version: "1.2.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Crafting Powerful Opening Plays.md"
+    - "Corpus/Research/Learner Outcomes - Instructions v4.md"
+    - "Corpus/Research/Research - Comprehensive Audience Analysis.md"
+
+
+  relationships:
+    - target: methodology/data_visualization_standards.yaml
+      type: depends_on
+      description: "Both visual data presentation; infographics apply data visualisation principles"
+design_workflow:
+  description: "Systematic 8-phase approach to infographic creation"
+
+  phase_1_research:
+    name: "Research & Discovery"
+    purpose: "Understand the topic, audience, and constraints"
+    activities:
+      - "Gather source data and statistics"
+      - "Identify target audience characteristics"
+      - "Define communication objectives"
+      - "Analyse competitor/reference infographics"
+    outputs:
+      - "Research summary document"
+      - "Audience profile"
+      - "Key statistics list"
+    duration: "15-20% of project time"
+
+  phase_2_story:
+    name: "Story Definition"
+    purpose: "Define the narrative arc and key messages"
+    activities:
+      - "Identify single main message (thesis)"
+      - "Determine supporting points"
+      - "Establish narrative structure"
+      - "Prioritise information hierarchy"
+    frameworks:
+      - "SCQA (Situation, Complication, Question, Answer)"
+      - "Problem → Solution → Benefit"
+      - "Then → Now → Next"
+      - "Comparison/Contrast"
+    outputs:
+      - "Headline/title"
+      - "3-5 key points"
+      - "Narrative outline"
+    duration: "10-15% of project time"
+
+  phase_3_structure:
+    name: "Information Architecture"
+    purpose: "Organise content into logical visual structure"
+    activities:
+      - "Choose infographic type/format"
+      - "Map content to sections"
+      - "Determine reading flow"
+      - "Plan section transitions"
+    structure_types:
+      - "Linear/Sequential"
+      - "Hierarchical"
+      - "Comparative"
+      - "Geographic"
+      - "Timeline"
+      - "Process/Flow"
+    outputs:
+      - "Content map/outline"
+      - "Section breakdown"
+      - "Flow diagram"
+    duration: "10% of project time"
+
+  phase_4_wireframe:
+    name: "Wireframing"
+    purpose: "Create low-fidelity layout blueprint"
+    activities:
+      - "Sketch rough layouts (3-5 variations)"
+      - "Define section proportions"
+      - "Plan visual element placement"
+      - "Identify chart/graph types needed"
+    guidelines:
+      - "Use grey boxes, no styling"
+      - "Focus on hierarchy and flow"
+      - "Test reading path"
+      - "Get stakeholder feedback early"
+    outputs:
+      - "Rough sketches"
+      - "Selected wireframe"
+      - "Annotated layout plan"
+    duration: "10-15% of project time"
+
+  phase_5_design:
+    name: "Visual Design"
+    purpose: "Apply visual style and create polished design"
+    activities:
+      - "Select colour palette"
+      - "Choose typography"
+      - "Design icons and illustrations"
+      - "Create charts and graphs"
+      - "Apply consistent styling"
+    considerations:
+      brand_alignment: "Match organisational visual identity"
+      accessibility: "WCAG colour contrast, readable fonts"
+      print_vs_digital: "Adjust for intended medium"
+    outputs:
+      - "High-fidelity design mockup"
+      - "Style guide for infographic"
+    duration: "25-30% of project time"
+
+  phase_6_data_viz:
+    name: "Data Visualisation"
+    purpose: "Create accurate, clear data representations"
+    activities:
+      - "Build charts and graphs"
+      - "Verify data accuracy"
+      - "Apply direct labelling"
+      - "Ensure visual integrity (no lie factor)"
+    checklist:
+      - "Appropriate chart type for data"
+      - "Accurate proportions"
+      - "Clear axis labels"
+      - "Source citations"
+    outputs:
+      - "Final data visualisations"
+      - "Data source documentation"
+    duration: "10-15% of project time"
+
+  phase_7_refinement:
+    name: "Review & Refinement"
+    purpose: "Polish and validate the final design"
+    activities:
+      - "Proofread all text"
+      - "Verify data accuracy"
+      - "Check visual consistency"
+      - "Test readability at final size"
+      - "Gather feedback and iterate"
+    review_checklist:
+      - "Spelling and grammar"
+      - "Data source accuracy"
+      - "Colour contrast accessibility"
+      - "Visual hierarchy clarity"
+      - "Brand compliance"
+    outputs:
+      - "Reviewed design"
+      - "Change log"
+    duration: "10% of project time"
+
+  phase_8_production:
+    name: "Production & Export"
+    purpose: "Prepare final files for distribution"
+    activities:
+      - "Export in required formats"
+      - "Optimise file sizes"
+      - "Create responsive versions if needed"
+      - "Prepare accessibility alternatives"
+    deliverables:
+      print: "PDF (CMYK, 300dpi, bleeds)"
+      digital: "PNG/JPG (RGB, optimised)"
+      web: "SVG for scalability"
+      social: "Platform-specific dimensions"
+    outputs:
+      - "Final production files"
+      - "Asset package"
+    duration: "5% of project time"
+
+# ==============================================================================
+# INFOGRAPHIC TYPES
+# ==============================================================================
+
+infographic_types:
+  description: "Common infographic structures and their use cases"
+
+  statistical:
+    description: "Data-driven infographics focusing on numbers and charts"
+    use_when: "Primary message is quantitative"
+    key_elements:
+      - "Prominent statistics"
+      - "Charts and graphs"
+      - "Comparative data"
+    example: "Annual report infographic, market research summary"
+
+  timeline:
+    description: "Chronological sequence of events"
+    use_when: "Showing history, evolution, or process over time"
+    layouts:
+      horizontal: "Left-to-right reading flow"
+      vertical: "Top-to-bottom, scrolling-friendly"
+      serpentine: "Winding path for many events"
+    key_elements:
+      - "Date markers"
+      - "Event descriptions"
+      - "Visual continuity (connecting line)"
+    example: "Company history, project milestones"
+
+  process:
+    description: "Step-by-step workflow or procedure"
+    use_when: "Explaining how something works or how to do something"
+    layouts:
+      numbered_steps: "Sequential with clear numbers"
+      flowchart: "Decision points and branches"
+      cycle: "Repeating process"
+    key_elements:
+      - "Clear step numbering"
+      - "Directional flow"
+      - "Action-oriented labels"
+    example: "How-to guide, onboarding process"
+
+  comparison:
+    description: "Side-by-side analysis of options"
+    use_when: "Comparing products, concepts, or choices"
+    layouts:
+      versus: "Two options head-to-head"
+      matrix: "Multiple options across criteria"
+      before_after: "State change comparison"
+    key_elements:
+      - "Consistent comparison criteria"
+      - "Clear visual differentiation"
+      - "Balanced presentation"
+    example: "Product comparison, A vs B analysis"
+
+  hierarchical:
+    description: "Organisation or priority structure"
+    use_when: "Showing levels, categories, or importance ranking"
+    layouts:
+      pyramid: "Narrow at top, wide at base"
+      org_chart: "Reporting structure"
+      nested: "Categories within categories"
+    key_elements:
+      - "Clear level differentiation"
+      - "Size reflecting importance"
+      - "Consistent styling per level"
+    example: "Organisation structure, priority pyramid"
+
+  geographic:
+    description: "Location-based data visualisation"
+    use_when: "Data has spatial component"
+    types:
+      choropleth: "Regions shaded by value"
+      dot_map: "Points showing locations"
+      flow_map: "Movement between locations"
+    key_elements:
+      - "Recognisable geography"
+      - "Clear legend"
+      - "Appropriate projection"
+    example: "Sales by region, office locations"
+
+  list:
+    description: "Visually enhanced list format"
+    use_when: "Presenting tips, facts, or ranked items"
+    layouts:
+      numbered: "Priority or sequence order"
+      icons: "Icon + text for each item"
+      grid: "Equal-weight items in matrix"
+    key_elements:
+      - "Consistent item formatting"
+      - "Clear visual hierarchy"
+      - "Engaging icons/illustrations"
+    example: "Top 10 tips, feature list"
+
+# ==============================================================================
+# VISUAL HIERARCHY IN INFOGRAPHICS
+# ==============================================================================
+
+infographic_hierarchy:
+  description: "Creating clear visual hierarchy in infographic design"
+
+  hierarchy_levels:
+    level_1_title:
+      role: "Primary headline, main message"
+      size: "Largest text element"
+      position: "Top or prominent location"
+      styling: "Bold, may use brand colour"
+
+    level_2_section:
+      role: "Section headings, key points"
+      size: "Significantly smaller than title, larger than body"
+      position: "Start of each section"
+      styling: "Clear differentiation from body text"
+
+    level_3_data:
+      role: "Key statistics, featured numbers"
+      size: "Large, attention-grabbing"
+      position: "Central to their section"
+      styling: "May use colour, special typography"
+
+    level_4_body:
+      role: "Explanatory text, details"
+      size: "Readable but not dominant"
+      position: "Supporting key points"
+      styling: "Clean, readable"
+
+    level_5_source:
+      role: "Citations, credits, fine print"
+      size: "Smallest text"
+      position: "Bottom or margins"
+      styling: "Subdued, but still readable"
+
+  attention_flow:
+    principle: "Guide the eye through content in intended order"
+    techniques:
+      - "Size gradation (large to small = important to detail)"
+      - "Colour saturation (vivid to muted)"
+      - "Position (top/centre to periphery)"
+      - "Visual connectors (arrows, lines, numbers)"
+      - "White space (isolation creates emphasis)"
+
+# ==============================================================================
+# DATA PRESENTATION PATTERNS
+# ==============================================================================
+
+data_patterns:
+  description: "Effective patterns for presenting data in infographics"
+
+  big_number_callout:
+    description: "Prominent display of key statistic"
+    elements:
+      number: "Large, bold, often coloured"
+      unit: "Smaller, may be different weight"
+      context: "Brief explanation below"
+    example: "73% | of employees prefer hybrid work"
+    guidelines:
+      - "One big number per section maximum"
+      - "Round for impact (73% not 72.8%)"
+      - "Provide comparison context"
+
+  icon_statistics:
+    description: "Icon array representing proportions"
+    types:
+      pictogram: "Icons filled/empty to show percentage"
+      isotype: "Repeated icons where each = value"
+    guidelines:
+      - "Use 10 or 100 icons for easy percentage reading"
+      - "Differentiate filled vs empty clearly"
+      - "Label the meaning explicitly"
+
+  comparison_callout:
+    description: "Side-by-side metric comparison"
+    elements:
+      metric_a: "First value with label"
+      metric_b: "Second value with label"
+      difference: "Explicit comparison (2x, +40%, etc.)"
+    guidelines:
+      - "Make comparison point explicit"
+      - "Use consistent visual treatment"
+      - "Consider direction (improvement, decline)"
+
+  mini_charts:
+    description: "Small embedded data visualisations"
+    types:
+      sparklines: "Trend without axes"
+      mini_bars: "Simple bar comparison"
+      mini_pie: "Simple proportion"
+    guidelines:
+      - "Keep extremely simple"
+      - "Label key values directly"
+      - "Don't try to show complex data"
+
+# ==============================================================================
+# ICON & ILLUSTRATION GUIDELINES
+# ==============================================================================
+
+iconography:
+  description: "Guidelines for icon usage in infographics"
+
+  style_consistency:
+    rule: "All icons must use same visual style"
+    styles:
+      line: "Outlined icons, same stroke weight"
+      filled: "Solid icons, same fill treatment"
+      flat: "Simple shapes, no gradients"
+      illustrated: "More detailed, consistent illustration style"
+    anti_pattern: "Mixing icon styles (line + filled + 3D)"
+
+  icon_selection:
+    clarity: "Icon meaning must be immediately clear"
+    universality: "Avoid culturally specific symbols"
+    simplicity: "Simple shapes recognise at small sizes"
+    relevance: "Icon must relate to content"
+
+  sizing:
+    consistency: "All icons at same importance level = same size"
+    hierarchy: "Larger icons for more important concepts"
+    minimum: "16x16px minimum for digital; larger for print"
+
+  colour_usage:
+    single_colour: "Preferred for clean look"
+    accent_colour: "Use to draw attention to key icons"
+    consistency: "Same colour treatment across all icons"
+
+# ==============================================================================
+# INFOGRAPHIC DIMENSIONS
+# ==============================================================================
+
+dimensions:
+  description: "Standard dimensions for different platforms"
+
+  print:
+    poster: "A2 (420×594mm) or A1 (594×841mm)"
+    handout: "A4 (210×297mm) or Letter (8.5×11in)"
+    resolution: "300dpi minimum"
+    colour_mode: "CMYK"
+
+  digital_general:
+    standard: "800×2000px to 800×5000px (tall format)"
+    width: "800-1200px optimal for web viewing"
+    resolution: "72-150dpi"
+    colour_mode: "RGB"
+
+  social_media:
+    pinterest: "1000×1500px (2:3 ratio)"
+    instagram: "1080×1080px (square) or 1080×1350px (4:5)"
+    twitter: "1200×675px (landscape)"
+    linkedin: "1200×627px (landscape)"
+    facebook: "1200×630px (landscape)"
+
+  email:
+    width: "600px maximum"
+    height: "Keep above the fold content in first 300px"
+    file_size: "Under 200KB for reliable loading"

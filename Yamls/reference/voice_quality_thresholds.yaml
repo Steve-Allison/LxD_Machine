@@ -1,0 +1,218 @@
+# ==============================================================================
+# Voice Quality Thresholds
+# Clinical and coaching thresholds for voice analysis and speaker development
+# ==============================================================================
+
+_meta:
+  id: voice_quality_thresholds
+  purpose: reference
+  version: "1.3.0"
+  last_updated: "2026-03-01"
+  description: "Clinical pathology screening and performance coaching thresholds for voice quality metrics including jitter, shimmer, HNR, CPPS, and formant analysis."
+  domain: performance
+  domain_type: workflow
+  corpus_sources:
+    - "Corpus/Research/Research - Voice Coaching and Clinical Analysis.md"
+    - "Corpus/Research/Research - Voice Quality Metric Research Parameters.md"
+    - "Corpus/Research/Research - Vocal Profiling for Executive Coaching.md"
+    - "Corpus/Research/Research - The Architecture of Influence: A Comprehensive Multimodal Taxonomy of Elite vs. Average Public Speaking.md"
+    - "Corpus/Research/Research - Unified Performance Framework.md"
+
+# ==============================================================================
+# CLINICAL PATHOLOGY SCREENING
+# ==============================================================================
+
+clinical_pathology_screening:
+  jitter_local:
+    metric: "Cycle-to-cycle frequency perturbation"
+    threshold_percent: 1.04
+    direction: "above"
+    warning: "Values >1.04% indicate nervousness, instability, or vocal pathology"
+    research_basis: "Clinical voice quality norms - Baken & Orlikoff (2000)"
+
+  shimmer_local:
+    metric: "Cycle-to-cycle amplitude perturbation"
+    threshold_percent: 3.8
+    direction: "above"
+    warning: "Values >3.8% indicate hoarseness or lack of vocal control"
+    research_basis: "Clinical voice quality norms - Baken & Orlikoff (2000)"
+
+  hnr_harmonics_to_noise:
+    metric: "Signal clarity vs noise ratio"
+    threshold_db: 20
+    direction: "below"
+    warning: "Values <20 dB indicate vocal pathology or extreme breathiness"
+    research_basis: "Harmonics-to-noise ratio clinical norms"
+
+  cpps_cepstral_peak:
+    metric: "Cepstral Peak Prominence Smoothed"
+    threshold_db: 14
+    direction: "below"
+    warning: "Values <14 dB indicate dysphonia"
+    research_basis: "Maryn et al. (2009) - CPPS clinical threshold"
+
+# ==============================================================================
+# PERFORMANCE COACHING THRESHOLDS
+# ==============================================================================
+
+performance_coaching:
+  maximum_phonation_time:
+    metric: "Sustained vowel duration on single breath"
+    target:
+      min_seconds: 15
+      max_seconds: 20
+    problem_threshold_seconds: 10
+    warning: "MPT <10s suggests respiratory inefficiency or vocal fold dysfunction"
+    research_basis: "Voice capacity assessment - Kent et al. (1987)"
+
+  s_z_ratio:
+    metric: "Ratio of sustained /s/ to sustained /z/ duration"
+    target: 1.0
+    tolerance: 0.2
+    problem_threshold: 1.4
+    warning: "S/Z ratio >1.4 suggests vocal fold pathology requiring referral"
+    research_basis: "Eckel & Boone (1981) - S/Z ratio screening"
+
+  acoustic_boost_twang:
+    metric: "Amplification in speaker's formant region"
+    frequency_range_khz:
+      min: 2.0
+      max: 4.0
+    boost_db:
+      min: 10
+      max: 15
+    description: "Twang/AES technique boosts projection without strain"
+    research_basis: "Titze (2001) - Acoustic efficiency and speaker's formant"
+
+  speakers_formant:
+    metric: "Resonance peak around 3kHz for vocal projection"
+    center_frequency_hz: 3000
+    description: "Presence of speaker's formant indicates trained vocal projection"
+    research_basis: "Sundberg (1974) - Articulatory interpretation of the singing formant"
+
+# ==============================================================================
+# FREQUENCY ANALYSIS BANDS
+# ==============================================================================
+
+frequency_analysis:
+  alpha_ratio:
+    metric: "Energy distribution above/below 1kHz"
+    low_band_hz: [0, 1000]
+    high_band_hz: [1000, 5000]
+    description: "Higher alpha ratio = more energy in harmonics = stronger/pressed voice"
+    research_basis: "Fant (1960) - Long-term average spectrum analysis"
+
+  hammarberg_index:
+    metric: "Peak energy difference between low and high bands"
+    low_band_hz: [0, 2000]
+    high_band_hz: [2000, 5000]
+    description: "Larger difference = breathier/softer voice quality"
+    research_basis: "Hammarberg et al. (1980) - Perceptual and acoustic correlates"
+
+# ==============================================================================
+# SCORING TIERS
+# ==============================================================================
+
+scoring_tiers:
+  excellent:
+    label: "Excellent Voice Quality"
+    criteria:
+      jitter_below: 0.5
+      shimmer_below: 2.0
+      hnr_above: 25
+      mpt_above: 18
+    description: "Professional broadcast/coaching quality"
+
+  good:
+    label: "Good Voice Quality"
+    criteria:
+      jitter_below: 0.8
+      shimmer_below: 3.0
+      hnr_above: 22
+      mpt_above: 15
+    description: "Strong professional speaking quality"
+
+  acceptable:
+    label: "Acceptable Voice Quality"
+    criteria:
+      jitter_below: 1.04
+      shimmer_below: 3.8
+      hnr_above: 20
+      mpt_above: 12
+    description: "Within normal clinical limits"
+
+  concern:
+    label: "Voice Quality Concern"
+    criteria:
+      jitter_above: 1.04
+      shimmer_above: 3.8
+      hnr_below: 20
+      mpt_below: 10
+    description: "Exceeds clinical thresholds - recommend assessment"
+
+# ==============================================================================
+# EXECUTIVE PRESENCE VOICE INDICATORS
+# Sources: Research - Vocal Profiling for Executive Coaching.md;
+#          Research - The Architecture of Influence.md
+# ==============================================================================
+
+executive_presence:
+  description: "Voice quality markers specifically associated with executive credibility and authority perception"
+
+  authority_voice_profile:
+    hnr_target: ">= 24 dB"
+    shimmer_target: "< 2.5%"
+    jitter_target: "< 0.6%"
+    speakers_formant: "Present (resonance at 2.8–3.2 kHz)"
+    note: "This profile correlates with perceived authority and trustworthiness in executive speaking research"
+
+  breathiness_as_uncertainty_signal:
+    trigger: "HNR < 20 dB with CPPS < 14 dB"
+    audience_perception: "Perceived as uncertain, tired, or low-status"
+    coaching_action: "Breath support exercises; lower laryngeal position training; reduce air flow pressure"
+    scoring_impact: "-5 points executive_presence score"
+
+  vocal_fry_detection:
+    description: "Creaky voice / laryngealisation at end of phrases — subglottal resonance drops below 70 Hz"
+    frequency_threshold_hz: 70
+    audience_perception: "In professional contexts: perceived as disengaged or lacking energy"
+    gender_asymmetry: "Research shows differential credibility penalty for women (Klofstad et al. 2012)"
+    scoring_impact: "-4 points (moderate); -8 points (pervasive)"
+    coaching_action: "Increase pitch slightly at phrase ends; improve breath management; avoid fading sentences"
+
+  resonance_quality:
+    chest_resonance:
+      description: "Lower formant energy concentrated below 500 Hz — 'warmth' quality"
+      executive_value: "High — projects groundedness and calm authority"
+    head_resonance:
+      description: "Formant energy concentrated above 2 kHz — 'bright' or 'thin' quality"
+      executive_value: "Low in isolation — sounds young or high-anxiety; combine with chest resonance for balance"
+    ideal_blend: "Dominant chest resonance with speakers_formant presence for boardroom authority"
+
+# ==============================================================================
+# CONTEXT-SPECIFIC THRESHOLDS
+# Sources: Research - Unified Performance Framework.md
+# ==============================================================================
+
+context_adjustments:
+  description: "Voice quality threshold modifications by presentation context"
+
+  boardroom_executive:
+    hnr_minimum: 22
+    shimmer_maximum: 3.0
+    jitter_maximum: 0.8
+    note: "Executive boardroom requires higher clarity — noise floor from acoustics is lower than large venues"
+
+  keynote_large_venue:
+    hnr_minimum: 20
+    shimmer_maximum: 3.5
+    jitter_maximum: 1.0
+    note: "Large venue PA reinforcement partially compensates for lower HNR; MPT more critical for pacing"
+    mpt_minimum: 15
+
+  virtual_webinar:
+    hnr_minimum: 24
+    shimmer_maximum: 2.5
+    note: "Microphone compression and digital codecs emphasise breathiness and shimmer — stricter thresholds required"
+    mic_recommendation: "Condenser microphone with low-cut filter at 80 Hz to reduce proximity effect"
+    headroom_db: "Leave 6 dB headroom below 0 dBFS to avoid codec clipping artefacts"

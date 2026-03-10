@@ -1,0 +1,400 @@
+_meta:
+  id: visual_design_principles
+  title: "Visual Design Principles"
+  description: "Comprehensive visual design principles including CRAP, Gestalt, Visual Hierarchy, and Social Semiotics."
+  domain: visual
+  domain_type: cross_cutting
+  purpose: methodology
+  version: "1.2.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Corporate Learning Assessment- Strategies, Modalities, and Best Practices.md"
+    - "Corpus/Research/Research - Slide Deck Design Playbook Research.md"
+    - "Corpus/Research/Research - The Cognitive Interface - Operationalizing UxD for Documents and Reports.md"
+
+
+# ==============================================================================
+# CRAP FRAMEWORK (Robin Williams)
+# ==============================================================================
+
+crap_framework:
+  description: "Four fundamental design principles for visual effectiveness"
+  scoring_anchors: !include ../shared/scoring_visual.yaml
+
+  contrast:
+    definition: "Different elements must be obviously different"
+    purpose: "Creates visual interest and establishes hierarchy"
+    data_requirements: !include ../shared/data_reqs_visual.yaml
+
+    application_rules:
+      - "Use size contrast: headings 1.5-2x body text minimum"
+      - "Use weight contrast: bold vs regular for emphasis"
+      - "Use color for emphasis sparingly and consistently"
+      - "Ensure clear figure/ground separation"
+      - "Avoid near-similarities: if different, make VERY different"
+
+    observable_indicators:
+      - "Headline is visibly larger than body text at a glance"
+      - "Primary message uses distinct weight or size"
+      - "Accent color is used to highlight key elements only"
+      - "Foreground elements separate cleanly from background"
+
+    common_failures:
+      - "Two similar font sizes competing for attention"
+      - "Slightly different colors that create visual confusion"
+      - "Headlines that don't stand out from body text"
+
+    anti_patterns:
+      - "Multiple elements styled as primary without clear hierarchy"
+      - "Decorative contrast that distracts from key message"
+      - "Subtle contrast that fails at presentation distance"
+
+    remediation_strategies:
+      low_typographic_contrast:
+        action: "Increase header size to 2x body text or change header font weight to Bold."
+        css_suggestion: "font-weight: 700; font-size: 2em;"
+      figure_ground_ambiguity:
+        action: "Add a 90% opacity white overlay behind text or drop shadow (y:2px, blur:4px)."
+      weak_color_emphasis:
+        action: "Desaturate background elements and increase saturation of focal element."
+
+    few_shot_examples:
+      bad:
+        description: "Slide title is 24pt Bold, Body text is 22pt Regular."
+        reasoning: "Contrast is insufficient; viewer cannot instantly distinguish hierarchy."
+      good:
+        description: "Slide title is 48pt Bold, Body text is 18pt Regular."
+        reasoning: "Clear size contrast establishes immediate hierarchy."
+
+    accessibility_overlay:
+      note: "WCAG contrast ratios belong to accessibility checks, not CRAP"
+
+  repetition:
+    definition: "Repeat visual elements throughout for consistency and unity"
+    purpose: "Creates cohesion, reduces cognitive load, builds visual schema"
+    data_requirements: !include ../shared/data_reqs_visual.yaml
+
+    application_rules:
+      - "Use consistent color palette across all materials"
+      - "Repeat icon styles (all flat, all outlined, etc.)"
+      - "Maintain consistent margins and spacing"
+
+    observable_indicators:
+      - "Color palette is consistent across slides"
+      - "Icon style family is consistent"
+      - "Headings share the same styling treatment"
+
+    common_failures:
+      - "Mixing icon styles (flat, 3D, illustrated)"
+      - "Inconsistent heading treatments slide-to-slide"
+      - "Random color variations without purpose"
+
+    remediation_strategies:
+      inconsistent_icons:
+        action: "Standardize on a single icon family (e.g., Material Design Outlined)."
+      random_colors:
+        action: "Restrict palette to primary brand colors + 1 accent color."
+
+  alignment:
+    definition: "Every element should have visual connection to another element"
+    purpose: "Creates order, organization, and professional appearance"
+    data_requirements: !include ../shared/data_reqs_visual.yaml
+
+    application_rules:
+      - "Align elements to an invisible grid"
+      - "Left-align text for readability in Western layouts"
+      - "Never centre-align body text over 3 lines"
+
+    observable_indicators:
+      - "Text blocks align to consistent left edge"
+      - "Objects share common x or y alignment lines"
+      - "Margins are consistent across slides"
+
+    common_failures:
+      - "Elements placed arbitrarily without grid reference"
+      - "Mixed alignments on same page without purpose"
+      - "Text that doesn't align with images beside it"
+
+    remediation_strategies:
+      mixed_alignment:
+        action: "Snap all text elements to a left-aligned 12-column grid."
+      centered_body_text:
+        action: "Left-align body text block for readability."
+
+  proximity:
+    definition: "Related items should be grouped together"
+    purpose: "Creates visual units, shows relationships, reduces cognitive parsing"
+    data_requirements: !include ../shared/data_reqs_visual.yaml
+
+    application_rules:
+      - "Group related items closer than unrelated items"
+      - "Use white space to separate logical groups"
+      - "Place labels near their referenced content"
+
+    observable_indicators:
+      - "Related items are visually clustered"
+      - "Labels sit adjacent to referenced data"
+      - "Group spacing is larger than intra-group spacing"
+
+    common_failures:
+      - "Equal spacing between all elements"
+      - "Captions far from their images"
+      - "Related bullet points separated by unrelated content"
+
+    remediation_strategies:
+      ambiguous_grouping:
+        action: "Increase whitespace between distinct groups to at least 2x the internal spacing."
+      orphaned_labels:
+        action: "Move label within 8px-16px of its target element."
+
+    few_shot_examples:
+      bad:
+        description: "A chart caption located equidistant between two charts."
+        reasoning: "Violates proximity; viewer cannot determine which chart owns the caption."
+      good:
+        description: "Caption located 8px from bottom of Chart A, with 32px margin before Chart B."
+        reasoning: "Clear proximity establishes relationship."
+
+# ==============================================================================
+# GESTALT PRINCIPLES
+# ==============================================================================
+
+gestalt_principles:
+  description: "Perceptual organisation principles from Gestalt psychology"
+  scoring_anchors: !include ../shared/scoring_visual.yaml
+
+  proximity:
+    definition: "Elements close together are perceived as a group"
+    observable_indicators:
+      - "Distance between related items is distinctly smaller than between unrelated items"
+      - "White space channels clearly separate functional sections"
+    remediation_strategies:
+      weak_grouping:
+        action: "Reduce internal spacing and increase external spacing."
+
+  similarity:
+    definition: "Elements sharing visual characteristics are perceived as related"
+    observable_indicators:
+      - "Action elements (buttons/links) share consistent color/style"
+      - "Data points of same category share shape/color"
+    remediation_strategies:
+      inconsistent_styling:
+        action: "Apply shared class/style to all functionally similar elements."
+
+  closure:
+    definition: "Mind completes incomplete shapes into recognizable wholes"
+    observable_indicators:
+      - "Implied borders used instead of heavy lines"
+      - "Aligned edges creating a virtual container"
+    remediation_strategies:
+      heavy_borders:
+        action: "Remove borders and use alignment/whitespace to define the container."
+
+  continuity:
+    definition: "Eye follows paths and continues along established directions"
+    observable_indicators:
+      - "Elements aligned along a clear reading path (Z or F pattern)"
+      - "Visual cues (arrows, lines) directing eye to next step"
+    remediation_strategies:
+      broken_flow:
+        action: "Reorder elements to follow a Z-pattern (Top-Left -> Top-Right -> Bottom-Left -> Bottom-Right)."
+
+# ==============================================================================
+# VISUAL HIERARCHY
+# ==============================================================================
+
+visual_hierarchy:
+  description: "System for guiding viewer attention through intentional emphasis"
+  scoring_anchors: !include ../shared/scoring_visual.yaml
+
+  hierarchy_tools:
+    size:
+      rule: "Larger elements attract attention first"
+      benchmark: "Headings should be 1.5x - 2x body text size"
+    weight:
+      rule: "Bolder elements draw more attention"
+      benchmark: "Use bold for < 10% of total text"
+    colour:
+      rule: "High-saturation/warm colours advance"
+      benchmark: "Accent colour used for key actions/insights only"
+    position:
+      rule: "Western reading path (Top-Left -> Bottom-Right)"
+      benchmark: "Key message in top-left or optical center"
+    whitespace:
+      rule: "Isolation creates emphasis"
+      benchmark: "Focal element has 2x surrounding space of other elements"
+
+  observable_indicators:
+    - "Clear entry point (eye knows where to start immediately)"
+    - "Logical scanning path (Z-pattern or F-pattern)"
+    - "Distinct levels of text hierarchy (H1, H2, Body, Caption)"
+
+  remediation_strategies:
+    flat_hierarchy:
+      action: "Identify the single most important element and increase its size by 50%."
+    competing_foci:
+      action: "Reduce the visual weight (size/color/boldness) of secondary elements."
+
+  data_requirements: !include ../shared/data_reqs_visual.yaml
+
+# ==============================================================================
+# KRESS & VAN LEEUWEN VISUAL GRAMMAR
+# ==============================================================================
+
+visual_grammar:
+  description: "Social semiotic framework for analysing visual meaning"
+  scoring_anchors: !include ../shared/scoring_visual.yaml
+
+  metafunctions:
+    representational:
+      description: "What is depicted and how relationships are constructed"
+      observable_indicators:
+        - "Presence of clear vectors (lines/gazes) connecting actors"
+        - "Identification of Actors (doers) and Goals (receivers)"
+      narrative_vectors:
+        definition: "The directional line that creates a narrative process."
+        rule: "Vectors must flow Left -> Right (Given -> New) or Top -> Bottom."
+        anti_pattern: "Ambiguous arrows or bi-directional flows that confuse causality."
+      remediation_strategies:
+        unclear_action:
+          action: "Add explicit directional cues (arrows, gaze direction) to show relationship."
+        reversed_flow:
+          action: "Reorient the diagram so the 'Actor' is on the left and the 'Goal' is on the right."
+
+    interactive:
+      description: "How the image addresses and positions the viewer"
+      observable_indicators:
+        - "Gaze direction (Direct vs Averted)"
+        - "Frame distance (Close vs Far)"
+      contact:
+        demand: "Direct gaze at viewer. Creates engagement and demands a response (Trust/Power)."
+        offer: "No gaze (looking away). Offers the subject as an object of study (Objectivity/Observation)."
+      power_dynamics:
+        viewer_power: "High angle shot (Subject looks small)."
+        subject_power: "Low angle shot (Subject looks imposing)."
+        equality: "Eye-level shot."
+      remediation_strategies:
+        passive_engagement:
+          action: "Use direct gaze (subject looking at camera) to demand viewer attention for key team slides."
+        intimidating_angle:
+          action: "Switch to an eye-level camera angle to establish equality and partnership."
+
+    compositional:
+      description: "How elements are arranged to create meaning"
+      observable_indicators:
+        - "Given/New placement (Left/Right)"
+        - "Ideal/Real placement (Top/Bottom)"
+      remediation_strategies:
+        weak_composition:
+          action: "Place 'Given' (known) info on Left, 'New' (key message) on Right."
+
+    point_of_view:
+      definition: "The narrative mode or camera angle defining the viewer's relationship to the subject."
+      modes:
+        first_person: "Subjective view (Seeing through the character's eyes). Creates immediacy."
+        third_person: "Objective view (Observer looking at the scene). Creates context."
+        participatory: "Immersive view (Viewer is part of the crowd/action)."
+      observable_indicators:
+        - "Hands entering frame (First-Person)"
+        - "Over-the-shoulder shot (Participatory)"
+        - "Wide/Long shot (Third-Person/Objective)"
+      remediation_strategies:
+        inconsistent_pov:
+          action: "Stick to one visual mode per section. Don't jump from 'God view' to 'First-person' without a transition."
+
+# ==============================================================================
+# VISUAL-VERBAL INTEGRATION (Dual Coding)
+# ==============================================================================
+
+visual_verbal_integration:
+  description: "Assessing alignment and synergy between visual and textual channels"
+  scoring_anchors: !include ../shared/scoring_visual.yaml
+
+  observable_indicators:
+    - "Visual elements directly correspond to specific text keywords"
+    - "Diagram structure matches logical structure of argument"
+    - "Text labels are spatially integrated with visual parts"
+
+  anti_patterns:
+    - "Seductive Details: Interesting but irrelevant visuals"
+    - "Value Conflict: 'Agile' text + Rigid chart visual"
+    - "Split Attention: Text explanation separated from visual reference"
+
+  remediation_strategies:
+    split_attention:
+      action: "Move text labels directly onto or adjacent to the visual element they describe."
+    decorative_distraction:
+      action: "Remove purely decorative images and replace with a diagram of the concept."
+
+# ==============================================================================
+# WHITESPACE MANAGEMENT
+# ==============================================================================
+
+whitespace:
+  description: "Strategic use of empty space to manage cognitive load and hierarchy"
+  scoring_anchors: !include ../shared/scoring_visual.yaml
+
+  guidelines:
+    margins: "Minimum 10% (Recommend 15-20%)"
+    line_spacing: "1.4-1.6x font size"
+    element_spacing: "Related: 0.5-1x | Unrelated: 2-3x"
+
+  observable_indicators:
+    - "Margins > 10% of total width/height"
+    - "Clear separation between distinct functional zones"
+    - "Focal point surrounded by 'moat' of space"
+
+  remediation_strategies:
+    overcrowded:
+      action: "Remove 30% of content or split into two slides."
+    tight_margins:
+      action: "Increase slide margins to at least 80px (on 1920x1080 canvas)."
+
+# ==============================================================================
+# VISUAL CONSISTENCY & FRANKENDECK PREVENTION
+# ==============================================================================
+
+consistency_rules:
+  description: "Rules for maintaining visual consistency and preventing 'Frankendecks'"
+  scoring_anchors: !include ../shared/scoring_visual.yaml
+
+  frankendeck_symptoms:
+    - "Font Mixing: Different fonts slide to slide"
+    - "Icon Clash: Mixed icon styles (flat, 3D, outlined)"
+    - "Color Variation: Different colour palettes without purpose"
+    - "Layout Chaos: Inconsistent margins and grids"
+    - "Template Fragments: Visible remnants of different templates"
+
+  repair_checklist:
+    - "Apply consistent fonts to all text"
+    - "Unify colour palette"
+    - "Replace mixed icons with single style family"
+    - "Align all elements to grid"
+    - "Standardise image treatment"
+
+# ==============================================================================
+# IMAGE SELECTION & AUTHENTICITY
+# ==============================================================================
+
+image_guidelines:
+  description: "Criteria for selecting authentic and effective imagery"
+  scoring_anchors: !include ../shared/scoring_visual.yaml
+
+  authenticity_considerations:
+    prefer:
+      - "Real team photos"
+      - "Actual product images"
+      - "Customer evidence (with permission)"
+      - "Contextual, specific imagery"
+    avoid:
+      - "Generic handshakes"
+      - "Diverse casting boardrooms (staged)"
+      - "Lightbulb = idea clichés"
+      - "Puzzle pieces"
+
+  image_treatment:
+    consistency: "Apply same treatment to all images (e.g., all full colour, or all B&W)"
+    overlay_techniques:
+      - "Gradient: Subtle brand colour overlay"
+      - "Darken: Improve text contrast"
+      - "Blur: De-emphasis, background use"

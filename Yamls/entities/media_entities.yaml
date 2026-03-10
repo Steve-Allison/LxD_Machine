@@ -1,0 +1,725 @@
+_meta:
+  id: media_entities
+  purpose: entity
+  version: 1.14.0
+  last_updated: '2026-03-09'
+  description: GLiNER entity definitions for multimedia asset analysis including video production elements, audio design markers,
+    animation types, storyboard components, and image generation terminology.
+  domain: visual
+  domain_type: cross_cutting
+  corpus_sources:
+  - Corpus/Research/Creating Learning Videos - Process v2.md
+  - Corpus/Research/Research - Storyboard Best Practices.md
+  - Corpus/Research/Research - Sketch Style for Wireframes and Storyboards.md
+  - Corpus/Research/Research - Best Video Script Prompts.md
+  - Corpus/Research/Visual Best Practices for Corporate Learning Videos.md
+  - Corpus/Research/Research - Advanced Image Prompting for Technical Content.md
+  - Corpus/Research/Research - Image Prompt Writing Effectiveness.md
+  - Corpus/Research/Learning Experience Design - Donald Clark - Combined.md
+  - Corpus/Research/Research - Visual Communication and Storytelling.md
+  - Corpus/Research/Research - visualisation_techniques_corporate_learning.md
+  - Corpus/Research/Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md
+  - Corpus/Research/visual_narrative_flow_pass.md
+  - Corpus/Research/Research - Narrative Visualization, Sketchnoting, Accessibility.md
+  relationships:
+  - target: methodology/multimodal_video_standards.yaml
+    type: depends_on
+    description: Video production standards and quality thresholds
+  - target: methodology/infographic_design_framework.yaml
+    type: depends_on
+    description: Infographic and data visualisation standards
+gliner_config:
+  model: urchade/gliner_multi_pii-v1
+  batch_size: 8
+  context_window: 512
+  domain_keywords:
+    primary:
+    - video
+    - audio
+    - animation
+    - storyboard
+    - image
+    - multimedia
+    - production
+    - footage
+    secondary:
+    - B-roll
+    - voiceover
+    - motion graphics
+    - render
+    - keyframe
+    - aspect ratio
+    - resolution
+entity_types:
+  video_shot_type:
+    description: Camera shot types and framing conventions used in video production
+    canonical_id: video_shot_type
+    entity_kind: production_element
+    family: video
+    gliner_label: VIDEO_SHOT_TYPE
+    gliner_description: Video shot type close-up wide shot medium shot over-the-shoulder establishing shot B-roll cutaway
+    examples:
+    - close-up of the speaker
+    - wide establishing shot
+    - medium shot
+    - over-the-shoulder angle
+    - B-roll footage
+    - cutaway to product
+    - screen capture
+    - talking head
+    anti_examples:
+    - shot of espresso
+    - take a shot
+    confidence_threshold: 0.75
+    aliases:
+    - camera shot
+    - framing type
+    - shot composition
+    indicators:
+    - close-up
+    - wide shot
+    - medium shot
+    - over-the-shoulder
+    - establishing shot
+    - B-roll
+    - cutaway
+    - screen capture
+    - talking head
+    - two-shot
+    - aerial shot
+    - pan
+    - zoom
+    patterns:
+    - (close-up|wide|medium|establishing|aerial) shot
+    - over-the-shoulder
+    - (B-roll|cutaway|screen capture|talking head)
+    - (pan|zoom|tilt|dolly|tracking) (shot|in|out)
+    color: '#3498db'
+    relates_to:
+    - target: storyboard_element
+      relation: supported_by
+      weight: required
+      description: "Storyboard frames specify camera direction and shot type as required annotations per the storyboard template structure"
+    - target: video_edit_transition
+      relation: enables
+      weight: expected
+      description: "Shot variety across wide, medium, and close-up enables meaningful edit transitions at natural breakpoints every 8-15 seconds"
+    - target: audio_element
+      relation: bridges
+      weight: expected
+      description: "Temporal contiguity principle requires aligning visual shot framing with narration pacing and audio cues for coherent delivery"
+    - target: image_prompt_element
+      relation: enables
+      weight: expected
+      description: "AI storyboard prompts require explicit camera details including shot type and angle to generate accurate concept frames"
+    - target: extraneous_load_marker
+      relation: limits
+      weight: expected
+      description: "Varied shot framing prevents visual monotony that increases extraneous processing and reduces cognitive load on learners"
+      target_file: cognitive_load_entities
+    - target: design_principle
+      relation: supported_by
+      weight: expected
+      description: "Rule-of-thirds composition, three-point lighting, and headroom framing are design principles governing shot type selection"
+      target_file: visual_elements_entities
+    - target: engagement_cue
+      relation: triggers
+      weight: expected
+      description: "Cycling between wide, medium, and close-up frames breaks visual monotony and maintains viewer engagement and interest"
+      target_file: delivery_entities
+    - target: visual_narrative_element
+      relation: supports
+      weight: expected
+      description: Shot types control point of view and psychological distance between viewer and story calibrating empathy
+        per Visual Communication and Storytelling
+      target_file: visual_elements_entities
+    - target: engagement_dimension
+      relation: enables
+      weight: expected
+      description: "Varied shot types (close-up for emotional connection, wide for context, medium for dialogue) directly enable engagement scoring by maintaining visual interest and audience attention per Visualisation Techniques research"
+      target_file: scoring_entities
+    - target: layout_pattern
+      relation: enables
+      weight: expected
+      description: "Video shot type selection enables layout patterns — wider shots leave space for graphic overlays while close-ups focus attention on speaker expressions per Visual Best Practices for Corporate Learning Videos"
+      target_file: visual_elements_entities
+    parent_entity: null
+  video_edit_transition:
+    description: Post-production transition and editing techniques between video segments
+    canonical_id: video_edit_transition
+    entity_kind: production_element
+    family: video
+    gliner_label: VIDEO_TRANSITION
+    gliner_description: Video edit transition cut dissolve fade wipe jump cut cross-fade montage split screen
+    examples:
+    - hard cut
+    - dissolve transition
+    - fade to black
+    - cross-fade
+    - jump cut
+    - montage sequence
+    - split screen
+    - wipe transition
+    anti_examples:
+    - cut the cord
+    - fade away
+    confidence_threshold: 0.75
+    aliases:
+    - edit type
+    - transition effect
+    indicators:
+    - hard cut
+    - dissolve
+    - fade to black
+    - fade in
+    - cross-fade
+    - jump cut
+    - montage
+    - split screen
+    - wipe
+    - L-cut
+    - J-cut
+    - match cut
+    patterns:
+    - (hard|jump|match|L|J)[- ]cut
+    - fade (to black|in|out)
+    - (cross[- ]fade|dissolve|wipe|montage)
+    - split screen
+    color: '#e74c3c'
+    relates_to:
+    - target: storyboard_element
+      relation: supported_by
+      weight: expected
+      description: "Storyboard shot plans specify cut frequency and transition styles; timing annotations document editing decisions in pre-production"
+    - target: video_shot_type
+      relation: bridges
+      weight: expected
+      description: "Transitions connect sequential shot types in storyboard sequences, linking consecutive visual panels in frame-by-frame flow"
+    - target: audio_element
+      relation: bridges
+      weight: expected
+      description: "J-cuts and L-cuts bridge audio across visual cuts; musical stings accompany chapter transition wipes or fades"
+    - target: extraneous_load_marker
+      relation: limits
+      weight: expected
+      description: "Consistent transition style makes chapter breaks predictable and reduces extraneous processing; coherence principle prohibits elaborate transitions"
+      target_file: cognitive_load_entities
+    - target: content_structure_marker
+      relation: supports
+      weight: expected
+      description: "Title cards and slide transitions signal structural shifts between segments; transition style reinforces content chunking into logical chapters"
+      target_file: content_architecture_entities
+    - target: visual_narrative_element
+      relation: supports
+      weight: expected
+      description: Edit transitions control pacing and rhythm of narrative flow compressing time via montage sequences per
+        Visual Communication and Storytelling
+      target_file: visual_elements_entities
+    - target: progressive_disclosure_marker
+      relation: supports
+      weight: expected
+      description: "Video edit transitions support progressive disclosure by segmenting content into logical chapters with title cards and consistent transition styles between sections per Visual Best Practices for Corporate Learning Videos"
+      target_file: cognitive_load_entities
+    parent_entity: null
+  audio_element:
+    description: Audio production elements including voiceover, music, and sound design
+    canonical_id: audio_element
+    entity_kind: production_element
+    family: audio
+    gliner_label: AUDIO_ELEMENT
+    gliner_description: Audio element voiceover narration background music sound effect SFX ambient audio bed underscore
+    examples:
+    - voiceover narration
+    - background music bed
+    - sound effect (SFX)
+    - ambient audio
+    - underscore music
+    - audio sting
+    - transition sound
+    - podcast narration
+    anti_examples:
+    - audio settings
+    - sound system
+    confidence_threshold: 0.75
+    aliases:
+    - sound element
+    - audio component
+    indicators:
+    - voiceover
+    - narration
+    - background music
+    - music bed
+    - sound effect
+    - SFX
+    - ambient
+    - underscore
+    - audio sting
+    - jingle
+    - foley
+    - audio bed
+    patterns:
+    - (voiceover|voice-over|VO) narration
+    - (background|underscore|ambient) (music|audio)
+    - sound effect|SFX
+    - audio (sting|bed|cue)
+    color: '#9b59b6'
+    relates_to:
+    - target: storyboard_element
+      relation: supported_by
+      weight: required
+      description: "Storyboard templates require concise narration and audio script as a mandatory component per the production planning process"
+    - target: video_shot_type
+      relation: bridges
+      weight: expected
+      description: "Temporal contiguity principle mandates synchronising audio narration with on-screen visuals across shot type changes"
+    - target: video_edit_transition
+      relation: enables
+      weight: expected
+      description: "J-cuts and L-cuts use audio flow to enable seamless visual transitions between scenes and camera angles"
+    - target: extraneous_load_marker
+      relation: limits
+      weight: expected
+      description: "Modality and redundancy principles require audio to complement rather than duplicate on-screen text, reducing extraneous cognitive load"
+      target_file: cognitive_load_entities
+    - target: missing_alt_indicator
+      relation: triggers
+      weight: expected
+      description: "Absent audio descriptions and missing captions or transcripts trigger accessibility violations per mandatory accessibility requirements"
+      target_file: accessibility_entities
+    - target: engagement_cue
+      relation: supports
+      weight: expected
+      description: "Enthusiastic speaker delivery with expressive tone holds attention better than flat monotone, directly driving learner engagement"
+      target_file: delivery_entities
+    - target: narrative_hook
+      relation: enables
+      weight: optional
+      description: "Monroe's Motivated Sequence attention step and engaging narrative hooks are delivered through narration audio in the opening"
+      target_file: narrative_entities
+    - target: delivery_rate_issue
+      relation: triggers
+      weight: optional
+      description: "Narration speed deviating from recommended 120-150 words per minute triggers pacing and delivery rate problems"
+      target_file: performance_entities
+    - target: mayer_extraneous_principle
+      relation: supported_by
+      weight: expected
+      description: "Audio elements are governed by Mayer's redundancy and modality principles — narration should complement rather than duplicate on-screen text, and background music must not compete with instructional audio per Applying Mayer's Principles Practical Checklist"
+      target_file: cognitive_load_entities
+    - target: accessibility_feature
+      relation: supports
+      weight: expected
+      description: "Audio elements — specifically data sonification mapping y-axis values to musical pitch — support accessibility by providing non-visual perception of data shape and trends per Narrative Visualization research"
+      target_file: visual_elements_entities
+    - target: quality_indicator
+      relation: supports
+      weight: expected
+      description: "Crisp audio is cited as essential for professional production quality in learning videos — audio quality directly supports overall quality indicators per Visual Best Practices for Corporate Learning Videos"
+      target_file: visual_elements_entities
+    - target: mayer_essential_principle
+      relation: supported_by
+      weight: expected
+      description: "Modality principle recommends audio narration to explain visuals offloading visual channel per Applying Mayer's Principles Practical Checklist"
+      target_file: cognitive_load_entities
+    - target: extraneous_load_marker
+      relation: triggers
+      weight: optional
+      description: "Background music or irrelevant sound effects increase extraneous load per coherence principle per Applying Mayer's Principles Practical Checklist"
+      target_file: cognitive_load_entities
+    parent_entity: null
+  animation_type:
+    description: Animation styles and motion graphics techniques used in learning content
+    canonical_id: animation_type
+    entity_kind: production_element
+    family: animation
+    gliner_label: ANIMATION_TYPE
+    gliner_description: Animation type motion graphics kinetic typography whiteboard animation explainer 2D 3D stop motion
+    examples:
+    - motion graphics
+    - kinetic typography
+    - whiteboard animation
+    - 2D character animation
+    - 3D rendering
+    - stop motion
+    - explainer animation
+    - animated infographic
+    anti_examples:
+    - animated discussion
+    - 3D printing
+    confidence_threshold: 0.75
+    aliases:
+    - motion type
+    - animated style
+    indicators:
+    - motion graphics
+    - kinetic typography
+    - whiteboard animation
+    - 2D animation
+    - 3D animation
+    - stop motion
+    - explainer
+    - animated infographic
+    - keyframe
+    - ease in
+    - ease out
+    - parallax
+    patterns:
+    - (motion|kinetic|whiteboard|2D|3D|stop[- ]motion) (graphics|typography|animation)
+    - animated (infographic|explainer|diagram)
+    - (keyframe|parallax|ease[- ](in|out))
+    color: '#f39c12'
+    relates_to:
+    - target: storyboard_element
+      relation: supported_by
+      weight: required
+      description: "Storyboard templates require action and animation cues as a mandatory field specifying animation intent for each scene"
+    - target: video_shot_type
+      relation: bridges
+      weight: expected
+      description: "Green-screen compositing layers animated charts beside the presenter during specific shot framings, integrating animation with composition"
+    - target: image_asset_type
+      relation: supports
+      weight: expected
+      description: "Animated infographics and motion graphics enhance static image assets into dynamic learning visuals per multimedia principle"
+    - target: extraneous_load_marker
+      relation: limits
+      weight: expected
+      description: "Coherence principle requires animations to directly serve learning objectives; gratuitous animation adds extraneous cognitive load"
+      target_file: cognitive_load_entities
+    - target: animation_type
+      relation: bridges
+      weight: expected
+      description: "Media production animation_type and visual_elements animation_type represent the same concept in different analytical frames"
+      target_file: visual_elements_entities
+    - target: design_principle
+      relation: supported_by
+      weight: expected
+      description: "Consistent clean on-brand graphic style with legible fonts and high-contrast colours are design principles governing animation quality"
+      target_file: visual_elements_entities
+    - target: progressive_disclosure_marker
+      relation: enables
+      weight: optional
+      description: "Segmenting principle uses animation to enable progressive reveal of complex content through bite-sized sequential segments"
+      target_file: cognitive_load_entities
+    - target: progressive_disclosure_marker
+      relation: supported_by
+      weight: expected
+      description: "Segmenting requires animations be divided into user-paced segments not continuous streams per Applying Mayer's Principles Practical Checklist"
+      target_file: cognitive_load_entities
+    parent_entity: null
+  storyboard_element:
+    description: Components of storyboard documents used in pre-production planning
+    canonical_id: storyboard_element
+    entity_kind: planning_element
+    family: storyboard
+    gliner_label: STORYBOARD_ELEMENT
+    gliner_description: Storyboard element panel frame scene description shot list timing action note camera direction
+    examples:
+    - storyboard panel
+    - scene description
+    - shot list
+    - timing annotation
+    - action note
+    - camera direction
+    - dialogue line
+    - visual reference
+    anti_examples:
+    - story time
+    - board meeting
+    confidence_threshold: 0.7
+    aliases:
+    - storyboard component
+    - pre-production element
+    indicators:
+    - panel
+    - frame
+    - scene
+    - shot list
+    - timing
+    - action note
+    - camera direction
+    - dialogue
+    - visual reference
+    - animatic
+    - thumbnail sketch
+    patterns:
+    - storyboard (panel|frame|sequence)
+    - (scene|shot) (description|list|breakdown)
+    - (timing|action|camera) (annotation|note|direction)
+    - (animatic|thumbnail|rough cut)
+    color: '#1abc9c'
+    relates_to:
+    - target: video_shot_type
+      relation: contains
+      weight: required
+      description: "Storyboard frames include camera specifications with shot type, angle, and movement cues as required annotations per each panel"
+    - target: audio_element
+      relation: contains
+      weight: required
+      description: "Storyboard templates require concise narration and audio script alongside visual panels for temporal contiguity compliance"
+    - target: video_edit_transition
+      relation: contains
+      weight: expected
+      description: "Storyboard frame components include technical specifications with transitions; AI prompt templates include dedicated transition fields"
+    - target: animation_type
+      relation: contains
+      weight: expected
+      description: "Action and animation cues are a required storyboard template field specifying motion graphics and animated sequences per scene"
+    - target: image_asset_type
+      relation: contains
+      weight: expected
+      description: "Visual panels contain illustrations, sketches, or AI-generated frames; storyboard frames serve as containers for image asset specifications"
+    - target: image_prompt_element
+      relation: enables
+      weight: expected
+      description: "Storyboard annotations feed directly into AI image generation prompts via the structured prompt template for concept frames"
+    - target: planning_artefact_marker
+      relation: specialises
+      weight: required
+      description: "Storyboards are explicitly distinguished from scripts and wireframes as a specialised planning artefact with frame-by-frame visual detail"
+      target_file: content_architecture_entities
+    - target: monroe_sequence_marker
+      relation: supported_by
+      weight: expected
+      description: "Each storyboard scene must include MMS step identification; Monroe's Motivated Sequence structures the persuasive arc across panels"
+      target_file: rhetorical_devices_entities
+    - target: extraneous_load_marker
+      relation: limits
+      weight: expected
+      description: "Mayer's coherence principle applied to storyboard design requires removing irrelevant detail from frames to reduce extraneous load"
+      target_file: cognitive_load_entities
+    - target: visual_narrative_element
+      relation: supports
+      weight: expected
+      description: "Storyboard elements support visual narrative by pre-planning the visual storytelling arc including action titles, annotations, and dot-dash logic per Visualisation Techniques research"
+      target_file: visual_elements_entities
+    - target: visual_element
+      relation: supported_by
+      weight: optional
+      description: "Storyboard elements for high-fidelity digital narratives are supported by low-fidelity sketchnote visual elements (CLDs, icons, connectors) that serve as rapid prototyping precursors per Narrative Visualization research"
+      target_file: visual_elements_entities
+    - target: chart_type
+      relation: contains
+      weight: expected
+      description: "Storyboard elements for scrollytelling narratives contain specific chart types (network graphs, Sankey diagrams, simulations) sequenced across narrative scroll positions per Narrative Visualization research"
+      target_file: visual_elements_entities
+    - target: accessibility_feature
+      relation: contains
+      weight: expected
+      description: "Storyboard templates require accessibility notes as a mandatory field including captions, audio descriptions, and colour contrast checks per Creating Learning Videos guide"
+      target_file: visual_elements_entities
+    - target: script_direction
+      relation: supported_by
+      weight: expected
+      description: "Storyboard elements supported by script directions specifying visual cues alongside narration (Best Video Script Prompts)"
+      target_file: writing_entities
+    parent_entity: null
+  image_asset_type:
+    description: Types of visual assets used in learning and presentation content
+    canonical_id: image_asset_type
+    entity_kind: asset_type
+    family: imagery
+    gliner_label: IMAGE_ASSET_TYPE
+    gliner_description: Image asset type stock photo illustration icon diagram screenshot infographic chart data visualisation
+    examples:
+    - stock photograph
+    - custom illustration
+    - icon set
+    - process diagram
+    - annotated screenshot
+    - infographic
+    - data chart
+    - hero image
+    anti_examples:
+    - image quality
+    - asset management
+    confidence_threshold: 0.7
+    aliases:
+    - visual asset
+    - graphic type
+    indicators:
+    - stock photo
+    - illustration
+    - icon
+    - diagram
+    - screenshot
+    - infographic
+    - chart
+    - data visualisation
+    - hero image
+    - banner
+    - thumbnail
+    - wireframe
+    patterns:
+    - (stock|hero|banner) (photo|image|graphic)
+    - (custom|hand-drawn|AI-generated) illustration
+    - (process|flow|architecture|network) diagram
+    - (bar|line|pie|scatter|Gantt) chart
+    color: '#e67e22'
+    relates_to:
+    - target: storyboard_element
+      relation: supported_by
+      weight: expected
+      description: "Storyboard visual panels contain detailed descriptions specifying which image asset types are needed for each scene"
+    - target: image_prompt_element
+      relation: supported_by
+      weight: expected
+      description: "AI-generated image assets are produced via prompt engineering; prompt style and technical parameters determine the resulting asset type"
+    - target: extraneous_load_marker
+      relation: limits
+      weight: expected
+      description: "Coherence principle requires only including graphics that directly support the learning objective; decorative assets increase extraneous load"
+      target_file: cognitive_load_entities
+    - target: design_principle
+      relation: supported_by
+      weight: expected
+      description: "Legible fonts, high-contrast colours, and simple clean style are design principles governing image asset visual quality and consistency"
+      target_file: visual_elements_entities
+    - target: brand_element
+      relation: supported_by
+      weight: expected
+      description: "Explicit visual style guides for colours, fonts, and graphics ensure consistent branding across all image assets in production"
+      target_file: visual_elements_entities
+    - target: low_contrast_text
+      relation: triggers
+      weight: optional
+      description: "Image assets with baked text may trigger colour contrast violations requiring consistent accessibility checks for readability"
+      target_file: accessibility_entities
+    - target: visual_content_format
+      relation: specialises
+      weight: optional
+      description: "Image assets such as illustrations, diagrams, and AI-generated frames are specialised types of visual content used in production"
+      target_file: content_format_entities
+    - target: visual_narrative_element
+      relation: supports
+      weight: expected
+      description: "Image assets directly constitute the visual narrative — photographs, illustrations, icons, and diagrams create the implicit visual story through metaphors, emotional arc, and symbolic progression per visual_narrative_flow_pass"
+      target_file: visual_elements_entities
+    - target: visual_element
+      relation: specialises
+      weight: expected
+      description: "Image asset types specialise visual elements — icons, diagrams, and background images serve as specific visual assets placed on screen to accompany narration per Visual Best Practices for Corporate Learning Videos"
+      target_file: visual_elements_entities
+    parent_entity: null
+  image_prompt_element:
+    description: Components of AI image generation prompts including style, composition, and technical parameters
+    canonical_id: image_prompt_element
+    entity_kind: ai_element
+    family: imagery
+    gliner_label: IMAGE_PROMPT_ELEMENT
+    gliner_description: AI image prompt element style photorealistic illustration isometric flat design composition lighting
+      aspect ratio
+    examples:
+    - photorealistic style
+    - isometric illustration
+    - flat design aesthetic
+    - cinematic lighting
+    - 16:9 aspect ratio
+    - negative prompt
+    - seed value
+    - high resolution 4K
+    anti_examples:
+    - style guide
+    - flat tire
+    confidence_threshold: 0.7
+    aliases:
+    - image generation parameter
+    - AI art directive
+    indicators:
+    - photorealistic
+    - isometric
+    - flat design
+    - cinematic lighting
+    - aspect ratio
+    - negative prompt
+    - seed
+    - resolution
+    - style transfer
+    - LoRA
+    - CFG scale
+    patterns:
+    - (photorealistic|isometric|flat|minimal|sketch)[- ](style|design|illustration)
+    - (cinematic|studio|natural|dramatic) lighting
+    - \d+:\d+ aspect ratio
+    - (negative|positive) prompt
+    color: '#2ecc71'
+    relates_to:
+    - target: image_asset_type
+      relation: enables
+      weight: expected
+      description: "Prompt parameters including style, composition, lighting, and aspect ratio directly determine the output visual asset type"
+    - target: storyboard_element
+      relation: supported_by
+      weight: required
+      description: "Storyboard annotations directly inform prompt construction including scene purpose, composition, and technical parameters"
+    - target: video_shot_type
+      relation: contains
+      weight: expected
+      description: "AI prompt template composition section requires explicit shot type, angle, framing, and perspective as prompt components"
+    - target: prompt_technique
+      relation: specialises
+      weight: expected
+      description: "AI image prompt engineering is a specialised prompting discipline with style locking, negative prompts, fixed seeds, and ControlNet"
+      target_file: ai_systems_entities
+    - target: generation_parameter
+      relation: contains
+      weight: required
+      description: "Image prompts contain seeds, aspect ratios, control modules, negative prompts, and model versions as generation parameters"
+      target_file: ai_systems_entities
+    - target: extraneous_load_marker
+      relation: limits
+      weight: optional
+      description: "Negative prompts within image generation specifically prevent extraneous visual detail per the coherence principle requirements"
+      target_file: cognitive_load_entities
+    - target: design_principle
+      relation: supported_by
+      weight: optional
+      description: "Consistent visual style, high contrast, and clean design principles should be encoded in image prompt style parameters"
+      target_file: visual_elements_entities
+    - target: storyboard_element
+      relation: supports
+      weight: optional
+      description: "Image prompt elements support storyboard planning by generating visual assets described in script direction (Best Video Script Prompts)"
+    parent_entity: null
+quality_indicators:
+  positive:
+  - consistent visual style
+  - professional audio quality
+  - accessible captions and alt text
+  - appropriate pacing
+  - clear storyboard annotations
+  - brand-aligned assets
+  negative:
+  - inconsistent visual treatment
+  - poor audio levels
+  - missing accessibility features
+  - jarring transitions
+  - low resolution assets
+  - unlicensed stock imagery
+domain_keywords:
+  primary:
+  - video
+  - audio
+  - animation
+  - storyboard
+  - image
+  - multimedia
+  - production
+  - footage
+  - frame
+  - scene
+  - shot
+  - narration
+  secondary:
+  - voiceover
+  - b-roll
+  - screencast
+  - motion graphics
+  - podcast
+  - soundtrack
+  - caption
+  - subtitle
+  - aspect ratio
+  - resolution
+  - colour grading
+  - lower third

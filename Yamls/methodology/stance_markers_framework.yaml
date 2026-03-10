@@ -1,0 +1,493 @@
+# Stance Markers and Epistemic Modality
+# Based on: IAM dataset stance classification and linguistic modality research
+# Source: Support/Contest/Neutral stance detection, hedging and boosting patterns
+
+_meta:
+  id: stance_markers_framework
+  title: "Stance Markers"
+  description: "Epistemic modality markers for detecting speaker stance (support/contest/neutral) and certainty levels based on IAM dataset classification."
+  domain: narrative
+  domain_type: cross_cutting
+  purpose: methodology
+  version: "1.2.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - LLM Argument Mining with PDL.md"
+    - "Corpus/Research/Research - TACAM Argument Mining with PDL.md"
+
+  relationships:
+    - target: methodology/discourse_markers_framework.yaml
+      type: depends_on
+      description: "Both discourse analysis; stance markers are a specific class of discourse markers"
+
+# Stance Categories (IAM Framework)
+stance_categories:
+  classification_dependency: "Stance is evaluated relative to a topic anchor, not intrinsically. The same evaluative phrase may be support, contest, or neutral depending on surrounding discourse context. Isolated marker matching without a context window risks systematic misclassification. IAM corpus: 1,000+ articles, 123 topics (Cheng et al. 2022, arXiv:2203.12257). TACAM finding: window-based classification outperforms isolated sentence classification as baseline (Fromm et al. 2019, arXiv:1906.00923)."
+  dataset_reference: "IAM (Informed Argument Mining) dataset — Cheng et al. 2022 — ternary stance schema: Support(+1), Contest(-1), None(0)"
+
+  support:
+    label: "+1"
+    iam_encoding: "+1"
+    definition: "Claim argues IN FAVOR of topic; expresses positive stance"
+    function: "Advocates for, endorses, recommends, or promotes topic"
+
+    linguistic_markers:
+      positive_adjectives: ["beneficial", "advantageous", "valuable", "important", "essential", "critical"]
+      prescriptive_support: ["should adopt", "must implement", "need to invest", "recommend", "propose"]
+      positive_outcomes: ["improves", "enhances", "increases", "optimizes", "accelerates"]
+      endorsement_verbs: ["endorse", "support", "advocate", "champion", "promote"]
+
+    examples:
+      value_claim_support: "Renewable energy is essential for sustainable growth"
+      policy_claim_support: "Companies should invest in AI infrastructure"
+      factual_claim_support: "AI automation improves operational efficiency"
+
+    presentation_context:
+      product_benefits: "Our solution improves speed, reduces cost, and increases quality"
+      recommendation_slides: "We recommend adopting Strategy X"
+      value_proposition: "Investing in our platform delivers measurable ROI"
+
+  contest:
+    label: "-1"
+    iam_encoding: "-1"
+    definition: "Claim argues AGAINST topic; expresses negative stance"
+    function: "Opposes, criticizes, warns against, or discourages topic"
+
+    linguistic_markers:
+      negative_adjectives: ["problematic", "risky", "dangerous", "ineffective", "wasteful", "harmful"]
+      prescriptive_opposition: ["should avoid", "must not", "should reject", "recommend against"]
+      negative_outcomes: ["damages", "reduces", "undermines", "threatens", "harms"]
+      opposition_verbs: ["oppose", "reject", "discourage", "warn against", "criticize"]
+
+    examples:
+      value_claim_contest: "Nuclear energy poses unacceptable safety risks"
+      policy_claim_contest: "Companies should avoid premature AI adoption"
+      factual_claim_contest: "Current AI systems lack transparency and accountability"
+
+    presentation_context:
+      competitive_positioning: "Competitor approaches are inefficient and costly"
+      risk_analysis: "Legacy systems create security vulnerabilities"
+      problem_identification: "Manual processes waste time and increase errors"
+
+  neutral:
+    label: "0"
+    iam_encoding: "0"
+    definition: "Statement is factual, descriptive, or unrelated to topic; no argumentative stance"
+    function: "Provides background, context, or factual information without advocacy"
+    note: "In IAM framework: Neutral stance = Not a claim regarding this topic"
+    iam_note: "In the IAM dataset, None(0) signals the *absence of a claim relationship* with the topic — not a measured or balanced opinion. A sentence that has no stance direction is not a claim at all regarding the topic. Binary classifiers (support vs. contest only) systematically misclassify transitional and descriptive sentences as stances; the three-class taxonomy is empirically superior (Fromm et al. 2019, TACAM arXiv:1906.00923)."
+    pipeline_note: "In presentation-stance assessment contexts (outside IAM), 'neutral' may refer to a presenter taking a genuinely balanced position — this is a distinct use from IAM's None(0). Pipelines must declare which definition they are using."
+
+    linguistic_markers:
+      factual_verbs: ["is", "are", "was", "were", "has", "have", "contains", "includes"]
+      reporting_verbs: ["reports", "states", "shows", "indicates", "reveals"]
+      descriptive_language: "Objective descriptions without evaluative adjectives"
+      statistical_presentation: "Data presented without interpretation"
+
+    examples:
+      factual_statement: "France produces 70% of its electricity from nuclear power"
+      descriptive_statement: "Our platform uses machine learning algorithms"
+      context_statement: "The market has grown 15% annually since 2020"
+
+    presentation_context:
+      background_slides: "Market overview, company history, technical architecture"
+      data_slides: "Charts and graphs without prescriptive interpretation"
+      definition_slides: "Explaining terms, concepts, or processes"
+
+# Hedging (Uncertainty Markers)
+hedging:
+  definition: "Language that weakens or qualifies claims; expresses uncertainty or caution"
+  function: "Reduces speaker commitment; acknowledges limitations; avoids overstatement"
+  rhetorical_effect: "Increases credibility by showing humility; prepares audience for caveats"
+
+  modal_verbs:
+    possibility:
+      - marker: "might"
+        certainty_level: 0.3
+        example: "This approach might improve efficiency"
+
+      - marker: "may"
+        certainty_level: 0.4
+        example: "Results may vary depending on implementation"
+
+      - marker: "could"
+        certainty_level: 0.5
+        example: "Our platform could reduce costs by 20%"
+
+    probability:
+      - marker: "would"
+        certainty_level: 0.6
+        example: "This strategy would likely succeed in mature markets"
+
+      - marker: "should"
+        certainty_level: 0.7
+        example: "Implementation should take 3-6 months"
+
+  epistemic_adverbs:
+    low_certainty:
+      - marker: "possibly"
+        certainty_level: 0.3
+        example: "This is possibly the most cost-effective solution"
+
+      - marker: "perhaps"
+        certainty_level: 0.4
+        example: "Perhaps we should reconsider the timeline"
+
+      - marker: "maybe"
+        certainty_level: 0.3
+        formality: "informal"
+        example: "Maybe we can achieve 30% improvement"
+
+    medium_certainty:
+      - marker: "probably"
+        certainty_level: 0.6
+        example: "We will probably exceed targets"
+
+      - marker: "likely"
+        certainty_level: 0.7
+        example: "This is likely the best approach"
+
+  approximators:
+    - marker: "approximately"
+      example: "Approximately 80% of users report satisfaction"
+
+    - marker: "roughly"
+      example: "Roughly 15% cost reduction"
+
+    - marker: "around"
+      example: "Around $2M in savings"
+
+    - marker: "about"
+      example: "About 90% accuracy"
+
+  frequency_hedges:
+    - marker: "sometimes"
+      certainty_level: 0.4
+      example: "This approach sometimes requires manual intervention"
+
+    - marker: "often"
+      certainty_level: 0.6
+      example: "Users often prefer the simplified interface"
+
+    - marker: "usually"
+      certainty_level: 0.7
+      example: "Implementation usually takes 2-3 months"
+
+    - marker: "generally"
+      certainty_level: 0.7
+      example: "This strategy generally works in enterprise contexts"
+
+  scope_limiters:
+    - marker: "in most cases"
+      example: "In most cases, ROI is achieved within 12 months"
+
+    - marker: "for the most part"
+      example: "For the most part, customers report satisfaction"
+
+    - marker: "to some extent"
+      example: "The platform improves efficiency to some extent"
+
+    - marker: "in some situations"
+      example: "This feature is valuable in some situations"
+
+  hedging_verbs:
+    - marker: "seems"
+      certainty_level: 0.5
+      example: "This approach seems promising"
+
+    - marker: "appears"
+      certainty_level: 0.5
+      example: "The data appears to support our hypothesis"
+
+    - marker: "tends to"
+      certainty_level: 0.6
+      example: "This strategy tends to work in B2B contexts"
+
+    - marker: "suggests"
+      certainty_level: 0.6
+      example: "Research suggests this method is effective"
+
+# Boosting (Certainty Amplifiers)
+boosting:
+  definition: "Language that strengthens or intensifies claims; expresses high confidence"
+  function: "Increases speaker commitment; emphasizes importance; conveys urgency"
+  rhetorical_effect: "Increases persuasive impact; may reduce credibility if overused"
+
+  certainty_adverbs:
+    absolute_certainty:
+      - marker: "definitely"
+        certainty_level: 1.0
+        example: "This is definitely the best solution"
+
+      - marker: "certainly"
+        certainty_level: 0.95
+        example: "We will certainly achieve our targets"
+
+      - marker: "absolutely"
+        certainty_level: 1.0
+        example: "This approach is absolutely necessary"
+
+      - marker: "undoubtedly"
+        certainty_level: 0.95
+        formality: "formal"
+        example: "This is undoubtedly a transformative technology"
+
+    high_certainty:
+      - marker: "clearly"
+        certainty_level: 0.9
+        example: "Clearly, the current approach is insufficient"
+
+      - marker: "obviously"
+        certainty_level: 0.9
+        example: "Obviously, we need to invest in infrastructure"
+
+      - marker: "evidently"
+        certainty_level: 0.85
+        formality: "formal"
+        example: "Evidently, customer demand is accelerating"
+
+  intensifiers:
+    - marker: "very"
+      example: "This is a very important consideration"
+
+    - marker: "extremely"
+      example: "The results are extremely promising"
+
+    - marker: "highly"
+      example: "This approach is highly effective"
+
+    - marker: "remarkably"
+      example: "We achieved remarkably fast time-to-value"
+
+  emphatic_markers:
+    - marker: "in fact"
+      example: "In fact, our solution is 3x faster than competitors"
+
+    - marker: "indeed"
+      formality: "formal"
+      example: "Indeed, the data confirms our hypothesis"
+
+    - marker: "actually"
+      example: "We actually exceeded targets by 40%"
+
+  necessity_markers:
+    - marker: "must"
+      certainty_level: 0.95
+      example: "We must invest in AI to remain competitive"
+
+    - marker: "have to"
+      certainty_level: 0.9
+      example: "Companies have to adapt or risk obsolescence"
+
+    - marker: "need to"
+      certainty_level: 0.85
+      example: "We need to accelerate deployment"
+
+  frequency_boosters:
+    - marker: "always"
+      certainty_level: 1.0
+      example: "Our platform always delivers sub-100ms latency"
+
+    - marker: "never"
+      certainty_level: 1.0
+      example: "We never compromise on security"
+
+    - marker: "invariably"
+      certainty_level: 1.0
+      formality: "formal"
+      example: "This approach invariably produces superior results"
+
+# Position Markers (Evaluative Language)
+position_markers:
+  positive_evaluation:
+    fortunately:
+      stance: "positive"
+      example: "Fortunately, we have the resources to proceed"
+
+    happily:
+      stance: "positive"
+      formality: "informal"
+      example: "Happily, customer adoption exceeded expectations"
+
+    encouragingly:
+      stance: "positive"
+      example: "Encouragingly, early results show promise"
+
+  negative_evaluation:
+    unfortunately:
+      stance: "negative"
+      example: "Unfortunately, implementation was delayed"
+
+    regrettably:
+      stance: "negative"
+      formality: "formal"
+      example: "Regrettably, costs exceeded budget"
+
+    disappointingly:
+      stance: "negative"
+      example: "Disappointingly, adoption was slower than projected"
+
+  neutral_evaluation:
+    objectively:
+      stance: "neutral"
+      example: "Objectively, the data shows mixed results"
+
+    frankly:
+      stance: "neutral"
+      example: "Frankly, this approach has trade-offs"
+
+    candidly:
+      stance: "neutral"
+      formality: "formal"
+      example: "Candidly, we face significant challenges"
+
+  evidential_strength:
+    description: "Stance-bearing claims can be further qualified by the strength of evidence supporting them; this gradation parallels the hedging/boosting certainty scale"
+    strong:
+      description: "Claim backed by explicit data, citations, or verified benchmarks"
+      example: "Our platform reduced costs by 32% in a controlled pilot (n=200)"
+    moderate:
+      description: "Claim supported by logical inference or indirect evidence"
+      example: "Given the market trends, we expect significant cost savings"
+    weak:
+      description: "Claim based on opinion only, no supporting evidence"
+      example: "We believe this will be a great improvement"
+    source: "Research - LLM Argument Mining with PDL.md — CEPE schema Section 6.2"
+
+# Presentation-Specific Stance Patterns
+presentation_context:
+  sales_deck_patterns:
+    strong_support: "Our solution is clearly the best choice (boosting)"
+    hedged_claim: "We typically achieve 20-30% cost reduction (hedging + approximation)"
+    competitive_contest: "Legacy approaches are demonstrably inefficient (boosting + negative)"
+
+  executive_brief_patterns:
+    confident_recommendation: "We should definitely proceed with this strategy (boosting + support)"
+    cautious_proposal: "This approach might be worth exploring (hedging + support)"
+    risk_identification: "Failure to act could seriously jeopardize market position (hedging + contest)"
+
+  technical_presentation_patterns:
+    qualified_claim: "Our benchmarks suggest approximately 40% improvement in most scenarios (hedging + approximation + scope limiter)"
+    emphatic_finding: "The data clearly demonstrates significant performance gains (boosting + support)"
+
+# Stance Detection Strategy
+detection_strategy:
+  step_1_identify_topic:
+    description: "Extract debate topic and generate a controversy profile identifying what pro-frame and con-frame arguments typically claim"
+    example: "Topic: AI adoption in enterprise"
+    controversy_profile: "Expand topic into pro-frame vocabulary (efficiency, competitiveness, innovation) and con-frame vocabulary (risk, cost, transparency) before scanning for evaluative language. This semantic anchoring prevents stance markers from being classified without topical grounding (Fromm et al. 2019, TACAM Section 2.2)."
+    context_window: "Stance cannot be determined from a single sentence in isolation. Provide a context window of 10-15 surrounding sentences (IAM corpus, Cheng et al. 2022) or k=3 preceding sentences (TACAM recommendation, Fromm et al. 2019). Evaluating without context is architecturally insufficient."
+
+  step_2_locate_evaluative_language:
+    description: "Identify adjectives, adverbs, and verbs expressing judgment within the topical domain"
+    markers: ["beneficial", "problematic", "should", "must", "avoid"]
+    topic_relevance_filter: "Only flag evaluative language that is semantically connected to the controversy profile. Topic-irrelevant intensifiers (e.g., 'the interface is absolutely beautiful' on an ROI debate) are not stance signals."
+
+  step_3_classify_direction:
+    support: "Positive evaluation of topic (beneficial, should adopt)"
+    contest: "Negative evaluation of topic (problematic, should avoid)"
+    neutral: "No evaluation (factual description) or no claim relationship to topic"
+    chain_of_thought: "Before assigning the label, output an analysis field documenting which contextual sentences influenced the classification and why. CoT reasoning before label assignment is empirically shown to improve stance classification precision (Cheng et al. 2022, arXiv:2203.12257 Section 5.1)."
+
+  step_4_assess_certainty:
+    description: "Identify hedging (weakens) or boosting (strengthens) markers"
+    hedging_score: "Count hedge markers, calculate certainty level"
+    boosting_score: "Count boost markers, calculate certainty level"
+
+  step_5_composite_stance:
+    formula: "direction (support/contest/neutral) + certainty_level (0.0-1.0) + confidence_score (0.0-1.0)"
+    examples:
+      strong_support: "We must definitely invest (support + boost)"
+      hedged_support: "We should probably consider (support + hedge)"
+      strong_contest: "We absolutely must avoid (contest + boost)"
+      hedged_contest: "This might be problematic (contest + hedge)"
+    confidence_score: "Include a model confidence score (0.0–1.0) alongside the stance label. Recommended classification temperature: 0.1 (deterministic output). Sentences with confidence < 0.5 should be routed for human review."
+    reasoning_trace: "Document which contextual sentences influenced the classification to enable auditing of ambiguous cases and distinguish genuine stance signals from annotation noise."
+
+  step_6_evidence_pairing:
+    description: "Conditional phase — only triggered when a claim is confirmed (stance = support or contest). Scan local context window for supporting evidence."
+    locality_window: "Evidence is statistically located within 10-15 sentences of the claim sentence (IAM corpus analysis, Cheng et al. 2022 Section 2.1)"
+    vocabulary_overlap_signal: "Claim-evidence pairs share 20.14% vocabulary on average vs. 8.73% for random pairs — use lexical overlap as a pre-filter before semantic scoring"
+    output: "Claim-Evidence Pair (CEP) with relation_strength: strong (explicit data/citation), moderate (logical inference), weak (opinion only)"
+
+# Quality Indicators
+quality_assessment:
+  appropriate_hedging:
+    context: "Uncertain outcomes, predictions, or generalizations"
+    example: "This approach will likely work in most enterprise contexts"
+    rationale: "Hedging increases credibility by acknowledging uncertainty"
+
+  inappropriate_hedging:
+    context: "Established facts or verified data"
+    example: "Our product might have won the industry award"  # BAD: Award is fact, not uncertain
+    rationale: "Hedging verifiable facts reduces credibility"
+
+  appropriate_boosting:
+    context: "Core differentiators, verified superiority, critical imperatives"
+    example: "We are clearly the fastest solution on the market (verified by benchmarks)"
+    rationale: "Boosting emphasizes proven advantages"
+
+  inappropriate_boosting:
+    context: "Unverified claims, subjective opinions, overgeneralizations"
+    example: "We are absolutely the best in every way"  # BAD: Too broad, unverifiable
+    rationale: "Excessive boosting without evidence damages credibility"
+    topic_irrelevance: "Intensifiers applied to properties not related to the contested topic are not stance signals (e.g., 'the interface is absolutely beautiful' on a cost-benefit debate). Topic-awareness filtering must precede stance classification (Fromm et al. 2019, TACAM Section 2.2)."
+
+  label_hallucination:
+    context: "LLM-based stance classification generating non-vocabulary stance labels"
+    example: "Model outputs 'Pro' instead of 'Support', or 'Agrees strongly' instead of 'Support'"
+    rationale: "Semantically synonymous but non-standard labels corrupt downstream pipeline ingestion and database schemas"
+    mitigation: "Enforce enum constraints on stance output — controlled vocabulary {support, contest, neutral} only. Reject and retry any response outside the enum."
+    source: "Research - LLM Argument Mining with PDL.md — Cheng et al. 2022 Section 5.2"
+
+  evidence_hallucination:
+    context: "LLM generating supporting evidence that does not exist in the source text"
+    example: "Model fabricates a statistic or expert quote to support a detected claim rather than extracting text from the source"
+    rationale: "Fabricated evidence is indistinguishable from real evidence in downstream pipelines — a critical integrity failure"
+    mitigation: "Require exact text substring extraction (not paraphrase or summarization). Use a critic/verification loop that checks extracted evidence against source text character overlap."
+    source: "Research - LLM Argument Mining with PDL.md — arXiv:2203.12257 Section 1"
+
+  polarity_misclassification:
+    context: "Model correctly identifies a sentence as a claim but assigns incorrect stance direction (support vs. contest)"
+    example: "A sentence opposing AI adoption is classified as support because of shared topical vocabulary"
+    rationale: "Polarity error is distinct from claim-detection error — the system 'knows' it is a claim but assigns wrong valence"
+    mitigation: "Pass full controversy profile (pro-frame AND con-frame) to the classifier, not just the topic keyword. Check that evaluative adjectives align with the correct frame."
+    source: "Research - LLM Argument Mining with PDL.md — arXiv:2203.12257 Section 1"
+
+  annotation_disagreement:
+    context: "Human annotators disagree on whether a sentence carries a stance or which stance it carries"
+    signal: "Sentence contains evaluative language but stance direction is topic-dependent or context-reversed — evaluative markers are present but topical relevance is ambiguous"
+    recommendation: "Do not force-classify ambiguous sentences. Use a reasoning trace to document the ambiguity and flag for human review. Sentences with inter-annotator disagreement in the IAM corpus cluster around topically ambiguous evaluative phrases."
+    source: "Research - TACAM Argument Mining with PDL.md — Fromm et al. 2019 Section 8.2"
+
+# GLiNER2 Extraction Guidance
+extraction_guidance:
+  stance_extraction:
+    input: "Sentence + topic controversy profile + local context window (10-15 sentences)"
+    output: "stance (support/contest/neutral) + certainty_level (0.0-1.0) + confidence_score (0.0-1.0) + reasoning_trace"
+    pipeline: "CESC (Claim Extraction with Stance Classification) — combined single-task, not two independent passes. Simultaneously detects whether the sentence is a claim AND assigns its stance label."
+    claim_length_signal: "IAM corpus analysis shows claim sentences average ~21 words; unusually short sentences (< 10 words) are less likely to be stance-bearing claims and can be deprioritized as a pre-processing heuristic (Cheng et al. 2022, arXiv:2203.12257 Section 2.1)."
+    recommended_temperature: 0.1  # Low temperature for deterministic, reproducible stance labels
+    topic_relevance_threshold: 0.5  # Sentences with relevance_score < 0.5 should be treated as NON-ARGUMENT regardless of evaluative language
+    source: "Research - LLM Argument Mining with PDL.md — Research - TACAM Argument Mining with PDL.md"
+
+  hedging_extraction:
+    markers_to_extract: ["modal_verbs", "epistemic_adverbs", "approximators", "scope_limiters"]
+    output: "List of hedge markers + composite certainty score"
+
+  boosting_extraction:
+    markers_to_extract: ["certainty_adverbs", "intensifiers", "emphatic_markers", "necessity_markers"]
+    output: "List of boost markers + composite certainty score"
+
+  position_extraction:
+    markers_to_extract: ["fortunately", "unfortunately", "objectively"]
+    output: "Evaluative stance (positive/negative/neutral)"
+
+  evidence_extraction:
+    description: "CEPE (Claim-Evidence Pair Extraction) — conditional phase, triggered only after a confirmed stance-bearing claim. Not applied to neutral sentences."
+    input: "Confirmed claim sentence + 10-15 sentence locality window"
+    locality_window: "Search within 10-15 surrounding sentences; do not scan full document (IAM corpus statistical validation, Cheng et al. 2022)"
+    pre_filter: "Use vocabulary overlap as pre-filter: candidate evidence sentences sharing > 15% vocabulary with the claim sentence are high-priority candidates (IAM mean overlap: 20.14% for true pairs vs. 8.73% for random pairs)"
+    output: "Claim-Evidence Pair with: evidence_text (exact substring), relation_strength (strong/moderate/weak), reasoning_trace"
+    anti_pattern: "Do not allow paraphrase or summarization as evidence — require exact text substring only, to prevent evidence_hallucination"
+    source: "Research - LLM Argument Mining with PDL.md — arXiv:2203.12257 Section 2.1"

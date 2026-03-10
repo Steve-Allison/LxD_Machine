@@ -1,0 +1,873 @@
+# ==============================================================================
+# Mayer's Principles of Multimedia Learning
+# Comprehensive configuration for the 15 research-validated principles
+# ==============================================================================
+#
+# SOURCE: Richard E. Mayer's Cognitive Theory of Multimedia Learning
+# Based on three foundational cognitive science principles:
+#   1. Dual-channel processing (visual/pictorial + auditory/verbal)
+#   2. Limited capacity (each channel has finite processing capacity)
+#   3. Active processing (selecting, organizing, integrating information)
+#
+# ==============================================================================
+
+_meta:
+  id: mayer_principles
+  title: "Mayer's Multimedia Principles"
+  description: "Richard Mayer's 15 principles of multimedia learning with effect sizes, expertise reversal effects, cognitive load theory mapping, and novice/expert proficiency guidance. Integrates meta-analysis data from 46-year research corpus."
+  domain: pedagogical
+  domain_type: workflow
+  purpose: methodology
+  version: "1.3.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Theory_Mayers_Principles_of_Multimedia_Learning-_A_Comprehensive_Summary.md"
+    - "Corpus/Research/mayers_15_principles.md"
+    - "Corpus/Research/Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md"
+    - "Corpus/Research/Applying Learning Theory - A Practical Checklist.md"
+  key_meta_analyses:
+    - "Alpizar et al. (2020): Signalling meta-analysis, n=2,726 participants, Educational Technology Research and Development"
+    - "Ginns (2006): Spatial/temporal contiguity meta-analysis, Learning and Instruction 16(6)"
+    - "Adesope & Nesbit (2012): Redundancy meta-analysis, Journal of Educational Psychology 104(1)"
+    - "Schneider et al. (2018): Signalling effects 46-year meta-analysis, Educational Research Review 23"
+    - "Bisra et al. (2018): Self-explanation 64-study meta-analysis, overall g=0.55"
+    - "Clark & Mayer (2016): Modality 20-40% retention improvement in e-learning contexts"
+    - "Mayer & Pilegard (2014): Segmenting & pre-training meta-analyses, median d≈0.75-0.79"
+    - "Chu & Chen (2019): Embodiment meta-analysis, modest g=0.20-0.30 on learning outcomes"
+    - "Rey & Buchwald (2011): Expertise reversal effect, British Journal of Educational Psychology"
+  relationships:
+    - target: methodology/pedagogical_frameworks.yaml
+      type: related_to
+# ==============================================================================
+# FOUNDATIONAL THEORY
+# ==============================================================================
+
+cognitive_foundations:
+  dual_channel_assumption:
+    description: "Humans process information through two separate channels"
+    channels:
+      visual_pictorial:
+        processes: ["images", "graphics", "videos", "animations", "diagrams"]
+        capacity: "Limited - approximately 4-7 chunks"
+      auditory_verbal:
+        processes: ["spoken words", "narration", "sound effects"]
+        capacity: "Limited - approximately 4-7 chunks"
+
+  limited_capacity_assumption:
+    description: "Each channel has finite processing capacity at any moment"
+    implication: "Overloading either channel impairs learning"
+    working_memory_limit: "7 ± 2 items (Miller's Law)"
+
+  active_processing_assumption:
+    description: "Meaningful learning requires cognitive engagement"
+    processes:
+      selecting: "Attending to relevant incoming information"
+      organizing: "Building coherent mental representations"
+      integrating: "Connecting new information with prior knowledge"
+
+# ==============================================================================
+# EXPERTISE REVERSAL EFFECTS
+# ==============================================================================
+
+expertise_reversal_effect:
+  description: "Principle effectiveness varies significantly by learner expertise level. Several principles show reversal—benefits diminish or reverse for expert learners."
+  research_basis: "Rey & Buchwald (2011); Richter (2016) in Alpizar et al. (2020)"
+  critical_implications: "Do NOT apply all principles uniformly across all audiences. Tailor instruction to learner proficiency."
+
+  principles_affected:
+    segmenting:
+      novice_effect: "HIGH BENEFIT — Essential for low prior-knowledge learners; breaks essential load into chunks"
+      expert_effect: "LOW/NEGATIVE — Experts process continuously without segmentation; segmenting may increase cognitive load or waste time"
+      citation: "Mayer & Pilegard (2014); Rey & Buchwald (2011)"
+
+    pre_training:
+      novice_effect: "HIGH BENEFIT — Essential prerequisite knowledge building; reduces essential processing load"
+      expert_effect: "NEGATIVE (waste of time) — Experts already know components; pre-training delays content delivery"
+      citation: "Mayer et al. (2002); Pollock et al. (2002)"
+
+    signalling:
+      novice_effect: "HIGH BENEFIT — Directs limited attentional capacity toward key points"
+      expert_effect: "MEDIUM/REDUNDANT — Experts attend to relevant information anyway; signals may be unnecessary"
+      citation: "Richter (2016) in Alpizar et al. (2020)"
+
+    embodiment:
+      novice_effect: "STRONG MOTIVATIONAL BENEFIT — Gestures guide attention; supports mental model building"
+      expert_effect: "MODEST COGNITIVE BENEFIT (g=0.20-0.30) — Less impact on learning; benefits primarily motivational"
+      citation: "Chu & Chen (2019)"
+
+  design_recommendation: "Assess learner prior knowledge early. Use principles MORE densely for novices; reduce/eliminate for experts."
+
+# ==============================================================================
+# COGNITIVE LOAD THEORY MAPPING
+# ==============================================================================
+
+cognitive_load_theory_mapping:
+  description: "Mayer's principles align with Sweller's cognitive load theory by reducing extraneous, managing essential, and fostering germane load."
+  sweller_framework_alignment: "All 15 principles serve one of three CLT load management goals"
+  working_memory_constraint: "Miller (1956) 7±2 limit is fundamental design assumption underlying all principles"
+
+  extraneous_load_reduction_principles:
+    description: "Eliminate unnecessary processing; learners focus cognitive effort on relevant content"
+    principles:
+      - "Coherence (remove decorative/seductive details)"
+      - "Signalling (reduce search/scanning cognitive effort)"
+      - "Redundancy (avoid dual-coding waste)"
+      - "Spatial Contiguity (reduce split-attention effort; eye movement cost)"
+      - "Temporal Contiguity (reduce working memory hold-time for unconnected elements)"
+    mechanism: "By removing extraneous processing, essential cognitive load decreases; learners have capacity for deeper learning"
+
+  essential_load_management_principles:
+    description: "Honor working memory limits by breaking content into manageable units or distributing across channels"
+    principles:
+      - "Segmenting (breaks content into digestible chunks; respects 7±2 limit)"
+      - "Pre-training (offloads component knowledge to earlier phase)"
+      - "Modality (distributes visual + auditory load across dual channels; prevents single-channel overload)"
+    mechanism: "By managing essential load, prevent cognitive overload while ensuring core content comprehension"
+
+  germane_load_fostering_principles:
+    description: "Increase cognitive effort on RELEVANT tasks—deep encoding, schema building, transfer preparation"
+    principles:
+      - "Multimedia (dual coding increases depth of processing)"
+      - "Personalization (conversational tone increases engagement; facilitates generative processing)"
+      - "Voice (natural voice reduces comprehension load; frees capacity for deeper processing)"
+      - "Generative Activity (intentionally increases cognitive effort on encoding tasks)"
+    mechanism: "Intentional germane load increase strengthens memory encoding and transfer learning"
+
+  cognitive_load_balance_principle:
+    optimal_design: "Minimize extraneous + manage essential + optimize germane = maximized learning"
+    imbalance_risks:
+      high_extraneous_only: "Learners are distracted; essential load goes unmet; learning fails"
+      high_essential_only: "Cognitive overload; working memory exhausted; surface learning only"
+      no_germane_effort: "Passive reception; minimal encoding; high forgetting rate"
+    success_indicator: "Learners report moderate difficulty (not bored, not overwhelmed) + high retention rates"
+
+# ==============================================================================
+# NOVICE VS. EXPERT PROFICIENCY EFFECTS
+# ==============================================================================
+
+learner_proficiency_effects:
+  description: "Mayer principles' effectiveness varies dramatically based on learner prior knowledge and expertise"
+  assessment_guidance: "Use pre-assessment to determine novice vs. intermediate vs. expert proficiency levels"
+
+  novice_learners_low_prior_knowledge:
+    profile: "Lack domain schema; limited conceptual framework; high essential processing load"
+    principle_application:
+      high_benefit:
+        - "Segmenting (essential — reduces overwhelming load)"
+        - "Pre-training (essential — builds component knowledge foundation)"
+        - "Signalling (high benefit — directs limited attention)"
+        - "Spatial Contiguity (high benefit — reduces search effort)"
+        - "Modality (strong benefit — distributes channel load)"
+      moderate_benefit:
+        - "Multimedia (moderate — dual coding helps but learners may struggle with integration)"
+        - "Embodiment (primarily motivational; modest cognitive benefit)"
+    citation: "Rey & Buchwald (2011); Richter (2016); Mayer & Pilegard (2014)"
+    design_principle: "Apply most principles liberally; provide external cognitive support throughout"
+
+  intermediate_learners:
+    profile: "Partial domain schema; developing conceptual framework; moderate essential load"
+    principle_application:
+      adapt: ["Segmenting (gradually reduce)", "Pre-training (light review only)", "Signalling (maintain)"]
+      maximize: ["Modality", "Multimedia", "Generative Activity"]
+    design_principle: "Transition from external to internal support; increase generative demands"
+
+  expert_learners_high_prior_knowledge:
+    profile: "Strong domain schema; rich mental models; low essential load; can handle density"
+    principle_application:
+      skip_or_reduce:
+        - "Segmenting (can process continuously; segmentation slows expertise advantage)"
+        - "Pre-training (waste of time; already knows components)"
+        - "Signalling (experts self-signal; cues may be redundant)"
+      maintain:
+        - "Coherence (quality still matters)"
+        - "Modality (still applicable for content type)"
+        - "Multimedia (depends on content type)"
+      emphasize:
+        - "Generative Activity (activate higher-order transfer; problem-solving)"
+        - "Personalization (may prefer more technical/direct tone)"
+    citation: "Rey & Buchwald (2011); Mayer & Pilegard (2014)"
+    caution: "Applying novice-level support to experts can frustrate and slow learning; tailor to proficiency"
+    design_principle: "Reduce scaffolding; increase challenge; focus on transfer and application"
+
+  universal_principles_regardless_of_expertise:
+    always_apply:
+      - "Coherence (remove seductive details; quality matters at all levels)"
+      - "Redundancy (avoid saying + showing identical content; all learners benefit from non-redundant multimodal)"
+    proficiency_independent: "These principles are fundamental to good design across all learner types"
+
+# ==============================================================================
+# PRACTICAL QUANTITATIVE OUTCOMES
+# ==============================================================================
+
+practical_effectiveness_data:
+  retention_improvements:
+    modality_effect: "20-40% retention improvement when converting text explanations to narration in e-learning contexts (Clark & Mayer 2016)"
+
+  learning_penalties:
+    coherence_violation: "Seductive details reduce retention by approximately 25% (Mayer 2001; Rey 2012 meta-analysis confirms effect)"
+
+  effect_size_summary:
+    d_values_interpretation: "d=0.2 (small), d=0.5 (medium), d=0.8 (large); all Mayer principles show medium-to-large effects"
+    large_effects:
+      - "Spatial Contiguity: d≈0.85"
+      - "Temporal Contiguity: d≈1.22"
+      - "Multimedia: d>0.8"
+      - "Segmenting: d≈0.79"
+      - "Pre-training: d≈0.75"
+      - "Modality: d≈0.72"
+      - "Personalization: d≈0.79"
+    medium_effects:
+      - "Coherence: d=0.86"
+      - "Generative Activity: g=0.55 (Bisra et al. 64-study meta-analysis)"
+      - "Voice: d=0.69 (human vs machine)"
+      - "Embodiment: d=0.36 (modest but consistent)"
+      - "Signalling: d=0.38 (context-dependent; stronger for novices)"
+
+# ==============================================================================
+# CATEGORY A: REDUCING EXTRANEOUS PROCESSING
+# Minimize unnecessary cognitive load so learners focus on key information
+# ==============================================================================
+
+reducing_extraneous_processing:
+  category_description: "Principles that reduce unnecessary cognitive load"
+
+  coherence:
+    id: 1
+    name: "Coherence Principle"
+    definition: "People learn better when extraneous words, pictures, and sounds are excluded rather than included"
+    core_guideline: "Remove all non-essential material that does not support the learning objective"
+
+    evidence:
+      effect_size: "d = 0.86 (Mayer & Moreno meta-analysis)"
+      key_studies:
+        - "Mayer (2001): Adding interesting but irrelevant facts reduced retention by 25%"
+        - "Harp & Mayer (1998): Seductive details harmed learning even when related to topic"
+
+    violations:
+      - "decorative_graphics"
+      - "background_music"
+      - "seductive_details"
+      - "irrelevant_animations"
+      - "stock_photos_unrelated"
+
+    indicators:
+      positive: ["focused content", "minimal decoration", "every element serves learning"]
+      negative: ["clip art", "background music", "decorative borders", "off-topic stories"]
+
+    how_to_apply:
+      text: "Remove tangential facts, anecdotes, or 'interesting' tidbits that don't directly support objectives"
+      graphics: "Use only visuals that illustrate the concept; avoid decorative clip art or stock photos"
+      video: "Cut B-roll that doesn't reinforce the narration; remove background music during explanations"
+      audio: "Eliminate ambient sounds or music beds under instructional narration"
+
+    checklist:
+      - "Is every visual directly relevant to the learning objective?"
+      - "Have all decorative elements been removed?"
+      - "Is background music/sound eliminated during instruction?"
+      - "Are 'interesting but irrelevant' facts removed?"
+
+    remediation:
+      action: "Remove all 'seductive details' (background music, decorative clip art) that do not directly support the learning goal"
+      quick_fix: "Delete any element you cannot directly link to a learning objective"
+
+  signalling:
+    id: 2
+    name: "Signalling Principle (Cueing)"
+    definition: "People learn better when cues highlight the essential information"
+    core_guideline: "Use visual and verbal cues to direct attention to key content"
+
+    evidence:
+      effect_size: "d = 0.38 (Alpizar et al. 2020 meta-analysis, n=2,726)"
+      key_studies:
+        - "Mautone & Mayer (2001): Organizational outlines improved transfer performance"
+        - "Richter (2016): Signals especially beneficial for low prior-knowledge learners"
+
+    cue_types:
+      visual:
+        - "arrows pointing to key elements"
+        - "color highlighting"
+        - "circles or boxes around important areas"
+        - "bold or italic text"
+        - "numbered steps"
+      verbal:
+        - "voice emphasis on key words"
+        - "transitional phrases ('The key point is...')"
+        - "preview statements"
+        - "summary statements"
+
+    indicators:
+      positive: ["arrows", "highlights", "bold text", "headers", "numbered lists", "voice emphasis"]
+      negative: ["undifferentiated text walls", "no visual hierarchy", "monotone delivery"]
+
+    how_to_apply:
+      text: "Use bold, headings, and summary sentences to flag key points"
+      graphics: "Add arrows, circles, or color highlights to direct attention"
+      video: "Use zooms, spotlights, or animated highlights on key areas"
+      audio: "Emphasize key words vocally; use phrases like 'Most importantly...'"
+
+    checklist:
+      - "Are key terms highlighted or emphasized?"
+      - "Do visuals include directional cues (arrows, highlights)?"
+      - "Does narration use verbal signals for important points?"
+      - "Is content structure made explicit through headings/outlines?"
+
+    remediation:
+      action: "Add visual cues (arrows, highlights) and verbal signals ('The key point is...') to guide attention"
+
+  redundancy:
+    id: 3
+    name: "Redundancy Principle"
+    definition: "People learn better from graphics and narration than from graphics, narration, AND on-screen text"
+    core_guideline: "Avoid presenting identical information in multiple formats simultaneously"
+
+    evidence:
+      effect_size: "d = 0.72 (negative effect of redundancy)"
+      key_studies:
+        - "Kalyuga et al. (1999): Redundant text with diagrams harmed learning"
+        - "Mayer & Moreno (2003): Simultaneous text + narration overloads visual channel"
+
+    violations:
+      - "reading slides verbatim"
+      - "full paragraphs on screen while narrating same content"
+      - "captions duplicating exact narration"
+      - "text labels that repeat narration word-for-word"
+
+    exceptions:
+      - "Foreign language learners may benefit from redundant text"
+      - "Technical terms can appear as text while spoken"
+      - "Accessibility requirements (closed captions for deaf/HoH)"
+
+    indicators:
+      positive: ["narration without duplicate text", "minimal on-screen text", "graphics with audio"]
+      negative: ["reading slides aloud", "text paragraphs with narration", "duplicate information"]
+
+    how_to_apply:
+      text: "If narrating, remove on-screen text or reduce to keywords only"
+      graphics: "Let narration explain diagrams; avoid text labels that duplicate audio"
+      video: "Use visuals with voiceover; don't display transcript on screen"
+      presentation: "Use visual slides with speaker notes; don't read bullet points"
+
+    checklist:
+      - "Is on-screen text removed when narration covers same content?"
+      - "Are slides visual rather than text-heavy?"
+      - "Is the presenter NOT reading slides verbatim?"
+
+    remediation:
+      action: "Mute the on-screen text. If narrating, don't show it as text simultaneously"
+      quick_fix: "Convert text-heavy slides to visuals with speaker notes"
+
+  spatial_contiguity:
+    id: 4
+    name: "Spatial Contiguity Principle"
+    definition: "People learn better when corresponding words and pictures are presented near rather than far from each other"
+    core_guideline: "Place text labels close to the graphics they describe"
+
+    evidence:
+      effect_size: "d = 1.12 (Mayer, 2001)"
+      key_studies:
+        - "Moreno & Mayer (1999): Integrated labels outperformed separated legends"
+        - "Ginns (2006): Meta-analysis confirmed spatial contiguity effect"
+
+    violations:
+      - "legends separated from diagrams"
+      - "footnotes far from referenced content"
+      - "labels requiring eye movement to connect"
+      - "split-attention layouts"
+
+    indicators:
+      positive: ["integrated labels", "text near related images", "inline explanations"]
+      negative: ["separate legends", "distant footnotes", "keys at bottom of page"]
+
+    how_to_apply:
+      text: "Place explanatory text directly adjacent to or overlaid on relevant visuals"
+      graphics: "Embed labels within diagrams rather than using separate legends"
+      video: "Position callouts and annotations near the element being discussed"
+      interactive: "Show tooltips adjacent to the element, not in a separate panel"
+
+    checklist:
+      - "Are labels integrated into diagrams (not in separate legends)?"
+      - "Is explanatory text positioned near relevant visuals?"
+      - "Can learners see both text and image without scrolling/searching?"
+
+    remediation:
+      action: "Physically integrate text labels into the diagram itself, eliminating the need for a legend"
+      quick_fix: "Move all callouts to touch or point directly at their referent"
+
+  temporal_contiguity:
+    id: 5
+    name: "Temporal Contiguity Principle"
+    definition: "People learn better when corresponding words and pictures are presented simultaneously rather than successively"
+    core_guideline: "Present narration and graphics at the same time, not sequentially"
+
+    evidence:
+      effect_size: "d = 1.31 (Mayer & Anderson, 1992)"
+      key_studies:
+        - "Mayer & Anderson (1991): Simultaneous narration + animation > sequential"
+        - "Mayer & Sims (1994): Effect stronger for low spatial ability learners"
+
+    violations:
+      - "showing all visuals first, then explaining"
+      - "explaining concept verbally, then showing diagram"
+      - "narration that leads or lags visuals significantly"
+
+    indicators:
+      positive: ["synchronized narration", "real-time annotation", "concurrent audio-visual"]
+      negative: ["pre-narration", "post-explanation", "asynchronous content"]
+
+    how_to_apply:
+      text: "Present text and related images on the same screen/page"
+      graphics: "Narrate while the visual is displayed, not before or after"
+      video: "Sync voiceover precisely with on-screen animations"
+      animation: "Build diagrams progressively as narration describes each part"
+
+    checklist:
+      - "Does narration play WHILE the visual is displayed?"
+      - "Are animations synchronized with their explanations?"
+      - "Is there a delay between visual and verbal content?"
+
+    remediation:
+      action: "Synchronize audio narration with visual appearance; use progressive reveal"
+
+# ==============================================================================
+# CATEGORY B: MANAGING ESSENTIAL PROCESSING
+# Help learners focus on and understand key content
+# ==============================================================================
+
+managing_essential_processing:
+  category_description: "Principles that help learners manage inherent complexity"
+
+  segmenting:
+    id: 6
+    name: "Segmenting Principle"
+    definition: "People learn better when a complex lesson is presented in learner-paced segments rather than as a continuous unit"
+    core_guideline: "Break content into smaller, manageable chunks with user control"
+
+    evidence:
+      effect_size: "d = 0.79 (Mayer & Chandler, 2001)"
+      key_studies:
+        - "Mayer & Chandler (2001): Segmented animations improved learning"
+        - "Hasler et al. (2007): Learner-controlled pacing enhanced understanding"
+
+    guidelines:
+      max_segment_length: "2-3 minutes for video; 5-7 concepts per module"
+      chunk_size: "3-5 related ideas per segment"
+      pacing: "Allow learner control between segments"
+
+    indicators:
+      positive: ["modular content", "clear sections", "pause points", "learner control"]
+      negative: ["monolithic videos", "no breaks", "information dumps"]
+
+    how_to_apply:
+      text: "Divide long documents into sections with clear headings"
+      graphics: "Reveal complex diagrams in stages"
+      video: "Create 2-3 minute segments instead of 10+ minute videos"
+      e_learning: "Add 'Continue' buttons between content chunks"
+
+    checklist:
+      - "Is content divided into logical segments (< 3 min each)?"
+      - "Does learner control pacing between segments?"
+      - "Are complex processes broken into steps?"
+
+    remediation:
+      action: "Break continuous presentations into 2-3 minute segments with pause points"
+
+  pre_training:
+    id: 7
+    name: "Pre-training Principle"
+    definition: "People learn better from a multimedia lesson when they know the names and characteristics of key concepts beforehand"
+    core_guideline: "Teach key terminology and components before the main lesson"
+
+    evidence:
+      effect_size: "d = 0.85 (Mayer et al., 2002)"
+      key_studies:
+        - "Mayer et al. (2002): Pre-training on components improved system understanding"
+        - "Pollock et al. (2002): Isolated elements before integration helped novices"
+
+    pre_training_types:
+      vocabulary: "Define technical terms before using them"
+      components: "Introduce parts of a system before explaining how they interact"
+      schemas: "Activate relevant prior knowledge"
+      orientation: "Provide overview of structure before details"
+
+    indicators:
+      positive: ["glossary", "terminology intro", "component overview", "prerequisite review"]
+      negative: ["undefined jargon", "assumed knowledge", "no context setting"]
+
+    how_to_apply:
+      text: "Include a glossary or 'Key Terms' section at the start"
+      graphics: "Show labeled components before explaining their interactions"
+      video: "Begin with a brief overview of key concepts"
+      e_learning: "Create a 'Prerequisites' or 'Before You Start' module"
+
+    checklist:
+      - "Are key terms defined before first use?"
+      - "Are system components introduced before processes?"
+      - "Is there a 'What You'll Learn' overview?"
+
+    remediation:
+      action: "Add a 'Key Terms' segment at the start; introduce components before explaining processes"
+
+  modality:
+    id: 8
+    name: "Modality Principle"
+    definition: "People learn better from graphics and narration than from graphics and on-screen text"
+    core_guideline: "Use audio narration rather than on-screen text to explain visuals"
+
+    evidence:
+      effect_size: "d = 0.76 (Low & Sweller, 2005)"
+      key_studies:
+        - "Moreno & Mayer (1999): Animation + narration > animation + text"
+        - "Mousavi et al. (1995): Spoken explanations of diagrams outperformed written"
+
+    rationale: "Text and graphics both use visual channel; narration uses auditory channel, distributing load"
+
+    exceptions:
+      - "Learners who are deaf or hard of hearing"
+      - "Noisy environments where audio isn't practical"
+      - "Technical content requiring precise wording"
+      - "Content in learner's non-native language"
+
+    indicators:
+      positive: ["narrated visuals", "audio explanations", "verbal walkthroughs"]
+      negative: ["text-heavy slides", "written explanations of diagrams", "silent videos"]
+
+    how_to_apply:
+      text: "Convert explanatory paragraphs to narration over simplified visuals"
+      graphics: "Explain diagrams verbally rather than with text blocks"
+      video: "Use voiceover to describe what's happening on screen"
+      presentation: "Speak your explanations; use visuals, not text, on slides"
+
+    checklist:
+      - "Are complex visuals explained via narration rather than text?"
+      - "Is on-screen text minimized when visuals are present?"
+      - "Are accessibility alternatives (captions) provided?"
+
+    remediation:
+      action: "Move extensive text off-screen and deliver it as audio narration while showing a relevant animation"
+
+# ==============================================================================
+# CATEGORY C: FOSTERING GENERATIVE PROCESSING
+# Encourage deeper cognitive engagement and meaning-making
+# ==============================================================================
+
+fostering_generative_processing:
+  category_description: "Principles that encourage active cognitive engagement"
+
+  multimedia:
+    id: 9
+    name: "Multimedia Principle"
+    definition: "People learn better from words and pictures than from words alone"
+    core_guideline: "Combine verbal and visual representations of content"
+
+    evidence:
+      effect_size: "d = 1.39 (Fletcher & Tobias, 2005)"
+      key_studies:
+        - "Mayer & Anderson (1991): Animation + narration > narration alone"
+        - "Butcher (2006): Diagrams improved text comprehension"
+
+    visual_types:
+      representational: "Show what something looks like"
+      organizational: "Show relationships (flowcharts, hierarchies)"
+      explanative: "Show how something works (animations)"
+      transformational: "Show change over time"
+
+    indicators:
+      positive: ["diagrams", "charts", "illustrations", "animations", "infographics"]
+      negative: ["text-only content", "walls of words", "no visual support"]
+
+    how_to_apply:
+      text: "Add diagrams, charts, or illustrations to explain concepts"
+      process: "Use flowcharts or step diagrams for procedures"
+      data: "Visualize statistics with charts rather than tables of numbers"
+      concepts: "Create visual metaphors or analogies"
+
+    checklist:
+      - "Does every major concept have visual support?"
+      - "Are relationships shown graphically (not just described)?"
+      - "Do visuals add information beyond the text?"
+
+    remediation:
+      action: "Add a diagram, flowchart, or illustration for every key concept"
+
+  personalization:
+    id: 10
+    name: "Personalization Principle"
+    definition: "People learn better when words are in conversational style rather than formal style"
+    core_guideline: "Use first and second person; write as if speaking to the learner"
+
+    evidence:
+      effect_size: "d = 0.79 (Ginns et al., 2013)"
+      key_studies:
+        - "Moreno & Mayer (2000): Conversational style improved transfer"
+        - "Mayer et al. (2004): 'You' and 'I' increased learning vs. formal prose"
+
+    techniques:
+      direct_address: "Use 'you' to speak to the learner"
+      first_person: "Use 'we' to create partnership"
+      conversational_tone: "Write as you would speak"
+      avoid_formal: "Replace passive voice and jargon"
+
+    indicators:
+      positive: ["you/your", "we/our", "imagine", "let's", "conversational tone"]
+      negative: ["formal academic style", "passive voice", "third person throughout"]
+
+    how_to_apply:
+      text: "Replace 'The user should...' with 'You should...'"
+      narration: "Speak naturally as if to a friend, not reading a textbook"
+      scenarios: "Use 'Imagine you are...' to place learner in the situation"
+      instructions: "Write 'Click the button' not 'The button should be clicked'"
+
+    checklist:
+      - "Does the content use 'you' to address the learner?"
+      - "Is the tone conversational rather than academic?"
+      - "Are scenarios framed from the learner's perspective?"
+
+    remediation:
+      action: "Rewrite formal prose using 'you' and conversational language"
+
+  voice:
+    id: 11
+    name: "Voice Principle"
+    definition: "People learn better when narration is spoken in a human voice rather than a machine voice"
+    core_guideline: "Use natural human narration; if AI voice, ensure warmth and naturalness"
+
+    evidence:
+      effect_size: "d = 0.69 (Atkinson et al., 2005)"
+      key_studies:
+        - "Mayer et al. (2003): Human voice outperformed synthesized voice"
+        - "Craig & Schroeder (2017): Quality of AI voices has improved but human still preferred"
+
+    voice_qualities:
+      preferred:
+        - "Natural, conversational pace"
+        - "Appropriate enthusiasm"
+        - "Clear pronunciation"
+        - "Warm, friendly tone"
+      avoid:
+        - "Monotone delivery"
+        - "Robotic/synthetic quality"
+        - "Reading verbatim"
+        - "Rushed or too slow"
+
+    indicators:
+      positive: ["natural narration", "expressive voice", "conversational pace"]
+      negative: ["robotic voice", "monotone", "obviously synthesized"]
+
+    how_to_apply:
+      narration: "Use professional voice talent or train speakers on conversational delivery"
+      ai_voices: "Choose highest-quality neural voices; add natural pauses"
+      recording: "Encourage speakers to 'talk to a friend' rather than read"
+
+    checklist:
+      - "Is the voice natural and human-sounding?"
+      - "Is the delivery conversational, not robotic?"
+      - "Is there appropriate expression and pacing?"
+
+    remediation:
+      action: "Re-record with human voice talent or upgrade to premium AI voices"
+
+  image:
+    id: 12
+    name: "Image Principle"
+    definition: "People do not necessarily learn better when a speaker's image is added to the screen"
+    core_guideline: "Talking-head video is not required; focus on content visuals instead"
+
+    evidence:
+      effect_size: "d = 0.09 (not significant)"
+      key_studies:
+        - "Mayer & DaPra (2012): Adding instructor image had no significant effect"
+        - "Kizilcec et al. (2014): Intermittent instructor presence may be optimal"
+
+    nuances:
+      when_helpful:
+        - "Building instructor credibility initially"
+        - "Emotional or motivational content"
+        - "Social presence for engagement"
+      when_harmful:
+        - "Complex diagrams or processes"
+        - "When face competes for attention with content"
+        - "Limited screen real estate"
+
+    indicators:
+      positive: ["content-focused visuals", "instructor appears strategically"]
+      negative: ["constant talking head blocking content", "face without added value"]
+
+    how_to_apply:
+      video: "Use instructor face for intros/outros; focus on content during explanations"
+      e_learning: "Don't require webcam presence for all content"
+      presentation: "Speaker can step aside when showing complex visuals"
+
+    checklist:
+      - "Does instructor image serve a purpose or just consume space?"
+      - "Is screen real estate optimized for content?"
+      - "Is instructor presence strategic rather than constant?"
+
+# ==============================================================================
+# CATEGORY D: ADDITIONAL PRINCIPLES (EXPANDED FRAMEWORK)
+# Newer principles addressing embodiment, immersion, and generative activities
+# ==============================================================================
+
+additional_principles:
+  category_description: "Extended principles from recent research"
+
+  embodiment:
+    id: 13
+    name: "Embodiment Principle"
+    definition: "People learn better from on-screen agents that display human-like gestures, movement, and eye contact"
+    core_guideline: "Animated instructors should use natural gestures and expressions"
+
+    evidence:
+      effect_size: "d = 0.36 (Mayer & DaPra, 2012)"
+      key_studies:
+        - "Lusk & Atkinson (2007): Animated agents with gestures improved learning"
+        - "Wang et al. (2018): Eye contact from virtual instructor increased engagement"
+
+    embodiment_elements:
+      gestures: "Pointing, demonstrating, emphasizing"
+      facial_expressions: "Smiling, nodding, expressing interest"
+      eye_contact: "Looking at learner, looking at content being discussed"
+      movement: "Natural, purposeful movement within the frame"
+
+    indicators:
+      positive: ["gesturing instructor", "pointing at content", "natural expressions"]
+      negative: ["static avatar", "stiff animations", "no gestural connection to content"]
+
+    how_to_apply:
+      animation: "Have animated instructors point at and interact with content"
+      video: "Capture natural gestures; coach presenters on expressive delivery"
+      avatar: "Program avatars to gesture toward discussed elements"
+
+    checklist:
+      - "Does the on-screen agent use gestures that relate to content?"
+      - "Are facial expressions natural and appropriate?"
+      - "Does the agent appear to be looking at the learner or content?"
+
+  immersion:
+    id: 14
+    name: "Immersion Principle"
+    definition: "People do not necessarily learn better in highly immersive (VR/3D) environments"
+    core_guideline: "Match immersion level to learning objectives; more immersion isn't always better"
+
+    evidence:
+      effect_size: "Mixed results - context dependent"
+      key_studies:
+        - "Makransky et al. (2019): VR increased presence but not always learning"
+        - "Parong & Mayer (2018): Some VR conditions showed lower learning than video"
+
+    nuances:
+      when_beneficial:
+        - "Psychomotor skills requiring spatial understanding"
+        - "Dangerous or expensive real-world practice"
+        - "Emotional/empathy learning objectives"
+      when_not_beneficial:
+        - "Conceptual learning"
+        - "Cognitive overload from novelty"
+        - "When immersion distracts from content"
+
+    indicators:
+      positive: ["appropriate technology for objectives", "immersion serves learning"]
+      negative: ["technology for technology's sake", "distraction from content"]
+
+    how_to_apply:
+      design: "Match immersion level to learning objectives and content type"
+      vr: "Reserve VR for spatial/procedural skills, not all content"
+      simplicity: "Sometimes a simple video outperforms elaborate VR"
+
+    checklist:
+      - "Does the immersion level match the learning objectives?"
+      - "Could simpler media achieve the same learning outcomes?"
+      - "Is the novelty of the technology distracting from content?"
+
+  generative_activity:
+    id: 15
+    name: "Generative Activity Principle"
+    definition: "People learn better when they are guided to engage in generative learning activities during learning"
+    core_guideline: "Include activities where learners summarize, explain, map, or teach the material"
+
+    evidence:
+      effect_size: "d = 0.71 (Fiorella & Mayer, 2016)"
+      key_studies:
+        - "Fiorella & Mayer (2015): Summarizing and self-explaining improved retention"
+        - "Chi et al. (1994): Self-explanation significantly improved learning"
+
+    generative_activities:
+      summarizing: "Create summaries in own words"
+      mapping: "Build concept maps or diagrams"
+      self_explaining: "Explain content to oneself"
+      teaching: "Explain to others (real or imagined)"
+      drawing: "Create own visual representations"
+      imagining: "Mentally visualize processes"
+      questioning: "Generate questions about content"
+
+    indicators:
+      positive: ["reflection prompts", "summary activities", "concept mapping", "teach-back"]
+      negative: ["passive consumption", "no engagement activities", "click-through only"]
+
+    how_to_apply:
+      e_learning: "Add 'Summarize in your own words' prompts"
+      video: "Include pause points for reflection or note-taking"
+      interactive: "Have learners create concept maps or diagrams"
+      social: "Include peer teaching or discussion activities"
+
+    checklist:
+      - "Are there prompts for learners to summarize or explain?"
+      - "Can learners create their own representations?"
+      - "Are there opportunities to teach or discuss?"
+
+    remediation:
+      action: "Add reflection prompts, summary activities, or concept-mapping exercises"
+
+# ==============================================================================
+# VALIDATION & QUALITY ASSURANCE
+# ==============================================================================
+
+qa_checkpoints:
+  pre_production:
+    - "Are all 15 principles considered in the design?"
+    - "Is content complexity appropriate for segmenting?"
+    - "Are prerequisites/pre-training needs identified?"
+
+  during_production:
+    - "Are coherence violations flagged and removed?"
+    - "Is spatial/temporal contiguity maintained?"
+    - "Is redundancy eliminated?"
+
+  post_production:
+    - "Does a sample learner struggle with any sections?"
+    - "Are cognitive load indicators within acceptable ranges?"
+    - "Are accessibility alternatives provided?"
+
+ai_validation_questions:
+  - "Does every visual element directly support a learning objective?"
+  - "Is on-screen text minimized when narration is present?"
+  - "Are labels integrated into diagrams rather than in legends?"
+  - "Is narration synchronized with visual appearance?"
+  - "Does the content use conversational, second-person language?"
+
+# ==============================================================================
+# SCORING & EVALUATION
+# ==============================================================================
+
+scoring:
+  principle_weights:
+    coherence: 0.12
+    signalling: 0.08
+    redundancy: 0.10
+    spatial_contiguity: 0.08
+    temporal_contiguity: 0.08
+    segmenting: 0.08
+    pre_training: 0.06
+    modality: 0.10
+    multimedia: 0.08
+    personalization: 0.06
+    voice: 0.04
+    image: 0.02
+    embodiment: 0.04
+    immersion: 0.02
+    generative_activity: 0.04
+
+  scoring_anchors:
+    excellent: "90-100: All principles applied effectively, optimal cognitive load"
+    good: "70-89: Most principles applied, minor violations"
+    adequate: "50-69: Core principles present, several violations"
+    poor: "0-49: Multiple principle violations, high cognitive load"

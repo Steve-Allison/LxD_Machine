@@ -1,0 +1,325 @@
+_meta:
+  id: stance_markers_taxonomy
+  purpose: taxonomy
+  version: "1.2.0"
+  last_updated: "2026-03-01"
+  description: "Classification of epistemic stance markers by marker type, modality category, certainty direction, strength tier, and stance polarity."
+  domain: narrative
+  domain_type: cross_cutting
+  corpus_sources:
+    - "Corpus/Research/Research - Argument Mining with MTL and PDL.md"
+    - "Corpus/Research/Research - Researching Narrative and Discourse Analysis.md"
+    - "Corpus/Research/a-guide-to-good-reasoning-cultivating-intellectual-virtues-16112.md"
+  academic_sources:
+    - "Biber & Finegan (1989) - Styles of Stance in English"
+    - "Hyland (2005) - Metadiscourse"
+    - "Palmer (2001) - Mood and Modality"
+  relationships:
+    - target: entities/stance_markers_entities.yaml
+      type: depends_on
+      description: "Stance marker entity types for NER extraction"
+    - target: methodology/stance_markers_framework.yaml
+      type: depends_on
+      description: "Stance detection scoring and certainty calculation"
+# ==============================================================================
+# MARKER TYPES
+# ==============================================================================
+
+marker_types:
+  hedge:
+    label: "Hedge"
+    description: "Markers that reduce the certainty or force of a claim"
+    certainty_direction: decreases
+    sub_types:
+      modal_verb:
+        description: "Modal verbs expressing possibility or uncertainty"
+        examples: ["might", "may", "could"]
+        strength: moderate
+      epistemic_adverb:
+        description: "Adverbs expressing probability or possibility"
+        examples: ["possibly", "perhaps", "probably", "likely"]
+        strength: moderate
+      perception_verb:
+        description: "Verbs suggesting appearance rather than fact; signals that what follows is an interpretation, not an established truth"
+        examples: ["seems to", "appears that", "suggests", "it would seem", "there appears to be", "one might conclude"]
+        strength: moderate
+      approximator:
+        description: "Words that soften precision"
+        examples: ["somewhat", "rather", "fairly", "roughly"]
+        strength: weak
+      attitude_indicator:
+        description: "Expressions conveying the speaker's emotional or evaluative attitude toward a proposition; distinct from pure epistemic hedging — signals personal feeling about the truth or desirability of a claim rather than uncertainty about it"
+        examples: ["I'm afraid that", "I'm pleased to note", "unfortunately", "regrettably", "I suspect"]
+        strength: moderate
+
+  boost:
+    label: "Boost"
+    description: "Markers that increase the certainty or force of a claim"
+    certainty_direction: increases
+    sub_types:
+      strong_modal:
+        description: "Modal verbs expressing necessity or certainty"
+        examples: ["must", "will", "shall"]
+        strength: strong
+      certainty_adverb:
+        description: "Adverbs expressing high confidence"
+        examples: ["definitely", "certainly", "clearly", "obviously"]
+        strength: strong
+      emphatic_marker:
+        description: "Intensifiers and emphatic expressions"
+        examples: ["absolutely", "undoubtedly", "unquestionably"]
+        strength: strong
+      universal_quantifier:
+        description: "Words expressing absolute scope"
+        examples: ["always", "never", "all", "every", "none"]
+        strength: strong
+
+  position:
+    label: "Attitudinal Position"
+    description: "Markers expressing the author's evaluative stance"
+    certainty_direction: neutral
+    sub_types:
+      evaluative_adverb:
+        description: "Adverbs expressing judgement about the proposition"
+        examples: ["fortunately", "unfortunately", "regrettably"]
+        polarity: varies
+      stance_adverbial:
+        description: "Adverbs signalling the speaker's framing"
+        examples: ["candidly", "honestly", "frankly", "objectively"]
+        polarity: neutral
+      significance_marker:
+        description: "Markers highlighting importance or noteworthiness"
+        examples: ["importantly", "notably", "remarkably", "significantly"]
+        polarity: positive
+      affective_marker:
+        description: "Markers conveying emotional reaction"
+        examples: ["disappointingly", "encouragingly", "surprisingly"]
+        polarity: varies
+      slanted_language:
+        description: "Lexical items that carry implicit evaluative loading beyond their surface meaning; often used to dismiss or delegitimise without explicit argument"
+        examples: ["mere", "merely", "so-called", "alleged", "supposed", "self-styled", "purported"]
+        polarity: negative
+        flag: "Detect as implicit contest stance; signals motivated reasoning without overt disagreement markers"
+
+# ==============================================================================
+# MODALITY CATEGORIES
+# ==============================================================================
+
+modality_categories:
+  epistemic:
+    label: "Epistemic Modality"
+    description: "Concerned with knowledge, belief, and certainty about propositions"
+    markers: ["might", "may", "could", "possibly", "probably", "certainly", "clearly"]
+    question_addressed: "How certain is the speaker about the truth of this claim?"
+    probability_scale:
+      certainly: 0.99
+      probably: 0.75
+      possibly: 0.35
+      cannot_determine: 0.5
+      unlikely: 0.2
+      definitely_not: 0.01
+
+  deontic:
+    label: "Deontic Modality"
+    description: "Concerned with obligation, permission, and necessity"
+    markers: ["must", "should", "ought to", "have to", "need to", "required"]
+    question_addressed: "What is the speaker's view on what should happen?"
+
+  dynamic:
+    label: "Dynamic Modality"
+    description: "Concerned with ability, willingness, and disposition"
+    markers: ["can", "able to", "willing to", "tends to", "capable of"]
+    question_addressed: "What is the subject's capacity or inclination?"
+
+  evidential:
+    label: "Evidential Modality"
+    description: "Concerned with the source or basis of information"
+    markers: ["reportedly", "allegedly", "according to", "it is said", "research shows"]
+    question_addressed: "What is the evidence basis for this claim?"
+    evidence_sub_classes:
+      inference:
+        description: "Evidence inferred from observation or data; speaker draws a conclusion not directly stated in the source"
+        examples: ["given the data, it is reasonable to conclude", "this suggests that", "the pattern indicates"]
+      hearsay:
+        description: "Second-hand report; speaker cites what others have said without direct verification"
+        examples: ["according to reports", "it is said that", "word is that", "allegedly"]
+      direct_perception:
+        description: "First-hand observation; speaker was a witness to the reported event"
+        examples: ["I saw", "I noticed", "I observed", "I witnessed", "in my experience"]
+      published_record:
+        description: "Citation of a formal or institutional record as evidence basis"
+        examples: ["research shows", "studies indicate", "data confirms", "the report states"]
+
+# ==============================================================================
+# STRENGTH TIERS
+# ==============================================================================
+
+strength_tiers:
+  weak:
+    label: "Weak"
+    description: "Minimal impact on perceived certainty"
+    hedge_examples: ["somewhat", "rather", "fairly", "slightly"]
+    boost_examples: ["likely", "probably"]
+    certainty_modifier: 0.1
+    probability_anchor: "0.1–0.3 (for hedges: claim probability reduced toward 20%; for boosts: raised to ~70%)"
+
+  moderate:
+    label: "Moderate"
+    description: "Noticeable impact on perceived certainty"
+    hedge_examples: ["possibly", "perhaps", "may", "suggests"]
+    boost_examples: ["clearly", "obviously", "evidently"]
+    certainty_modifier: 0.3
+    probability_anchor: "0.3–0.6 (for hedges: claim probability in range 30–50%; for boosts: raised to 70–85%)"
+
+  strong:
+    label: "Strong"
+    description: "Substantial impact on perceived certainty"
+    hedge_examples: ["might", "could", "seems", "appears"]
+    boost_examples: ["definitely", "absolutely", "must", "always", "never"]
+    certainty_modifier: 0.5
+    probability_anchor: "0.7–0.99 for boosts (e.g., certainly ≈ 0.99, definitely ≈ 0.95); < 0.2 for strong hedges"
+
+# ==============================================================================
+# STANCE POLARITY
+# ==============================================================================
+
+stance_polarity:
+  support:
+    label: "Support"
+    description: "Author signals agreement with or endorsement of the proposition"
+    numeric_value: 1
+    indicators: ["agree", "support", "endorse", "advocate", "promote", "favour"]
+    normative_basis:
+      evidential: "Support based on strong evidence; the most epistemically virtuous form of support stance"
+      preferential: "Support based on personal preference or values rather than evidence"
+      deferential: "Support based on deference to authority or consensus without independent verification"
+
+  contest:
+    label: "Contest"
+    description: "Author signals disagreement with or opposition to the proposition"
+    numeric_value: -1
+    indicators: ["disagree", "oppose", "reject", "refute", "challenge", "deny"]
+    normative_basis:
+      intellectual_virtue: "Contest grounded in evidence and reasoning; challenges a claim because it is not well-supported"
+      corrective: "Contest aimed at correcting factual error or logical fallacy"
+      adversarial: "Contest motivated by self-interest, rivalry, or motivated reasoning rather than evidence"
+
+  neutral:
+    label: "Neutral"
+    description: "Author takes no clear evaluative position"
+    numeric_value: 0
+    indicators: ["observe", "note", "report", "describe", "document", "state"]
+    normative_basis:
+      epistemic_modesty: "Deliberate suspension of judgment pending sufficient evidence"
+      observer_role: "Reporting or describing without claiming a stake in the outcome"
+      multi_perspective: "Presenting multiple viewpoints without endorsing any"
+
+motivated_stance_distortions:
+  description: "Patterns where expressed stance diverges from epistemically warranted stance due to psychological or social pressures"
+  distortions:
+    self_interest:
+      description: "Taking a stance that serves personal or organisational gain regardless of evidence quality"
+      linguistic_signal: "Boost markers applied to weakly-evidenced claims that benefit the speaker"
+    cultural_conditioning:
+      description: "Defaulting to culturally inherited positions without subjecting them to critical evaluation"
+      linguistic_signal: "Universal quantifiers ('always', 'everyone knows') applied to claims that would not survive evidential scrutiny"
+    overconfidence:
+      description: "Expressing stronger certainty than the available evidence warrants; misuse of boost markers"
+      linguistic_signal: "Certainty adverbs ('clearly', 'obviously', 'definitely') applied to contested or underspecified claims"
+    confirmation_bias:
+      description: "Selectively citing evidence that supports a pre-existing stance while ignoring contradictory evidence"
+      linguistic_signal: "Attribution markers citing only supporting sources; absence of rebuttal or qualification language"
+
+# ==============================================================================
+# DISCOURSE FUNCTIONS
+# ==============================================================================
+
+discourse_functions:
+  hedging:
+    label: "Hedging"
+    description: "Protecting the speaker from commitment to a proposition"
+    purpose: "Face-saving, academic caution, diplomatic communication"
+    typical_contexts: ["research writing", "diplomatic speech", "risk communication"]
+
+  boosting:
+    label: "Boosting"
+    description: "Strengthening the speaker's commitment and persuasive force"
+    purpose: "Assertiveness, persuasion, confidence projection"
+    typical_contexts: ["sales pitch", "leadership communication", "advocacy"]
+
+  evaluation:
+    label: "Evaluation"
+    description: "Signalling the speaker's judgement about propositions or events"
+    purpose: "Opinion formation, critical analysis, commentary"
+    typical_contexts: ["reviews", "critiques", "editorial content", "coaching feedback"]
+
+  attribution:
+    label: "Attribution"
+    description: "Identifying the source or basis of a claim"
+    purpose: "Credibility, transparency, evidence grounding"
+    typical_contexts: ["academic writing", "journalism", "legal argument"]
+    report_indicators: ["according to", "as X states", "X argues that", "X reports", "it is claimed that", "the evidence suggests", "studies show", "data indicates"]
+
+  discounting:
+    label: "Discounting"
+    description: "Acknowledging a counterpoint or concession before reasserting the main claim with greater force; the speaker temporarily takes a contest stance on their own argument to pre-empt objections, then pivots back to their support stance with strengthened emphasis"
+    purpose: "Anticipate objections, demonstrate intellectual fairness, strengthen the main position through contrast"
+    typical_contexts: ["debate", "academic argument", "sales objection handling", "diplomatic communication", "persuasive writing"]
+    discount_markers: ["but", "however", "nevertheless", "although", "nonetheless", "despite", "even though", "admittedly", "granted that", "while I accept that", "to be sure", "it is true that... but", "while X, Y"]
+    pattern: "CONCESSION [discount_marker] + ASSERTION — the assertion following the discount marker carries the speaker's actual stance"
+
+# ==============================================================================
+# CLASSIFICATION DIMENSIONS
+# ==============================================================================
+
+classification_dimensions:
+  marker_type:
+    name: "Marker Type"
+    description: "The primary category of stance marker"
+    values:
+      - hedge
+      - boost
+      - position
+
+  modality_category:
+    name: "Modality Category"
+    description: "The type of modality the marker expresses"
+    values:
+      - epistemic
+      - deontic
+      - dynamic
+      - evidential
+
+  certainty_direction:
+    name: "Certainty Direction"
+    description: "Whether the marker increases, decreases, or does not affect perceived certainty"
+    values:
+      - increases
+      - decreases
+      - neutral
+
+  strength_tier:
+    name: "Strength Tier"
+    description: "The degree of impact the marker has on perceived certainty"
+    values:
+      - weak
+      - moderate
+      - strong
+
+  stance_polarity:
+    name: "Stance Polarity"
+    description: "Whether the author supports, contests, or remains neutral on the proposition"
+    values:
+      - support
+      - contest
+      - neutral
+
+  discourse_role:
+    name: "Discourse Role"
+    description: "The function the stance marker performs within the discourse structure"
+    values:
+      - hedging
+      - boosting
+      - evaluation
+      - attribution
+      - discounting

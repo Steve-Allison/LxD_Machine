@@ -1,0 +1,86 @@
+_meta:
+  id: typography_standards
+  title: "Typography Standards"
+  description: "Typography standards differentiated by context (live presentation, document, video)."
+  domain: visual
+  domain_type: cross_cutting
+  purpose: methodology
+  version: "1.2.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Best Practices for Writing Effective Corporate Learning Content.md"
+    - "Corpus/Research/RESEARCH-BASED_ENHANCEMENTS FOR VOICE.md"
+    - "Corpus/Research/Research - Comprehensive Audience Analysis.md"
+
+
+# ==============================================================================
+# CONTEXT-BASED SIZE STANDARDS
+# ==============================================================================
+
+context_typography:
+  description: "Font size rules vary dramatically by delivery context"
+  scoring_anchors: !include ../shared/scoring_visual.yaml
+
+  live_presentation:
+    description: "Slides projected for audience in conference/meeting room"
+    minimum_sizes:
+      title: "60pt+"
+      body_text: "40pt+"
+
+    remediation_strategies:
+      text_too_small:
+        action: "Increase font size to 40pt+. Split content across multiple slides if it doesn't fit."
+      too_much_text:
+        action: "Reduce text to keywords only; move details to speaker notes."
+
+  leave_behind_document:
+    description: "Printed or PDF documents for individual reading"
+    minimum_sizes:
+      body_text: "12pt-14pt"
+
+    remediation_strategies:
+      text_too_large:
+        action: "Reduce body text to 12pt to allow for higher information density."
+
+# ==============================================================================
+# TYPOGRAPHIC HIERARCHY
+# ==============================================================================
+
+typographic_hierarchy:
+  description: "Creating clear visual hierarchy through typography"
+
+  remediation_strategies:
+    flat_hierarchy:
+      action: "Establish 'Skip-level' contrast. Title should be 2x Body size. Section Header should be Bold."
+    too_many_fonts:
+      action: "Reduce font families to maximum 2 (Header font + Body font)."
+
+# ==============================================================================
+# READABILITY FACTORS
+# ==============================================================================
+
+readability:
+  description: "Factors affecting reading speed and comprehension"
+
+  line_length:
+    optimal: "45-75 characters per line"
+
+    remediation_strategies:
+      line_too_long:
+        action: "Split text block into 2 columns or increase side margins."
+
+  line_height:
+    optimal: "1.4x - 1.6x font size"
+
+    remediation_strategies:
+      cramped_lines:
+        action: "Increase line-height (leading) to 1.5."
+
+  alignment:
+    rule: "Left-align body text. Never center blocks > 3 lines."
+
+    remediation_strategies:
+      centered_paragraphs:
+        action: "Left-align the text block."
+      justified_rivers:
+        action: "Switch from Justified to Ragged-Right (Left Align)."

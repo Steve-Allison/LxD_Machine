@@ -1,0 +1,489 @@
+_meta:
+  id: surface_patterns_config
+  title: Surface Pattern Entities
+  description: Story-relevant entity types for NuExtract pattern-based extraction - evidence, persuasion, metrics, and structural markers
+  domain: ai
+  domain_type: cross_cutting
+  purpose: reference
+  version: "1.3.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Researching Narrative and Discourse Analysis.md"
+    - "Corpus/Research/Research - Using SOAR Storytelling most effectively.md"
+    - "Corpus/Research/Research - Canonical Presentation Methodology Research.md"
+    - "Corpus/Research/PDL Architecture: Narrative & Discourse Analysis Series.md"
+
+  relationships:
+    - target: ai_config/extraction_rules_config.yaml
+      type: depends_on
+      description: "Surface patterns feed extraction; pattern definitions are consumed by extraction rules"
+# ==============================================================================
+# ENTITY TYPES
+# ==============================================================================
+
+entity_types:
+
+  # ---------------------------------------------------------------------------
+  # PERSUASION PATTERNS
+  # ---------------------------------------------------------------------------
+
+  call_to_action:
+    description: "Explicit call-to-action phrases indicating desired audience response"
+    canonical_id: "call_to_action"
+    entity_kind: "cta"
+    family: "persuasion_patterns"
+    label: "CALL_TO_ACTION"
+    field_description: "CTA action contact learn more get started sign up book demo request trial download"
+    examples:
+      - "Contact us today"
+      - "Learn more"
+      - "Get started"
+      - "Book a demo"
+      - "Sign up free"
+      - "Request a trial"
+      - "Download now"
+      - "Start your free trial"
+    anti_examples:
+      - "learning experience"
+      - "getting started guide"
+    confidence_threshold: 0.75
+    patterns:
+      - "(?:Contact|Call|Email|Reach)\\s+(?:us|me|the team)"
+      - "(?:Learn|Find out|Discover)\\s+more"
+      - "(?:Get|Start|Begin)\\s+(?:started|now|today)"
+      - "(?:Book|Schedule|Request)\\s+(?:a\\s+)?(?:demo|call|meeting|trial)"
+      - "(?:Sign|Register)\\s+(?:up|now)"
+      - "(?:Download|Try|Access)\\s+(?:now|free|today)"
+    indicators:
+      - "contact us"
+      - "learn more"
+      - "get started"
+      - "book a demo"
+      - "sign up"
+      - "free trial"
+      - "download"
+    story_role: "Narrative resolution - directs audience to next step"
+
+  social_proof:
+    description: "Social proof and trust markers demonstrating credibility"
+    canonical_id: "social_proof"
+    entity_kind: "trust"
+    family: "persuasion_patterns"
+    label: "SOCIAL_PROOF"
+    field_description: "Social proof trusted by used by customers clients companies Fortune 500 rated leader"
+    examples:
+      - "trusted by 500+ companies"
+      - "used by Fortune 500"
+      - "rated #1"
+      - "10,000+ customers"
+      - "industry leader"
+      - "Gartner Leader"
+    anti_examples:
+      - "trust issues"
+      - "customer service"
+    confidence_threshold: 0.7
+    patterns:
+      - "(?:trusted|used|chosen)\\s+by\\s+(?:\\d+[\\+K]?|Fortune|leading)"
+      - "\\d+[\\+K]?\\s+(?:customers|clients|companies|users)"
+      - "(?:rated|ranked)\\s+#?\\d"
+      - "(?:Gartner|Forrester|IDC)\\s+(?:Leader|Visionary|Challenger)"
+    indicators:
+      - "trusted by"
+      - "used by"
+      - "customers"
+      - "clients"
+      - "Fortune 500"
+      - "rated"
+      - "ranked"
+      - "leader"
+    story_role: "Evidence - third-party validation (Ethos)"
+
+  urgency_marker:
+    description: "Urgency and scarcity language creating time pressure"
+    canonical_id: "urgency_marker"
+    entity_kind: "urgency"
+    family: "persuasion_patterns"
+    label: "URGENCY"
+    field_description: "Urgency limited time act now don't miss today only hurry deadline expires soon"
+    examples:
+      - "limited time offer"
+      - "act now"
+      - "don't miss out"
+      - "today only"
+      - "offer expires"
+      - "hurry"
+    anti_examples:
+      - "time management"
+      - "today's agenda"
+    confidence_threshold: 0.7
+    patterns:
+      - "limited\\s+(?:time|offer|availability)"
+      - "(?:act|order|register|sign up)\\s+now"
+      - "(?:don't|do not)\\s+miss"
+      - "(?:today|this week)\\s+only"
+      - "(?:offer|deal|discount)\\s+(?:expires|ends)"
+    indicators:
+      - "limited"
+      - "act now"
+      - "don't miss"
+      - "today only"
+      - "expires"
+      - "hurry"
+    story_role: "Narrative tension - creates stakes and urgency"
+
+  # ---------------------------------------------------------------------------
+  # EVIDENCE PATTERNS
+  # ---------------------------------------------------------------------------
+
+  attribution_marker:
+    description: "Source attribution and citation markers for evidence credibility"
+    canonical_id: "attribution_marker"
+    entity_kind: "attribution"
+    family: "evidence_patterns"
+    label: "ATTRIBUTION"
+    field_description: "Attribution source according to research shows study finds analysts report Gartner IDC Forrester"
+    examples:
+      - "According to Gartner"
+      - "Research shows"
+      - "Studies indicate"
+      - "Analysts report"
+      - "Source: IDC"
+      - "per Forrester"
+    anti_examples:
+      - "show and tell"
+      - "research department"
+    confidence_threshold: 0.75
+    patterns:
+      - "(?:According|Per)\\s+to\\s+(?:Gartner|Forrester|IDC|McKinsey|\\w+)"
+      - "(?:Research|Studies|Data|Analysts?)\\s+(?:shows?|indicates?|suggests?|reports?)"
+      - "Source:\\s*\\w+"
+    indicators:
+      - "according to"
+      - "research shows"
+      - "studies indicate"
+      - "analysts report"
+      - "source:"
+      - "Gartner"
+      - "Forrester"
+      - "IDC"
+      - "McKinsey"
+    story_role: "Evidence sourcing - establishes credibility (Ethos in Toulmin)"
+
+  testimonial_marker:
+    description: "Testimonial and quote attribution from customers or experts"
+    canonical_id: "testimonial_marker"
+    entity_kind: "testimonial"
+    family: "evidence_patterns"
+    label: "TESTIMONIAL"
+    field_description: "Testimonial quote attribution dash name title CEO VP Director customer quote says"
+    examples:
+      - "- John Smith, CEO"
+      - "— Jane Doe, VP Marketing"
+      - "Customer quote:"
+      - '"Great product" - Customer'
+    anti_examples:
+      - "Smith family"
+      - "CEO responsibilities"
+    confidence_threshold: 0.7
+    patterns:
+      - "[—–-]\\s*[A-Z][a-z]+\\s+[A-Z][a-z]+,\\s*(?:CEO|CTO|CFO|VP|Director|Manager|Head)"
+      - "\"[^\"]+\"\\s*[—–-]"
+      - "(?:Customer|Client)\\s+(?:quote|testimonial|feedback):"
+    indicators:
+      - "CEO"
+      - "VP"
+      - "Director"
+      - "quote"
+      - "testimonial"
+      - '"'
+    story_role: "Evidence - customer voice as proof (Toulmin Evidence)"
+
+  comparison_marker:
+    description: "Comparison and differentiation language for competitive positioning"
+    canonical_id: "comparison_marker"
+    entity_kind: "comparison"
+    family: "evidence_patterns"
+    label: "COMPARISON"
+    field_description: "Comparison vs versus compared to unlike better than faster more efficient outperforms"
+    examples:
+      - "vs competitors"
+      - "compared to legacy systems"
+      - "unlike traditional approaches"
+      - "better than the competition"
+      - "3x faster than"
+      - "outperforms"
+    anti_examples:
+      - "legal vs illegal"
+      - "comparison shopping"
+    confidence_threshold: 0.7
+    patterns:
+      - "(?:vs\\.?|versus)\\s+\\w+"
+      - "compared\\s+to"
+      - "unlike\\s+(?:traditional|legacy|other|competitor)"
+      - "(?:better|faster|cheaper|more \\w+)\\s+than"
+      - "\\d+x\\s+(?:faster|better|more)"
+      - "outperforms?"
+    indicators:
+      - "vs"
+      - "versus"
+      - "compared to"
+      - "unlike"
+      - "better than"
+      - "faster than"
+      - "outperforms"
+    story_role: "SOAR Approach/Result - competitive differentiation"
+
+  # ---------------------------------------------------------------------------
+  # TRUST PATTERNS
+  # ---------------------------------------------------------------------------
+
+  compliance_marker:
+    description: "Compliance, certification, and security markers establishing trust"
+    canonical_id: "compliance_marker"
+    entity_kind: "compliance"
+    family: "trust_patterns"
+    label: "COMPLIANCE"
+    field_description: "Compliance certification ISO SOC GDPR HIPAA FedRAMP PCI certified compliant security"
+    examples:
+      - "ISO 27001 certified"
+      - "SOC 2 Type II"
+      - "GDPR compliant"
+      - "HIPAA compliant"
+      - "FedRAMP authorized"
+      - "PCI DSS compliant"
+    anti_examples:
+      - "compliance team"
+      - "security guard"
+    confidence_threshold: 0.85
+    patterns:
+      - "ISO\\s*\\d+"
+      - "SOC\\s*[12](?:\\s*Type\\s*I{1,2})?"
+      - "(?:GDPR|HIPAA|CCPA|PCI|FedRAMP)\\s*(?:compliant|certified|authorized)?"
+    indicators:
+      - "ISO"
+      - "SOC"
+      - "GDPR"
+      - "HIPAA"
+      - "FedRAMP"
+      - "PCI"
+      - "certified"
+      - "compliant"
+    story_role: "Evidence - third-party validation reducing risk"
+
+  integration_marker:
+    description: "Integration and compatibility markers showing ecosystem fit"
+    canonical_id: "integration_marker"
+    entity_kind: "integration"
+    family: "trust_patterns"
+    label: "INTEGRATION"
+    field_description: "Integration integrates with works with connects to compatible with API connector plugin"
+    examples:
+      - "integrates with Salesforce"
+      - "works with Slack"
+      - "connects to your CRM"
+      - "compatible with AWS"
+      - "native integration"
+      - "pre-built connectors"
+    anti_examples:
+      - "integration testing"
+      - "work environment"
+    confidence_threshold: 0.7
+    patterns:
+      - "(?:integrates?|connects?)\\s+(?:with|to)\\s+\\w+"
+      - "(?:works?|compatible)\\s+with\\s+\\w+"
+      - "(?:native|pre-built|out-of-the-box)\\s+(?:integration|connector)"
+    indicators:
+      - "integrates with"
+      - "works with"
+      - "connects to"
+      - "compatible with"
+      - "connector"
+      - "plugin"
+      - "API"
+    story_role: "SOAR Approach - ease of adoption, reduced Obstacle"
+
+  # ---------------------------------------------------------------------------
+  # METRICS PATTERNS
+  # ---------------------------------------------------------------------------
+
+  multiplier_metric:
+    description: "Multiplier and improvement metrics quantifying results"
+    canonical_id: "multiplier_metric"
+    entity_kind: "metric"
+    family: "quantitative_patterns"
+    label: "MULTIPLIER"
+    field_description: "Multiplier improvement 2x 3x 10x doubled tripled times faster better more efficient"
+    examples:
+      - "3x faster"
+      - "10x improvement"
+      - "doubled revenue"
+      - "tripled efficiency"
+      - "5 times faster"
+    anti_examples:
+      - "x-ray"
+      - "double-click"
+    confidence_threshold: 0.8
+    patterns:
+      - "\\d+x\\s+(?:faster|better|more|improvement|growth)"
+      - "(?:doubled|tripled|quadrupled)\\s+\\w+"
+      - "\\d+\\s+times\\s+(?:faster|better|more)"
+    indicators:
+      - "2x"
+      - "3x"
+      - "10x"
+      - "doubled"
+      - "tripled"
+      - "times faster"
+    story_role: "SOAR Result - quantified outcome evidence"
+
+  # ---------------------------------------------------------------------------
+  # STRUCTURAL PATTERNS
+  # ---------------------------------------------------------------------------
+
+  list_marker:
+    description: "List enumeration and sequence markers indicating structure"
+    canonical_id: "list_marker"
+    entity_kind: "structure"
+    family: "structural_patterns"
+    label: "LIST_MARKER"
+    field_description: "List marker first second third finally step phase number enumeration sequence order"
+    examples:
+      - "First"
+      - "Second"
+      - "Third"
+      - "Finally"
+      - "Step 1"
+      - "Phase 2"
+      - "1."
+      - "a)"
+    anti_examples:
+      - "first name"
+      - "second hand"
+    confidence_threshold: 0.7
+    patterns:
+      - "(?:First|Second|Third|Fourth|Fifth|Finally|Lastly)(?:ly)?[,:]?"
+      - "(?:Step|Phase|Stage)\\s+\\d+"
+      - "^\\d+[\\.\\)]"
+      - "^[a-z][\\.\\)]"
+    indicators:
+      - "First"
+      - "Second"
+      - "Third"
+      - "Finally"
+      - "Step"
+      - "Phase"
+    story_role: "Narrative sequence - Gagné's instructional events"
+
+  summary_marker:
+    description: "Summary and conclusion markers indicating narrative closure"
+    canonical_id: "summary_marker"
+    entity_kind: "structure"
+    family: "structural_patterns"
+    label: "SUMMARY_MARKER"
+    field_description: "Summary conclusion in summary to conclude key takeaways recap bottom line overall"
+    examples:
+      - "In summary"
+      - "To conclude"
+      - "Key takeaways"
+      - "In conclusion"
+      - "Bottom line"
+      - "To recap"
+    anti_examples:
+      - "summary report"
+      - "takeaway food"
+    confidence_threshold: 0.75
+    patterns:
+      - "(?:In|To)\\s+(?:summary|conclusion|conclude|recap)"
+      - "(?:Key|Main)\\s+(?:takeaways?|points?|findings?)"
+      - "(?:Bottom|End)\\s+line"
+      - "(?:Overall|Ultimately)"
+    indicators:
+      - "in summary"
+      - "to conclude"
+      - "key takeaways"
+      - "bottom line"
+      - "to recap"
+    story_role: "Narrative closure - resolution phase"
+
+  # ---------------------------------------------------------------------------
+  # FEATURE PATTERNS
+  # ---------------------------------------------------------------------------
+
+  feature_descriptor:
+    description: "Product feature descriptors signalling capability claims"
+    canonical_id: "feature_descriptor"
+    entity_kind: "feature"
+    family: "product_patterns"
+    label: "FEATURE"
+    field_description: "Feature AI-powered drag-and-drop one-click real-time cloud-based automated intelligent"
+    examples:
+      - "AI-powered"
+      - "drag-and-drop"
+      - "one-click"
+      - "real-time"
+      - "cloud-based"
+      - "automated"
+      - "intelligent"
+      - "no-code"
+    anti_examples:
+      - "power outage"
+      - "click here"
+    confidence_threshold: 0.7
+    patterns:
+      - "(?:AI|ML|cloud|data|user)[-\\s](?:powered|driven|based|native)"
+      - "(?:drag-and-drop|one-click|real-time|no-code|low-code)"
+      - "(?:automated|intelligent|smart|predictive|adaptive)"
+    indicators:
+      - "AI-powered"
+      - "cloud-based"
+      - "real-time"
+      - "automated"
+      - "intelligent"
+      - "no-code"
+    story_role: "SOAR Approach - capability differentiation"
+
+# ==============================================================================
+# NUEXTRACT SCHEMA CONFIGURATION
+# ==============================================================================
+
+nuextract_config:
+  # Group entities into logical structures for NuExtract
+  structures:
+    persuasion:
+      - call_to_action
+      - social_proof
+      - urgency_marker
+    
+    evidence:
+      - attribution_marker
+      - testimonial_marker
+      - comparison_marker
+    
+    trust:
+      - compliance_marker
+      - integration_marker
+    
+    metrics:
+      - multiplier_metric
+    
+    structure:
+      - list_marker
+      - summary_marker
+    
+    features:
+      - feature_descriptor
+
+  # Recommended extraction order (simpler patterns first)
+  extraction_priority:
+    - compliance_marker    # Highest confidence regex
+    - multiplier_metric    # Clear patterns
+    - attribution_marker   # Keyword-based
+    - testimonial_marker   # Pattern-based
+    - comparison_marker    # Keyword-based
+    - call_to_action       # Keyword-based
+    - social_proof         # Keyword-based
+    - list_marker          # Keyword-based
+    - summary_marker       # Keyword-based
+    - feature_descriptor   # Keyword-based
+    - urgency_marker       # Keyword-based
+    - integration_marker   # Keyword-based

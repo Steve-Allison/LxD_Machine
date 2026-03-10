@@ -1,0 +1,39 @@
+_meta:
+  id: meta
+  title: "Shared Cross-Domain Metadata"
+  description: "Standard metadata for cross-domain shared infrastructure files."
+  domain: ai
+  domain_type: meta
+  purpose: "reference"
+  version: "2.4.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Using SOAR Storytelling most effectively.md"
+    - "Corpus/Research/The Universal Narrative Methodology: A Framework for Crafting and Improving Stories.md"
+
+# Shared Cross-Domain Metadata
+# Consolidated from pedagogical/shared, narrative/shared, visual/shared
+version: "2.2.0"
+domain: "ai"
+maintainer: "Story_Analyser Core Team"
+last_updated: "2026-03-01"
+license: "Proprietary"
+
+# ==============================================================================
+# CROSS-DOMAIN GOVERNANCE NOTES
+# Source: Research - Using SOAR Storytelling most effectively.md
+# ==============================================================================
+
+cross_domain_notes:
+  purpose: "Governance rules for shared infrastructure files spanning pedagogical, narrative, and visual domains"
+  source: "Research - Using SOAR Storytelling most effectively.md; The Universal Narrative Methodology"
+
+  domain_integration_principle:
+    description: "Pedagogical, narrative, and visual analyses are complementary lenses on the same content; scores should be presented together, not in isolation"
+    narrative_pedagogy_link: "SOAR narrative arc maps to instructional design: Situation activates prior knowledge; Opportunity creates learning need; Action delivers content; Result provides evidence of mastery"
+    visual_narrative_link: "Visual elements should reinforce (not contradict) the narrative SOAR arc at each slide position"
+
+  shared_file_update_protocol:
+    rule: "When any domain-specific scoring threshold changes, review shared/scoring*.yaml for cascade effects"
+    versioning: "Shared files use independent semver; bump minor version when any threshold or weight changes"
+    dependency_check: "Check data_reqs_narrative.yaml and data_reqs_visual.yaml when adding new analysis dimensions to ensure input requirements are captured"

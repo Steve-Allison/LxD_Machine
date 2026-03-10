@@ -1,0 +1,887 @@
+_meta:
+  id: assessment_entities
+  purpose: entity
+  version: 1.33.0
+  last_updated: '2026-03-09'
+  description: GLiNER entity definitions for learning assessment analysis including evaluation types, Kirkpatrick levels,
+    rubric components, competency markers, and feedback modalities.
+  domain: pedagogical
+  domain_type: workflow
+  corpus_sources:
+  - Corpus/Research/Research - Essential Inputs for Learning Objectives.md
+  - Corpus/Research/Research - Corporate Learning Assessment- Strategies, Modalities, and Best Practices.md
+  - Corpus/Research/Research - Assessment_Design_Module_Enhancement_Notes.md
+  - Corpus/Research/Activities - Research + Instructions v4.md
+  - Corpus/Research/recommended-training-effectiveness-questions-for-postcourse-eval.md
+  - Corpus/Research/Research - Comprehensive Learning Design Framework.md
+  - Corpus/Research/Research - Merrills Instructional Design Theories Applied.md
+  - Corpus/Research/Research - Discussion-based Learning.md
+  - Corpus/Research/Research - Scenario-Based Training_ A Comprehensive Guide.md
+  - Corpus/Research/Research - Roleplay & Scenarios for Learning.md
+  - Corpus/Research/Research - Learner Persona Research and Development.md
+  - Corpus/Research/Research - Voice Coaching and Clinical Analysis.md
+  - Corpus/Research/donald_clarks_100_tips_for_effective_learning_design.md
+  - Corpus/Research/theory_gagne_s_nine_events_of_instruction.md
+  - Corpus/Research/High-Level Planning Tools in Corporate Learning - Wireframes, Content Maps & Course Blueprints.md
+  - Corpus/Research/core_knowledge_and_progress_measurement.md
+  - Corpus/Research/Essentials_Course_Gold_Structure_AI_Course_Playbook.md
+  - Corpus/Research/Applying_Learning_Theory_Practical_Checklist.md
+  - Corpus/Research/Research - ILT & VILT Best Practice.md
+  - Corpus/Research/Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md
+  - Corpus/Research/Gold Standard Structure for Any Corporate-Learning Asset v3.md
+  - Corpus/Research/course_structure_hierarchy_corpus_research.md
+  - Corpus/Research/innovative-learning-and-teaching-experiments-across-the-discipli.md
+  - Corpus/Research/module-integration-strategy.md
+  - Corpus/Research/course-creation-flow.md
+  - Corpus/Research/Research - Canonical Presentation Methodology Research.md
+  - Corpus/Research/Content Map - Instructions v3.md
+  - Corpus/Research/Methodology - How do we move from this research to a sequenced A.I. Enhanced Course Pipeline_.md
+  relationships:
+  - target: scoring/assessment_scoring_frameworks.yaml
+    type: depends_on
+    description: Scoring rubric definitions for assessment evaluation
+  - target: scoring/master_scoring_framework.yaml
+    type: depends_on
+    description: Master scoring dimensions and weights
+gliner_config:
+  model: urchade/gliner_multi_pii-v1
+  batch_size: 8
+  context_window: 512
+  domain_keywords:
+    primary:
+    - assessment
+    - evaluation
+    - rubric
+    - competency
+    - quiz
+    - test
+    - exam
+    - grading
+    secondary:
+    - formative
+    - summative
+    - Kirkpatrick
+    - criterion
+    - feedback
+    - mastery
+    - proficiency
+entity_types:
+  formative_assessment:
+    description: Assessment conducted during the learning process to monitor progress and adjust instruction
+    canonical_id: formative_assessment
+    entity_kind: assessment_type
+    family: evaluation
+    gliner_label: FORMATIVE_ASSESSMENT
+    gliner_description: Formative assessment during learning knowledge check poll practice quiz reflection checkpoint progress
+    examples:
+    - mid-module knowledge check
+    - in-class polling
+    - practice quiz
+    - reflection prompt
+    - learning checkpoint
+    - think-pair-share check
+    - exit ticket
+    anti_examples:
+    - final exam
+    - certification test
+    confidence_threshold: 0.75
+    aliases:
+    - diagnostic assessment
+    - progress check
+    - learning check
+    indicators:
+    - knowledge check
+    - practice quiz
+    - reflection
+    - checkpoint
+    - exit ticket
+    - polling
+    - formative
+    - self-check
+    - pulse check
+    - temperature check
+    patterns:
+    - (knowledge|learning|progress|pulse) check
+    - (practice|diagnostic|pre-) (quiz|test|assessment)
+    - exit ticket
+    - formative (assessment|evaluation)
+    color: '#3498db'
+    relates_to:
+    - target: summative_assessment
+      relation: contrasts_with
+      weight: required
+      description: Formative (during learning, developmental) vs summative (end of learning, evaluative)
+    - target: feedback_modality
+      relation: triggers
+      weight: expected
+      description: Formative assessments require feedback delivery to fulfil their purpose
+    - target: summative_assessment
+      relation: precedes
+      weight: required
+      description: Formative assessments provide feedback during learning, leading to summative assessment at the end
+    - target: quiz_activity
+      relation: supported_by
+      weight: expected
+      description: Formative assessments use quizzes as low-stakes checks during learning for continuous feedback without grading anxiety
+      target_file: activity_types_entities
+    - target: reflection_activity
+      relation: supported_by
+      weight: expected
+      description: Reflective assessments such as journals and debriefs serve as key formative tools encouraging deeper self-awareness
+      target_file: activity_types_entities
+    - target: scenario_activity
+      relation: supported_by
+      weight: expected
+      description: Scenario-based questions serve as formative assessment formats checking whether learners can apply knowledge in context
+      target_file: activity_types_entities
+    - target: proficiency_level
+      relation: triggers
+      weight: expected
+      description: Ipsative formative assessments track individual improvement over time, triggering transitions between proficiency levels
+    - target: extraneous_load_marker
+      relation: limits
+      weight: expected
+      description: Cognitive Load Theory requires formative assessment items use plain language and segmentation to minimise extraneous load
+      target_file: cognitive_load_entities
+    - target: novice_learner
+      relation: supports
+      weight: expected
+      description: Formative assessments with low-stakes practice and feedback particularly support novice learners by allowing safe mistakes
+      target_file: audience_entities
+    - target: delivery_modality
+      relation: supported_by
+      weight: expected
+      description: Formative assessment methods must adapt to delivery modality — polls in VILT, embedded quizzes in e-learning, exit tickets in ILT
+      target_file: delivery_entities
+    - target: confidence_technique
+      relation: enables
+      weight: expected
+      description: "Real-time biofeedback (formative assessment) directly enables confidence technique development by providing immediate visual confirmation of vocal targets during the associative learning stage per Voice Coaching and Clinical Analysis"
+      target_file: delivery_entities
+    - target: practice_activity
+      relation: supports
+      weight: required
+      description: "FPI Application phase functions as formative assessment with immediate corrective feedback guiding learner performance per Merrill"
+      target_file: activity_types_entities
+    - target: learning_objective
+      relation: supports
+      weight: required
+      description: "CDT prescribes formative assessment components aligned precisely to classified learning objectives per Merrill"
+      target_file: pedagogical_frameworks_entities
+    - target: discussion_activity
+      relation: supported_by
+      weight: expected
+      description: "Discussion-based learning provides observable behavior indicators and participation contexts that directly serve formative assessment per Discussion-based Learning research"
+      target_file: activity_types_entities
+    - target: germane_load_marker
+      relation: enables
+      weight: expected
+      description: "Formative assessments like self-explanation prompts and retrieval quizzes enable germane processing — testing effect boosts retention (Roediger & Karpicke, 2006; Applying_Learning_Theory_Practical_Checklist)"
+      target_file: cognitive_load_entities
+    - target: proficiency_level
+      relation: enables
+      weight: expected
+      description: "Formative assessments enable tracking of proficiency levels — real-time knowledge checks reveal whether learners have achieved understanding before progressing to higher complexity per ILT&VILT Best Practice"
+    - target: feedback_modality
+      relation: contains
+      weight: required
+      description: "Formative assessment contains feedback modalities including immediate automated quiz feedback, peer critique, instructor debrief, and written commentary (Best-Practice Learning Activities)"
+    - target: rubric_component
+      relation: supported_by
+      weight: optional
+      description: "Formative assessments like peer video reviews and slide deck critiques are supported by rubric components providing structured evaluation criteria (Best-Practice Learning Activities)"
+    - target: intrinsic_load_marker
+      relation: resolves
+      weight: expected
+      description: "Formative assessment resolves intrinsic load by breaking complex material into checkpoints that verify understanding before adding new complexity per Best Practices for Structuring Corporate Learning Content"
+      target_file: cognitive_load_entities
+    - target: microlearning_format
+      relation: supported_by
+      weight: expected
+      description: "Automated assessment generation creates contextually appropriate questions with intelligent distractor analysis; embedded quizzes are core microlearning components per AI Microlearning Guide"
+      target_file: content_format_entities
+    - target: content_structure_marker
+      relation: supported_by
+      weight: expected
+      description: "Formative assessments depend on content structure markers — modular section boundaries and progress checkpoints define natural insertion points for knowledge checks per course structure hierarchy research"
+      target_file: content_architecture_entities
+    - target: motivation_element
+      relation: supports
+      weight: expected
+      description: "Formative assessments enhanced with emotional framing (encouragement messages, low-stakes framing, retry support) directly sustain learner motivation per module-integration-strategy"
+      target_file: pedagogical_frameworks_entities
+    - target: claim
+      relation: supports
+      weight: optional
+      description: "The Phase 2 logic audit functions as formative assessment, checking whether claims pass the 'So What?' test and MECE criteria before proceeding to design (Canonical Presentation Methodology)"
+      target_file: narrative_entities
+    - target: extraneous_load_marker
+      relation: resolves
+      weight: expected
+      description: "Red Team quality gates (Squint Test, Vertical Flow, Cognitive Load check) function as formative assessment resolving extraneous load"
+      target_file: cognitive_load_entities
+    - target: alignment_marker
+      relation: supported_by
+      weight: required
+      description: "Content Map explicitly maps each objective to assessment method supporting formative alignment"
+      target_file: content_architecture_entities
+    - target: progressive_disclosure_marker
+      relation: supports
+      weight: expected
+      description: "Mini-assessments between segments inherently implement segmenting with processing pauses per Applying Mayer's Principles Practical Checklist"
+      target_file: cognitive_load_entities
+  summative_assessment:
+    description: Assessment conducted at the end of a learning unit to evaluate overall achievement
+    canonical_id: summative_assessment
+    entity_kind: assessment_type
+    family: evaluation
+    gliner_label: SUMMATIVE_ASSESSMENT
+    gliner_description: Summative assessment final exam end-of-course certification capstone portfolio graded evaluation
+    examples:
+    - final exam
+    - end-of-course assessment
+    - certification exam
+    - capstone project evaluation
+    - portfolio review
+    - graded assignment
+    - competency demonstration
+    anti_examples:
+    - practice test
+    - self-assessment
+    confidence_threshold: 0.75
+    aliases:
+    - final assessment
+    - achievement test
+    - culminating evaluation
+    indicators:
+    - final exam
+    - end-of-course
+    - certification
+    - capstone
+    - portfolio review
+    - graded
+    - summative
+    - pass/fail
+    - competency demonstration
+    patterns:
+    - (final|end-of-course|certification) (exam|test|assessment)
+    - (capstone|portfolio|competency) (project|review|demonstration)
+    - summative (assessment|evaluation)
+    color: '#e74c3c'
+    relates_to:
+    - target: formative_assessment
+      relation: contrasts_with
+      weight: required
+      description: Summative (evaluative, end-point) vs formative (developmental, ongoing)
+    - target: rubric_component
+      relation: supported_by
+      weight: expected
+      description: Summative assessments need rubric criteria for consistent evaluation
+    - target: kirkpatrick_level
+      relation: supported_by
+      weight: required
+      description: Summative assessment maps to Kirkpatrick Level 2 for knowledge tests, Level 3 for behavioural observation, Level 4 for business metrics
+    - target: cognitive_level
+      relation: supported_by
+      weight: required
+      description: Summative assessments must align with Bloom's Taxonomy cognitive levels ensuring question complexity matches learning objective depth
+      target_file: pedagogical_frameworks_entities
+    - target: demonstration_activity
+      relation: supported_by
+      weight: expected
+      description: Summative skill assessments require learners to demonstrate competence through performance tasks like simulations or capstone projects
+      target_file: activity_types_entities
+    - target: proficiency_level
+      relation: contains
+      weight: required
+      description: Summative assessments use criterion-referenced grading against fixed proficiency standards to validate competency at defined levels
+    - target: roleplay_activity
+      relation: supports
+      weight: expected
+      description: "Summative assessments support roleplay evaluation through structured observation rubrics and behavioural checklists per roleplay research"
+      target_file: activity_types_entities
+    - target: instructional_event
+      relation: supports
+      weight: required
+      description: "Gagné's Event 8 (Assess Performance) explicitly requires summative assessment to verify that learners have achieved stated objectives per theory_gagne_s_nine_events_of_instruction"
+      target_file: pedagogical_frameworks_entities
+    - target: learning_objective
+      relation: supported_by
+      weight: required
+      description: "Research requires success metrics and clear indicators of training effectiveness tied to business results — summative assessment measures achievement of defined learning objectives per Essential Inputs for Learning Objectives"
+      target_file: pedagogical_frameworks_entities
+    - target: formative_assessment
+      relation: supported_by
+      weight: expected
+      description: "End-of-course summative evaluation aggregates strip quiz scores from formative assessments — summative assessment is built upon accumulated formative data (Essentials_Course_Gold_Structure)"
+    - target: kirkpatrick_level
+      relation: supports
+      weight: expected
+      description: "Summative assessments support Kirkpatrick evaluation levels — end-of-course tests map to Level 2 (Learning), while applied projects and follow-up assessments map to Level 3 (Behavior) per ILT&VILT Best Practice"
+    - target: proficiency_level
+      relation: triggers
+      weight: expected
+      description: "Summative assessments trigger proficiency level determinations through passing score requirements for certification and module completion gating (Best-Practice Learning Activities)"
+    - target: alignment_marker
+      relation: supported_by
+      weight: required
+      description: "Summative assessments are supported by alignment markers — backward design requires end-of-course assessments to be aligned with learning objectives from the outset, ensuring assessments measure intended outcomes (Gold Standard Structure)"
+      target_file: content_architecture_entities
+    - target: scenario_activity
+      relation: supported_by
+      weight: expected
+      description: "Summative assessments are supported by scenario activities — scenario-based final assessments test application of knowledge in realistic workplace contexts as end-of-module evaluations (Gold Standard Structure)"
+      target_file: activity_types_entities
+    - target: learning_objective
+      relation: supports
+      weight: required
+      description: "Content Map places final assessments after foundational content mapping objectives to tests (Content Map Instructions v3)"
+      target_file: pedagogical_frameworks_entities
+  kirkpatrick_level:
+    description: References to Kirkpatrick's four levels of training evaluation
+    canonical_id: kirkpatrick_level
+    entity_kind: evaluation_framework
+    family: evaluation
+    gliner_label: KIRKPATRICK_LEVEL
+    gliner_description: Kirkpatrick evaluation level reaction learning behaviour results ROI impact training effectiveness
+    examples:
+    - 'Level 1: Reaction'
+    - 'Level 2: Learning'
+    - 'Level 3: Behaviour'
+    - 'Level 4: Results'
+    - learner satisfaction survey
+    - on-the-job behaviour change
+    - business impact measurement
+    anti_examples:
+    - level playing field
+    - reaction time
+    confidence_threshold: 0.8
+    aliases:
+    - evaluation level
+    - training effectiveness level
+    subtypes:
+      reaction:
+        description: Level 1 — Learner satisfaction, engagement, and perceived relevance
+        indicators:
+        - satisfaction
+        - reaction
+        - engagement survey
+        - happy sheet
+        - NPS
+      learning:
+        description: Level 2 — Knowledge acquisition, skill development, attitude change
+        indicators:
+        - knowledge gain
+        - skill assessment
+        - pre/post test
+        - learning outcomes
+      behaviour:
+        description: Level 3 — On-the-job application and behavioural transfer
+        indicators:
+        - behaviour change
+        - on-the-job
+        - transfer
+        - application
+        - performance improvement
+      results:
+        description: Level 4 — Organisational impact, ROI, and business outcomes
+        indicators:
+        - business impact
+        - ROI
+        - results
+        - KPI improvement
+        - revenue impact
+    indicators:
+    - Kirkpatrick
+    - Level 1
+    - Level 2
+    - Level 3
+    - Level 4
+    - reaction
+    - behaviour change
+    - business impact
+    - training ROI
+    patterns:
+    - Kirkpatrick
+    - Level [1-4]
+    - (reaction|learning|behaviour|results) (survey|assessment|evaluation|measurement)
+    - training (ROI|effectiveness|impact)
+    color: '#9b59b6'
+    relates_to:
+    - target: formative_assessment
+      relation: contains
+      weight: optional
+      description: Kirkpatrick levels encompass both formative and summative evaluation approaches
+    - target: summative_assessment
+      relation: supports
+      weight: required
+      description: Kirkpatrick Levels 2-4 map directly to summative assessment types — L2 knowledge tests, L3 behavioural observation, L4 business metrics
+    - target: practice_activity
+      relation: contains
+      weight: optional
+      description: Kirkpatrick Level 3 behaviour assessment relies on on-the-job practice observation via manager checklists and follow-up interviews
+      target_file: activity_types_entities
+    - target: scenario_activity
+      relation: supports
+      weight: required
+      description: "Kirkpatrick four-level framework (Reaction, Learning, Behavior, Results) is explicitly prescribed for evaluating scenario-based training effectiveness per SBT guide"
+      target_file: activity_types_entities
+    - target: roleplay_activity
+      relation: supports
+      weight: expected
+      description: "Kirkpatrick levels evaluate roleplay effectiveness — L2 measures skill acquisition, L3 measures on-the-job behaviour transfer from roleplay practice per roleplay research"
+      target_file: activity_types_entities
+    - target: learning_objective
+      relation: supports
+      weight: required
+      description: "Kirkpatrick Levels 1-3 validate whether learning objectives were achieved — Level 2 measures knowledge gain, Level 1 measures relevance, Level 3 measures transfer intent per recommended-training-effectiveness-questions"
+      target_file: pedagogical_frameworks_entities
+    - target: proficiency_level
+      relation: supported_by
+      weight: required
+      description: "Kirkpatrick evaluation uses 5-point proficiency scales (Not at all knowledgeable to Extremely knowledgeable) as retrospective pre/post measures for Level 2 Learning assessment per recommended-training-effectiveness-questions"
+    - target: alignment_marker
+      relation: supports
+      weight: expected
+      description: "Kirkpatrick evaluation levels support alignment — the research recommends noting level 1-4 evaluations and on-the-job metrics in the blueprint to reinforce the focus on business outcomes and verify training effectiveness per High-Level Planning Tools research"
+      target_file: content_architecture_entities
+    - target: feedback_modality
+      relation: supported_by
+      weight: expected
+      description: "Kirkpatrick evaluation levels are supported by feedback modalities — Level 1 (Reaction) uses learner surveys, Level 2 uses knowledge tests, Level 3 uses on-job observation and follow-up assessments per ILT&VILT Best Practice"
+    - target: summative_assessment
+      relation: supported_by
+      weight: expected
+      description: "Kirkpatrick evaluation levels are supported by summative assessments that measure learning (L2) through quizzes and performance tests, and behavior (L3) through action learning projects (Best-Practice Learning Activities)"
+    - target: microlearning_format
+      relation: supports
+      weight: expected
+      description: "Pre/post assessments following Kirkpatrick's model evaluate reaction, learning, behaviour, and results at 30/60/90-day intervals for microlearning effectiveness per AI Microlearning Guide"
+      target_file: content_format_entities
+    - target: audience_kpi
+      relation: triggers
+      weight: required
+      description: "Kirkpatrick Level 4 (Results) triggers audience KPI measurement — business impact, ROI calculations, and KPI improvements are the defined metrics per course-creation-flow"
+      target_file: audience_entities
+    - target: call_to_action
+      relation: supports
+      weight: expected
+      description: "Kirkpatrick Level 3 (Behavior) measures whether the audience executed the call to action's 'Do' objective after the presentation (Canonical Presentation Methodology)"
+      target_file: narrative_entities
+    - target: outcome_statement
+      relation: supports
+      weight: expected
+      description: "Kirkpatrick Level 4 (Results) validates outcome statements by measuring business impact — ROI, revenue increase, risk reduction — as the strategic 'Why' (Canonical Presentation Methodology)"
+      target_file: narrative_entities
+  rubric_component:
+    description: Structural elements of assessment rubrics including criteria, levels, and descriptors
+    canonical_id: rubric_component
+    entity_kind: assessment_structure
+    family: rubric
+    gliner_label: RUBRIC_COMPONENT
+    gliner_description: Rubric component criterion performance level descriptor scoring anchor exemplar weight dimension
+    examples:
+    - 'criterion: clarity of explanation'
+    - 'performance level: proficient'
+    - scoring descriptor
+    - anchor exemplar
+    - 'rubric weight: 25%'
+    - 'dimension: technical accuracy'
+    anti_examples:
+    - Rubik's cube
+    - anchor text
+    confidence_threshold: 0.7
+    aliases:
+    - scoring criterion
+    - rubric element
+    - grading descriptor
+    indicators:
+    - criterion
+    - performance level
+    - descriptor
+    - anchor
+    - exemplar
+    - rubric
+    - weight
+    - dimension
+    - scoring guide
+    - marking scheme
+    patterns:
+    - '(criterion|criteria|dimension):'
+    - (performance|proficiency|mastery) level
+    - (scoring|rubric) (descriptor|anchor|guide|weight)
+    color: '#f39c12'
+    relates_to:
+    - target: proficiency_level
+      relation: contains
+      weight: required
+      description: Rubric components contain proficiency level descriptors
+    - target: demonstration_activity
+      relation: enables
+      weight: required
+      description: Rubrics provide criteria matrices essential for consistently evaluating performance demonstrations like role-plays and simulations
+      target_file: activity_types_entities
+    - target: roleplay_activity
+      relation: enables
+      weight: expected
+      description: Rubrics enable structured roleplay evaluation with criteria for opening, needs analysis, presenting solutions, and objection handling
+      target_file: activity_types_entities
+    - target: feedback_modality
+      relation: triggers
+      weight: expected
+      description: Rubrics trigger structured feedback by providing criteria-level observations, making feedback targeted to agreed standards
+    - target: clarity_dimension
+      relation: supports
+      weight: expected
+      description: Rubrics must use observable clear language for each level descriptor to promote fairness, consistency, and scoring transparency
+      target_file: scoring_entities
+    - target: scenario_activity
+      relation: supports
+      weight: required
+      description: "Analytic, single-point, and holistic rubrics assess participant performance during scenarios, reducing subjectivity and providing consistent feedback per SBT guide"
+      target_file: activity_types_entities
+    - target: vocal_quality_issue
+      relation: contains
+      weight: expected
+      description: "Assessment rubrics contain vocal quality metrics (Jitter, Shimmer, HNR, CPPS) as objective measurement components for evaluating speaker performance per Voice Coaching and Clinical Analysis"
+      target_file: performance_entities
+    - target: kirkpatrick_level
+      relation: supported_by
+      weight: expected
+      description: "Evaluation constructs (Learning, Relevance, Characteristics of Training, Intent to Use, Barriers) function as rubric components structuring Kirkpatrick-level postcourse evaluation per recommended-training-effectiveness-questions"
+    - target: summative_assessment
+      relation: supports
+      weight: expected
+      description: "Rubric components support summative assessments by providing structured criteria, performance levels, and scoring anchors for consistent end-of-course evaluation (Gold Standard Structure)"
+    - target: learning_objective
+      relation: supports
+      weight: required
+      description: "Rubric components directly support learning objectives by defining criteria and proficiency levels that operationalise the target behaviour and degree of mastery per innovative learning experiments"
+      target_file: learning_objectives_entities
+  proficiency_level:
+    description: Named competency or proficiency tiers used in learner assessment
+    canonical_id: proficiency_level
+    entity_kind: assessment_label
+    family: rubric
+    gliner_label: PROFICIENCY_LEVEL
+    gliner_description: Proficiency level novice beginner intermediate advanced expert mastery developing proficient exemplary
+    examples:
+    - Novice
+    - Developing
+    - Proficient
+    - Advanced
+    - Expert
+    - Exemplary
+    - Mastery
+    - Needs Improvement
+    anti_examples:
+    - advanced settings
+    - expert mode
+    confidence_threshold: 0.8
+    aliases:
+    - competency tier
+    - mastery level
+    - skill level
+    indicators:
+    - novice
+    - beginner
+    - developing
+    - intermediate
+    - proficient
+    - advanced
+    - expert
+    - exemplary
+    - mastery
+    - needs improvement
+    - not yet competent
+    patterns:
+    - (Novice|Beginner|Developing|Intermediate|Proficient|Advanced|Expert|Exemplary)
+    - (Needs Improvement|Not Yet Competent|Mastery)
+    color: '#27ae60'
+    relates_to:
+    - target: rubric_component
+      relation: specialises
+      weight: required
+      description: Proficiency levels are defined within rubric components
+    - target: novice_learner
+      relation: supports
+      weight: expected
+      description: Ipsative proficiency tracking shows novice learners their personal improvement, motivating engagement before external benchmarks
+      target_file: audience_entities
+    - target: expert_learner
+      relation: supports
+      weight: optional
+      description: Proficiency tracking challenges high performers to beat personal bests, preventing complacency at advanced skill levels
+      target_file: audience_entities
+    - target: cognitive_level
+      relation: supported_by
+      weight: expected
+      description: Proficiency levels align with Bloom's Taxonomy — lower levels map to remember/understand, higher to apply/analyze/evaluate/create
+      target_file: pedagogical_frameworks_entities
+    - target: learner_characteristic
+      relation: supported_by
+      weight: expected
+      description: "Proficiency levels must account for learner characteristics that vary by generation: Gen Z has high digital but low soft-skill proficiency; Boomers have inverse pattern per Learner Persona Research"
+      target_file: pedagogical_frameworks_entities
+    - target: assessment_item_type
+      relation: supported_by
+      weight: required
+      description: "Clark defines four proficiency levels (Familiar, Recognised, Recalled, Automatic) mapping directly to assessment item types — MCQ tests recognition, open-response tests recall, timed open-response tests automaticity per Clark 100 Tips"
+    - target: learning_objective
+      relation: supports
+      weight: required
+      description: "Retrospective pre/post proficiency ratings directly measure achievement of learning objectives via 5-point scale from Not at all knowledgeable to Extremely knowledgeable per recommended-training-effectiveness-questions"
+      target_file: pedagogical_frameworks_entities
+    - target: pedagogical_sequence_marker
+      relation: supported_by
+      weight: expected
+      description: "Proficiency level progression depends on pedagogical sequencing — scaffolded sequences define the path from novice to expert proficiency tiers per course structure hierarchy research"
+      target_file: content_architecture_entities
+    - target: progressive_disclosure_marker
+      relation: enables
+      weight: expected
+      description: "Proficiency levels enable progressive disclosure — the adaptive engine routes learners along different difficulty paths based on assessed proficiency per module-integration-strategy"
+      target_file: cognitive_load_entities
+    parent_entity: rubric_component
+  feedback_modality:
+    description: Types of feedback delivery in learning assessment contexts
+    canonical_id: feedback_modality
+    entity_kind: assessment_method
+    family: feedback
+    gliner_label: FEEDBACK_MODALITY
+    gliner_description: Feedback modality peer review written feedback verbal coaching self-reflection rubric-based automated
+    examples:
+    - peer review
+    - written instructor feedback
+    - verbal coaching session
+    - self-reflection journal
+    - rubric-based scoring
+    - automated feedback
+    - 360-degree review
+    anti_examples:
+    - feedback loop
+    - audio feedback
+    confidence_threshold: 0.7
+    aliases:
+    - feedback type
+    - evaluation method
+    indicators:
+    - peer review
+    - written feedback
+    - verbal coaching
+    - self-reflection
+    - rubric-based
+    - automated
+    - 360-degree
+    - formative feedback
+    - corrective feedback
+    - evaluative feedback
+    patterns:
+    - (peer|instructor|self|automated|360) (review|feedback|assessment)
+    - (written|verbal|rubric-based|formative|corrective) feedback
+    color: '#1abc9c'
+    relates_to:
+    - target: formative_assessment
+      relation: resolves
+      weight: expected
+      description: Feedback provides the actionable output from formative assessment
+    - target: confidence_technique
+      relation: triggers
+      weight: optional
+      description: Timely specific feedback triggers confidence-building techniques by providing learners with evidence of progress
+      target_file: delivery_entities
+    - target: practice_activity
+      relation: enables
+      weight: required
+      description: "CDT identifies feedback as critical secondary presentation form; immediate corrective feedback during practice enables mastery per Merrill"
+      target_file: activity_types_entities
+    - target: scenario_activity
+      relation: supports
+      weight: required
+      description: "Intrinsic feedback in SBT shows consequences of learner choices within the story continuation rather than external correct/incorrect judgments per SBT guide"
+      target_file: activity_types_entities
+    - target: delivery_modality
+      relation: supported_by
+      weight: expected
+      description: "Feedback must match persona delivery preferences: data-driven coaching via Gong for Sales Directors, peer validation for Millennials, just-in-time for Gen X per Learner Persona Research"
+      target_file: delivery_entities
+    - target: summative_assessment
+      relation: supports
+      weight: expected
+      description: "Open-ended questions for Training Strengths, Weaknesses, and Intent to Use provide qualitative feedback that supplements quantitative summative assessment scales per recommended-training-effectiveness-questions"
+    - target: proficiency_level
+      relation: supports
+      weight: expected
+      description: "360-degree feedback, self-assessment, and manager check-ins support identification of learner proficiency levels and growth areas (core_knowledge_and_progress_measurement)"
+    - target: before_after_comparison
+      relation: supported_by
+      weight: optional
+      description: "Strip 3.2.1 Hook Card uses 'Before/after pitch videos - spot the difference' as a formative assessment anchor — before/after comparison supports assessment framing (Essentials_Course_Gold_Structure)"
+      target_file: evidence_types_entities
+    - target: reflection_activity
+      relation: triggers
+      weight: expected
+      description: "Feedback modalities trigger reflection activities — peer review, coaching feedback, and self-assessment results prompt learners to reflect on performance gaps and plan improvement per Corporate Learning Assessment research"
+      target_file: activity_types_entities
+    - target: roleplay_activity
+      relation: supported_by
+      weight: expected
+      description: "Feedback modalities are supported by role-play activities that generate structured observation data for immediate peer and instructor feedback (Best-Practice Learning Activities)"
+      target_file: activity_types_entities
+    - target: formative_assessment
+      relation: supports
+      weight: required
+      description: "Feedback modalities directly support formative assessment by delivering immediate corrective and reinforcement information to learners (Best-Practice Learning Activities)"
+    - target: quiz_activity
+      relation: supported_by
+      weight: required
+      description: "Feedback modalities are supported by quiz activities that generate correct/incorrect response data requiring immediate explanatory feedback delivery (Best-Practice Learning Activities)"
+      target_file: activity_types_entities
+    - target: mayer_essential_principle
+      relation: supported_by
+      weight: expected
+      description: "Modality principle applies to feedback; audio feedback preserves visual channel for review per Applying Mayer's Principles Practical Checklist"
+      target_file: cognitive_load_entities
+  assessment_item_type:
+    description: Specific question or task formats used in assessments
+    canonical_id: assessment_item_type
+    entity_kind: assessment_format
+    family: item_design
+    gliner_label: ASSESSMENT_ITEM
+    gliner_description: Assessment item type multiple choice true false matching short answer essay drag drop scenario branching
+    examples:
+    - multiple choice question
+    - true/false item
+    - matching exercise
+    - short answer response
+    - essay question
+    - drag-and-drop activity
+    - branching scenario
+    - hotspot identification
+    anti_examples:
+    - multiple options
+    - true story
+    confidence_threshold: 0.75
+    aliases:
+    - question type
+    - item format
+    - test item
+    indicators:
+    - multiple choice
+    - true/false
+    - matching
+    - short answer
+    - essay
+    - drag and drop
+    - branching scenario
+    - hotspot
+    - fill in the blank
+    - Likert scale
+    - ranking
+    - ordering
+    patterns:
+    - multiple[- ]choice
+    - true[/ ]false
+    - (short|long|free)[- ](answer|response|text)
+    - drag[- ]and[- ]drop
+    - branching scenario
+    - fill[- ]in[- ]the[- ]blank
+    color: '#e67e22'
+    relates_to:
+    - target: summative_assessment
+      relation: enables
+      weight: expected
+      description: Assessment item types provide the building blocks for summative assessments
+    - target: formative_assessment
+      relation: enables
+      weight: expected
+      description: Assessment items also underpin formative checks
+    - target: rubric_component
+      relation: supported_by
+      weight: expected
+      description: Complex assessment items like role-plays and simulations require rubric-based scoring guides for consistent evaluation
+    - target: cognitive_level
+      relation: supported_by
+      weight: required
+      description: Assessment item types must match Bloom's cognitive levels — MCQ for recall, scenarios for application, case analyses for evaluation
+      target_file: pedagogical_frameworks_entities
+    - target: intrinsic_load_marker
+      relation: limits
+      weight: expected
+      description: Complex assessment items should be segmented and sequenced to manage intrinsic cognitive load on working memory
+      target_file: cognitive_load_entities
+    - target: extraneous_load_marker
+      relation: limits
+      weight: expected
+      description: Overly verbose scenarios and trick questions create extraneous cognitive load measuring test-taking savvy rather than knowledge
+      target_file: cognitive_load_entities
+    - target: quiz_activity
+      relation: specialises
+      weight: expected
+      description: Quiz is a specific assessment item type for knowledge recall with variants including MCQ, true/false, matching, and short answer
+      target_file: activity_types_entities
+    - target: scenario_activity
+      relation: specialises
+      weight: expected
+      description: Scenario-based items are assessment types testing application and decision-making in context through branching simulations
+      target_file: activity_types_entities
+    - target: delivery_modality
+      relation: supported_by
+      weight: expected
+      description: Assessment item types must match delivery modality — automated MCQ for e-learning, observation checklists for ILT, polls for VILT
+      target_file: delivery_entities
+    - target: germane_load_marker
+      relation: enables
+      weight: expected
+      description: "Well-designed MCQ distractors catching common misconceptions force active cognitive processing — effort of working out why wrong options are wrong produces germane load per Clark 100 Tips"
+      target_file: cognitive_load_entities
+    - target: learning_objective
+      relation: supported_by
+      weight: required
+      description: "Assessment item types are supported by learning objectives — each item must directly measure a specific Bloom's-level objective to ensure construct validity and assessment-objective alignment per Corporate Learning Assessment research"
+      target_file: pedagogical_frameworks_entities
+    - target: microlearning_format
+      relation: supported_by
+      weight: expected
+      description: "AI generates multiple choice questions, scenario-based assessments, and adaptive testing sequences with real-time difficulty adjustment for microlearning per AI Microlearning Guide"
+      target_file: content_format_entities
+quality_indicators:
+  positive:
+  - aligned to learning objectives
+  - multiple assessment types
+  - clear rubric criteria
+  - actionable feedback
+  - appropriate difficulty progression
+  - authentic assessment tasks
+  negative:
+  - assessment-objective misalignment
+  - single item type dependency
+  - vague rubric descriptors
+  - no feedback mechanism
+  - recall-only testing
+  - culturally biased items
+domain_keywords:
+  primary:
+  - assessment
+  - evaluation
+  - rubric
+  - competency
+  - quiz
+  - test
+  - exam
+  - grading
+  - feedback
+  - criterion
+  - benchmark
+  secondary:
+  - formative
+  - summative
+  - diagnostic
+  - portfolio
+  - peer assessment
+  - self-assessment
+  - Kirkpatrick
+  - validity
+  - reliability
+  - authentic assessment
+  - knowledge check

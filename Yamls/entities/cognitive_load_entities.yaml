@@ -1,0 +1,1256 @@
+_meta:
+  id: cognitive_load_entities
+  purpose: entity
+  version: 2.42.1
+  last_updated: '2026-03-09'
+  description: GLiNER entity definitions for detecting cognitive load indicators, Mayer principle references, CLT load type
+    markers, and working memory constraint signals in instructional content.
+  domain: pedagogical
+  domain_type: workflow
+  corpus_sources:
+  - Corpus/Research/Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md
+  - Corpus/Research/Best Practices for Writing Effective Corporate Learning Content.md
+  - Corpus/Research/Theory_Mayers_Principles_of_Multimedia_Learning-_A_Comprehensive_Summary.md
+  - Corpus/Research/mayers_15_principles.md
+  - Corpus/Research/Research - Comprehensive Learning Design Framework.md
+  - Corpus/Research/Research - Elite Speaker Linguistic Analysis Taxonomy.md
+  - Corpus/Research/Research - Visual Communication and Storytelling.md
+  - Corpus/Research/Research - Merrills Instructional Design Theories Applied.md
+  - Corpus/Research/Research - Researching Narrative and Discourse Analysis.md
+  - Corpus/Research/Research - Canonical Presentation Methodology Research.md
+  - Corpus/Research/Research - Presentation Delivery_ Ethos and Physicality.md
+  - Corpus/Research/Research - Case Study Excellence.md
+  - Corpus/Research/Research - Using Monroes Motivated Sequence.md
+  - Corpus/Research/Research - The Anatomy of Presence.md
+  - Corpus/Research/Research - Vocal Profiling for Executive Coaching.md
+  - Corpus/Research/Research - Scenario-Based Training_ A Comprehensive Guide.md
+  - Corpus/Research/Research - Roleplay & Scenarios for Learning.md
+  - Corpus/Research/Research - Learner Persona Research and Development.md
+  - Corpus/Research/Research - The Architecture of Influence_ A Comprehensive Multimodal Taxonomy of Elite vs. Average Public
+    Speaking.md
+  - Corpus/Research/Research - Visual Analysis of Slide Decks.md
+  - Corpus/Research/Research - Slide Deck Design Playbook Research.md
+  - Corpus/Research/Research - Infographics.md
+  - Corpus/Research/Research - visualisation_techniques_corporate_learning.md
+  - Corpus/Research/slide_design_research_monograph.md
+  - Corpus/Research/slide_design_research_monograph_part_2.md
+  - Corpus/Research/theory_gagne_s_nine_events_of_instruction.md
+  - Corpus/Research/Research - Sketch Style for Wireframes and Storyboards.md
+  - Corpus/Research/Research - Wireframe Best Practices.md
+  - Corpus/Research/Research - Public_Speaking_research.md
+  - Corpus/Research/Research - Narrative Visualization, Sketchnoting, Accessibility.md
+  - Corpus/Research/Research - ILT & VILT Best Practice.md
+  - Corpus/Research/Visual Best Practices for Corporate Learning Videos.md
+  - Corpus/Research/Research - Storyboard Best Practices.md
+  - Corpus/Research/Research - Corporate Learning Assessment- Strategies, Modalities, and Best Practices.md
+  - Corpus/Research/Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md
+  - Corpus/Research/Research - The Cognitive Interface - Operationalizing UxD.md
+  - Corpus/Research/Gold Standard Structure for Any Corporate-Learning Asset v3.md
+  - Corpus/Research/course_structure_hierarchy_corpus_research.md
+  - Corpus/Research/innovative-learning-and-teaching-experiments-across-the-discipli.md
+  - Corpus/Research/research_-_slide_deck_design_playbook_research.md
+  - Corpus/Research/module-integration-strategy.md
+  - Corpus/Research/research_-_comprehensive_audience_analysis.md
+  - Corpus/Research/research_-_the_architecture_of_influence__a_comprehensive_multim.md
+  - Corpus/Research/Research - Voice Quality Metric Research Parameters.md
+  - Corpus/Research/Methodology - How do we move from this research to a sequenced A.I. Enhanced Course Pipeline_.md
+  academic_sources:
+  - Sweller (1988) - Cognitive Load During Problem Solving
+  - Mayer (2009) - Multimedia Learning
+  relationships:
+  - target: taxonomy/cognitive_load_taxonomy.yaml
+    type: depends_on
+    description: Canonical cognitive load classification dimensions
+  - target: methodology/cognitive_load_principles.yaml
+    type: depends_on
+    description: CLT application framework with Mayer's 15 principles
+  - target: methodology/mayer_principles.yaml
+    type: depends_on
+    description: Detailed Mayer principle definitions with effect sizes and checklists
+gliner_config:
+  model: urchade/gliner_multi_pii-v1
+  batch_size: 8
+  context_window: 512
+  domain_keywords:
+    primary:
+    - cognitive load
+    - working memory
+    - Mayer
+    - split attention
+    - redundancy
+    - segmenting
+    - modality
+    secondary:
+    - extraneous load
+    - intrinsic load
+    - germane load
+    - dual coding
+    - contiguity
+    - coherence
+    - pre-training
+entity_types:
+  extraneous_load_marker:
+    description: References to extraneous cognitive load — unnecessary processing caused by poor design
+    canonical_id: extraneous_load_marker
+    entity_kind: cognitive_load_type
+    family: clt_load_types
+    gliner_label: EXTRANEOUS_LOAD
+    gliner_description: Extraneous cognitive load unnecessary processing poor design distraction cluttered split attention
+      redundancy chartjunk decoration
+    examples:
+    - the slide is cluttered with unnecessary detail
+    - split attention between the legend and the chart
+    - redundant text duplicates the narration
+    - decorative images distract from the content
+    - chartjunk obscures the data
+    - extraneous information overloads the learner
+    anti_examples:
+    - the content is inherently complex
+    - the topic is difficult
+    confidence_threshold: 0.7
+    aliases:
+    - unnecessary load
+    - design-imposed load
+    - distracting elements
+    indicators:
+    - extraneous load
+    - extraneous processing
+    - split attention
+    - split-attention
+    - redundant
+    - redundancy
+    - cluttered
+    - chartjunk
+    - decorative
+    - distracting
+    - unnecessary detail
+    - competing signals
+    patterns:
+    - (extraneous|unnecessary) (load|processing|information|detail)
+    - split[- ]attention (between|effect|layout)
+    - (redundant|duplicate) (text|information|content)
+    - (cluttered|busy|noisy|overloaded) (slide|screen|layout|design)
+    - (decorative|seductive) (image|detail|element|graphic)
+    color: '#e74c3c'
+    relates_to:
+    - target: intrinsic_load_marker
+      relation: contrasts_with
+      weight: required
+      description: Extraneous (unnecessary) vs intrinsic (inherent) cognitive load — different CLT dimensions
+    - target: germane_load_marker
+      relation: contrasts_with
+      weight: required
+      description: Extraneous (wasteful) vs germane (productive) cognitive load
+    - target: readability_flag
+      relation: triggers
+      weight: expected
+      description: "Poor presentation generating extraneous load triggers readability flags — verbose text, inconsistent fonts, and split-attention designs degrade readability scores (Cognitive Interface, §1.1.2, §4.1)"
+      target_file: writing_entities
+    - target: mayer_extraneous_principle
+      relation: triggers
+      weight: expected
+      description: Detected extraneous load triggers application of Mayer's extraneous reduction principles
+    - target: structural_slide
+      relation: supports
+      weight: required
+      description: Slide design is unified by Cognitive Load Theory principles which guide all structural decisions
+      target_file: slide_types_entities
+    - target: design_principle
+      relation: supported_by
+      weight: expected
+      description: Coherence and signaling design principles guide reduction of extraneous load through visual clarity and information hierarchy
+      target_file: visual_elements_entities
+    - target: cognitive_debt_marker
+      relation: supports
+      weight: expected
+      description: Extraneous load markers are indicators of cognitive debt accumulation in slide design requiring remediation
+      target_file: visual_elements_entities
+    - target: jargon_marker
+      relation: supported_by
+      weight: required
+      description: Extraneous load is increased by jargon usage causing cognitive overload from constant jargon novel syntax and erratic jumps per Elite Speaker Linguistic Analysis
+      target_file: writing_entities
+    - target: instructional_strategy
+      relation: limits
+      weight: expected
+      description: "CDT's prescriptive matrix reduces extraneous load by ensuring only relevant presentation forms are used for each content-performance cell per Merrill"
+      target_file: pedagogical_frameworks_entities
+    - target: delivery_rate_issue
+      relation: supported_by
+      weight: expected
+      description: "Excessive speech rate (>180 WPM) is a primary source of extraneous cognitive load in oral communication, overwhelming the listener's processing capacity per Unified Performance Framework"
+      target_file: performance_entities
+    - target: vocal_quality_issue
+      relation: supported_by
+      weight: expected
+      description: "Extraneous cognitive load is generated by vocal quality issues; vocal fry, uptalk, and filler words create processing interference that diverts attention from content per Anatomy of Presence research"
+      target_file: performance_entities
+    - target: filler_word
+      relation: supported_by
+      weight: expected
+      description: "Extraneous load is generated by filler words; verbal fillers force listeners to process irrelevant auditory information, diverting working memory resources from the intended message per Anatomy of Presence research"
+      target_file: performance_entities
+    - target: scenario_activity
+      relation: limits
+      weight: required
+      description: "Extraneous load in SBT reflects instructional design quality; poor scenario design overwhelms working memory and must be managed through scaffolding per SBT guide"
+      target_file: activity_types_entities
+    - target: working_memory_marker
+      relation: limits
+      weight: expected
+      description: "Extraneous load from academic bundles and high Propositional Idea Density limits working memory capacity; elite speakers minimise extraneous load to free cognitive resources per Architecture of Influence"
+    - target: low_contrast_text
+      relation: triggers
+      weight: expected
+      description: "Poor contrast is a significant source of extraneous load for all users per Slide Deck Design Playbook"
+      target_file: accessibility_entities
+    - target: visual_quality_dimension
+      relation: limits
+      weight: expected
+      description: "Extraneous load markers (chartjunk, decorative elements, split-attention layouts) directly limit visual quality scoring — high extraneous load inversely correlates with visual quality per Visualisation Techniques research"
+      target_file: scoring_entities
+    - target: video_edit_transition
+      relation: supported_by
+      weight: expected
+      description: "Extraneous load from topic transitions is resolved by establishing wide shots and consistent transition styles that signal content shifts and provide mental rest points per Visual Best Practices for Corporate Learning Videos"
+      target_file: media_entities
+    - target: microlearning_format
+      relation: limits
+      weight: required
+      description: "Effective microlearning minimises extraneous load through clean, focused design — the format structurally constrains unnecessary mental effort per AI Microlearning Guide"
+      target_file: content_format_entities
+    - target: content_structure_marker
+      relation: supported_by
+      weight: expected
+      description: "Extraneous load is mitigated by content structure markers — clear section boundaries, headings, and progress indicators reduce navigational confusion that generates unnecessary processing per course structure hierarchy research"
+      target_file: content_architecture_entities
+    - target: delivery_modality
+      relation: supported_by
+      weight: expected
+      description: "Extraneous load sources differ by delivery modality — online delivery generates navigational extraneous load while face-to-face generates environmental distractions per innovative learning experiments"
+      target_file: delivery_entities
+    - target: layout_pattern
+      relation: limits
+      weight: expected
+      description: "The 12-column grid system and C.R.A.P. principles reduce extraneous cognitive load by enforcing visual consistency; poor layout increases extraneous processing (Canonical Presentation Methodology)"
+      target_file: visual_elements_entities
+    - target: accessibility_feature
+      relation: supported_by
+      weight: expected
+      description: "Extraneous load is reduced by accessibility features — neurodiversity accommodations (ADHD-friendly, dyslexia-friendly modes) directly strip extraneous processing demands per module-integration-strategy"
+      target_file: visual_elements_entities
+    - target: nominalisation_marker
+      relation: supported_by
+      weight: expected
+      description: "Extraneous load is supported by nominalisations — they compress actions into abstract nouns increasing propositional idea density beyond processing limits (elite_speaker_taxonomy)"
+      target_file: writing_entities
+    - target: academic_bundle
+      relation: supported_by
+      weight: expected
+      description: "Academic bundles increase cognitive distance and processing load; they are a lexical source of extraneous load in spoken discourse (Architecture of Influence, Part 3)"
+      target_file: rhetorical_devices_entities
+    - target: typography_element
+      relation: supported_by
+      weight: expected
+      description: "Extraneous load is reduced by consistent typographic hierarchy; inconsistent heading styles waste working memory per cognitive interface UxD research"
+      target_file: visual_elements_entities
+  intrinsic_load_marker:
+    description: References to intrinsic cognitive load — inherent difficulty of the material being learned
+    canonical_id: intrinsic_load_marker
+    entity_kind: cognitive_load_type
+    family: clt_load_types
+    gliner_label: INTRINSIC_LOAD
+    gliner_description: Intrinsic cognitive load inherent difficulty element interactivity complex material challenging concept
+      prerequisite knowledge
+    examples:
+    - the material is inherently complex
+    - high element interactivity makes this topic difficult
+    - this concept requires significant prerequisite knowledge
+    - the intrinsic load of the subject matter
+    - interrelated concepts increase cognitive demands
+    anti_examples:
+    - the design is confusing
+    - too much text on the slide
+    confidence_threshold: 0.7
+    aliases:
+    - inherent difficulty
+    - content complexity
+    - element interactivity
+    indicators:
+    - intrinsic load
+    - intrinsic processing
+    - element interactivity
+    - inherent difficulty
+    - inherently complex
+    - prerequisite knowledge
+    - interrelated concepts
+    - content complexity
+    patterns:
+    - intrinsic (load|processing|difficulty|complexity)
+    - element interactivity
+    - inherent(ly)? (complex|difficult|challenging)
+    - (prerequisite|prior) knowledge (required|needed|assumed)
+    - interrelated (concepts|elements|components)
+    color: '#f39c12'
+    relates_to:
+    - target: extraneous_load_marker
+      relation: contrasts_with
+      weight: required
+      description: Intrinsic (inherent complexity) vs extraneous (unnecessary) load
+    - target: mayer_essential_principle
+      relation: triggers
+      weight: expected
+      description: High intrinsic load triggers Mayer's essential management principles
+    - target: microlearning_format
+      relation: resolves
+      weight: expected
+      description: Segmenting principle — breaking content into microlearning units manages intrinsic load by reducing element interactivity per segment
+      target_file: content_format_entities
+    - target: instructional_strategy
+      relation: supported_by
+      weight: expected
+      description: High intrinsic load content requires careful instructional strategy selection including pre-training and scaffolding
+      target_file: pedagogical_frameworks_entities
+    - target: progressive_disclosure_marker
+      relation: supported_by
+      weight: expected
+      description: Topics use progressive disclosure preventing cognitive overload — incremental revelation manages intrinsic complexity
+        (Comprehensive Learning Design Framework)
+    - target: subordination_marker
+      relation: supported_by
+      weight: expected
+      description: "Complex embedded syntax (subordination, relative clauses) creates intrinsic processing load that simplification reduces per Researching Narrative and Discourse Analysis"
+      target_file: discourse_entities
+    - target: germane_load_marker
+      relation: enables
+      weight: expected
+      description: "Managing intrinsic load through chunking into digestible components enables germane schema construction, improving learning outcomes by 25-35% per Case Study Excellence"
+    - target: delivery_rate_issue
+      relation: supported_by
+      weight: optional
+      description: "Intrinsic load perception is affected by delivery rate; slower-than-baseline speech allows processing of inherently complex material without overwhelming working memory per Anatomy of Presence research"
+      target_file: performance_entities
+    - target: scenario_activity
+      relation: limits
+      weight: required
+      description: "Intrinsic load represents the inherent difficulty of material being simulated in SBT; CLT provides essential boundaries for scenario design per SBT guide"
+      target_file: activity_types_entities
+    - target: expertise_reversal_marker
+      relation: limits
+      weight: expected
+      description: "Expertise reverses what constitutes a chunk; presenters must assume novice audience and design for the 4-chunk limit per Slide Deck Design Playbook"
+    - target: content_structure_marker
+      relation: supported_by
+      weight: expected
+      description: "Intrinsic load is managed by content structure markers that chunk and sequence complex information per slide design research monograph"
+      target_file: content_architecture_entities
+    - target: working_memory_marker
+      relation: triggers
+      weight: required
+      description: "Inherent content complexity consumes limited channel capacity — Segmenting and Pre-training Principles manage intrinsic load by breaking and pre-teaching before complex material per mayers_15_principles"
+    - target: novice_learner
+      relation: triggers
+      weight: expected
+      description: "Intrinsic load varies by learner expertise — novice learners experience higher intrinsic load on the same material because low prior knowledge increases element interactivity per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    - target: nominalisation
+      relation: supported_by
+      weight: expected
+      description: "High propositional idea density from nominalisations increases intrinsic processing burden; de-densification targets these constructions (Architecture of Influence, Section 1.1)"
+      target_file: discourse_entities
+    - target: pedagogical_sequence_marker
+      relation: supported_by
+      weight: expected
+      description: "SOAR narrative sequencing separates phases preventing simultaneous context-switching of complex material"
+      target_file: content_architecture_entities
+  germane_load_marker:
+    description: References to germane cognitive load — productive effort spent on schema construction and deep processing
+    canonical_id: germane_load_marker
+    entity_kind: cognitive_load_type
+    family: clt_load_types
+    gliner_label: GERMANE_LOAD
+    gliner_description: Germane cognitive load productive processing schema construction deep learning active engagement elaboration
+      integration
+    examples:
+    - schema construction through worked examples
+    - productive struggle with the material
+    - deep processing through self-explanation
+    - germane load supports meaningful learning
+    - active cognitive engagement with the content
+    anti_examples:
+    - passive reading
+    - surface memorisation
+    confidence_threshold: 0.7
+    aliases:
+    - productive load
+    - deep processing
+    - meaningful effort
+    indicators:
+    - germane load
+    - germane processing
+    - schema construction
+    - deep processing
+    - active processing
+    - self-explanation
+    - productive struggle
+    - elaboration
+    - meaningful learning
+    patterns:
+    - germane (load|processing|effort)
+    - schema (construction|building|formation)
+    - deep (processing|learning|engagement)
+    - active (processing|engagement|cognitive)
+    - (self-explanation|self[- ]explain|elaborat)
+    color: '#27ae60'
+    relates_to:
+    - target: extraneous_load_marker
+      relation: contrasts_with
+      weight: required
+      description: Germane (schema-building) vs extraneous (wasteful) load
+    - target: mayer_generative_principle
+      relation: triggers
+      weight: expected
+      description: Germane load opportunities trigger Mayer's generative fostering principles
+    - target: reflection_activity
+      relation: supported_by
+      weight: expected
+      description: Reflection activities promote germane processing through self-explanation and metacognitive schema consolidation
+      target_file: activity_types_entities
+    - target: discussion_activity
+      relation: supported_by
+      weight: expected
+      description: Discussion activities promote deep processing and active schema construction that characterise germane cognitive load
+      target_file: activity_types_entities
+    - target: metaphor
+      relation: supported_by
+      weight: expected
+      description: Metaphors export inference structure of a known domain to an unknown domain facilitating deeper schema construction supporting germane load per Elite Speaker Linguistic Analysis
+      target_file: rhetorical_devices_entities
+    - target: elaboration_marker
+      relation: supported_by
+      weight: optional
+      description: "Elaboration relations preserve context that supports germane meaning-building cognitive load per Researching Narrative and Discourse Analysis"
+      target_file: discourse_entities
+    - target: pause_marker
+      relation: supported_by
+      weight: expected
+      description: "Strategic pauses provide processing time for germane schema construction — silence after key concepts allows consolidation into long-term memory per Ethos and Physicality research"
+      target_file: performance_entities
+    - target: emphasis_marker
+      relation: supported_by
+      weight: expected
+      description: "Germane load is supported by emphasis markers; pitch and intensity variability direct the listener's attention to key points, facilitating meaningful processing per Vocal Profiling research"
+      target_file: performance_entities
+    - target: scenario_activity
+      relation: supported_by
+      weight: required
+      description: "Germane load represents effort devoted to schema construction, which SBT promotes through constructivist active knowledge building via realistic problem-solving per SBT guide"
+      target_file: activity_types_entities
+    - target: semiotic_arrangement
+      relation: supported_by
+      weight: expected
+      description: "Effective semiotic arrangements (Elaboration and Extension modes) directly support germane processing by helping viewers build mental models through visual structure per Visual Analysis of Slide Decks"
+      target_file: visual_elements_entities
+    - target: visual_element
+      relation: supported_by
+      weight: expected
+      description: "Germane load is supported by well-designed visual elements — dual coding through text plus visuals creates two memory pathways, doubling encoding effectiveness per Visualisation Techniques research"
+      target_file: visual_elements_entities
+    - target: visual_narrative_element
+      relation: supported_by
+      weight: expected
+      description: "Germane cognitive load is productively triggered by visual narrative elements that require active interpretation — brushing PCPs to discover segments, tracing pathfinding animations, interpreting t-SNE cluster labels per Narrative Visualization research"
+      target_file: visual_elements_entities
+    - target: working_memory_marker
+      relation: supported_by
+      weight: required
+      description: "Productive schema-building processing requires available working memory capacity freed by reducing extraneous load — Mayer's active processing foundation states learning happens when learners select, organise, and integrate information per mayers_15_principles"
+    - target: microlearning_format
+      relation: supported_by
+      weight: expected
+      description: "Effective microlearning maximises germane load through relevant, engaging content that promotes productive mental effort for learning per AI Microlearning Guide"
+      target_file: content_format_entities
+    - target: engagement_dimension
+      relation: supports
+      weight: expected
+      description: "Germane load represents productive mental effort for learning; engagement strategies like gamification boost this while maintaining learning focus per AI Microlearning Guide"
+      target_file: scoring_entities
+    - target: practice_activity
+      relation: supported_by
+      weight: expected
+      description: "Germane load is promoted by practice activities — guided practice and application exercises require active schema construction that characterises productive cognitive processing per course structure hierarchy research"
+      target_file: activity_types_entities
+    - target: instructional_strategy
+      relation: supported_by
+      weight: expected
+      description: "Germane load is supported by instructional strategies that inject emotional moments — curiosity gaps and achievement celebrations deepen schema construction per module-integration-strategy"
+      target_file: pedagogical_frameworks_entities
+    - target: formative_assessment
+      relation: supported_by
+      weight: expected
+      description: "Germane load is strengthened when practice is paired with immediate feedback that reinforces correct responses per Slide Deck Design Playbook Gagne Event 7"
+      target_file: assessment_entities
+    - target: claim
+      relation: enables
+      weight: expected
+      description: "Germane load processing is enabled when claims are structured via Action Titles as complete declarative sentences, facilitating schema building and meaningful encoding (Canonical Presentation Methodology)"
+      target_file: narrative_entities
+    - target: visionary_bundle
+      relation: supported_by
+      weight: expected
+      description: "Visionary discourse bundles guide audience attention toward meaning-making rather than decoding abstract hedges (Architecture of Influence, Section 1.3)"
+      target_file: rhetorical_devices_entities
+  mayer_extraneous_principle:
+    description: 'References to Mayer''s principles for reducing extraneous processing: coherence, signalling, redundancy,
+      spatial contiguity, temporal contiguity'
+    canonical_id: mayer_extraneous_principle
+    entity_kind: mayer_principle
+    family: extraneous_reduction
+    gliner_label: MAYER_EXTRANEOUS
+    gliner_description: Mayer principle coherence signalling cueing redundancy spatial contiguity temporal contiguity reduce
+      extraneous
+    examples:
+    - violates the coherence principle
+    - add signalling cues to highlight key content
+    - the redundancy principle suggests removing duplicate text
+    - spatial contiguity — labels should be on the diagram
+    - temporal contiguity requires syncing narration with visuals
+    - remove seductive details per coherence
+    anti_examples:
+    - coherent argument structure
+    - consistent signalling
+    confidence_threshold: 0.7
+    aliases:
+    - coherence principle
+    - signalling principle
+    - contiguity principle
+    indicators:
+    - coherence principle
+    - signalling principle
+    - cueing
+    - redundancy principle
+    - spatial contiguity
+    - temporal contiguity
+    - seductive details
+    - extraneous material
+    - integrated labels
+    - sync narration
+    patterns:
+    - (coherence|signalling|cueing|redundancy) principle
+    - (spatial|temporal) contiguity
+    - (remove|eliminate) (seductive|extraneous|decorative) (details|material|elements)
+    - (integrate|embed) labels (into|within|on)
+    - (sync|synchronise) (narration|audio) (with|to)
+    color: '#3498db'
+    relates_to:
+    - target: extraneous_load_marker
+      relation: resolves
+      weight: required
+      description: Mayer's extraneous principles provide specific remedies for detected extraneous load
+    - target: mayer_essential_principle
+      relation: contrasts_with
+      weight: expected
+      description: Extraneous reduction vs essential management — different Mayer principle categories
+    - target: germane_load_marker
+      relation: enables
+      weight: required
+      description: Redundancy Principle eliminates redundant visual+verbal information, freeing cognitive resources for germane
+        processing
+    - target: learning_principle
+      relation: specialises
+      weight: required
+      description: Mayer's 15 principles are tactical implementations of Cognitive Load Theory
+      target_file: pedagogical_frameworks_entities
+    - target: structural_slide
+      relation: supports
+      weight: required
+      description: 'Mayer''s principles directly guide slide design: Coherence eliminates chartjunk, Signaling highlights
+        key content'
+      target_file: slide_types_entities
+    - target: design_principle
+      relation: enables
+      weight: expected
+      description: Mayer's extraneous principles (coherence, signaling, contiguity) enable evidence-based design principle application in visual content
+      target_file: visual_elements_entities
+    - target: visual_element
+      relation: limits
+      weight: expected
+      description: "Mayer's extraneous principles (coherence, signalling) limit visual element usage — decorative images, gratuitous animations, and seductive details must be removed per Visualisation Techniques research"
+      target_file: visual_elements_entities
+    - target: negative_qualifier
+      relation: enables
+      weight: expected
+      description: "Mayer's extraneous principles enable negative qualifier scoring — violations of coherence, redundancy, and contiguity principles trigger negative quality assessments per Visualisation Techniques research"
+      target_file: scoring_entities
+    - target: animation_type
+      relation: limits
+      weight: expected
+      description: "Mayer's coherence principle limits animation type usage — gratuitous animations that don't serve learning objectives add extraneous cognitive load per Visualisation Techniques research"
+      target_file: visual_elements_entities
+    - target: storyboard_element
+      relation: supports
+      weight: expected
+      description: "Mayer's extraneous load reduction applies to storyboard design — removing unnecessary detail, shading, and decorative elements keeps frames clear and focused on essential information per Sketch Style for Wireframes and Storyboards"
+      target_file: media_entities
+    - target: planning_artefact_marker
+      relation: supports
+      weight: expected
+      description: "Mayer's coherence principle governs wireframe planning — include only visuals and text that directly support the learning objective, reducing extraneous cognitive load at the planning stage per Wireframe Best Practices"
+      target_file: content_architecture_entities
+    - target: audio_element
+      relation: limits
+      weight: expected
+      description: "Redundancy Principle warns against presenting same information in multiple formats simultaneously such as showing text while reading it aloud, overloading both channels per mayers_15_principles"
+      target_file: media_entities
+    - target: mayer_essential_principle
+      relation: precedes
+      weight: required
+      description: "Extraneous processing reduction (Category A) must precede essential processing management (Category B) in Mayer's cognitive processing hierarchy per mayers_15_principles"
+    - target: intrinsic_load_marker
+      relation: enables
+      weight: expected
+      description: "Reducing extraneous load frees cognitive capacity for processing intrinsic content complexity — removing unnecessary words, images, or sounds enables focus on essential material per mayers_15_principles"
+    - target: typography_element
+      relation: limits
+      weight: expected
+      description: "Redundancy principle limits on-screen typography — verbatim duplication of narration as on-screen text creates extraneous load per Visual Best Practices for Corporate Learning Videos"
+      target_file: visual_elements_entities
+    - target: assessment_item_type
+      relation: limits
+      weight: expected
+      description: "Extraneous load from poorly designed assessment items — irrelevant graphics, complex formatting, or redundant on-screen text impairs test performance per Corporate Learning Assessment research"
+      target_file: assessment_entities
+    - target: microlearning_format
+      relation: supports
+      weight: expected
+      description: "Mayer's extraneous load reduction principles support microlearning format design by segmenting content into focused 3-10 minute units targeting single concepts (Best-Practice Learning Activities)"
+      target_file: content_format_entities
+    - target: course_format
+      relation: supports
+      weight: expected
+      description: "Mayer's extraneous load reduction principles support course format design — chunking multi-module courses into focused sessions with clear transitions minimises split-attention and redundancy effects (Best-Practice Learning Activities)"
+      target_file: content_format_entities
+    - target: chart_type
+      relation: limits
+      weight: expected
+      description: "Mayer's coherence principle limits chart type decoration — chartjunk, 3D effects, and unnecessary gridlines add extraneous load to data visualisation per slide deck design playbook"
+      target_file: visual_elements_entities
+    - target: elaboration_marker
+      relation: supported_by
+      weight: expected
+      description: "Elaborative Repetition reduces extraneous load by unpacking dense propositions into simpler clauses — aligning with Mayer's principle of eliminating extraneous processing (Architecture of Influence, Section 1.1)"
+      target_file: discourse_entities
+    - target: working_memory_marker
+      relation: enables
+      weight: expected
+      description: "Removing extraneous content frees working memory capacity for essential material processing per Applying Mayer's Principles Practical Checklist"
+  mayer_essential_principle:
+    description: 'References to Mayer''s principles for managing essential processing: segmenting, pre-training, modality'
+    canonical_id: mayer_essential_principle
+    entity_kind: mayer_principle
+    family: essential_management
+    gliner_label: MAYER_ESSENTIAL
+    gliner_description: Mayer principle segmenting chunking pre-training prerequisite modality dual channel narration manage
+      essential processing
+    examples:
+    - segment this content into shorter modules
+    - pre-training on key terms before the lesson
+    - apply the modality principle — narrate rather than showing text
+    - chunking reduces essential processing load
+    - dual-channel processing supports the modality effect
+    anti_examples:
+    - training module
+    - audio modality
+    confidence_threshold: 0.7
+    aliases:
+    - segmenting principle
+    - pre-training principle
+    - modality principle
+    indicators:
+    - segmenting principle
+    - segmenting
+    - chunking
+    - pre-training
+    - pre-train
+    - modality principle
+    - modality effect
+    - dual channel
+    - dual-channel
+    - narration over text
+    - graphics plus narration
+    patterns:
+    - (segmenting|chunking|pre-training|modality) (principle|effect)
+    - (segment|chunk|break) (this|the|complex) (content|material|lesson)
+    - pre-train(ing)? (on|for|with) (key|foundational|component)
+    - (dual[- ]channel|modality) (processing|effect|principle)
+    - (graphics|visuals) (plus|with|and) (narration|audio|voice)
+    color: '#2ecc71'
+    relates_to:
+    - target: intrinsic_load_marker
+      relation: resolves
+      weight: required
+      description: Essential management principles address inherent complexity
+    - target: working_memory_marker
+      relation: supports
+      weight: required
+      description: Modality Principle leverages dual channels (visual + auditory) to optimize working memory capacity
+    - target: microlearning_format
+      relation: enables
+      weight: expected
+      description: Segmenting principle naturally aligns with microlearning format for chunking complex content into manageable units
+      target_file: content_format_entities
+    - target: audio_element
+      relation: enables
+      weight: expected
+      description: Modality principle leverages audio narration with graphics instead of on-screen text, optimising dual-channel processing
+      target_file: media_entities
+    - target: chart_type
+      relation: supports
+      weight: expected
+      description: "Mayer's essential principles (segmenting, pre-training) support chart type effectiveness — pre-training on chart reading conventions and segmenting complex data into sequential visualisations manages intrinsic load per Visualisation Techniques research"
+      target_file: visual_elements_entities
+    - target: formative_assessment
+      relation: enables
+      weight: expected
+      description: "Segmenting principle enables formative assessment insertion — breaking content into learner-paced segments creates natural checkpoint opportunities for knowledge checks and practice activities per Applying Mayer's Principles Practical Checklist"
+      target_file: assessment_entities
+    - target: mayer_generative_principle
+      relation: precedes
+      weight: required
+      description: "Essential processing management (Category B) precedes generative processing fostering (Category C) in Mayer's hierarchy — understanding must precede deep engagement per mayers_15_principles"
+    - target: delivery_modality_marker
+      relation: supports
+      weight: expected
+      description: "Modality Principle directs delivery modality selection: use narration instead of text when presenting visuals to distribute load across dual channels per mayers_15_principles"
+      target_file: content_architecture_entities
+    - target: video_shot_type
+      relation: supports
+      weight: expected
+      description: "Close-ups on key moments and medium shots for instruction manage essential processing by directing attention appropriately per Visual Best Practices for Corporate Learning Videos"
+      target_file: media_entities
+    - target: storyboard_element
+      relation: supports
+      weight: expected
+      description: "Temporal contiguity and multimedia principles require storyboards to synchronize narration with meaningful visuals for optimal cognitive integration per Research - Storyboard Best Practices"
+      target_file: media_entities
+    - target: course_format
+      relation: supports
+      weight: expected
+      description: "Mayer's essential processing principles support e-learning course format through segmenting content into short lessons mixing text, images, videos, and interactive exercises (Best-Practice Learning Activities)"
+      target_file: content_format_entities
+    - target: content_structure_marker
+      relation: supports
+      weight: expected
+      description: "Segmenting principle requires modular content structure — 5-7 minute sections for e-learning with clear titles, headings, and progress indicators for each segment (Gold Standard Structure)"
+      target_file: content_architecture_entities
+    - target: pedagogical_sequence_marker
+      relation: supports
+      weight: expected
+      description: "Mayer's essential principles support pedagogical sequencing — segmenting and pre-training ensure learners master prerequisites before advancing through the instructional sequence per course structure hierarchy research"
+      target_file: content_architecture_entities
+    - target: layout_pattern
+      relation: supports
+      weight: expected
+      description: "Mayer's Spatial Contiguity principle requires labels positioned adjacent to visuals rather than in separate legends, directly governing layout pattern selection per Slide Deck Design Playbook"
+      target_file: visual_elements_entities
+  mayer_generative_principle:
+    description: 'References to Mayer''s principles for fostering generative processing: multimedia, personalisation, voice,
+      image, embodiment, immersion, generativity'
+    canonical_id: mayer_generative_principle
+    entity_kind: mayer_principle
+    family: generative_fostering
+    gliner_label: MAYER_GENERATIVE
+    gliner_description: Mayer principle multimedia personalisation voice image embodiment immersion generativity foster generative
+      processing dual coding
+    examples:
+    - apply the multimedia principle — words and pictures
+    - personalisation — use conversational language
+    - the voice principle favours human narration
+    - embodiment through natural gestures
+    - generative activity prompts deeper processing
+    - dual coding with words and pictures
+    anti_examples:
+    - multimedia content
+    - personal voice
+    confidence_threshold: 0.7
+    aliases:
+    - multimedia principle
+    - personalisation principle
+    - voice principle
+    - generativity principle
+    indicators:
+    - multimedia principle
+    - personalisation principle
+    - personalization principle
+    - voice principle
+    - image principle
+    - embodiment principle
+    - immersion principle
+    - generative activity
+    - generativity
+    - dual coding
+    - words and pictures
+    patterns:
+    - (multimedia|personalisation|personalization|voice|image|embodiment|immersion|generativity) principle
+    - (words|text) and (pictures|images|graphics)
+    - (conversational|informal|friendly) (style|tone|language)
+    - (human|natural) (voice|narration)
+    - generative (activity|learning|processing)
+    - dual[- ]coding (theory|approach|effect)
+    color: '#9b59b6'
+    relates_to:
+    - target: germane_load_marker
+      relation: supports
+      weight: required
+      description: Generative principles foster productive schema-building cognitive load
+    - target: practice_activity
+      relation: enables
+      weight: required
+      description: Generative processing (Mayer principle) is enabled through practice activities that align with Bloom's
+        higher-order objectives
+      target_file: activity_types_entities
+    - target: reflection_activity
+      relation: enables
+      weight: expected
+      description: Generativity principle — reflection prompts foster active processing and durable schema building beyond passive consumption
+      target_file: activity_types_entities
+    - target: discussion_activity
+      relation: enables
+      weight: expected
+      description: Generative activities like discussion promote deeper cognitive engagement through social elaboration and self-explanation
+      target_file: activity_types_entities
+    - target: visual_narrative_element
+      relation: supports
+      weight: expected
+      description: "Mayer's generative principles (multimedia, personalisation) support visual narrative elements — words plus pictures together foster deeper schema construction than either alone per Visualisation Techniques research"
+      target_file: visual_elements_entities
+    - target: visual_element
+      relation: enables
+      weight: expected
+      description: "Multimedia Principle requires pairing diagrams with narration; Embodiment Principle states virtual agents should use gestures and expressions to reinforce learning per mayers_15_principles"
+      target_file: visual_elements_entities
+    - target: motivation_element
+      relation: enables
+      weight: expected
+      description: "Personalization Principle uses conversational language and Voice Principle uses warm human voices, both fostering engagement and learner connection per mayers_15_principles"
+      target_file: pedagogical_frameworks_entities
+    - target: interaction_element_marker
+      relation: enables
+      weight: expected
+      description: "Generative Activity Principle prescribes that learners summarise, map, or teach material to reinforce learning — these require interactive content components per mayers_15_principles"
+      target_file: content_architecture_entities
+    - target: audio_element
+      relation: supports
+      weight: expected
+      description: "Voice Principle specifies human voices over robotic ones for connection; Personalization uses conversational informal language to keep learners engaged per mayers_15_principles"
+      target_file: media_entities
+    - target: scenario_activity
+      relation: supports
+      weight: expected
+      description: "Mayer's generative processing principles support scenario activities by prompting learners to actively construct meaning through branching decisions and consequence-based feedback (Best-Practice Learning Activities)"
+      target_file: activity_types_entities
+    - target: quiz_activity
+      relation: supports
+      weight: expected
+      description: "Testing effect — attempting to recall information substantially boosts long-term retention relative to re-reading; frequent low-stakes quizzes serve as generative retrieval practice (Gold Standard Structure)"
+      target_file: activity_types_entities
+  working_memory_marker:
+    description: References to working memory limitations, Miller's Law, and capacity constraints in instructional design
+    canonical_id: working_memory_marker
+    entity_kind: cognitive_constraint
+    family: memory_constraints
+    gliner_label: WORKING_MEMORY
+    gliner_description: Working memory capacity limitation Miller's Law 7 plus minus 2 cognitive overload information overload
+      too much
+    examples:
+    - exceeds working memory capacity
+    - Miller's Law limits to 7 plus or minus 2
+    - cognitive overload from too many elements
+    - information overload on this slide
+    - too many items competing for attention
+    - design for 4 plus or minus 1 chunks
+    anti_examples:
+    - memory of the event
+    - in memory of
+    confidence_threshold: 0.7
+    aliases:
+    - memory capacity
+    - cognitive capacity
+    - information overload
+    indicators:
+    - working memory
+    - Miller's Law
+    - 7 plus or minus 2
+    - 7±2
+    - cognitive overload
+    - information overload
+    - too many elements
+    - attention capacity
+    - processing capacity
+    - cognitive capacity
+    patterns:
+    - working memory (capacity|limit|constraint|overload)
+    - Miller's Law
+    - (cognitive|information) overload
+    - too (many|much) (elements|items|information|data|text)
+    - (exceeds|overwhelms|overloads) (working memory|capacity|attention)
+    color: '#e67e22'
+    relates_to:
+    - target: extraneous_load_marker
+      relation: limits
+      weight: required
+      description: Working memory capacity constrains how much extraneous load can be tolerated
+    - target: progressive_disclosure_marker
+      relation: triggers
+      weight: expected
+      description: Working memory limits trigger the need for progressive disclosure strategies
+    - target: clt_compliance_dimension
+      relation: supports
+      weight: required
+      description: Working memory limitations are the core constraint of Cognitive Load Theory. Presentations that respect
+        working memory capacity (Miller's 7±2 items, chunks of 3-4 ideas) score higher on clt_compliance_dimension.
+      target_file: scoring_entities
+    - target: microlearning_format
+      relation: resolves
+      weight: expected
+      description: Chunking content into microlearning segments manages working memory constraints per Miller's Law and the segmenting principle
+      target_file: content_format_entities
+    - target: intrinsic_load_marker
+      relation: limits
+      weight: required
+      description: Working memory capacity of 7 plus-or-minus 2 chunks constrains how much intrinsic content can be presented simultaneously
+        (Comprehensive Learning Design Framework)
+    - target: tricolon
+      relation: supported_by
+      weight: required
+      description: Three is the smallest number required to create a pattern satisfying the brain's desire for order without overwhelming working memory per Elite Speaker Linguistic Analysis
+      target_file: rhetorical_devices_entities
+    - target: design_principle
+      relation: supported_by
+      weight: expected
+      description: "Working memory limitations are managed by design principles (Contrast, Repetition, Alignment, Proximity, Balance) which reduce cognitive load through visual consistency and hierarchy per Canonical Presentation Methodology"
+      target_file: visual_elements_entities
+    - target: delivery_rate_issue
+      relation: limits
+      weight: required
+      description: "Working memory capacity imposes a hard ceiling on speech processing — rates exceeding 180 WPM create cognitive backlog where comprehension drops 17-25% per Unified Performance Framework"
+      target_file: performance_entities
+    - target: pause_marker
+      relation: supported_by
+      weight: expected
+      description: "Working memory processing is supported by strategic pauses; Landing Pauses after key points and Transition Pauses between sections control cognitive load by providing processing time per Anatomy of Presence research"
+      target_file: performance_entities
+    - target: visual_element
+      relation: supported_by
+      weight: expected
+      description: "Working memory capacity is supported by well-designed visual elements — dual coding (verbal + visual channels) effectively doubles available working memory by distributing load across modalities per Visualisation Techniques research"
+      target_file: visual_elements_entities
+    - target: typography_element
+      relation: supported_by
+      weight: expected
+      description: "Working memory constraints are managed by typography elements — font size hierarchy, weight contrast, and spacing create visual chunking that reduces cognitive load per slide design research monograph part 2"
+      target_file: visual_elements_entities
+    - target: chart_type
+      relation: limits
+      weight: optional
+      description: "Working memory constraints limit how many dimensions, nodes, or flow-bands a user can process simultaneously in complex chart types, necessitating narrative simplification techniques like brushing, pruning, and clustering per Narrative Visualization research"
+      target_file: visual_elements_entities
+    - target: video_edit_transition
+      relation: supported_by
+      weight: expected
+      description: "Well-paced video edit transitions allowing 3-6 seconds per bullet point and natural pauses for micro-reflection prevent working memory overload per Visual Best Practices for Corporate Learning Videos"
+      target_file: media_entities
+    - target: assessment_item_type
+      relation: limits
+      weight: expected
+      description: "Working memory constraints limit assessment item design — large case studies with multiple simultaneous questions overwhelm processing capacity, requiring segmentation and clear formatting per Corporate Learning Assessment research"
+      target_file: assessment_entities
+    - target: content_structure_marker
+      relation: supported_by
+      weight: required
+      description: "Modular segmenting prevents overloading working memory by introducing content one piece at a time; aligns with CLT by controlling how much novel information enters working memory simultaneously (Gold Standard Structure)"
+      target_file: content_architecture_entities
+    - target: job_aid_format
+      relation: supported_by
+      weight: expected
+      description: "Working memory limitations are supported by job aids — quick reference cards and decision trees offload recall demands to external performance support tools per module-integration-strategy"
+      target_file: content_format_entities
+    - target: metaphor
+      relation: supported_by
+      weight: expected
+      description: "Working memory is supported by metaphors — they export known inference structures to unknown domains, reducing processing demands (elite_speaker_taxonomy)"
+      target_file: rhetorical_devices_entities
+  expertise_reversal_marker:
+    description: References to the expertise reversal effect — when instructional strategies that help novices harm expert
+      learners
+    canonical_id: expertise_reversal_marker
+    entity_kind: cognitive_effect
+    family: learner_effects
+    gliner_label: EXPERTISE_REVERSAL
+    gliner_description: Expertise reversal effect novice expert prior knowledge scaffolding too much support helps novices
+      harms experts
+    examples:
+    - expertise reversal effect — novices benefit but experts are slowed
+    - too much scaffolding for experienced learners
+    - the worked example effect reverses for experts
+    - adjust support level based on prior knowledge
+    - novices need segmenting; experts find it tedious
+    anti_examples:
+    - reverse engineering
+    - expert system
+    confidence_threshold: 0.75
+    aliases:
+    - expertise effect
+    - novice-expert difference
+    - scaffolding reversal
+    indicators:
+    - expertise reversal
+    - reversal effect
+    - novice vs expert
+    - prior knowledge
+    - scaffolding level
+    - over-scaffolding
+    - adaptive instruction
+    - learner proficiency
+    patterns:
+    - expertise reversal (effect)?
+    - (novice|beginner)s? (vs?\.?|versus|and) expert
+    - (too much|excessive|over[- ])(scaffolding|support|guidance)
+    - (adjust|adapt|tailor) (to|for|based on) (prior knowledge|expertise|proficiency)
+    color: '#1abc9c'
+    relates_to:
+    - target: intrinsic_load_marker
+      relation: limits
+      weight: expected
+      description: Expertise reversal limits which instructional strategies are effective for advanced learners
+    - target: novice_learner
+      relation: contrasts_with
+      weight: expected
+      description: Expertise reversal indicates that detailed explanations benefit novices but impair experts
+      target_file: audience_entities
+    - target: expert_learner
+      relation: supports
+      weight: expected
+      description: Expertise reversal specifically describes how strategies effective for novices (worked examples, scaffolding) can harm expert learners
+      target_file: audience_entities
+    - target: instructional_strategy
+      relation: limits
+      weight: expected
+      description: Expertise reversal limits which instructional strategies are effective — strategies must adapt to learner proficiency level
+      target_file: pedagogical_frameworks_entities
+    - target: scenario_activity
+      relation: limits
+      weight: expected
+      description: "Expertise reversal limits scenario complexity — expert learners need less scaffolding in scenarios while novices require more structured support per roleplay research"
+      target_file: activity_types_entities
+    - target: progressive_disclosure_marker
+      relation: limits
+      weight: expected
+      description: "Expertise reversal limits progressive disclosure strategies — over-scaffolded progressive disclosure harms expert learners who can process information holistically per Visualisation Techniques research"
+    - target: mayer_essential_principle
+      relation: limits
+      weight: expected
+      description: "Pre-training Principle may be redundant for experts who already know key concepts; Segmenting may unnecessarily slow advanced learners who can handle larger chunks per mayers_15_principles"
+    - target: mayer_extraneous_principle
+      relation: limits
+      weight: optional
+      description: "Experts find signaling and scaffolding redundant; over-signaling becomes extraneous for advanced learners per Applying Mayer's Principles Practical Checklist"
+  progressive_disclosure_marker:
+    description: References to progressive disclosure, staged revelation, and layered complexity in content design
+    canonical_id: progressive_disclosure_marker
+    entity_kind: design_strategy
+    family: complexity_management
+    gliner_label: PROGRESSIVE_DISCLOSURE
+    gliner_description: Progressive disclosure reveal gradually layered complexity build up staged revelation drill down on
+      demand
+    examples:
+    - use progressive disclosure to reveal details
+    - build the diagram progressively
+    - layered complexity — start simple, add detail
+    - reveal content on demand
+    - staged revelation of the process
+    - drill down from overview to detail
+    anti_examples:
+    - disclosure requirements
+    - financial disclosure
+    confidence_threshold: 0.7
+    aliases:
+    - staged reveal
+    - layered complexity
+    - drill-down
+    indicators:
+    - progressive disclosure
+    - progressive reveal
+    - staged revelation
+    - layered complexity
+    - build progressively
+    - reveal gradually
+    - drill down
+    - overview to detail
+    - simple to complex
+    - on demand
+    patterns:
+    - progressive (disclosure|reveal|revelation)
+    - (layered|staged|gradual) (complexity|reveal|disclosure)
+    - (build|reveal) (the|content|diagram) (progressively|gradually|step by step)
+    - (drill|zoom) (down|in) (to|for) (detail|specifics)
+    - (simple|overview) (to|then) (complex|detail)
+    color: '#34495e'
+    relates_to:
+    - target: working_memory_marker
+      relation: resolves
+      weight: expected
+      description: Progressive disclosure manages working memory limits by sequencing information
+    - target: mayer_essential_principle
+      relation: supports
+      weight: required
+      description: Progressive disclosure (revealing information in sequence rather than all at once) is a primary strategy
+        for applying Mayer's essential principle. Breaking complex content into stages respects intrinsic load limits.
+    - target: intrinsic_load_marker
+      relation: resolves
+      weight: expected
+      description: Progressive disclosure manages intrinsic complexity by staging information revelation to avoid overwhelming learners
+    - target: microlearning_format
+      relation: supports
+      weight: expected
+      description: Progressive disclosure aligns with microlearning's staged content delivery, revealing complexity incrementally across modules
+      target_file: content_format_entities
+    - target: instructional_strategy
+      relation: supports
+      weight: expected
+      description: "FPI's problem progression principle prescribes starting with simple whole tasks and gradually increasing complexity a form of progressive disclosure per Merrill"
+      target_file: pedagogical_frameworks_entities
+    - target: monroe_sequence_marker
+      relation: supported_by
+      weight: expected
+      description: "MMS's five-stage progression naturally implements progressive disclosure — each stage reveals information at the point where learners are psychologically ready for it per Monroe's Motivated Sequence research"
+      target_file: rhetorical_devices_entities
+    - target: scenario_activity
+      relation: supports
+      weight: expected
+      description: "Designers manage cognitive load in SBT by scaffolding and segmenting scenario complexity, using bottlenecks where branches converge to prevent cognitive paralysis per SBT guide"
+      target_file: activity_types_entities
+    - target: novice_learner
+      relation: supports
+      weight: expected
+      description: "Progressive disclosure aligns with Gen Z's preference for bite-sized content, managing complexity through incremental visual delivery per Learner Persona Research"
+      target_file: audience_entities
+    - target: animation_type
+      relation: supported_by
+      weight: expected
+      description: "Progressive disclosure uses only Appear or Fade animations to reveal content; distracting animations add extraneous load per Slide Deck Design Playbook"
+      target_file: visual_elements_entities
+    - target: extraneous_load_marker
+      relation: resolves
+      weight: expected
+      description: "Progressive disclosure resolves extraneous load caused by split-attention by temporally segmenting information rather than presenting all at once per Visual Analysis of Slide Decks"
+    - target: germane_load_marker
+      relation: supports
+      weight: expected
+      description: "Progressive disclosure supports germane processing by chunking content into manageable segments — learners process each chunk deeply before the next is revealed, promoting meaningful encoding per Infographics research"
+    - target: instructional_event
+      relation: supports
+      weight: expected
+      description: "Progressive disclosure directly supports Gagné's Event 4 (Present Content) by staging information revelation so learners process each chunk before the next is introduced per theory_gagne_s_nine_events_of_instruction"
+      target_file: pedagogical_frameworks_entities
+    - target: storyboard_element
+      relation: supports
+      weight: optional
+      description: "Progressive disclosure applies to storyboard sequences where complex scenes are revealed across multiple frames rather than crammed into a single panel per Sketch Style for Wireframes and Storyboards"
+      target_file: media_entities
+    - target: session_structure_marker
+      relation: supported_by
+      weight: optional
+      description: "Progressive disclosure is directly supported by clear session structure — breaking presentations into well-organized chunks and sticking to few key points enables gradual content reveal per Public Speaking research"
+      target_file: delivery_entities
+    - target: content_structure_marker
+      relation: supports
+      weight: expected
+      description: "Progressive disclosure supports content structure — chunking into 10-20 minute mini-lessons and the module template (Intro→Content→Activity→Debrief→Summary) structures how content is progressively revealed per ILT&VILT Best Practice"
+      target_file: content_architecture_entities
+    - target: design_principle
+      relation: supported_by
+      weight: expected
+      description: "Progressive disclosure as a cognitive load strategy is instantiated by design principles in ego-centric graph exploration (N-degree expansion), scrollytelling chunking, and annotative layers for novel visualizations per Narrative Visualization research"
+      target_file: visual_elements_entities
+    - target: accessibility_feature
+      relation: enables
+      weight: expected
+      description: "Progressive disclosure enables accessible narrative structures by breaking complex data stories into sequential chunks that screen readers can navigate linearly per Narrative Visualization research"
+      target_file: visual_elements_entities
+    - target: video_edit_transition
+      relation: supported_by
+      weight: expected
+      description: "Progressive disclosure is supported by video edit transitions that chunk content into 1-3 minute chapters with title cards and verbal cues between segments per Visual Best Practices for Corporate Learning Videos"
+      target_file: media_entities
+    - target: structural_slide
+      relation: supported_by
+      weight: expected
+      description: "Progressive disclosure is supported by structural slides that serve as chapter headings and visual signposts between content segments per Visual Best Practices for Corporate Learning Videos"
+      target_file: slide_types_entities
+    - target: expertise_reversal_marker
+      relation: enables
+      weight: expected
+      description: "Progressive disclosure enables expertise reversal management — scaffolding fades from maximum support in Module 1 to independent practice in later modules as learner expertise grows (Gold Standard Structure)"
+    - target: assessment_item_type
+      relation: supports
+      weight: expected
+      description: "Progressive disclosure supports assessment item design by presenting information and questions incrementally rather than dumping a full scenario at once per Corporate Learning Assessment research"
+      target_file: assessment_entities
+    - target: pedagogical_sequence_marker
+      relation: supports
+      weight: expected
+      description: "The SOAR lifecycle enforces progressive disclosure from abstract strategy to concrete execution, sequencing information reveal across four phases to manage cognitive load (Canonical Presentation Methodology)"
+      target_file: content_architecture_entities
+    - target: elaboration_marker
+      relation: supported_by
+      weight: expected
+      description: "Progressive disclosure is supported by elaboration — elite speakers unpack dense propositions over more words, purchasing processing time for the audience (elite_speaker_taxonomy)"
+      target_file: discourse_entities
+    - target: mixed_audience
+      relation: supports
+      weight: expected
+      description: "Progressive disclosure supports mixed audiences by allowing layered complexity access — start with broadest common points then drill down, enabling both novice and expert engagement per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    - target: executive_audience
+      relation: supports
+      weight: expected
+      description: "Progressive disclosure supports executive audiences who extract core message from Layer 1 alone"
+      target_file: audience_entities
+quality_indicators:
+  positive:
+  - explicit CLT awareness in design rationale
+  - Mayer principles correctly applied
+  - working memory constraints respected
+  - extraneous load minimised
+  - germane processing supported
+  negative:
+  - CLT principles violated without awareness
+  - working memory overloaded
+  - extraneous load not addressed
+  - expertise level not considered
+  - progressive disclosure not used for complex content
+domain_keywords:
+  primary:
+  - cognitive load
+  - working memory
+  - Mayer
+  - split attention
+  - redundancy
+  - segmenting
+  - modality
+  - chunking
+  - schema
+  - element interactivity
+  secondary:
+  - intrinsic load
+  - extraneous load
+  - germane load
+  - Sweller
+  - Miller
+  - 7 plus or minus 2
+  - information processing
+  - expertise reversal
+  - worked example
+  - progressive disclosure
+  - pre-training

@@ -1,0 +1,248 @@
+# ==============================================================================
+# Extraction Rules
+# Configuration for extracting narrative elements from specific document types
+# ==============================================================================
+
+_meta:
+  id: extraction_rules_config
+  title: "Extraction Rules"
+  description: "Rules for parsing Sales Plays (L1-L4) and synthesizing Narrative DNA."
+  domain: ai
+  domain_type: cross_cutting
+  purpose: reference
+  version: "1.3.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Using SOAR Storytelling most effectively.md"
+    - "Corpus/Research/Research - Researching Narrative and Discourse Analysis.md"
+    - "Corpus/Research/Research - Canonical Presentation Methodology Research.md"
+    - "Corpus/Research/The Universal Narrative Methodology: A Framework for Crafting and Improving Stories.md"
+
+  relationships:
+    - target: ai_config/analyzer_catalog.yaml
+      type: depends_on
+      description: "Extraction rules reference analyzers; rules specify how catalog analyzers are applied"
+# ==============================================================================
+# HIERARCHY DEFINITIONS (SALES PLAYS)
+# ==============================================================================
+
+sales_play_hierarchy:
+  description: "Extraction targets for each level of the sales play model."
+
+  l1_portfolio_play:
+    description: "Highest level, transformational vision."
+    extract:
+      - field: "name"
+        heuristic: "Title of the deck or first slide."
+      - field: "transformational_vision"
+        heuristic: "First 3 slides, high-level 'Why Change' statement."
+      - field: "key_customer_challenges"
+        heuristic: "Section 'The Problem' or 'Market Shift'."
+      - field: "business_impact"
+        heuristic: "Section 'Outcomes' or 'Benefits'."
+      - field: "target_audience"
+        heuristic: "Section 'Target Audience' or 'Ideal Customer Profile'."
+
+  l2_strategic_play:
+    description: "Core sales play, problem/solution focused."
+    extract:
+      - field: "name"
+        heuristic: "Title of the deck."
+      - field: "parent_play"
+        heuristic: "Reference to Portfolio Play."
+      - field: "business_problem"
+        heuristic: "Detailed problem statement."
+      - field: "solution_overview"
+        heuristic: "Section 'Our Approach' or 'The Solution'."
+      - field: "use_cases"
+        heuristic: "List of scenarios or 'How to use'."
+      - field: "key_features"
+        heuristic: "Section 'Features' or 'Capabilities'."
+      - field: "differentiation"
+        heuristic: "Section 'Why Us' or 'Competitive Advantage'."
+      - field: "proof_points"
+        heuristic: "Customer Success or Case Studies."
+
+  l3_vertical_play:
+    description: "Industry-tailored variation."
+    extract:
+      - field: "name"
+        heuristic: "Title including Industry."
+      - field: "parent_play"
+        heuristic: "Reference to Strategic Play."
+      - field: "industry"
+        heuristic: "Target Industry."
+      - field: "industry_specific_challenges"
+        heuristic: "Challenges specific to [Industry Name]."
+      - field: "industry_specific_use_cases"
+        heuristic: "Scenarios specific to [Industry Name]."
+      - field: "industry_specific_proof_points"
+        heuristic: "Case studies from [Industry Name]."
+
+  l4_persona_play:
+    description: "Role-specific messaging."
+    extract:
+      - field: "name"
+        heuristic: "Title including Persona."
+      - field: "parent_play"
+        heuristic: "Reference to Vertical Play."
+      - field: "persona"
+        heuristic: "Target Persona."
+      - field: "persona_specific_pain_points"
+        heuristic: "'A Day in the Life' or Role-specific challenges."
+      - field: "persona_specific_value_propositions"
+        heuristic: "'Why it matters to [Role]' or 'Benefits'."
+      - field: "persona_specific_objections"
+        heuristic: "FAQ or 'Common Concerns'."
+
+# ==============================================================================
+# NARRATIVE DNA SYNTHESIS
+# ==============================================================================
+
+narrative_dna:
+  description: "Rules for combining analysis outputs into a unified signature."
+
+  components:
+    soar_profile:
+      source: "stage2_soar_extractor"
+      required: true
+    emotional_arc:
+      source: "stage3_emotional_analysis"
+      required: true
+    rhetorical_signature:
+      source: "stage4_critique"
+      elements: ["ethos_score", "pathos_score", "logos_score", "dominant_device"]
+    visual_alignment:
+      source: "stage4_visual_critique"
+      classification: ["aligned", "dissonant", "decorative", "contradictory"]
+
+# ==============================================================================
+# COMMON ELEMENT BLOCKS
+# ==============================================================================
+
+element_blocks:
+  description: "Heuristics for identifying common slide types."
+
+  case_study:
+    definition: "A detailed story about a specific customer and how they benefited from the solution."
+    section_titles: ["Case Study", "Customer Success", "Customer Story"]
+    visual_indicators: ["Customer logo + quote"]
+    required_fields:
+      - "Customer Name"
+      - "Industry"
+      - "Challenge"
+      - "Solution"
+      - "Result"
+      - "Metrics"
+
+  use_case:
+    definition: "A specific example of how the solution solves a business problem."
+    section_titles: ["Use Cases", "Scenarios", "Examples"]
+    visual_indicators: ["Step diagrams", "Workflow illustrations"]
+    required_fields:
+      - "Name"
+      - "Description"
+      - "Actors"
+      - "Steps"
+      - "Benefit"
+
+  product_description:
+    definition: "A detailed overview of the features and capabilities of the solution."
+    section_titles: ["Product", "Solution", "Features"]
+    visual_indicators: ["Feature lists", "Technical diagrams"]
+    required_fields:
+      - "Name"
+      - "Description"
+      - "Key Features"
+      - "Technical Specifications"
+
+# ==============================================================================
+# EXTRACTION HEURISTICS
+# Strategies for finding narrative elements in inconsistent documents
+# ==============================================================================
+
+extraction_heuristics:
+  description: "Strategies for identifying story elements when structure varies."
+
+  keyword_search:
+    description: "Use keyword search to identify potential sections"
+    examples:
+      business_problem: ["problem", "challenge", "pain point", "hurdle"]
+      solution: ["solution", "approach", "how we help", "our approach"]
+      benefits: ["benefits", "outcomes", "results", "impact", "value"]
+      target_audience: ["target audience", "ideal customer", "who we serve"]
+      differentiation: ["why us", "competitive advantage", "differentiation"]
+      proof_points: ["case study", "customer success", "proof", "evidence"]
+
+  slide_position:
+    description: "Slide position provides content clues"
+    patterns:
+      early_slides: "Transformational vision, problem statement, context setting"
+      middle_slides: "Solution details, features, use cases, approach"
+      late_slides: "Proof points, call to action, next steps, pricing"
+
+  formatting_cues:
+    description: "Visual formatting signals content type"
+    patterns:
+      bullet_lists: "Key features, use cases, benefits lists"
+      numbered_lists: "Process steps, implementation phases"
+      charts_graphs: "Data evidence, metrics, KPIs"
+      customer_logo: "Case study, testimonial, proof point"
+      quote_block: "Testimonial, customer voice"
+
+# ==============================================================================
+# FALLBACK STRATEGIES
+# Handling missing or ambiguous information
+# ==============================================================================
+
+fallback_strategies:
+  description: "Approaches when primary extraction fails."
+
+  llm_inference:
+    description: "Use LLM to infer missing information"
+    technique: "Summarize section and identify key messages from summary"
+    use_when: "Heuristics fail to identify specific story element"
+    warning: "Results require validation against source"
+
+  human_review_flagging:
+    description: "Flag for manual review"
+    use_when: "LLM inference produces low confidence result"
+    fields_to_capture:
+      - "Element type being extracted"
+      - "Source slide numbers reviewed"
+      - "Confidence level"
+      - "Reason for flagging"
+
+  cross_reference:
+    description: "Reference related documents for context"
+    use_when: "Parent/sibling plays contain relevant context"
+    technique: "Check parent play for inherited messaging, terminology"
+
+# ==============================================================================
+# EXTENSIBILITY PROCESS
+# How to add new story elements
+# ==============================================================================
+
+extensibility_process:
+  description: "Process for extending extraction capabilities."
+
+  add_new_element_steps:
+    step_1:
+      action: "Identify the new story element"
+      method: "Manual review of decks to find information not currently extracted"
+    step_2:
+      action: "Define schema for new element"
+      required_fields: ["name", "description", "fields_to_extract"]
+    step_3:
+      action: "Update extraction process"
+      options:
+        - "Add keywords to keyword search"
+        - "Update slide position heuristics"
+        - "Create new LLM prompt"
+    step_4:
+      action: "Update documentation and configuration"
+      artifacts: ["This YAML file", "Bible documentation", "PDL prompts"]
+
+  versioning:
+    description: "Track schema changes"
+    recommendation: "Use semantic versioning for extraction schema changes"

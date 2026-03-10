@@ -1,0 +1,1019 @@
+# ==============================================================================
+# Video and Multimedia Rubric
+# Scoring rubric for video and multimedia production quality
+# Sources: Creating Learning Videos Process v2, Storyboard Best Practices,
+#          Visual Best Practices for Corporate Learning Videos,
+#          Research - Best Video Script Prompts
+# ==============================================================================
+
+_meta:
+  id: video_multimedia_rubric
+  title: "Video and Multimedia Rubric"
+  description: "Scoring rubric for video and multimedia production quality covering audio clarity, visual-narration synchronisation, segment pacing, transition quality, and production value"
+  domain: visual
+  domain_type: workflow
+  purpose: scoring
+  version: "1.1.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Creating Learning Videos - Process v2.md"
+    - "Corpus/Research/Research - Storyboard Best Practices.md"
+    - "Corpus/Research/Visual Best Practices for Corporate Learning Videos.md"
+    - "Corpus/Research/Research - Best Video Script Prompts.md"
+    - "Corpus/Research/Best Practices for Writing Corporate Training Video Scripts for Adult Learners.md"
+  academic_sources:
+    - "Mayer (2009) - Multimedia Learning (2nd ed.)"
+    - "Guo, Kim & Rubin (2014) - How video production affects student engagement"
+    - "Brame (2016) - Effective educational videos"
+    - "Ibrahim et al. (2012) - Effects of segmenting, signalling, and weeding"
+  relationships:
+    - target: visual_design_rubric.yaml
+      type: related_to
+      description: "Visual design quality standards for video content"
+    - target: cognitive_load_rubric.yaml
+      type: related_to
+      description: "Mayer's principles applied to video/multimedia"
+    - target: accessibility_rubric.yaml
+      type: related_to
+      description: "Multimedia accessibility (captions, transcripts, audio description)"
+    - target: ../methodology/multimodal_video_standards.yaml
+      type: derived_from
+      description: "Multimodal video production standards"
+
+# ==============================================================================
+# RUBRIC WEIGHTS
+# Dimension weights must sum to 1.0
+# ==============================================================================
+
+rubric_weights:
+  audio_clarity: 0.25            # Voice quality is a primary determinant of engagement
+  visual_narration_sync: 0.20    # Temporal/spatial contiguity (Mayer) — highest effect size
+  segment_pacing: 0.20           # Segment length and density directly impact retention
+  transition_quality: 0.15       # Scene transitions and signposting reduce cognitive load
+  production_value: 0.20         # Resolution, framing, lighting, graphics, branding
+
+# ==============================================================================
+# SCORING DIMENSIONS
+# Each dimension scored 1–5 against named score levels
+# ==============================================================================
+
+dimensions:
+
+  # ----------------------------------------------------------------------------
+  # DIMENSION 1: AUDIO CLARITY
+  # Research basis: Creating Learning Videos Process v2 (narration speed 120–150 WPM,
+  # conversational energetic style); Visual Best Practices (enthusiastic delivery
+  # holds attention better than flat monotone lecture)
+  # ----------------------------------------------------------------------------
+  audio_clarity:
+    name: "Audio Clarity"
+    description: >
+      Evaluates voice quality, background noise floor, volume consistency,
+      articulation clarity, and compression/EQ treatment. Crisp audio is the
+      single highest-leverage production variable for learner engagement.
+    weight: 0.25
+    score_levels:
+      1:
+        label: "Unacceptable"
+        criteria:
+          - "Pervasive background noise (HVAC, traffic, keyboard) audible throughout"
+          - "Volume inconsistent or clipping distortion present"
+          - "Narration muffled, unintelligible, or heavily accented without accommodation"
+          - "No noise reduction or compression applied"
+          - "Room echo/reverb makes speech fatiguing to follow"
+      2:
+        label: "Below Standard"
+        criteria:
+          - "Intermittent background noise noticeable but not constant"
+          - "Volume dips or spikes requiring listener adjustment"
+          - "Articulation occasionally unclear; some syllables dropped"
+          - "Minimal processing — raw room sound with light handling noise"
+          - "Plosives (P/B sounds) cause distracting pop artefacts"
+      3:
+        label: "Acceptable"
+        criteria:
+          - "Background noise largely absent; minor room ambience acceptable"
+          - "Volume consistent within ±3 dB across segments"
+          - "Articulation clear for majority of content; occasional stumble recovered"
+          - "Basic noise gate and compression applied"
+          - "Narration pace approximates 120–150 WPM target range"
+      4:
+        label: "Good"
+        criteria:
+          - "Clean noise floor; no audible ambient intrusion"
+          - "Volume normalised to broadcast standard (approx. -16 LUFS for streaming)"
+          - "Articulation crisp with natural emphasis on key terms"
+          - "Proper compression, de-essing, and light EQ applied"
+          - "Narration speed 120–150 WPM consistently; natural pauses after key points"
+          - "Conversational, energetic tone maintained (Creating Learning Videos v2)"
+      5:
+        label: "Exemplary"
+        criteria:
+          - "Broadcast-grade audio: noise floor ≤ -60 dBFS, -16 LUFS integrated"
+          - "Seamless volume consistency across all scenes and re-takes"
+          - "Narration is warm, energetic, conversational — first person, approachable"
+          - "Professional de-essing, multiband compression, high-pass EQ applied"
+          - "Zero plosives, handling noise, or room echo"
+          - "Pacing 120–150 WPM with deliberate micro-pauses for reflection"
+
+  # ----------------------------------------------------------------------------
+  # DIMENSION 2: VISUAL-NARRATION SYNCHRONISATION
+  # Research basis: Mayer Temporal Contiguity (effect size 1.30), Spatial Contiguity
+  # (effect size 0.82); Creating Learning Videos v2 (spatial/temporal contiguity
+  # align visual cues with narration); Visual Best Practices (sync text appearance
+  # with spoken narration — learner should see text when they hear the term)
+  # ----------------------------------------------------------------------------
+  visual_narration_sync:
+    name: "Visual-Narration Synchronisation"
+    description: >
+      Evaluates temporal alignment of visuals with speech, spatial placement of
+      on-screen text relative to corresponding graphics, verbal-visual channel
+      balance, and signalling cues that direct learner attention. Directly maps
+      to Mayer's temporal contiguity (effect size 1.30) and spatial contiguity
+      (effect size 0.82) principles.
+    weight: 0.20
+    score_levels:
+      1:
+        label: "Unacceptable"
+        criteria:
+          - "Graphics appear 5+ seconds after the narration describes them"
+          - "On-screen text is read verbatim by narrator (redundancy violation)"
+          - "Labels placed far from the graphic they describe (split-attention)"
+          - "No signalling — viewer has no cues about what to attend to"
+          - "Narration and visuals address different topics simultaneously"
+      2:
+        label: "Below Standard"
+        criteria:
+          - "Visuals lag narration by 2–4 seconds creating confusing offset"
+          - "Text overlays duplicate spoken words without adding value"
+          - "Labels near but not integrated into referenced visual elements"
+          - "Minimal signalling; key concepts not visually emphasised"
+          - "Some mismatched scenes where visual contradicts narration topic"
+      3:
+        label: "Acceptable"
+        criteria:
+          - "Visuals generally appear within 1 second of narration reference"
+          - "On-screen text complements narration — keywords only, not verbatim"
+          - "Labels positioned close to referenced visual regions"
+          - "Occasional callouts or arrows to direct attention to key areas"
+          - "Dual-channel load manageable; no active contradiction"
+      4:
+        label: "Good"
+        criteria:
+          - "Visuals appear simultaneously with or just before narration reference"
+          - "On-screen text = keywords/short bullets only; narration elaborates"
+          - "Text labels integrated directly into graphic elements (not floating)"
+          - "Consistent signalling: highlights, arrows, or zoom used for key points"
+          - "Presenter gestures aligned with on-screen graphic regions"
+      5:
+        label: "Exemplary"
+        criteria:
+          - "Frame-accurate synchronisation: visual change coincides with spoken cue"
+          - "Strict Mayer compliance: modality principle observed (graphics + narration, not graphics + narration + verbatim text)"
+          - "Spatial contiguity exemplary: all labels integrated within graphics"
+          - "Signalling systematic: colour, arrows, and callouts guide every key point"
+          - "J/L-cut audio technique used for seamless visual-narration transitions"
+          - "Graphics pre-loaded during narration setup; revealed on cue word"
+
+  # ----------------------------------------------------------------------------
+  # DIMENSION 3: SEGMENT PACING
+  # Research basis: Creating Learning Videos v2 (segmenting principle, bite-sized
+  # logically sequenced segments); Visual Best Practices (6–9 min video divided into
+  # 1–3 min chapters; 3–6 seconds per bullet; not too fast — clarity over speed);
+  # Guo et al. (2014) engagement drop-off data; Brame (2016) ≤6 min optimal
+  # ----------------------------------------------------------------------------
+  segment_pacing:
+    name: "Segment Pacing"
+    description: >
+      Evaluates video segment lengths against engagement research, information
+      density per minute, learner cognitive load management, and presence of
+      reflection pause cues. Guo et al. (2014) found median engagement time is
+      6 minutes; Brame (2016) recommends ≤6 min for concept videos.
+    weight: 0.20
+    score_levels:
+      1:
+        label: "Unacceptable"
+        criteria:
+          - "Single unbroken segment exceeding 15 minutes"
+          - "No logical chapter breaks or section signposting"
+          - "Information density so high learners cannot consolidate before new content"
+          - "No reflection prompts or pause cues throughout"
+          - "Pacing erratic — rapid-fire edits alternating with dead air"
+      2:
+        label: "Below Standard"
+        criteria:
+          - "Segments run 10–15 minutes without pacing variation"
+          - "Occasional verbal section break but no visual chapter marker"
+          - "High information density with insufficient breathing room"
+          - "Retrieval or reflection prompts absent or at end only"
+          - "Speaker pace too fast (>165 WPM) or too slow (<90 WPM)"
+      3:
+        label: "Acceptable"
+        criteria:
+          - "Total video ≤9 minutes or segmented into ≤9 min chapters"
+          - "Chapter breaks evident through verbal cues ('Now that we've covered X…')"
+          - "Information density allows basic consolidation between concepts"
+          - "At least one reflection prompt or pause cue per video"
+          - "Narration pace near 120–150 WPM target"
+      4:
+        label: "Good"
+        criteria:
+          - "Concept segments: 2–3 minutes each; walkthroughs: ≤10 minutes"
+          - "Visual title cards or section slides mark each chapter break"
+          - "Mini-recap at end of each segment: 'Remember that…' reinforcement"
+          - "Reflection prompts distributed throughout, not just at segment end"
+          - "Narration: 120–150 WPM with intentional pauses after key statements"
+          - "Bullet points held 3–6 seconds each before advancing"
+      5:
+        label: "Exemplary"
+        criteria:
+          - "Segments optimised by type: concept ≤3 min, demo/walkthrough ≤10 min, full module ≤6 min"
+          - "Chapter markers with visual title cards and progress indicators"
+          - "Mini-recap after every segment; brief engagement question before advancing"
+          - "Retrieval prompts mid-video — not only at end"
+          - "Pacing matches cognitive load: slower delivery for complex concepts, brisker for review"
+          - "Gamification elements (progress bar, section counter) used where appropriate"
+
+  # ----------------------------------------------------------------------------
+  # DIMENSION 4: TRANSITION QUALITY
+  # Research basis: Visual Best Practices (cut every 8–15 seconds at natural breakpoints;
+  # establishing shot before transition reduces cognitive load; verbal cue 'Now that
+  # we've covered X, let's move to Y' + title card); Storyboard Best Practices
+  # (transition in/out annotation per frame; consistent transition style)
+  # ----------------------------------------------------------------------------
+  transition_quality:
+    name: "Transition Quality"
+    description: >
+      Evaluates scene-to-scene cut quality, topic transition signposting, visual
+      continuity across angles and backgrounds, and use of B-roll or cutaways to
+      maintain coherence. Research shows establishing shots before transitions
+      reduce cognitive load; consistent transition style creates predictable
+      mental checkpoints.
+    weight: 0.15
+    score_levels:
+      1:
+        label: "Unacceptable"
+        criteria:
+          - "Jump cuts within same camera angle create jarring visual discontinuity"
+          - "No transition signposting — topic shifts without any verbal or visual cue"
+          - "Eyeline continuity broken (180° rule violated)"
+          - "Backgrounds change inconsistently, breaking visual coherence"
+          - "Abrupt audio cuts with no J/L-cut treatment"
+      2:
+        label: "Below Standard"
+        criteria:
+          - "Cuts visible but inconsistent — some smooth, some jarring"
+          - "Topic transitions occasionally verbal only, no visual marker"
+          - "Camera angles too similar on cuts, creating false jump-cut impression"
+          - "Transition effects inconsistent or chosen purely decoratively"
+          - "B-roll absent; static talking head throughout"
+      3:
+        label: "Acceptable"
+        criteria:
+          - "Cuts at natural breakpoints (end of sentence, rhetorical pause)"
+          - "Verbal signposting for topic changes: 'Now let's turn to…'"
+          - "Two-camera alternation at 8–15 second intervals maintains visual interest"
+          - "Consistent fade/cut style used throughout"
+          - "Background changes aligned with segment transitions"
+      4:
+        label: "Good"
+        criteria:
+          - "Cuts timed to action (cutting on gesture or topic shift)"
+          - "Verbal + visual signposting: spoken cue plus title card or slide"
+          - "Establishing shot used before major topic transitions"
+          - "B-roll or cutaway used during exposition to break talking-head monotony"
+          - "Transition audio (musical sting or tone) marks chapter changes consistently"
+          - "Lower thirds or callout overlays used to reinforce key transition points"
+      5:
+        label: "Exemplary"
+        criteria:
+          - "Cinematic transitions: match cuts, cutting on action, J/L-cuts throughout"
+          - "Three-layer signposting: verbal cue + visual card + chapter progress marker"
+          - "Establishing wide shot before every major section change"
+          - "B-roll, diagrams, and screen recordings intercut dynamically"
+          - "Rule-of-thirds and shot variety (wide/medium/close-up) cycled deliberately"
+          - "Visual narrative thread maintained across all transitions — style bible enforced"
+
+  # ----------------------------------------------------------------------------
+  # DIMENSION 5: PRODUCTION VALUE
+  # Research basis: Visual Best Practices (4K shoot/1080p delivery; three-point
+  # lighting; rule of thirds; stable camera; even green-screen lighting; high
+  # production quality for professional look); Storyboard Best Practices (resolution,
+  # file naming, technical specifications per frame)
+  # ----------------------------------------------------------------------------
+  production_value:
+    name: "Production Value"
+    description: >
+      Evaluates technical output quality: video resolution, camera framing, lighting
+      quality, graphics fidelity, and brand consistency. High production value signals
+      credibility and maintains learner attention.
+    weight: 0.20
+    score_levels:
+      1:
+        label: "Unacceptable"
+        criteria:
+          - "Video resolution below 720p or heavy compression artefacts"
+          - "Poorly lit presenter (underexposed, harsh shadows, unflattering backlight)"
+          - "Handheld shaky footage without stabilisation"
+          - "Graphics pixelated, misaligned, or inconsistently styled"
+          - "No brand colours, fonts, or logo applied — off-brand appearance"
+      2:
+        label: "Below Standard"
+        criteria:
+          - "720p resolution; acceptable but not sharp on large displays"
+          - "Flat one-point lighting; presenter lacks dimension"
+          - "Camera mostly stable but occasional shake visible"
+          - "Graphics functional but amateur in execution (mismatched fonts/colours)"
+          - "Brand elements present inconsistently — some slides branded, others not"
+      3:
+        label: "Acceptable"
+        criteria:
+          - "1080p (Full HD) delivery; clean compression"
+          - "Two-point or basic three-point lighting; presenter clearly visible"
+          - "Camera on tripod; stable throughout"
+          - "Graphics clean and legible; consistent icon library used"
+          - "Brand colours and fonts applied consistently"
+      4:
+        label: "Good"
+        criteria:
+          - "1080p delivery from 4K source (allowing post-production reframing)"
+          - "Three-point lighting with even exposure, no harsh shadows"
+          - "Presenter framed rule-of-thirds; eyes on upper third; appropriate headroom"
+          - "Motion graphics and lower thirds on-brand and smoothly animated"
+          - "Green-screen composited cleanly with matching lighting and scale"
+          - "Consistent visual style guide applied to all graphic elements"
+      5:
+        label: "Exemplary"
+        criteria:
+          - "4K source, 1080p or higher delivery; zero compression artefacts"
+          - "Broadcast-quality three-point lighting with background separation"
+          - "Multi-camera coverage; deliberate shot composition per learning objective"
+          - "Motion graphics professional grade: smooth animation, on-brand typography"
+          - "Green-screen realistic: background perspective matches presenter lighting"
+          - "Full visual style bible enforced: colours, fonts, icons, lower-thirds, logo lock-up"
+          - "Presenter gesture and framing planned to align with on-screen overlay zones"
+
+# ==============================================================================
+# AUDIO STANDARDS
+# Numeric targets for audio quality assessment
+# Source: Creating Learning Videos Process v2; broadcast/streaming audio standards
+# ==============================================================================
+
+audio_standards:
+  integrated_loudness:
+    target_lufs: -16              # EBU R128 / streaming standard
+    acceptable_range_lufs:
+      min: -18
+      max: -14
+    broadcast_target_lufs: -23   # EBU R128 broadcast
+    short_form_target_lufs: -14  # YouTube/podcast normalisation
+    note: "LUFS (Loudness Units relative to Full Scale) is the correct broadcast loudness metric; avoid peak-only metering for voice"
+
+  noise_floor:
+    target_dbfs: -60             # ≤ -60 dBFS noise floor for professional recording
+    acceptable_dbfs: -50         # Still usable with noise reduction
+    failure_dbfs: -40            # Audible ambient noise at -40 dBFS degrades comprehension
+
+  dynamic_range:
+    voice_over_compression_ratio: "3:1 to 4:1"   # Gentle compression preserving natural tone
+    aggressive_compression_ratio: "6:1"            # For noisy environments only
+    attack_ms: "5–10"            # Fast enough to catch plosives
+    release_ms: "40–80"          # Natural decay, avoids pumping artefact
+
+  eq_recommendations:
+    high_pass_hz: 80             # Roll off below 80 Hz to remove rumble and handling noise
+    presence_boost_hz: "2000–5000"  # Gentle +2–3 dB for intelligibility
+    de_ess_frequency_hz: "5000–10000"  # De-essing target range for sibilance
+
+  narration_pace:
+    optimal_wpm: 135             # Centre of 120–150 WPM range (Creating Learning Videos v2)
+    acceptable_range_wpm:
+      min: 120
+      max: 150
+    fast_warning_wpm: 165        # >165 WPM — learners cannot consolidate
+    slow_warning_wpm: 90         # <90 WPM — loses audience engagement
+
+  room_treatment_indicators:
+    ideal: "Treated recording room or professional vocal booth"
+    acceptable: "Soft-furnished room with rugs, curtains, bookshelves"
+    unacceptable: "Hard parallel walls, tiled bathrooms, open offices"
+    green_screen_note: "Fabric green screens act as acoustic absorption — a secondary benefit in studio setups"
+
+# ==============================================================================
+# MAYER MULTIMEDIA PRINCIPLES — VIDEO CONTEXT
+# Effect sizes from Mayer (2009) Multimedia Learning (2nd ed.)
+# Applied specifically to video and moving-image contexts
+# ==============================================================================
+
+mayer_video_principles:
+  modality:
+    principle: "Use spoken words and graphics — not on-screen text and graphics"
+    effect_size: 1.02
+    video_application: >
+      For talking-head learning videos: narrate explanations verbally while showing
+      relevant diagrams or visuals on screen. Avoid full-sentence text overlays that
+      duplicate what the presenter is saying.
+    violation_example: "Slide of six bullet sentences displayed while narrator reads each word verbatim"
+    compliant_example: "Diagram of a process on screen while presenter narrates the explanation in their own words"
+
+  temporal_contiguity:
+    principle: "Present narration and corresponding graphics simultaneously"
+    effect_size: 1.30
+    video_application: >
+      Sync visual appearance to the spoken cue word — if the narrator says 'as you
+      can see here', the graphic must be visible at that moment, not before or after.
+      Use J/L-cuts to pre-load audio before the visual cut.
+    violation_example: "Diagram appears 4 seconds after narrator has finished describing it"
+    compliant_example: "Animated callout reveals when narrator says the term; freeze-frame held through the explanation"
+
+  spatial_contiguity:
+    principle: "Place text next to corresponding graphic, not in a separate text box"
+    effect_size: 0.82
+    video_application: >
+      Integrate labels directly into the graphic or diagram. For lower thirds and
+      callout overlays, position text adjacent to the relevant visual region, not
+      in a fixed corner disconnected from the referenced element.
+    violation_example: "Label in top-left corner while the referenced diagram element is bottom-right"
+    compliant_example: "Arrow callout with label placed directly on the diagram component being described"
+
+  coherence:
+    principle: "Exclude extraneous words, graphics, and sounds that do not serve learning"
+    effect_size: 0.86
+    video_application: >
+      Remove background music unless it directly supports emotional tone without
+      competing with narration. Remove decorative animations that trigger before
+      the related narration cue. Cut any scene that does not advance the learning
+      objective.
+    violation_example: "Upbeat background music playing throughout, competing with voice track"
+    compliant_example: "Music only in intro/outro; silent under narration; sound effects only when reinforcing a demo action"
+
+  signalling:
+    principle: "Add cues that highlight the organisation and key information"
+    effect_size: 0.41
+    video_application: >
+      Use visual signalling: zoom-in, animated highlight box, colour callout, or
+      arrow to direct learner attention to the critical element on screen at the
+      moment the narrator references it. Verbal signalling: 'The important thing
+      to note here is…'
+    violation_example: "Complex diagram shown with no callouts — learner must locate the relevant region unaided"
+    compliant_example: "Animated red circle highlights the relevant component on screen simultaneously with the verbal cue"
+
+  segmenting:
+    principle: "Break the lesson into learner-paced segments"
+    effect_size: 0.76
+    video_application: >
+      Chapter-break every 2–3 minutes for concept videos; every 6–9 minutes for
+      full modules. Use a section title card as a visual pause. Include a brief
+      recap sentence before the next chapter begins.
+    violation_example: "40-minute unbroken video with no chapter markers or topic transitions"
+    compliant_example: "6-minute module segmented into three 2-minute chapters each with title card and mini-recap"
+
+  redundancy:
+    principle: "Use graphics + narration, not graphics + narration + identical on-screen text"
+    effect_size: 0.72
+    video_application: >
+      On-screen text should show keywords or short labels only — never full sentences
+      that duplicate the narration. The exception: captions (which are accessibility
+      accommodations) should be toggled independently and not be considered
+      instructional redundancy.
+    violation_example: "Full paragraph of narration text displayed on screen while narrator reads it word for word"
+    compliant_example: "Single keyword 'Temporal Contiguity' on screen; presenter elaborates the concept in speech"
+
+# ==============================================================================
+# SEGMENT LENGTH RESEARCH
+# Engagement data from Guo, Kim & Rubin (2014) and Brame (2016)
+# ==============================================================================
+
+segment_length_research:
+  engagement_drop_off:
+    source: "Guo, Kim & Rubin (2014)"
+    finding: "Median engagement time is approximately 6 minutes regardless of total video length"
+    implication: "Videos longer than 6 minutes see sharply increasing drop-off; content beyond 9 minutes retains very few learners"
+    recommendation: "Design for a 6-minute maximum for primary learning segments; use segmented series for longer content"
+
+  optimal_lengths_by_type:
+    concept_explainer:
+      max_minutes: 3
+      ideal_minutes: 2
+      note: "Single concept; one objective; tight scope — Brame (2016)"
+    full_learning_module:
+      max_minutes: 6
+      ideal_minutes: 4
+      note: "Guo et al. (2014) engagement threshold"
+    software_walkthrough_demo:
+      max_minutes: 10
+      ideal_minutes: 7
+      note: "Procedural demos tolerate longer duration when learner follows along actively"
+    compliance_overview:
+      max_minutes: 9
+      ideal_minutes: 6
+      note: "Mandatory content — minimise length to maintain compliance"
+    short_form_reinforcement:
+      max_minutes: 2
+      ideal_minutes: 1
+      note: "Microlearning / retrieval practice refresh clips"
+
+  information_density:
+    max_new_concepts_per_minute: 2
+    note: "Exceeding 2 new concepts per minute without pause or recap collapses learner working memory"
+    segmenting_rule: "Insert a verbal or visual pause cue for every new concept introduced"
+
+# ==============================================================================
+# STORYBOARD STANDARDS
+# Source: Research - Storyboard Best Practices; Visual Best Practices
+# ==============================================================================
+
+storyboard_standards:
+  shot_composition:
+    establishing_shot:
+      use_case: "Open each major section or topic transition"
+      framing: "Wide (full body or environment visible)"
+      cognitive_benefit: "Reduces load at transition — establishes spatial context before detail"
+      source: "Visual Best Practices for Corporate Learning Videos"
+    medium_shot:
+      use_case: "General instruction and narration"
+      framing: "Chest-up; eyes on upper third of frame (rule of thirds)"
+      headroom: "Small space above head — natural, not cramped"
+    close_up:
+      use_case: "Emphasis, emotional beat, key concept moment"
+      framing: "Head only or face-only; cut to for rhetorical punch"
+      frequency: "Use sparingly; close-up loses effect if overused"
+    over_shoulder:
+      use_case: "Presenter references on-screen graphic or whiteboard"
+      framing: "Shows presenter's posture and the referenced visual simultaneously"
+
+  visual_continuity:
+    rule_of_180: "Maintain cameras on the same side of the subject — do not cross the 180° line"
+    eyeline_continuity: "Presenter looks toward each lens; cuts feel natural"
+    cut_frequency: "8–15 seconds average between camera cuts at natural breakpoints"
+    source: "Visual Best Practices for Corporate Learning Videos"
+
+  b_roll_usage:
+    purpose: "Break talking-head monotony; illustrate abstract concepts; demonstrate procedures"
+    types:
+      - "Screen recordings for software demos"
+      - "Cutaway graphics or animated diagrams"
+      - "Stock footage for context (used sparingly; must be relevant)"
+      - "Close-up of hands, props, or physical demonstrations"
+    coherence_rule: "B-roll must directly illustrate the concurrent narration — no decorative b-roll"
+
+  lower_thirds:
+    content: "Speaker name/title on first appearance; section title at chapter breaks"
+    duration_seconds: 4           # Long enough to read comfortably
+    placement: "Lower-left quadrant; avoid covering presenter's face or key graphics"
+    brand_compliance: "Font, colour, and animation style from visual style guide"
+
+  callout_overlays:
+    types:
+      - "Animated box/circle highlighting screen region"
+      - "Arrow callout with short label (≤5 words)"
+      - "Zoom-in to magnify small UI element during software demo"
+    timing: "Callout appears simultaneously with verbal reference — temporal contiguity"
+    removal: "Callout fades before narration moves to the next point"
+
+  accessibility_zones:
+    caption_safe_area: "Reserve bottom 10% of frame for caption track — no critical content here"
+    overlay_safe_area: "Avoid placing graphics within 5% of frame edges (broadcast safe area)"
+
+# ==============================================================================
+# SCRIPT QUALITY
+# Source: Research - Best Video Script Prompts; Creating Learning Videos Process v2
+# ==============================================================================
+
+script_quality:
+  script_to_screen_alignment:
+    requirement: "Every spoken statement should have a corresponding or anticipatory visual on screen"
+    method: "Two-column script format: narration left, visual direction right"
+    storyboard_integration: "Storyboard frames annotated with the exact narration line they accompany"
+
+  conversational_tone:
+    style: "First person, active voice, direct address ('you', 'we')"
+    prohibited: "Passive constructions ('it has been shown that…'); third person; formal academic register"
+    research_basis: "Mayer Personalization Principle (effect size 0.79); Creating Learning Videos Process v2"
+    reading_level_target: "Grade 8–10 Flesch-Kincaid for general business audiences"
+
+  pacing_markers_wpm:
+    target: 135
+    range_min: 120
+    range_max: 150
+    technique: "Scripts should be timed by reading aloud before production — 150 WPM = 1 min per ~150 words"
+    complex_content_adjustment: "Slow to 110–120 WPM for technically dense passages; pause after each new term"
+
+  hook_requirements:
+    first_seconds: 10            # Hook must land within first 10 seconds
+    hook_types:
+      - "Compelling question that the learner wants answered"
+      - "Surprising statistic or counterintuitive finding"
+      - "Relatable scenario or problem the learner recognises"
+      - "Bold statement that challenges assumptions"
+    source: "Research - Best Video Script Prompts; Creating Learning Videos Process v2 (MMS Attention step)"
+
+  monroe_motivated_sequence:
+    steps:
+      attention: "Hook — establish relevance and capture interest"
+      need: "Problem — articulate the gap or pain point"
+      satisfaction: "Solution — present the learning or approach"
+      visualisation: "Application — show the outcome or scenario"
+      action: "CTA — direct next steps or retrieval activity"
+    application: "Structure each learning video using MMS as the persuasive arc (Creating Learning Videos v2)"
+
+  cta_standards:
+    placement: "Final 10 seconds or as post-video screen"
+    single_cta: "One primary action only — do not combine subscribe + download + quiz into one CTA"
+    types:
+      - "Proceed to next module"
+      - "Complete the accompanying knowledge check"
+      - "Apply the technique in the next scenario"
+      - "Download the job aid referenced in this video"
+
+  adult_learning_principles:
+    source: "Best Practices for Writing Corporate Training Video Scripts for Adult Learners — Section 1"
+    theory_basis: "Knowles (1980) andragogy — adults learn best when they know why and can connect to prior experience"
+    relevance_framing:
+      requirement: "Open by stating learning objectives AND the job-performance benefit — answer 'Why does this matter to me?'"
+      technique: "Highlight a work challenge at the outset and promise a solution (e.g. 'In 5 minutes you'll learn how to handle X to save time on Y')"
+    prior_knowledge_activation:
+      requirement: "At least one prior-knowledge activation moment per module"
+      techniques:
+        - "Ask 'Remember a time when…?' before introducing a new concept"
+        - "Use familiar workplace scenarios to frame new information"
+        - "Connect new terminology to an everyday analogy before the formal definition"
+    self_direction_scaffolding:
+      requirement: "Structure content into navigable modules; indicate optional resources for self-directed follow-up"
+      technique: "Pause prompts and reflection moments support adult preference for autonomy in pacing"
+    just_in_time_positioning:
+      requirement: "Microlearning segments must clearly signal immediate applicability to a specific named task"
+      technique: "State how the video helps the learner perform a named task before delivering the content"
+
+  gagné_events_script_structure:
+    source: "Best Practices for Writing Corporate Training Video Scripts for Adult Learners — Section 1"
+    theory_basis: "Gagné (1985) Nine Events of Instruction applied as a script writing framework"
+    events:
+      gain_attention: "Open with surprising statistic, question, or scenario — hook within first 10 s"
+      inform_objectives: "State explicitly what the learner will be able to do after watching"
+      stimulate_recall: "Activate prior knowledge via question, analogy, or reference to known experience"
+      present_content: "Deliver new information paired with visuals (Mayer Multimedia Principle)"
+      provide_learning_guidance: "Use examples, analogies, and worked demonstrations"
+      elicit_performance: "Include a pause-and-apply prompt or mental exercise mid-video"
+      provide_feedback: "Show correct vs. incorrect examples; demonstrate consequences in scenario"
+      assess_performance: "End-of-video retrieval question or knowledge-check CTA"
+      enhance_retention_transfer: "Summarise 3 key takeaways; suggest next steps; future-facing CTA"
+    scoring_note: "Scripts covering ≥7 of the 9 events score highest on script_quality dimension"
+
+  dialogic_techniques:
+    source: "Best Practices for Writing Corporate Training Video Scripts for Adult Learners — Section 4"
+    theory_basis: "Distance learning research on implied dialogue; Bakhtin (1981) addressivity principle"
+    description: "Techniques for writing scripts that feel conversational and interactive rather than one-way lecture"
+    implied_dialogue:
+      requirement: "Anticipate and address learner questions or objections directly in the narration"
+      technique: "Write phrases such as 'You may be thinking…', 'That's a fair point — here's why…', 'You might ask…'"
+      effect: "Reduces perceived instructor-learner distance; positions learner as active interlocutor"
+    pronoun_strategy:
+      second_person: "Address learner as 'you' throughout to acknowledge their role"
+      first_person_singular: "Creates mentor feel — 'I'm going to show you…'"
+      first_person_plural: "Creates collaborative feel — 'Together, we will solve…'"
+      prohibited: "Arbitrary mixing of I/we/you without consistent persona logic"
+    call_and_response_framing:
+      technique: "Present a common misconception or concern, then answer it — Concern → Answer pattern"
+      example: "'But I've always done it this way, why change?' → 'Great question. Here's why…'"
+    reflection_interaction_prompts:
+      requirement: "At least one scripted pause-and-respond moment per 3-minute segment"
+      technique: "Script explicitly asks learner to pause, then continues with 'Here's what you might have identified…'"
+
+  paralinguistic_delivery_cues:
+    source: "Best Practices for Writing Corporate Training Video Scripts for Adult Learners — Section 5"
+    theory_basis: "Mayer Voice Principle (effect size 0.78) — delivery quality shapes learning outcome"
+    description: "Script-level annotations guiding vocal delivery — how the narration should sound, not just what it says"
+    tone_marking:
+      requirement: "Indicate intended vocal tone at key moments using inline bracket notation"
+      examples: ["[tone: excited]", "[serious tone]", "[empathetic — slow down here]"]
+      sensitive_topics: "Diversity, safety, and wellbeing content must be marked for empathetic, respectful delivery"
+    emphasis_marking:
+      requirement: "Bold or italicise critical do/don't words; narrator stresses these — use sparingly (max 2–3 per segment)"
+      caution: "Over-marking emphasis desensitises the narrator and makes everything sound equally urgent"
+    strategic_pauses:
+      requirement: "Mark deliberate pauses using '…' or [pause] at transitions and after important revelations"
+      principle: "Silence is to audio what whitespace is to text — processing time must be built in after each major point"
+      technique: "Any sentence longer than can be read aloud in one breath must be split"
+    pronunciation_guides:
+      requirement: "Provide phonetic guide for all acronyms, product names, and technical terms on first use"
+      example: "SQL [sequel] — mark the script with the spoken form"
+    read_aloud_validation:
+      requirement: "Every script must be read aloud before entering production"
+      test: "If the narrator runs out of breath on a sentence, it must be broken up"
+    rhetorical_devices:
+      metaphor_and_analogy: "State the analogy before the formal concept — maps abstract to familiar; one analogy required per complex concept"
+      triadic_structure: "Limit key-point lists to three items; use parallel phrasing — 'Plan it, Do it, Review it'"
+      anaphora: "Deliberate repetition of a phrase at sentence openings for motivational cadence — use sparingly"
+      sensory_imagery: "Add one sensory detail to hard-to-remember points — activates dual-coding (Paivio)"
+
+  message_anchoring:
+    source: "Best Practices for Writing Corporate Training Video Scripts for Adult Learners — Section 6"
+    description: "Deliberate use of a consistent recurring cue to anchor key messages in memory"
+    techniques:
+      character_callback: "Return to the scenario character introduced in the hook — 'Remember how Jane handled this?'"
+      recurring_metaphor: "Establish a core metaphor in the opening and reuse the same wording throughout"
+      section_refrain: "Close each major section with a brief repeated phrase or tagline distilling the lesson"
+    requirement: "At least one anchor device per video; introduced in the opening and reinforced before the closing CTA"
+
+  positive_framing_standard:
+    source: "Best Practices for Writing Corporate Training Video Scripts for Adult Learners — Section 6"
+    requirement: "Frame instructions as positive habitual actions rather than avoidance goals"
+    examples:
+      prohibited: "'Don't procrastinate on system updates'"
+      preferred: "'Make it a habit to update the system promptly'"
+    identity_language: "Use inclusive statements anchoring a desirable professional identity — 'Professionals who do X consistently achieve Y'"
+    rationale: "People respond better to attainable positive actions than to avoidance goals; positive framing aligns with desired self-image"
+
+# ==============================================================================
+# ACCESSIBILITY COMPLIANCE
+# Source: Creating Learning Videos Process v2; accessibility_rubric.yaml
+# ==============================================================================
+
+accessibility_compliance:
+  closed_captions:
+    accuracy_target_percent: 99   # WCAG 1.2.2 — pre-recorded captions required
+    timing_tolerance_seconds: 0.5 # Caption must appear within 0.5 s of speech
+    formatting:
+      max_characters_per_line: 42
+      max_lines_on_screen: 2
+      font: "Sans-serif, white on black semi-transparent background"
+      prohibited: "All-caps captions; no punctuation; captions that merge two speakers"
+    speaker_identification: "Label speaker in [brackets] when multiple speakers present"
+
+  audio_description:
+    requirement: "Required when visual content conveys information not present in narration"
+    examples:
+      - "Diagram that the narrator references only as 'as you can see here'"
+      - "On-screen text that is not read aloud"
+      - "Demonstration actions not verbally described"
+    delivery: "Extended AD version or open description integrated into narration"
+
+  transcript:
+    requirement: "Full verbatim transcript must accompany all published learning videos"
+    format: "Accessible HTML or PDF; searchable; includes descriptions of key visuals"
+
+  colour_contrast:
+    on_screen_text_aa_minimum: 4.5   # WCAG 1.4.3
+    caption_background: "Semi-transparent black box ensures contrast regardless of background"
+
+  caption_accuracy_check:
+    auto_caption_review: "AI-generated captions must be human-reviewed before publishing"
+    error_types_to_correct:
+      - "Proper nouns and product names"
+      - "Technical terminology and acronyms"
+      - "Homophones misrecognised by ASR"
+      - "Missing punctuation that alters meaning"
+
+# ==============================================================================
+# VIDEO TYPES — PRODUCTION STANDARDS BY FORMAT
+# Source: Creating Learning Videos Process v2; Visual Best Practices
+# ==============================================================================
+
+video_types:
+  talking_head:
+    description: "Presenter on camera with green screen or physical background"
+    resolution_min: "1080p (from 4K source)"
+    camera_setup: "Two-camera at 30–45° apart; one straight-on, one side angle"
+    lighting: "Three-point (key, fill, backlight) — even, no harsh shadows"
+    background: "Green screen keyed to relevant contextual scene; or clean physical backdrop"
+    cut_frequency: "8–15 seconds between camera angles"
+    graphics_requirement: "On-screen keywords, diagrams, or callouts to support narration"
+    source: "Visual Best Practices for Corporate Learning Videos"
+
+  screencast:
+    description: "Screen recording of software or digital tool with voiceover"
+    resolution_min: "1080p; capture at 2× on Retina displays then downscale"
+    cursor: "Cursor highlighting enabled; large cursor or spotlight effect recommended"
+    annotations: "Zoom-in callouts for small UI elements; arrow callouts for click targets"
+    narration: "Voiceover synchronised to on-screen action — describe what you are doing as you do it"
+    pacing: "Pause screen recording after each discrete action before narrating next step"
+
+  animation:
+    description: "Illustrated or motion-graphic animated video without live presenter"
+    style_consistency: "Visual style bible required — character sheets, colour palette, icon library"
+    voice_talent: "Human voiceover required (Mayer Voice Principle, effect size 0.78) — avoid TTS"
+    complexity_limit: "Maximum 3 animated elements active simultaneously per frame"
+    timing: "Animation duration per concept: 3–6 seconds; allow time for processing"
+
+  mixed_media:
+    description: "Combination of talking head, screencast, and animation segments"
+    transition_treatment: "Clear visual break (title card or animated transition) between format changes"
+    audio_continuity: "Normalise audio levels across segments; consistent tone and EQ profile"
+    pacing: "Mixed media allows shorter segments per format — target ≤2 min per media type block"
+
+# ==============================================================================
+# ANTI-PATTERNS
+# Common production failures that degrade learning effectiveness
+# ==============================================================================
+
+anti_patterns:
+  monotone_narration:
+    description: "Flat, unexpressive delivery with no vocal variation in pitch, pace, or emphasis"
+    impact: "Attention drops sharply within 60–90 seconds; learners disengage"
+    fix: "Re-record with coaching on enthusiasm and emphasis; use editing to increase energy"
+    source: "Visual Best Practices — energetic delivery holds attention better than flat monotone lecture"
+
+  text_wall_slides_in_video:
+    description: "Full paragraphs of text visible on screen simultaneously with narration"
+    impact: "Split-attention and redundancy violation — dual-channel overload"
+    fix: "Reduce to keywords/short bullets only; let narration carry the explanation"
+    mayer_principle: "Modality (effect size 1.02) and Redundancy (effect size 0.72)"
+
+  no_visual_variation:
+    description: "Static talking head locked to a single framing for the entire video"
+    impact: "Viewer attention declines; video feels unprofessional and monotonous"
+    fix: "Cut between camera angles every 8–15 s; intercut B-roll and graphics"
+    source: "Visual Best Practices for Corporate Learning Videos"
+
+  excessive_length:
+    description: "Video or segment significantly exceeds optimal length without segmentation"
+    impact: "Engagement drop-off after 6 minutes — most learners stop watching"
+    fix: "Split into sub-6-minute segments; add chapter markers; use microlearning format"
+    source: "Guo, Kim & Rubin (2014)"
+
+  missing_captions:
+    description: "No closed captions or auto-captions unreviewed and published with errors"
+    impact: "Excludes deaf and hard-of-hearing learners; WCAG 1.2.2 non-compliance"
+    fix: "Generate captions, human-review all auto-captions, correct errors before publishing"
+
+  audio_visual_mismatch:
+    description: "Narration describes one concept while unrelated visual is displayed"
+    impact: "Temporal contiguity violation — highest effect size Mayer principle breached"
+    fix: "Re-edit to synchronise visual appearance with verbal cue; use J/L-cuts"
+    mayer_principle: "Temporal Contiguity (effect size 1.30)"
+
+  background_music_over_narration:
+    description: "Continuous music track competing with voice throughout"
+    impact: "Coherence violation; extraneous auditory load degrades comprehension"
+    fix: "Remove or reduce music to ≤ -30 dBFS under narration; use only in intro/outro"
+    mayer_principle: "Coherence (effect size 0.86)"
+
+  no_reflection_prompts:
+    description: "Video delivers content passively with no learner engagement prompts"
+    impact: "No germane load generation; content not encoded to long-term memory"
+    fix: "Insert pause-and-reflect cues, retrieval questions, or scenario challenges mid-video"
+    source: "Creating Learning Videos Process v2"
+
+  inconsistent_branding:
+    description: "Mixed fonts, colours, and styles across graphics with no visual style guide"
+    impact: "Unprofessional appearance; reduces perceived credibility"
+    fix: "Enforce visual style guide for all graphics; use brand-locked templates"
+
+  missing_hook:
+    description: "Video opens without establishing relevance or learner motivation"
+    impact: "High drop-off in first 10 seconds; MMS Attention step absent"
+    fix: "Rewrite opening with hook (question, statistic, scenario, bold statement)"
+    source: "Creating Learning Videos Process v2 (Monroe's Motivated Sequence)"
+
+  no_narrative_arc:
+    description: "Script presents information as a flat fact list or rule enumeration without any scenario, character, or situation→challenge→resolution structure"
+    impact: "Dry, unmemorable content; no emotional connection; adults disengage from content that lacks relevance framing"
+    fix: "Rewrite opening with a named character or relatable scenario; structure lesson as situation → challenge → resolution; close by showing the scenario resolved"
+    source: "Best Practices for Writing Corporate Training Video Scripts for Adult Learners (Sections 2 and 7)"
+
+  print_prose_narration:
+    description: "Script written in formal written-prose register rather than spoken conversational English — long compound sentences, passive voice, no breath marks, academic vocabulary"
+    impact: "Narrator cannot deliver naturally; learners struggle to follow audio-only phrasing designed for reading; Mayer Personalization Principle breached"
+    mayer_principle: "Personalization Principle (effect size 0.79)"
+    fix: "Convert to short, active-voice sentences; add pause markers [pause]; use contractions and second-person address; read aloud to verify every sentence can be spoken in one breath"
+    source: "Best Practices for Writing Corporate Training Video Scripts for Adult Learners (Sections 2 and 5)"
+
+  sustained_talking_head_without_visual_handoff:
+    description: "Presenter on camera for the entirety of content delivery without cutting to supporting graphics, screencasts, or B-roll — particularly for conceptually dense segments"
+    impact: "Mayer Image Principle — complex content absorption degrades when attention is divided between watching a face and processing information; viewers disengage after ~90 seconds of continuous face-only delivery"
+    fix: "Use talking head for rapport-building and motivational segments only (≤90 seconds); switch to visuals + voiceover for conceptually dense content; intercut B-roll and diagrams"
+    mayer_principle: "Image Principle — a continuous on-screen presenter does not enhance learning vs. relevant visuals alone"
+    source: "Best Practices for Writing Corporate Training Video Scripts for Adult Learners (Sections 1 and 5)"
+
+# ==============================================================================
+# VALIDATION CHECKS
+# ==============================================================================
+
+checks:
+  audio_loudness_check:
+    requirement: "Integrated loudness between -18 and -14 LUFS"
+    failure: "Below -18 LUFS (too quiet) or above -14 LUFS (too loud/distorted)"
+
+  noise_floor_check:
+    requirement: "Background noise floor ≤ -50 dBFS; ideal ≤ -60 dBFS"
+    failure: "Audible ambient noise above -40 dBFS"
+
+  narration_pace_check:
+    requirement: "120–150 WPM; measured by word count divided by duration in minutes"
+    failure: "Below 90 WPM or above 165 WPM"
+
+  segment_length_check:
+    concept_video_max_minutes: 3
+    module_max_minutes: 6
+    walkthrough_max_minutes: 10
+    failure: "Any single unbroken segment exceeding stated maximum"
+
+  caption_accuracy_check:
+    requirement: "≥99% word accuracy on published captions"
+    method: "Manual review against transcript; auto-caption alone does not pass"
+    failure: "Proper nouns, acronyms, or technical terms misspelled in captions"
+
+  mayer_principles_check:
+    critical_principles_required:
+      - temporal_contiguity: "Visuals appear simultaneously with narration reference"
+      - spatial_contiguity: "Labels integrated into graphics, not separate text boxes"
+      - redundancy: "On-screen text is keywords only — not verbatim narration"
+      - coherence: "No background music under narration; no decorative animations"
+    recommended_principles:
+      - modality: "Graphics + narration used (not graphics + text only)"
+      - signalling: "Key points marked with callouts, highlights, or verbal cues"
+      - segmenting: "Content chunked into ≤6 min segments with chapter breaks"
+
+  visual_sync_check:
+    requirement: "Visuals change within 1 second of corresponding narration cue"
+    failure: "Graphic appears >2 seconds after or before the narration reference"
+
+  resolution_check:
+    minimum: "1080p (Full HD)"
+    recommended: "4K source, 1080p delivery"
+    failure: "Sub-720p output or visible compression blocking artefacts"
+
+  accessibility_check:
+    captions_present: true
+    transcript_available: true
+    audio_description_required: "When visual conveys information not in narration"
+    colour_contrast_min: 4.5     # WCAG AA for on-screen text overlays
+
+# ==============================================================================
+# THRESHOLDS
+# Numeric limits for automated scoring and quality gates
+# ==============================================================================
+
+thresholds:
+  audio_integrated_lufs_target: -16
+  audio_integrated_lufs_min: -18
+  audio_integrated_lufs_max: -14
+  audio_noise_floor_target_dbfs: -60
+  audio_noise_floor_acceptable_dbfs: -50
+  audio_noise_floor_failure_dbfs: -40
+  narration_wpm_min: 120
+  narration_wpm_max: 150
+  narration_wpm_fast_warning: 165
+  narration_wpm_slow_warning: 90
+  concept_segment_max_minutes: 3
+  module_segment_max_minutes: 6
+  walkthrough_segment_max_minutes: 10
+  cut_frequency_min_seconds: 8
+  cut_frequency_max_seconds: 15
+  bullet_hold_duration_min_seconds: 3
+  bullet_hold_duration_max_seconds: 6
+  caption_accuracy_min_percent: 99
+  caption_sync_tolerance_seconds: 0.5
+  caption_max_characters_per_line: 42
+  caption_max_lines_on_screen: 2
+  visual_sync_tolerance_seconds: 1.0
+  visual_sync_failure_seconds: 2.0
+  resolution_min_pixels_height: 1080
+  b_roll_min_percent_of_runtime: 15    # At least 15% non-talking-head footage recommended
+  lower_third_duration_seconds: 4
+  mayer_critical_principles_required: 4
+  on_screen_text_max_words_per_overlay: 8
+  max_animated_elements_simultaneous: 3
+
+# ==============================================================================
+# PENALTIES
+# Applied as score deductions (as decimal fractions)
+# ==============================================================================
+
+penalties:
+  missing_captions: 0.15              # WCAG 1.2.2 hard requirement — severe penalty
+  audio_visual_mismatch: 0.12         # Temporal contiguity violation; highest Mayer effect size
+  audio_noise_unacceptable: 0.10      # Background noise >-40 dBFS renders content inaccessible
+  verbatim_text_redundancy: 0.10      # Reading slides verbatim — Mayer redundancy violation
+  excessive_segment_length: 0.10      # Segment >2× optimal length without chapter breaks
+  monotone_narration: 0.08            # Flat delivery — documented engagement impact
+  static_single_camera: 0.08          # No visual variation across entire video
+  background_music_over_voice: 0.08   # Coherence principle violation — auditory overload
+  poor_lighting: 0.06                 # Underexposed or harsh shadows — credibility impact
+  split_attention_labels: 0.06        # Labels far from referenced graphic — spatial contiguity
+  no_reflection_prompts: 0.06         # No germane load generation throughout video
+  sub_1080p_resolution: 0.05          # Below minimum resolution standard
+  missing_hook: 0.05                  # No attention mechanism in first 10 seconds
+  inconsistent_branding: 0.04         # Mixed visual styles — no style guide applied
+  missing_transcript: 0.04            # Transcript absent — accessibility shortfall
+  no_b_roll: 0.03                     # Entire video is static talking head — visual monotony
+
+# ==============================================================================
+# BONUSES
+# Applied as score additions (as decimal fractions)
+# ==============================================================================
+
+bonuses:
+  broadcast_audio_quality: 0.03       # -16 LUFS, ≤-60 dBFS noise floor, professional processing
+  exemplary_temporal_sync: 0.03       # Frame-accurate visual synchronisation throughout
+  mayer_full_compliance: 0.03         # All 7 video-relevant Mayer principles applied
+  segmentation_exemplary: 0.02        # All segments within optimal length; chapter markers present
+  accessible_captions_100pct: 0.02    # Verified ≥99% caption accuracy with human review
+  audio_description_provided: 0.02    # Full audio description for all non-narrated visual content
+  hook_within_10_seconds: 0.02        # Compelling hook delivered in first 10 seconds
+  multi_camera_well_executed: 0.02    # Two-camera coverage with clean cuts at natural breakpoints
+  reflection_prompts_distributed: 0.02  # Retrieval/reflection cues mid-video, not end-only
+  storyboard_driven: 0.01             # Evidence of storyboard-to-screen discipline (shot consistency)
+  visual_style_guide_enforced: 0.01   # Consistent brand typography, colours, icons throughout
+  monroe_structure_complete: 0.01     # All five MMS steps present: Attention → Need → Satisfaction → Visualisation → Action

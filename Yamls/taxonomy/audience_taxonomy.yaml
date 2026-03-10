@@ -1,0 +1,240 @@
+_meta:
+  id: audience_taxonomy
+  title: "Audience Taxonomy"
+  description: "Classification of audience types by role context, expertise level, engagement mode, demographic dimension, and accessibility needs"
+  domain: audience
+  domain_type: cross_cutting
+  purpose: taxonomy
+  version: "1.1.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Comprehensive Audience Analysis.md"
+    - "Corpus/Research/36_audience_analysis_and_persuasion.md"
+    - "Corpus/Research/Research - Learner Persona Research and Development.md"
+    - "Corpus/Research/audience_analysis_for_presentations__how_to_know_your_audience_a.md"
+    - "Corpus/Research/Storytelling_for_Different_Business_Personas.md"
+    - "Corpus/Research/Research - The Anatomy of Presence_ An Exhaustive Analysis of First Impressions, Enclothed Cognition, and the Mechanics of Influence.md"
+  relationships:
+    - target: entities/audience_entities.yaml
+      type: depends_on
+      description: "Audience entity types for NER extraction"
+    - target: methodology/learner_profiles_framework.yaml
+      type: depends_on
+      description: "Learner profile definitions and expertise tiers"
+    - target: sales/personas_reference.yaml
+      type: depends_on
+      description: "Sales buyer persona definitions"
+# ==============================================================================
+# AUDIENCE ROLE CONTEXT
+# ==============================================================================
+
+role_contexts:
+  buyer:
+    label: "Buyer"
+    description: "Audience involved in purchase decisions for products or services"
+    sub_roles:
+      - economic_buyer
+      - technical_evaluator
+      - end_user_champion
+      - executive_sponsor
+      - procurement_lead
+
+  learner:
+    label: "Learner"
+    description: "Audience engaged in skills development or knowledge acquisition"
+    sub_roles:
+      - new_hire
+      - upskiller
+      - career_changer
+      - specialist_deepener
+      - compliance_learner
+
+  stakeholder:
+    label: "Stakeholder"
+    description: "Audience with decision-making or approval authority in a project or organisation"
+    sub_roles:
+      - c_suite_executive
+      - department_head
+      - project_sponsor
+      - board_member
+      - investor
+
+  general_audience:
+    label: "General Audience"
+    description: "Broad audience at conferences, webinars, or public presentations"
+    sub_roles:
+      - conference_attendee
+      - webinar_participant
+      - community_member
+      - public_viewer
+
+# ==============================================================================
+# EXPERTISE LEVELS
+# ==============================================================================
+
+expertise_levels:
+  novice:
+    label: "Novice"
+    description: "No prior knowledge; needs foundational concepts and definitions"
+    content_strategy: "Define all terms, use analogies, avoid jargon, provide scaffolding"
+
+  beginner:
+    label: "Beginner"
+    description: "Basic awareness but limited practical experience"
+    content_strategy: "Build on fundamentals, use worked examples, provide step-by-step guidance"
+
+  intermediate:
+    label: "Intermediate"
+    description: "Working knowledge with some practical experience"
+    content_strategy: "Focus on application, introduce nuance, compare approaches"
+
+  advanced:
+    label: "Advanced"
+    description: "Deep expertise with significant hands-on experience"
+    content_strategy: "Emphasise edge cases, trade-offs, advanced techniques, and research"
+
+  expert:
+    label: "Expert"
+    description: "Domain authority who contributes to the field"
+    content_strategy: "Present novel insights, challenge assumptions, peer-level discourse"
+
+# ==============================================================================
+# SEGMENTATION DIMENSIONS
+# ==============================================================================
+
+segmentation_dimensions:
+  demographic:
+    label: "Demographic"
+    description: "Age, education, role, industry, geography"
+    attributes:
+      - age_range
+      - education_level
+      - job_function
+      - industry_vertical
+      - geographic_region
+      - language_preference
+
+  psychographic:
+    label: "Psychographic"
+    description: "Motivations, values, attitudes, learning preferences"
+    attributes:
+      - learning_motivation
+      - risk_tolerance
+      - technology_comfort
+      - time_availability
+      - preferred_learning_style
+
+  behavioural:
+    label: "Behavioural"
+    description: "Observable actions, engagement patterns, usage habits"
+    attributes:
+      - content_consumption_pattern
+      - engagement_frequency
+      - completion_rate_history
+      - preferred_device
+      - session_duration
+
+  situational:
+    label: "Situational"
+    description: "Context-specific factors affecting receptiveness"
+    attributes:
+      - voluntary_vs_mandatory
+      - individual_vs_team
+      - time_pressure
+      - stakes_level
+      - prior_experience_with_topic
+
+# ==============================================================================
+# ACCESSIBILITY PROFILES
+# ==============================================================================
+
+accessibility_profiles:
+  visual:
+    label: "Visual Accessibility"
+    description: "Needs for learners with visual impairments"
+    accommodations:
+      - "screen reader compatibility"
+      - "high contrast mode"
+      - "alt text for images"
+      - "large font options"
+      - "colour-blind safe palettes"
+
+  auditory:
+    label: "Auditory Accessibility"
+    description: "Needs for learners with hearing impairments"
+    accommodations:
+      - "closed captions"
+      - "transcripts"
+      - "visual alerts"
+      - "sign language interpretation"
+
+  cognitive:
+    label: "Cognitive Accessibility"
+    description: "Needs for learners with cognitive or learning differences"
+    accommodations:
+      - "plain language"
+      - "chunked content"
+      - "consistent navigation"
+      - "extended time allowances"
+      - "multi-modal presentation"
+
+  motor:
+    label: "Motor Accessibility"
+    description: "Needs for learners with motor impairments"
+    accommodations:
+      - "keyboard navigation"
+      - "large click targets"
+      - "voice control support"
+      - "switch device compatibility"
+
+# ==============================================================================
+# CLASSIFICATION DIMENSIONS
+# ==============================================================================
+
+classification_dimensions:
+  role_context:
+    name: "Role Context"
+    description: "The primary role in which the audience member engages with content"
+    values:
+      - buyer
+      - learner
+      - stakeholder
+      - general_audience
+
+  expertise_level:
+    name: "Expertise Level"
+    description: "The audience member's depth of domain knowledge"
+    values:
+      - novice
+      - beginner
+      - intermediate
+      - advanced
+      - expert
+
+  segmentation_type:
+    name: "Segmentation Type"
+    description: "The dimension used to categorise and target audience members"
+    values:
+      - demographic
+      - psychographic
+      - behavioural
+      - situational
+
+  engagement_mode:
+    name: "Engagement Mode"
+    description: "How the audience interacts with the content"
+    values:
+      - passive_consumption
+      - active_participation
+      - collaborative_creation
+      - self_directed_exploration
+
+  accessibility_need:
+    name: "Accessibility Need"
+    description: "Primary accessibility accommodation category"
+    values:
+      - visual
+      - auditory
+      - cognitive
+      - motor
+      - none_identified

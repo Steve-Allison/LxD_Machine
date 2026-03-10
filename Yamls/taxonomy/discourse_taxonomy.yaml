@@ -1,0 +1,243 @@
+_meta:
+  id: discourse_taxonomy
+  title: "Discourse Taxonomy"
+  description: "Classification of discourse structures by relation type, coherence level, connective function, complexity tier, and analysis granularity"
+  domain: narrative
+  domain_type: cross_cutting
+  purpose: taxonomy
+  version: "1.1.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/PDL_ARCHITECTURE_NARRATIVE_DISCOURSE_SERIES.md"
+    - "Corpus/Research/Research - PDL for Discourse-Aware Text Simplification.md"
+    - "Corpus/Research/Research - Researching Narrative and Discourse Analysis.md"
+    - "Corpus/Research/Research - AQE with LLMs via IBM PDL.md"
+  academic_sources:
+    - "Mann & Thompson (1988) - Rhetorical Structure Theory"
+    - "Halliday & Hasan (1976) - Cohesion in English"
+    - "Hyland (2005) - Metadiscourse"
+  relationships:
+    - target: entities/discourse_entities.yaml
+      type: depends_on
+      description: "Discourse entity types for NER extraction"
+    - target: methodology/discourse_markers_framework.yaml
+      type: depends_on
+      description: "Discourse marker definitions and patterns"
+    - target: methodology/rst_framework.yaml
+      type: depends_on
+      description: "RST relation definitions"
+# ==============================================================================
+# RST RELATION TYPES
+# ==============================================================================
+
+rst_relation_types:
+  presentational:
+    label: "Presentational"
+    description: "Relations that increase the reader's inclination to accept a claim"
+    relations:
+      motivation:
+        description: "Nucleus action is made desirable by satellite"
+        signal_words: ["imagine", "consider the benefits", "you could"]
+      antithesis:
+        description: "Nucleus is supported by contrasting satellite"
+        signal_words: ["however", "on the contrary", "unlike"]
+      background:
+        description: "Satellite provides context for understanding nucleus"
+        signal_words: ["to understand", "historically", "in context"]
+      enablement:
+        description: "Satellite helps reader perform nucleus action"
+        signal_words: ["by doing", "this allows", "to achieve this"]
+      justification:
+        description: "Satellite justifies the nucleus claim"
+        signal_words: ["because", "the reason is", "this is why"]
+      concession:
+        description: "Nucleus is maintained despite satellite"
+        signal_words: ["although", "despite", "even though"]
+
+  subject_matter:
+    label: "Subject Matter"
+    description: "Relations between the semantic content of discourse units"
+    relations:
+      elaboration:
+        description: "Satellite provides additional detail about nucleus"
+        signal_words: ["specifically", "in particular", "for example"]
+      cause:
+        description: "Satellite is the cause, nucleus is the effect"
+        signal_words: ["because", "since", "therefore", "consequently"]
+      condition:
+        description: "Nucleus depends on satellite being true"
+        signal_words: ["if", "when", "provided that", "unless"]
+      contrast:
+        description: "Multi-nuclear relation comparing differences"
+        signal_words: ["whereas", "while", "on the other hand"]
+      sequence:
+        description: "Multi-nuclear temporal or logical ordering"
+        signal_words: ["first", "then", "next", "finally"]
+      restatement:
+        description: "Satellite restates nucleus in different words"
+        signal_words: ["in other words", "put differently", "that is"]
+      evaluation:
+        description: "Satellite provides author's assessment of nucleus"
+        signal_words: ["importantly", "significantly", "notably"]
+      solutionhood:
+        description: "Nucleus is a solution to the problem in satellite"
+        signal_words: ["the solution is", "to address this", "we resolved"]
+
+# ==============================================================================
+# COHERENCE LEVELS
+# ==============================================================================
+
+coherence_levels:
+  local:
+    label: "Local Coherence"
+    description: "Sentence-to-sentence connections via coreference, lexical chains, and connectives"
+    mechanisms:
+      - "pronoun reference"
+      - "lexical repetition"
+      - "conjunction"
+      - "ellipsis"
+
+  global:
+    label: "Global Coherence"
+    description: "Macro-level organisation via topic progression and rhetorical structure"
+    mechanisms:
+      - "topic sentences"
+      - "section headers"
+      - "thesis-support structure"
+      - "narrative arc"
+
+  relational:
+    label: "Relational Coherence"
+    description: "Explicit signalling of how discourse units relate to each other"
+    mechanisms:
+      - "discourse connectives"
+      - "RST relations"
+      - "transition phrases"
+      - "meta-discourse markers"
+
+# ==============================================================================
+# CONNECTIVE FUNCTIONS
+# ==============================================================================
+
+connective_functions:
+  additive:
+    label: "Additive"
+    description: "Adds information without contrast or causality"
+    examples: ["and", "also", "furthermore", "moreover", "in addition"]
+
+  adversative:
+    label: "Adversative"
+    description: "Signals contrast, concession, or unexpected outcome"
+    examples: ["but", "however", "although", "despite", "nevertheless", "yet"]
+
+  causal:
+    label: "Causal"
+    description: "Signals cause-effect, reason, or purpose"
+    examples: ["because", "therefore", "since", "consequently", "thus", "as a result"]
+
+  temporal:
+    label: "Temporal"
+    description: "Signals time relationships or sequence"
+    examples: ["then", "next", "before", "after", "meanwhile", "subsequently"]
+
+  conditional:
+    label: "Conditional"
+    description: "Signals contingency or hypothetical relationships"
+    examples: ["if", "unless", "provided that", "in case", "assuming"]
+
+  exemplifying:
+    label: "Exemplifying"
+    description: "Introduces examples or illustrations"
+    examples: ["for example", "for instance", "such as", "including", "namely"]
+
+  reformulating:
+    label: "Reformulating"
+    description: "Restates or clarifies previous content"
+    examples: ["in other words", "that is", "put simply", "to clarify"]
+
+# ==============================================================================
+# COMPLEXITY TIERS
+# ==============================================================================
+
+complexity_tiers:
+  simple:
+    label: "Simple"
+    description: "Single clause or sentence with one proposition"
+    max_embedding_depth: 0
+    typical_connectives: ["and", "but", "so"]
+
+  compound:
+    label: "Compound"
+    description: "Two or more independent clauses joined by coordination"
+    max_embedding_depth: 1
+    typical_connectives: ["and", "but", "or", "yet", "so"]
+
+  complex:
+    label: "Complex"
+    description: "Main clause with one or more subordinate clauses"
+    max_embedding_depth: 2
+    typical_connectives: ["because", "although", "when", "if", "while"]
+
+  compound_complex:
+    label: "Compound-Complex"
+    description: "Multiple independent clauses with embedded subordination"
+    max_embedding_depth: 3
+    typical_connectives: ["however", "furthermore", "consequently", "nevertheless"]
+
+  multi_level:
+    label: "Multi-Level"
+    description: "Deeply nested discourse with multiple levels of embedding"
+    max_embedding_depth: 4
+    typical_connectives: ["moreover", "notwithstanding", "in light of the fact that"]
+
+# ==============================================================================
+# CLASSIFICATION DIMENSIONS
+# ==============================================================================
+
+classification_dimensions:
+  relation_type:
+    name: "Discourse Relation Type"
+    description: "The RST or discourse relation connecting two text spans"
+    values:
+      - presentational
+      - subject_matter
+
+  coherence_level:
+    name: "Coherence Level"
+    description: "The scope of the coherence mechanism"
+    values:
+      - local
+      - global
+      - relational
+
+  connective_function:
+    name: "Connective Function"
+    description: "The semantic role of the discourse connective"
+    values:
+      - additive
+      - adversative
+      - causal
+      - temporal
+      - conditional
+      - exemplifying
+      - reformulating
+
+  complexity_tier:
+    name: "Complexity Tier"
+    description: "The structural complexity of the discourse unit"
+    values:
+      - simple
+      - compound
+      - complex
+      - compound_complex
+      - multi_level
+
+  analysis_granularity:
+    name: "Analysis Granularity"
+    description: "The level at which discourse analysis is conducted"
+    values:
+      - clause_level
+      - sentence_level
+      - paragraph_level
+      - section_level
+      - document_level

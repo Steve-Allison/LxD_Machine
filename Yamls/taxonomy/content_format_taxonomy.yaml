@@ -1,0 +1,406 @@
+_meta:
+  id: content_format_taxonomy
+  title: "Content Format Taxonomy"
+  description: "Classification of learning and performance support content format types — from full courses to microlearning, job aids, coaching, and communication formats — for pipeline routing and design selection"
+  domain: pedagogical
+  domain_type: classification
+  purpose: taxonomy
+  version: "1.4.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Complete Guide to AI-powered Microlearning.md"
+    - "Corpus/Research/Best Practices for Structuring Corporate Learning Content.md"
+  academic_sources:
+    - "Rossett & Shafer (2007) - Job Aids and Performance Support"
+    - "Bersin (2004) - The Blended Learning Book"
+    - "Thalheimer (2017) - Performance-Focused Smile Sheets"
+
+  relationships:
+    - target: entities/content_format_entities.yaml
+      type: depends_on
+      description: "Content format entity types for NER extraction"
+classification_dimensions:
+  - name: format_type
+    description: "Primary content format category determining structural requirements and production approach"
+    values:
+      - formal_learning
+      - job_aid
+      - reference_material
+      - practice_activity
+      - assessment
+  - name: duration_band
+    description: "Content duration classification from nano (< 2 min) to extended (> 4 hours)"
+    values:
+      - nano
+      - micro
+      - short
+      - medium
+      - long
+      - extended
+  - name: delivery_mode
+    description: "Primary delivery modality for the content format"
+    values:
+      - elearning
+      - ilt
+      - blended
+      - self_directed
+      - on_the_job
+      - virtual_ilt
+
+# ==============================================================================
+# TOP-LEVEL CATEGORIES
+# ==============================================================================
+
+categories:
+
+  # --------------------------------------------------------------------------
+  # FORMAL LEARNING — structured, instructor-led or self-paced courses
+  # --------------------------------------------------------------------------
+  formal_learning:
+    label: "Formal Learning"
+    description: "Structured content with defined objectives, progression, and assessment"
+    requires_objectives: true
+    requires_assessment: true
+
+    types:
+      full_course:
+        label: "Full Course"
+        description: "Multi-module structured learning programme with comprehensive coverage"
+        typical_duration: "2-8 hours"
+        delivery_modes: [ilt, vilt, elearning, blended]
+        bloom_suitability: [understand, apply, analyze, evaluate, create]
+        output_artefacts:
+          - participant_guide
+          - facilitator_guide
+          - slide_deck
+          - assessment
+          - evaluation_survey
+        routing_signals:
+          - "course"
+          - "programme"
+          - "curriculum"
+          - "learning path"
+
+      module:
+        label: "Learning Module"
+        description: "Single-topic unit within a larger course or programme"
+        typical_duration: "30-90 min"
+        delivery_modes: [ilt, vilt, elearning]
+        bloom_suitability: [understand, apply, analyze]
+        output_artefacts:
+          - slide_deck
+          - activity_sheet
+          - module_quiz
+        routing_signals:
+          - "module"
+          - "unit"
+          - "section of a course"
+          - "lesson"
+
+      workshop:
+        label: "Workshop"
+        description: "Facilitated group session focused on applying knowledge or developing skills"
+        typical_duration: "2-4 hours"
+        delivery_modes: [ilt, vilt]
+        bloom_suitability: [apply, analyze, create]
+        output_artefacts:
+          - facilitator_guide
+          - activity_cards
+          - workbook
+          - output_template
+        routing_signals:
+          - "workshop"
+          - "facilitated session"
+          - "skills lab"
+          - "practice session"
+
+      bootcamp:
+        label: "Bootcamp"
+        description: "Intensive multi-day immersive programme combining instruction and practice"
+        typical_duration: "1-5 days"
+        delivery_modes: [ilt, vilt]
+        bloom_suitability: [apply, analyze, evaluate, create]
+        output_artefacts:
+          - full_programme_guide
+          - participant_workbook
+          - day_plan
+          - capstone_brief
+        routing_signals:
+          - "bootcamp"
+          - "immersive"
+          - "intensive training"
+          - "multi-day programme"
+
+      webinar:
+        label: "Webinar"
+        description: "Live or recorded online broadcast — primarily presentation with Q&A"
+        typical_duration: "45-90 min"
+        delivery_modes: [vilt, async_video]
+        bloom_suitability: [remember, understand]
+        output_artefacts:
+          - slide_deck
+          - recording
+          - follow_up_resources
+        routing_signals:
+          - "webinar"
+          - "live session"
+          - "broadcast"
+          - "online event"
+
+  # --------------------------------------------------------------------------
+  # MICROLEARNING — short, focused, just-in-time content
+  # --------------------------------------------------------------------------
+  microlearning:
+    label: "Microlearning"
+    description: "Short, focused content designed for a single learning objective, accessible in moments of need"
+    requires_objectives: true
+    requires_assessment: optional
+
+    types:
+      video_explainer:
+        label: "Video Explainer"
+        description: "Short explanatory video covering a single concept or process"
+        typical_duration: "2-5 min"
+        delivery_modes: [async_video]
+        bloom_suitability: [remember, understand]
+        output_artefacts:
+          - script
+          - storyboard
+          - video_file
+        routing_signals:
+          - "explainer video"
+          - "short video"
+          - "video lesson"
+          - "video tutorial"
+
+      micro_scenario:
+        label: "Micro Scenario"
+        description: "Short branching or choice-based scenario for decision-making practice"
+        typical_duration: "3-8 min"
+        delivery_modes: [elearning, mobile]
+        bloom_suitability: [apply, evaluate]
+        output_artefacts:
+          - scenario_script
+          - branching_logic
+          - feedback_text
+        routing_signals:
+          - "scenario"
+          - "branching"
+          - "decision-making activity"
+          - "micro lesson"
+
+      knowledge_burst:
+        label: "Knowledge Burst"
+        description: "Ultra-short text or audio content with a single fact or concept"
+        typical_duration: "< 2 min"
+        delivery_modes: [mobile, email, slack]
+        bloom_suitability: [remember]
+        output_artefacts:
+          - push_notification_text
+          - card_content
+          - audio_script
+        routing_signals:
+          - "knowledge burst"
+          - "push content"
+          - "daily tip"
+          - "bite-sized"
+
+      infographic_card:
+        label: "Infographic / Visual Card"
+        description: "Single-page visual summary of a concept, process, or checklist"
+        typical_duration: "2-5 min"
+        delivery_modes: [digital, print]
+        bloom_suitability: [remember, understand]
+        output_artefacts:
+          - infographic_design
+          - source_data
+        routing_signals:
+          - "infographic"
+          - "visual summary"
+          - "one-pager"
+          - "cheat sheet"
+
+  # --------------------------------------------------------------------------
+  # PERFORMANCE SUPPORT — tools used at point of need
+  # --------------------------------------------------------------------------
+  performance_support:
+    label: "Performance Support"
+    description: "Resources designed to support task execution at the moment of need — not primarily for learning"
+    requires_objectives: false
+    requires_assessment: false
+
+    types:
+      job_aid:
+        label: "Job Aid"
+        description: "Quick reference guide for a specific task or process"
+        typical_duration: "1-5 min to use"
+        delivery_modes: [print, digital, mobile]
+        bloom_suitability: [apply]
+        output_artefacts:
+          - job_aid_document
+          - laminated_card
+          - digital_pdf
+        routing_signals:
+          - "job aid"
+          - "quick reference"
+          - "how-to guide"
+          - "step-by-step"
+
+      checklist:
+        label: "Checklist"
+        description: "Sequential list of steps or criteria to verify task completion"
+        typical_duration: "2-10 min to use"
+        delivery_modes: [print, digital, mobile]
+        bloom_suitability: [apply]
+        output_artefacts:
+          - checklist_document
+        routing_signals:
+          - "checklist"
+          - "process list"
+          - "pre-call checklist"
+          - "launch checklist"
+
+      decision_guide:
+        label: "Decision Guide"
+        description: "Branching decision tool guiding users to the correct answer for a situation"
+        typical_duration: "2-10 min to use"
+        delivery_modes: [digital, mobile, print]
+        bloom_suitability: [apply, evaluate]
+        output_artefacts:
+          - decision_tree_document
+          - interactive_tool
+        routing_signals:
+          - "decision guide"
+          - "decision tree"
+          - "should I"
+          - "which option"
+
+      reference_card:
+        label: "Reference Card"
+        description: "Compact card with key facts, terminology, or data for quick lookup"
+        typical_duration: "1-3 min to use"
+        delivery_modes: [print, digital]
+        bloom_suitability: [remember]
+        output_artefacts:
+          - reference_card_pdf
+        routing_signals:
+          - "reference card"
+          - "glossary card"
+          - "quick facts"
+          - "terminology guide"
+
+  # --------------------------------------------------------------------------
+  # COACHING AND PRACTICE — human-facilitated skill development
+  # --------------------------------------------------------------------------
+  coaching_and_practice:
+    label: "Coaching and Practice"
+    description: "Individualised skill development through structured practice, observation, and feedback"
+    requires_objectives: true
+    requires_assessment: true
+
+    types:
+      coaching_session:
+        label: "1:1 Coaching Session"
+        description: "Individual coaching conversation to develop specific skills or address performance gaps"
+        typical_duration: "30-60 min"
+        delivery_modes: [in_person, virtual]
+        bloom_suitability: [apply, evaluate]
+        output_artefacts:
+          - coaching_framework
+          - observation_notes
+          - development_plan
+        routing_signals:
+          - "coaching"
+          - "one-to-one"
+          - "manager coaching"
+          - "feedback session"
+
+      practice_drill:
+        label: "Practice Drill"
+        description: "Structured repetition of a specific skill in a controlled environment"
+        typical_duration: "10-30 min"
+        delivery_modes: [in_person, virtual]
+        bloom_suitability: [apply]
+        output_artefacts:
+          - drill_script
+          - observation_rubric
+          - feedback_form
+        routing_signals:
+          - "drill"
+          - "practice"
+          - "roleplay"
+          - "objection handling"
+
+  # --------------------------------------------------------------------------
+  # COMMUNICATION — content designed to inform, not teach
+  # --------------------------------------------------------------------------
+  communication:
+    label: "Communication"
+    description: "Content designed to inform, align, or enable — not primarily to teach"
+    requires_objectives: false
+    requires_assessment: false
+
+    types:
+      internal_briefing:
+        label: "Internal Briefing"
+        description: "Written or presented update for internal audiences — teams, leaders, or stakeholders"
+        typical_duration: "5-15 min to read or present"
+        delivery_modes: [email, slide_deck, document]
+        output_artefacts:
+          - briefing_document
+          - slide_deck
+        routing_signals:
+          - "briefing"
+          - "update"
+          - "announcement"
+          - "internal comms"
+
+      enablement_deck:
+        label: "Enablement Deck"
+        description: "Presentation deck designed to equip a team with product, skill, or campaign knowledge"
+        typical_duration: "15-45 min"
+        delivery_modes: [slide_deck, vilt]
+        output_artefacts:
+          - presentation_deck
+          - speaker_notes
+        routing_signals:
+          - "enablement"
+          - "launch deck"
+          - "sales deck"
+          - "training deck"
+
+      battle_card:
+        label: "Battle Card"
+        description: "Compact competitive positioning guide for sales use in the field"
+        typical_duration: "2-5 min to use"
+        delivery_modes: [digital, print, mobile]
+        output_artefacts:
+          - battle_card_document
+        routing_signals:
+          - "battle card"
+          - "competitive card"
+          - "objection card"
+          - "win/loss"
+
+# ==============================================================================
+# ROUTING LOGIC
+# ==============================================================================
+
+routing_rules:
+  if_formal_objective_and_assessment_required: "formal_learning"
+  if_single_objective_short_duration: "microlearning"
+  if_task_performance_support_at_point_of_need: "performance_support"
+  if_skill_gap_individual_feedback_needed: "coaching_and_practice"
+  if_inform_align_or_enable_no_assessment: "communication"
+
+# ==============================================================================
+# DURATION BANDS
+# ==============================================================================
+
+duration_bands:
+  nano: "< 2 min"
+  micro: "2-10 min"
+  short: "10-30 min"
+  medium: "30-90 min"
+  long: "90 min - 4 hours"
+  extended: "> 4 hours"

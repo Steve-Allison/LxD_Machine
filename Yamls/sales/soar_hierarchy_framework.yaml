@@ -1,0 +1,326 @@
+_meta:
+  id: soar_hierarchy_framework
+  title: SOAR Hierarchy Rules
+  description: SOAR requirements by hierarchy level (L1-L4) specifying slide blueprints, guardrails, inheritance rules, and narrative coherence constraints
+  domain: narrative
+  domain_type: cross_cutting
+  purpose: reference
+  version: "1.4.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Crafting Powerful Opening Plays.md"
+    - "Corpus/Research/Research - Comprehensive Audience Analysis.md"
+    - "Corpus/Research/Research - Slide Deck Design Playbook Research.md"
+    - "Corpus/Research/Research - Using SOAR Storytelling most effectively.md"
+    - "Corpus/Research/The Universal Narrative Methodology: A Framework for Crafting and Improving Stories.md"
+
+
+  relationships:
+    - target: sales/soar_mapping_reference.yaml
+      type: depends_on
+      description: "SOAR hierarchy derives from SOAR mapping; hierarchy formalises what mapping describes"
+notes: 'Messaging levels and inheritance for hierarchical narrative coherence.
+
+  L1→L4 define required SOAR coverage and default slide blueprints.
+
+  '
+levels:
+- id: L1
+  name: Strategic
+  requires:
+  - S
+  - O
+  inherits_from: null
+  defaults:
+    slide_blueprint:
+    - stage: Situation
+      expected:
+      - market_trend
+      - problem
+      - urgency
+    - stage: Opportunity
+      expected:
+      - vision
+      - value_drivers
+      - personas
+    - stage: Action
+      expected:
+      - capability_pillars
+      optional: true
+    - stage: Result
+      expected:
+      - north_star_metrics
+      optional: true
+    guardrails:
+      must_include_messages:
+      - KM1
+      preferred_terms:
+      - customer journey
+      - activation
+      banned_terms:
+      - legacy term X
+- id: L2
+  name: Sales Play
+  requires:
+  - O
+  - A
+  inherits_from: L1
+  defaults:
+    slide_blueprint:
+    - stage: Situation
+      expected:
+      - context
+      optional: true
+    - stage: Opportunity
+      expected:
+      - value_prop
+      - use_cases
+      - objections
+    - stage: Action
+      expected:
+      - solution_overview
+      - proof_points
+      - differentiation
+    - stage: Result
+      expected:
+      - impact_metrics
+      - customer_story
+    guardrails:
+      must_include_messages:
+      - KM1
+      - KM3
+      preferred_terms:
+      - activation
+      - journey
+      banned_terms:
+      - legacy term X
+- id: L3
+  name: Product
+  requires:
+  - A
+  - R
+  inherits_from: L2
+  defaults:
+    slide_blueprint:
+    - stage: Opportunity
+      expected:
+      - persona_needs
+      optional: true
+    - stage: Action
+      expected:
+      - capabilities
+      - architecture
+      - proof_points
+    - stage: Result
+      expected:
+      - benchmarks
+      - outcomes
+      - case_study
+    guardrails:
+      must_include_messages: []
+      preferred_terms:
+      - time to value
+      - total cost
+      banned_terms: []
+- id: L4P
+  name: Persona Adaptation
+  scope: Tailored talk-track for a single persona (WIIFM-first)
+  soar_weights:
+    Situation: 0.15
+    Opportunity: 0.2
+    Approach: 0.35
+    Results: 0.3
+  intent: Assume L1 vision/urgency is aligned; translate the play into persona WIIFM, concrete approach steps, and proof that
+    matters to them.
+  must_answer:
+  - What does this persona need to do better/faster/safer?
+  - What is the recommended approach in their terms?
+  - What proof/metric matters most to them?
+  default_sections:
+  - stage: Bridge
+    purpose: reference
+  - stage: Situation
+    purpose: reference
+  - stage: Opportunity
+    purpose: reference
+  - stage: Approach
+    purpose: reference
+  - stage: Results
+    purpose: reference
+  inheritance:
+    from_parent: Reuse parent play’s value prop and proof points; translate into persona language. Do not introduce new claims.
+- id: L4I
+  name: Industry Adaptation
+  scope: Industry variant layered on top of persona talk-track
+  soar_weights:
+    Situation: 0.2
+    Opportunity: 0.2
+    Approach: 0.3
+    Results: 0.3
+  intent: Start from the persona story and swap only industry context, regulatory constraints, and examples. Keep the approach/proof
+    logic consistent.
+  must_answer:
+  - What changes in this industry context?
+  - Which examples/metrics make it feel real?
+  - Any constraints (compliance/ops) to acknowledge?
+  default_sections:
+  - stage: Bridge
+    purpose: reference
+  - stage: Situation
+    purpose: reference
+  - stage: Opportunity
+    purpose: reference
+  - stage: Approach
+    purpose: reference
+  - stage: Results
+    purpose: reference
+  inheritance:
+    from_parent: Derived from L4 Persona Adaptation; override examples and constraints only.
+narrative_spine:
+  purpose: reference
+  artifacts:
+    L1_required:
+    - vision_statement
+    - urgency_trigger
+    - value_drivers
+    L2_required:
+    - value_proposition
+    - capability_pillars
+    - differentiation
+    - proof_points
+    L3_required:
+    - capabilities
+    - integration_notes
+    - evidence_snippets
+    L4_required:
+    - persona_wiifm
+    - tailored_use_case
+    - adoption_path
+    - proof_in_persona_language
+  inheritance_rules:
+  - 'L1 establishes the narrative spine: the vision statement and urgency trigger. These must be referenced (one sentence)
+    at lower levels but not re-explained in detail.'
+  - L2 translates the L1 spine into a specific customer problem and multi-app approach; must preserve L1 terms and value drivers.
+  - L3 must open with a one-line bridge back to its parent L2 value proposition; then focus on approach and results (what
+    the application enables and how to prove it).
+  - 'L4 is persona-first: assume the L1 vision/urgency is already agreed; focus on persona WIIFM, approach steps, and results/proof.
+    Use only a short bridge sentence to remind the spine when needed.'
+  - 'Industry adaptations come after persona: reuse the persona talk track and swap only the industry context/examples; do
+    not introduce new claims.'
+governance:
+  weighting_rules:
+  - If a play is delivered "results-first" (rare), explicitly tag Bridge + Results and then backfill Situation/Opportunity
+    so the arc still completes.
+  - Play-level SOAR weights may override level defaults only when a documented rationale exists (e.g., exec asked for proof-first).
+  - L4 should be persona-first. Industry adaptation is applied after persona (replace examples/context, not the underlying
+    WIIFM or proof logic).
+  quality_checks:
+  - L4 must not re-litigate L1 vision/urgency; treat them as established. Use at most one bridge line back to L1.
+  - When using play-level SOAR overrides, ensure slide notes explain why and where the missing SOAR elements are covered elsewhere.
+play_registry:
+  L4:
+    order:
+    - L4P
+    - L4I
+    policy: Create persona adaptations first (L4P). Create industry adaptations second (L4I) by reusing the persona story
+      and swapping context/examples. Inherit default weights unless explicitly overridden with rationale.
+  override_schema:
+    field: soar_weights_override
+    allowed_levels:
+    - L1
+    - L2
+    - L3
+    - L4P
+    - L4I
+    requires:
+    - rationale
+    - owner
+    - date
+soar:
+  stages:
+  - Situation
+  - Opportunity
+  - Approach
+  - Results
+  - Bridge
+  persona_first: true
+  industry_after_persona: true
+  stage_naming_note: Use "Approach" (not "Action") in tags; Action is supported only as an alias for backward compatibility.
+
+# ==============================================================================
+# NARRATIVE QUALITY GATES
+# Per-level coherence thresholds and validation rules
+# Source: Research - Using SOAR Storytelling most effectively.md
+# ==============================================================================
+
+narrative_quality_gates:
+  purpose: "Minimum quality thresholds for SOAR narrative coherence at each hierarchy level"
+  source: "Research - Using SOAR Storytelling most effectively.md; The Universal Narrative Methodology"
+
+  l1_strategic:
+    min_soar_stages_covered: 2
+    required_elements:
+      - "Transformational vision statement (what the world looks like after change)"
+      - "Urgency trigger grounded in external data or trend (why now)"
+      - "Audience-relevant pain framing (what is at stake)"
+    quality_checks:
+      - "Vision statement is aspirational, not product-centric"
+      - "Urgency trigger cites verifiable market or industry event (Kairos principle)"
+      - "No premature product mention in first 3 slides"
+    anti_patterns:
+      - "Leading with features before establishing shared pain (Opportunity stage skipped)"
+      - "Abstract vision without customer-relevant context (Situation undefined)"
+
+  l2_sales_play:
+    min_soar_stages_covered: 3
+    required_elements:
+      - "Customer problem statement with quantified cost of inaction"
+      - "Solution approach tied to specific use cases"
+      - "At least one validated proof point (case study or benchmark)"
+    quality_checks:
+      - "Problem statement names the villain (fragmented tools, manual process, etc.)"
+      - "Action section uses how language, not just what language"
+      - "Result section includes before/after or ROI metric"
+    anti_patterns:
+      - "Solution overview before establishing problem (Opportunity stage absent)"
+      - "Generic proof points not tied to the specific use case (Result not credible)"
+
+  l3_product:
+    min_soar_stages_covered: 2
+    required_elements:
+      - "One-line bridge back to parent L2 value proposition"
+      - "Technical capabilities mapped to specific customer workflows"
+      - "Benchmarks or case study with named customer or industry"
+    quality_checks:
+      - "Bridge sentence uses L2 language (no new claims introduced)"
+      - "Capabilities section answers how does this specifically work per use case"
+    anti_patterns:
+      - "Capability list without workflow context (Action not grounded)"
+      - "Re-arguing L1 vision at L3 level (inheritance violated)"
+
+  l4_persona_adaptation:
+    min_soar_stages_covered: 2
+    required_elements:
+      - "WIIFM statement specific to persona role"
+      - "Approach steps in persona language and workflow context"
+      - "Result or proof that uses persona own KPIs"
+    quality_checks:
+      - "No re-litigation of L1 vision (max one bridge sentence)"
+      - "Pain vocabulary matches persona known terminology"
+      - "Proof metric is role-relevant (CMO: ROMI; CIO: TCO; Practitioner: time saved)"
+    anti_patterns:
+      - "Generic ROI claim not translated into persona KPI language"
+      - "Industry examples without persona-relevant context"
+
+  cross_level_coherence:
+    inheritance_validation:
+      - "L2 must reference L1 vision_statement or urgency_trigger"
+      - "L3 must open with bridge to L2 value_proposition"
+      - "L4 must not introduce claims absent from L3"
+    vocabulary_consistency:
+      - "Key terms must be used consistently across levels"
+      - "Preferred and banned terms from persona definitions must be respected at all levels"
+    scoring_impact:
+      missing_bridge_l3: "-8 points (coherence penalty)"
+      new_claim_at_l4: "-10 points (governance violation)"
+      urgency_absent_l1: "-5 points (kairos requirement unfulfilled)"

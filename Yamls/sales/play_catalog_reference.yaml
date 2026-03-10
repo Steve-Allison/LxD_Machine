@@ -1,0 +1,341 @@
+_meta:
+  id: play_catalog_reference
+  title: Play Catalog
+  description: FY26 sales play catalog mapping Portfolio Plays (L1) → Strategic Sales Plays (L2) → Application Tactics (L3) → Industry Adaptations (L4) with applications and enablers
+  domain: sales
+  domain_type: cross_cutting
+  purpose: reference
+  version: "3.3.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Crafting Powerful Opening Plays.md"
+    - "Corpus/Research/Research - Comprehensive Audience Analysis.md"
+    - "Corpus/Research/Research - Slide Deck Design Playbook Research.md"
+    - "Corpus/Research/Research - Using SOAR Storytelling most effectively.md"
+    - "Corpus/Research/The Universal Narrative Methodology: A Framework for Crafting and Improving Stories.md"
+
+
+  relationships:
+    - target: sales/sales_play_taxonomy.yaml
+      type: depends_on
+      description: "Catalog references the taxonomy; play instances are classified by taxonomy values"
+hierarchy_levels:
+  L1: Portfolio Play
+  L2: Strategic Sales Play
+  L3: Application Sales Tactic
+  L4: Industry adaptation
+governance:
+  directory_source:
+    file: FY26 Targeting & Positioning Guide_Dec 15 Final.pptx
+    refs:
+    - turn7search449
+    note: FY26 Sales Play Directory slide is the navigation index.
+fy26_catalog_applications:
+  Content, Commerce & Workflows:
+  - Learning Manager
+  - Workfront Workflow
+  - Workfront Planning
+  - Adobe Commerce
+  - Frame.io
+  - GenStudio for Performance Marketing
+  - AEM Sites Optimizer
+  - LLM Optimizer
+  - AEM Sites
+  - AEM Assets
+  - AEM Forms
+  - AEM Guides
+  Data & Audiences:
+  - Content Analytics
+  - Mix Modeler
+  - Analytics
+  - Real-Time CDP Collaboration
+  - Customer Journey Analytics
+  - Customer Journey Analytics B2B Edition
+  - Real-Time CDP
+  - Real-Time CDP B2B Edition
+  Customer Journeys:
+  - Marketo Engage
+  - Marketo Measure
+  - Dynamic Chat
+  - Adobe Journey Optimizer
+  - Adobe Journey Optimizer B2B Edition
+  - Campaign
+  - Target
+  Advertising:
+  - Adobe Advertising
+  Creative (DMe):
+  - Creative Cloud
+  - Express
+  - Firefly Services
+  - Firefly Custom Models
+  - Firefly Foundry
+  - Firefly Design Intelligence
+  - FF for Creative Production
+  - FF Creative Production
+  New/Coming Soon (as labeled in FY26 materials):
+  - GenStudio for Content Mktg (H2)
+  - Commerce as a Cloud Serv.
+  - AJO Experimentation Accelerator
+  - Journey Optimizer Experimentation Accelerator
+  - Adobe Commerce Optimizer
+  Document Productivity (DMe):
+  - Acrobat Studio
+sales_play_taxonomy:
+  portfolio_plays:
+  - id: FY26_L1_CSC
+    name: Content Supply Chain for the AI World
+    level: L1
+    strategic_sales_plays:
+    - id: FY26_L2_WP
+      name: 'W&P: Workflows, Planning & Metadata'
+      level: L2
+      parent_id: FY26_L1_CSC
+      lead_applications:
+      - Workfront Workflow
+      - Workfront Planning
+      - Frame.io
+      - AEM Assets
+    - id: FY26_L2_CP_SCT
+      name: 'C&P: Supercharge Creative Teams'
+      level: L2
+      parent_id: FY26_L1_CSC
+      lead_applications:
+      - Creative Cloud
+      - FF for Creative Production
+      - Frame.io
+      - FF Custom Models
+      - FF Foundry
+    - id: FY26_L2_CP_SAP
+      name: 'C&P: Scaled Asset Production'
+      level: L2
+      parent_id: FY26_L1_CSC
+      lead_applications:
+      - FF Services
+      - FF Creative Production
+      - FF Design Intelligence
+      - FF Custom Models
+      - FF Foundry
+    - id: FY26_L2_CP_OB
+      name: 'C&P: On-brand Creation for Marketers and beyond'
+      level: L2
+      parent_id: FY26_L1_CSC
+      lead_applications:
+      - Adobe Express
+      - GenStudio for Performance Marketing
+    - id: FY26_L2_AM_REUSE
+      name: 'Asset Management: Asset Mgmt & Reuse'
+      level: L2
+      parent_id: FY26_L1_CSC
+      lead_applications:
+      - AEM Assets
+      - Workfront
+    - id: FY26_L2_RI_CI
+      name: 'Reporting & Insights: Content Insights'
+      level: L2
+      parent_id: FY26_L1_CSC
+      lead_applications:
+      - Content Analytics
+      - GenStudio for Performance Marketing
+    notes: 'FY26 CSC: six strategic sales plays align 1:1 with CSC entry points.'
+    evidence:
+      refs:
+      - turn6search557
+      - turn5search362
+      - turn6search361
+  - id: FY26_L1_UCX
+    name: Unified Customer Experience for the AI World
+    level: L1
+    strategic_sales_plays:
+    - id: FY26_L2_UCX_ABA
+      name: Agentic Brand Activation
+      level: L2
+      parent_id: FY26_L1_UCX
+    - id: FY26_L2_UCX_CCE
+      name: Customer-centric Engagement
+      level: L2
+      parent_id: FY26_L1_UCX
+    - id: FY26_L2_UCX_CA
+      name: Customer Acquisition
+      level: L2
+      parent_id: FY26_L1_UCX
+    - id: FY26_L2_UCX_OCA
+      name: Omnichannel Content Activation
+      level: L2
+      parent_id: FY26_L1_UCX
+    lead_applications:
+    - Real-Time CDP Collaboration
+    - Journey Optimizer
+    - Journey Optimizer Experimentation Accelerator
+    - Real-Time CDP
+    - Mix Modeler
+    - Content Analytics
+    - Brand Concierge
+    - Customer Journey Analytics
+    - Adobe Experience Manager Sites
+    - Adobe Experience Manager Sites Optimizer
+    - LLM Optimizer
+    evidence:
+      refs:
+      - turn6search361
+      - turn7search449
+  - id: FY26_L1_B2B
+    name: B2B GTM Orchestration
+    level: L1
+    strategic_sales_plays:
+    - id: FY26_L2_B2B_MO
+      name: Marketing Orchestration
+      level: L2
+      parent_id: FY26_L1_B2B
+    - id: FY26_L2_B2B_CLG
+      name: Content–led Growth
+      level: L2
+      parent_id: FY26_L1_B2B
+    - id: FY26_L2_B2B_CAMPACC
+      name: Campaign Acceleration
+      level: L2
+      parent_id: FY26_L1_B2B
+    - id: FY26_L2_B2B_B2BCOM
+      name: B2B Commerce
+      level: L2
+      parent_id: FY26_L1_B2B
+    - id: FY26_L2_B2B_AO
+      name: Account Orchestration
+      level: L2
+      parent_id: FY26_L1_B2B
+    lead_applications:
+    - Adobe Experience Manager
+    - Workfront
+    - Marketo
+    - Commerce
+    - Learning Manager
+    - GenStudio for Performance Marketing
+    - Real-Time CDP B2B Edition
+    - Adobe Experience Manager Guides
+    - Journey Optimizer B2B Edition
+    - Customer Journey Analytics B2B Edition
+    evidence:
+      refs:
+      - turn6search361
+      - turn7search449
+  - id: FY26_L1_EUP
+    name: End-User Productivity
+    level: L1
+    strategic_sales_plays:
+    - id: FY26_L2_KBP
+      name: Knowledge Based Productivity
+      level: L2
+      parent_id: FY26_L1_EUP
+      lead_applications:
+      - Acrobat Studio
+      - Adobe Express
+      notes: DMe-led strategic play focused on Business Pro value; often positioned via CIO/ITDM exec pitch and expanded across
+        departments.
+    notes: DMe FY26 enterprise framework portfolio play. Legacy/related naming in prior materials may include “AI–Driven Secure
+      Productivity” or “Digital Documents for Modern Workplace”.
+    evidence:
+      refs:
+      - turn21search766
+      - turn21search589
+      - turn21search905
+      - turn21search641
+      - turn21search654
+application_sales_tactics:
+  by_application:
+    Real-Time CDP (Portfolio):
+    - 'RTCDP B2C: New, Rip & Replace'
+    - 'RTCDP B2C: Cross-Sell'
+    - 'RTCDP: Capacity, Capability, and Volume Upsell'
+    - 'RTCDP: Data Composability'
+    - 'RTCDP B2B Edition: B2B New, Rip & Replace'
+    - 'RTCDP B2B Edition: B2B Cross-sell'
+    - 'RTCDP: RTCDP Connections, Server-Side Event Forwarding'
+    - 'AAM: Data Management Evolution'
+    Real-Time CDP Collaboration:
+    - 'RTCDP: Data Collaboration for Brands'
+    - 'RTCDP: Audience Monetization for Publishers and Media Networks'
+    Marketo Engage:
+    - Replace MAP with ME (Greenfield)
+    - Replace MAP with ME (Cross-sell)
+    - ME Maturity Upsell to ME Prime
+    - ME Cross-Channel Upsell
+    - ME Volume & Performance Upsell
+    - ME Analytics & Attribution Upsell
+industry_verticalization:
+  industries:
+  - Automotive
+  - Consumer Goods
+  - Financial Services
+  - Financial Services & Insurance
+  - Healthcare
+  - High Tech
+  - Industrial Manufacturing
+  - Life sciences
+  - Media & Entertainment
+  - Media and Entertainment
+  - Public Sector
+  - Retail
+  - Travel & Hospitality
+
+# ==============================================================================
+# NARRATIVE DEPLOYMENT FRAMEWORK
+# SOAR arc shape and opening strategy per portfolio play (L1)
+# Source: Research - Using SOAR Storytelling most effectively.md
+# ==============================================================================
+
+narrative_deployment_framework:
+  purpose: "Canonical SOAR arc and opening hook strategy per portfolio play for narrative generation"
+  source: "Research - Using SOAR Storytelling most effectively.md; Crafting Powerful Opening Plays.md"
+
+  by_portfolio_play:
+    FY26_L1_CSC:
+      name: Content Supply Chain for the AI World
+      arc_shape: man_in_hole
+      opening_hook_type: provocative_statistic
+      situation_frame: "Content demand is growing 3x while budgets remain flat; teams rely on disconnected tools creating bottlenecks"
+      opportunity_villain: "Content fragmentation — disconnected planning, creation, activation, and measurement systems"
+      opportunity_kairos: "Generative AI has eliminated the cost barrier to personalization at scale; competitors are moving now"
+      action_hero: "Adobe GenStudio — the only integrated AI-powered content supply chain from planning to performance"
+      result_proof_types:
+        - content_velocity_metrics
+        - agency_spend_reduction
+        - brand_consistency_scores
+
+    FY26_L1_UCX:
+      name: Unified Customer Experience for the AI World
+      arc_shape: man_in_hole
+      opening_hook_type: customer_scenario
+      situation_frame: "Customer expectations have outpaced marketing infrastructure; point solutions create data silos and inconsistent journeys"
+      opportunity_villain: "Channel-first marketing vs customer-first reality; fragmented data prevents real-time personalization"
+      opportunity_kairos: "AI agents can now act on unified data in real time; brands without unified CX lose to those who have it"
+      action_hero: "Real-Time CDP + Journey Optimizer + AEM Sites — unified data, journeys, and content in one platform"
+      result_proof_types:
+        - conversion_rate_improvement
+        - cac_reduction
+        - customer_lifetime_value_increase
+
+    FY26_L1_B2B:
+      name: B2B GTM Orchestration
+      arc_shape: man_in_hole
+      opening_hook_type: provocative_question
+      situation_frame: "B2B buying groups now average 6-10 stakeholders; manual orchestration across fragmented tools creates pipeline leakage"
+      opportunity_villain: "Siloed marketing-sales-content tools that prevent buying group engagement at the right moment"
+      opportunity_kairos: "AI-native competitors are orchestrating buying group journeys at scale; manual GTM is a strategic liability"
+      action_hero: "Marketo Engage + Journey Optimizer B2B + Real-Time CDP B2B — unified GTM intelligence and orchestration"
+      result_proof_types:
+        - pipeline_velocity
+        - win_rate
+        - cac
+        - sales_cycle_reduction
+
+    FY26_L1_EUP:
+      name: End-User Productivity
+      arc_shape: rags_to_riches
+      opening_hook_type: day_in_the_life
+      situation_frame: "Knowledge workers spend 40%+ of time finding, reading and recreating information trapped in documents"
+      opportunity_villain: "Static, siloed PDFs and tool sprawl that prevent fast decisions and high-quality stakeholder outputs"
+      opportunity_kairos: "Trusted AI in documents has arrived; organizations that embed it now gain durable productivity advantage"
+      action_hero: "Acrobat Studio — AI Assistant + PDF Spaces for trusted document intelligence and creation"
+      result_proof_types:
+        - time_to_decision_reduction
+        - tool_consolidation_savings
+        - stakeholder_output_quality

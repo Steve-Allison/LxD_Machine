@@ -1,0 +1,477 @@
+_meta:
+  id: "descriptive_rst_corpus"
+  title: "Descriptive RST Corpus Governance"
+  description: "Comprehensive knowledge base for analytical, bottom-up and top-down parsing of existing text using Rhetorical Structure Theory."
+  domain: "narrative"
+  domain_type: "workflow"
+  purpose: "corpus"
+  version: "2.0.0"
+  last_updated: "2026-03-03"
+  corpus_sources:
+    - "Corpus/Research/Research - Advanced Computational Discourse Analysis_ Operationalizing Rhetorical Structure Theory with LLM.md"
+  relationships:
+    - target: corpus/Constructive_RST_corpus.yaml
+      type: related_to
+      description: "Complementary RST corpus — constructive (generation) vs descriptive (parsing)"
+  changelog:
+    - version: "1.2.0"
+      date: "2026-03-03"
+      summary: "Initial skeleton with 4 entries covering EDU segmentation, nuclearity, bottom-up parsing, and connective anti-pattern."
+    - version: "2.0.0"
+      date: "2026-03-03"
+      summary: "Full enrichment from RST research document. Expanded to 25 entries (8 principles, 12 best practices, 5 anti-patterns) covering signal taxonomy, comparative frameworks, algorithmic strategies, schema engineering, and downstream applications."
+schema_version: "1.0"
+domain: "narrative"
+last_updated: "2026-03-03"
+total_entries: 25
+tag_vocabulary:
+  - tag: "segmentation"
+    status: "active"
+  - tag: "nuclearity"
+    status: "active"
+  - tag: "parsing_algorithms"
+    status: "active"
+  - tag: "evaluation"
+    status: "active"
+  - tag: "discourse_signals"
+    status: "active"
+  - tag: "entity_markers"
+    status: "active"
+  - tag: "comparative_frameworks"
+    status: "active"
+  - tag: "summarization"
+    status: "active"
+  - tag: "sentiment_analysis"
+    status: "active"
+  - tag: "authorship_detection"
+    status: "active"
+  - tag: "prompt_orchestration"
+    status: "active"
+  - tag: "schema_engineering"
+    status: "active"
+  - tag: "tree_constraints"
+    status: "active"
+  - tag: "cross_domain"
+    status: "active"
+entries:
+  # ─────────────────────────────────────────────
+  # PRINCIPLES (pr_001 – pr_008)
+  # ─────────────────────────────────────────────
+  - id: "pr_001"
+    entry_type: "principle"
+    title: "Elementary Discourse Unit (EDU) Segmentation"
+    description: "The fundamental first step of descriptive RST is decomposing text into non-overlapping, continuous text spans called Elementary Discourse Units (EDUs). These typically correspond to individual clauses or discrete propositions, bounded by punctuation or coordinating conjunctions, but exclude nested restrictive relative clauses. EDUs are the terminal leaf nodes of every RST discourse tree."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "The Theoretical Architecture of Rhetorical Structure Theory"
+      - document: "RST Discourse Treebank Guidelines"
+        section: "Segmentation"
+    tags:
+      - "segmentation"
+    added: "2026-03-03"
+    related_practices:
+      - "bp_001"
+      - "bp_002"
+
+  - id: "pr_002"
+    entry_type: "principle"
+    title: "Principle of Nuclearity"
+    description: "RST formally distinguishes between a Nucleus (the text span central to the author's communicative intent, capable of standing alone) and a Satellite (ancillary, supporting, or contextualizing information). In multinuclear relations such as lists or contrasts, multiple EDUs possess equal semantic weight and are interconnected without subordination. Nuclearity enables algorithms to compute text centrality and structural importance."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "The Theoretical Architecture of Rhetorical Structure Theory"
+      - document: "Rhetorical Structure Theory: Toward a functional theory"
+        section: "Core Concepts"
+    tags:
+      - "nuclearity"
+    added: "2026-03-03"
+    related_practices:
+      - "bp_006"
+      - "bp_007"
+
+  - id: "pr_003"
+    entry_type: "principle"
+    title: "Relational Propositions as the Core Parsing Objective"
+    description: "The ultimate objective of RST discourse parsing is extracting relational propositions—the unstated but inferred logical connections arising from the juxtaposition of text spans. These relations (e.g., Justify, Motivation, Non-volitional Cause, Interpretation) describe the functional interaction between Nucleus and Satellite rather than morphological characteristics. Recognizing these relations is equivalent to recognizing the structural basis of textual coherence."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "The Theoretical Architecture of Rhetorical Structure Theory"
+    tags:
+      - "nuclearity"
+      - "evaluation"
+    added: "2026-03-03"
+    related_practices:
+      - "bp_001"
+      - "bp_002"
+
+  - id: "pr_004"
+    entry_type: "principle"
+    title: "Five-Class Discourse Signal Taxonomy"
+    description: "Discourse relations are indicated by five distinct signal typologies: (1) Semantic signals (~41% of indicators, including lexical chains, synonymy, meronymy, coreference); (2) Syntactic signals (parallel constructions, relative clauses, participial clauses, tense patterns); (3) Morphological signals (verb tense shifts, personal reference markers); (4) Graphical signals (punctuation, paragraph boundaries); and (5) Discourse markers (traditional connectives like 'because', 'however'). Explicit discourse markers signal only 8.5–22% of all relations; the majority must be inferred from implicit cues."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "The Complex Taxonomy of Discourse Signals and Entity Markers"
+      - document: "Taxonomy of Discourse Signals for RST Relations: A Study in a News Corpus"
+        section: "Signal Distribution"
+    tags:
+      - "discourse_signals"
+      - "evaluation"
+    added: "2026-03-03"
+    related_practices:
+      - "bp_003"
+
+  - id: "pr_005"
+    entry_type: "principle"
+    title: "Entity Markers vs. Discourse Markers Distinction"
+    description: "Discourse markers dictate the structural relational edges of the parsed tree (how one span logically transitions to another), while entity markers bound specific named entities, domain nomenclature, or actors within the text. Advanced parsing systems must integrate both: entity markers to resolve coreference across distant tree branches, and discourse markers to construct the hierarchical skeleton. When a newly introduced entity is a meronym of an entity in a preceding sentence, that entity relationship serves as a semantic discourse signal to predict an elaboration relation."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "The Complex Taxonomy of Discourse Signals and Entity Markers"
+    tags:
+      - "entity_markers"
+      - "discourse_signals"
+    added: "2026-03-03"
+
+  - id: "pr_006"
+    entry_type: "principle"
+    title: "Projectivity and Tree Constraints"
+    description: "RST produces single-rooted, projective constituency trees where EDUs combine into spans, which combine into larger macro-spans until a single root is formed. This strict tree-breaking restriction ensures non-overlapping, contiguous coverage. Enhanced RST (eRST) extends the classical model by introducing secondary, possibly cyclic graph edges while preserving the primary projective tree, capturing concurrent relations that strict constituency trees force annotators to discard."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "The Comparative Landscape of Computational Discourse Frameworks"
+    tags:
+      - "tree_constraints"
+      - "comparative_frameworks"
+    added: "2026-03-03"
+    related_practices:
+      - "bp_009"
+
+  - id: "pr_007"
+    entry_type: "principle"
+    title: "Signal Combinatorics and Interpretative Ambiguity"
+    description: "The computational fusion of discourse signals presents a highly complex multidimensional space. Some relations are marked by combined signals operating in tandem (e.g., attribution is frequently marked by a cognitive verb followed by a specific subordinate clause structure). However, relations like concession and condition often share identical, overlapping signal sets, creating profound interpretative ambiguity for both human annotators and automated systems. This necessitates advanced language models capable of evaluating broad contextual meaning rather than rigid rule-based matching."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "The Complex Taxonomy of Discourse Signals and Entity Markers"
+      - document: "RST Signalling Corpus Annotation Manual"
+        section: "Signal Distribution"
+    tags:
+      - "discourse_signals"
+      - "evaluation"
+    added: "2026-03-03"
+
+  - id: "pr_008"
+    entry_type: "principle"
+    title: "Three Interconnected Parsing Subtasks"
+    description: "Automated discourse tree construction requires three deeply interconnected computational subtasks: (1) precise segmentation of text into EDUs, (2) topological prediction of tree structure to determine which spans logically merge, and (3) concurrent labeling of both nuclearity and the specific rhetorical relation assigned to each merge. These subtasks are interdependent and must be jointly optimized for high-accuracy parsing."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "Algorithmic Evolution: From Transition-Based Parsers to Large Language Models"
+    tags:
+      - "parsing_algorithms"
+      - "segmentation"
+      - "nuclearity"
+    added: "2026-03-03"
+    related_practices:
+      - "bp_001"
+      - "bp_002"
+      - "bp_003"
+
+  # ─────────────────────────────────────────────
+  # BEST PRACTICES (bp_001 – bp_010)
+  # ─────────────────────────────────────────────
+  - id: "bp_001"
+    entry_type: "best_practice"
+    title: "Bottom-Up Shift-Reduce Parsing via LLMs"
+    description: "Leverage Large Language Models to evaluate adjacent units stored in a working memory stack. The system iteratively prompts the model with the current parse tree state, providing text spans of adjacent nodes, and requests prediction of the optimal logical merge with nuclearity and relation labels. This requires orchestrated sequential prompts using a shift-reduce paradigm: 'Shift' pushes a new element from the queue to the stack, 'Reduce' merges two stack-top elements into a subtree."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "Algorithmic Evolution: From Transition-Based Parsers to Large Language Models"
+      - document: "Can we obtain significant success in RST discourse parsing by using Large Language Models?"
+        section: "Methodology"
+    tags:
+      - "parsing_algorithms"
+    added: "2026-03-03"
+    evidence: "Bottom-up parsing using massive LLMs significantly surpasses previous state-of-the-art results on benchmark datasets (RST-DT, Instructional Discourse Treebank, GUM corpus), exhibiting robust cross-domain generalization and outperforming traditional discriminative models by 2-3 points on standard benchmarks."
+    context: "When constructing automated discourse parsers for complex, multi-domain documents requiring fine-grained intra-sentential boundary detection."
+    confidence: "strong"
+    derived_from:
+      - "pr_001"
+      - "pr_008"
+
+  - id: "bp_002"
+    entry_type: "best_practice"
+    title: "Top-Down Sequential Bisection Parsing"
+    description: "Treat the entire document as a single contiguous macro-span and use sequence-to-sequence neural architectures to sequentially predict optimal split points at token boundaries. Recursively bisect the document and assign rhetorical relations to resulting sub-spans until indivisible terminal EDUs are reached. This naturally captures global document coherence and macro-level thematic shifts."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "Algorithmic Evolution: From Transition-Based Parsers to Large Language Models"
+      - document: "RST Parsing from Scratch"
+        section: "Methodology"
+    tags:
+      - "parsing_algorithms"
+    added: "2026-03-03"
+    evidence: "Top-down methodology captures global coherence patterns that bottom-up approaches may miss. However, precision can degrade when identifying fine-grained intra-sentential boundaries deep within the recursive structure."
+    context: "When macro-level document structure and thematic shift detection are prioritized over fine-grained clause-level accuracy."
+    confidence: "strong"
+    derived_from:
+      - "pr_001"
+      - "pr_008"
+
+  - id: "bp_003"
+    entry_type: "best_practice"
+    title: "Ensemble Model Strategy for Segmentation and Relation Labeling"
+    description: "Use different models for different cognitive tasks within the parsing pipeline. Deploy a highly efficient, lower-parameter model for raw text segmentation (EDU boundary detection), and a highly parameterized reasoning model for complex semantic relational assignments. Use declarative language model-chaining to pass the output of one model directly into the prompt template of another, abstracting API mechanics and provider-specific configurations."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "Declarative Prompt Engineering with Prompt Declaration Language"
+    tags:
+      - "parsing_algorithms"
+      - "prompt_orchestration"
+    added: "2026-03-03"
+    evidence: "Segmentation-specialized models excel at boundary detection while larger reasoning models handle semantic disambiguation. The division of labor optimizes both cost and accuracy across the pipeline."
+    context: "When building production parsing pipelines where cost efficiency and accuracy must be jointly optimized across the segmentation and relation classification subtasks."
+    confidence: "strong"
+    derived_from:
+      - "pr_008"
+
+  - id: "bp_004"
+    entry_type: "best_practice"
+    title: "Declarative Prompt Orchestration via PDL for Parsing"
+    description: "Use IBM's Prompt Declaration Language (PDL), a declarative YAML-based framework, to orchestrate the iterative multi-turn prompting required for bottom-up parsing. PDL elevates the prompt to a first-class citizen, managing repeat-until loops (terminating when queue is empty and stack contains one root node), explicit variable bindings via Jinja2 expressions, conditional branching for relation labeling on Reduce actions, and deterministic code-block state updates for graph merges."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "Declarative Prompt Engineering with Prompt Declaration Language"
+      - document: "PDL: A Declarative Prompt Programming Language"
+        section: "Architecture"
+    tags:
+      - "prompt_orchestration"
+      - "parsing_algorithms"
+    added: "2026-03-03"
+    evidence: "Declarative prompt management enables scientific reproducibility, eliminates brittle interactions when models hallucinate formatting, and supports automated source-to-source optimization over gold-standard treebank subsets."
+    context: "When building reliable, reproducible discourse parsing pipelines that require complex iterative state management across multiple model invocations."
+    confidence: "strong"
+
+  - id: "bp_005"
+    entry_type: "best_practice"
+    title: "Flat Relational Adjacency Extraction for Schema Compliance"
+    description: "Instead of instructing the model to extract deeply nested recursive tree objects, constrain the prompt to output a flat list of isolated DiscourseNode objects (with node_id, is_leaf, text, start_token, end_token) and a separate list of RhetoricalEdge objects (with edge_id, parent_id, left_child_id, right_child_id, relation_type, nuclearity, signal_type). The deeply nested tree is subsequently reconstructed in local memory using deterministic graphing logic."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "Enforcing Structural Fidelity with Pydantic-AI and JSON Schema"
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "Defining the Discourse Tree JSON Schema"
+    tags:
+      - "schema_engineering"
+      - "tree_constraints"
+    added: "2026-03-03"
+    evidence: "Flat-list relational payloads bypass recursive $ref schema limitations in strict structured output modes (which explicitly ban recursive references), while perfectly preserving hierarchical data. Pydantic validation frameworks trivially accept and validate flat payloads."
+    context: "When extracting discourse trees using LLM structured output APIs that reject recursive JSON schema definitions."
+    confidence: "strong"
+    derived_from:
+      - "pr_006"
+
+  - id: "bp_006"
+    entry_type: "best_practice"
+    title: "Discourse-Aware Extractive Summarization via Tree Pruning"
+    description: "Leverage RST discourse trees as intrinsic filters for extractive summarization. Because satellite units inherently modify or support nuclear units, an extractive algorithm can deterministically traverse the computed tree, strategically pruning leaf-node satellites (background, minor elaborations, parenthetical interpretations) while rigorously retaining root nuclei. This preserves the core communicative intent without requiring computationally expensive neural attention over the entire document."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "Analytical Benefits and Real-World Applications"
+    tags:
+      - "summarization"
+      - "nuclearity"
+    added: "2026-03-03"
+    evidence: "Structural pruning guarantees that resulting summaries preserve primary assertions of the original text. For abstractive summarization of long documents, integrating structural awareness via parameter-efficient fine-tuning (RST-LoRA) surpasses previous state-of-the-art methods by incorporating the type and uncertainty of rhetorical relations into the model's loss functions."
+    context: "When building extractive or abstractive summarization systems where preserving the author's core communicative intent is more important than surface-level coverage."
+    confidence: "strong"
+    derived_from:
+      - "pr_002"
+
+  - id: "bp_007"
+    entry_type: "best_practice"
+    title: "Discourse-Weighted Recursive Sentiment Analysis"
+    description: "Resolve sentiment analysis failures in nuanced argumentative structures by recursively propagating sentiment up the RST discourse tree. A negative sentiment localized within a concession satellite is structurally subordinated to the positive nucleus it attaches to, preventing incorrect aggregation of negative lexical weight. Tree-recursive neural models utilizing discourse features achieve highly competitive coherence and sentiment classification accuracy with significantly fewer parameters than massive sequential transformers."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "Analytical Benefits and Real-World Applications"
+    tags:
+      - "sentiment_analysis"
+      - "nuclearity"
+    added: "2026-03-03"
+    evidence: "Tree-recursive neural models using RST features achieve competitive accuracy while requiring significantly fewer parameters than sequential transformers, correctly handling counter-arguments and concessions that mislead flat sequential models."
+    context: "When performing sentiment analysis or opinion mining on documents with complex argumentative structures containing concessions, counter-arguments, or nested opinions."
+    confidence: "strong"
+    derived_from:
+      - "pr_002"
+
+  - id: "bp_008"
+    entry_type: "best_practice"
+    title: "Application-Neutral Discourse Features for Authorship and Deception Detection"
+    description: "Use topological features of discourse trees (specific frequencies, depths, and relational preferences) as application-neutral indicators for authorship identification and deception detection. These structural patterns act as cognitive fingerprints of how an author structures arguments, and perform comparably to classic highly-engineered application-specific features."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "Analytical Benefits and Real-World Applications"
+      - document: "RST-Style Discourse Parsing and Its Applications in Discourse Analysis"
+        section: "Applications"
+    tags:
+      - "authorship_detection"
+      - "evaluation"
+    added: "2026-03-03"
+    evidence: "Application-neutral features derived strictly from extracted discourse relations perform comparably to classic, highly engineered application-specific features in identifying deceptive text or authenticating authorship, providing strong evidence that structural parsing captures fundamental cognitive patterns underlying language production."
+    context: "When performing forensic text analysis, authorship attribution, or automated deception detection without engineering domain-specific feature sets."
+    confidence: "strong"
+
+  - id: "bp_009"
+    entry_type: "best_practice"
+    title: "Progressive Chunk-Aware Extraction for Long Documents"
+    description: "Evaluate documents chunk by chunk rather than in a single monolithic pass. The model identifies localized subtrees within individual paragraphs, validates them, and stores them. A secondary pass then builds the macro-tree by exclusively evaluating and linking the root nodes of previously established local subtrees. This avoids context window degradation, token limit truncation, and structural hallucination."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "Enforcing Structural Fidelity with Pydantic-AI and JSON Schema"
+    tags:
+      - "parsing_algorithms"
+      - "schema_engineering"
+    added: "2026-03-03"
+    evidence: "Single-pass extraction of massive documents leads to severe context window degradation and structural hallucination. Two-pass chunk-aware extraction with dependency injection preserves accuracy across document length."
+    context: "When parsing documents that exceed single-context-window capacity or where structural hallucination risk increases with document length."
+    confidence: "strong"
+    derived_from:
+      - "pr_006"
+
+  - id: "bp_010"
+    entry_type: "best_practice"
+    title: "Automated Prompt Optimization over Gold-Standard Treebanks"
+    description: "Treat the prompting strategy itself as a hyperparameter optimization space. Run automated optimizers (e.g., AutoPDL) over gold-standard annotated treebank subsets to automatically discover optimal few-shot examples, reorder instructional constraints, and tune physical parameters. This shifts prompt engineering from ad-hoc manual phrasing to systematic software engineering, yielding significant accuracy gains."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "Declarative Prompt Engineering with Prompt Declaration Language"
+      - document: "IBM/prompt-declaration-language"
+        section: "Optimization"
+    tags:
+      - "prompt_orchestration"
+      - "evaluation"
+    added: "2026-03-03"
+    evidence: "Automated source-to-source optimization of PDL prompt trees discovers prompt configurations that significantly outperform manually engineered prompts on gold-standard discourse treebank benchmarks."
+    context: "When a gold-standard annotated treebank subset is available for optimization and the parsing system uses a declarative prompt framework."
+    confidence: "moderate"
+
+  # ─────────────────────────────────────────────
+  # ANTI-PATTERNS (ap_001 – ap_005)
+  # ─────────────────────────────────────────────
+  - id: "ap_001"
+    entry_type: "anti_pattern"
+    title: "Over-Reliance on Explicit Connectives"
+    description: "Configuring a parser to detect relations only when explicit markers like 'because', 'however', or 'therefore' are present, ignoring implicit semantic, syntactic, morphological, and graphical signals."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "The Complex Taxonomy of Discourse Signals and Entity Markers"
+      - document: "RST Signalling Corpus"
+        section: "Signal Distribution"
+    tags:
+      - "discourse_signals"
+      - "evaluation"
+    added: "2026-03-03"
+    consequences: "The parser will miss the vast majority of relational propositions. Subordinating conjunctions, coordinating conjunctions, and adverbial connectives explicitly signal only 8.5–22% of all discourse relations in natural text. The system will produce severely incomplete and fragmented discourse trees."
+    instead: "Incorporate extraction pipelines for all five signal typologies: semantic signals (lexical chains, synonymy, meronymy, coreference), syntactic signals (parallel constructions, clause mood, participial clauses), morphological signals (tense shifts, personal references), graphical signals (punctuation, paragraph boundaries), and traditional discourse markers."
+    violates:
+      - "pr_004"
+      - "pr_007"
+
+  - id: "ap_002"
+    entry_type: "anti_pattern"
+    title: "Single-Pass Monolithic Document Parsing"
+    description: "Attempting to force a model to evaluate and output the complete topological graph of a massive document in a single generation pass without chunking or progressive extraction."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "Enforcing Structural Fidelity with Pydantic-AI and JSON Schema"
+    tags:
+      - "parsing_algorithms"
+      - "schema_engineering"
+    added: "2026-03-03"
+    consequences: "Leads to severe context window degradation, token limit truncation, and structural hallucination. The model loses track of distant node relationships and produces trees with broken, circular, or missing edges."
+    instead: "Use progressive chunk-aware extraction: parse localized subtrees within individual paragraphs first, validate and store them, then build the macro-tree by linking root nodes of established local subtrees in a secondary pass."
+    violates:
+      - "pr_006"
+
+  - id: "ap_003"
+    entry_type: "anti_pattern"
+    title: "Imperative Prompt Wrapping for Recursive Parsing Workflows"
+    description: "Embedding multi-turn discourse parsing prompts deeply within imperative languages (Python, TypeScript) using custom state-management logic, rather than using declarative prompt orchestration frameworks."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "Declarative Prompt Engineering with Prompt Declaration Language"
+      - document: "PDL: A Declarative Prompt Programming Language"
+        section: "Motivation"
+    tags:
+      - "prompt_orchestration"
+    added: "2026-03-03"
+    consequences: "Obfuscates the prompt architecture, drastically limits scientific reproducibility, and creates highly brittle interactions when models hallucinate formatting or fail to comply with expected syntax. Makes automated prompt optimization impossible."
+    instead: "Use declarative, data-oriented prompt frameworks such as IBM's PDL (YAML-based) that elevate prompts to first-class citizens, provide native repeat-until loops, variable bindings, conditional branching, and support automated source-to-source optimization."
+
+  - id: "ap_004"
+    entry_type: "anti_pattern"
+    title: "Ignoring Entity-Discourse Marker Distinction in Parsing"
+    description: "Treating all markers uniformly without distinguishing between discourse markers (which dictate structural relational edges) and entity markers (which bound specific named entities, domain nomenclature, or actors within the text)."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "The Complex Taxonomy of Discourse Signals and Entity Markers"
+    tags:
+      - "entity_markers"
+      - "discourse_signals"
+    added: "2026-03-03"
+    consequences: "The parser conflates structural transitions with entity references, producing incorrect tree topologies. Coreference resolution across distant tree branches fails, and elaboration relations driven by meronymic entity links are missed entirely."
+    instead: "Integrate both marker types in parallel: use entity markers for coreference resolution across distant branches, and discourse markers for constructing the hierarchical skeleton. When a newly introduced entity is a meronym of a preceding entity, use that entity relationship as a semantic discourse signal."
+    violates:
+      - "pr_005"
+
+  - id: "ap_005"
+    entry_type: "anti_pattern"
+    title: "Recursive JSON Schema for Discourse Tree Extraction"
+    description: "Attempting to force an LLM to output a deeply nested, recursive discourse tree using recursive $ref schema references in structured output APIs."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "Enforcing Structural Fidelity with Pydantic-AI and JSON Schema"
+    tags:
+      - "schema_engineering"
+      - "tree_constraints"
+    added: "2026-03-03"
+    consequences: "Strict structured output modes explicitly ban recursive references in their underlying JSON schema engines. The strict validation mechanism outright rejects the payload. These modes also frequently prohibit optional fields, numerical boundary constraints, and unconstrained dictionaries, severely limiting semantic expressivity."
+    instead: "Use Flat Relational Adjacency Extraction: output a flat list of DiscourseNode objects and a separate list of RhetoricalEdge objects with parent_id and child_id pointers. Reconstruct the deeply nested tree in local memory using deterministic graphing logic."
+    violates:
+      - "pr_006"
+
+  # ─────────────────────────────────────────────
+  # BEST PRACTICES (bp_011 – bp_012) — Benchmarking & Framework Selection
+  # ─────────────────────────────────────────────
+  - id: "bp_011"
+    entry_type: "best_practice"
+    title: "Coarse-Grained Relation Mapping for Computational Evaluation"
+    description: "Map the 56 fine-grained rhetorical relations from standard inventories (RST-DT) down to 18 coarse-grained classes (Elaboration, Contrast, Attribution, Cause, etc.) for computational evaluation and cross-system benchmarking. Use fine-grained relations for detailed analytical output but evaluate parser performance on the coarse-grained taxonomy to enable meaningful comparison across systems and datasets."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "The Complex Taxonomy of Discourse Signals and Entity Markers"
+    tags:
+      - "evaluation"
+      - "comparative_frameworks"
+    added: "2026-03-03"
+    evidence: "Standard benchmarking across DISRPT shared tasks uses coarse-grained relation classes. Highest-performing systems achieve ~71% accuracy for complex relation classification and F1 scores exceeding 91 for raw segmentation on treebanked data."
+    context: "When evaluating or benchmarking discourse parsers against standard treebanks or comparing across different parsing systems."
+    confidence: "strong"
+
+  - id: "bp_012"
+    entry_type: "best_practice"
+    title: "Schema Reinforcement Learning for Structural Compliance"
+    description: "Combine reinforcement learning with fine-grained schema validators during the model training phase to help models inherently respect structural boundaries of discourse schemas. This reduces reliance on API-side constraints by training models to produce structurally valid outputs without strict logit-biasing modes."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "Enforcing Structural Fidelity with Pydantic-AI and JSON Schema"
+      - document: "Learning to Generate Structured Output with Schema Reinforcement Learning"
+        section: "Methodology"
+    tags:
+      - "schema_engineering"
+      - "parsing_algorithms"
+    added: "2026-03-03"
+    evidence: "Models trained with schema RL exhibit significantly improved structural compliance over pure prompt-based constraint methods, reducing retry cycles and improving overall pipeline throughput."
+    context: "When developing custom fine-tuned models for discourse parsing where structured output compliance is a persistent bottleneck."
+    confidence: "emerging"

@@ -1,0 +1,624 @@
+_meta:
+  id: accessibility_entities
+  purpose: entity
+  version: 1.14.0
+  last_updated: '2026-03-09'
+  description: NuExtract entity definitions for text-based accessibility issue detection.
+  domain: visual
+  domain_type: cross_cutting
+  parent_config: accessibility_standards.yaml
+  corpus_sources:
+  - Corpus/Research/Research - The Cognitive Interface - Operationalizing UxD for Documents and Reports.md
+  - 'Corpus/Research/The Unseen Structure: A Technical Deep-Dive into Narrative, Visualization, and Accessibility.md'
+  - 'Corpus/Research/Applying Mayer''s Principles & Contemporary Theory: A Practical Checklist for Course Authors and AI Validators.md'
+  - Corpus/Research/Research - Narrative Visualization, Sketchnoting, Accessibility.md
+  - Corpus/Research/Research - Visual Communication and Storytelling.md
+  - Corpus/Research/Research - visualisation_techniques_corporate_learning.md
+  - Corpus/Research/slide_design_research_monograph_part_4.md
+  - Corpus/Research/Visual Best Practices for Corporate Learning Videos.md
+  - Corpus/Research/Research - Storyboard Best Practices.md
+entity_types:
+  color_only_indicator:
+    label: COLOR_ONLY
+    entity_kind: accessibility_violation
+    family: wcag_violations
+    field_description: Color-only encoding like red means required green for success color-coded status without label accessibility
+      issue WCAG violation
+    description: Information conveyed by color alone (WCAG 1.4.1 violation)
+    examples:
+    - red fields are required
+    - green indicates success
+    - color-coded by status
+    - red for errors, yellow for warnings
+    - blue links
+    - see the green line
+    - orange section
+    - highlighted in yellow
+    - the red bars represent deficits
+    - use the green category
+    confidence_threshold: 0.7
+    indicators:
+    - color adjectives without non-color cues (red, green, blue, yellow)
+    - phrases like 'red means', 'green indicates'
+    - '''color-coded'', ''highlighted in [color]'''
+    - '''see the [color] section/line/bar'''
+    wcag_criterion: 1.4.1 Use of Color
+    severity: Level A
+    impact: Users with achromatopsia (color blindness) cannot distinguish information
+    remediation:
+    - Add icons, patterns, or text labels in addition to color
+    - Use different dash patterns (solid/dotted) for chart series
+    - Add symbols inside colored indicators (✓, ✗, ⚠)
+    - Underline links within body text
+    - Apply Okabe & Ito (2008) or Wong (2011) colorblind-safe palettes
+    relates_to:
+    - target: accessibility_dimension
+      relation: triggers
+      weight: required
+      description: "Color-only violations trigger accessibility dimension scoring deductions per WCAG 1.4.1 Level A compliance requirements"
+      target_file: scoring_entities
+    - target: chart_type
+      relation: limits
+      weight: expected
+      description: "Color-coded chart series without non-color differentiators like dash patterns or symbols fail accessibility for colorblind users"
+      target_file: visual_elements_entities
+    - target: accessibility_feature
+      relation: contrasts_with
+      weight: expected
+      description: "Color-only encoding is the inverse of proper accessibility features; UxD mandates multi-channel redundancy for navigation markers"
+      target_file: visual_elements_entities
+    - target: extraneous_load_marker
+      relation: triggers
+      weight: expected
+      description: "Color-only encoding generates extraneous cognitive load as users must decode ambiguous color signals without redundant textual cues"
+      target_file: cognitive_load_entities
+    - target: design_principle
+      relation: rebuts
+      weight: expected
+      description: "Color-only encoding rebuts inclusive design principles; Gestalt Law of Similarity requires consistent redundant non-color affordances"
+      target_file: visual_elements_entities
+    - target: low_contrast_text
+      relation: bridges
+      weight: optional
+      description: "Color-only encoding and low contrast both stem from visual-channel-only design requiring semantic text layer separation"
+    - target: color_reference
+      relation: specialises
+      weight: optional
+      description: "Color-only indicator is a specific accessibility-violation subset of general color usage in visual design per WCAG 1.4.1"
+      target_file: visual_elements_entities
+    - target: accessibility_dimension
+      relation: supports
+      weight: required
+      description: Color-only indicators are a primary factor in scoring accessibility dimension compliance per Visual Communication
+        and Storytelling
+      target_file: scoring_entities
+    parent_entity: null
+  missing_alt_indicator:
+    label: MISSING_ALT
+    entity_kind: accessibility_violation
+    family: wcag_violations
+    field_description: Image without description like see figure shown in image refer to diagram visual without explanation
+      screen reader inaccessible
+    description: Visual content without text alternative (WCAG 1.1.1 violation)
+    examples:
+    - see image
+    - shown in figure
+    - refer to diagram
+    - as illustrated
+    - see chart
+    - view the graphic
+    - look at the visualization
+    - screenshot shows
+    - image depicts
+    - the infographic above
+    - see the visual
+    confidence_threshold: 0.65
+    indicators:
+    - deictic references without explanation ('see image', 'shown in')
+    - '''refer to figure/diagram/chart'' without description'
+    - '''as illustrated'' without alt text equivalent'
+    - bare image references without content description
+    wcag_criterion: 1.1.1 Non-text Content
+    severity: Level A
+    impact: Screen reader users cannot access visual information
+    remediation:
+    - Add alt text describing intent and outcome, not just title
+    - Provide text equivalent of chart data (table or list)
+    - Describe what the image shows and why it matters
+    - Use aria-label or aria-describedby for complex visualizations
+    relates_to:
+    - target: accessibility_dimension
+      relation: triggers
+      weight: required
+      description: "Missing alt text triggers highest-severity accessibility scoring deduction per WCAG 1.1.1 Non-text Content Level A failure"
+      target_file: scoring_entities
+    - target: image_asset_type
+      relation: limits
+      weight: expected
+      description: "Missing alt text on images violates Dual Coding Theory; all image assets require verbal channel equivalents per multimedia principle"
+      target_file: media_entities
+    - target: chart_type
+      relation: limits
+      weight: expected
+      description: "Static data visualisations without extended descriptions via aria-describedby violate WCAG 1.1.1 Non-text Content requirements"
+      target_file: visual_elements_entities
+    - target: baked_text_in_image
+      relation: bridges
+      weight: expected
+      description: "Both missing alt and baked text render content invisible to assistive technology; dual-structure pattern resolves both violations"
+    - target: accessibility_feature
+      relation: contrasts_with
+      weight: expected
+      description: "Missing alt is the antithesis of accessible architecture; dual-structure pattern requires semantic shadow structures for all visuals"
+      target_file: visual_elements_entities
+    - target: extraneous_load_marker
+      relation: triggers
+      weight: expected
+      description: "Missing alt text forces split-attention effect as readers search for contextual meaning of undescribed visuals, generating extraneous load"
+      target_file: cognitive_load_entities
+    - target: storyboard_element
+      relation: limits
+      weight: optional
+      description: "Storyboard visuals with text baked into canvas or WebGL are invisible to screen readers without separate semantic text layer"
+      target_file: media_entities
+    - target: visual_element
+      relation: limits
+      weight: expected
+      description: "Missing alt text limits visual element effectiveness — images, diagrams, and charts without text alternatives exclude screen reader users and break dual coding per Visualisation Techniques research"
+      target_file: visual_elements_entities
+    - target: mayer_essential_principle
+      relation: limits
+      weight: expected
+      description: "Missing alt text prevents screen reader access to multimedia content required by modality principle per Applying Mayer's Principles Practical Checklist"
+      target_file: cognitive_load_entities
+    parent_entity: null
+  low_contrast_text:
+    label: CONTRAST_VIOLATION
+    entity_kind: accessibility_violation
+    family: wcag_violations
+    field_description: Low contrast text light on light hard to read gray on white subtle contrast insufficient contrast ratio
+      fails WCAG
+    description: Text that fails minimum contrast ratio requirements (WCAG 1.4.3 violation)
+    examples:
+    - light gray text on white background
+    - subtle contrast for secondary text
+    - hard to read against the background
+    - gray text on light gray
+    - white text on pale yellow
+    - faint watermark text
+    - barely visible caption
+    confidence_threshold: 0.68
+    indicators:
+    - '''light'' + color adjective on ''light'' background'
+    - '''hard to read'', ''barely visible'', ''faint'''
+    - '''subtle'', ''soft'', ''muted'' text'
+    - contrast ratio explicitly stated below 4.5:1
+    wcag_criterion: 1.4.3 Contrast (Minimum)
+    severity: Level AA
+    contrast_thresholds:
+      normal_text: 4.5:1 minimum (WCAG 2.2 AA)
+      large_text: 3:1 minimum (18pt+ or 14pt bold)
+      graphical_objects: 3:1 minimum
+    impact: Users with low vision, older readers, and high-glare environments cannot read
+    remediation:
+    - Increase contrast to 4.5:1 for body text (14pt and under)
+    - Minimum 3:1 for text 18pt or larger
+    - Use contrast checker before finalising slide palette
+    relates_to:
+    - target: accessibility_dimension
+      relation: triggers
+      weight: required
+      description: "Contrast violations trigger accessibility dimension scoring deductions per WCAG 1.4.3 Contrast Minimum Level AA requirement"
+      target_file: scoring_entities
+    - target: typography_element
+      relation: limits
+      weight: required
+      description: "Low contrast undermines the typographic hierarchy that enables scanning; visual hierarchy requires sufficient contrast differentiation"
+      target_file: visual_elements_entities
+    - target: extraneous_load_marker
+      relation: triggers
+      weight: expected
+      description: "Low contrast forces repeated fixations and regressive saccades as the eye struggles to decode text, increasing extraneous cognitive load"
+      target_file: cognitive_load_entities
+    - target: design_principle
+      relation: rebuts
+      weight: expected
+      description: "Low contrast text violates Figure/Ground Gestalt principle; adequate contrast is required for separating content from background"
+      target_file: visual_elements_entities
+    - target: readability_flag
+      relation: supports
+      weight: expected
+      description: "Low contrast text compounds readability issues; eye-tracking research shows regression rate spikes when visual clarity fails"
+      target_file: writing_entities
+    - target: text_size_violation
+      relation: bridges
+      weight: optional
+      description: "Small text compounds contrast failures since smaller glyphs require higher contrast ratios; both are WCAG perceivability barriers"
+    - target: color_only_indicator
+      relation: bridges
+      weight: optional
+      description: "Low contrast and color-only encoding are co-occurring visual accessibility failures requiring non-visual semantic alternatives"
+    - target: accessibility_dimension
+      relation: supports
+      weight: required
+      description: WCAG SC 1.4.3 mandates minimum 4.5:1 contrast ratio for normal text directly scoring accessibility per
+        Visual Communication and Storytelling
+      target_file: scoring_entities
+    - target: cognitive_debt_marker
+      relation: enables
+      weight: expected
+      description: "Low contrast text creates cognitive debt by forcing repeated fixations and visual fatigue as readers struggle to decode poorly differentiated text from background per slide design research monograph part 4"
+      target_file: visual_elements_entities
+    - target: color_reference
+      relation: supported_by
+      weight: expected
+      description: "Low-contrast text detection is supported by color reference standards that define minimum contrast ratios for legible on-screen text per Visual Best Practices for Corporate Learning Videos"
+      target_file: visual_elements_entities
+    - target: design_principle
+      relation: limits
+      weight: expected
+      description: "Insufficient contrast violates WCAG 2.2 AA accessibility standards per Applying Mayer's Principles Practical Checklist"
+      target_file: visual_elements_entities
+    parent_entity: null
+  text_size_violation:
+    label: TEXT_SIZE_ISSUE
+    entity_kind: accessibility_violation
+    family: wcag_violations
+    field_description: Text size too small below minimum threshold tiny font small print hard to read at distance projection
+      issue
+    description: Font size below minimum legibility threshold for the delivery context
+    examples:
+    - small print disclaimer
+    - 8pt footnote
+    - very small text in the corner
+    - fine print at the bottom
+    - text too small to read from the back
+    - tiny label on the chart axis
+    - 6pt caption
+    confidence_threshold: 0.65
+    indicators:
+    - explicit point size below 14pt mentioned
+    - '''small print'', ''fine print'', ''tiny text'''
+    - '''hard to read from the back'', ''can''t see it'''
+    - footnote, disclaimer, caption without size specification
+    minimum_thresholds:
+      body_text_digital: 18pt (WCAG 2.2 large text threshold)
+      body_text_live: 24pt minimum for standard room
+      body_text_ballroom: 28pt minimum (Ballroom override)
+      caption_minimum: 16pt
+    severity: Level AA
+    impact: Readers in the back of the room or with low vision cannot read the content
+    remediation:
+    - Set minimum body text 24pt for standard live delivery
+    - Set minimum 28pt for ballroom/auditorium contexts
+    - Move non-essential small text to handouts
+    relates_to:
+    - target: accessibility_dimension
+      relation: triggers
+      weight: required
+      description: "Font sizes below minimum thresholds trigger accessibility scoring penalties per WCAG perceivability and legibility guidelines"
+      target_file: scoring_entities
+    - target: typography_element
+      relation: limits
+      weight: required
+      description: "Text size violations break the typographic hierarchy system; UxD prescribes minimum sizes by delivery context for legibility"
+      target_file: visual_elements_entities
+    - target: extraneous_load_marker
+      relation: triggers
+      weight: expected
+      description: "Undersized text increases extraneous load by forcing effortful decoding; small text reduces the foveal visual span per fixation"
+      target_file: cognitive_load_entities
+    - target: cognitive_debt_marker
+      relation: enables
+      weight: expected
+      description: "Text size violations create cognitive debt by forcing physical strain, reducing working memory available for germane processing"
+      target_file: visual_elements_entities
+    - target: low_contrast_text
+      relation: bridges
+      weight: optional
+      description: "Undersized text at low contrast compounds legibility barriers exponentially; both are WCAG perceivability violations"
+    - target: layout_pattern
+      relation: limits
+      weight: optional
+      description: "Text size violations result from cramming content into dense layouts like the God Table anti-pattern with undersized fonts"
+      target_file: visual_elements_entities
+    parent_entity: null
+  animation_only_carrier:
+    label: ANIMATION_ONLY_CARRIER
+    entity_kind: accessibility_violation
+    family: wcag_violations
+    field_description: Content accessible only through animation essential information locked behind animation requires click
+      appear build sequence
+    description: Essential information that can only be accessed via animation — inaccessible to static reading (anti-pattern)
+    examples:
+    - the key point appears on click
+    - final conclusion reveals after animation completes
+    - this only shows after the build sequence
+    - the recommendation is hidden until the last click
+    - reveals progressively through animations
+    confidence_threshold: 0.7
+    indicators:
+    - '''appears on click'', ''reveals after'', ''hidden until'''
+    - '''animation sequence'', ''build order'' for essential content'
+    - '''only visible if you click through'''
+    severity: Critical anti-pattern
+    impact: PDF exports, printed handouts, and static viewers miss essential information; screen reader users cannot access
+      animation-triggered content
+    remediation:
+    - Ensure all essential information is visible in static state
+    - Use animation for reinforcement only, never as sole delivery mechanism
+    - Provide slide notes with full content when animation is used
+    relates_to:
+    - target: accessibility_dimension
+      relation: triggers
+      weight: required
+      description: "Animation-only content triggers critical accessibility scoring penalties as the highest-severity anti-pattern blocking essential content access"
+      target_file: scoring_entities
+    - target: animation_type
+      relation: limits
+      weight: required
+      description: "Animation-only carriers violate progressive disclosure for static documents; content must be accessible at all layers without interaction"
+      target_file: visual_elements_entities
+    - target: delivery_modality
+      relation: limits
+      weight: expected
+      description: "Animation-only content fails across delivery modalities including PDF exports, printed handouts, and static viewers"
+      target_file: delivery_entities
+    - target: progressive_disclosure_marker
+      relation: contrasts_with
+      weight: expected
+      description: "Animation-only carriers misuse progressive disclosure; proper layering reveals information through structural hierarchy not animation gates"
+      target_file: cognitive_load_entities
+    - target: accessibility_feature
+      relation: rebuts
+      weight: required
+      description: "Dual-structure and aria-live patterns exist because animation-only delivery directly violates accessible narrative architecture"
+      target_file: visual_elements_entities
+    - target: missing_alt_indicator
+      relation: bridges
+      weight: expected
+      description: "Animation-only content and missing alt text both lock essential information behind visual-only channels inaccessible to AT users"
+    - target: extraneous_load_marker
+      relation: triggers
+      weight: expected
+      description: "Animation-only content generates extraneous load by hiding essential information behind temporal sequences rather than structural affordances"
+      target_file: cognitive_load_entities
+    - target: cognitive_debt_marker
+      relation: enables
+      weight: expected
+      description: "Animation-only content delivery creates cognitive debt by forcing audiences to reconstruct temporal sequences from memory rather than processing visible static information per slide design research monograph part 4"
+      target_file: visual_elements_entities
+    - target: animation_type
+      relation: supported_by
+      weight: expected
+      description: "Animation-only information carriers (flow particles showing rate, ghosting showing comparison, simulation playback showing outcomes) require non-visual counterparts like ARIA live regions and sonification per Narrative Visualization research"
+      target_file: visual_elements_entities
+    parent_entity: null
+  baked_text_in_image:
+    label: BAKED_TEXT
+    entity_kind: accessibility_violation
+    family: wcag_violations
+    field_description: Text embedded baked inside image photograph infographic screenshot OCR cannot extract screen reader
+      cannot read rasterised text
+    description: Text embedded within a raster image rather than as real selectable text (WCAG 1.4.5 violation)
+    examples:
+    - text embedded in the infographic
+    - labels baked into the screenshot
+    - annotations burned into the image
+    - text inside the JPEG
+    - the quote is part of the photograph
+    - title text rendered as image
+    - rasterised text block
+    confidence_threshold: 0.65
+    indicators:
+    - '''baked into'', ''burned into'', ''embedded in'' the image'
+    - '''rasterised text'', ''image-based text'''
+    - references to screenshots containing text without alt
+    - '''OCR required to extract'''
+    wcag_criterion: 1.4.5 Images of Text
+    severity: Level AA
+    impact: Screen readers, search indexing, copy-paste, reflow, and translation all fail; cognitive accessibility harmed
+    remediation:
+    - Replace with real text overlaid on image using CSS/slide text boxes
+    - Provide full text alternative in slide notes
+    - Use vector graphics with real text layers for diagrams
+    relates_to:
+    - target: accessibility_dimension
+      relation: triggers
+      weight: required
+      description: "Baked text triggers accessibility dimension scoring deductions per WCAG 1.4.5 Images of Text Level AA violation"
+      target_file: scoring_entities
+    - target: image_asset_type
+      relation: limits
+      weight: expected
+      description: "Baked text prevents Dual Coding by collapsing verbal and visual channels into a single non-extractable visual stream"
+      target_file: media_entities
+    - target: missing_alt_indicator
+      relation: bridges
+      weight: expected
+      description: "Baked text is structurally identical to missing alt; rasterised text is invisible to screen readers, search indexing, and translation"
+    - target: accessibility_feature
+      relation: rebuts
+      weight: required
+      description: "Dual-structure pattern mandates separating semantic text from visual layer; baked text directly violates this accessible architecture"
+      target_file: visual_elements_entities
+    - target: typography_element
+      relation: limits
+      weight: expected
+      description: "Baked text cannot participate in typographic hierarchy; rasterised text defeats visual hierarchy for scanning and Layer Cake patterns"
+      target_file: visual_elements_entities
+    - target: extraneous_load_marker
+      relation: triggers
+      weight: expected
+      description: "Baked text generates extraneous load by preventing text reflow, zoom, and contrast adjustment that readers need for cognitive load management"
+      target_file: cognitive_load_entities
+    - target: readability_flag
+      relation: triggers
+      weight: expected
+      description: "Baked text in images cannot be assessed by readability tools and evades the readability audit required by UxD compliance frameworks"
+      target_file: writing_entities
+    - target: accessibility_dimension
+      relation: supports
+      weight: expected
+      description: Text baked into images cannot be resized or read by screen readers impacting accessibility scoring per Visual
+        Communication and Storytelling
+      target_file: scoring_entities
+    - target: visual_element
+      relation: limits
+      weight: expected
+      description: "Baked text in images limits visual element effectiveness — rasterised text prevents reflow, zoom, and contrast adjustment that learners need per Visualisation Techniques research"
+      target_file: visual_elements_entities
+    - target: chart_type
+      relation: limits
+      weight: required
+      description: "Text baked into canvas/WebGL visualization layers (labels drawn as pixels rather than DOM text) makes chart text invisible to screen readers, violating the DOM Rule separation requirement per Narrative Visualization research"
+      target_file: visual_elements_entities
+    - target: storyboard_element
+      relation: limits
+      weight: optional
+      description: "On-screen text in storyboard frames must reserve accessibility zones to avoid baked-text violations — caption and interpreter spaces must be planned from the start per Research - Storyboard Best Practices"
+      target_file: media_entities
+    parent_entity: null
+text_based_indicators:
+  heading_structure_issues:
+    patterns:
+    - skipped heading levels (H1 to H3)
+    - multiple H1 elements
+    - headings used for styling only
+    wcag_criterion: 1.3.1 Info and Relationships
+    detection: structural analysis, not NuExtract
+  low_contrast_mentions:
+    patterns:
+    - light text on light background
+    - gray on white
+    - subtle contrast
+    - hard to read
+    wcag_criterion: 1.4.3 Contrast (Minimum)
+    detection: requires visual analysis (Stage 7.5)
+  keyboard_inaccessibility:
+    patterns:
+    - mouse-only interaction
+    - drag and drop required
+    - hover to reveal
+    wcag_criterion: 2.1.1 Keyboard
+    detection: interaction analysis, not text-based
+  focus_indicator_missing:
+    patterns:
+    - no visible focus state
+    - focus ring removed
+    - 'outline: none in CSS'
+    wcag_criterion: 2.4.7 Focus Visible
+    detection: CSS/interaction analysis
+integration:
+  visuallens_usage: 'VisualLens extracts COLOR_ONLY and MISSING_ALT entities from speaker notes
+
+    and slide text to flag accessibility issues mentioned in content:
+
+
+    1. Detect color-only encoding references in notes
+
+    2. Detect bare image references without descriptions
+
+    3. Detect animation-only carriers in delivery notes
+
+    4. Flag for review in critique generation
+
+    5. Combine with Stage 7.5 validator results for complete WCAG assessment
+
+    '
+  stage_7_5_validator: "Stage 7.5 (Accessibility Validator) performs comprehensive WCAG validation:\n\n1. Measure contrast\
+    \ ratios (text, graphical objects, UI components)\n   - Normal text: 4.5:1 minimum (WCAG 2.2 AA)\n   - Large text (18pt+):\
+    \ 3:1 minimum\n2. Detect color-only encoding in visuals (not just text mentions)\n3. Check heading hierarchy and structure\n\
+    4. Validate keyboard accessibility\n5. Assess screen reader compatibility\n6. Check minimum font sizes by venue context\
+    \ (standard: 24pt, ballroom: 28pt)\n\nThe validator uses accessibility_standards.yaml (reference layer) for\nWCAG requirements,\
+    \ remediation strategies, and scoring rubrics.\n"
+  example_extraction: "Speaker notes: \"The red fields on this form are required. See the chart\nfor details on regional performance.\"\
+    \n\nEntities extracted:\n- COLOR_ONLY: \"red fields are required\"\n  - WCAG 1.4.1 violation\n  - Remediation: Add asterisk\
+    \ (*) or \"Required\" label\n\n- MISSING_ALT: \"see the chart\"\n  - WCAG 1.1.1 violation\n  - Remediation: Describe chart\
+    \ data in notes or provide data table\n"
+  scoring_impact: 'Accessibility violations reduce visual lens score:
+
+    - COLOR_ONLY detected: -5 points per occurrence
+
+    - MISSING_ALT detected: -10 points per occurrence
+
+    - CONTRAST_VIOLATION detected: -8 points per occurrence
+
+    - TEXT_SIZE_ISSUE detected: -6 points per occurrence
+
+    - ANIMATION_ONLY_CARRIER detected: -12 points (critical anti-pattern)
+
+    - BAKED_TEXT detected: -7 points per occurrence
+
+    - Multiple violations compound negative impact
+
+    - WCAG AA compliance bonus (zero violations): +5 points
+
+    '
+reference_layer:
+  accessibility_standards_yaml: 'The full accessibility_standards.yaml file is NOT used for
+
+    NuExtract extraction. It provides reference layer content for Stage 7.5:
+
+
+    - wcag_contrast: Contrast ratio requirements (4.5:1, 3:1)
+
+    - colour_independence: Remediation strategies for color-only encoding
+
+    - dual_structure: Complex visualization accessibility patterns
+
+    - screen_reader_compatibility: Technical implementation guidelines
+
+    - colorblind_safe_palettes: Okabe & Ito (2008), Wong (2011) references
+
+
+    These are validation frameworks, not extractable entities.
+
+    '
+gliner_config:
+  model: gliner-large-v2
+  batch_size: 32
+  default_confidence_threshold: 0.7
+  context_window: 128
+  use_hybrid_extraction: true
+  entity_groups:
+    accessibility_violations:
+    - COLOR_ONLY_INDICATOR
+    - MISSING_ALT_INDICATOR
+    - CONTRAST_VIOLATION
+    - KEYBOARD_BARRIER
+    - MISSING_LABEL
+domain_keywords:
+  primary:
+  - accessible
+  - accessibility
+  - WCAG
+  - alt text
+  - color contrast
+  - screen reader
+  - aria
+  - label
+  - tabindex
+  - focus indicator
+  secondary:
+  - inclusive
+  - disability
+  - visual impairment
+  - cognitive accessibility
+  - keyboard navigation
+  - color blindness
+  - high contrast
+  - captions
+  - transcript
+  - reduced motion
+  - dyslexia
+quality_indicators:
+  violation_severity:
+    critical: Critical WCAG violation detected (e.g., COLOR_ONLY_INDICATOR, MISSING_ALT_INDICATOR) — blocks access for users
+      with disabilities
+    serious: Serious violation detected — significantly impairs usability; remediation required
+    moderate: Moderate violation detected — creates friction but does not block access
+    none: No accessibility violation entities detected — slide passes accessibility screening
+  coverage:
+    partial: Some accessibility indicators present but not all WCAG checkpoints covered
+    complete: Color, alt text, contrast, and keyboard accessibility entities all screened

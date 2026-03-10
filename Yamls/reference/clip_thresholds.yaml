@@ -1,0 +1,420 @@
+# CLIP Similarity Thresholds and Scoring Weights
+# Based on: CLIP semantic alignment research and multimodal coherence evaluation
+# Source: Visual-text similarity scoring for presentation analysis
+
+_meta:
+  id: clip_thresholds
+  title: "CLIP Thresholds"
+  description: "CLIP semantic similarity thresholds for visual-text alignment scoring, defining strong/medium/weak correspondence levels for multimodal content analysis."
+  domain: pedagogical
+  domain_type: workflow
+  purpose: reference
+  version: "1.3.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Visual Communication and Storytelling.md"
+    - "Corpus/Research/Visual Narrative Flow Pass.md"
+    - "Corpus/Research/The Unseen Structure: A Technical Deep-Dive into Narrative, Visualization, and Accessibility.md"
+
+  relationships:
+    - target: reference/siglip_thresholds.yaml
+      type: depends_on
+      description: "Both model threshold configs; CLIP and SigLIP thresholds are used in the same visual scoring pipeline"
+
+# CLIP Similarity Thresholds
+similarity_thresholds:
+  semantic_alignment:
+    strong:
+      min_similarity: 0.75
+      max_similarity: 1.0
+      interpretation: "Text and visual convey highly aligned semantic content"
+      examples:
+        - text: "Revenue increased 45% in Q3"
+          visual: "Bar chart showing Q3 revenue bar 45% taller"
+          similarity: 0.82
+        - text: "Customer testimonial: 'The platform transformed our operations'"
+          visual: "Photo of smiling customer with logo and quote overlay"
+          similarity: 0.78
+
+    medium:
+      min_similarity: 0.60
+      max_similarity: 0.74
+      interpretation: "Text and visual are moderately related but may lack specificity or exact correspondence"
+      examples:
+        - text: "Our platform improves efficiency"
+          visual: "Generic productivity icon or abstract diagram"
+          similarity: 0.68
+        - text: "Global expansion accelerating"
+          visual: "World map with regions highlighted (but no specific metrics)"
+          similarity: 0.65
+
+    low:
+      min_similarity: 0.45
+      max_similarity: 0.59
+      interpretation: "Text and visual are weakly related; may be topically similar but semantically misaligned"
+      examples:
+        - text: "Security is our top priority"
+          visual: "Generic technology stock photo (servers, data center)"
+          similarity: 0.52
+        - text: "We serve Fortune 500 companies"
+          visual: "Pie chart of revenue breakdown (not company logos)"
+          similarity: 0.48
+
+    misaligned:
+      min_similarity: 0.0
+      max_similarity: 0.44
+      interpretation: "Text and visual convey different or contradictory information"
+      examples:
+        - text: "Revenue growth accelerating"
+          visual: "Team photo at company event (no revenue data)"
+          similarity: 0.38
+        - text: "Fastest performance in industry"
+          visual: "Customer logo wall (no performance metrics)"
+          similarity: 0.35
+
+  redundancy_vs_complementarity:
+    highly_redundant:
+      min_similarity: 0.85
+      interpretation: "Visual and text convey nearly identical information; one is superfluous"
+      guidance: "Consider removing redundant element or adding unique information"
+      example:
+        text: "45% revenue growth"
+        visual: "Single number '45%' with up arrow"
+        similarity: 0.92
+
+    complementary_optimal:
+      min_similarity: 0.65
+      max_similarity: 0.80
+      interpretation: "Visual and text each contribute unique but aligned information"
+      guidance: "Optimal balance - text provides context, visual provides detail or vice versa"
+      example:
+        text: "Revenue grew across all segments"
+        visual: "Breakdown showing Enterprise +60%, SMB +30%, Startup +45%"
+        similarity: 0.72
+
+    complementary_weak:
+      min_similarity: 0.50
+      max_similarity: 0.64
+      interpretation: "Visual and text are related but connection requires inference"
+      guidance: "Strengthen alignment with more specific text or visual"
+      example:
+        text: "Our solution is scalable"
+        visual: "Generic cloud architecture diagram"
+        similarity: 0.58
+
+  content_specificity:
+    specific_match:
+      min_similarity: 0.80
+      interpretation: "Text references specific visual element with high precision"
+      examples:
+        - text: "The red bar shows Q3 performance exceeding targets by 20%"
+          visual: "Chart with red bar labeled Q3 at 120% of target line"
+          similarity: 0.87
+
+    general_match:
+      min_similarity: 0.60
+      max_similarity: 0.79
+      interpretation: "Text references visual in general terms"
+      examples:
+        - text: "This chart shows growth trends"
+          visual: "Line chart with upward trend"
+          similarity: 0.68
+
+    abstract_match:
+      min_similarity: 0.45
+      max_similarity: 0.59
+      interpretation: "Text and visual share abstract concepts but lack specificity"
+      examples:
+        - text: "Innovation drives success"
+          visual: "Light bulb icon or abstract innovation graphic"
+          similarity: 0.52
+
+# Scoring Weights for Composite Coherence Score
+scoring_weights:
+  semantic_alignment:
+    weight: 0.50
+    rationale: "Primary indicator of visual-text coherence"
+    calculation: "CLIP cosine similarity between text embedding and visual embedding"
+
+  reference_explicitness:
+    weight: 0.20
+    rationale: "Explicit references (Figure 1) improve clarity vs implicit (this)"
+    levels:
+      direct_labeled: 1.0  # "Figure 1 shows..."
+      indirect_specific: 0.7  # "The chart on the right..."
+      deictic_generic: 0.5  # "This shows..."
+      no_reference: 0.0  # Text doesn't mention visual at all
+
+  information_complementarity:
+    weight: 0.20
+    rationale: "Balance between redundancy and unique information contribution"
+    levels:
+      optimal_complement: 1.0  # Visual adds unique detail to text summary
+      moderate_complement: 0.7  # Some overlap, some unique
+      high_redundancy: 0.3  # Visual duplicates text
+      contradictory: 0.0  # Visual contradicts text
+
+  spatial_proximity:
+    weight: 0.10
+    rationale: "Physical closeness on slide aids cognitive processing"
+    calculation: "Distance between text block and visual element centroid"
+    levels:
+      adjacent: 1.0  # Text within 100px of visual
+      near: 0.7  # Text within 200px of visual
+      far: 0.4  # Text >200px from visual
+      separate_slide: 0.0  # Text and visual on different slides
+
+# Composite Coherence Formula
+composite_scoring:
+  formula: |
+    coherence_score = (
+      semantic_alignment_score * 0.50 +
+      reference_explicitness_score * 0.20 +
+      information_complementarity_score * 0.20 +
+      spatial_proximity_score * 0.10
+    )
+
+  thresholds:
+    excellent:
+      min_score: 0.80
+      interpretation: "Strong visual-text coherence; presentation is clear and effective"
+      guidance: "Maintain current approach"
+
+    good:
+      min_score: 0.65
+      max_score: 0.79
+      interpretation: "Moderate coherence; generally effective with minor improvements possible"
+      guidance: "Consider making text references more explicit or improving semantic alignment"
+
+    fair:
+      min_score: 0.50
+      max_score: 0.64
+      interpretation: "Weak coherence; audience may struggle to connect text and visual"
+      guidance: "Revise text to explicitly reference visual OR replace visual with more aligned content"
+
+    poor:
+      min_score: 0.0
+      max_score: 0.49
+      interpretation: "Misaligned or contradictory; significant coherence issues"
+      guidance: "Major revision needed - visual and text do not support each other"
+
+# Presentation-Specific Thresholds
+presentation_context:
+  executive_summary:
+    min_acceptable_coherence: 0.70
+    rationale: "Executive audiences expect high clarity and alignment"
+    common_patterns:
+      headline_metric_slide:
+        expected_similarity: 0.80
+        text_pattern: "X% growth achieved"
+        visual_pattern: "Large number with trend arrow/chart"
+
+  technical_deep_dive:
+    min_acceptable_coherence: 0.65
+    rationale: "Technical audiences tolerate more abstract visuals (architecture diagrams)"
+    common_patterns:
+      architecture_diagram:
+        expected_similarity: 0.65
+        text_pattern: "System components and data flows"
+        visual_pattern: "Boxes, arrows, technical diagram"
+
+  sales_pitch:
+    min_acceptable_coherence: 0.75
+    rationale: "Sales decks require strong visual impact and clear messaging"
+    common_patterns:
+      roi_proof_slide:
+        expected_similarity: 0.80
+        text_pattern: "Customer achieved X% ROI in Y months"
+        visual_pattern: "Chart showing ROI curve with customer logo"
+
+  training_materials:
+    min_acceptable_coherence: 0.70
+    rationale: "Learning requires explicit connections between concepts and visuals"
+    common_patterns:
+      process_flow:
+        expected_similarity: 0.75
+        text_pattern: "Step-by-step instructions with numbered stages"
+        visual_pattern: "Flowchart with matching numbered nodes"
+
+# Visual Element Type Adjustments
+visual_type_calibration:
+  chart_bar_line:
+    baseline_threshold: 0.65
+    rationale: "Quantitative visuals should strongly align with data-focused text"
+    adjustment: "+0.05"  # Expect higher similarity for data visuals
+
+  diagram_flowchart:
+    baseline_threshold: 0.60
+    rationale: "Process diagrams may be more abstract; moderate alignment acceptable"
+    adjustment: "0.00"  # Standard threshold
+
+  photograph_screenshot:
+    baseline_threshold: 0.55
+    rationale: "Photos often provide context rather than direct data; lower threshold acceptable"
+    adjustment: "-0.05"  # Slightly lower expectation
+
+  icon_illustration:
+    baseline_threshold: 0.50
+    rationale: "Icons are highly abstract; semantic alignment may be lower"
+    adjustment: "-0.10"  # Accept lower similarity for abstract visuals
+
+  table_matrix:
+    baseline_threshold: 0.70
+    rationale: "Tables convey structured data; should strongly align with text"
+    adjustment: "+0.10"  # Expect strong alignment
+
+# Anomaly Detection
+anomaly_flags:
+  text_without_visual:
+    condition: "Text references visual (contains 'chart', 'figure', 'diagram') but no visual present"
+    severity: "high"
+    recommendation: "Add referenced visual OR remove reference from text"
+
+  visual_without_text_reference:
+    condition: "Visual present on slide but no text references it (no 'this chart', 'as shown', etc.)"
+    severity: "medium"
+    recommendation: "Add text reference to visual OR remove unused visual"
+
+  contradictory_alignment:
+    condition: "CLIP similarity < 0.30 AND text explicitly references visual"
+    severity: "critical"
+    recommendation: "Visual and text convey conflicting information; major revision needed"
+    example:
+      text: "Revenue growth accelerating"
+      visual: "Chart showing revenue decline"
+      similarity: 0.22
+
+  redundant_duplication:
+    condition: "CLIP similarity > 0.90 AND both text and visual convey identical simple message"
+    severity: "low"
+    recommendation: "Remove redundant element; either show visual OR state text, not both"
+    example:
+      text: "45% growth"
+      visual: "Number '45%' in large font"
+      similarity: 0.95
+
+# CLIP Embedding Best Practices
+embedding_guidelines:
+  text_preprocessing:
+    - "Use complete sentences rather than fragments for better embeddings"
+    - "Include context (topic, domain) if text is ambiguous"
+    - "Combine slide title + bullet text for richer semantic content"
+
+  visual_preprocessing:
+    - "Ensure visual is high-resolution (min 224x224 for CLIP)"
+    - "Crop visual to exclude non-content areas (white space, borders)"
+    - "For charts, include axis labels and legends in crop"
+
+  embedding_computation:
+    - "Use same CLIP model version consistently (openai/clip-vit-large-patch14)"
+    - "Normalize embeddings before computing cosine similarity"
+    - "Cache embeddings to avoid redundant computation"
+
+  similarity_interpretation:
+    - "Cosine similarity ranges from -1 to 1; typical range for related content is 0.3-0.9"
+    - "Similarity > 0.5 indicates topical relation"
+    - "Similarity > 0.7 indicates strong semantic alignment"
+    - "Similarity > 0.85 may indicate redundancy"
+
+# Performance Optimization
+optimization:
+  batch_processing:
+    description: "Process multiple text-visual pairs in single CLIP forward pass"
+    batch_size: 32
+    speedup: "~10x faster than sequential processing"
+
+  caching:
+    visual_embeddings: "Cache visual embeddings (images rarely change between analyses)"
+    text_embeddings: "Cache text embeddings at slide level"
+    ttl: 86400  # 24 hours
+
+  similarity_matrix:
+    description: "Compute all-pairs similarity matrix for slides with multiple visuals"
+    use_case: "Identify which text segments align with which visual elements"
+    output: "M x N matrix where M = text segments, N = visual elements"
+
+# Validation and Quality Control
+quality_checks:
+  embedding_sanity:
+    - check: "Verify embedding dimensions match expected (768 for CLIP ViT-L/14)"
+    - check: "Verify embeddings are normalized (L2 norm ≈ 1.0)"
+    - check: "Spot-check similarity scores for known aligned/misaligned pairs"
+
+  threshold_calibration:
+    - check: "Validate thresholds on sample dataset with human annotations"
+    - check: "Adjust thresholds if false positive/negative rate exceeds 10%"
+    - check: "Re-calibrate quarterly as presentation styles evolve"
+
+  outlier_detection:
+    - check: "Flag slides with all similarities < 0.40 (potential layout or content issues)"
+    - check: "Flag slides with all similarities > 0.95 (potential redundancy)"
+    - check: "Review flagged slides manually for quality assessment"
+
+# Lens-Specific Scoring Thresholds (for MultimodalLens)
+lens_scoring_thresholds:
+  clip_linking:
+    meaningful_link_threshold: 0.6  # Minimum CLIP similarity to consider text-visual link meaningful
+    bidirectional_threshold: 0.8  # CLIP similarity indicating bidirectional link (caption mentions text concept)
+    proximity_fallback_score: 0.7  # Default heuristic score when CLIP unavailable (proximity-based linking)
+
+  coherence_calculation:
+    linked_ratio_weight: 0.6  # Weight for reference linking ratio in coherence score
+    mean_similarity_weight: 0.4  # Weight for average CLIP similarity in coherence score
+
+  flag_thresholds:
+    weak_linking_threshold: 0.5  # Warn if <50% of references have visual links
+    low_similarity_threshold: 0.7  # Warn if average CLIP similarity <0.7
+
+  finding_thresholds:
+    poor_coherence: 40.0  # <40% coherence = poor visual-text alignment
+    moderate_coherence: 70.0  # <70% coherence = moderate alignment
+    reference_linking_good: 0.7  # >70% of references should have visual links
+    mean_similarity_good: 0.6  # Average CLIP similarity should be >0.6
+
+# ==============================================================================
+# NARRATIVE VISUAL COHERENCE INTEGRATION
+# Sources: Visual Narrative Flow Pass.md; The Unseen Structure
+# ==============================================================================
+
+narrative_coherence_integration:
+  description: "CLIP threshold guidance mapped to narrative framework stages and visual storytelling standards"
+
+  soar_stage_visual_requirements:
+    situation:
+      recommended_visual_types: ["photograph_screenshot", "diagram_flowchart", "table_matrix"]
+      min_clip_similarity: 0.65
+      note: "Situation slides establish shared context — moderately aligned visuals (world maps, industry charts) are acceptable"
+    opportunity:
+      recommended_visual_types: ["chart_bar_line", "diagram_flowchart"]
+      min_clip_similarity: 0.70
+      note: "Opportunity slides must visually demonstrate the problem gap — quantitative visuals preferred"
+    action:
+      recommended_visual_types: ["diagram_flowchart", "icon_illustration", "chart_bar_line"]
+      min_clip_similarity: 0.65
+      note: "Action slides explain the solution mechanism — architecture diagrams expected; lower threshold acceptable"
+    result:
+      recommended_visual_types: ["chart_bar_line", "table_matrix", "photograph_screenshot"]
+      min_clip_similarity: 0.75
+      note: "Result slides must strongly align visual proof with text claim — customer logos + charts + testimonials"
+      case_study_requirement: "CLIP similarity for validated_outcome visuals must reach 0.75 minimum"
+
+  action_title_visual_alignment:
+    description: "When slide uses an action title (assertion headline), CLIP alignment between title text and primary visual must exceed minimum"
+    minimum_for_action_title: 0.70
+    rationale: "Action titles make a claim — the visual must provide the evidence for that claim (Minto Pyramid principle)"
+    penalty: "If action_title detected but CLIP similarity < 0.60: -5 points visual coherence score"
+
+  semiotic_arrangement_note:
+    description: "Kress & van Leeuwen's Given/New and Ideal/Real spatial grammar affects expected CLIP alignment by slide zone"
+    given_zone:
+      description: "Left side of slide — established/known information"
+      expected_similarity: "Slightly lower — Given zone content is contextual, not evidential"
+    new_zone:
+      description: "Right side of slide — new or challenging information"
+      expected_similarity: "Higher — New zone content must earn attention with specific, aligned visuals"
+    ideal_zone:
+      description: "Top of slide — aspirational, brand, headline content"
+      expected_similarity: "Lower acceptable — brand imagery is often abstract"
+    real_zone:
+      description: "Bottom of slide — grounded, practical, evidential content"
+      expected_similarity: "Higher required — Real zone must carry CLIP-aligned proof visuals"

@@ -1,0 +1,345 @@
+_meta:
+  id: visual_elements_taxonomy
+  title: "Visual Elements Taxonomy"
+  description: "Classification of visual element types within presentations and documents — data visuals, structural diagrams, photographic, iconographic, typographic, and decorative elements"
+  domain: visual
+  domain_type: classification
+  purpose: taxonomy
+  version: "1.3.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Visual Narrative Flow Pass.md"
+    - "Corpus/Research/The Unseen Structure: A Technical Deep-Dive into Narrative, Visualization, and Accessibility.md"
+  academic_sources:
+    - "Mayer (2009) - Multimedia Learning"
+    - "Few (2012) - Show Me the Numbers"
+    - "Cairo (2016) - The Truthful Art"
+    - "Tufte (2001) - The Visual Display of Quantitative Information"
+    - "Kress & van Leeuwen (1996) - Reading Images: The Grammar of Visual Design"
+
+  relationships:
+    - target: entities/visual_elements_entities.yaml
+      type: depends_on
+      description: "Visual element entity types for NER extraction"
+classification_dimensions:
+  - name: element_category
+    description: "Visual element category determining production approach and cognitive function"
+    values:
+      - data_visualisation
+      - structural_diagram
+      - photographic
+      - typographic
+      - decorative
+  - name: density_level
+    description: "Number of visual elements per slide relative to cognitive load thresholds"
+    values:
+      - minimal
+      - balanced
+      - dense
+      - overloaded
+  - name: spatial_arrangement
+    description: "Semiotic spatial arrangement principle applied (Kress & van Leeuwen)"
+    values:
+      - given_new_arrangement
+      - ideal_real_arrangement
+      - before_after_visual
+      - action_title_headline
+
+# ==============================================================================
+# TOP-LEVEL CATEGORIES
+# ==============================================================================
+
+categories:
+
+  # --------------------------------------------------------------------------
+  # DATA VISUALISATION
+  # Elements that encode quantitative or relational data
+  # --------------------------------------------------------------------------
+  data_visualisation:
+    label: "Data Visualisation"
+    function: "Encode and communicate quantitative or relational information visually"
+    cognitive_load_profile: medium_to_high
+    accessibility_requirements: [alt_text, data_table_alternative, colour_independent_encoding]
+
+    types:
+      bar_chart:
+        label: "Bar / Column Chart"
+        best_for: "Comparing discrete categories"
+        avoid_when: "More than 12 categories; time series with many points"
+        variants: [grouped_bar, stacked_bar, horizontal_bar]
+
+      line_chart:
+        label: "Line Chart"
+        best_for: "Showing trends over continuous time"
+        avoid_when: "Comparing categories; fewer than 4 data points"
+        variants: [single_line, multi_line, area_chart]
+
+      pie_chart:
+        label: "Pie / Donut Chart"
+        best_for: "Showing proportion of a whole (2-4 segments max)"
+        avoid_when: "More than 5 segments; comparing between multiple pies"
+        variants: [pie, donut, semi_donut]
+        caution: "Frequently misused — consider bar chart instead"
+
+      scatter_plot:
+        label: "Scatter Plot"
+        best_for: "Showing correlation between two variables"
+        avoid_when: "Fewer than 10 data points; audience unfamiliar with the format"
+        variants: [scatter, bubble_chart]
+
+      heat_map:
+        label: "Heat Map"
+        best_for: "Showing density, frequency, or intensity across a matrix"
+        avoid_when: "Colour-only encoding without pattern differentiation (accessibility risk)"
+        variants: [matrix_heat_map, geographic_heat_map]
+
+      data_table:
+        label: "Data Table"
+        best_for: "Precise lookup of values across multiple variables"
+        avoid_when: "When a chart would be clearer; audience needs trend not value"
+        variants: [simple_table, comparison_matrix]
+
+      stat_callout:
+        label: "Statistic Callout"
+        best_for: "Highlighting a single key metric with maximum impact"
+        avoid_when: "More than 3 stats on one slide (attention fragmentation)"
+        variants: [big_number, percentage_callout, delta_indicator]
+
+  # --------------------------------------------------------------------------
+  # STRUCTURAL DIAGRAMS
+  # Elements that show relationships, processes, or hierarchies
+  # --------------------------------------------------------------------------
+  structural_diagram:
+    label: "Structural Diagram"
+    function: "Show relationships, processes, hierarchies, or system architecture"
+    cognitive_load_profile: medium_to_high
+    accessibility_requirements: [alt_text, descriptive_caption, text_alternative_for_complex]
+
+    types:
+      flow_diagram:
+        label: "Flow Diagram"
+        best_for: "Showing a process or workflow with decision points"
+        avoid_when: "More than 8 steps (split across slides)"
+        variants: [linear_flow, swimlane, decision_tree_visual]
+
+      hierarchy_diagram:
+        label: "Hierarchy / Org Chart"
+        best_for: "Showing reporting relationships or nested categories"
+        avoid_when: "Deeply nested structures beyond 3 levels"
+        variants: [tree_diagram, org_chart, nested_boxes]
+
+      cycle_diagram:
+        label: "Cycle Diagram"
+        best_for: "Showing a repeating or iterative process"
+        avoid_when: "Linear processes where sequence matters"
+        variants: [circular_cycle, infinity_loop, spiral]
+
+      venn_diagram:
+        label: "Venn Diagram"
+        best_for: "Showing overlap and shared elements between sets"
+        avoid_when: "More than 3 circles; precise proportions matter"
+        variants: [two_circle, three_circle]
+
+      matrix_diagram:
+        label: "Matrix Diagram"
+        best_for: "Plotting two-axis comparisons (effort vs impact, risk vs reward)"
+        avoid_when: "When exact data position matters (use scatter plot)"
+        variants: [2x2_matrix, quadrant_diagram, bcg_style]
+
+      timeline_visual:
+        label: "Timeline"
+        best_for: "Showing sequence of events or milestones over time"
+        avoid_when: "Events cluster too closely; non-temporal content"
+        variants: [horizontal_timeline, vertical_timeline, swimlane_roadmap]
+
+      architecture_diagram:
+        label: "Architecture Diagram"
+        best_for: "Showing system components and their relationships"
+        avoid_when: "Audience is not technical; simplify to conceptual for non-technical"
+        variants: [system_architecture, platform_layers, integration_diagram]
+
+      hub_spoke_diagram:
+        label: "Hub and Spoke"
+        best_for: "Showing a central element connected to surrounding elements"
+        avoid_when: "More than 8 spokes (clutter risk)"
+        variants: [star_diagram, ecosystem_map]
+
+  # --------------------------------------------------------------------------
+  # PHOTOGRAPHIC ELEMENTS
+  # Real-world imagery used for emotional impact or illustration
+  # --------------------------------------------------------------------------
+  photographic:
+    label: "Photographic Elements"
+    function: "Create emotional resonance, authenticity, or real-world context"
+    cognitive_load_profile: low_to_medium
+    accessibility_requirements: [alt_text, non_decorative_caption, descriptive_when_informational]
+
+    types:
+      full_bleed_photo:
+        label: "Full Bleed / Background Photo"
+        best_for: "Emotional impact; brand atmosphere; reducing text dependency"
+        avoid_when: "Text overlaid without sufficient contrast"
+
+      person_photo:
+        label: "Person / Team Photo"
+        best_for: "Humanising content; presenter bio; customer story"
+        avoid_when: "Stock photo appearing generic; lack of diversity"
+        caution: "Avoid: arms_folded, overly_posed, all_same_demographic"
+
+      product_screenshot:
+        label: "Product Screenshot"
+        best_for: "Demonstrating UI, features, or product proof"
+        avoid_when: "Low resolution; outdated UI; text too small to read"
+
+      customer_logo:
+        label: "Customer / Partner Logo"
+        best_for: "Social proof; partner ecosystem; trust building"
+        avoid_when: "Using old versions of logos; too many logos losing legibility"
+
+      icon_set:
+        label: "Icon Set"
+        best_for: "Visual labels for categories, steps, or concepts"
+        avoid_when: "Icons are ambiguous without text; mixed icon styles"
+        style_requirement: "Consistent style: all outline, all filled, or all flat"
+
+  # --------------------------------------------------------------------------
+  # TYPOGRAPHIC ELEMENTS
+  # Text-based visual elements with communicative function
+  # --------------------------------------------------------------------------
+  typographic:
+    label: "Typographic Elements"
+    function: "Communicate meaning through deliberate use of text scale, weight, and layout"
+    cognitive_load_profile: low_to_medium
+    accessibility_requirements: [minimum_contrast_4_5_to_1, readable_font_size, logical_heading_order]
+
+    types:
+      headline_text:
+        label: "Headline / Display Text"
+        best_for: "Key message; slide title; attention capture"
+        guidance: "Maximum 8-10 words; should convey the key insight independently"
+
+      body_text:
+        label: "Body Text / Bullet Points"
+        best_for: "Supporting detail when audience needs to read"
+        avoid_when: "Presenting live — use speaker notes instead"
+        guidance: "Maximum 5 bullet points; 6-8 words per bullet"
+
+      pull_quote:
+        label: "Pull Quote"
+        best_for: "Customer testimony; research citation; memorable statement"
+        guidance: "Keep under 30 words; attribute with name and title"
+
+      call_out_box:
+        label: "Callout Box"
+        best_for: "Highlighting a key fact, warning, or tip within a larger layout"
+        guidance: "Use sparingly — max 1-2 per slide"
+
+      label_annotation:
+        label: "Label / Annotation"
+        best_for: "Adding explanatory text to a diagram, chart, or screenshot"
+        guidance: "Keep labels concise; use leader lines for clarity"
+
+  # --------------------------------------------------------------------------
+  # DECORATIVE ELEMENTS
+  # Visual elements that are aesthetic rather than informational
+  # --------------------------------------------------------------------------
+  decorative:
+    label: "Decorative Elements"
+    function: "Establish visual tone, brand identity, or aesthetic quality"
+    cognitive_load_profile: very_low
+    accessibility_requirements: [mark_as_decorative_in_alt_text]
+
+    types:
+      brand_shape:
+        label: "Brand Shape / Graphic Element"
+        best_for: "Reinforcing brand identity; visual consistency across deck"
+        guidance: "Never use decorative elements that obscure informational content"
+
+      background_texture:
+        label: "Background Texture / Pattern"
+        best_for: "Establishing section identity; adding visual interest"
+        avoid_when: "Pattern conflicts with readability of overlaid text"
+
+      divider_line:
+        label: "Divider Line / Rule"
+        best_for: "Separating content zones; adding visual structure"
+
+      colour_block:
+        label: "Colour Block"
+        best_for: "Creating contrast zones; highlighting key areas"
+        guidance: "Check contrast ratio against overlaid text"
+
+      whitespace:
+        label: "Whitespace"
+        best_for: "Reducing cognitive load; directing attention; visual breathing room"
+        note: "Not a literal element — whitespace is the absence of elements; critical to good design"
+
+# ==============================================================================
+# ELEMENT DENSITY THRESHOLDS
+# ==============================================================================
+
+density_thresholds:
+  per_slide:
+    minimal: "1-2 element types"
+    balanced: "2-3 element types"
+    dense: "4-5 element types — risk of cognitive overload"
+    overloaded: "> 5 element types — redesign required"
+
+  data_visualisation_per_slide:
+    recommended_maximum: 2
+    absolute_maximum: 3
+    note: "One clear chart with a callout is preferred over two competing charts"
+
+# ==============================================================================
+# ACCESSIBILITY CHECKLIST
+# ==============================================================================
+
+accessibility_checklist:
+  all_informational_images: "Alt text required"
+  decorative_images: "Mark as decorative (empty alt text)"
+  colour_encoding: "Never use colour as the only differentiator"
+  text_contrast: "Minimum 4.5:1 contrast ratio for body text; 3:1 for large text"
+  chart_labels: "All data points must be labelled or accessible via data table"
+  font_size: "Minimum 18pt for body text; 24pt for slides"
+
+# ==============================================================================
+# SEMIOTIC VISUAL ELEMENTS
+# Sources: Kress & van Leeuwen (1996) Reading Images;
+#          Visual Narrative Flow Pass.md; The Unseen Structure
+# ==============================================================================
+
+semiotic_visual:
+  label: "Semiotic Visual Elements"
+  function: "Communicate meaning through spatial position and compositional arrangement — Kress & van Leeuwen's social semiotic framework"
+  cognitive_load_profile: low  # Semiotic meaning is processed pre-consciously when correctly applied
+  theory_source: "Kress & van Leeuwen (1996) Reading Images: The Grammar of Visual Design"
+
+  types:
+    given_new_arrangement:
+      label: "Given / New Spatial Arrangement"
+      definition: "Left-side elements encode Given information (established, known, accepted); right-side elements encode New information (challenging, unknown, to be attended to)"
+      best_for: "Comparison slides; before/after layouts; incumbent vs. challenger positioning"
+      scoring_note: "Mismatch between spatial position and information status (e.g., placing new proposal on left): -10 points"
+
+    ideal_real_arrangement:
+      label: "Ideal / Real Spatial Arrangement"
+      definition: "Top elements encode the Ideal (aspirational, brand promise, generalised overview); bottom elements encode the Real (grounded, specific, practical evidence)"
+      best_for: "Headline + evidence layouts; vision-to-execution slides; aspiration + proof structure"
+      scoring_note: "Placing practical data above aspirational framing may reduce emotional impact"
+
+    before_after_visual:
+      label: "Before / After Comparison Visual"
+      definition: "Side-by-side or sequenced visual showing the state before and after an intervention — typically Given (before) on left, New (after) on right"
+      best_for: "Case study evidence; ROI visualisation; transformation stories"
+      evidence_quality: "Highest — satisfies BEFORE_AFTER_COMPARISON entity requirement"
+      roi_enabler: true
+      note: "Applying Given/New semiotic arrangement to before/after amplifies the visual impact of the transformation"
+
+    action_title_headline:
+      label: "Action Title / Assertion Headline"
+      definition: "Slide title that states a conclusion, insight, or recommendation rather than a topic label — McKinsey/Minto communication standard"
+      scoring_rubric:
+        score_5: "Result + Mechanism + Timeframe ('Customer NPS improved 22 points in 6 months following CX redesign')"
+        score_3: "Assertion without mechanism ('Customer satisfaction improved')"
+        score_1: "Topic label only ('Customer Satisfaction')"
+      note: "Action title is classified as a typographic element but is semiotic in function — it encodes the editorial stance of the slide"

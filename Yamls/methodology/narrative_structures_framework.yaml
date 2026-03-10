@@ -1,0 +1,972 @@
+_meta:
+  id: narrative_structures_framework
+  title: "Narrative Structures"
+  description: "Advanced narrative frameworks including 3-Act Structure, Hero's Journey, Character Arc (Lie→Truth), Pacing analysis, and diagnostic frameworks for narrative design. Covers classical structures (3-Act, Freytag, Hero's Journey), business frameworks (SOAR, StoryBrand, SCQA, Duarte Sparkline, Raskin), emotional arcs (Vonnegut), and methodology for diagnosing and fixing weak narratives."
+  domain: narrative
+  domain_type: cross_cutting
+  purpose: methodology
+  version: "1.2.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Best Practices for Writing Effective Corporate Learning Content.md"
+    - "Corpus/Research/Crafting Powerful Opening Plays.md"
+    - "Corpus/Research/Research - Corporate Learning Assessment- Strategies, Modalities, and Best Practices.md"
+    - "Corpus/Research/The Universal Narrative Methodology: A Framework for Crafting and Improving Stories.md"
+    - "Corpus/Research/The Narrative Deconstruction Methodology: A Strategic Guide to Analyzing and Enhancing Stories in Leadership, Business, and Learning.md"
+
+
+# ==============================================================================
+# THREE-ACT STRUCTURE
+# ==============================================================================
+
+three_act_structure:
+  description: "The universal 'King of Story Structures' dividing a narrative into Setup, Confrontation, and Resolution."
+  scoring_anchors: !include ../shared/scoring_narrative.yaml
+
+  act_1:
+    name: "The Setup"
+    percentage: "0-25%"
+    function: "Establish the protagonist, normal world, and status quo."
+    key_beats:
+      inciting_incident:
+        definition: "The catalyst or call to adventure that disrupts the protagonist's world."
+        observable_indicators: "A clear problem or opportunity is introduced."
+      plot_point_one:
+        definition: "The point of no return where the hero commits to the journey."
+        observable_indicators: "A clear decision or action that shifts the context."
+
+  act_2:
+    name: "The Confrontation"
+    percentage: "25-75%"
+    function: "The hero faces escalating obstacles and complications."
+    key_beats:
+      rising_action:
+        definition: "Series of challenges and tests."
+      midpoint:
+        definition: "A significant event or revelation that shifts the hero from reactive to proactive."
+        observable_indicators: "A 'no return' moment, often a failure or major insight."
+      plot_point_two:
+        definition: "The 'All is Lost' moment."
+        observable_indicators: "Maximum tension/despair before the final push."
+
+  act_3:
+    name: "The Resolution"
+    percentage: "75-100%"
+    function: "The payoff that answers the dramatic question."
+    key_beats:
+      climax:
+        definition: "The final, decisive confrontation."
+        observable_indicators: "Peak emotional intensity; the problem is resolved."
+      denouement:
+        definition: "The new normal is established."
+
+# ==============================================================================
+# HERO'S JOURNEY (MONOMYTH)
+# ==============================================================================
+
+heros_journey:
+  description: "Joseph Campbell's 12-stage universal pattern of transformation."
+  scoring_anchors: !include ../shared/scoring_narrative.yaml
+
+  stages:
+    ordinary_world:
+      role: "Establishes the hero's normal life and the 'Lie' they believe."
+    call_to_adventure:
+      role: "A problem disrupts the normal world."
+    refusal_of_call:
+      role: "Hero expresses fear/doubt and hesitates."
+    meeting_the_mentor:
+      role: "Hero gains a guide or tool (The Brand/Product)."
+    crossing_threshold:
+      role: "Hero commits and enters the Special World."
+    tests_allies_enemies:
+      role: "Hero learns rules, faces trials."
+    approach_inmost_cave:
+      role: "Preparation for the central challenge."
+    the_ordeal:
+      role: "The central crisis; death and rebirth of the 'Lie'."
+    the_reward:
+      role: "Hero seizes the 'Truth' or solution."
+    road_back:
+      role: "Hero faces consequences; the journey is not over."
+    resurrection:
+      role: "Final test; hero proves they have changed."
+    return_with_elixir:
+      role: "Hero returns to Ordinary World with the solution."
+
+  business_application:
+    hero: "The Customer (NOT the Brand)"
+    mentor: "The Brand/Product"
+    elixir: "The Solution/Result"
+
+# ==============================================================================
+# STORYBRAND (SB7) FRAMEWORK
+# ==============================================================================
+
+storybrand_framework:
+  description: "Donald Miller's 7-part framework adapting the Hero's Journey for marketing."
+  scoring_anchors: !include ../shared/scoring_narrative.yaml
+
+  steps:
+    1_character: "A Character (The Customer) with a specific desire."
+    2_problem: "Has a Problem (External, Internal, and Philosophical)."
+    3_guide: "And Meets a Guide (The Brand) with Empathy and Authority."
+    4_plan: "Who gives them a Plan (Process or Agreement)."
+    5_call_to_action: "And Calls them to Action (Direct or Transitional)."
+    6_failure: "That helps them Avoid Failure (The stakes)."
+    7_success: "And ends in Success (The vision)."
+
+# ==============================================================================
+# STORY SPINE
+# ==============================================================================
+
+story_spine:
+  description: "Pixar's 7-sentence structure for spine creation."
+  structure:
+    - "Once upon a time..."
+    - "Every day..."
+    - "Until one day..."
+    - "Because of that..."
+    - "Because of that..."
+    - "Until finally..."
+    - "And ever since then..."
+
+# ==============================================================================
+# SCQA FRAMEWORK (MINTO PYRAMID PRINCIPLE)
+# ==============================================================================
+
+scqa_framework:
+  description: "Barbara Minto's framework for structuring introductions and clarifying logic."
+  scoring_anchors: !include ../shared/scoring_narrative.yaml
+
+  components:
+    situation:
+      definition: "State the context that is known and agreed upon."
+      function: "Establish common ground. No controversy here."
+    complication:
+      definition: "The change or problem that disrupts the Situation."
+      function: "Create tension and trigger the Question."
+    question:
+      definition: "The natural question arising from the Complication."
+      example: "'How do we solve this?', 'What should we do?'"
+    answer:
+      definition: "The solution or main idea."
+      function: "The core thesis of the narrative."
+
+# ==============================================================================
+# FREYTAG'S PYRAMID (THE TENSION MAP)
+# ==============================================================================
+
+freytags_pyramid:
+  description: "Five-act structure focusing on dramatic tension and tragic/complex arcs."
+  scoring_anchors: !include ../shared/scoring_narrative.yaml
+
+  acts:
+    act_1_exposition:
+      function: "Introduction to characters and atmosphere, ending with the Exciting Force."
+    act_2_rising_action:
+      function: "Escalating complications building tension."
+    act_3_climax:
+      function: "The TURNING POINT (Midpoint). The pivot where the hero's fortune changes."
+      note: "Distinct from the 3-Act Climax. This is the peak of the pyramid, not the end."
+    act_4_falling_action:
+      function: "The consequences of the pivot. The 'Counterplay' leading to the final outcome."
+    act_5_denouement:
+      function: "The Catastrophe or Resolution. Catharsis and the new normal."
+
+# ==============================================================================
+# DUARTE'S SPARKLINE
+# ==============================================================================
+
+duarte_sparkline:
+  description: "Presentation structure that oscillates between the status quo and the vision."
+  pattern: "Oscillation"
+
+  components:
+    what_is:
+      definition: "The current, problematic reality. The 'Pain'."
+    what_could_be:
+      definition: "The ideal future state. The 'Prize'."
+    call_to_action:
+      definition: "The final crossing of the threshold to make 'What Could Be' the new reality."
+
+# ==============================================================================
+# RASKIN'S SALES NARRATIVE (THE PROMISED LAND)
+# ==============================================================================
+
+raskin_sales_narrative:
+  description: "Strategic sales narrative for high-stakes pitches."
+
+  steps:
+    1_big_change: "Name a big, undeniable change in the world (not your product)."
+    2_winners_losers: "Show that this change will create big winners and losers."
+    3_promised_land: "Tease the 'Happily Ever After' state (The Success)."
+    4_magic_gift: "Introduce your product as the 'Magic Gift' to reach the Promised Land."
+    5_evidence: "Present proof (case studies) that you can deliver."
+
+# ==============================================================================
+# RAPID FRAMEWORKS (BAB / PAS)
+# ==============================================================================
+
+rapid_frameworks:
+  description: "Simple structures for short-form content or emails."
+
+  bab_before_after_bridge:
+    before: "Current world with the problem."
+    after: "Ideal world without the problem."
+    bridge: "Your solution as the path."
+
+  pas_problem_agitate_solve:
+    problem: "State the problem."
+    agitate: "Amplify the pain and emotional cost."
+    solve: "Present the solution."
+
+# ==============================================================================
+# VONNEGUT'S SIX EMOTIONAL ARCS
+# Computationally validated story shapes (Reagan et al., 2016)
+# ==============================================================================
+
+vonnegut_emotional_arcs:
+  description: "Six fundamental story shapes validated by computational analysis of thousands of texts."
+  scoring_anchors: !include ../shared/scoring_narrative.yaml
+
+  research_finding: "Most successful stories (by audience engagement) use Icarus, Oedipus, or Man in a Hole arcs - audiences crave catharsis and complexity."
+
+  arcs:
+    rags_to_riches:
+      pattern: "Rise"
+      shape: "Steady upward trajectory of fortune"
+      example: "Cinderella (simple version)"
+      emotional_function: "Hope and aspiration"
+
+    riches_to_rags:
+      pattern: "Fall"
+      shape: "Steady downward trajectory"
+      alternative_name: "Tragedy"
+      emotional_function: "Warning, cautionary tale"
+
+    man_in_a_hole:
+      pattern: "Fall-Rise"
+      shape: "Fall into trouble, followed by recovery"
+      example: "Most recovery stories, redemption arcs"
+      emotional_function: "Resilience and hope through adversity"
+      success_correlation: "High"
+
+    icarus:
+      pattern: "Rise-Fall"
+      shape: "Rise to peak, followed by tragic fall"
+      example: "Greek tragedy, hubris stories"
+      emotional_function: "Warning against overreach"
+      success_correlation: "High"
+
+    cinderella:
+      pattern: "Rise-Fall-Rise"
+      shape: "Complex 'Man in a Hole' with initial rise"
+      emotional_function: "Earned triumph through setback"
+      success_correlation: "High"
+
+    oedipus:
+      pattern: "Fall-Rise-Fall"
+      shape: "Complex tragic form with false hope"
+      emotional_function: "Deep catharsis, inevitability"
+      success_correlation: "High"
+
+  analysis_methodology:
+    micro_level:
+      description: "Scene-level emotional arc analysis"
+      rule: "A compelling scene MUST possess its own emotional arc."
+      diagnostic: "If protagonist's emotional state is same at beginning and end, scene fails narrative purpose."
+
+    macro_level:
+      description: "Plot key events on Fortune/Emotion (y) vs Time (x) graph"
+      key_events_to_plot:
+        - "Inciting Incident"
+        - "Midpoint"
+        - "Low Point"
+        - "Climax"
+        - "Resolution"
+
+  weakness_diagnosis:
+    flat_arc_problem: "Story is emotionally 'flat' - no variance in fortune"
+    too_positive_problem: "Story lacks the 'fall' that makes subsequent 'rise' earned and meaningful"
+
+# ==============================================================================
+# CHARACTER ARC: THE TRANSFORMATION FRAMEWORK (LIE → TRUTH)
+# Protagonist's psychological and belief transformation
+# ==============================================================================
+
+character_arc:
+  description: "The protagonist's internal transformation from false belief to truth. A character arc tracks what the protagonist believes at the start vs. what they believe/realize by the end."
+  research_basis: "The Universal Narrative Methodology, The Narrative Deconstruction Methodology"
+
+  core_components:
+    lie:
+      definition: "What the protagonist falsely believes about themselves, others, or the world at story start."
+      purpose: "Establishes the protagonist's self-limiting belief or misconception that the story will challenge."
+      corporate_examples:
+        - "A sales leader believes success = hitting quotas (false); learns success = building relationships (truth)"
+        - "A technologist believes humans are obstacles to innovation (false); learns collaboration drives breakthrough (truth)"
+      diagnostic_question: "What fundamental misconception is the character operating under at the start?"
+
+    want:
+      definition: "What the protagonist consciously thinks they need (surface goal, immediate desire)."
+      purpose: "Drives the plot forward; the visible goal that motivates action."
+      distinction_from_need: "WANT is what the protagonist pursues; NEED is what actually transforms them."
+      corporate_examples:
+        - "Sales leader wants: Meet annual quota | Needs: Build sustainable customer relationships"
+        - "Executive wants: Acquire competitor | Needs: Develop internal innovation culture"
+      diagnostic_question: "What does the character explicitly pursue throughout the story?"
+
+    need:
+      definition: "What the protagonist actually needs for true growth and transformation (deeper, unconscious need)."
+      purpose: "The real source of the character's change; often contradicts the Want."
+      why_it_matters: "Character growth happens when Want and Need conflict, and Need ultimately wins."
+      corporate_examples:
+        - "Executive needs: Learn to listen to frontline employees and trust their expertise"
+        - "Manager needs: Accept that failure is part of learning, not a personal failing"
+      diagnostic_question: "What deeper truth or skill does the character need to acquire for real transformation?"
+
+    truth:
+      definition: "What the protagonist realizes or becomes by the story's end (new belief replacing the Lie)."
+      purpose: "The resolution of the character arc; the protagonist's new understanding."
+      scope: "Can be a single realization or a complete paradigm shift."
+      corporate_examples:
+        - "Truth: Success is measured by sustainable growth, not quarterly numbers"
+        - "Truth: Leadership is about enabling others, not controlling outcomes"
+      diagnostic_question: "What new belief or understanding does the character embrace by story's end?"
+
+  arc_types:
+    change_arc:
+      definition: "Protagonist is fundamentally transformed by story events."
+      mechanism: "Protagonist's worldview, behavior, or values change as a result of the journey."
+      structure: "(Lie) → Conflict/Ordeal → (Need Accepted) → (Truth Realized)"
+      corporate_application: "Transformation narratives in leadership, culture change, learning"
+      example: "Executive realizes competitive advantage comes from employee engagement, not cost-cutting"
+
+    flat_arc:
+      definition: "Protagonist's core beliefs remain unchanged; protagonist changes the world around them."
+      mechanism: "Protagonist's strength, conviction, or morality impacts others without changing themselves."
+      structure: "(Conviction) → Protagonist Resists Change → (Others Transform)"
+      importance_note: "Flat arcs are NOT weak narratives—they serve a different function (mentor/guide archetypes)."
+      corporate_application: "Mentor stories, established leader navigating change, coach/guide roles"
+      example: "Seasoned mentor maintains integrity and values while mentee transforms through exposure to mentor's example"
+
+  implementation_methodology:
+    step_1_identify_lie:
+      action: "Write a one-sentence statement of the protagonist's core false belief at story start"
+      validation: "Is this belief limiting? Does it directly conflict with the story's resolution?"
+
+    step_2_identify_want_and_need:
+      action: "Write what protagonist explicitly pursues (Want) and what they actually need (Need)"
+      validation: "Do Want and Need differ? Is the Want surface-level and Need deeper?"
+
+    step_3_identify_truth:
+      action: "Write the new belief or understanding the protagonist has by story end"
+      validation: "Does this Truth directly contradict the original Lie?"
+
+    step_4_map_turning_points:
+      action: "Identify 3-5 key moments where character's belief is tested/changed"
+      moments:
+        - "Inciting Incident: First challenge to the Lie"
+        - "Midpoint: Major revelation or reversal"
+        - "Low Point/Ordeal: Maximum pressure; character faces consequences of Lie"
+        - "Climax: Character makes final choice aligned with new belief"
+        - "Resolution: New behavior/belief confirmed as character's new normal"
+
+    step_5_verify_emotional_state_change:
+      action: "At each key moment, note whether protagonist's emotional state changes"
+      diagnostic_rule: "If protagonist's psychological/emotional state is SAME at beginning and end, character arc fails"
+      validity_check: "Character should think/feel/act differently by story's end than they did at start"
+
+  corporate_context_examples:
+    onboarding_narrative:
+      lie: "New employee: 'I need to fit in and follow all the rules exactly'"
+      want: "Get through orientation without standing out"
+      need: "Understand the company culture deeply enough to make good decisions independently"
+      truth: "Great employees contribute unique ideas while respecting core values"
+
+    change_management_narrative:
+      lie: "Team: 'This new system is a threat to our competence and relevance'"
+      want: "Maintain the old way of working"
+      need: "Develop new skills and trust in organizational direction"
+      truth: "Adopting new tools increases impact and opens new opportunities"
+
+    leadership_development_narrative:
+      lie: "Manager: 'Success means controlling every detail; delegation is risky'"
+      want: "Personally oversee all critical decisions"
+      need: "Build trust in team, develop their capabilities"
+      truth: "Leadership multiplies impact through others"
+
+# ==============================================================================
+# THREE-LAYER ANALYSIS MODEL
+# Simultaneous tracking of Plot, Character, and Emotion
+# ==============================================================================
+
+three_layer_model:
+  description: "Complete narrative analysis requires simultaneous tracking of three distinct layers."
+
+  layers:
+    story_arc:
+      name: "Story Arc (External Plot)"
+      question: "What happens?"
+      tracks: "Sequence of external events"
+      rhetorical_appeal: "Logos"
+
+    character_arc:
+      name: "Character Arc (Internal Psychology)"
+      question: "Why does it matter?"
+      tracks: "Protagonist's psychological transformation"
+      rhetorical_appeal: "Ethos"
+
+    emotional_arc:
+      name: "Emotional Arc (Audience Affect)"
+      question: "How does it feel?"
+      tracks: "Audience's emotional journey through the narrative"
+      rhetorical_appeal: "Pathos"
+
+  key_insight: "These layers can move in different directions. In a tragedy, protagonist may have Negative Character Arc while Emotional Arc is compelling Icarus shape for audience."
+
+  diagnostic_questions:
+    logos: "Is the logical structure clear?"
+    ethos: "Is the hero correct, and is it the RIGHT hero?"
+    pathos: "Is the feeling compelling?"
+
+# ==============================================================================
+# THE ROSETTA STONE: SOAR TO HERO'S JOURNEY MAPPING
+# ==============================================================================
+
+soar_monomyth_map:
+  description: "Mapping business storytelling (SOAR) to the universal Monomyth."
+
+  situation:
+    monomyth_stage: "Ordinary World"
+    function: "Establishes the status quo."
+
+  obstacle:
+    monomyth_stage: ["Call to Adventure", "The Ordeal"]
+    function: "The disruption and the central crisis. Must be agitated."
+
+  action:
+    monomyth_stage: ["Tests, Allies, Enemies", "Approach"]
+    function: "The hero's response and struggle."
+
+  result:
+    monomyth_stage: ["The Reward", "Return with Elixir"]
+    function: "The transformed state and value delivered."
+
+# ==============================================================================
+# SOAR EXECUTION GUIDELINES
+# Practical guidance for crafting each SOAR element effectively
+# ==============================================================================
+
+soar_execution_guidelines:
+  description: "Detailed execution guidance for each SOAR element."
+
+  narrative_arc_mapping:
+    description: "SOAR maps to the universal story arc"
+    beginning:
+      elements: ["Situation", "Opportunity"]
+      function: "Setting and conflict"
+    middle:
+      elements: ["Approach"]
+      function: "Rising action - how challenge is tackled"
+    end:
+      elements: ["Results"]
+      function: "Resolution and outcome"
+
+  situation_guidelines:
+    purpose: "Set the stage with context"
+    key_elements:
+      - "Who, when, where"
+      - "Relevant background the audience needs"
+      - "Stakes and status quo"
+    execution_tips:
+      - "Be selective: include only relevant details that matter to audience"
+      - "Include concrete specifics (year, company type, challenge hint) for authenticity"
+      - "Orient listeners and spark attention by connecting to their reality"
+    common_failure: "Skipping context - audience left wondering why this matters"
+    success_indicator: "Audience thinks 'Yes, I've seen that scenario' or 'I understand that context'"
+
+  opportunity_guidelines:
+    purpose: "Create the narrative hook through challenge or goal"
+    key_elements:
+      - "Gap between current state and desired state"
+      - "What needed to be achieved"
+      - "What was standing in the way"
+    execution_tips:
+      - "Frame opportunity in terms of audience's values and pains"
+      - "Introduce tension or conflict - this makes it a story, not a statement"
+      - "Emphasize stakes: what's the risk if nothing changes? what's the upside?"
+    psychological_effect: "Audiences become engaged when they hear about a problem - creates suspense"
+    common_failure: "Rushing past the 'O' - becomes flat Situation-Result report"
+
+  approach_guidelines:
+    purpose: "Show how the challenge was addressed"
+    key_elements:
+      - "Key actions, decisions, strategy"
+      - "Logical progression of steps"
+      - "Who was involved (human actors)"
+    execution_tips:
+      - "Focus on key actions that drove the solution"
+      - "Highlight combination of hard work and skill (results didn't happen by magic)"
+      - "Show, don't tell: paint transformation picture for audience to envision"
+      - "Cast the customer/team as hero, your product/company as guide"
+    vision_enhancement: "Articulate the guiding philosophy behind the approach, not just what was done"
+    common_failure: "Becoming operations manual - too much detail without narrative flow"
+
+  results_guidelines:
+    purpose: "Deliver proof and payoff"
+    key_elements:
+      - "Specific, quantified outcomes (KPIs, metrics)"
+      - "Benefits (the 'why it matters' behind the numbers)"
+      - "Human or emotional impact"
+    execution_tips:
+      - "Be specific and quantify: vague promises won't persuade"
+      - "Distinguish Results (what achieved) from Benefits (why it matters)"
+      - "Mention human/emotional impact alongside metrics"
+      - "Close the loop: results should address the situation/challenge set up earlier"
+    forward_looking_option: "End with bigger picture or call-to-action for vision amplification"
+    common_failure: "Raw numbers without explanation of significance"
+
+# ==============================================================================
+# SOAR PSYCHOLOGY & EFFECTIVENESS
+# Research-backed reasons why SOAR stories work
+# ==============================================================================
+
+soar_psychology:
+  description: "Psychological principles underlying SOAR story effectiveness."
+
+  memory_and_recall:
+    key_finding: "Stories are up to 22x more memorable than facts alone"
+    mechanism: "Coherent story arc reduces cognitive load - audience doesn't have to piece together random information"
+    statistic_embedding: "People 22% more likely to remember statistic if part of story vs standalone"
+
+  emotional_engagement:
+    key_finding: "Emotional content triggers oxytocin release, increasing empathy and trust"
+    effect: "Emotions make stories persuasive AND memorable"
+    arc_importance: "SOAR naturally includes emotional arc: frustration/challenge → resolution/payoff"
+
+  dual_system_persuasion:
+    key_finding: "Story + Data hits both analytical and intuitive processing systems"
+    system_1:
+      name: "Intuitive/Peripheral"
+      appeal: "Story, trust, emotion"
+      alone_weakness: "Analytical side might doubt"
+    system_2:
+      name: "Analytical/Central"
+      appeal: "Logical evidence, data, ROI"
+      alone_weakness: "Intuitive side might not remember or be convinced"
+    combined_effect: "When both systems agree, persuasion is strong - eliminates reasons to say no"
+
+  narrative_transportation:
+    definition: "When absorbed in story, people become less critical of persuasive intent"
+    effect: "Audience stops arguing with sales pitch in their head - experiences the story instead"
+    result: "More likely to adopt ideas or solutions proposed"
+
+  connection_and_empathy:
+    key_finding: "Stories build empathy, compassion and trust"
+    business_effect: "People more likely to partner with those who seem to understand them"
+    signal: "Well-told story signals 'I understand your world, here's how we can succeed together'"
+
+  complete_argument:
+    key_finding: "SOAR covers all bases audiences unconsciously look for"
+    questions_answered:
+      - "What's the issue?"
+      - "Why should I care?"
+      - "What did you do about it?"
+      - "How do I know it worked?"
+    effect: "Preempts questions and skepticism, shows respect for audience"
+
+# ==============================================================================
+# VALUE-BASED STORYTELLING
+# Customer-centric story construction principles
+# ==============================================================================
+
+value_based_storytelling:
+  description: "Principles for making SOAR stories resonate with audience values."
+
+  core_principle: "Story must be built around what the AUDIENCE values and cares about"
+
+  audience_research:
+    requirement: "Start by understanding who you're speaking to"
+    elements_to_identify:
+      - "Industry and role"
+      - "Primary objectives"
+      - "Pain points"
+      - "Values and priorities"
+    guidance: "This insight informs the angle of your story"
+
+  situation_alignment:
+    principle: "Choose a situation that parallels audience's context"
+    tactic: "Use customer success story from same industry so they can 'see themselves' in it"
+    rule: "Audience should nod along thinking 'Yes, that's important to me'"
+
+  opportunity_mirroring:
+    principle: "Use language that reflects audience's own goals and hurdles"
+    effect: "Demonstrates empathy - shows you 'get' what they're up against"
+    adage: "No pain, no sale - showing you understand pain builds trust"
+
+  benefits_alignment:
+    principle: "Highlight benefits that tie to what audience values"
+    examples:
+      - "If listener values growth, underscore how results led to growth"
+      - "If they value reliability, emphasize stability increase"
+    technique: "Don't just state result - translate it into value ON THEIR TERMS"
+
+  hero_casting:
+    principle: "Frame protagonist as someone like the audience"
+    best_choice: "The customer (not the brand/presenter)"
+    execution: "Make protagonist's values and anxieties explicit - reflects audience's own"
+
+  vision_enabling:
+    principle: "Allow audience to envision themselves enjoying the results"
+    target_outcome: "After hearing story, they think 'I want that outcome for me'"
+    technique: "Sometimes directly invite: 'Picture your organization achieving similar results'"
+    psychology: "When people visualize future where problem is solved, more likely to take action"
+
+# ==============================================================================
+# DATA + VISION BALANCE
+# Combining KPIs with inspirational storytelling
+# ==============================================================================
+
+data_vision_balance:
+  description: "How to effectively blend quantitative evidence with inspirational narrative."
+
+  principle: "Business audiences need both hard evidence AND vision/big ideas"
+
+  data_integration:
+    when: "Results section especially, but also Opportunity for problem magnitude"
+    how:
+      - "Be selective: 1-2 strong data points more powerful than barrage of numbers"
+      - "State data, then immediately translate to plain language or human scale"
+      - "Round numbers for simplicity in spoken narratives"
+    example: "Churn dropped from 10% to 5% - that's keeping an extra 5 customers per 100 every month who would have left"
+    effect: "Data heightens story's impact without distracting from narrative"
+
+  vision_integration:
+    where: "Opportunity and Approach sections"
+    techniques:
+      - "Articulate big-picture vision, not just mechanics"
+      - "Highlight insights: 'The real challenge wasn't X, it was Y'"
+      - "Show guiding philosophy behind actions"
+    effect: "Elevates story from simple fix to demonstration of leadership and innovation"
+
+  mutual_reinforcement:
+    technique: "Let vision and evidence reinforce each other"
+    pattern_1: "Introduce visionary goal in Opportunity, prove progress with data in Results"
+    pattern_2: "After sharing strong results, cast them as proof of a larger idea"
+    effect: "Shows vision isn't just hype - you have data to back it up"
+
+  dramatic_data:
+    technique: "Present statistics dramatically within narrative"
+    examples:
+      - "'We aimed for 5% growth - but achieved 20%, four times our goal!'"
+      - "Compare to relatable benchmark: 'What used to take a full Monday now finishes with your coffee break'"
+    effect: "Helps audience emotionally appreciate magnitude"
+
+# ==============================================================================
+# HUMAN TOUCH TECHNIQUES
+# Adding emotional resonance and relatability
+# ==============================================================================
+
+human_touch_techniques:
+  description: "Specific techniques for humanizing SOAR stories."
+
+  relatable_protagonist:
+    technique: "Give character a name, role, brief backstory"
+    example: "'A veteran project manager, Jane was frustrated by how long approvals took...'"
+    effect: "Creates empathy - if audience sees parallels with themselves, they invest emotionally"
+
+  show_emotions:
+    technique: "Don't shy away from mentioning feelings before and after solution"
+    before_emotions: ["Frustration", "Demoralization", "Worry", "Fear"]
+    after_emotions: ["Relief", "Pride", "Excitement", "Confidence"]
+    example: "'When the new system went live, the relief in the room was palpable. The support agents felt like they could breathe again.'"
+
+  authentic_vulnerability:
+    principle: "Acknowledge challenges, missteps, or help from others"
+    warning: "If story only highlights triumph and perfection, may seem canned or boastful"
+    example: "'Honestly, we weren't sure at first if the new approach would work. There were doubters.'"
+    effect: "Shows humility and humanity - makes success seem earned and real"
+
+  dialogue_and_testimonials:
+    technique: "Briefly quote something a person said"
+    examples:
+      - "'One customer told us, This change saved my team so much headache.'"
+      - "'The warehouse supervisor thanked us - he said, I get to eat dinner with my family now.'"
+    effect: "Breaks narrative, gives sense of real people involved"
+
+  sensory_details:
+    technique: "Engage imagination with vivid, descriptive language"
+    example: "'The office used to be eerily quiet on Fridays - everyone buried in spreadsheets. After our solution, Fridays buzzed with energy.'"
+    effect: "Puts listener 'in the room' - scenario feels real and lived-in"
+
+  human_benefit_highlight:
+    principle: "Go beyond metric to human outcome"
+    questions: ["What did increased profit enable?", "Did efficiency make employees happier?"]
+    effect: "'Humanizes' the value proposition - makes brand more relatable and trustworthy"
+
+# ==============================================================================
+# PACING FRAMEWORK: The Rhythmic Engine of Narrative
+# Control over narrative speed, tension, and audience breath
+# ==============================================================================
+
+pacing_framework:
+  description: "How quickly a story unfolds and answers the audience's implicit questions. Pacing is not fixed—it's a narrative device that can be manipulated for effect."
+  research_basis: "The Universal Narrative Methodology, The Narrative Deconstruction Methodology"
+
+  definition: "The pace of a narrative is controlled by physical text construction (sentence length, paragraph density) and content pacing (balance of action vs. reflection)."
+
+  pacing_levels:
+    macro_level:
+      focus: "Entire narrative rhythm"
+      question: "Does the overall story have a satisfying rise, plateau, and resolution?"
+      analysis: "Map key scenes as 'fast' (action, conflict, urgency) vs. 'slow' (reflection, exposition, introspection)"
+
+    micro_level:
+      focus: "Scene-by-scene, even sentence-level rhythm"
+      question: "Does each scene build energy, create contrast, or provide necessary breather?"
+      analysis: "Examine dialogue pacing, action sequences, description density within individual scenes"
+
+  structural_pacing_elements:
+    fast_pace_indicators:
+      examples:
+        - "Short, staccato sentences"
+        - "Single-word fragments ('Stop.' 'Go.' 'Run.')"
+        - "Brief paragraphs; sometimes single-sentence paragraphs"
+        - "Terse, punchy dialogue"
+        - "Action sequences, conflict, movement"
+        - "High verb dynamism (active, strong verbs)"
+      effect: "Creates urgency, energy, suspense; keeps audiences on edge"
+
+    slow_pace_indicators:
+      examples:
+        - "Long, complex, flowing sentences"
+        - "Multi-clause sentence structures"
+        - "Dense paragraphs with rich description"
+        - "Detailed character introspection"
+        - "Exposition and world-building"
+        - "Contemplative, reflective passages"
+      effect: "Allows time for reflection, builds atmosphere, provides space for ideas to land"
+
+  content_pacing_elements:
+    action_elements:
+      examples:
+        - "Conflict, confrontation"
+        - "Dialogue (especially argumentative)"
+        - "Movement, decisions, consequences"
+        - "Stakes and risk"
+      effect: "Drives story forward; maintains tension"
+
+    reflection_elements:
+      examples:
+        - "Internal monologue, introspection"
+        - "Description, world-building"
+        - "Exposition, backstory"
+        - "Connection-building, relationship development"
+      effect: "Allows audience to process, creates emotional depth"
+
+    critical_principle: "All action burns out audience; all reflection is boring. Mastery is BALANCE."
+
+  pacing_by_narrative_framework:
+    three_act_structure:
+      act_1: "Fast opening (hook in first 25%) to establish protagonist and stakes quickly"
+      act_2: "Variable pacing—build tension, provide breathers, re-escalate (25-75%)"
+      act_3: "Accelerating toward climax; faster pacing in final sequence (75-100%)"
+
+    hero_journey:
+      early_stages: "Slow setup through Meeting the Mentor (establish ordinary world, build empathy)"
+      ordeal_to_reward: "Accelerate through The Ordeal and climactic moments"
+      return: "Decelerate in Return, allow reflection and integration of lessons"
+
+    soar_framework:
+      situation: "Moderate to slow (establish context, orient audience)"
+      obstacle: "Fast and escalating (agitate the problem, build tension)"
+      approach: "Variable (show progression, occasional pauses for comprehension)"
+      result: "Fast payoff with data, then slow/reflect for vision impact"
+
+    duarte_sparkline: "Oscillating rhythm—faster oscillations between 'What Is' and 'What Could Be' create urgency"
+
+  analysis_methodology:
+    color_coding_technique:
+      method: "Manually mark scenes/paragraphs as 'fast' (action/conflict) or 'slow' (reflection/exposition)"
+      purpose: "Visualize pacing balance across entire narrative"
+      evaluation: "Do fast and slow sections alternate? Are there breathers? Does climax accelerate?"
+
+    read_aloud_test:
+      method: "Read narrative aloud at natural speaking pace"
+      what_to_listen_for:
+        - "Does rhythm feel rushed, choppy, or stagnant at any point?"
+        - "Do emotional beats have space to land?"
+        - "Do action sequences feel energetic?"
+      purpose: "Reveals pacing problems not visible on the page; auditory rhythm is critical"
+
+    timing_analysis:
+      method: "If presenting, time each scene/section"
+      benchmark: "How long does key emotional moment last? Is it long enough for impact?"
+      validation: "Results section should be fast (quick payoff); Vision section should slow for processing"
+
+  common_pacing_failures:
+    relentless_pace:
+      symptom: "Story never stops; no breathers, constant urgency"
+      effect: "Audience fatigue; audience can't process emotional beats"
+      fix: "Insert reflective moments, slow passages after high-tension scenes"
+      example: "After sharing crisis moment, pause. Let it land. Then move forward."
+
+    stagnant_pace:
+      symptom: "Too much reflection, introspection, description with no forward momentum"
+      effect: "Audience loses interest; story feels slow, loses engagement"
+      fix: "Inject conflict, decisions, movement; cut excessive exposition"
+      example: "Remove 3 paragraphs of backstory; keep 1 impactful line instead"
+
+    unearned_speed:
+      symptom: "Fast pacing without established stakes feels hollow"
+      effect: "Audience doesn't care because they don't understand why this matters"
+      fix: "Ensure Situation and Obstacle establish stakes BEFORE accelerating pacing"
+      example: "Spend time in Situation so audience understands the pain before Obstacle agitates it"
+
+# ==============================================================================
+# NARRATIVE WEAKNESS DIAGNOSTIC FRAMEWORK
+# Three types of weak narratives with prescriptive fixes
+# ==============================================================================
+
+narrative_weakness_diagnostics:
+  description: "Systematic framework for identifying and fixing weak stories and presentations."
+  research_basis: "The Narrative Deconstruction Methodology"
+
+  diagnostic_principle: "Every weak narrative falls into one of three categories: Confusing Story (logic problem), Arrogant Story (character problem), or Boring Story (emotion problem)."
+
+  diagnosis_type_1_confusing_story:
+    name: "The Confusing Story (Weak Logic / Incoherent Structure)"
+    audience_feedback:
+      - "'I don't get the point'"
+      - "'It was all over the place'"
+      - "'What are you trying to say?'"
+      - "'I couldn't follow the logic'"
+
+    root_cause: "Story lacks clear narrative structure. It's a 'data dump' with no clear Big Idea. Logos (logical appeal) is broken."
+
+    diagnostic_questions:
+      - "Is there a clear problem → solution arc?"
+      - "Does each scene connect logically to the next?"
+      - "Can you state the 'so what?' in one sentence?"
+
+    prescriptive_fixes:
+      fix_1_impose_structure:
+        action: "Force-structure using PAS (Problem-Agitate-Solve) or SCQA (Situation-Complication-Question-Answer)"
+        steps:
+          - "State the Problem clearly (What's wrong?)"
+          - "Explain WHY it's painful (Agitate—what's the cost?)"
+          - "Provide the Solution (What's the answer?)"
+        effect: "Gives narrative skeleton; audience can follow logic"
+
+      fix_2_clarify_opening:
+        action: "Re-write opening to establish clear context and stakes"
+        technique: "Use SCQA to structure opening: establish Situation, hint at Complication, pose the Question the story answers"
+        effect: "Audience knows what they're listening for"
+
+      fix_3_apply_pyramid_principle:
+        action: "Restructure visual narrative to Pyramid Principle: Answer first, then supporting data"
+        application_to_decks: "Slide 1: Main idea/answer. Subsequent slides: supporting data"
+        application_to_talk_track: "State conclusion early; then provide evidence"
+        effect: "Audience understands the point before drowning in details"
+
+  diagnosis_type_2_arrogant_story:
+    name: "The Arrogant Story (Weak Character / Wrong Hero)"
+    audience_feedback:
+      - "'It was all about them'"
+      - "'I just didn't care'"
+      - "'So what? What's in it for me?'"
+      - "'The presenter/brand felt superior, not relatable'"
+
+    root_cause: "Presenter/brand is positioned as the Hero. Audience is positioned as passive observer. Ethos (credibility and likeability) is damaged through arrogance or irrelevance."
+
+    diagnostic_questions:
+      - "Who is the main character/hero of this story?"
+      - "If it's the presenter/product, is the audience positioned as audience or participant?"
+      - "Does the audience see themselves in the story?"
+
+    prescriptive_fixes:
+      fix_1_execute_the_hero_shift:
+        action: "Completely recast the story using StoryBrand (SB7) framework"
+        steps:
+          - "Make AUDIENCE the Character (the Hero with a desire)"
+          - "Make their challenge/pain the Problem"
+          - "Reposition presenter/product as the Guide (Mentor) who helps them succeed"
+          - "Provide a clear Plan the audience can execute"
+          - "Call them to Action (what to do, what happens if they don't)"
+        impact: "SINGLE MOST POWERFUL enhancement for business storytelling"
+        example_transformation:
+          before: "'Our company is innovative and disrupted the market. We achieved record growth.'"
+          after: "'You face rising competition and legacy systems. We're your guide to digital transformation. Here's the plan... Ready to move forward?'"
+
+      fix_2_shift_perspective:
+        action: "Rewrite all statements from audience perspective, not brand perspective"
+        technique: "Change 'We' to 'You' focus; show how solution benefits THEM"
+        example:
+          before: "'We reduced costs by 30% and improved efficiency'"
+          after: "'You get to eliminate administrative waste. Your team saves 5 hours per week—that's Monday mornings free for strategic work'"
+
+      fix_3_add_vulnerability:
+        action: "Show the presenter/brand as fallible guide, not infallible hero"
+        technique: "Acknowledge challenges, what you learned the hard way, mistakes you made"
+        effect: "Makes story relatable; audience sees you as a peer who's a few steps ahead, not unreachable superior"
+
+  diagnosis_type_3_boring_story:
+    name: "The Boring Story (Weak Emotion / Flat Arc)"
+    audience_feedback:
+      - "'It was dry'"
+      - "'It put me to sleep'"
+      - "'The data was interesting, but...'"
+      - "'I understood it, but I didn't FEEL anything'"
+
+    root_cause: "Story is all Logos and no Pathos. Emotional arc is flat line. No character transformation. No tension or relief."
+
+    diagnostic_questions:
+      - "Does the story have an emotional arc (rise and fall, not constant)"
+      - "Is there a 'fall' or low point before the final 'rise'?"
+      - "Does the audience's emotional state change from beginning to end?"
+
+    prescriptive_fixes:
+      fix_1_agitate_the_problem:
+        action: "Don't just state 'What Is'—make audience FEEL the pain and cost"
+        technique: "Use vivid, emotional language describing consequences of the problem"
+        examples:
+          bland: "'Customer satisfaction was declining'"
+          vivid: "'Customers were voting with their feet. A customer who'd been with us for five years sent an email saying they couldn't justify staying'"
+        effect: "Audience emotionally invests in finding a solution"
+
+      fix_2_add_anecdotes:
+        action: "Insert short, relevant, personal stories or examples"
+        types:
+          - "Customer testimonial (brief)"
+          - "Personal experience from team member"
+          - "Before-and-after scenario"
+        effect: "Builds both Ethos and Pathos; makes data points feel real"
+
+      fix_3_use_vivid_language:
+        action: "Replace abstract jargon with concrete, sensory language"
+        examples:
+          abstract: "'Optimize synergistic efficiencies'"
+          concrete: "'Stop wasting time in pointless meetings'"
+          abstract: "'Improve operational throughput'"
+          concrete: "'Orders ship to customers two days faster'"
+        effect: "Audience can visualize and emotionally connect"
+
+      fix_4_employ_strategic_pacing:
+        action: "Vary sentence length; insert strategic pauses after key emotional points"
+        technique: "After a powerful statement, pause for 2-3 seconds. Let it land."
+        effect: "Builds tension; allows message to resonate"
+
+      fix_5_enhance_visuals:
+        action: "Replace text-heavy slides with single powerful images"
+        principle: "Images should evoke the core emotion of the point, not just illustrate data"
+        examples:
+          problem_slide: "Image of frustrated team (not a chart of churn)"
+          solution_slide: "Image of confident, energized team"
+        effect: "Emotional resonance bypasses logic centers; creates lasting memory"
+
+      fix_6_ensure_character_transformation:
+        action: "Verify protagonist has visible character arc (Lie→Truth)"
+        check: "By story's end, is protagonist (customer/team) different? Different beliefs? New capability?"
+        effect: "Transformation is inherently emotionally satisfying"

@@ -1,0 +1,583 @@
+_meta:
+  id: narrative_quality_rubric
+  title: Narrative Quality Rubric
+  description: Rubric for narrative quality assessment covering SOAR coverage, coherence, clarity, audience fit, evidence, and reusability
+  domain: pedagogical
+  domain_type: workflow
+  purpose: scoring
+  version: "2.4.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Best Practices for Writing Effective Corporate Learning Content.md"
+    - "Corpus/Research/Crafting Powerful Opening Plays.md"
+    - "Corpus/Research/Research - Comprehensive Audience Analysis.md"
+    - "Corpus/Research/Research - Using SOAR Storytelling most effectively.md"
+    - "Corpus/Research/Storytelling for Different Business Personas.md"
+
+
+  relationships:
+    - target: scoring/cognitive_load_rubric.yaml
+      type: depends_on
+      description: "Both quality evaluation rubrics; narrative quality and cognitive load are assessed together"
+rubric_weights:
+  coverage: 0.25      # SOAR completeness
+  coherence: 0.20     # logical flow & transitions
+  clarity: 0.20       # plain language, one idea per section
+  audience_fit: 0.15  # WIIFM & persona relevance
+  evidence: 0.10      # proof points, metrics
+  reusability: 0.10   # template + lexicon compliance
+
+# ==============================================================================
+# QUALITY DIMENSIONS
+# ==============================================================================
+
+dimensions:
+  coverage:
+    description: "SOAR framework completeness - all narrative elements present"
+    evaluates:
+      - situation_present: "Context and challenges established"
+      - opportunity_present: "Vision and value articulated"
+      - action_present: "Solution and approach described"
+      - result_present: "Outcomes and proof points included"
+    soar_excellence_criteria:
+      situation:
+        function: "Primes audience relevance — functions as alignment test, not data dump"
+        excellence:
+          - "Names who, when, where with specific (not exhaustive) detail"
+          - "Includes at least one concrete grounding element (year, company type, challenge indicator)"
+          - "Audience mentally confirms: 'Yes, that's my context'"
+          - "Establishes relevance without data overload"
+        weak:
+          - "Skips context entirely and jumps to results"
+          - "Exhaustive background that doesn't serve the narrative"
+          - "Assumes audience knows the scenario without establishing it"
+      opportunity:
+        function: "Establishes stakes — tension increases engagement: humans naturally tune in to resolve uncertainties"
+        excellence:
+          - "Frames both the goal AND the obstacle"
+          - "Names what is at risk if nothing changes (stakes)"
+          - "Uses the customer's own values and language"
+          - "Introduces explicit tension or conflict"
+          - "Audience thinks: 'I care about this problem'"
+        weak:
+          - "States opportunity without tension"
+          - "Generic problem framing not specific to this audience"
+          - "Framed from seller perspective, not buyer perspective"
+      approach:
+        function: "Demonstrates credibility and insight — show, don't just tell"
+        excellence:
+          - "2–4 logical steps in causal order"
+          - "Names the human actors involved"
+          - "Shows effort or ingenuity (not just a feature list)"
+          - "Each step connects back to obstacles named in Opportunity"
+          - "Positions customer as hero, vendor as guide"
+          - "Audience can vividly imagine the solution in action"
+        weak:
+          - "Reads as an operations manual or feature list"
+          - "Steps do not connect back to Opportunity challenges"
+          - "Company is the hero, not the customer"
+          - "Fewer than 2 steps (underdeveloped) or more than 4 (overwhelming)"
+      results:
+        function: "Delivers proof and payoff — distinguish result (what) from benefit (why it matters)"
+        excellence:
+          - "Contains both quantified metrics AND plain-language benefit translation"
+          - "Closes the loop back to the original Opportunity framing"
+          - "At least one human or emotional outcome included"
+          - "Ends on forward-looking or crescendo statement"
+          - "Optional: testimonial or quote from named/titled stakeholder"
+          - "Comparison/baseline framing: before→after or against target"
+        weak:
+          - "Raw metrics without 'so what' translation (result without benefit)"
+          - "Results that don't address the challenge set up in Opportunity"
+          - "Only qualitative without any quantified outcome"
+          - "More than 3 data points — risks overwhelming audience"
+        research_note: "54% of B2B buyers engage with case studies; 1–2 strong metrics more effective than lists"
+
+  coherence:
+    description: "Logical flow, transitions, and narrative structure"
+    evaluates:
+      - logical_progression: "Ideas flow naturally from one to next"
+      - transition_quality: "Clear connections between sections"
+      - narrative_arc: "Story builds to conclusion"
+      - vision_path_balance: "Appropriate mix of vision vs execution detail"
+    transition_standards:
+      opportunity_to_approach:
+        pattern: "We knew we had to act — here's what we did"
+        test: "Does the Approach feel causally necessitated by the Opportunity?"
+        requirement: "Cause-and-effect linkage required"
+      approach_to_results:
+        pattern: "After those efforts, here's what happened"
+        test: "Does the transition signal logical consequence?"
+        requirement: "Temporal or causal connector required"
+    loop_closure:
+      description: "Results must explicitly reference the challenge or pain named in Opportunity"
+      test: "If Opportunity named 'unsuccessful product launches', Results must reference 'product launch success'"
+      failure_mode: "Results address a different problem than the one posed in Opportunity"
+      excellence_marker: "Explicit symmetry between Opportunity framing and Results payoff"
+    emotional_arc:
+      description: "Narrative moves through emotional beats appropriate to the story"
+      structure:
+        opportunity_tone: "Challenge / frustration / urgency — audience feels the stakes"
+        approach_tone: "Effort / tension / ingenuity — audience senses the work required"
+        results_tone: "Relief / pride / excitement — emotional resolution"
+      minimum_standard: "At least one emotional signal present in any section"
+      excellence_marker: "All three beats present; tone resolves positively"
+      research_basis: "Oxytocin released by emotional content makes listeners more receptive (neuroscience)"
+      anti_pattern: "Canned or boastful tone — only triumph, no acknowledgment of challenge"
+
+  clarity:
+    description: "Plain language, one idea per section, readability"
+    evaluates:
+      - jargon_level: "Minimal unnecessary technical terminology"
+      - sentence_complexity: "Clear, scannable sentences"
+      - value_clarity: "Benefits explicitly stated"
+      - single_focus: "Each section has one main point"
+    specificity_standards:
+      description: "Narrative transportation requires vivid, concrete details"
+      high_specificity:
+        - "Named company type, industry, or scenario"
+        - "Concrete challenge indicators (year, scale, measurement)"
+        - "Named human actors (role titles at minimum)"
+        - "Comparison framing: 'aimed for 5%, achieved 20%'"
+      low_specificity:
+        - "Unnamed company or 'a large enterprise'"
+        - "Generic pain: 'they struggled with efficiency'"
+        - "No actors named"
+        - "Abstract success: 'significant improvement'"
+      research_note: "Specific scenarios trigger narrative transportation; generic scenarios allow critical defences to remain up"
+
+  audience_fit:
+    description: "WIIFM focus and persona relevance"
+    evaluates:
+      - customer_centricity: "Focus on 'you' not 'we'"
+      - pain_point_alignment: "Addresses persona's specific challenges"
+      - kpi_connection: "Links to metrics persona cares about"
+      - tone_alignment: "Matches expected tone for stage/persona"
+    protagonist_check:
+      description: "The customer or audience-relatable persona must be the story hero"
+      test: "Is the customer the protagonist who achieves the outcome?"
+      failure: "Vendor/solution is the hero; customer is passive recipient"
+      fix: "Reframe as: the customer's team solved the problem — the solution was their enabler"
+      research_basis: "Don't make the company the hero; position your customer as the hero"
+    persona_profiles:
+      marketing_leaders:
+        titles: ["CMO", "CBO", "VP Marketing"]
+        tone: "Visionary"
+        wiifm_core: "Proven ROI, competitive differentiation, and data-driven personalisation at scale"
+        resonant_vocabulary: ["ROI", "measurable results", "brand equity", "market share", "competitive advantage", "omnichannel", "personalisation", "GenAI", "differentiation", "campaign performance"]
+        alienating_vocabulary: ["architecture", "API", "technical debt", "migration", "implementation overhead"]
+        pain_points: ["lack of visibility into costs and ROI", "outdated workflows and fragmented systems", "budget pressure to prove ROI", "unclear GenAI capabilities"]
+        kpis: ["ROI / marketing performance", "campaign time to market", "brand equity metrics", "market share"]
+      creative_leaders:
+        titles: ["CCO", "CDO", "VP Creative"]
+        tone: "Pragmatic"
+        wiifm_core: "Maintain brand quality and creative vision while scaling output and removing bottlenecks"
+        resonant_vocabulary: ["creative vision", "brand integrity", "time to market", "rework", "bottlenecks", "review and approval", "content demand", "brand differentiation"]
+        alienating_vocabulary: ["TCO", "scalability", "infrastructure", "compliance"]
+        pain_points: ["generating enough content to meet demand", "bottlenecks in review and approval", "functional silos and legacy systems", "outdated manual workflows"]
+        kpis: ["time to market", "content output volume", "rework rates", "brand consistency scores"]
+      ops_personas:
+        titles: ["VP Ops", "Director Marketing Ops", "Director Creative Ops"]
+        tone: "Detailed"
+        wiifm_core: "Cleaner, more integrated tech stack with measurable, governable outcomes"
+        resonant_vocabulary: ["process optimisation", "consolidation", "integration", "KPIs", "tech stack", "redundancies", "end-to-end content lifecycle", "governance", "compliance"]
+        alienating_vocabulary: ["visionary", "transformational"]
+        pain_points: ["disconnected tools and processes", "legacy systems and duplicated work", "multiple vendor sprawl", "inability to demonstrate need for new tools"]
+        kpis: ["tech stack redundancy / consolidation metrics", "content lifecycle efficiency", "campaign compliance rates", "vendor count"]
+      it_leaders:
+        titles: ["CIO", "CTO", "VP MarTech", "VP IT"]
+        tone: "Confident / Technical"
+        wiifm_core: "Secure, scalable solution that integrates with existing infrastructure and reduces technical debt"
+        resonant_vocabulary: ["security", "scalability", "compliance", "API-first", "integration", "TCO", "legacy migration", "technical debt", "SLAs", "enterprise-grade support"]
+        alienating_vocabulary: ["brand equity", "creative vision", "campaign performance"]
+        pain_points: ["supporting fast-moving marketing teams with limited resources", "managing fragmented tech stacks", "legacy systems and technical debt", "poor service from providers"]
+        kpis: ["security incident rates", "system uptime / SLA compliance", "TCO", "integration coverage"]
+
+  evidence:
+    description: "Proof points, metrics, and credibility"
+    evaluates:
+      - quantified_outcomes: "Specific numbers and percentages"
+      - customer_examples: "Named or anonymized case studies"
+      - third_party_validation: "Analyst quotes, awards, certifications"
+      - relevance: "Evidence matches audience industry/context"
+    quality_standards:
+      optimal_metric_count: 2
+      metric_count_rationale: "1–2 strong, selective data points more persuasive than a list; more than 3 risks overwhelming audience"
+      required_components:
+        - result_metric: "Quantified result (%, $, time, scale)"
+        - benefit_translation: "Plain-language 'so what' — why the metric matters to this audience"
+        - human_scale_example: "Convert statistics to human experience (e.g., '5 customers saved per 100 per month')"
+      excellence_markers:
+        comparison_framing:
+          description: "Data gains impact when framed against a baseline or target"
+          example: "Aimed for 5% growth, achieved 20% — four times our goal"
+          mechanism: "Surprise + contrast increase emotional resonance"
+        testimonial_quote:
+          description: "Quote from named or titled stakeholder counts as evidence"
+          example: "Our COO told us: 'This change saved my team so much headache'"
+          title_minimum: "Role title required (COO, Team Lead, Supervisor)"
+      anti_patterns:
+        metrics_without_benefit: "Statistics without a 'so what' translation leave analytical proof with no emotional resonance"
+        exceeding_metric_count: "More than 2–3 data points risks diminishing returns and audience fatigue"
+        irrelevant_evidence: "Case study from different industry/persona without translation"
+      research_note: "22% more likely to remember a statistic embedded in a story vs standalone"
+
+  reusability:
+    description: "Template compliance and lexicon adherence"
+    evaluates:
+      - terminology_compliance: "Uses preferred terms from lexicon"
+      - structure_compliance: "Follows expected section structure"
+      - brand_consistency: "Adheres to brand voice guidelines"
+
+# ==============================================================================
+# QUALITY CHECKS
+# ==============================================================================
+
+checks:
+  # ---------------------------------------------------------------------------
+  # WIIFM (What's In It For Me)
+  # ---------------------------------------------------------------------------
+  wiifm:
+    description: "Ensures customer-centric language and benefit focus"
+    you_we_ratio_min: 0.60              # ('you/your') / ('we/our') within O/A sections
+    min_benefit_mentions: 2              # count of benefit phrases
+    benefit_patterns:
+      - "so you can"
+      - "so that you"
+      - "which means you"
+      - "for you"
+      - "your team will"
+      - "you will be able to"
+    require_persona_pain_reference: true # at least one persona pain/KPI mentioned
+    persona_benefit_patterns:
+      marketing_leaders: ["ROI", "brand equity", "market share", "competitive advantage", "personalisation at scale"]
+      creative_leaders: ["time to market", "rework reduction", "brand quality", "creative vision", "bottleneck removal"]
+      ops_personas: ["process optimisation", "tech stack consolidation", "governance", "KPI visibility"]
+      it_leaders: ["TCO", "security", "scalability", "integration", "technical debt reduction"]
+
+  # ---------------------------------------------------------------------------
+  # Value Clarity
+  # ---------------------------------------------------------------------------
+  value_clarity:
+    description: "Ensures clear articulation of value proposition"
+    require_value_prop_sentence: true    # explicit value prop line in Opportunity
+    value_prop_patterns:
+      - "we help you"
+      - "we enable you"
+      - "so you can"
+      - "we deliver"
+      - "value proposition"
+    require_outcome_metric: true
+    outcome_metric_patterns:
+      - "% improvement"
+      - "x faster"
+      - "reduction"
+      - "increase"
+      - "ROI"
+      - "TCO"
+      - "payback"
+      - "time to value"
+    min_proof_points: 2
+    so_what_test:
+      description: "Every result claim must answer 'so what?' in the same breath"
+      format: "Result + Benefit + Audience-Relevant Translation"
+      example: "We reduced errors by 50% [result], which freed sales reps to spend more time with customers [benefit], which is exactly what your team is striving for [translation]"
+      failure: "Result stated without explanation of why it matters to this audience"
+
+  # ---------------------------------------------------------------------------
+  # Vision vs Path Balance
+  # ---------------------------------------------------------------------------
+  vision_vs_path:
+    description: "Ensures appropriate balance of vision vs execution detail by stage"
+    vision_cues:
+      - "vision"
+      - "north star"
+      - "imagine"
+      - "future"
+      - "why now"
+      - "strategy"
+    how_cues:
+      - "how it works"
+      - "roadmap"
+      - "pilot"
+      - "POC"
+      - "implementation"
+      - "migration"
+      - "timeline"
+      - "architecture"
+      - "next steps"
+    # Methodological targets by sales stage (from Adobe methodology)
+    balance_targets_by_stage:
+      "1": { vision_min: 0.60, how_min: 0.10 }  # early: sell the vision
+      "2": { vision_min: 0.50, how_min: 0.15 }
+      "3": { vision_min: 0.30, how_min: 0.30 }  # mid: balance vision with proof/how
+      "4": { vision_min: 0.20, how_min: 0.40 }
+      "5": { vision_min: 0.10, how_min: 0.50 }  # late: emphasize execution & outcomes
+    dual_layer_requirement:
+      description: "Both vision AND evidence must be present in any complete narrative"
+      vision_only_failure: "Comes across as hype — inspires but doesn't prove"
+      evidence_only_failure: "Comes across as a dry report — proves but doesn't inspire"
+      research_basis: "When you show a bold vision and simultaneously provide evidence, you engender both confidence and enthusiasm"
+
+  # ---------------------------------------------------------------------------
+  # Call to Action
+  # ---------------------------------------------------------------------------
+  cta:
+    description: "Ensures clear next steps appropriate for sales stage"
+    criteria:
+      required_from_stage: 3
+      description: "Clear, specific call to action"
+    patterns:
+      - "next steps"
+      - "call to action"
+      - "pilot"
+      - "POC"
+      - "workshop"
+      - "schedule"
+      - "sign"
+      - "approve"
+      - "kickoff"
+    stage_cta_types:
+      stages_1_2:
+        type: "Visionary"
+        patterns: ["imagine what outcomes like these could mean", "consider how this could apply", "let us explore the possibilities"]
+        goal: "Prompt audience to envision their own positive outcome before direct action is requested"
+      stages_3_4:
+        type: "Transitional"
+        patterns: ["let's explore how we can achieve similar results", "let's scope an initial engagement"]
+        goal: "Bridge from vision to concrete action"
+      stages_4_5:
+        type: "Transactional"
+        patterns: ["let us show you", "schedule a pilot", "sign off on the POC"]
+        goal: "Specific, action-oriented next step"
+    story_led_cta:
+      description: "CTA should feel logically implied by the story, not bolted on"
+      test: "Does the CTA reference content from the story ('similar results for you' etc.)?"
+
+  # ---------------------------------------------------------------------------
+  # Jargon Detection
+  # ---------------------------------------------------------------------------
+  jargon:
+    description: "Detects excessive technical jargon not in approved lexicon"
+    criteria:
+      max_ratio:
+        description: "Maximum jargon tokens as percentage of total"
+        target: "<=0.18"
+      allowlist_from_lexicon:
+        description: "Exclude preferred_terms from jargon count"
+        enabled: true
+    persona_jargon_guidance:
+      marketing_leaders_avoid: ["API", "technical debt", "migration", "implementation overhead", "architecture"]
+      creative_leaders_avoid: ["TCO", "infrastructure", "compliance matrix", "SLAs"]
+      ops_personas_avoid: ["visionary", "transformational", "paradigm shift"]
+      it_leaders_avoid: ["brand equity", "creative empowerment", "campaign ROI"]
+
+  # ---------------------------------------------------------------------------
+  # Tone Alignment
+  # ---------------------------------------------------------------------------
+  tone_alignment:
+    description: "Ensures tone matches expected tone for sales stage and persona"
+    criteria:
+      enforce_stage_tone:
+        description: "Compare to tone defined in sales_stages.yaml"
+        enabled: true
+      tone_reference: "sales/stages.yaml"
+    persona_tone_mapping:
+      marketing_leaders: "Visionary"
+      creative_leaders: "Pragmatic"
+      ops_personas: "Detailed"
+      it_leaders: "Confident / Technical"
+    tone_definitions:
+      visionary: "Forward-looking, outcome-oriented, strategic; leads with possibility and market transformation"
+      pragmatic: "Concrete, process-focused, example-driven; leads with real workflow impact and bottleneck removal"
+      detailed: "Specific, metric-driven, governance-aware; leads with operational outcomes and measurable KPIs"
+      confident_technical: "Authoritative, architecture-aware, risk-conscious; leads with security, scalability, and integration specifics"
+
+  # ---------------------------------------------------------------------------
+  # Emotional Arc (NEW — research-backed)
+  # ---------------------------------------------------------------------------
+  emotional_arc:
+    description: "Evaluates presence and quality of emotional progression through the narrative"
+    minimum_standard: "At least one emotional signal in any section"
+    optimal_structure:
+      opportunity_emotion: "Challenge / frustration / urgency signals present"
+      approach_emotion: "Effort / tension / ingenuity acknowledged — including at least one obstacle"
+      results_emotion: "Relief / pride / excitement — positive resolution"
+    authenticity_requirement:
+      description: "Approach must acknowledge at least one obstacle, doubt, or challenge"
+      test: "Is there a moment of vulnerability or challenge acknowledged within the Approach?"
+      failure: "Only smooth success narrated — narrative feels canned or boastful"
+      fix: "Add: 'One challenge we encountered was X — here's how the team addressed it'"
+    research_basis: "Neuroscience: emotional content triggers oxytocin release, increasing trust and receptiveness to the message"
+    anti_pattern: "Triumphalist narrative — all success, no struggle — reduces authenticity and trust"
+
+  # ---------------------------------------------------------------------------
+  # Loop Closure (NEW — narrative coherence standard)
+  # ---------------------------------------------------------------------------
+  loop_closure:
+    description: "Results must explicitly close the loop opened in Opportunity"
+    test: "Does the Results section directly address the specific challenge or pain named in Opportunity?"
+    example:
+      opportunity_framing: "Struggling with unsuccessful product launches"
+      required_result_reference: "The next launch was our most profitable ever"
+      failure: "Results describe a different outcome than the problem posed"
+    excellence_marker: "Explicit lexical echo between Opportunity challenge and Results payoff"
+    failure_mode: "Story ends with results that don't address the original problem — leaves audience feeling incomplete"
+    maps_to_dimension: coherence
+
+  # ---------------------------------------------------------------------------
+  # Protagonist Framing (NEW — customer-as-hero standard)
+  # ---------------------------------------------------------------------------
+  protagonist_framing:
+    description: "Verifies the customer/audience persona is positioned as the story hero"
+    hero_test: "Is the customer the protagonist who drives the outcome?"
+    guide_test: "Is the vendor/solution positioned as the enabler, not the hero?"
+    failure_signals:
+      - "Narrative leads with 'We at [Company] developed...' rather than 'Our customer needed to...'"
+      - "Customer is passive: 'We gave them...' not 'They achieved...'"
+      - "Solution is the subject of every sentence"
+    fix: "Reframe: 'The team at [Customer] tackled X. Using [Solution], they were able to...'"
+    research_basis: "Audiences identify with people like them. Making the company the hero reduces identification and engagement"
+    maps_to_dimension: audience_fit
+
+  # ---------------------------------------------------------------------------
+  # Objection Pre-emption (NEW — persona-specific)
+  # ---------------------------------------------------------------------------
+  objection_preemption:
+    description: "High-quality narratives proactively address the audience's documented common objections"
+    persona_objections:
+      marketing_leaders: ["comprehensive tech overhaul cost concerns", "GenAI uncertainty and risk", "ROI proof timeline"]
+      creative_leaders: ["shrinking budgets", "change management complexity", "siloed organisational structure", "lack of exec sponsorship"]
+      ops_personas: ["cross-department consensus challenges", "legacy retirement complexity", "change management burden"]
+      it_leaders: ["budget constraints for migration", "legacy retirement cost and bandwidth", "security validation requirements"]
+    test: "Does the narrative touch on at least one of the persona's documented common objections?"
+    maps_to_dimension: audience_fit
+
+# ==============================================================================
+# QUALITY SIGNALS
+# ==============================================================================
+
+positive_signals:
+  - customer_metric: "Includes specific customer outcome metric"
+  - customer_quote: "Includes customer testimonial or quote"
+  - persona_specific_wiifm: "WIIFM tailored to specific persona"
+  - explicit_value_prop: "Clear value proposition sentence"
+  - clear_next_step: "Specific, actionable next step"
+  - loop_closure_achieved: "Results explicitly address Opportunity framing"
+  - emotional_arc_complete: "Frustration → effort → resolution arc present"
+  - comparison_framing: "Before/after or target-vs-actual comparison in Results"
+  - protagonist_customer: "Customer clearly positioned as story hero"
+  - authentic_obstacle: "At least one challenge/obstacle acknowledged in Approach"
+  - social_proof_persona_matched: "Evidence features similar role/industry to target persona"
+  - objection_preempted: "Narrative addresses a known audience objection"
+
+negative_signals:
+  - missing_required_element: "Required SOAR element missing"
+  - banned_term: "Uses term from banned list"
+  - drift_opportunity_statement: "Opportunity statement doesn't match core value prop"
+  - misaligned_tone: "Tone doesn't match stage expectations"
+  - missing_cta: "No call to action when expected"
+  - poor_vision_path_balance: "Vision/how balance wrong for stage"
+  - company_as_hero: "Vendor/solution positioned as hero, not customer"
+  - generic_opportunity: "Opportunity doesn't reflect audience's specific values or pain"
+  - no_sowthat_translation: "Results stated without benefit/impact translation"
+  - unresolved_narrative: "Results don't close the loop opened in Opportunity"
+  - emotional_flatness: "No emotional signals in any section — feels like a dry report"
+  - persona_vocabulary_mismatch: "Uses terms that alienate the target persona"
+  - metric_overload: "More than 3 data points in Results — risks overwhelming audience"
+  - triumphalism: "Only success narrated, no obstacles acknowledged — feels boastful"
+  - vision_without_evidence: "Inspires but doesn't prove — comes across as hype"
+  - evidence_without_vision: "Proves but doesn't inspire — comes across as a dry report"
+
+# ==============================================================================
+# THRESHOLDS
+# ==============================================================================
+
+thresholds:
+  min_soar_confidence: 0.55
+  min_outline_sections: 4
+  max_jargon_ratio: 0.18
+  min_result_evidence_late_stage:
+    applies_from_stage: 4
+    min_ratio: 0.25
+  optimal_results_metric_count: 2
+  max_results_metric_count: 3
+  approach_step_range:
+    min: 2
+    max: 4
+  loop_closure_confidence: 0.70
+  emotional_arc_minimum_signals: 1
+
+# ==============================================================================
+# PENALTIES (Score Deductions)
+# ==============================================================================
+
+penalties:
+  missing_required_element: 0.10   # Missing S, O, A, or R
+  banned_term: 0.05                # Using term from banned list
+  drift_opportunity_statement: 0.08 # Opportunity doesn't match core value prop
+  misaligned_tone: 0.05            # Tone wrong for stage/persona
+  missing_cta: 0.04                # No call to action when expected
+  poor_vision_path_balance: 0.05   # Vision/how balance wrong for stage
+  company_as_hero: 0.06            # Vendor positioned as hero, not customer
+  generic_opportunity: 0.05        # Opportunity doesn't reflect audience pain/values
+  no_sowthat_translation: 0.05     # Result stated without 'so what' benefit
+  unresolved_narrative: 0.06       # Loop not closed between Opportunity and Results
+  emotional_flatness: 0.03         # No emotional signals anywhere in narrative
+  metric_overload: 0.03            # More than 3 data points — risks audience fatigue
+  vision_only_no_evidence: 0.04    # Inspires but doesn't prove — hype
+  evidence_only_no_vision: 0.04    # Proves but doesn't inspire — dry report
+
+# ==============================================================================
+# BONUSES (Score Additions)
+# ==============================================================================
+
+bonuses:
+  includes_customer_metric: 0.03   # Specific customer outcome metric
+  includes_customer_quote: 0.02    # Customer testimonial or quote
+  persona_specific_wiifm: 0.02     # WIIFM tailored to specific persona
+  explicit_value_prop_sentence: 0.02 # Clear value proposition sentence
+  clear_next_step: 0.02            # Specific, actionable next step
+  loop_closure_achieved: 0.02      # Results explicitly close Opportunity loop
+  emotional_arc_complete: 0.02     # Full frustration → effort → resolution arc
+  comparison_framing: 0.02         # Before/after or target-vs-actual framing
+  authentic_obstacle: 0.01         # Obstacle or challenge acknowledged in Approach
+  objection_preempted: 0.01        # Proactively addresses documented audience objection
+
+# ==============================================================================
+# RESEARCH BENCHMARKS
+# ==============================================================================
+
+research_benchmarks:
+  memorability:
+    statistic: "Stories are up to 22 times more memorable than facts alone"
+    source: "Research - Using SOAR Storytelling most effectively.md"
+    implication: "Structured SOAR narrative dramatically outperforms data-only communication"
+  statistic_retention:
+    statistic: "22% more likely to remember a statistic embedded in a story vs standalone"
+    source: "Research - Using SOAR Storytelling most effectively.md"
+    implication: "Evidence in Results must be contextualised within the story arc"
+  b2b_case_study_engagement:
+    statistic: "54% of B2B buyers engage with case studies during purchase process"
+    source: "Research - Using SOAR Storytelling most effectively.md"
+    implication: "Evidence dimension is a primary quality driver, not secondary"
+  neurochemistry:
+    statistic: "Emotional content triggers oxytocin release, increasing trust and receptiveness"
+    source: "Research - Using SOAR Storytelling most effectively.md"
+    implication: "Emotional arc is not ornamental — it determines audience openness to the CTA"
+
+# ==============================================================================
+# SUBSCORE ROLLUP (How checks map to dimensions)
+# ==============================================================================
+
+weights_contrib:
+  wiifm: audience_fit
+  value_clarity: clarity
+  vision_vs_path: coherence
+  cta: coherence
+  jargon: clarity
+  tone_alignment: audience_fit
+  emotional_arc: coherence
+  loop_closure: coherence
+  protagonist_framing: audience_fit
+  objection_preemption: audience_fit

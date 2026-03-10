@@ -1,0 +1,648 @@
+_meta:
+  id: cognitive_load_principles
+  title: Cognitive Load Optimization
+  description: Cognitive Load Theory application with Mayer's 15 Multimedia Principles operationalized for visual, written, and interactive design in corporate learning.
+  domain: pedagogical
+  domain_type: workflow
+  purpose: methodology
+  version: "1.3.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md"
+    - "Corpus/Research/Best Practices for Writing Effective Corporate Learning Content.md"
+    - "Corpus/Research/Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+
+  relationships:
+    - target: methodology/mayer_principles.yaml
+      type: depends_on
+      description: "Same cognitive framework family; CLT principles ground Mayer's categories"
+cognitive_load_types:
+  description: "Three types of cognitive load affecting learning"
+
+  intrinsic_load:
+    definition: "Inherent difficulty of the material itself"
+    characteristics:
+      - "Determined by element interactivity"
+      - "Cannot be eliminated, only managed"
+      - "High for complex, interrelated concepts"
+    management_strategies:
+      - "Segment complex content into smaller chunks"
+      - "Pre-train on foundational concepts first"
+      - "Sequence from simple to complex"
+      - "Reduce element interactivity where possible"
+
+  extraneous_load:
+    definition: "Unnecessary cognitive effort imposed by poor design"
+    characteristics:
+      - "Caused by suboptimal presentation"
+      - "CAN and SHOULD be eliminated"
+      - "The primary target of design optimisation"
+    common_causes:
+      - "Split-attention: related information in separate locations"
+      - "Redundancy: same information in multiple channels"
+      - "Chartjunk: decorative non-data elements"
+      - "Poor visual hierarchy: unclear what's important"
+      - "Inconsistent design: requires re-learning patterns"
+
+  germane_load:
+    definition: "Productive effort spent on schema construction"
+    characteristics:
+      - "Directly contributes to learning"
+      - "Should be maximised once extraneous is reduced"
+      - "Supports deep processing and transfer"
+    enhancement_strategies:
+      - "Use worked examples with explanations"
+      - "Provide self-explanation prompts"
+      - "Vary practice conditions"
+      - "Use visual-verbal integration"
+
+working_memory_constraints:
+  description: "Fundamental limitations of human cognitive processing. Research shows working memory capacity is approximately 5–9 items, but effective design targets 4±1 for safety margin."
+  evidence_source: "Best Practices for Writing Effective Corporate Learning Content.md; Applying Mayer's Principles & Contemporary Theory.md"
+
+  millers_law:
+    principle: "Working memory holds 7±2 items (often cited as 5–9 items in recent research)"
+    practical_limit: "Design for 4±1 chunks for safety margin. By chunking content, you respect this limitation."
+    application:
+      - "Maximum 5-7 bullets per slide (avoid overwhelming)"
+      - "Maximum 4 data series per chart"
+      - "Maximum 4-6 key concepts per section"
+      - "Text: One main idea per section or module"
+      - "Documents: Break long content into discrete, labeled subsections"
+    example: "Instead of one 30-page 'Company Policies' document, break into 'Attendance Policy,' 'Expense Policy,' 'Time Off,' etc."
+    source: "Best Practices for Writing Effective Corporate Learning Content.md"
+
+  attention_bottleneck:
+    principle: "Limited attentional capacity"
+    application:
+      - "One focal point per visual"
+      - "Clear visual hierarchy"
+      - "Eliminate competing signals"
+
+  dual_channel_processing:
+    principle: "Separate channels for visual and auditory processing"
+    application:
+      - "Use graphics with narration (not graphics with text)"
+      - "Avoid redundant verbal channels"
+      - "Leverage both channels simultaneously"
+
+# ==============================================================================
+# MAYER'S 15 MULTIMEDIA PRINCIPLES
+# ==============================================================================
+
+mayer_principles:
+  description: "Research-based principles for multimedia learning effectiveness"
+
+  # REDUCING EXTRANEOUS PROCESSING
+
+  coherence:
+    category: "Reduce Extraneous Processing"
+    principle: "People learn better when extraneous material is excluded"
+    effect_size: "73% retention penalty when extraneous material present (Mayer & Moreno, meta-analysis)"
+    application:
+      - "Remove decorative images that don't support learning"
+      - "Eliminate background music during explanation"
+      - "Cut unnecessary words and details"
+      - "Remove seductive details that distract from core message"
+    design_rule: "Every element must serve the learning goal"
+    anti_patterns:
+      - "Stock photos unrelated to content"
+      - "Complex backgrounds behind text"
+      - "Fun facts that don't support objectives"
+    source: "Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md"
+
+  signalling:
+    category: "Reduce Extraneous Processing"
+    principle: "People learn better when cues highlight essential material"
+    effect_size: "d ≈ 0.35 (Cohen's d, medium effect); signals reduce extraneous load by directing attention"
+    application:
+      - "Use arrows/pointers to direct attention"
+      - "Highlight key terms with bold or colour"
+      - "Use headings and numbered lists"
+      - "Add emphasis through visual contrast"
+    design_rule: "Guide the eye to what matters most"
+    techniques:
+      - "Colour coding for categories"
+      - "Callout boxes for key information"
+      - "Progressive reveal in animations"
+      - "Gestural cues from presenter"
+    source: "Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md"
+
+  redundancy:
+    category: "Reduce Extraneous Processing"
+    principle: "People learn better from graphics + narration than graphics + narration + text"
+    effect_size: "64% recall boost when eliminating redundancy between verbal channels (Kalyuga et al., expertise reversal caveat applies for novices)"
+    application:
+      - "DON'T read on-screen text verbatim"
+      - "Use keywords on screen, elaborate verbally"
+      - "Choose narration OR text, not both for same content"
+    design_rule: "Avoid competing verbal channels"
+    exception: "When learners are non-native speakers or content is technical terminology, brief text labels can help. Novices may benefit from redundancy; experts are hindered by it (expertise reversal effect)"
+    source: "Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md"
+
+  spatial_contiguity:
+    category: "Reduce Extraneous Processing"
+    principle: "People learn better when related text and graphics are near each other"
+    effect_size: "43–89% improvement in performance when text and graphics are integrated (Mayer, Moreno, & Mathias; varies by content complexity)"
+    application:
+      - "Place labels directly on or beside diagrams"
+      - "Integrate text into graphics, not in separate legends"
+      - "Keep captions close to their images"
+      - "No page-turns between related content"
+    design_rule: "Adjacent = related"
+    anti_patterns:
+      - "Separate legends requiring eye movement"
+      - "Text at bottom, graphic at top"
+      - "References to content on other pages"
+    source: "Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md"
+
+  temporal_contiguity:
+    category: "Reduce Extraneous Processing"
+    principle: "People learn better when corresponding words and pictures are presented simultaneously"
+    effect_size: "Substantial improvements in learning outcomes when timing is synchronized; effect increases with working memory load"
+    application:
+      - "Sync graphics with narration timing"
+      - "Show diagram as you explain it"
+      - "No delayed reveals of relevant content"
+    design_rule: "Related content appears together in time"
+    animation_implication: "Build animations phrase-by-phrase with narration"
+    source: "Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md"
+
+  # MANAGING INTRINSIC PROCESSING
+
+  segmenting:
+    category: "Manage Intrinsic Processing"
+    principle: "People learn better when complex content is presented in learner-paced segments"
+    effect_size: "d ≈ 0.75 (large effect); segmentation allows learners to consolidate schemas between segments"
+    application:
+      - "Break complex topics into discrete modules"
+      - "Use section breaks and chapter markers"
+      - "Provide pause points for processing"
+      - "Allow self-paced navigation where possible"
+    design_rule: "Chunk content into digestible pieces"
+    segment_sizing:
+      video: "2-6 minutes per segment ideal"
+      presentation: "One concept per slide"
+      document: "One main idea per section"
+    source: "Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md; Best Practices for Writing Effective Corporate Learning Content.md"
+
+  pre_training:
+    category: "Manage Intrinsic Processing"
+    principle: "People learn better when they already know component concepts and terms"
+    effect_size: "Substantial improvements in complex topics; effect amplified when intrinsic load is high (Mayer & Pilegard, 2014)"
+    related_mechanism: "Advance organizers activate existing schemas and reduce cognitive integration demands. Best practice: 2-5 minute primer before main content for highly technical material."
+    application:
+      - "Introduce key terms before the main lesson"
+      - "Define jargon before using it"
+      - "Establish foundational concepts first"
+      - "Use glossaries and terminology primers"
+      - "Deploy advance organizers (concept maps, overviews) before detailed instruction"
+    design_rule: "Reduce novelty overload with preparation"
+    source: "Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md; Best Practices for Writing Effective Corporate Learning Content.md"
+
+  modality:
+    category: "Manage Intrinsic Processing"
+    principle: "People learn better from graphics + narration than graphics + on-screen text"
+    effect_size: "d ≈ 0.76 (large effect); exploits dual-channel processing capacity; especially powerful for complex visuals"
+    application:
+      - "Use spoken words with visuals, not written words"
+      - "Reserve on-screen text for key terms/labels only"
+      - "Let the visual channel handle imagery, verbal channel handle explanation"
+    design_rule: "Graphics + Voice > Graphics + Text"
+    exception: "When content is complex, self-paced, or reference material, text may be appropriate. Expertise reversal: experts may prefer text; novices benefit from narration."
+    source: "Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md"
+
+  # FOSTERING GENERATIVE PROCESSING
+
+  multimedia:
+    category: "Foster Generative Processing"
+    principle: "People learn better from words and pictures than from words alone"
+    effect_size: "d > 0.8 (very large effect); dual coding theory: visual imagery offloads working memory by leveraging visual channel capacity"
+    application:
+      - "Include relevant graphics with text content"
+      - "Visualise abstract concepts"
+      - "Use diagrams to show relationships"
+      - "Illustrate processes with flowcharts"
+    design_rule: "Show AND tell"
+    visual_imagery_mechanism: "Graphics enable learners to offload complex information from verbal/textual working memory to visual-spatial memory, reducing intrinsic load"
+    graphic_types:
+      representational: "Depicts real objects"
+      organisational: "Shows structure/relationships"
+      relational: "Compares quantities"
+      transformational: "Shows change over time"
+      interpretive: "Makes invisible visible"
+    source: "Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md"
+
+  personalisation:
+    category: "Foster Generative Processing"
+    principle: "People learn better from conversational style than formal style"
+    effect_size: "d ≈ 0.79 (large effect); conversational tone activates social presence, increasing motivation and cognitive engagement"
+    application:
+      - "Use 'you' and 'your' language"
+      - "Write as if speaking to the learner"
+      - "Avoid overly academic phrasing"
+      - "Be direct and friendly"
+    design_rule: "Write like you're explaining to a colleague"
+    mechanism: "Conversational style triggers social presence, which enhances generative processing by inviting active cognitive engagement"
+    source: "Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md; Best Practices for Writing Effective Corporate Learning Content.md"
+
+  voice:
+    category: "Foster Generative Processing"
+    principle: "People learn better when narration is in a human voice rather than machine voice"
+    effect_size: "Meta-analysis shows human voice significantly outperforms synthesized speech; effect strengthened for emotional or motivational content"
+    application:
+      - "Use professional voice talent when possible"
+      - "If using AI voices, choose natural-sounding options (natural prosody, appropriate pacing)"
+      - "Match voice to audience expectations"
+      - "Ensure clear articulation and appropriate pacing (120-150 words per minute optimal)"
+    design_rule: "Human connection aids learning"
+    mechanism: "Natural voice quality triggers social presence and reduces cognitive load by facilitating easier processing of auditory information"
+    source: "Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md"
+
+  image:
+    category: "Foster Generative Processing"
+    principle: "People don't necessarily learn better when speaker's image is on screen"
+    effect_size: "No consistent effect on learning outcomes; can harm performance on complex tasks by competing for visual attention"
+    application:
+      - "Don't default to talking-head video"
+      - "Use speaker image when social presence adds value"
+      - "Remove speaker image during complex graphics"
+    design_rule: "Speaker visibility is optional, not required"
+    when_to_show_speaker:
+      - "Introductions and conclusions"
+      - "Emotional or motivational content"
+      - "When building rapport"
+    when_to_hide_speaker:
+      - "Complex diagram explanations"
+      - "Step-by-step demonstrations"
+      - "Data-heavy content"
+    source: "Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md"
+
+  embodiment:
+    category: "Foster Generative Processing"
+    principle: "People learn better when on-screen agents display human-like gestures and movements"
+    effect_size: "d ≈ 0.40 (small-to-medium effect); gestures guide attention and aid integration of visual information"
+    application:
+      - "Use meaningful hand gestures (pointing, depicting spatial relationships)"
+      - "Point to relevant content on screen"
+      - "Use facial expressions for emphasis and emotional engagement"
+      - "Avoid static, robotic delivery"
+      - "Coordinate gestures with narration for temporal contiguity"
+    design_rule: "Movement and gesture aid comprehension"
+    mechanism: "Iconic and deictic gestures reduce extraneous load by guiding visual attention and facilitating integration of complex information"
+    source: "Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md"
+
+  immersion:
+    category: "Foster Generative Processing"
+    principle: "People don't always learn better in immersive VR environments"
+    effect_size: "Mixed findings: 6x fewer errors in surgical training (high spatial complexity); inconsistent gains for conceptual learning. Novelty effect wears off within 2-3 sessions."
+    application:
+      - "Don't use VR for novelty's sake"
+      - "Use immersion when spatial understanding is critical (surgery, architecture, spatial reasoning)"
+      - "Consider cognitive load of new environments (interface learning, motion sickness, disorientation)"
+      - "Reserve for high-stakes or high-complexity spatial tasks"
+    design_rule: "Match medium to learning need"
+    caveat: "Immersion introduces extraneous load from unfamiliar interfaces. Only justified when spatial embodiment directly supports learning objective."
+    source: "Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md"
+
+  generativity:
+    category: "Foster Generative Processing"
+    principle: "People learn better when prompted to generate responses during learning"
+    effect_size: "d ≈ 0.4–0.8 (medium-to-large effect); effect amplified when generative activity aligns with learning objective (transfer-appropriate processing)"
+    application:
+      - "Include reflection prompts (low-stakes retrieval practice)"
+      - "Add practice questions (spaced retrieval, varied contexts)"
+      - "Request learner predictions before revealing answers"
+      - "Use self-explanation prompts during worked examples"
+      - "Implement spacing and interleaving across multiple sessions"
+    design_rule: "Active processing beats passive receiving"
+    mechanism: "Generative activities force encoding elaboration, strengthen retrieval pathways, and activate schema construction (germane load)"
+    related_strategies: "Retrieval practice and spaced repetition multiply effect size; low-stakes quizzing produces learning gains without anxiety"
+    source: "Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md; Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+# ==============================================================================
+# LANGUAGE & READABILITY: COGNITIVE LOAD REDUCER
+# ==============================================================================
+
+language_and_readability:
+  description: "Using clear language and optimal text formatting to reduce extraneous load in written content"
+
+  readability_thresholds:
+    principle: "Text comprehension depends on word frequency, sentence length, and typographical clarity"
+    target_range:
+      flesch_kincaid_grade: "6-8 for corporate audiences (80% comprehension)"
+      flesch_reading_ease: "60-70 (standard business English)"
+      average_sentence_length: "12-15 words"
+      average_word_length: "4.5-5 characters"
+    tools: "Use Flesch-Kincaid Grade Level, Gunning Fog, or SMOG readability calculators"
+
+  text_formatting_and_layout:
+    principle: "Visual formatting reduces extraneous load by guiding attention and chunking information"
+    techniques:
+      - "Bulleted lists (5-7 items max per list; respects Miller's Law)"
+      - "Short paragraphs (3-4 sentences max; one idea per paragraph)"
+      - "Headings and subheadings (clear hierarchy; scannable structure)"
+      - "Bold or colour for key terms (but avoid excessive highlighting)"
+      - "Appropriate font size (12-14pt body text; 1.5-2.0 line spacing)"
+      - "High contrast (dark text on light background; minimum 4.5:1 ratio for accessibility)"
+      - "Whitespace (margins and padding reduce visual density)"
+    source: "Best Practices for Writing Effective Corporate Learning Content.md"
+
+  writing_for_comprehension:
+    principle: "Active voice, concrete nouns, and minimal jargon reduce cognitive load"
+    strategies:
+      - "Use active voice (reduces subject-verb distance, aids comprehension)"
+      - "Prefer concrete nouns over abstract nouns ('the policy' vs. 'the implementation of the aforementioned framework')"
+      - "Define jargon on first use; use glossaries for technical terminology"
+      - "Avoid negation when possible (affirmative phrasing is easier to process)"
+      - "Use parallel structure in lists and series (reduces re-learning cognitive load)"
+    source: "Best Practices for Writing Effective Corporate Learning Content.md"
+
+  split_attention_in_writing:
+    principle: "Related information separated by distance creates integration demand"
+    common_causes:
+      - "Definitions in footnotes or glossaries separate from use"
+      - "References to figures/tables that appear later"
+      - "Instructions and examples not co-located"
+    solutions:
+      - "Integrate definitions inline at point of first use"
+      - "Place figures/tables immediately after mention in text"
+      - "Show worked example adjacent to instructions (spatial contiguity)"
+
+# ==============================================================================
+# RETRIEVAL PRACTICE AND SPACING
+# ==============================================================================
+
+retrieval_practice_and_spacing:
+  description: "Using low-stakes quizzing and spaced review to strengthen learning and reduce forgetting"
+
+  principle: "Testing effect: people remember information they retrieve more strongly than information they re-read"
+  effect_size: "Retrieval practice produces 50%+ larger long-term retention gains than passive review (Roediger & Karpicke, 2006)"
+
+  best_practices:
+    low_stakes_quizzing:
+      principle: "Frequent, low-stakes quizzes enhance learning without inducing anxiety"
+      implementation:
+        - "Administer 1-2 quizzes per module (ungraded or minimal grade weight)"
+        - "Provide immediate corrective feedback with explanation"
+        - "Use varied question types (multiple choice, short answer, application)"
+        - "Randomize question order to prevent memorization of sequences"
+      research: "Dunlosky et al. (2013) rated low-stakes testing as high-utility learning technique"
+
+    spaced_repetition:
+      principle: "Distributing practice over time (spacing) produces better retention than massed practice"
+      implementation:
+        - "First review: 1-2 days after initial learning (consolidation phase)"
+        - "Second review: 1 week later (prevents decay)"
+        - "Third review: 2-4 weeks later (long-term retention)"
+        - "Use spacing: schedule reviews at expanding intervals"
+      timing_rule: "Optimal spacing = interval before learner begins to forget. Use adaptive spacing based on learner performance."
+
+    retrieval_practice_schedule:
+      week_1: "Initial learning module + immediate low-stakes quiz"
+      week_2: "Spaced review quiz (covers week 1 content + new material)"
+      week_4: "Cumulative review (covers weeks 1-4; interleaved with new content)"
+      week_8: "Summative assessment with mix of familiar and novel problems"
+
+  interleaving:
+    principle: "Mixing different problem types or topics during practice (vs. blocked practice) improves transfer"
+    effect_size: "Interleaving improves transfer to novel problems by 25-50% vs. blocked practice (Rohrer & Taylor, 2007)"
+    implementation:
+      - "Don't practice problems in context-dependent blocks (all coherence problems, then all multimedia problems)"
+      - "Mix problem types within practice sessions"
+      - "Vary contexts to promote generalization"
+    source: "Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md; Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+# ==============================================================================
+# EXPERTISE REVERSAL EFFECT AND ADAPTIVITY
+# ==============================================================================
+
+expertise_reversal_effect:
+  description: "Principles that help novices harm experts—a critical caveat for one-size-fits-all instruction"
+
+  principle: "Instructional features that reduce extraneous load for novices (redundancy, segmenting, worked examples) increase extraneous load for experts"
+  evidence: "Kalyuga et al. (2003); Sweller (2010)"
+
+  affected_principles:
+    - "Redundancy: Novices benefit from redundant text + narration; experts are slowed by dual-coding overhead"
+    - "Modality (graphics + text vs. graphics + narration): Novices benefit from narration; experts can read text faster"
+    - "Worked examples: Novices rely on step-by-step examples; experts find them tedious and prefer to solve directly"
+    - "Segmenting: Novices need pauses for schema consolidation; experts process fluently without interruption"
+
+  design_implication: "Adaptive instruction based on expertise level. Offer options: novices get worked examples and redundancy; experts skip to advanced problems."
+
+  source: "Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md"
+
+# ==============================================================================
+# SPLIT-ATTENTION EFFECT MITIGATION
+# ==============================================================================
+
+split_attention:
+  description: "Strategies to eliminate split-attention in visual design"
+
+  the_problem:
+    definition: "When learners must integrate multiple sources of information that are physically or temporally separated"
+    cognitive_cost: "Uses working memory capacity for integration instead of learning"
+    common_occurrences:
+      - "Separate legend from chart"
+      - "Caption far from image"
+      - "Text explanation beside diagram without integration"
+      - "Audio describing visual that's not on screen"
+
+  solutions:
+    physical_integration:
+      strategy: "Place related content adjacent"
+      techniques:
+        - "Embed labels directly on diagrams"
+        - "Use callouts instead of legends"
+        - "Position text within or beside graphics"
+      example: "Label parts of a diagram directly instead of using a numbered legend"
+
+    temporal_integration:
+      strategy: "Present related content simultaneously"
+      techniques:
+        - "Sync narration with visual appearance"
+        - "Use progressive reveal with matching audio"
+        - "Avoid referencing content not currently visible"
+      example: "Show the step as you describe it, not before or after"
+
+    cognitive_integration:
+      strategy: "Pre-process to reduce integration demands"
+      techniques:
+        - "Pre-train on components separately"
+        - "Use worked examples with integrated steps"
+        - "Provide organisers showing relationships"
+      example: "Teach individual terms before showing the full system diagram"
+
+# ==============================================================================
+# ACCESSIBILITY AS COGNITIVE LOAD REDUCER
+# ==============================================================================
+
+accessibility_as_clt_reducer:
+  description: "Universal design principles reduce extraneous load for all learners, not just those with disabilities"
+
+  principle: "Accessible design (clear contrast, readable fonts, simple navigation, captions) reduces extraneous processing for everyone"
+  mechanism: "Accessibility accommodations address working memory bottlenecks: captions reduce reliance on auditory memory; large fonts reduce visual scanning; logical navigation reduces decision load"
+
+  universal_design_practices:
+    colour_contrast:
+      principle: "Text and background must have sufficient luminance contrast"
+      standard: "WCAG AA minimum 4.5:1 (normal text); 3:1 (large text)"
+      benefit: "Reduces visual strain and processing time; benefits low-vision users, elderly, and users in low-light environments"
+
+    text_readability:
+      principle: "Font size, line height, and line length affect comprehension"
+      guidelines:
+        - "Body text: minimum 12-14 points"
+        - "Line height: 1.5–2.0 (more space reduces cognitive overload)"
+        - "Line length: 45-75 characters (shorter lines reduce backward eye movement)"
+      benefit: "Improves comprehension for all readers; benefits dyslexic learners and non-native speakers"
+
+    captions_and_transcripts:
+      principle: "Audio-based content should have synchronized captions and full transcripts"
+      benefit: "Captions reduce auditory working memory load; enable comprehension in noisy environments; support non-native speakers; aid retention (dual coding)"
+
+    navigational_clarity:
+      principle: "Clear navigation structure reduces cognitive load from finding content"
+      practices:
+        - "Consistent menu locations and naming"
+        - "Logical hierarchy (related items grouped)"
+        - "Breadcrumb navigation (shows location in structure)"
+        - "Search functionality"
+      benefit: "Reduces extraneous processing; frees cognitive resources for learning"
+
+  source: "Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md; Best Practices for Writing Effective Corporate Learning Content.md"
+
+# ==============================================================================
+# SOCIAL PRESENCE AND COGNITIVE ENGAGEMENT
+# ==============================================================================
+
+social_presence_theory:
+  description: "Social presence (perceived closeness, interaction) enhances motivation and cognitive engagement"
+
+  principle: "Perceived social presence in instruction triggers conversational engagement, increasing generative processing (Morreale & Pearson, 2008)"
+
+  mechanisms_that_trigger_social_presence:
+    - "Conversational language and direct address ('you,' 'let's')"
+    - "Human voice (narration) rather than text-only or synthesized speech"
+    - "Speaker image in introductions/conclusions (builds rapport)"
+    - "Instructor personality and teaching presence (enthusiasm, clarity)"
+    - "Feedback addressing learner by name or specific performance"
+    - "Discussion forums or instructor-led Q&A (asynchronous or synchronous)"
+
+  cognitive_load_implication: "Social presence enhances germane load (deep processing) without increasing extraneous load, making it especially valuable for motivation and retention"
+
+  design_guidance:
+    synchronous_instruction: "High social presence: real-time instructor, peer interaction, live Q&A. Effective for complex, social learning."
+    asynchronous_instruction: "Build perceived social presence: conversational narration, instructor image in key moments, discussion forums, personalised feedback. Mitigates isolation."
+    hybrid_instruction: "Combine synchronous interaction (instructor contact, group problem-solving) with asynchronous self-paced review (affordance of control, spaced practice)"
+
+  source: "Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md; Best Practices for Writing Effective Corporate Learning Content.md"
+
+# ==============================================================================
+# PROGRESSIVE DISCLOSURE
+# ==============================================================================
+
+progressive_disclosure:
+  description: "Strategy for managing complexity through staged revelation"
+
+  principle: "Present only what's needed at each moment"
+
+  benefits:
+    - "Reduces initial cognitive load"
+    - "Maintains attention on current focus"
+    - "Allows scaffolded complexity building"
+    - "Prevents overwhelm from information density"
+
+  techniques:
+    animation_builds:
+      description: "Reveal content element by element"
+      application: "Bullet points appear as discussed"
+      warning: "Don't over-animate; each build should have purpose"
+
+    layered_diagrams:
+      description: "Start simple, add complexity progressively"
+      application: "Show basic structure first, then add details"
+      example: "Organisation chart: CEO first, then direct reports, then departments"
+
+    drill_down_interfaces:
+      description: "Overview first, detail on demand"
+      application: "Summary slide with links to detailed sections"
+
+    chunked_navigation:
+      description: "Content divided into navigable sections"
+      application: "Table of contents with section links"
+
+  pacing_guidance:
+    intro_slides: "Minimal content, set context"
+    core_content: "One main idea per unit"
+    summary_slides: "Consolidate key takeaways"
+    transition_slides: "Bridge between sections, allow processing"
+
+# ==============================================================================
+# COGNITIVE LOAD ASSESSMENT
+# ==============================================================================
+
+cognitive_load_audit:
+  description: "Checklist for evaluating cognitive load in visual materials"
+
+  scoring_anchors:
+    description: "Cognitive load scoring bands (0-100)"
+    bands:
+      excellent: "90-100 (low extraneous load, clear focus)"
+      good: "70-89 (minor overload risks)"
+      mixed: "50-69 (several overload signals)"
+      poor: "0-49 (overwhelming, high extraneous load)"
+
+  data_requirements:
+    required:
+      - "Element counts and grouping"
+      - "Text word counts per slide/section"
+      - "Chart series counts"
+      - "Layout hierarchy cues"
+    optional:
+      - "Audience expertise level"
+  fallback:
+    rule: "If required data is missing, set confidence low and avoid strong claims"
+
+  element_count_check:
+    question: "How many distinct visual elements compete for attention?"
+    threshold:
+      low_load: "1-5 elements"
+      moderate_load: "6-9 elements"
+      high_load: "10+ elements (redesign needed)"
+    action: "Consolidate or segment if above 9"
+
+  text_density_check:
+    question: "How much text is on screen?"
+    threshold:
+      slide: "Maximum 30-40 words"
+      infographic_section: "Maximum 50-75 words per block"
+      video_frame: "Maximum 10-15 words visible at once"
+    action: "Cut ruthlessly or split across units"
+
+  integration_check:
+    question: "Does learner need to integrate separate sources?"
+    indicators:
+      - "Eyes must move between text and graphic"
+      - "Legend separate from visualisation"
+      - "Explanation below, diagram above"
+    action: "Integrate physically or use pointing cues"
+
+  redundancy_check:
+    question: "Is same information presented in multiple channels?"
+    indicators:
+      - "On-screen text read aloud verbatim"
+      - "Same content in graphic and text"
+    action: "Choose primary channel; use other for support only"
+
+  extraneous_check:
+    question: "Does every element serve the learning goal?"
+    test: "If removed, would learning suffer?"
+    action: "Delete anything that fails the test"
+
+  signalling_check:
+    question: "Is it clear what's most important?"
+    test: "Can viewer identify key message in 5 seconds?"
+    action: "Add visual cues if focus is unclear"

@@ -1,0 +1,3358 @@
+_meta:
+  id: presentation_design_principles
+  title: Presentation Design Principles Corpus
+  description: Comprehensive corpus of presentation design rules, principles, best practices, and anti-patterns extracted
+    from the Design Methodology repository
+  domain: course_materials
+  domain_type: workflow
+  purpose: reference
+  version: 1.0.0
+  last_updated: '2026-03-09'
+  owner: Design Methodology Team
+  license: CC-BY-4.0
+  lifecycle_status: active
+  relationships:
+    - target: corpus/constructive_RST_corpus.yaml
+      type: upstream_dependency
+      description: "RST discourse planning generates narrative structure; presentation corpus validates visual realisation"
+schema_version: '1.0'
+domain: course_materials
+last_updated: '2026-03-09'
+total_entries: 245
+tag_vocabulary:
+- tag: accessibility
+  status: active
+- tag: anti-pattern
+  status: active
+- tag: cognitive-load
+  status: active
+- tag: colour
+  status: active
+- tag: consistency
+  status: active
+- tag: data-visualisation
+  status: active
+- tag: deck-type
+  status: active
+- tag: executive-deck
+  status: active
+- tag: gestalt
+  status: active
+- tag: image-usage
+  status: active
+- tag: infographic
+  status: active
+- tag: layout
+  status: active
+- tag: mayer-principles
+  status: active
+- tag: mece
+  status: active
+- tag: narrative-structure
+  status: active
+- tag: opening-closing
+  status: active
+- tag: progressive-disclosure
+  status: active
+- tag: quality-gate
+  status: active
+- tag: sales-deck
+  status: active
+- tag: slide-structure
+  status: active
+- tag: text-density
+  status: active
+- tag: training-deck
+  status: active
+- tag: typography
+  status: active
+- tag: visual-hierarchy
+  status: active
+entries:
+- id: pr_001
+  entry_type: principle
+  title: Cognitive Load Model
+  description: 'Total cognitive load = intrinsic (material complexity) + extraneous (poor design) + germane (productive thinking).
+    Goal: minimise extraneous, manage intrinsic, maximise germane.'
+  sources:
+  - Guides/03-visual-design/cognitive-load-principles.md
+  - Learning_Framework/01_Core_Theory/Visual_Design_for_Learning.md
+  tags:
+  - cognitive-load
+  added: '2026-03-09'
+  underpins:
+  - bp_036
+  - bp_037
+  - bp_038
+  - bp_138
+- id: pr_002
+  entry_type: principle
+  title: Working Memory Limit (Cowan/Miller)
+  description: 'Working memory holds 3–5 chunks (Cowan, 2001). Operational thresholds: **≤5 ideal** (Cowan''s limit — safest),
+    **6–7 acceptable** (Miller''s range — experienced audiences), **8–9 warning** (overload risk — simplify or chunk), **10+
+    error** (guaranteed overload — split slide).'
+  sources:
+  - Guides/03-visual-design/cognitive-load-principles.md
+  - Guides/02-slide-design/slide-design-best-practices.md
+  tags:
+  - cognitive-load
+  added: '2026-03-09'
+  underpins:
+  - bp_036
+  - bp_098
+  - bp_171
+- id: pr_003
+  entry_type: principle
+  title: Dual Coding Theory
+  description: Combining text + visuals creates two retrieval pathways → 65% better recall (Mayer & Anderson, 1991), effect
+    size 0.89.
+  sources:
+  - Learning_Framework/01_Core_Theory/Visual_Design_for_Learning.md
+  tags:
+  - mayer-principles
+  added: '2026-03-09'
+  underpins:
+  - bp_078
+- id: pr_004
+  entry_type: principle
+  title: Picture Superiority Effect
+  description: Pictures remembered 6× better than words alone (Standing, 1973), but ONLY when meaningful and relevant — never
+    decorative.
+  sources:
+  - Learning_Framework/01_Core_Theory/Visual_Design_for_Learning.md
+  tags:
+  - mayer-principles
+  added: '2026-03-09'
+  underpins:
+  - bp_078
+  - bp_168
+- id: pr_005
+  entry_type: principle
+  title: Split-Attention Effect
+  description: Separating related information (e.g. chart on one slide, legend on another) forces mental integration and wastes
+    cognitive resources.
+  sources:
+  - Guides/00-presentation-methodology/cognitive-visual-bridge.md
+  tags:
+  - mayer-principles
+  added: '2026-03-09'
+  underpins:
+  - bp_092
+  - bp_093
+  - bp_136
+- id: pr_006
+  entry_type: principle
+  title: Redundancy Effect
+  description: Presenting identical information in multiple modalities simultaneously (reading text aloud while it's on screen)
+    increases extraneous load.
+  sources:
+  - Guides/03-visual-design/cognitive-load-principles.md
+  - Guides/00-presentation-methodology/cognitive-visual-bridge.md
+  tags:
+  - mayer-principles
+  added: '2026-03-09'
+  underpins:
+  - bp_135
+- id: pr_007
+  entry_type: principle
+  title: Coherence Principle
+  description: Remove non-essential words, pictures, and sounds. Removing extraneous visuals improves learning by 73% (Harp
+    & Mayer, 1998).
+  sources:
+  - Guides/03-visual-design/cognitive-load-principles.md
+  - Learning_Framework/01_Core_Theory/Visual_Design_for_Learning.md
+  tags:
+  - mayer-principles
+  added: '2026-03-09'
+  underpins:
+  - bp_038
+  - bp_134
+- id: pr_008
+  entry_type: principle
+  title: Signalling Principle
+  description: Add cues (arrows, highlights, colour, size) that direct attention to what matters most. One clear focal point
+    per slide.
+  sources:
+  - Guides/03-visual-design/cognitive-load-principles.md
+  tags:
+  - mayer-principles
+  added: '2026-03-09'
+  underpins:
+  - bp_040
+  - bp_072
+  - bp_137
+- id: pr_009
+  entry_type: principle
+  title: Redundancy Principle
+  description: Don't duplicate narration with on-screen text. Slides carry visual anchors; spoken word carries detail.
+  sources:
+  - Guides/03-visual-design/cognitive-load-principles.md
+  tags:
+  - mayer-principles
+  added: '2026-03-09'
+- id: pr_010
+  entry_type: principle
+  title: Spatial Contiguity Principle
+  description: Place related text NEAR the related visual — 68% better transfer (Mayer, 1989). Labels go ON the diagram, not
+    in separate legends.
+  sources:
+  - Guides/03-visual-design/cognitive-load-principles.md
+  - Learning_Framework/01_Core_Theory/Visual_Design_for_Learning.md
+  tags:
+  - gestalt
+  added: '2026-03-09'
+  underpins:
+  - bp_092
+  - bp_093
+  - bp_115
+- id: pr_011
+  entry_type: principle
+  title: Temporal Contiguity Principle
+  description: Present corresponding words and pictures simultaneously, not successively. Sync animation timing with narration.
+  sources:
+  - Guides/03-visual-design/cognitive-load-principles.md
+  tags:
+  - gestalt
+  added: '2026-03-09'
+- id: pr_012
+  entry_type: principle
+  title: Segmenting Principle
+  description: Present complex information in small, learner-paced steps rather than all-at-once. Progressive disclosure in
+    decks.
+  sources:
+  - Guides/03-visual-design/cognitive-load-principles.md
+  tags:
+  - mayer-principles
+  added: '2026-03-09'
+  underpins:
+  - bp_039
+  - bp_035
+- id: pr_013
+  entry_type: principle
+  title: Pre-Training Principle
+  description: Define key terms, parts, and concepts before presenting complex explanations. Front-load vocabulary.
+  sources:
+  - Guides/03-visual-design/cognitive-load-principles.md
+  tags:
+  - mayer-principles
+  added: '2026-03-09'
+- id: pr_014
+  entry_type: principle
+  title: Modality Principle
+  description: Graphics + narration often beats graphics + on-screen text (when spoken delivery exists).
+  sources:
+  - Guides/03-visual-design/cognitive-load-principles.md
+  tags:
+  - mayer-principles
+  added: '2026-03-09'
+- id: pr_015
+  entry_type: principle
+  title: Personalisation Principle
+  description: Conversational tone increases engagement and learning. Use "you" language where appropriate.
+  sources:
+  - Guides/03-visual-design/cognitive-load-principles.md
+  tags:
+  - mayer-principles
+  added: '2026-03-09'
+- id: pr_016
+  entry_type: principle
+  title: Voice Principle
+  description: Human voice preferred. Visuals should clarify, not decorate.
+  sources:
+  - Guides/03-visual-design/cognitive-load-principles.md
+  tags:
+  - mayer-principles
+  added: '2026-03-09'
+- id: pr_017
+  entry_type: principle
+  title: Law of Proximity
+  description: Elements close together are perceived as related. Group related content; increase space between unrelated sections.
+  sources:
+  - Guides/03-visual-design/infographic-design-methodology.md
+  - Guides/00-presentation-methodology/cognitive-visual-bridge.md
+  tags:
+  - gestalt
+  added: '2026-03-09'
+  underpins:
+  - bp_070
+  - bp_115
+- id: pr_018
+  entry_type: principle
+  title: Law of Similarity
+  description: Consistent icons, colours, and shapes signal related function. Inconsistency implies difference.
+  sources:
+  - Guides/03-visual-design/infographic-design-methodology.md
+  tags:
+  - gestalt
+  added: '2026-03-09'
+- id: pr_019
+  entry_type: principle
+  title: Law of Continuity
+  description: The eye follows lines, arrows, and sequential positioning. Use to guide reading path through slides.
+  sources:
+  - Guides/03-visual-design/infographic-design-methodology.md
+  - Guides/00-presentation-methodology/cognitive-visual-bridge.md
+  tags:
+  - gestalt
+  added: '2026-03-09'
+- id: pr_020
+  entry_type: principle
+  title: Law of Closure
+  description: Partial shapes suggest completeness — the brain fills gaps. Can use for implied grouping.
+  sources:
+  - Guides/03-visual-design/infographic-design-methodology.md
+  tags:
+  - layout
+  - visual-hierarchy
+  added: '2026-03-09'
+- id: pr_021
+  entry_type: principle
+  title: Law of Figure-Ground
+  description: Clear distinction between content (figure) and background (ground) is essential.
+  sources:
+  - Guides/03-visual-design/infographic-design-methodology.md
+  tags:
+  - layout
+  - visual-hierarchy
+  added: '2026-03-09'
+- id: pr_022
+  entry_type: principle
+  title: Law of Common Region
+  description: Elements within a shared closed boundary are perceived as a group. Overrides weaker Law of Proximity. Parent
+    items become containers, children become content within.
+  sources:
+  - Guides/00-presentation-methodology/cognitive-visual-bridge.md
+  tags:
+  - layout
+  - visual-hierarchy
+  added: '2026-03-09'
+- id: pr_023
+  entry_type: principle
+  title: Law of Prägnanz (Simplicity)
+  description: The human eye interprets complex images in the simplest form possible. Reduce visual complexity to canonical
+    form.
+  sources:
+  - Guides/00-presentation-methodology/cognitive-visual-bridge.md
+  tags:
+  - layout
+  - visual-hierarchy
+  added: '2026-03-09'
+- id: pr_024
+  entry_type: principle
+  title: Law of Isomorphic Correspondence
+  description: Visual relationships are interpreted as analogous to conceptual relationships. Same-size objects = equal importance;
+    higher position = superior/prior. Visual hierarchy MUST match semantic hierarchy.
+  sources:
+  - Guides/00-presentation-methodology/cognitive-visual-bridge.md
+  tags:
+  - layout
+  - visual-hierarchy
+  added: '2026-03-09'
+- id: pr_025
+  entry_type: principle
+  title: CRAP Framework
+  description: 'All visual design evaluated against four principles: Contrast (attention), Repetition (consistency), Alignment
+    (structure), Proximity (grouping).'
+  sources:
+  - Guides/03-visual-design/infographic-design-workflow.md
+  - Guides/00-presentation-methodology/cognitive-visual-bridge.md
+  tags:
+  - layout
+  - consistency
+  added: '2026-03-09'
+  underpins:
+  - bp_112
+  - bp_113
+  - bp_114
+  - bp_115
+- id: pr_026
+  entry_type: principle
+  title: Data-Ink Ratio (Tufte)
+  description: Maximise the proportion of ink devoted to actual data vs. decoration. Data-Ink Ratio = Data-Ink / Total Ink;
+    goal approaches 1.0.
+  sources:
+  - Guides/03-visual-design/data-visualization-excellence.md
+  tags:
+  - data-visualisation
+  added: '2026-03-09'
+  underpins:
+  - bp_086
+  - bp_087
+  - bp_088
+  - bp_089
+  - bp_090
+  - bp_091
+- id: pr_027
+  entry_type: principle
+  title: Graphical Excellence (Tufte)
+  description: Gives the viewer the greatest number of ideas in the shortest time with the least ink in the smallest space.
+    Clarity is the goal, not simplicity.
+  sources:
+  - Guides/03-visual-design/data-visualization-excellence.md
+  tags:
+  - narrative-structure
+  added: '2026-03-09'
+- id: pr_028
+  entry_type: principle
+  title: MECE Principle
+  description: All content must be Mutually Exclusive and Collectively Exhaustive — no overlaps, no gaps. Applies to arguments,
+    sections, and categories.
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  - Guides/03-visual-design/cognitive-load-principles.md
+  tags:
+  - cognitive-load
+  added: '2026-03-09'
+  underpins:
+  - bp_005
+  - bp_145
+  - bp_160
+- id: pr_029
+  entry_type: principle
+  title: Memory & Attention Principle
+  description: People remember beginnings, endings, and groups of three. Opening and closing slides receive disproportionate
+    attention and retention.
+  sources:
+  - Guides/00-presentation-methodology/presentation-design-workflow.md
+  tags:
+  - cognitive-load
+  added: '2026-03-09'
+  underpins:
+  - bp_016
+  - bp_017
+- id: pr_030
+  entry_type: principle
+  title: Transformation Principle
+  description: 'Every deck must answer: "Transform [audience] from [current belief/behaviour] to [desired belief/behaviour]
+    so that [business outcome]."'
+  sources:
+  - Guides/00-presentation-methodology/presentation-design-workflow.md
+  tags:
+  - narrative-structure
+  added: '2026-03-09'
+  underpins:
+  - bp_003
+- id: bp_001
+  entry_type: best_practice
+  title: Four-Question Diagnostic
+  description: 'Before any design: (1) Who is the audience? (2) What is the objective/CTA? (3) What is the context (live/leave-behind/both)?
+    (4) What is the "one thing" to remember?'
+  sources:
+  - Guides/00-presentation-methodology/presentation-design-workflow.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_002
+  entry_type: best_practice
+  title: Deck Type Decision First
+  description: Determine PRIMARY delivery mode BEFORE designing. "Presentation" (minimal text, spoken narrative) vs. "Deck-ument"
+    (self-contained, action titles). Never mix.
+  sources:
+  - Guides/02-slide-design/presentation-vs-deck-ument-decision-guide.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_003
+  entry_type: best_practice
+  title: Transformation Statement
+  description: 'Every deck MUST have: "Transform [audience] from [current state] to [desired state] so that [outcome]." Must
+    be specific, measurable, audience-centred, action-oriented.'
+  sources:
+  - Guides/00-presentation-methodology/presentation-design-workflow.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+  related_principles:
+  - pr_030
+- id: bp_004
+  entry_type: best_practice
+  title: WIIFM Hook
+  description: 'Answer the audience''s immediate question: "Why should I care?" within the opening.'
+  sources:
+  - Guides/00-presentation-methodology/presentation-design-workflow.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_005
+  entry_type: best_practice
+  title: Vertical Flow Test
+  description: Reading slide titles alone must tell a coherent story with beginning, middle, end. All titles must be action
+    statements. No gaps or redundancies (MECE logic).
+  sources:
+  - Guides/00-presentation-methodology/presentation-design-workflow.md
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+  related_principles:
+  - pr_028
+- id: bp_006
+  entry_type: best_practice
+  title: Dot-Dash Storyline
+  description: Action titles (dots) + supporting evidence (dashes). Titles tell the story when read sequentially; body content
+    proves each title.
+  sources:
+  - Guides/00-presentation-methodology/presentation-design-workflow.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_007
+  entry_type: best_practice
+  title: Framework Completeness
+  description: The selected narrative framework (SCQA/SOAR/Gagné/Sparkline) must be complete — all required elements present.
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_008
+  entry_type: best_practice
+  title: Pyramid Principle
+  description: Start with the key insight/recommendation. Parent-child hierarchy maps to visual containers. Conclusion first,
+    supporting arguments after.
+  sources:
+  - Guides/03-visual-design/accessible-data-narrative-design.md
+  - Guides/00-presentation-methodology/presentation-design-workflow.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_009
+  entry_type: best_practice
+  title: Rule of Three
+  description: Apply groupings of three to narrative elements. Three key points, three supporting arguments, three proof points.
+  sources:
+  - Guides/00-presentation-methodology/presentation-design-workflow.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_010
+  entry_type: best_practice
+  title: BLUF (Bottom Line Up Front)
+  description: State conclusion/recommendation first, then provide supporting detail. Essential for executive and time-constrained
+    audiences.
+  sources:
+  - Guides/03-visual-design/accessible-data-narrative-design.md
+  - Guides/02-slide-design/executive-presentation-sop.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_011
+  entry_type: best_practice
+  title: SOAR-to-Layout Mapping
+  description: 'Each SOAR phase maps to a specific visual archetype: Situation → Grid/Dashboard; Obstacle → Split Screen/Metaphor;
+    Approach → Timeline/Process Flow; Results → Hero Card/Big Number.'
+  sources:
+  - Guides/00-presentation-methodology/cognitive-visual-bridge.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_012
+  entry_type: best_practice
+  title: Situation Phase Design
+  description: 'Visual archetype: Bento Grid / Dashboard. Use Law of Common Region to group disparate data. Audience scans
+    state of play as single gestalt.'
+  sources:
+  - Guides/00-presentation-methodology/cognitive-visual-bridge.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_013
+  entry_type: best_practice
+  title: Obstacle Phase Design
+  description: 'Visual archetype: Metaphor / Split Screen. Use dramatic contrast, bold typography. Highlight gap between "what
+    is" and "what could be."'
+  sources:
+  - Guides/00-presentation-methodology/cognitive-visual-bridge.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_014
+  entry_type: best_practice
+  title: Approach Phase Design
+  description: 'Visual archetype: Timeline / Process Flow / Funnel. Use Law of Continuity — elements linked by lines, arrows,
+    left-to-right sequential positioning.'
+  sources:
+  - Guides/00-presentation-methodology/cognitive-visual-bridge.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_015
+  entry_type: best_practice
+  title: Results Phase Design
+  description: 'Visual archetype: Hero Card / Big Number / Before-After. Single massive statistic. Clean, spacious, aspirational.'
+  sources:
+  - Guides/00-presentation-methodology/cognitive-visual-bridge.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_016
+  entry_type: best_practice
+  title: Opening Structure
+  description: 'Must include: (1) Hook (statistical shock, financial impact, relevance cue), (2) Transformation promise, (3)
+    Roadmap (optional but recommended).'
+  sources:
+  - Guides/00-presentation-methodology/presentation-design-workflow.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+  related_principles:
+  - pr_029
+- id: bp_017
+  entry_type: best_practice
+  title: Closing Structure
+  description: 'Must include: (1) Summary of key transformation, (2) Clear Call-to-Action (specific ask, owner, deadline),
+    (3) Contact info / next steps.'
+  sources:
+  - Guides/00-presentation-methodology/presentation-design-workflow.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+  related_principles:
+  - pr_029
+- id: bp_018
+  entry_type: best_practice
+  title: Executive Hook Types
+  description: Statistical shock (surprising statistic), financial impact (ROI-focused), relevance cue (why now), evidence
+    of problem (proof that pain exists).
+  sources:
+  - Guides/02-slide-design/executive-presentation-sop.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_019
+  entry_type: best_practice
+  title: Executive SCQA Structure
+  description: Situation (context established) → Complication (problem quantified with $, %, time) → Question (decision framed)
+    → Answer (recommendation in first 5 slides — BLUF).
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  - Guides/02-slide-design/executive-presentation-sop.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_020
+  entry_type: best_practice
+  title: Executive Slide Distribution
+  description: 'Title: 1 slide; Situation: 1–2; Complication: 2–3; Answer/Exec Summary: 1; Data slides: 3–5 (40–50% of deck);
+    Process: 1–2; CTA: 1. Key ratios: data 40–50%, text 30–40%, visual 10–20%.'
+  sources:
+  - Guides/02-slide-design/executive-presentation-sop.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_021
+  entry_type: best_practice
+  title: Executive Slide Minimisation
+  description: 'Minimise or eliminate: section dividers, agenda slides, "About Us" slides, "Thank You" slides. **Zero agenda
+    slides for <10 slide decks. Max 1 agenda slide for 10–20. Section dividers only for >20 slides.** Every slide must earn
+    its place.'
+  sources:
+  - Guides/02-slide-design/executive-presentation-sop.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_022
+  entry_type: best_practice
+  title: Training Gagné Structure
+  description: '9 events mapped to slides: (1) Gain attention (hook in first 3 slides), (2) Inform objectives (ABCD format),
+    (3) Stimulate recall, (4) Present content, (5) Provide guidance, (6) Elicit practice, (7) Provide feedback, (8) Assess
+    performance, (9) Enhance retention/transfer.'
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_023
+  entry_type: best_practice
+  title: Sales SOAR Structure
+  description: Situation (problem context) → Opportunity (solution capability) → Approach (implementation) → Results (proof
+    points + quantified outcomes).
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_024
+  entry_type: best_practice
+  title: Thought Leadership Sparkline
+  description: Tension between "What Is" and "What Could Be." Multiple contrasts creating rhythm. Big idea focus.
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_025
+  entry_type: best_practice
+  title: Action Titles Required
+  description: Every slide headline must be a complete assertion stating the "so-what" (insight), NOT a topic label. **5–12
+    words. Must contain a verb and a number where data exists.** ✅ "Q4 Sales grew 15%, driven by NE region" (8 words) ❌ "Q4
+    Sales by Region" (4 words, no verb).
+  sources:
+  - Guides/00-presentation-methodology/presentation-design-workflow.md
+  - Guides/02-slide-design/presentation-vs-deck-ument-decision-guide.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_026
+  entry_type: best_practice
+  title: Heading Hierarchy
+  description: 'Proper hierarchy: H1 → H2 → H3, no skipped levels. H1 = slide concept (complete assertion), H2 = containers
+    (2–4 per slide), H3 = supporting evidence.'
+  sources:
+  - Guides/00-presentation-methodology/cognitive-visual-bridge.md
+  - Guides/02-slide-design/opml-to-slides-conversion.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_027
+  entry_type: best_practice
+  title: Horizontal Flow Test (Deck-uments)
+  description: Reading ONLY the slide titles must produce a complete executive summary.
+  sources:
+  - Guides/02-slide-design/presentation-vs-deck-ument-decision-guide.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_028
+  entry_type: best_practice
+  title: Vertical Logic Test (Deck-uments)
+  description: Body content on each slide must prove/support its action title.
+  sources:
+  - Guides/02-slide-design/presentation-vs-deck-ument-decision-guide.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_029
+  entry_type: best_practice
+  title: Level 0
+  description: Root = File Name / Presentation Title.
+  sources:
+  - Guides/00-presentation-methodology/cognitive-visual-bridge.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_030
+  entry_type: best_practice
+  title: Level 1 (H1)
+  description: Slide concept. Must be complete assertion, not category topic.
+  sources:
+  - Guides/00-presentation-methodology/cognitive-visual-bridge.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_031
+  entry_type: best_practice
+  title: Level 2 (H2)
+  description: Visual containers / card sections. Ideally 2–4 per slide.
+  sources:
+  - Guides/00-presentation-methodology/cognitive-visual-bridge.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_032
+  entry_type: best_practice
+  title: Level 3 (H3)
+  description: Supporting evidence — statistics, short sentences, image prompts. **Max 15 words per H3 item. One statistic
+    OR one short sentence per bullet.**
+  sources:
+  - Guides/00-presentation-methodology/cognitive-visual-bridge.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_033
+  entry_type: best_practice
+  title: Level 4 (H4)
+  description: Deep detail — technical specs, footnotes. Use progressive disclosure (nested cards, toggles).
+  sources:
+  - Guides/00-presentation-methodology/cognitive-visual-bridge.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_034
+  entry_type: best_practice
+  title: Depth Limit
+  description: Maximum 5 content levels from Level 1 (6 total with Level 0 wrapper). Never exceed Level 5.
+  sources:
+  - Guides/01-content-standards/opml-best-practices.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_035
+  entry_type: best_practice
+  title: Slides Are Frames, Not Posters
+  description: 'Treat slides as **frames in a film**, not self-contained posters. A concept may need 3–5 frames to unpack
+    (context → data → insight → implication). Two modes: **Explanation mode** (body): one cognitive step per frame, use as
+    many slides as the concept needs — progressive builds, reveals, and transitions are the primary storytelling mechanism.
+    **Overview mode** (BLUF, summary, dashboard, closing): aggregate multiple concepts for orientation/recall. In both modes:
+    **one focal point per visible unit.** Slide count is not a quality metric — narrative flow is. Platform scoping: fixed-frame
+    (PPT/Keynote) = per slide; card-based (Gamma) = per card.'
+  sources:
+  - Guides/03-visual-design/cognitive-load-principles.md
+  - Guides/00-presentation-methodology/presentation-design-workflow.md
+  - Guides/00-presentation-methodology/cognitive-visual-bridge.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+  related_principles:
+  - pr_012
+- id: bp_036
+  entry_type: best_practice
+  title: Visual Element Limit (Decision Tree)
+  description: 'Visual elements per visible unit: **≤5 ideal** (Cowan''s limit), **6–7 acceptable** (experienced audiences),
+    **8–9 warning** (simplify or chunk), **10+ error** (split slide). Applies to fixed-frame slides (PPT/Keynote) per slide;
+    card-based (Gamma) per card. See pr_002.'
+  sources:
+  - Guides/02-slide-design/slide-design-best-practices.md
+  - Guides/00-presentation-methodology/presentation-design-workflow.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+  related_principles:
+  - pr_001
+  - pr_002
+- id: bp_037
+  entry_type: best_practice
+  title: Text Density Decision Tree
+  description: 'Text limits by deck type: **Keynote/TL:** 9 words (3×3), 3 bullets, 3 words/bullet. **Live presentation:**
+    10 words, 3 bullets, 5 words/bullet. **Boardroom:** 36 words (6×6), 6 bullets, 6 words/bullet. **Deck-ument:** 150 words,
+    8 bullets, 20 words/bullet. **Gamma card:** 40 words, 5 bullets, 8 words/bullet.'
+  sources:
+  - Guides/02-slide-design/presentation-vs-deck-ument-decision-guide.md
+  - Guides/00-presentation-methodology/presentation-design-workflow.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+  related_principles:
+  - pr_001
+- id: bp_038
+  entry_type: best_practice
+  title: Every Word Earns Its Place
+  description: 'Apply deletion test: cover each element, ask "does the slide''s message weaken?" If no → delete. **Target:
+    ≤5 elements surviving per slide.**'
+  sources:
+  - Guides/00-presentation-methodology/presentation-design-workflow.md
+  - Guides/03-visual-design/cognitive-load-principles.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+  related_principles:
+  - pr_001
+  - pr_007
+- id: bp_039
+  entry_type: best_practice
+  title: Progressive Reveal (Primary Tool)
+  description: Progressive builds and reveals are the **primary storytelling mechanism**, not decoration. Each reveal advances
+    understanding by one cognitive step. Builds across multiple slides (film frames) are preferred over cramming onto one
+    slide. Nested cards/toggles for async (Gamma/deck-ument). Initial view stays simple; complexity emerges through the sequence.
+  sources:
+  - Guides/00-presentation-methodology/cognitive-visual-bridge.md
+  - Guides/00-presentation-methodology/presentation-design-workflow.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+  related_principles:
+  - pr_012
+- id: bp_040
+  entry_type: best_practice
+  title: Signal the "So What"
+  description: 'Use a single clear cue: highlight one bar/line, circle an outlier, add arrow + annotation. **Exactly 1 annotation
+    per chart or diagram. Annotation label: 2–5 words.** The key insight must be immediately obvious.'
+  sources:
+  - Guides/03-visual-design/cognitive-load-principles.md
+  tags:
+  - narrative-structure
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+  related_principles:
+  - pr_008
+- id: bp_041
+  entry_type: best_practice
+  title: Presentation Text Density
+  description: '5–10 words maximum per slide. Max 3 short phrases (≤5 words each). Speaker notes: 50–150 words per slide (key
+    message + supporting detail + transition cue). See bp_037 decision tree for all deck types.'
+  sources:
+  - Guides/02-slide-design/presentation-vs-deck-ument-decision-guide.md
+  tags:
+  - typography
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+- id: bp_042
+  entry_type: best_practice
+  title: Deck-ument Text Density
+  description: 50–150 words per slide. 6–8 bullets with sub-bullets permitted. Action titles (full sentences). Must work without
+    presenter.
+  sources:
+  - Guides/02-slide-design/presentation-vs-deck-ument-decision-guide.md
+  tags:
+  - typography
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+- id: bp_043
+  entry_type: best_practice
+  title: Slide Count Is Not a Constraint
+  description: Slide count is irrelevant — narrative flow is. A 60-slide keynote that flows like a film beats a 15-slide deck
+    of cramped posters. **Rough pacing guide only:** speaking minutes × 1–3 frames (higher for visual/build-heavy styles).
+    Never sacrifice clarity to reduce slide count.
+  sources:
+  - Guides/02-slide-design/presentation-vs-deck-ument-decision-guide.md
+  tags:
+  - typography
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+- id: bp_044
+  entry_type: best_practice
+  title: Deck-ument Self-Sufficiency
+  description: Deck must work if CEO reads alone on a plane. Self-contained with action titles, evidence, and appendix.
+  sources:
+  - Guides/02-slide-design/presentation-vs-deck-ument-decision-guide.md
+  tags:
+  - typography
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+- id: bp_045
+  entry_type: best_practice
+  title: Font Size Decision Tree
+  description: 'By context: **Large venue keynote (100+ seats):** title 60pt+, body 40pt+, min 20pt. **Boardroom (10–30 seats):**
+    title 30–40pt, body 24–30pt, min 18pt. **Deck-ument (screen):** title 24–40pt, body 12–20pt, min 12pt. **Infographic:**
+    title 48–72pt, body 16–18pt, min 12pt. **Chart labels (projected):** min 18pt, ideal 24pt.'
+  sources:
+  - Guides/02-slide-design/presentation-vs-deck-ument-decision-guide.md
+  tags:
+  - typography
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+- id: bp_046
+  entry_type: best_practice
+  title: Boardroom Font Sizes
+  description: 'Title: 30–40pt, body: 24–30pt, minimum: 18pt+.'
+  sources:
+  - Guides/02-slide-design/presentation-vs-deck-ument-decision-guide.md
+  tags:
+  - typography
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+- id: bp_047
+  entry_type: best_practice
+  title: Deck-ument Font Sizes
+  description: 'Title: 24–40pt, body: 12–20pt, minimum: 12pt.'
+  sources:
+  - Guides/02-slide-design/presentation-vs-deck-ument-decision-guide.md
+  tags:
+  - typography
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+- id: bp_048
+  entry_type: best_practice
+  title: Infographic Font Sizes
+  description: 'Title: 48–72pt bold accent; sections: 24–36pt semi-bold; body: 16–18pt regular; captions: 12–14pt light.'
+  sources:
+  - Guides/03-visual-design/infographic-design-workflow.md
+  tags:
+  - typography
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+- id: bp_049
+  entry_type: best_practice
+  title: Font Family Limit
+  description: Maximum 2 font families per deck/infographic.
+  sources:
+  - Guides/03-visual-design/accessibility-standards.md
+  - Guides/03-visual-design/infographic-design-workflow.md
+  tags:
+  - typography
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+- id: bp_050
+  entry_type: best_practice
+  title: Body Text Legibility
+  description: Minimum 12pt body text. Avoid light font weights (projector + compression kills legibility). Prefer left-aligned
+    (ragged right) for dense text.
+  sources:
+  - Guides/03-visual-design/accessibility-standards.md
+  tags:
+  - typography
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+- id: bp_051
+  entry_type: best_practice
+  title: Title-to-Body Ratio
+  description: 'Title vs. body text: minimum 2:1 size ratio.'
+  sources:
+  - Guides/03-visual-design/infographic-design-workflow.md
+  tags:
+  - typography
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+- id: bp_052
+  entry_type: best_practice
+  title: Avoid Decorative Fonts
+  description: No decorative fonts for body text. Use italic and ALL CAPS sparingly.
+  sources:
+  - Guides/03-visual-design/infographic-design-workflow.md
+  tags:
+  - typography
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+- id: bp_053
+  entry_type: best_practice
+  title: Contrast Ratio — Normal Text
+  description: Minimum 4.5:1 contrast ratio (WCAG AA).
+  sources:
+  - Guides/03-visual-design/accessibility-standards.md
+  tags:
+  - typography
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+- id: bp_054
+  entry_type: best_practice
+  title: Contrast Ratio — Large Text
+  description: Minimum 3:1 contrast ratio for 24pt+ or 18pt+ bold.
+  sources:
+  - Guides/03-visual-design/accessibility-standards.md
+  tags:
+  - typography
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+- id: bp_055
+  entry_type: best_practice
+  title: Contrast Ratio — Non-Text
+  description: Aim for 3:1 contrast for icons, lines, and graphical elements.
+  sources:
+  - Guides/03-visual-design/accessibility-standards.md
+  tags:
+  - typography
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+- id: bp_056
+  entry_type: best_practice
+  title: Colour Never Alone
+  description: Never encode meaning with colour alone. Always pair with labels, icons, shapes, or position.
+  sources:
+  - Guides/03-visual-design/accessibility-standards.md
+  - Guides/03-visual-design/cognitive-load-principles.md
+  tags:
+  - colour
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+- id: bp_057
+  entry_type: best_practice
+  title: One Accent Colour Per Slide
+  description: 'Default: one accent colour per slide for the key element. All others in neutral grey.'
+  sources:
+  - Guides/03-visual-design/cognitive-load-principles.md
+  tags:
+  - colour
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+- id: bp_058
+  entry_type: best_practice
+  title: Maximum 5 Colours in Palette
+  description: Keep total colour palette to 5 or fewer.
+  sources:
+  - Guides/03-visual-design/infographic-design-workflow.md
+  tags:
+  - colour
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+- id: bp_059
+  entry_type: best_practice
+  title: Design in Greyscale First
+  description: Design in greyscale; add colour as a meaning layer. Test in greyscale — still comprehensible?
+  sources:
+  - Guides/03-visual-design/cognitive-load-principles.md
+  - Guides/03-visual-design/accessibility-standards.md
+  tags:
+  - colour
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+- id: bp_060
+  entry_type: best_practice
+  title: Colour-Blind Safe Palettes
+  description: Avoid red-green combinations (affects 4% of population). Use blue + orange (universally distinguishable). Include
+    patterns or labels alongside colour.
+  sources:
+  - Guides/03-visual-design/infographic-design-workflow.md
+  tags:
+  - colour
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+- id: bp_061
+  entry_type: best_practice
+  title: Saturation Signals Priority
+  description: High saturation = primary/key data; low saturation = background/supporting.
+  sources:
+  - Guides/03-visual-design/cognitive-load-principles.md
+  tags:
+  - colour
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+- id: bp_062
+  entry_type: best_practice
+  title: Data Colour Strategies
+  description: 'Single metric: monochromatic. Comparison (2 items): complementary. Categorical (3–5): triadic/custom. Sequential:
+    gradient. Diverging: red ← white → green.'
+  sources:
+  - Guides/03-visual-design/infographic-design-workflow.md
+  tags:
+  - colour
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+- id: bp_063
+  entry_type: best_practice
+  title: Minimum 40% Whitespace
+  description: Minimum 40% of total slide/infographic space should be empty.
+  sources:
+  - Guides/03-visual-design/infographic-design-workflow.md
+  tags:
+  - colour
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+- id: bp_064
+  entry_type: best_practice
+  title: Margin Minimums
+  description: 'Minimum 5% margins on all sides. Header: top 10–15%. Footer: bottom 5–10%. Content: middle 70–85%.'
+  sources:
+  - Guides/03-visual-design/infographic-design-workflow.md
+  tags:
+  - colour
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+- id: bp_065
+  entry_type: best_practice
+  title: Grid System
+  description: 'Recommended 12-column grid (supports 2/3/4-column layouts). Consistent gutter width: 20–40px.'
+  sources:
+  - Guides/03-visual-design/infographic-design-workflow.md
+  tags:
+  - colour
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+- id: bp_066
+  entry_type: best_practice
+  title: Reading Pattern — Z-Pattern
+  description: Top left → Top right → Middle left → Bottom right. Use for visual/minimal-text slides.
+  sources:
+  - Guides/02-slide-design/presentation-vs-deck-ument-decision-guide.md
+  tags:
+  - colour
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+- id: bp_067
+  entry_type: best_practice
+  title: Reading Pattern — F-Pattern
+  description: Top horizontal → Left vertical → Middle horizontal. Use for text-heavy deck-ument slides.
+  sources:
+  - Guides/02-slide-design/presentation-vs-deck-ument-decision-guide.md
+  tags:
+  - layout
+  - visual-hierarchy
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+- id: bp_068
+  entry_type: best_practice
+  title: Standard Aspect Ratio
+  description: 16:9 (1920×1080px) is the standard presentation grid.
+  sources:
+  - Guides/00-presentation-methodology/presentation-design-workflow.md
+  tags:
+  - layout
+  - visual-hierarchy
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+- id: bp_069
+  entry_type: best_practice
+  title: Consistent Element Placement
+  description: Consistent placement of repeated elements (section titles, page numbers, logos) across all slides.
+  sources:
+  - Guides/03-visual-design/accessibility-standards.md
+  tags:
+  - layout
+  - visual-hierarchy
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+- id: bp_070
+  entry_type: best_practice
+  title: Proximity Distances
+  description: Close proximity (<40px) = related; far proximity (>100px) = separate concept.
+  sources:
+  - Guides/00-presentation-methodology/cognitive-visual-bridge.md
+  tags:
+  - layout
+  - visual-hierarchy
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+  related_principles:
+  - pr_017
+- id: bp_071
+  entry_type: best_practice
+  title: Three-Tier Hierarchy
+  description: Title (largest) → Section headers (medium) → Detail (smallest). Every slide.
+  sources:
+  - Guides/03-visual-design/infographic-design-workflow.md
+  tags:
+  - layout
+  - visual-hierarchy
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+- id: bp_072
+  entry_type: best_practice
+  title: Single Focal Point
+  description: Every slide must have ONE clear focal point. What to look at first must be obvious via contrast in size, weight,
+    or colour.
+  sources:
+  - Guides/00-presentation-methodology/presentation-design-workflow.md
+  tags:
+  - layout
+  - visual-hierarchy
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+  related_principles:
+  - pr_008
+- id: bp_073
+  entry_type: best_practice
+  title: Headline States the "So What"
+  description: Headline conveys the insight, not just the topic. It's the slide's thesis statement. **(See canonical rule
+    bp_025 for word targets and format.)**
+  sources:
+  - Guides/03-visual-design/cognitive-load-principles.md
+  tags:
+  - layout
+  - visual-hierarchy
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+- id: bp_074
+  entry_type: best_practice
+  title: Logical Reading Order
+  description: 'For document exports and screen readers: ensure logical reading order, especially in multi-column layouts.'
+  sources:
+  - Guides/03-visual-design/accessibility-standards.md
+  tags:
+  - layout
+  - visual-hierarchy
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+- id: bp_075
+  entry_type: best_practice
+  title: Icon Consistency
+  description: All icons same style (all line, all filled, or all flat). Same visual weight across icons.
+  sources:
+  - Guides/03-visual-design/infographic-design-workflow.md
+  - Guides/03-visual-design/visual-communication-foundations.md
+  tags:
+  - layout
+  - visual-hierarchy
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+- id: bp_076
+  entry_type: best_practice
+  title: Icons Pair with Text
+  description: 'Icons always pair with text labels — never standalone without context. **Label: 1–3 words. Same font family
+    as body text, 2pt smaller.**'
+  sources:
+  - Guides/03-visual-design/infographic-design-workflow.md
+  tags:
+  - layout
+  - visual-hierarchy
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+- id: bp_077
+  entry_type: best_practice
+  title: Motif Dictionary
+  description: 'Build 3–7 visual motifs: assign each concept a stable signifier and reuse throughout the deck. Pick one metaphor
+    domain and don''t switch halfway.'
+  sources:
+  - Guides/03-visual-design/visual-communication-foundations.md
+  tags:
+  - layout
+  - visual-hierarchy
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+- id: bp_078
+  entry_type: best_practice
+  title: Meaningful Images Only
+  description: Use index signs for proof (charts, screenshots, real product UI, real customer photos). Treat stock imagery
+    as a claim — if it implies "happy team" or "speed", support it with evidence.
+  sources:
+  - Guides/03-visual-design/visual-communication-foundations.md
+  tags:
+  - layout
+  - visual-hierarchy
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+  related_principles:
+  - pr_003
+  - pr_004
+- id: bp_079
+  entry_type: best_practice
+  title: AI Image Prompting
+  description: Be specific (10–20 words). Include business context. Avoid requesting text in images (often garbled). Avoid
+    generic stock language ("smiling people in suits"). Include "diverse" in people-focused images.
+  sources:
+  - Guides/03-visual-design/image-prompt-strategy.md
+  tags:
+  - layout
+  - visual-hierarchy
+  added: '2026-03-09'
+  evidence: AI image generation best practices from prompt engineering research
+  context: All deck types
+  confidence: moderate
+- id: bp_080
+  entry_type: best_practice
+  title: Alt Text Requirement
+  description: All meaning-bearing images must have descriptive alt text. Essential visuals have text alternative or captioned
+    insight. Key text NOT placed over busy imagery without contrast-safe container.
+  sources:
+  - Guides/03-visual-design/accessibility-standards.md
+  tags:
+  - layout
+  - visual-hierarchy
+  added: '2026-03-09'
+  evidence: Based on Gestalt principles and visual perception research
+  context: All deck types
+  confidence: strong
+- id: bp_081
+  entry_type: best_practice
+  title: Comparison → Bar Chart
+  description: Use bar charts for comparing quantities across categories.
+  sources:
+  - Guides/03-visual-design/data-visualization-excellence.md
+  tags:
+  - data-visualisation
+  added: '2026-03-09'
+  evidence: Based on data visualization research and Tufte principles
+  context: All deck types
+  confidence: strong
+- id: bp_082
+  entry_type: best_practice
+  title: Trend → Line Chart
+  description: 'Use line charts for showing change over time. X-axis: time flows left to right.'
+  sources:
+  - Guides/03-visual-design/data-visualization-excellence.md
+  tags:
+  - data-visualisation
+  added: '2026-03-09'
+  evidence: Based on data visualization research and Tufte principles
+  context: All deck types
+  confidence: strong
+- id: bp_083
+  entry_type: best_practice
+  title: Part-to-Whole → Pie (≤5) or Stacked Bar
+  description: Use pie charts ONLY for 2–5 segments. More than 5 slices → use bar chart instead.
+  sources:
+  - Guides/03-visual-design/data-visualization-excellence.md
+  tags:
+  - data-visualisation
+  added: '2026-03-09'
+  evidence: Based on data visualization research and Tufte principles
+  context: All deck types
+  confidence: strong
+- id: bp_084
+  entry_type: best_practice
+  title: Relationship → Scatter/Bubble
+  description: Use scatter plots or bubble charts for showing correlation.
+  sources:
+  - Guides/03-visual-design/data-visualization-excellence.md
+  tags:
+  - data-visualisation
+  added: '2026-03-09'
+  evidence: Based on data visualization research and Tufte principles
+  context: All deck types
+  confidence: strong
+- id: bp_085
+  entry_type: best_practice
+  title: Distribution → Histogram/Box Plot
+  description: Use histograms or box plots for showing distributions.
+  sources:
+  - Guides/03-visual-design/data-visualization-excellence.md
+  tags:
+  - data-visualisation
+  added: '2026-03-09'
+  evidence: Based on data visualization research and Tufte principles
+  context: All deck types
+  confidence: strong
+- id: bp_086
+  entry_type: best_practice
+  title: Remove 3D Effects
+  description: 3D distorts perception, hides data, creates visual lies. 2D comparisons are 40% more accurate. ALWAYS use 2D.
+  sources:
+  - Guides/03-visual-design/data-visualization-excellence.md
+  tags:
+  - data-visualisation
+  added: '2026-03-09'
+  evidence: Based on data visualization research and Tufte principles
+  context: All deck types
+  confidence: strong
+  related_principles:
+  - pr_026
+- id: bp_087
+  entry_type: best_practice
+  title: Remove Gridlines
+  description: Delete entirely or make very light grey (**#E5E5E5 or lighter**). If data points >20, keep light gridlines.
+    If <10, delete entirely.
+  sources:
+  - Guides/03-visual-design/data-visualization-excellence.md
+  tags:
+  - data-visualisation
+  added: '2026-03-09'
+  evidence: Based on data visualization research and Tufte principles
+  context: All deck types
+  confidence: strong
+  related_principles:
+  - pr_026
+- id: bp_088
+  entry_type: best_practice
+  title: Remove Chart Borders
+  description: Delete frames and boxes around charts.
+  sources:
+  - Guides/03-visual-design/data-visualization-excellence.md
+  tags:
+  - data-visualisation
+  added: '2026-03-09'
+  evidence: Based on data visualization research and Tufte principles
+  context: All deck types
+  confidence: strong
+  related_principles:
+  - pr_026
+- id: bp_089
+  entry_type: best_practice
+  title: Remove Background Fills
+  description: No grey boxes or coloured backgrounds behind charts. White/transparent only.
+  sources:
+  - Guides/03-visual-design/data-visualization-excellence.md
+  tags:
+  - data-visualisation
+  added: '2026-03-09'
+  evidence: Based on data visualization research and Tufte principles
+  context: All deck types
+  confidence: strong
+  related_principles:
+  - pr_026
+- id: bp_090
+  entry_type: best_practice
+  title: Remove Decoration
+  description: No gradient fills, drop shadows, texture patterns, pictorial bars, irrelevant clip art, ornamental borders.
+    Use flat, solid colours.
+  sources:
+  - Guides/03-visual-design/data-visualization-excellence.md
+  tags:
+  - data-visualisation
+  added: '2026-03-09'
+  evidence: Based on data visualization research and Tufte principles
+  context: All deck types
+  confidence: strong
+  related_principles:
+  - pr_026
+- id: bp_091
+  entry_type: best_practice
+  title: Remove Redundant Labels
+  description: 'Choose Y-axis OR data labels on bars, not both. Delete legends if colour-coded labels exist. **Rounding rule:
+    range >100 → whole numbers; range 1–100 → 1 decimal; range <1 → 2 decimals.**'
+  sources:
+  - Guides/03-visual-design/data-visualization-excellence.md
+  tags:
+  - data-visualisation
+  added: '2026-03-09'
+  evidence: Based on data visualization research and Tufte principles
+  context: All deck types
+  confidence: strong
+  related_principles:
+  - pr_026
+- id: bp_092
+  entry_type: best_practice
+  title: Delete Legends, Direct Label
+  description: Label data directly on/near the chart element. Delete separate legends. Eliminates split-attention.
+  sources:
+  - Guides/03-visual-design/data-visualization-excellence.md
+  - Guides/03-visual-design/cognitive-load-principles.md
+  tags:
+  - data-visualisation
+  added: '2026-03-09'
+  evidence: Based on data visualization research and Tufte principles
+  context: All deck types
+  confidence: strong
+  related_principles:
+  - pr_005
+  - pr_010
+- id: bp_093
+  entry_type: best_practice
+  title: Labels Inside Diagrams
+  description: All labels inside diagrams, not in separate keys. Captions next to their chart, not separated. **(See canonical
+    rule bp_092.)**
+  sources:
+  - Guides/03-visual-design/infographic-design-methodology.md
+  tags:
+  - data-visualisation
+  added: '2026-03-09'
+  evidence: Based on data visualization research and Tufte principles
+  context: All deck types
+  confidence: strong
+  related_principles:
+  - pr_005
+  - pr_010
+- id: bp_094
+  entry_type: best_practice
+  title: Bars Start at Zero
+  description: ALWAYS start bars at zero for magnitude comparison. Never truncate axis.
+  sources:
+  - Guides/03-visual-design/data-visualization-excellence.md
+  tags:
+  - data-visualisation
+  added: '2026-03-09'
+  evidence: Based on data visualization research and Tufte principles
+  context: All deck types
+  confidence: strong
+- id: bp_095
+  entry_type: best_practice
+  title: Sort Bars by Value
+  description: Largest to smallest, unless natural order exists (e.g. time, geography).
+  sources:
+  - Guides/03-visual-design/data-visualization-excellence.md
+  tags:
+  - data-visualisation
+  added: '2026-03-09'
+  evidence: Based on data visualization research and Tufte principles
+  context: All deck types
+  confidence: strong
+- id: bp_096
+  entry_type: best_practice
+  title: Bar Spacing
+  description: Bar width = 60–80% of available space. Gap between = 20–40% of bar width.
+  sources:
+  - Guides/03-visual-design/data-visualization-excellence.md
+  tags:
+  - data-visualisation
+  added: '2026-03-09'
+  evidence: Based on data visualization research and Tufte principles
+  context: All deck types
+  confidence: strong
+- id: bp_097
+  entry_type: best_practice
+  title: Bar Colour Strategy
+  description: One colour for all bars, OR one accent colour for key bar + grey for all others.
+  sources:
+  - Guides/03-visual-design/data-visualization-excellence.md
+  tags:
+  - data-visualisation
+  added: '2026-03-09'
+  evidence: Based on data visualization research and Tufte principles
+  context: All deck types
+  confidence: strong
+- id: bp_098
+  entry_type: best_practice
+  title: Maximum 5 Lines
+  description: Never more than 5 lines on one chart. Highlight 1 in colour, others in grey.
+  sources:
+  - Guides/03-visual-design/data-visualization-excellence.md
+  tags:
+  - data-visualisation
+  added: '2026-03-09'
+  evidence: Based on data visualization research and Tufte principles
+  context: All deck types
+  confidence: strong
+  related_principles:
+  - pr_002
+- id: bp_099
+  entry_type: best_practice
+  title: Line Width & Markers
+  description: Point width max 2–3 points. No markers unless sparse data. Direct labels at end of line.
+  sources:
+  - Guides/03-visual-design/data-visualization-excellence.md
+  tags:
+  - data-visualisation
+  added: '2026-03-09'
+  evidence: Based on data visualization research and Tufte principles
+  context: All deck types
+  confidence: strong
+- id: bp_100
+  entry_type: best_practice
+  title: Y-Axis Starting Point
+  description: Line charts CAN start above zero IF showing variance, but NOT for magnitude comparison. Truncated axis requires
+    explicit notation.
+  sources:
+  - Guides/03-visual-design/data-visualization-excellence.md
+  tags:
+  - data-visualisation
+  added: '2026-03-09'
+  evidence: Based on data visualization research and Tufte principles
+  context: All deck types
+  confidence: strong
+- id: bp_101
+  entry_type: best_practice
+  title: Annotate Key Points
+  description: Annotate peaks, troughs, and inflection points with vertical lines + labels. 1–3 callouts per chart maximum.
+  sources:
+  - Guides/03-visual-design/data-visualization-excellence.md
+  tags:
+  - data-visualisation
+  added: '2026-03-09'
+  evidence: Based on data visualization research and Tufte principles
+  context: All deck types
+  confidence: strong
+- id: bp_102
+  entry_type: best_practice
+  title: 2–5 Segments Only
+  description: Only 2–5 segments. >5 slices = use bar chart.
+  sources:
+  - Guides/03-visual-design/data-visualization-excellence.md
+  tags:
+  - data-visualisation
+  added: '2026-03-09'
+  evidence: Based on data visualization research and Tufte principles
+  context: All deck types
+  confidence: strong
+- id: bp_103
+  entry_type: best_practice
+  title: 2D Only
+  description: Never 3D pie charts.
+  sources:
+  - Guides/03-visual-design/data-visualization-excellence.md
+  tags:
+  - data-visualisation
+  added: '2026-03-09'
+  evidence: Based on data visualization research and Tufte principles
+  context: All deck types
+  confidence: strong
+- id: bp_104
+  entry_type: best_practice
+  title: Largest at 12 O'Clock
+  description: Start largest slice at 12 o'clock. Sort clockwise largest to smallest. Direct labels with values.
+  sources:
+  - Guides/03-visual-design/data-visualization-excellence.md
+  tags:
+  - data-visualisation
+  added: '2026-03-09'
+  evidence: Based on data visualization research and Tufte principles
+  context: All deck types
+  confidence: strong
+- id: bp_105
+  entry_type: best_practice
+  title: Semi-Transparent Overlapping
+  description: Use semi-transparency when data points overlap. Size encoding for 3rd variable (bubble). Colour encoding for
+    categories.
+  sources:
+  - Guides/03-visual-design/data-visualization-excellence.md
+  tags:
+  - data-visualisation
+  added: '2026-03-09'
+  evidence: Based on data visualization research and Tufte principles
+  context: All deck types
+  confidence: strong
+- id: bp_106
+  entry_type: best_practice
+  title: Trend Lines
+  description: Light grey, behind data points. Show R² value if relevant.
+  sources:
+  - Guides/03-visual-design/data-visualization-excellence.md
+  tags:
+  - data-visualisation
+  added: '2026-03-09'
+  evidence: Based on data visualization research and Tufte principles
+  context: All deck types
+  confidence: strong
+- id: bp_107
+  entry_type: best_practice
+  title: No Dual Y-Axes
+  description: Avoid dual Y-axes (confusion/manipulation risk). Use separate charts or index metrics instead.
+  sources:
+  - Guides/03-visual-design/data-visualization-excellence.md
+  tags:
+  - data-visualisation
+  added: '2026-03-09'
+  evidence: Based on data visualization research and Tufte principles
+  context: All deck types
+  confidence: strong
+- id: bp_108
+  entry_type: best_practice
+  title: Reference Lines
+  description: Dashed line, light grey, label directly on line. Use for targets, averages, thresholds.
+  sources:
+  - Guides/03-visual-design/data-visualization-excellence.md
+  tags:
+  - data-visualisation
+  added: '2026-03-09'
+  evidence: Based on data visualization research and Tufte principles
+  context: All deck types
+  confidence: strong
+- id: bp_109
+  entry_type: best_practice
+  title: Small Multiples
+  description: Same axes, same scale across all multiples. Minimal labels on each, rely on shared axis.
+  sources:
+  - Guides/03-visual-design/data-visualization-excellence.md
+  tags:
+  - data-visualisation
+  added: '2026-03-09'
+  evidence: Based on data visualization research and Tufte principles
+  context: All deck types
+  confidence: strong
+- id: bp_110
+  entry_type: best_practice
+  title: Sparklines
+  description: Word-sized graphics embedded in text or tables for compact trend indication.
+  sources:
+  - Guides/03-visual-design/data-visualization-excellence.md
+  tags:
+  - data-visualisation
+  added: '2026-03-09'
+  evidence: Based on data visualization research and Tufte principles
+  context: All deck types
+  confidence: strong
+- id: bp_111
+  entry_type: best_practice
+  title: Action Captions on Charts
+  description: '**5–10 words. Must include a verb and a direction (up/down/grew/dropped).** "Western Region Revenue Dropped
+    15%" NOT "Revenue by Region." Every chart tells its story in the title.'
+  sources:
+  - Guides/03-visual-design/infographic-design-methodology.md
+  tags:
+  - data-visualisation
+  added: '2026-03-09'
+  evidence: Based on data visualization research and Tufte principles
+  context: All deck types
+  confidence: strong
+- id: bp_112
+  entry_type: best_practice
+  title: Contrast — Attention Manager
+  description: Hero element (key figure, main point) must be significantly larger/bolder than supporting text.
+  sources:
+  - Guides/00-presentation-methodology/cognitive-visual-bridge.md
+  tags:
+  - consistency
+  added: '2026-03-09'
+  evidence: Industry best practice for design consistency
+  context: All deck types
+  confidence: strong
+  related_principles:
+  - pr_025
+- id: bp_113
+  entry_type: best_practice
+  title: Repetition — Consistency Enforcer
+  description: All icons same stroke weight and style. Consistent font and colour across entire deck. Consistent design becomes
+    invisible, letting content surface.
+  sources:
+  - Guides/00-presentation-methodology/cognitive-visual-bridge.md
+  tags:
+  - consistency
+  added: '2026-03-09'
+  evidence: Industry best practice for design consistency
+  context: All deck types
+  confidence: strong
+  related_principles:
+  - pr_025
+- id: bp_114
+  entry_type: best_practice
+  title: Alignment — Structural Glue
+  description: Clear invisible line connecting headers. Images aligned to text grid. Left-align long paragraphs (F-pattern).
+    Misalignment = visual noise = extraneous load.
+  sources:
+  - Guides/00-presentation-methodology/cognitive-visual-bridge.md
+  tags:
+  - consistency
+  added: '2026-03-09'
+  evidence: Industry best practice for design consistency
+  context: All deck types
+  confidence: strong
+  related_principles:
+  - pr_025
+- id: bp_115
+  entry_type: best_practice
+  title: Proximity — Grouping Mechanism
+  description: Caption closer to chart than to text below. Use group features or nested cards to bind related elements. Whitespace
+    separates distinct topics.
+  sources:
+  - Guides/00-presentation-methodology/cognitive-visual-bridge.md
+  tags:
+  - consistency
+  added: '2026-03-09'
+  evidence: Industry best practice for design consistency
+  context: All deck types
+  confidence: strong
+  related_principles:
+  - pr_010
+  - pr_017
+  - pr_025
+- id: bp_116
+  entry_type: best_practice
+  title: Frankendeck Prevention
+  description: Never mix fonts slide-to-slide. Standardise to 1–2 fonts throughout. Never mix presentation and deck-ument
+    styles within a single deck.
+  sources:
+  - Guides/00-presentation-methodology/presentation-design-workflow.md
+  - Guides/02-slide-design/presentation-vs-deck-ument-decision-guide.md
+  tags:
+  - consistency
+  added: '2026-03-09'
+  evidence: Industry best practice for design consistency
+  context: All deck types
+  confidence: strong
+- id: bp_117
+  entry_type: best_practice
+  title: Visual Voice Specification
+  description: 'Define: 3 adjectives (e.g. calm, precise, modern), motif dictionary (concept → signifier), typography rules,
+    colour tokens, imagery rules.'
+  sources:
+  - Guides/03-visual-design/visual-communication-foundations.md
+  tags:
+  - consistency
+  added: '2026-03-09'
+  evidence: Industry best practice for design consistency
+  context: All deck types
+  confidence: strong
+- id: bp_118
+  entry_type: best_practice
+  title: Master Style Image
+  description: Generate a "master style image" first for visual consistency, then reference it for all subsequent prompts
+    (enforces CRAP Repetition).
+  sources:
+  - Guides/00-presentation-methodology/cognitive-visual-bridge.md
+  tags:
+  - consistency
+  added: '2026-03-09'
+  evidence: Industry best practice for design consistency
+  context: All deck types
+  confidence: strong
+- id: bp_119
+  entry_type: best_practice
+  title: Typography Voice Mapping
+  description: 'Authoritative: fewer styles, strong weight contrast, generous spacing. Friendly: larger body, clear subheads,
+    conversational. Technical: consistent numeric formatting, tight labels.'
+  sources:
+  - Guides/03-visual-design/visual-communication-foundations.md
+  tags:
+  - consistency
+  added: '2026-03-09'
+  evidence: Industry best practice for design consistency
+  context: All deck types
+  confidence: strong
+- id: bp_120
+  entry_type: best_practice
+  title: Outcome-Driven Visual Choice — Trust
+  description: 'Clarity + authenticity: real artefacts, consistent motifs, clean hierarchy, restrained palette.'
+  sources:
+  - Guides/03-visual-design/visual-communication-foundations.md
+  tags:
+  - consistency
+  added: '2026-03-09'
+  evidence: Industry best practice for design consistency
+  context: All deck types
+  confidence: strong
+- id: bp_121
+  entry_type: best_practice
+  title: Outcome-Driven Visual Choice — Attention
+  description: 'Contrast + novelty: isolate one element, dramatic value contrast, one focal point per visible unit.'
+  sources:
+  - Guides/03-visual-design/visual-communication-foundations.md
+  tags:
+  - consistency
+  added: '2026-03-09'
+  evidence: Industry best practice for design consistency
+  context: All deck types
+  confidence: strong
+- id: bp_122
+  entry_type: best_practice
+  title: Outcome-Driven Visual Choice — Memory
+  description: 'Pattern + anticipation: recurring motifs, consistent section structure, progressive reveals, cliffhanger headings.'
+  sources:
+  - Guides/03-visual-design/visual-communication-foundations.md
+  tags:
+  - consistency
+  added: '2026-03-09'
+  evidence: Industry best practice for design consistency
+  context: All deck types
+  confidence: strong
+- id: bp_123
+  entry_type: best_practice
+  title: WCAG 2.2 AA Compliance
+  description: All text meets 4.5:1 contrast. Large text (18pt+) meets 3:1. Non-text graphics aim for 3:1.
+  sources:
+  - Guides/03-visual-design/accessibility-standards.md
+  - Guides/00-presentation-methodology/presentation-design-workflow.md
+  tags:
+  - accessibility
+  added: '2026-03-09'
+  evidence: WCAG accessibility standards and inclusive design research
+  context: All deck types; particularly important for inclusive design
+  confidence: strong
+- id: bp_124
+  entry_type: best_practice
+  title: Colour-Independent Comprehension
+  description: 'Meaning never conveyed by colour alone. Test: if printed in greyscale, is content still understandable?'
+  sources:
+  - Guides/03-visual-design/accessibility-standards.md
+  tags:
+  - accessibility
+  added: '2026-03-09'
+  evidence: WCAG accessibility standards and inclusive design research
+  context: All deck types; particularly important for inclusive design
+  confidence: strong
+- id: bp_125
+  entry_type: best_practice
+  title: Descriptive Alt Text
+  description: All meaning-bearing visuals have descriptive alt text. Decorative images marked as decorative.
+  sources:
+  - Guides/03-visual-design/accessibility-standards.md
+  tags:
+  - accessibility
+  added: '2026-03-09'
+  evidence: WCAG accessibility standards and inclusive design research
+  context: All deck types; particularly important for inclusive design
+  confidence: strong
+- id: bp_126
+  entry_type: best_practice
+  title: Clear Heading Hierarchy
+  description: Headings create clear, logical hierarchy. Screen readers and document exports must reflect this structure.
+  sources:
+  - Guides/03-visual-design/accessibility-standards.md
+  tags:
+  - accessibility
+  added: '2026-03-09'
+  evidence: WCAG accessibility standards and inclusive design research
+  context: All deck types; particularly important for inclusive design
+  confidence: strong
+- id: bp_127
+  entry_type: best_practice
+  title: Readable from Back of Room
+  description: 'For live presentations: body text must be readable from the back of the room.'
+  sources:
+  - Guides/03-visual-design/accessibility-standards.md
+  tags:
+  - accessibility
+  added: '2026-03-09'
+  evidence: WCAG accessibility standards and inclusive design research
+  context: All deck types; particularly important for inclusive design
+  confidence: strong
+- id: bp_128
+  entry_type: best_practice
+  title: No Text Over Busy Imagery
+  description: Key text NOT placed over busy imagery without a contrast-safe container (semi-transparent overlay, solid background
+    box).
+  sources:
+  - Guides/03-visual-design/accessibility-standards.md
+  tags:
+  - accessibility
+  added: '2026-03-09'
+  evidence: WCAG accessibility standards and inclusive design research
+  context: All deck types; particularly important for inclusive design
+  confidence: strong
+- id: bp_129
+  entry_type: best_practice
+  title: Chart Key Insight Caption
+  description: 'For complex charts: add a one-sentence "Key insight" caption. **10–20 words. Format: ''[Subject] [verb] [magnitude]
+    because [driver]''.**'
+  sources:
+  - Guides/03-visual-design/accessible-data-narrative-design.md
+  tags:
+  - accessibility
+  added: '2026-03-09'
+  evidence: WCAG accessibility standards and inclusive design research
+  context: All deck types; particularly important for inclusive design
+  confidence: strong
+- id: bp_130
+  entry_type: best_practice
+  title: Narrative Text in DOM
+  description: All narrative text must be in HTML DOM (not pixels in canvas) for screen reader compatibility.
+  sources:
+  - Guides/03-visual-design/accessible-data-narrative-design.md
+  tags:
+  - accessibility
+  added: '2026-03-09'
+  evidence: WCAG accessibility standards and inclusive design research
+  context: All deck types; particularly important for inclusive design
+  confidence: strong
+- id: bp_131
+  entry_type: best_practice
+  title: Gate 1 — Post-Outline
+  description: 'Before visual design: transformation statement clear, framework selected and complete, vertical flow test
+    passed, dot-dash storyline validated.'
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - quality-gate
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_132
+  entry_type: best_practice
+  title: Gate 2 — Post-Visual
+  description: 'Before refinement: cognitive load assessment (7±2), text density check (6×6), visual hierarchy established,
+    template consistency verified.'
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - quality-gate
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_133
+  entry_type: best_practice
+  title: Gate 3 — Final Review
+  description: 'Before delivery: complete quality checklist (all 5 dimensions), accessibility validation (WCAG 2.2 AA), timing
+    feasibility confirmed, platform compatibility tested.'
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - quality-gate
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_134
+  entry_type: best_practice
+  title: Coherence Check
+  description: Every element essential to slide's message? Delete decorative images, redundant labels, extra shapes.
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - quality-gate
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+  related_principles:
+  - pr_007
+- id: bp_135
+  entry_type: best_practice
+  title: Redundancy Check
+  description: Not reading on-screen paragraphs verbatim? Script/detail moved to speaker notes?
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - quality-gate
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+  related_principles:
+  - pr_006
+- id: bp_136
+  entry_type: best_practice
+  title: Contiguity Check
+  description: Labels next to what they describe? No "hunt and match"? Legends deleted, data directly labelled?
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - quality-gate
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+  related_principles:
+  - pr_005
+- id: bp_137
+  entry_type: best_practice
+  title: Signalling Check
+  description: One clear focal point? What to look at first is obvious?
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - quality-gate
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+  related_principles:
+  - pr_008
+- id: bp_138
+  entry_type: best_practice
+  title: Overload Check
+  description: '**Explanation mode:** one concept at a time, ≤5 elements ideal, ≤7 acceptable — use more slides if needed.
+    **Overview mode** (BLUF/summary): multiple concepts OK if one focal point and Gestalt grouping applied. **Gamma cards:**
+    ≤40 words per card. Content chunked into 3–5 groups? See bp_035 and bp_036.'
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - quality-gate
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+  related_principles:
+  - pr_001
+- id: bp_139
+  entry_type: best_practice
+  title: Accessibility Check
+  description: Contrast meets WCAG? No colour-only meaning? Alt text present?
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - quality-gate
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_140
+  entry_type: best_practice
+  title: Slide Quality — Visual Communication
+  description: 1=Cluttered/no hierarchy → 5=Simple/clean/one focal point.
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - quality-gate
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_141
+  entry_type: best_practice
+  title: Slide Quality — Cognitive Efficiency
+  description: 1=High extraneous load → 5=Low extraneous load, principles applied.
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - quality-gate
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_142
+  entry_type: best_practice
+  title: Slide Quality — Narrative (Action Title)
+  description: 1=Vague label → 3=Descriptive → 5=Insight title.
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - quality-gate
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_143
+  entry_type: best_practice
+  title: Slide Quality — Data Viz (Tufte)
+  description: 1=Chartjunk/legends/unreadable → 5=High data-ink ratio/direct labels/clean.
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - quality-gate
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_144
+  entry_type: best_practice
+  title: Deck Quality — Narrative & Flow
+  description: 1=List of facts → 5=Clear story end-to-end, BLUF upfront.
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - quality-gate
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_145
+  entry_type: best_practice
+  title: Deck Quality — MECE Logic
+  description: 1=Overlaps/gaps/objections unanswered → 5=Airtight reasoning.
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - quality-gate
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+  related_principles:
+  - pr_028
+- id: bp_146
+  entry_type: best_practice
+  title: Deck Quality — Consistency
+  description: 1=Fonts/colours/layouts change slide-to-slide → 5=Consistent visual system.
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - quality-gate
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_147
+  entry_type: best_practice
+  title: Executive Pass Threshold
+  description: 'Content 30%, Structure 25%. Overall pass: 85%.'
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - quality-gate
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_148
+  entry_type: best_practice
+  title: Training Pass Threshold
+  description: 'Structure 30%, Cognitive Load 25%. Overall pass: 80%.'
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - quality-gate
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_149
+  entry_type: best_practice
+  title: Sales Pass Threshold
+  description: 'Content 25%, Credibility 20%. Overall pass: 82%.'
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - quality-gate
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_150
+  entry_type: best_practice
+  title: Thought Leadership Pass Threshold
+  description: 'Content 30%, Visual 25%. Overall pass: 80%.'
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - quality-gate
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_151
+  entry_type: best_practice
+  title: 5-Second Test
+  description: 'Show slide for 5 seconds, ask "What was the main message?" Target: 80%+ recall.'
+  sources:
+  - Guides/03-visual-design/infographic-design-methodology.md
+  tags:
+  - quality-gate
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_152
+  entry_type: best_practice
+  title: Squint Test
+  description: Step back 6 feet / squint — visual hierarchy still visible? Key element still dominant?
+  sources:
+  - Guides/03-visual-design/infographic-design-methodology.md
+  tags:
+  - quality-gate
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_153
+  entry_type: best_practice
+  title: Greyscale Test
+  description: Convert to greyscale — is content still comprehensible without colour?
+  sources:
+  - Guides/03-visual-design/accessibility-standards.md
+  tags:
+  - quality-gate
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_154
+  entry_type: best_practice
+  title: Device Testing
+  description: Test on mobile, tablet, desktop, and print (if applicable).
+  sources:
+  - Guides/03-visual-design/infographic-design-methodology.md
+  tags:
+  - quality-gate
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_155
+  entry_type: best_practice
+  title: Readability Target
+  description: Flesch-Kincaid Grade 8–10 for general audience. Sentence length 15–20 words average. Paragraph length 3–5 sentences.
+  sources:
+  - Guides/01-content-standards/README.md
+  tags:
+  - text-density
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_156
+  entry_type: best_practice
+  title: Voice Consistency
+  description: Professional yet approachable. Second person ("you") for instructions. Use contractions. Prefer active voice.
+    Define or avoid jargon.
+  sources:
+  - Guides/01-content-standards/README.md
+  tags:
+  - text-density
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_157
+  entry_type: best_practice
+  title: WIIFM in First 50 Words
+  description: '"What''s in it for me?" answered within first 50 words of any section.'
+  sources:
+  - Guides/01-content-standards/README.md
+  tags:
+  - text-density
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_158
+  entry_type: best_practice
+  title: Chunking Rule
+  description: ≤4 new concepts per section. One example every 300–500 words. Clear signposting with headers and transitions.
+  sources:
+  - Guides/01-content-standards/README.md
+  tags:
+  - text-density
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_159
+  entry_type: best_practice
+  title: Scanning Optimisation
+  description: Bold key terms. Use lists strategically (not as default). Enable rapid visual scanning of key information.
+  sources:
+  - Guides/01-content-standards/README.md
+  tags:
+  - text-density
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+- id: bp_160
+  entry_type: best_practice
+  title: MECE Content Grouping
+  description: 'Chunk content into 3–5 groups. **Label each group: 2–4 words.** Reveal in deliberate order. Mutually exclusive,
+    collectively exhaustive.'
+  sources:
+  - Guides/03-visual-design/cognitive-load-principles.md
+  tags:
+  - text-density
+  - slide-structure
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: All deck types
+  confidence: strong
+  related_principles:
+  - pr_028
+- id: bp_161
+  entry_type: best_practice
+  title: 10–15 Minute Attention Chunks
+  description: Training decks must chunk content into 10–15 minute segments before attention wanes. Insert interaction/practice
+    between chunks.
+  sources:
+  - Guides/04-learning-delivery/training-presentation-sop.md
+  tags:
+  - deck-type
+  - executive-deck
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: Executive presentations and board decks
+  confidence: strong
+- id: bp_162
+  entry_type: best_practice
+  title: Show-Try-Feedback Cycle
+  description: 'Training decks rotate: demonstration slide → practice activity → debrief. Not monologue.'
+  sources:
+  - Guides/04-learning-delivery/training-presentation-sop.md
+  tags:
+  - deck-type
+  - executive-deck
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: Executive presentations and board decks
+  confidence: strong
+- id: bp_163
+  entry_type: best_practice
+  title: Job Aid Requirement
+  description: Training decks must include leave-behind reference materials for on-the-job performance support.
+  sources:
+  - Guides/04-learning-delivery/training-presentation-sop.md
+  tags:
+  - deck-type
+  - executive-deck
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: Executive presentations and board decks
+  confidence: strong
+- id: bp_164
+  entry_type: best_practice
+  title: Root Cause Alignment
+  description: Never create a training deck for motivation or environment gaps — only knowledge/skill gaps. Governance rule
+    for when decks are the right solution.
+  sources:
+  - Guides/04-learning-delivery/training-presentation-sop.md
+  tags:
+  - deck-type
+  - executive-deck
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: Executive presentations and board decks
+  confidence: strong
+- id: bp_165
+  entry_type: best_practice
+  title: Feature-to-Outcome Mapping
+  description: Every capability shown must explicitly map to a prospect benefit. Never present features without outcomes.
+  sources:
+  - Guides/02-slide-design/sales-narrative-sop.md
+  tags:
+  - deck-type
+  - executive-deck
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: Executive presentations and board decks
+  confidence: strong
+- id: bp_166
+  entry_type: best_practice
+  title: 2-Minute Decision Window
+  description: Sales decks must hook in the first 2 minutes — prospects make engagement decisions very early.
+  sources:
+  - Guides/02-slide-design/sales-narrative-sop.md
+  tags:
+  - deck-type
+  - executive-deck
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: Executive presentations and board decks
+  confidence: strong
+- id: bp_167
+  entry_type: best_practice
+  title: 'TL Text Density: 3×3 Maximum'
+  description: 'Thought leadership keynotes: maximum 3 words × 3 lines per slide (stricter than standard 6×6).'
+  sources:
+  - Guides/02-slide-design/thought-leadership-sop.md
+  tags:
+  - deck-type
+  - executive-deck
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: Executive presentations and board decks
+  confidence: strong
+- id: bp_168
+  entry_type: best_practice
+  title: 40–50% Visual-Only Slides
+  description: TL decks should be 40–50% full-bleed photography/diagrams with zero text.
+  sources:
+  - Guides/02-slide-design/thought-leadership-sop.md
+  tags:
+  - deck-type
+  - executive-deck
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: Executive presentations and board decks
+  confidence: strong
+  related_principles:
+  - pr_004
+- id: bp_169
+  entry_type: best_practice
+  title: 3× Big Idea Repetition
+  description: Core big idea must be repeated minimum 3 times throughout the presentation for reinforcement.
+  sources:
+  - Guides/02-slide-design/thought-leadership-sop.md
+  tags:
+  - deck-type
+  - training-deck
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: Training and educational presentations
+  confidence: strong
+- id: bp_170
+  entry_type: best_practice
+  title: Presentation Chart Font Sizes
+  description: 18pt minimum (24pt ideal) for all chart text when projected. Distance-dependent legibility.
+  sources:
+  - Guides/03-visual-design/presentation-data-visualization-guide.md
+  tags:
+  - deck-type
+  - training-deck
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: Training and educational presentations
+  confidence: strong
+- id: bp_171
+  entry_type: best_practice
+  title: 3–7 Data Points for Presentations
+  description: Charts projected live must show 3–7 data points maximum (vs. 20+ acceptable in dashboards/reports).
+  sources:
+  - Guides/03-visual-design/presentation-data-visualization-guide.md
+  tags:
+  - deck-type
+  - training-deck
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: Training and educational presentations
+  confidence: strong
+  related_principles:
+  - pr_002
+- id: bp_172
+  entry_type: best_practice
+  title: Chart Fills 70–80% of Slide
+  description: Post-title, charts should fill 70–80% of available slide area. Don't shrink charts.
+  sources:
+  - Guides/03-visual-design/presentation-data-visualization-guide.md
+  tags:
+  - deck-type
+  - training-deck
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: Training and educational presentations
+  confidence: strong
+- id: bp_173
+  entry_type: best_practice
+  title: 50-Point Chart Complexity Limit
+  description: 'Hard threshold: >50 data points in a single projected chart becomes unreadable.'
+  sources:
+  - Guides/03-visual-design/presentation-data-visualization-guide.md
+  tags:
+  - deck-type
+  - training-deck
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: Training and educational presentations
+  confidence: strong
+- id: bp_174
+  entry_type: best_practice
+  title: 'Histogram/Scatter: 20–50 Data Points'
+  description: Acceptable range for distribution-type charts (histograms, scatter plots) in presentations.
+  sources:
+  - Guides/03-visual-design/presentation-data-visualization-guide.md
+  tags:
+  - deck-type
+  - training-deck
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: Training and educational presentations
+  confidence: strong
+- id: bp_175
+  entry_type: best_practice
+  title: 'Gamma: 3–5 Bullets Maximum'
+  description: Gamma cards support 3–5 bullets optimally (stricter than general 6×6).
+  sources:
+  - Guides/02-slide-design/platform-implementation-guide.md
+  tags:
+  - deck-type
+  - training-deck
+  added: '2026-03-09'
+  evidence: Gamma platform implementation guidelines
+  context: Training and educational presentations
+  confidence: moderate
+- id: bp_176
+  entry_type: best_practice
+  title: 'Gamma: 40 Words Maximum Per Card'
+  description: Word count ceiling for Gamma-optimised content per card.
+  sources:
+  - Guides/02-slide-design/platform-implementation-guide.md
+  tags:
+  - deck-type
+  - training-deck
+  added: '2026-03-09'
+  evidence: Gamma platform implementation guidelines
+  context: Training and educational presentations
+  confidence: moderate
+- id: bp_177
+  entry_type: best_practice
+  title: Card vs Slide Paradigm
+  description: 'Gamma cards are fluid (expand vertically), unlike fixed 16:9 slides. The "frames not posters" paradigm applies
+    per card: one cognitive step per card in explanation mode, aggregation permitted in overview mode. See bp_035.'
+  sources:
+  - Guides/00-presentation-methodology/cognitive-visual-bridge.md
+  tags:
+  - deck-type
+  - sales-deck
+  added: '2026-03-09'
+  evidence: Gamma platform implementation guidelines
+  context: Sales presentations and pitch decks
+  confidence: moderate
+- id: bp_178
+  entry_type: best_practice
+  title: Slide Transitions
+  description: 'Zero transitions as default. If used: **fade only, <0.5s duration.** Never fly-in, bounce, or rotate.'
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - deck-type
+  - sales-deck
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: Sales presentations and pitch decks
+  confidence: strong
+- id: bp_179
+  entry_type: best_practice
+  title: Speaker Notes Standards
+  description: '**50–150 words per slide.** Structure: key message (1 sentence) + supporting detail + transition cue to next
+    slide.'
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - deck-type
+  - sales-deck
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: Sales presentations and pitch decks
+  confidence: strong
+- id: bp_180
+  entry_type: best_practice
+  title: Appendix Standards
+  description: Appendix slides numbered A1, A2… Labelled with source slide reference. Contain full data tables, methodology,
+    sources.
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - deck-type
+  - sales-deck
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: Sales presentations and pitch decks
+  confidence: strong
+- id: bp_181
+  entry_type: best_practice
+  title: Slide Numbering
+  description: 'Show slide numbers on all slides except title and full-bleed image slides. Format: ''n / N''. Bottom-right
+    corner.'
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - deck-type
+  - sales-deck
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: Sales presentations and pitch decks
+  confidence: strong
+- id: bp_182
+  entry_type: best_practice
+  title: Logo Placement
+  description: Title slide only OR small corner watermark (**max 5% of slide area**). Never centre-stage. Never on every slide
+    at large size.
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - deck-type
+  - sales-deck
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: Sales presentations and pitch decks
+  confidence: strong
+- id: bp_183
+  entry_type: best_practice
+  title: Build/Animation Standards
+  description: 'Builds are a storytelling tool — use them freely when each step advances understanding. **Quality test: does
+    this reveal add a cognitive step, or is it decoration?** Duration 0.3–0.5s per step. Final state must work as standalone
+    screenshot/PDF. For complex sequences, prefer splitting across multiple slides (film frames) over 5+ builds on one slide.'
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - deck-type
+  - sales-deck
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: Sales presentations and pitch decks
+  confidence: strong
+- id: bp_184
+  entry_type: best_practice
+  title: Breathing Slides
+  description: Insert 1 breathing slide (blank, single image, or single quote) **every 5–7 content slides** in keynote/TL
+    presentations.
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - deck-type
+  - sales-deck
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: Sales presentations and pitch decks
+  confidence: strong
+- id: bp_185
+  entry_type: best_practice
+  title: Handout vs Projected
+  description: 'Produce 2 artefacts: (1) projected version (visual, minimal text), (2) handout version (deck-ument with action
+    titles + full notes). Never use one for both.'
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  - Guides/02-slide-design/presentation-vs-deck-ument-decision-guide.md
+  tags:
+  - deck-type
+  - sales-deck
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: Sales presentations and pitch decks
+  confidence: strong
+- id: bp_186
+  entry_type: best_practice
+  title: SOAR Phase Colour Coding
+  description: 'Optional colour mapping: Situation = blue (calm/authority), Obstacle = red/orange (urgency), Approach = green
+    (progress), Results = gold/purple (achievement).'
+  sources:
+  - Guides/00-presentation-methodology/cognitive-visual-bridge.md
+  tags:
+  - deck-type
+  - sales-deck
+  added: '2026-03-09'
+  evidence: Industry best practice and expert consensus
+  context: Sales presentations and pitch decks
+  confidence: strong
+- id: ap_001
+  entry_type: anti_pattern
+  title: Teleprompter
+  description: Paragraphs of text on screen; presenter reads verbatim
+  consequences: Audience reads ahead, stops listening; redundancy principle violated
+  instead: Move text to speaker notes; replace with visual anchor + keyword
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - anti-pattern
+  - narrative-structure
+  added: '2026-03-09'
+  severity: critical
+  violates:
+  - pr_006
+  - pr_009
+- id: ap_002
+  entry_type: anti_pattern
+  title: Hybrid Trap
+  description: Dense "leave-behind" slides used in live presentation
+  consequences: 'Fails at both: too dense to present, too sparse to stand alone'
+  instead: Split into two versions OR redesign for primary delivery mode
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  - Guides/02-slide-design/presentation-vs-deck-ument-decision-guide.md
+  tags:
+  - anti-pattern
+  added: '2026-03-09'
+  severity: critical
+  violates:
+  - bp_002
+- id: ap_003
+  entry_type: anti_pattern
+  title: Data Dump
+  description: Tables/charts with no "so what"
+  consequences: Audience doesn't know what to conclude; wasted cognitive resources
+  instead: Add action title + highlight one insight; move detail to appendix
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - anti-pattern
+  - data-visualisation
+  added: '2026-03-09'
+  severity: critical
+  violates:
+  - pr_008
+- id: ap_004
+  entry_type: anti_pattern
+  title: Legend Addiction
+  description: Separate legends requiring eye-scanning between legend and data
+  consequences: Split-attention effect; increases extraneous cognitive load
+  instead: Direct-label data series; delete legend
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - anti-pattern
+  - data-visualisation
+  added: '2026-03-09'
+  severity: moderate
+  violates:
+  - pr_005
+  - pr_010
+- id: ap_005
+  entry_type: anti_pattern
+  title: Chartjunk
+  description: 3D effects, heavy gridlines, gradients, shadows, unnecessary icons
+  consequences: Reduces data-ink ratio; distracts from actual data; 40% less accurate
+  instead: Strip to essentials; maximise data-ink ratio; use 2D flat colours
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  - Guides/03-visual-design/data-visualization-excellence.md
+  tags:
+  - anti-pattern
+  - data-visualisation
+  added: '2026-03-09'
+  severity: critical
+  violates:
+  - pr_026
+- id: ap_006
+  entry_type: anti_pattern
+  title: Pretty-but-Useless
+  description: Decorative visuals with no informational purpose
+  consequences: Extraneous cognitive load; violates coherence principle
+  instead: Remove or replace with functional diagram/metaphor
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - anti-pattern
+  added: '2026-03-09'
+  severity: moderate
+  violates:
+  - pr_007
+- id: ap_007
+  entry_type: anti_pattern
+  title: Frankendeck
+  description: Fonts, colours, and layouts change from slide to slide
+  consequences: Audience perceives chaos; undermines professional credibility
+  instead: Standardise 1–2 fonts, consistent colour palette, single layout system
+  sources:
+  - Guides/00-presentation-methodology/presentation-design-workflow.md
+  tags:
+  - anti-pattern
+  - layout
+  added: '2026-03-09'
+  severity: critical
+  violates:
+  - pr_025
+- id: ap_008
+  entry_type: anti_pattern
+  title: Topic-Label Titles
+  description: Vague headlines like "Market Analysis" or "Background"
+  consequences: Audience can't skim deck; vertical flow test fails; no insight communicated
+  instead: 'Use action titles: full-sentence assertions stating the insight'
+  sources:
+  - Guides/02-slide-design/presentation-vs-deck-ument-decision-guide.md
+  tags:
+  - anti-pattern
+  added: '2026-03-09'
+  severity: critical
+  violates:
+  - bp_025
+- id: ap_009
+  entry_type: anti_pattern
+  title: Death by PowerPoint
+  description: Reading dense text-heavy slides verbatim to audience
+  consequences: Redundancy principle violated; audience disengages entirely
+  instead: Redesign as visual presentation or create proper deck-ument
+  sources:
+  - Guides/02-slide-design/presentation-vs-deck-ument-decision-guide.md
+  tags:
+  - anti-pattern
+  - narrative-structure
+  added: '2026-03-09'
+  severity: critical
+  violates:
+  - pr_006
+  - pr_009
+- id: ap_010
+  entry_type: anti_pattern
+  title: Information Overload
+  description: Wall of text, >10 data points, cluttered layout on single slide
+  consequences: Exceeds working memory; audience retains nothing
+  instead: Chunk into 3–5 groups; progressive disclosure; split slides
+  sources:
+  - Guides/03-visual-design/infographic-design-workflow.md
+  tags:
+  - anti-pattern
+  added: '2026-03-09'
+  severity: critical
+  violates:
+  - pr_001
+  - pr_002
+- id: ap_011
+  entry_type: anti_pattern
+  title: Missing Hierarchy
+  description: All text same size; no focal point; flat visual weight
+  consequences: Eye doesn't know where to start; audience scans randomly
+  instead: 'Establish 3-tier hierarchy: title → section → detail'
+  sources:
+  - Guides/03-visual-design/infographic-design-workflow.md
+  tags:
+  - anti-pattern
+  added: '2026-03-09'
+  severity: moderate
+  violates:
+  - pr_008
+- id: ap_012
+  entry_type: anti_pattern
+  title: Colour Overload
+  description: 10+ colours, rainbow palette, no semantic meaning
+  consequences: Cognitive overload; no visual priority system
+  instead: Limit to 5 colours max; one accent for key data
+  sources:
+  - Guides/03-visual-design/infographic-design-workflow.md
+  tags:
+  - anti-pattern
+  - colour
+  added: '2026-03-09'
+  severity: moderate
+  violates:
+  - pr_001
+- id: ap_013
+  entry_type: anti_pattern
+  title: Mismatched Complexity
+  description: Expert-level complexity presented to novice audience (or vice versa)
+  consequences: Audience either confused or bored; transformation fails
+  instead: Match visual and content complexity to specific audience persona
+  sources:
+  - Guides/03-visual-design/infographic-design-workflow.md
+  tags:
+  - anti-pattern
+  added: '2026-03-09'
+  severity: moderate
+- id: ap_014
+  entry_type: anti_pattern
+  title: Presentation Emailed
+  description: Minimal-text presentation slides sent via email without context
+  consequences: Slides are incomprehensible without spoken narration
+  instead: Create deck-ument version for distribution OR add comprehensive notes
+  sources:
+  - Guides/02-slide-design/presentation-vs-deck-ument-decision-guide.md
+  tags:
+  - anti-pattern
+  added: '2026-03-09'
+  severity: moderate
+- id: ap_015
+  entry_type: anti_pattern
+  title: Truncated Bar Axis
+  description: Bar chart Y-axis doesn't start at zero
+  consequences: Exaggerates differences; creates visual lie for magnitude comparison
+  instead: Always start bars at zero; if variance, use line chart instead
+  sources:
+  - Guides/03-visual-design/data-visualization-excellence.md
+  tags:
+  - anti-pattern
+  added: '2026-03-09'
+  severity: critical
+  violates:
+  - bp_094
+- id: ap_016
+  entry_type: anti_pattern
+  title: 3D Charts
+  description: Any chart rendered with 3D perspective effects
+  consequences: Perspective distortion; occlusion; 40% less accurate; zero information added
+  instead: 'Convert to 2D: 3D pie→horizontal bar; 3D column→2D bar; 3D area→line'
+  sources:
+  - Guides/03-visual-design/data-visualization-excellence.md
+  tags:
+  - anti-pattern
+  - data-visualisation
+  added: '2026-03-09'
+  severity: critical
+  violates:
+  - bp_086
+- id: ap_017
+  entry_type: anti_pattern
+  title: Dual Y-Axes
+  description: Two Y-axes on same chart
+  consequences: Confusion/manipulation risk; viewer can't compare scales
+  instead: Use separate charts or index metrics to common baseline
+  sources:
+  - Guides/03-visual-design/data-visualization-excellence.md
+  tags:
+  - anti-pattern
+  - data-visualisation
+  added: '2026-03-09'
+  severity: moderate
+  violates:
+  - bp_107
+- id: ap_018
+  entry_type: anti_pattern
+  title: Default Excel Charts
+  description: Unmodified Excel/PowerPoint default output (grey background, heavy gridlines, 3D)
+  consequences: Low data-ink ratio; unprofessional appearance; chartjunk
+  instead: 'Strip defaults: white background, no gridlines, 2D, direct labels'
+  sources:
+  - Guides/03-visual-design/data-visualization-excellence.md
+  tags:
+  - anti-pattern
+  added: '2026-03-09'
+  severity: moderate
+- id: ap_019
+  entry_type: anti_pattern
+  title: Skipping Logic Phase
+  description: Building visuals before structuring narrative/logic architecture
+  consequences: Incoherent deck; "slideument" with no through-line
+  instead: Always complete Phase 1–2 (audience + logic) before Phase 3 (visual)
+  sources:
+  - Guides/00-presentation-methodology/presentation-design-workflow.md
+  tags:
+  - anti-pattern
+  added: '2026-03-09'
+  severity: critical
+- id: ap_020
+  entry_type: anti_pattern
+  title: Design-in-Vacuum
+  description: Creating infographics/slides without user testing
+  consequences: Assumes comprehension that may not exist; misses accessibility issues
+  instead: Conduct 5-second test, squint test, and accessibility audit
+  sources:
+  - Guides/03-visual-design/infographic-design-workflow.md
+  tags:
+  - anti-pattern
+  added: '2026-03-09'
+  severity: moderate
+- id: ap_021
+  entry_type: anti_pattern
+  title: Moiré Patterns
+  description: Tight crosshatch/dot patterns in chart fills
+  consequences: Creates optical illusions and visual vibration; physically uncomfortable
+  instead: Use solid fills; no textures
+  sources:
+  - Guides/03-visual-design/data-visualization-excellence.md
+  tags:
+  - anti-pattern
+  added: '2026-03-09'
+  severity: moderate
+- id: ap_022
+  entry_type: anti_pattern
+  title: Colour-Only Encoding
+  description: Using colour as sole differentiator without labels/patterns
+  consequences: 4%+ population cannot distinguish; accessibility violation
+  instead: Always pair colour with labels, icons, shapes, or positional encoding
+  sources:
+  - Guides/03-visual-design/accessibility-standards.md
+  tags:
+  - anti-pattern
+  - colour
+  added: '2026-03-09'
+  severity: moderate
+  violates:
+  - bp_056
+- id: ap_023
+  entry_type: anti_pattern
+  title: Broken Hierarchy
+  description: Skipped heading levels (H1 → H3, missing H2)
+  consequences: Screen readers confused; document structure broken; violates semantic hierarchy
+  instead: Strict H1 → H2 → H3 progression, no skips
+  sources:
+  - Guides/02-slide-design/opml-to-slides-conversion.md
+  tags:
+  - anti-pattern
+  - layout
+  added: '2026-03-09'
+  severity: critical
+  violates:
+  - bp_026
+- id: ap_024
+  entry_type: anti_pattern
+  title: Buried Recommendation
+  description: Key recommendation appears on slide 15+ instead of early in deck
+  consequences: Executive disengages; decision deferred; meeting unproductive
+  instead: 'BLUF: state recommendation in first 5 slides'
+  sources:
+  - Guides/02-slide-design/executive-presentation-sop.md
+  tags:
+  - anti-pattern
+  added: '2026-03-09'
+  severity: critical
+  violates:
+  - bp_010
+- id: ap_025
+  entry_type: anti_pattern
+  title: Agenda/About Padding
+  description: Excessive agenda slides, "About Us" sections, section dividers consuming deck real estate
+  consequences: Delays value delivery; wastes scarce executive attention
+  instead: Minimise or eliminate; every slide must earn its place
+  sources:
+  - Guides/02-slide-design/executive-presentation-sop.md
+  tags:
+  - anti-pattern
+  added: '2026-03-09'
+  severity: moderate
+- id: ap_026
+  entry_type: anti_pattern
+  title: Transition Overload
+  description: Fly-in, bounce, spin, zoom animations on every slide
+  consequences: Distracts from content; adds extraneous cognitive load; looks dated
+  instead: Zero transitions default; fade only if used, <0.5s duration
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - anti-pattern
+  added: '2026-03-09'
+  severity: moderate
+  violates:
+  - pr_007
+- id: ap_027
+  entry_type: anti_pattern
+  title: Missing Speaker Notes
+  description: Presentation slides with no speaker notes sent to stand-in presenter
+  consequences: Stand-in has no context; delivery quality drops catastrophically
+  instead: '50–150 words per slide: key message + detail + transition cue'
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - anti-pattern
+  added: '2026-03-09'
+  severity: moderate
+- id: ap_028
+  entry_type: anti_pattern
+  title: No Appendix
+  description: Detail-heavy data moved to "the report" that doesn't exist
+  consequences: Audience has no way to verify claims or explore detail
+  instead: Create appendix slides (A1, A2…) with full data and methodology
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - anti-pattern
+  added: '2026-03-09'
+  severity: moderate
+- id: ap_029
+  entry_type: anti_pattern
+  title: Decorative Animations
+  description: Builds that add no cognitive step; animations used for visual flair not storytelling
+  consequences: Audience distracted; builds become noise; screenshot/PDF meaningless
+  instead: Each build must advance understanding. For complex sequences, split across slides (film frames). Final state standalone
+  sources:
+  - Guides/00-presentation-methodology/quality-checklist-framework.md
+  tags:
+  - anti-pattern
+  added: '2026-03-09'
+  severity: moderate
+  violates:
+  - bp_039

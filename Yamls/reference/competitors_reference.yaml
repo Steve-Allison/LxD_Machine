@@ -1,0 +1,992 @@
+_meta:
+  id: competitors_reference
+  title: "Competitor Landscape"
+  description: "Competitor product vocabulary, positioning strategies, objection handling, and competitive intelligence for Adobe Experience Cloud context."
+  domain: sales
+  domain_type: cross_cutting
+  purpose: reference
+  version: "2.3.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Best Practices for Writing Effective Corporate Learning Content.md"
+    - "Corpus/Research/Crafting Powerful Opening Plays.md"
+    - "Corpus/Research/Research - Corporate Learning Assessment- Strategies, Modalities, and Best Practices.md"
+    - "Corpus/Research/Research - Canonical Presentation Methodology Research.md"
+    - "Corpus/Research/The Universal Narrative Methodology: A Framework for Crafting and Improving Stories.md"
+
+  relationships:
+    - target: entities/adobe_entities.yaml
+      type: depends_on
+      description: "Adobe product definitions"
+# ==============================================================================
+# COMPETITOR VOCABULARY BY CATEGORY
+# ==============================================================================
+
+competitors:
+  # ---------------------------------------------------------------------------
+  # MARKETING AUTOMATION
+  # ---------------------------------------------------------------------------
+  marketing_automation:
+    category_description: "Email marketing, campaign orchestration, lead nurturing"
+    adobe_product: "Adobe Marketo Engage"
+
+    vendors:
+      hubspot:
+        name: "HubSpot"
+        products:
+          - "HubSpot Marketing Hub"
+          - "HubSpot CRM"
+        market_position: "SMB to mid-market; all-in-one inbound marketing"
+        strengths:
+          - "Ease of use and quick implementation"
+          - "Freemium entry point"
+          - "Strong inbound methodology content"
+          - "Integrated CRM at no extra cost"
+        weaknesses:
+          - "Limited scalability for enterprise"
+          - "Less sophisticated ABM capabilities"
+          - "Basic reporting compared to enterprise tools"
+          - "Pricing jumps at scale"
+
+      pardot:
+        name: "Pardot (Salesforce Marketing Cloud Account Engagement)"
+        products:
+          - "Pardot"
+          - "Marketing Cloud Account Engagement"
+        market_position: "Salesforce ecosystem B2B marketing"
+        strengths:
+          - "Native Salesforce integration"
+          - "Strong B2B focus"
+          - "Einstein AI capabilities"
+        weaknesses:
+          - "Requires Salesforce investment"
+          - "Learning curve"
+          - "Can be expensive fully loaded"
+
+      eloqua:
+        name: "Oracle Eloqua"
+        products:
+          - "Oracle Eloqua"
+          - "Oracle CX Marketing"
+        market_position: "Enterprise B2B marketing automation"
+        strengths:
+          - "Sophisticated campaign orchestration"
+          - "Strong data management"
+          - "Enterprise scale"
+        weaknesses:
+          - "Steep learning curve"
+          - "Implementation complexity"
+          - "Higher cost of ownership"
+
+      salesforce_marketing_cloud:
+        name: "Salesforce Marketing Cloud"
+        products:
+          - "Marketing Cloud"
+          - "Journey Builder"
+          - "Email Studio"
+        market_position: "Enterprise multi-channel marketing"
+        strengths:
+          - "Multi-channel orchestration"
+          - "Salesforce ecosystem"
+          - "AI/Einstein integration"
+        weaknesses:
+          - "Complexity"
+          - "Cost"
+          - "Integration challenges outside Salesforce"
+
+      mailchimp:
+        name: "Mailchimp"
+        products:
+          - "Mailchimp All-in-One"
+        market_position: "SMB email marketing"
+        strengths:
+          - "Very easy to use"
+          - "Low cost entry"
+          - "Good templates"
+        weaknesses:
+          - "Limited enterprise features"
+          - "Basic segmentation"
+          - "Not suitable for complex B2B"
+
+  # ---------------------------------------------------------------------------
+  # ANALYTICS
+  # ---------------------------------------------------------------------------
+  analytics:
+    category_description: "Digital analytics, customer insights, attribution"
+    adobe_product: "Adobe Analytics"
+
+    vendors:
+      google_analytics:
+        name: "Google Analytics 4"
+        products:
+          - "Google Analytics 4"
+          - "GA4 360"
+        market_position: "Default web analytics; free tier dominance"
+        strengths:
+          - "Free tier with broad capabilities"
+          - "Google ecosystem integration"
+          - "Event-based data model"
+          - "Machine learning insights"
+        weaknesses:
+          - "Data sampling at scale"
+          - "Limited customer journey analysis"
+          - "Privacy concerns with data location"
+          - "Steep migration from UA"
+
+      mixpanel:
+        name: "Mixpanel"
+        products:
+          - "Mixpanel Analytics"
+        market_position: "Product analytics; user behavior focus"
+        strengths:
+          - "Strong product analytics"
+          - "Easy event tracking"
+          - "Good retention analysis"
+        weaknesses:
+          - "Less marketing focus"
+          - "Pricing at scale"
+          - "Limited attribution"
+
+      amplitude:
+        name: "Amplitude"
+        products:
+          - "Amplitude Analytics"
+          - "Amplitude Experiment"
+        market_position: "Product analytics; growth teams"
+        strengths:
+          - "Behavioral analytics"
+          - "Cohort analysis"
+          - "Experiment platform"
+        weaknesses:
+          - "Product focus vs marketing"
+          - "Cost at enterprise scale"
+
+      segment:
+        name: "Segment (Twilio)"
+        products:
+          - "Segment CDP"
+          - "Twilio Engage"
+        market_position: "Customer data infrastructure"
+        strengths:
+          - "Data collection and routing"
+          - "Broad integrations"
+          - "Developer-friendly"
+        weaknesses:
+          - "Not analytics per se"
+          - "Requires downstream tools"
+          - "Cost at volume"
+
+      heap:
+        name: "Heap Analytics"
+        products:
+          - "Heap"
+        market_position: "Auto-capture product analytics"
+        strengths:
+          - "Automatic event capture"
+          - "Retroactive analysis"
+          - "Easy implementation"
+        weaknesses:
+          - "Data volume concerns"
+          - "Limited customization"
+
+  # ---------------------------------------------------------------------------
+  # CONTENT MANAGEMENT
+  # ---------------------------------------------------------------------------
+  content_management:
+    category_description: "Web CMS, headless CMS, digital experience platforms"
+    adobe_products:
+      - "Adobe Experience Manager Sites"
+      - "Adobe Experience Manager Assets"
+
+    enterprise_cms_dxp:
+      sitecore:
+        name: "Sitecore"
+        products:
+          - "Sitecore XM Cloud"
+          - "Sitecore Content Hub"
+          - "Sitecore CDP"
+        market_position: "Enterprise DXP; .NET ecosystem"
+        strengths:
+          - "Strong personalisation"
+          - "Composable architecture (XM Cloud)"
+          - "Marketing automation integration"
+          - "Enterprise security"
+        weaknesses:
+          - "Implementation complexity"
+          - "Cost"
+          - "Historically slow releases"
+          - ".NET expertise required"
+
+      contentful:
+        name: "Contentful"
+        products:
+          - "Contentful Content Platform"
+        market_position: "Headless CMS; API-first"
+        strengths:
+          - "Developer experience"
+          - "Headless/API-first"
+          - "Fast implementation"
+          - "Strong for multi-channel"
+        weaknesses:
+          - "Not a full DXP"
+          - "No built-in personalisation"
+          - "Cost at scale"
+
+      drupal:
+        name: "Drupal"
+        products:
+          - "Drupal CMS"
+          - "Acquia (Drupal as a Service)"
+        market_position: "Open source enterprise CMS"
+        strengths:
+          - "Open source flexibility"
+          - "Strong community"
+          - "Government/education adoption"
+        weaknesses:
+          - "Requires development expertise"
+          - "Can be costly with Acquia"
+          - "Slower time to value"
+
+      optimizely:
+        name: "Optimizely CMS"
+        products:
+          - "Optimizely CMS"
+          - "Optimizely Content Cloud"
+        market_position: "DXP with experimentation DNA"
+        strengths:
+          - "Strong experimentation"
+          - "Good personalisation"
+          - "Marketing-friendly UI"
+        weaknesses:
+          - "Smaller ecosystem"
+          - "Cost"
+
+      contentstack:
+        name: "Contentstack"
+        products:
+          - "Contentstack Headless CMS"
+        market_position: "Enterprise headless CMS"
+        strengths:
+          - "Enterprise-grade headless"
+          - "Good for omnichannel"
+          - "Strong integrations"
+        weaknesses:
+          - "Not a full DXP"
+          - "Requires front-end investment"
+
+      bloomreach:
+        name: "Bloomreach"
+        products:
+          - "Bloomreach Content"
+          - "Bloomreach Discovery"
+        market_position: "Commerce experience platform"
+        strengths:
+          - "Strong commerce focus"
+          - "Good search/discovery"
+          - "AI-powered merchandising"
+        weaknesses:
+          - "Commerce-centric"
+          - "Less general content focus"
+
+    publishing_platforms_smb:
+      wordpress:
+        name: "WordPress"
+        products:
+          - "WordPress.org"
+          - "WordPress.com"
+        market_position: "Dominant open-source CMS"
+        strengths:
+          - "Ubiquitous"
+          - "Huge plugin ecosystem"
+          - "Low cost"
+        weaknesses:
+          - "Security concerns"
+          - "Performance at scale"
+          - "Not enterprise-ready out of box"
+
+      squarespace:
+        name: "Squarespace"
+        products:
+          - "Squarespace"
+        market_position: "SMB website builder"
+        strengths:
+          - "Beautiful templates"
+          - "Easy to use"
+          - "All-in-one"
+        weaknesses:
+          - "Limited customization"
+          - "Not for enterprise"
+
+      wix:
+        name: "Wix"
+        products:
+          - "Wix"
+        market_position: "SMB website builder"
+        strengths:
+          - "Drag-and-drop ease"
+          - "Low cost"
+        weaknesses:
+          - "Limited scalability"
+          - "SEO limitations"
+
+  # ---------------------------------------------------------------------------
+  # CREATIVE TOOLS
+  # ---------------------------------------------------------------------------
+  creative_tools:
+    category_description: "Design, video, creative collaboration"
+    adobe_products:
+      - "Adobe Creative Cloud"
+      - "Adobe Firefly"
+      - "Adobe Express"
+
+    design_and_video:
+      figma:
+        name: "Figma"
+        products:
+          - "Figma"
+          - "FigJam"
+          - "Dev Mode"
+        market_position: "Collaborative design; product design"
+        strengths:
+          - "Real-time collaboration"
+          - "Browser-based"
+          - "Strong for product/UI design"
+          - "Developer handoff"
+        weaknesses:
+          - "Less print/production focus"
+          - "Limited asset management"
+          - "Ownership concerns (Adobe acquisition pending/complete)"
+
+      sketch:
+        name: "Sketch"
+        products:
+          - "Sketch"
+        market_position: "Mac-based UI/UX design"
+        strengths:
+          - "Mac-native performance"
+          - "Strong UI design legacy"
+        weaknesses:
+          - "Mac only"
+          - "Less collaboration than Figma"
+          - "Smaller ecosystem now"
+
+      canva:
+        name: "Canva"
+        products:
+          - "Canva"
+          - "Canva Pro"
+          - "Canva Teams"
+        market_position: "Democratized design; SMB/prosumer"
+        strengths:
+          - "Extremely easy to use"
+          - "Template-driven"
+          - "Low cost"
+          - "Magic Studio AI features"
+        weaknesses:
+          - "Limited professional features"
+          - "Less control"
+          - "Brand consistency challenges"
+
+    genai_creation:
+      image:
+        midjourney:
+          name: "Midjourney"
+          market_position: "AI image generation; artistic focus"
+          strengths:
+            - "High-quality artistic output"
+            - "Strong community"
+            - "Creative exploration"
+          weaknesses:
+            - "Discord-based UI"
+            - "Limited commercial licensing clarity"
+            - "Less control/editing"
+
+        stability_ai:
+          name: "Stability AI"
+          products:
+            - "Stable Diffusion"
+            - "Stability.ai Platform"
+          market_position: "Open-source AI image generation"
+          strengths:
+            - "Open source options"
+            - "Customization"
+            - "Cost-effective"
+          weaknesses:
+            - "Requires technical expertise"
+            - "Quality consistency"
+
+        canva_ai:
+          name: "Canva AI"
+          products:
+            - "Magic Studio"
+            - "Text to Image"
+          market_position: "Integrated GenAI in design tool"
+          strengths:
+            - "Integrated workflow"
+            - "Easy to use"
+          weaknesses:
+            - "Less sophisticated than dedicated tools"
+
+      video:
+        runway:
+          name: "Runway"
+          products:
+            - "Runway Gen-2"
+            - "Runway ML"
+          market_position: "AI video generation pioneer"
+          strengths:
+            - "Video generation leader"
+            - "Creative tools"
+            - "Research-backed"
+          weaknesses:
+            - "Cost"
+            - "Length limitations"
+
+        descript:
+          name: "Descript"
+          products:
+            - "Descript"
+          market_position: "AI-powered video/audio editing"
+          strengths:
+            - "Text-based editing"
+            - "Easy transcription"
+            - "Podcasting focus"
+          weaknesses:
+            - "Less professional than Premiere"
+            - "Limited advanced features"
+
+      text:
+        jasper:
+          name: "Jasper"
+          products:
+            - "Jasper AI"
+          market_position: "Enterprise AI copywriting"
+          strengths:
+            - "Marketing focus"
+            - "Brand voice training"
+            - "Template library"
+          weaknesses:
+            - "Cost"
+            - "Generic output without training"
+
+        typeface:
+          name: "Typeface"
+          products:
+            - "Typeface"
+          market_position: "Enterprise brand-safe GenAI"
+          strengths:
+            - "Brand safety focus"
+            - "Enterprise governance"
+          weaknesses:
+            - "Newer entrant"
+            - "Enterprise-only pricing"
+
+  # ---------------------------------------------------------------------------
+  # E-COMMERCE
+  # ---------------------------------------------------------------------------
+  ecommerce:
+    category_description: "Commerce platforms, storefronts, B2B commerce"
+    adobe_product: "Adobe Commerce (Magento)"
+
+    vendors:
+      shopify:
+        name: "Shopify"
+        products:
+          - "Shopify"
+          - "Shopify Plus"
+        market_position: "SMB to mid-market; hosted commerce"
+        strengths:
+          - "Ease of use"
+          - "Fast time to market"
+          - "App ecosystem"
+          - "Shopify Payments"
+        weaknesses:
+          - "Limited B2B"
+          - "Customization limits"
+          - "Transaction fees"
+
+      woocommerce:
+        name: "WooCommerce"
+        products:
+          - "WooCommerce"
+        market_position: "WordPress-based open source"
+        strengths:
+          - "Open source flexibility"
+          - "WordPress integration"
+          - "Low cost"
+        weaknesses:
+          - "Scaling challenges"
+          - "Hosting dependency"
+          - "Plugin quality varies"
+
+      bigcommerce:
+        name: "BigCommerce"
+        products:
+          - "BigCommerce"
+          - "BigCommerce B2B"
+        market_position: "Mid-market SaaS commerce"
+        strengths:
+          - "Headless options"
+          - "B2B capabilities"
+          - "No transaction fees"
+        weaknesses:
+          - "Smaller ecosystem"
+          - "Less brand recognition"
+
+      salesforce_commerce_cloud:
+        name: "Salesforce Commerce Cloud"
+        products:
+          - "Commerce Cloud"
+          - "B2C Commerce"
+          - "B2B Commerce"
+        market_position: "Enterprise commerce in Salesforce ecosystem"
+        strengths:
+          - "Salesforce integration"
+          - "B2B and B2C"
+          - "AI/Einstein"
+        weaknesses:
+          - "Cost"
+          - "Complexity"
+          - "Salesforce dependency"
+
+      commercetools:
+        name: "commercetools"
+        products:
+          - "commercetools"
+        market_position: "Headless commerce; MACH architecture"
+        strengths:
+          - "API-first"
+          - "Composable"
+          - "Scalability"
+        weaknesses:
+          - "Requires development investment"
+          - "No out-of-box storefront"
+
+      elastic_path:
+        name: "Elastic Path"
+        products:
+          - "Elastic Path Commerce Cloud"
+        market_position: "Composable commerce"
+        strengths:
+          - "Composable architecture"
+          - "Flexibility"
+        weaknesses:
+          - "Implementation effort"
+          - "Smaller community"
+
+  # ---------------------------------------------------------------------------
+  # SEARCH AND DISCOVERY
+  # ---------------------------------------------------------------------------
+  search_and_discovery:
+    category_description: "Site search, product discovery, merchandising"
+    adobe_product: "Adobe Target, Adobe Commerce Search"
+
+    vendors:
+      algolia:
+        name: "Algolia"
+        products:
+          - "Algolia Search"
+          - "Algolia Recommend"
+        market_position: "API-first search-as-a-service"
+        strengths:
+          - "Speed"
+          - "Developer experience"
+          - "AI ranking"
+        weaknesses:
+          - "Cost at scale"
+          - "Less merchandising depth"
+
+# ==============================================================================
+# COMPETITIVE POSITIONING
+# ==============================================================================
+
+positioning:
+  description: "Strategic positioning frameworks for competitive scenarios"
+
+  # ---------------------------------------------------------------------------
+  # POSITIONING BY SCENARIO
+  # ---------------------------------------------------------------------------
+  positioning_strategies:
+    enterprise_scale:
+      scenario: "Prospect needs enterprise-grade scale and reliability"
+      key_messages:
+        - "Adobe powers the world's largest brands - trusted by 80% of Fortune 100"
+        - "Unified platform reduces integration complexity and total cost of ownership"
+        - "Global 24/7 support with dedicated customer success"
+      proof_points:
+        - "Customer: [Major Brand] serves 50M+ customers on AEM"
+        - "Uptime: 99.99% SLA for Enterprise customers"
+        - "Scale: Process billions of events daily in Analytics"
+      competitors_to_address:
+        - "Point solution complexity (Contentful + Segment + multiple tools)"
+        - "Google Analytics sampling at enterprise volume"
+        - "Salesforce total cost of ownership"
+
+    innovation_leader:
+      scenario: "Prospect values cutting-edge technology and innovation"
+      key_messages:
+        - "First-party data foundation for a cookieless future"
+        - "Native AI (Sensei) trained on marketing-specific data"
+        - "Firefly generative AI with commercial safety built-in"
+      proof_points:
+        - "Adobe Sensei processes 100T+ transactions per year"
+        - "Firefly trained on licensed Adobe Stock content"
+        - "Real-Time CDP for millisecond personalization"
+      competitors_to_address:
+        - "Midjourney/Stability AI IP concerns"
+        - "Google cookie deprecation impact"
+        - "Point solution AI vs unified AI"
+
+    time_to_value:
+      scenario: "Prospect needs fast implementation and quick wins"
+      key_messages:
+        - "Edge Delivery Services for sub-second page loads in weeks"
+        - "AJO quick-start templates for campaign launch in days"
+        - "Express for democratized creation without design skills"
+      proof_points:
+        - "Customer: [Brand] launched in 6 weeks with EDS"
+        - "100+ pre-built journey templates in AJO"
+        - "Express: 30 minutes from idea to social asset"
+      competitors_to_address:
+        - "HubSpot simplicity claims"
+        - "Canva speed claims"
+        - "Contentful implementation speed"
+
+    integration_ecosystem:
+      scenario: "Prospect has complex technology stack"
+      key_messages:
+        - "250+ native integrations in Experience Cloud"
+        - "API-first architecture for custom integration"
+        - "Exchange marketplace for partner solutions"
+      proof_points:
+        - "Native Salesforce, Microsoft, SAP connectors"
+        - "Experience Platform APIs for any data source"
+        - "1000+ Exchange partners"
+      competitors_to_address:
+        - "Salesforce ecosystem lock-in"
+        - "Point solution integration complexity"
+        - "Custom development costs elsewhere"
+
+  # ---------------------------------------------------------------------------
+  # DIFFERENTIATION FRAMEWORK
+  # ---------------------------------------------------------------------------
+  differentiation:
+    description: "Core differentiators for competitive positioning"
+
+    platform_vs_point:
+      differentiator: "Unified Platform vs Point Solution Sprawl"
+      message: "Single view of customer across all channels; one data layer; unified AI"
+      evidence:
+        - "Real-Time CDP unifies all data sources"
+        - "Sensei AI available across all products"
+        - "One login, one governance model"
+      counter:
+        objection: "We prefer best-of-breed flexibility"
+        response: "Adobe is composable - use what you need. But unified data and AI compound value. Integration tax of point solutions often exceeds platform cost."
+
+    content_supply_chain:
+      differentiator: "End-to-End Content Supply Chain"
+      message: "From creative ideation through delivery and optimization - one flow"
+      evidence:
+        - "Creative Cloud to Experience Cloud workflow"
+        - "Asset management in AEM Assets"
+        - "Content velocity with GenStudio"
+      counter:
+        objection: "We use Figma/Canva for design"
+        response: "Those tools fit early workflow. Adobe completes the chain - asset management, delivery, personalization, analytics. Handoff friction adds hidden cost."
+
+    first_party_data:
+      differentiator: "First-Party Data Foundation"
+      message: "Built for a privacy-first, cookieless future from the ground up"
+      evidence:
+        - "Real-Time CDP is consent-aware by design"
+        - "Adobe Analytics doesn't sample like GA4"
+        - "Identity resolution without third-party cookies"
+      counter:
+        objection: "GA4 is free and sufficient"
+        response: "Free at the cost of sampling, data ownership, and Google's priorities. First-party data ownership is strategic - Adobe ensures you control it."
+
+    creative_to_commerce:
+      differentiator: "Creative-to-Commerce Continuum"
+      message: "Only Adobe connects creative, marketing, and commerce in one ecosystem"
+      evidence:
+        - "Firefly generates commerce-ready assets"
+        - "AEM Assets serves Creative and Marketing"
+        - "Adobe Commerce plugs into Experience Cloud"
+      counter:
+        objection: "We use Shopify/Salesforce Commerce"
+        response: "Adobe Commerce offers B2B depth and Experience Cloud integration that Shopify can't match. For Salesforce shops, consider total ecosystem cost."
+
+# ==============================================================================
+# OBJECTION HANDLING
+# ==============================================================================
+
+objection_handling:
+  description: "Common objections and response playbooks"
+
+  # ---------------------------------------------------------------------------
+  # COST/PRICING OBJECTIONS
+  # ---------------------------------------------------------------------------
+  cost:
+    objection: "Adobe is too expensive"
+    response_framework:
+      acknowledge: "I understand - Adobe is an investment. Let's unpack what you're comparing."
+      reframe: "When evaluating cost, consider total cost of ownership: point solution integration, multiple vendor management, data silos, and opportunity cost of slower time-to-value."
+      evidence:
+        - "Forrester TEI studies show 300%+ ROI for AEM, Analytics, and Target customers"
+        - "Unified platform reduces IT integration burden by 30-40%"
+        - "Faster time to market = faster revenue"
+      question: "What is the cost of the problem you're trying to solve? How does that compare to the investment?"
+
+    variations:
+      cant_afford:
+        objection: "We can't afford Adobe right now"
+        response: "Let's scope to what matters most. Adobe has entry points at different investment levels. What's the most critical problem to solve first?"
+
+      cheaper_alternative:
+        objection: "HubSpot/GA4/Canva is much cheaper"
+        response: "They are - for a subset of capability. What happens when you need to add personalization? Attribution? Enterprise scale? The upgrade path from point solutions often costs more than starting with Adobe."
+
+      budget_freeze:
+        objection: "We have a budget freeze"
+        response: "Understood. Let's focus on building the business case for when budget opens. Often, Adobe pays for itself through efficiency gains - would a pilot help demonstrate value?"
+
+  # ---------------------------------------------------------------------------
+  # COMPLEXITY OBJECTIONS
+  # ---------------------------------------------------------------------------
+  complexity:
+    objection: "Adobe is too complex for our team"
+    response_framework:
+      acknowledge: "Adobe has depth - that's part of the value. But I hear the concern about adoption."
+      reframe: "Complexity depends on scope. You don't have to use everything. Adobe is modular - start simple, grow as you need."
+      evidence:
+        - "Edge Delivery Services: developers productive in days"
+        - "Express: no design skills required"
+        - "Adobe Learning: 1000+ free courses"
+      question: "What would success look like for your team in the first 90 days? Let's design an adoption path for that."
+
+    variations:
+      learning_curve:
+        objection: "The learning curve is too steep"
+        response: "Adobe invests heavily in enablement - Adobe Learning, certification, customer success. We also have implementation partners who accelerate time to value."
+
+      need_simpler:
+        objection: "We need something simpler"
+        response: "Simple is relative to capability. What feels simple today may constrain you tomorrow. Let's match tool complexity to your actual needs."
+
+  # ---------------------------------------------------------------------------
+  # COMPETITIVE OBJECTIONS
+  # ---------------------------------------------------------------------------
+  competitive:
+    vs_google:
+      objection: "We're happy with Google Analytics"
+      response_framework:
+        acknowledge: "GA4 is widely used and free at entry. I understand the appeal."
+        reframe: "But consider: Do you own your data, or does Google? Are you hitting sampling limits? Can GA4 connect the full customer journey across touchpoints?"
+        evidence:
+          - "Adobe Analytics: No sampling at any volume"
+          - "Full attribution modeling, not last-click default"
+          - "Integrates natively with Adobe Target, AJO, CDP"
+        question: "What questions can't you answer today with GA4? That's often where Adobe adds value."
+
+    vs_salesforce:
+      objection: "We're a Salesforce shop"
+      response_framework:
+        acknowledge: "Salesforce has a strong ecosystem. Adobe integrates well with Salesforce."
+        reframe: "Many customers use both - CRM data in Salesforce, experience and creative in Adobe. They complement rather than compete."
+        evidence:
+          - "Native Salesforce connectors in Experience Platform"
+          - "Bi-directional data sync"
+          - "Adobe excels at experience, Salesforce at CRM"
+        question: "Are you looking to consolidate, or optimize each platform for what it does best?"
+
+    vs_hubspot:
+      objection: "HubSpot does everything we need"
+      response_framework:
+        acknowledge: "HubSpot is great for getting started and inbound marketing."
+        reframe: "As you scale, HubSpot's pricing increases and enterprise features become gaps. Many graduate to Adobe when they outgrow HubSpot's ceiling."
+        evidence:
+          - "Adobe Marketo: Built for enterprise B2B complexity"
+          - "Advanced ABM, predictive scoring, attribution"
+          - "Integrates with full Experience Cloud"
+        question: "What marketing challenges are you facing that HubSpot can't solve? That's typically the trigger for Adobe."
+
+  # ---------------------------------------------------------------------------
+  # SWITCHING/MIGRATION OBJECTIONS
+  # ---------------------------------------------------------------------------
+  switching:
+    objection: "Switching costs are too high"
+    response_framework:
+      acknowledge: "Migration is always a consideration. It's a valid concern."
+      reframe: "But staying on the wrong platform has costs too - opportunity cost, technical debt, and eventually forced migration anyway."
+      evidence:
+        - "Adobe has migration tools and services"
+        - "Phased implementation reduces risk"
+        - "Customer success for smooth transition"
+      question: "What's the cost of staying where you are for another 3 years? Often that exceeds migration investment."
+
+    variations:
+      locked_in:
+        objection: "We're locked into our current vendor"
+        response: "Most 'lock-in' is contractual, not technical. Let's explore your contract timeline and plan ahead."
+
+      too_much_effort:
+        objection: "Too much effort to migrate"
+        response: "Adobe has migration playbooks and partners who've done this hundreds of times. Let's scope the actual effort together."
+
+# ==============================================================================
+# ENTITY EXTRACTION (GLiNER)
+# ==============================================================================
+
+entity_types:
+  competitor_mention:
+    gliner_label: "COMPETITOR"
+    gliner_description: "Competitor product company HubSpot Salesforce Google Analytics Sitecore Shopify Canva Figma alternative vendor"
+    examples:
+      - "HubSpot"
+      - "Salesforce Marketing Cloud"
+      - "Google Analytics"
+      - "Sitecore"
+      - "Canva"
+    confidence_threshold: 0.8
+    color: "#e74c3c"
+
+  competitive_claim:
+    gliner_label: "COMPETITIVE_CLAIM"
+    gliner_description: "Competitor comparison differentiation advantage better than versus alternative claim positioning"
+    examples:
+      - "Unlike HubSpot, Adobe offers..."
+      - "While competitors require multiple tools..."
+      - "Adobe is the only platform that..."
+    confidence_threshold: 0.7
+    color: "#f39c12"
+
+  objection:
+    gliner_label: "OBJECTION"
+    gliner_description: "Customer objection concern hesitation pushback too expensive too complex switch cost"
+    examples:
+      - "Adobe is too expensive"
+      - "We can't afford"
+      - "Too complex for our team"
+      - "We're happy with our current solution"
+    confidence_threshold: 0.65
+    color: "#9b59b6"
+
+# ==============================================================================
+# SCORING & DETECTION
+# ==============================================================================
+
+scoring:
+  description: "Rubric for evaluating competitive messaging quality"
+
+  dimensions:
+    positioning_clarity:
+      weight: 0.30
+      criteria:
+        excellent: "Clear differentiation; specific value proposition; memorable framing"
+        good: "Solid positioning; some differentiation; reasonable clarity"
+        adequate: "Generic claims; limited differentiation"
+        weak: "Unclear positioning; no differentiation"
+        poor: "Confusing or contradictory positioning"
+
+    objection_handling:
+      weight: 0.25
+      criteria:
+        excellent: "Acknowledges concern; reframes effectively; provides evidence; advances conversation"
+        good: "Handles objection; some reframe; moves forward"
+        adequate: "Addresses objection superficially"
+        weak: "Dismissive or defensive response"
+        poor: "Ignores or fumbles objection"
+
+    evidence_quality:
+      weight: 0.25
+      criteria:
+        excellent: "Specific proof points; named customers; quantified results"
+        good: "Some evidence; reasonably specific"
+        adequate: "Generic claims; limited evidence"
+        weak: "No supporting evidence"
+        poor: "Misleading or fabricated claims"
+
+    competitive_accuracy:
+      weight: 0.20
+      criteria:
+        excellent: "Accurate competitor characterization; fair comparison"
+        good: "Generally accurate; minor gaps"
+        adequate: "Some inaccuracies; dated information"
+        weak: "Significant inaccuracies; strawman arguments"
+        poor: "Misleading or false competitor claims"
+
+# ==============================================================================
+# COMPETITIVE NARRATIVE FRAMEWORK
+# Sources: Research - Canonical Presentation Methodology Research.md;
+#          The Universal Narrative Methodology.md;
+#          Crafting Powerful Opening Plays.md
+# ==============================================================================
+
+competitive_narrative_framework:
+  description: "SOAR-stage mapping for competitive positioning — how to frame competitor context within the narrative arc"
+
+  soar_competitive_mapping:
+    situation:
+      role: "Establish the shared competitive landscape without conceding ground"
+      guidance: "Acknowledge the competitive environment as fact — do not ignore it or be defensive. Name the incumbent if known."
+      example_framing: "'Most organisations in your space are running [Competitor X] or a mix of point solutions. You may be in that position now.'"
+      anti_pattern: "Opening with 'we're better than X' — triggers defensiveness; Situation stage is not for differentiation claims"
+
+    opportunity:
+      role: "Reframe the competitive gap as the cost of not changing — not as 'switch to us'"
+      guidance: "Define the opportunity in terms of the problem the incumbent doesn't solve, not in terms of your product features. Make the status quo the villain."
+      example_framing: "'The real cost isn't the licence fee for [Competitor X] — it's the [lost revenue/manual effort/compliance risk] that their architecture can't address.'"
+      villain_frame: "Competitor should be the OBSTACLE (external villain), not the VILLAIN per se — the villain is the business problem the competitor enables"
+
+    action:
+      role: "Present Adobe's solution as the mechanism that closes the gap — with differentiated proof"
+      guidance: "Differentiation must be specific and verifiable. Avoid generic claims ('best in class', 'enterprise-grade'). Use named customer evidence and quantified outcomes."
+      differentiation_standard:
+        weak: "'Adobe has better analytics capabilities'"
+        strong: "'Adobe Analytics processed 2.3 trillion data rows for [Customer] in 2024, versus [Competitor X]'s 500B row cap — enabling real-time personalisation at scale'"
+      champion_role: "Equip the internal champion with one crisp competitive story for each stakeholder they must convince"
+
+    result:
+      role: "Close with proof that the switch/upgrade delivered measurable value — neutralising the migration objection"
+      guidance: "VALIDATED_OUTCOME from a named similar-profile customer is the most powerful Result for competitive displacement"
+      before_after_requirement: "Before/after comparisons should explicitly reference what the customer was running before — names the competitor, validates the switch"
+      example: "'[Customer] migrated from [Competitor X] to Adobe in 8 months. ARR from digital grew 34% in the first year. Their previous tool couldn't attribute cross-channel — Adobe resolved that within 90 days.'"
+
+  competitive_objection_narrative_patterns:
+    description: "Narrative response patterns for common competitive objections — mapped to ethos/pathos/logos for rhetorical balance"
+
+    price_objection:
+      objection_type: "Adobe is too expensive"
+      ethos_move: "Acknowledge that licence cost is a real consideration — validate the concern"
+      pathos_move: "Reframe the pain: 'The question isn't what Adobe costs — it's what staying on [Competitor X] costs you every quarter in [missed attribution / manual workarounds / compliance risk]'"
+      logos_move: "Present TCO comparison with quantified switching cost vs. ongoing opportunity cost"
+      closing_question: "If we could show a clear path to 18-month payback on the investment, what would need to be true for you to move forward?"
+
+    complexity_objection:
+      objection_type: "Too complex / takes too long to implement"
+      ethos_move: "Reference named customers of similar complexity who have gone live successfully"
+      pathos_move: "Acknowledge implementation anxiety — 'Everyone who's gone through a platform change has felt this'"
+      logos_move: "Provide specific timeline benchmarks: 'Median time to first value for your use case is 12 weeks. Here's the implementation playbook.'"
+
+    incumbent_loyalty_objection:
+      objection_type: "We're happy with [Competitor] / we have a long relationship with them"
+      ethos_move: "Respect the relationship — 'That relationship clearly has value. We're not asking you to walk away from it today.'"
+      pathos_move: "Explore the gap: 'What would change if you could do [specific capability X] that [Competitor] can't provide?'"
+      logos_move: "Use a wedge strategy — identify a specific use case where Adobe is uniquely superior and propose a pilot"
+
+  competitive_messaging_quality_indicators:
+    description: "Additional scoring indicators for competitive content quality — supplements the scoring.dimensions section"
+
+    narrative_specificity:
+      weight: "Informational supplement to positioning_clarity"
+      excellent: "Competitor named + specific weakness identified + Adobe alternative named + quantified customer proof"
+      adequate: "Generic differentiation claims without competitor naming or specific evidence"
+      weak: "Vague claims ('better than alternatives') with no supporting structure"
+
+    soar_alignment:
+      description: "Competitive content should appear primarily in Opportunity and Action stages of SOAR"
+      misplaced_competitor_content:
+        situation_competitor_mention: "Low risk — establishing context"
+        result_competitor_mention: "High risk — Result stage should be about customer success, not competitor bashing"
+      scoring_note: "Competitor mentions in Result stage without before/after context: -3 points narrative coherence"

@@ -1,0 +1,1352 @@
+_meta:
+  id: pedagogical_frameworks_entities
+  purpose: entity
+  version: 3.40.0
+  last_updated: '2026-03-09'
+  description: Entity types and patterns for NLP-based pedagogical content detection including instructional strategies, learning
+    objectives, assessments, and cognitive science principles.
+  domain: pedagogical
+  domain_type: workflow
+  corpus_sources:
+  - Corpus/Research/Research - Essential Inputs for Learning Objectives.md
+  - Corpus/Research/Crafting Powerful Opening Plays.md
+  - Corpus/Research/Learner Outcomes - Instructions v4.md
+  - Corpus/Research/Research - Comprehensive Learning Design Framework.md
+  - Corpus/Research/Applying Mayer's Multimedia Learning Principles to Slide and Presentation Design.md
+  - 'Corpus/Research/Research - Cognitive Interface Design: Leveraging Human Cognitive Architecture for Enhanced Learning
+    Systems.md'
+  - Corpus/Research/Research - Comprehensive Audience Analysis.md
+  - Corpus/Research/Research - Merrills Instructional Design Theories Applied.md
+  - Corpus/Research/Research - Using Monroes Motivated Sequence.md
+  - Corpus/Research/Research - Scenario-Based Training_ A Comprehensive Guide.md
+  - Corpus/Research/Research - Roleplay & Scenarios for Learning.md
+  - Corpus/Research/Research - Learner Persona Research and Development.md
+  - Corpus/Research/theory_gagne_s_nine_events_of_instruction.md
+  - Corpus/Research/recommended-training-effectiveness-questions-for-postcourse-eval.md
+  - Corpus/Research/map-it-the-hands-on-guide-to-strategic-training-design-cathy-moo.md
+  - Corpus/Research/High-Level Planning Tools in Corporate Learning - Wireframes, Content Maps & Course Blueprints.md
+  - Corpus/Research/core_knowledge_and_progress_measurement.md
+  - Corpus/Research/Essentials_Course_Gold_Structure_AI_Course_Playbook.md
+  - Corpus/Research/Applying_Learning_Theory_Practical_Checklist.md
+  - Corpus/Research/Research - ILT & VILT Best Practice.md
+  - Corpus/Research/Research - Corporate Learning Assessment- Strategies, Modalities, and Best Practices.md
+  - Corpus/Research/Gold Standard Structure for Any Corporate-Learning Asset v3.md
+  - Corpus/Research/innovative-learning-and-teaching-experiments-across-the-discipli.md
+  - Corpus/Research/module-integration-strategy.md
+  - Corpus/Research/Research - Slide Deck Design Playbook Research.md
+  - Corpus/Research/course-creation-flow.md
+  - Corpus/Research/Content Map - Instructions v3.md
+  - Corpus/Research/Methodology - How do we move from this research to a sequenced A.I. Enhanced Course Pipeline_.md
+  relationships:
+  - target: methodology/pedagogical_frameworks.yaml
+    type: depends_on
+    description: taxonomy_reference lookups (blooms_cognitive, gagne_nine_events, arcs_model)
+entity_types:
+  instructional_strategy:
+    description: Teaching strategies, approaches, and methods
+    canonical_id: instructional_strategy
+    entity_kind: pedagogical_method
+    family: instructional_design
+    gliner_label: INSTRUCTIONAL_STRATEGY
+    gliner_description: Teaching strategy method approach scaffolding microlearning spaced repetition worked examples chunking
+    examples:
+    - microlearning
+    - problem-centred learning
+    - scaffolding
+    - spaced repetition
+    - flipped classroom
+    - collaborative learning
+    - inquiry-based learning
+    - worked examples
+    - chunking
+    - interleaving
+    - retrieval practice
+    - elaborative interrogation
+    - dual coding
+    - concrete examples
+    - distributed practice
+    anti_examples:
+    - business strategy
+    - marketing approach
+    - sales method
+    confidence_threshold: 0.6
+    match_policy_ref: defaults
+    aliases:
+    - teaching_strategy
+    - learning_strategy
+    - pedagogical_approach
+    indicators:
+    - strategy
+    - approach
+    - method
+    - technique
+    - practice
+    - -based learning
+    - instructional
+    patterns:
+    - \w+-based learning
+    - \w+ approach
+    - \w+ strategy
+    color: '#3498db'
+    relates_to:
+    - target: learning_objective
+      relation: enables
+      weight: required
+      description: Instructional strategies (advance organisers, segmentation, retrieval practice, scaffolding) operationalise
+        learning objectives
+    - target: practice_activity
+      relation: contains
+      weight: expected
+      description: Strategies include practice activities aligned to Bloom taxonomy levels per evidence-based sequencing
+      target_file: activity_types_entities
+    - target: formative_assessment
+      relation: enables
+      weight: expected
+      description: Retrieval practice, quizzes, and formative checks embedded throughout content per evidence-based learning
+        design
+      target_file: assessment_entities
+    - target: cognitive_load_dimension
+      relation: supports
+      weight: required
+      description: Segmentation, pre-training, modality effect reduce extraneous load and manage intrinsic load via chunking
+        (Sweller CLT)
+      target_file: scoring_entities
+    - target: cognitive_level
+      relation: enables
+      weight: expected
+      description: Instructional strategies scaffold from simple recall (binary test cards) to complex application (simulations,
+        role-plays, case studies) enabling progression through cognitive levels (Comprehensive Learning Design Framework)
+    - target: audience_pain_point
+      relation: resolves
+      weight: expected
+      description: "Instructional strategies resolve audience pain points about learning by breaking content into digestible modules with engaging formats per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    - target: cognitive_level
+      relation: supported_by
+      weight: required
+      description: "CDT's Performance-Content Matrix prescribes different strategies depending on the cognitive performance level required: Remember, Use, or Find per Merrill"
+    - target: demonstration_activity
+      relation: contains
+      weight: expected
+      description: "FPI Demonstration phase prescribes expert modeling and worked examples as core instructional strategy components per Merrill"
+      target_file: activity_types_entities
+    - target: scenario_activity
+      relation: contains
+      weight: expected
+      description: "FPI Application phase prescribes branching scenarios and simulations as core practice strategy components per Merrill"
+      target_file: activity_types_entities
+    - target: roleplay_activity
+      relation: contains
+      weight: expected
+      description: "Instructional strategies contain roleplay as an applied practice method for interpersonal skill development within active learning frameworks per roleplay research"
+      target_file: activity_types_entities
+    - target: monroe_sequence_marker
+      relation: supported_by
+      weight: expected
+      description: "MMS functions as an instructional strategy by scaffolding learning through a problem-solution narrative arc that aligns content delivery with motivational design per Monroe's Motivated Sequence research"
+      target_file: rhetorical_devices_entities
+    - target: delivery_mode
+      relation: enables
+      weight: required
+      description: "Each instructional strategy requires a matched delivery mode: micro-learning for Sales Directors, sandbox for Tech Specialists, cohort-based for Millennials per Learner Persona Research"
+    - target: assessment_type
+      relation: triggers
+      weight: expected
+      description: "Instructional strategy choices (lecture vs interactivity balance) trigger assessment of their effectiveness through postcourse evaluation per recommended-training-effectiveness-questions"
+    - target: planning_artefact_marker
+      relation: supported_by
+      weight: expected
+      description: "Instructional strategies are supported by planning artefacts — action mapping and backward design both produce wireframes that specify which strategy applies to each module, preventing content-centric approaches per High-Level Planning Tools research"
+      target_file: content_architecture_entities
+    - target: learning_principle
+      relation: supported_by
+      weight: required
+      description: "Instructional strategies are directly supported by learning principles — andragogy, CLT, experiential learning (Kolb), and constructivism serve as theoretical foundations for all ILT/VILT strategies per ILT&VILT Best Practice"
+    - target: mayer_extraneous_principle
+      relation: supported_by
+      weight: expected
+      description: "Instructional strategies for multimedia design are supported by Mayer's extraneous principles — Coherence removes irrelevant content, Signalling cues essential information, Redundancy prevents dual-channel overload per mayers_15_principles"
+      target_file: cognitive_load_entities
+    - target: mayer_essential_principle
+      relation: supported_by
+      weight: expected
+      description: "Instructional strategies are supported by Mayer's essential principles — Segmenting prescribes chunking, Pre-training prescribes vocabulary scaffolding, Modality prescribes narration over on-screen text with visuals per mayers_15_principles"
+      target_file: cognitive_load_entities
+    - target: mayer_generative_principle
+      relation: supported_by
+      weight: expected
+      description: "Instructional strategies for active learning are supported by Mayer's generative principles — Generative Activity Principle prescribes summarising, concept mapping, and peer teaching per mayers_15_principles"
+      target_file: cognitive_load_entities
+    - target: content_structure_marker
+      relation: supports
+      weight: required
+      description: "Instructional strategies support content structure — chunking, segmenting, and scaffolding strategies directly determine how content is organised into modules, sections, and learning paths (Gold Standard Structure)"
+      target_file: content_architecture_entities
+    - target: pedagogical_sequence_marker
+      relation: supported_by
+      weight: expected
+      description: "Instructional strategies are supported by pedagogical sequence markers that implement the seven-stage gold-standard storyboard structure (hook, roadmap, pre-training, core content, practice, summary, assessment) per Best Practices for Structuring Corporate Learning Content"
+      target_file: content_architecture_entities
+    - target: microlearning_format
+      relation: supports
+      weight: expected
+      description: "Spaced repetition and just-in-time delivery improve retention 25-80% compared to traditional methods — these are core instructional strategies for microlearning per AI Microlearning Guide"
+      target_file: content_format_entities
+    - target: learner_characteristic
+      relation: supports
+      weight: required
+      description: "Instructional strategies are adapted to learner characteristics — the adaptive engine creates neurodiversity-specific accommodations (ADHD-friendly, autism-friendly, dyslexia-friendly) matched to learner profiles per module-integration-strategy"
+    - target: motivation_element
+      relation: enables
+      weight: expected
+      description: "Instructional strategies enable motivation through emotional design — curiosity gaps, achievement moments, and struggle support are built into the strategy layer per module-integration-strategy"
+    - target: progressive_disclosure_marker
+      relation: contains
+      weight: expected
+      description: "Instructional strategies contain progressive disclosure to manage novice vs expert needs — calibrating content complexity by gauging audience knowledge level and staging information accordingly per Comprehensive Audience Analysis"
+      target_file: cognitive_load_entities
+    - target: pedagogical_sequence_marker
+      relation: enables
+      weight: required
+      description: "SOAR 4-step orchestration chain defines instructional strategy as sequenced workflow where each phase output becomes next input"
+      target_file: content_architecture_entities
+    - target: learning_objective
+      relation: supports
+      weight: required
+      description: "Audience Simulator defines Point A to Point B transformation as the learning objective the strategy must serve"
+    taxonomy_mapping:
+    - taxonomy: pedagogical_frameworks_taxonomy
+      dimension: instructional_approach
+      values:
+      - advance_organiser
+      - segmentation
+      - retrieval_practice
+      - scaffolding
+      strength: primary
+  learning_principle:
+    description: Fundamental principles and laws of learning from cognitive science
+    canonical_id: learning_principle
+    entity_kind: cognitive_science
+    family: learning_theory
+    gliner_label: LEARNING_PRINCIPLE
+    gliner_description: Cognitive principle learning theory Mayer multimedia contiguity coherence signalling modality redundancy
+    examples:
+    - prior knowledge activation
+    - cognitive load
+    - active learning
+    - spaced practice
+    - retrieval practice
+    - elaboration
+    - dual coding
+    - multimedia principle
+    - contiguity principle
+    - coherence principle
+    - segmenting principle
+    - modality principle
+    - redundancy principle
+    - signalling principle
+    - personalisation principle
+    - testing effect
+    - generation effect
+    - desirable difficulties
+    - productive failure
+    anti_examples:
+    - business principle
+    - first principles
+    - moral principle
+    confidence_threshold: 0.65
+    match_policy_ref: defaults
+    aliases:
+    - learning_theory
+    - educational_principle
+    - cognitive_principle
+    indicators:
+    - principle
+    - effect
+    - theory
+    - law
+    - hypothesis
+    patterns:
+    - principle of \w+
+    - \w+ principle
+    - \w+ effect
+    color: '#9b59b6'
+    relates_to:
+    - target: instructional_strategy
+      relation: supported_by
+      weight: required
+      description: Mayer 15 principles (coherence, signaling, redundancy, contiguity, segmenting, pre-training, modality)
+        ground all strategies
+    - target: cognitive_load_dimension
+      relation: supports
+      weight: required
+      description: Multimedia principles operationalise CLT via extraneous/intrinsic/germane load management per Sweller and
+        Mayer
+      target_file: scoring_entities
+    - target: remember_verb
+      relation: enables
+      weight: expected
+      description: Principles support progression from Remember (factual) to Create (higher-order) per Bloom taxonomy levels
+      target_file: learning_objectives_entities
+    - target: learning_objective
+      relation: supports
+      weight: required
+      description: "FPI's five principles (problem-centered, activation, demonstration, application, integration) each directly promote achievement of learning objectives per Merrill"
+      target_file: learning_objectives_entities
+    - target: scenario_activity
+      relation: supports
+      weight: required
+      description: "SBT is grounded in four established learning theories: Experiential Learning, Constructivism, Situated Cognition, and Cognitive Load Theory, each providing design constraints per SBT guide"
+      target_file: activity_types_entities
+    - target: roleplay_activity
+      relation: supports
+      weight: expected
+      description: "Learning principles (experiential learning, situated cognition) support roleplay as authentic practice grounded in real-world interpersonal contexts per roleplay research"
+      target_file: activity_types_entities
+    - target: instructional_event
+      relation: enables
+      weight: expected
+      description: "Cognitive learning principles (prior knowledge activation, chunking, feedback loops) directly enable effective execution of Gagné's instructional events per theory_gagne_s_nine_events_of_instruction"
+    - target: learner_characteristic
+      relation: supported_by
+      weight: required
+      description: "Learning principles are supported by learner characteristics — andragogy's 5 principles (relevance, self-direction, experience, readiness, problem-centeredness) derive directly from adult learner traits per ILT&VILT Best Practice"
+    - target: adult_learner
+      relation: supports
+      weight: required
+      description: "Learning principles directly support adult learner needs — Knowles' andragogy, Kolb's experiential cycle, and Mezirow's transformative learning all address how adults learn best per ILT&VILT Best Practice"
+      target_file: audience_entities
+    - target: mayer_extraneous_principle
+      relation: contains
+      weight: required
+      description: "Learning principles contain Mayer's 5 extraneous principles (Coherence, Signalling, Redundancy, Spatial Contiguity, Temporal Contiguity) as specific empirically-grounded instructional rules per mayers_15_principles"
+      target_file: cognitive_load_entities
+    - target: mayer_essential_principle
+      relation: contains
+      weight: required
+      description: "Learning principles contain Mayer's 3 essential principles (Segmenting, Pre-training, Modality) as specific rules for managing intrinsic complexity in multimedia materials per mayers_15_principles"
+      target_file: cognitive_load_entities
+    - target: mayer_generative_principle
+      relation: contains
+      weight: required
+      description: "Learning principles contain Mayer's 7 generative/expanded principles (Multimedia, Personalization, Voice, Image, Embodiment, Immersion, Generative Activity) as rules for fostering deep understanding per mayers_15_principles"
+      target_file: cognitive_load_entities
+    - target: intrinsic_load_marker
+      relation: limits
+      weight: expected
+      description: "Learning principles like segmenting and pre-training directly manage intrinsic load by breaking procedures into steps and building foundational schemas first per Slide Deck Design Playbook CDT Section 4.0"
+      target_file: cognitive_load_entities
+    - target: working_memory_marker
+      relation: supported_by
+      weight: required
+      description: "Learning principles constrained by working memory limits; all design accommodates limited processing capacity"
+      target_file: cognitive_load_entities
+    - target: germane_load_marker
+      relation: supports
+      weight: expected
+      description: "Schema construction principle maximized when extraneous load reduced allowing germane processing"
+      target_file: cognitive_load_entities
+    taxonomy_mapping:
+    - taxonomy: pedagogical_frameworks_taxonomy
+      dimension: learning_theory
+      values:
+      - mayer_multimedia_principles
+      - cognitive_load_theory
+      - dual_coding_theory
+      strength: primary
+  assessment_type:
+    description: Types of assessments and evaluation methods
+    canonical_id: assessment_type
+    entity_kind: pedagogical_method
+    family: instructional_design
+    gliner_label: ASSESSMENT_TYPE
+    gliner_description: Assessment evaluation formative summative diagnostic rubric quiz knowledge check performance test
+    examples:
+    - formative assessment
+    - summative assessment
+    - diagnostic assessment
+    - rubric
+    - quiz
+    - project-based assessment
+    - peer assessment
+    - self-assessment
+    - knowledge check
+    - performance assessment
+    - portfolio assessment
+    - authentic assessment
+    - competency-based assessment
+    - criterion-referenced
+    - norm-referenced
+    - pre-assessment
+    - post-assessment
+    anti_examples:
+    - risk assessment
+    - property assessment
+    - tax assessment
+    confidence_threshold: 0.65
+    match_policy_ref: defaults
+    aliases:
+    - evaluation_method
+    - assessment_method
+    - measurement
+    indicators:
+    - assessment
+    - evaluation
+    - test
+    - quiz
+    - check
+    - measure
+    - rubric
+    patterns:
+    - \w+ assessment
+    - \w+ evaluation
+    - knowledge check
+    color: '#e74c3c'
+    relates_to:
+    - target: learning_objective
+      relation: supports
+      weight: required
+      description: Assessment types (formative quizzes, summative tests, scenarios) aligned to Kirkpatrick levels and Bloom
+        depth
+    - target: formative_assessment
+      relation: specialises
+      weight: expected
+      description: Frequent in-line quizzes (every 5-7 min), polls, micro-assessments drive retrieval practice effect per
+        research
+      target_file: assessment_entities
+    - target: instructional_strategy
+      relation: supports
+      weight: expected
+      description: "Red Team Critic step functions as formative assessment applying quality gates to audit instructional output"
+    taxonomy_mapping:
+    - taxonomy: assessment_taxonomy
+      dimension: assessment_modality
+      values:
+      - formative_quiz
+      - summative_test
+      - scenario_based
+      - criterion_referenced
+      strength: primary
+  learning_objective:
+    description: Stated learning goals, outcomes, or competencies
+    canonical_id: learning_objective
+    entity_kind: learning_outcome
+    family: instructional_design
+    gliner_label: LEARNING_OBJECTIVE
+    gliner_description: Learning objective outcome goal competency learners will be able to by the end performance
+    examples:
+    - Learners will analyse data patterns
+    - Apply Bloom's Taxonomy to objectives
+    - Students will create a project plan
+    - Evaluate the effectiveness of strategies
+    - Demonstrate proficiency in...
+    - By the end of this module...
+    anti_examples:
+    - business objective
+    - sales goal
+    - marketing objective
+    confidence_threshold: 0.7
+    match_policy_ref: defaults
+    aliases:
+    - learning_outcome
+    - learning_goal
+    - competency
+    - performance_objective
+    - terminal_objective
+    - enabling_objective
+    indicators:
+    - objective
+    - outcome
+    - goal
+    - competency
+    - will be able to
+    - by the end
+    - learners will
+    - participants will
+    patterns:
+    - learners? will \w+
+    - students? will be able to
+    - by the end.*will
+    - participants? will
+    - able to \w+
+    requires_verb_detection: true
+    color: '#1abc9c'
+    relates_to:
+    - target: cognitive_level
+      relation: contains
+      weight: required
+      description: Objectives map to Bloom verbs (Remember to Create) and Kirkpatrick L2 learning outcomes from quizzes and
+        products
+    - target: remember_verb
+      relation: specialises
+      weight: expected
+      description: Remember-level objectives (factual recall) require frequent retrieval practice supported by segmentation
+        strategy
+      target_file: learning_objectives_entities
+    - target: assessment_type
+      relation: enables
+      weight: required
+      description: Each objective maps to specific assessment checkpoint per Kirkpatrick evaluation framework (L2, L3, L4)
+    - target: instructional_event
+      relation: contains
+      weight: expected
+      description: Learning progression aligns outcomes to activities to evidence through module overview, practice, quiz,
+        reflection
+    - target: monroe_sequence_marker
+      relation: supported_by
+      weight: expected
+      description: "MMS's Satisfaction stage must align directly with learning objectives — each objective corresponds to a part of the solution that addresses the Need per Monroe's Motivated Sequence research"
+      target_file: rhetorical_devices_entities
+    - target: audience_kpi
+      relation: supported_by
+      weight: expected
+      description: "Learning objectives must align with persona-specific KPIs: salary progression for Gen Z, time saved for Millennials, risk mitigation for executives per Learner Persona Research"
+      target_file: audience_entities
+    - target: learner_characteristic
+      relation: supported_by
+      weight: expected
+      description: "Person analysis evaluates individual learner characteristics, prior knowledge, and learning preferences which significantly influence training design — learning objectives depend on learner characteristics per Essential Inputs for Learning Objectives"
+    - target: kirkpatrick_level
+      relation: triggers
+      weight: expected
+      description: "Training effectiveness shows effect sizes of 0.60-0.63 across all evaluation criteria when proper needs assessment is conducted — learning objectives trigger evaluation at specific Kirkpatrick levels per Essential Inputs for Learning Objectives"
+      target_file: assessment_entities
+    - target: alignment_marker
+      relation: enables
+      weight: required
+      description: "Learning objectives enable alignment — each module objective maps back to course-level goals and business outcomes, creating the chain from training activity to learning outcome to business result per High-Level Planning Tools research"
+      target_file: content_architecture_entities
+    - target: formative_assessment
+      relation: triggers
+      weight: expected
+      description: "Each learning objective triggers corresponding formative assessment; framework requires knowledge checks at topic and card levels to validate objective achievement per Comprehensive Learning Design Framework"
+      target_file: assessment_entities
+    - target: content_structure_marker
+      relation: enables
+      weight: expected
+      description: "Learning objectives drive the content structure hierarchy — each strip targets exactly ONE measurable objective, and objectives ladder from card to strip to topic to module per course_structure_hierarchy_corpus_research"
+      target_file: content_architecture_entities
+    - target: assessment_item_type
+      relation: triggers
+      weight: required
+      description: "Learning objectives trigger assessment item creation — the pipeline flows from content structure through learning goals to emotionally intelligent assessment items per module-integration-strategy"
+      target_file: assessment_entities
+    - target: pedagogical_model
+      relation: supported_by
+      weight: required
+      description: "Learning objectives are supported by pedagogical models — the ADDIE model structures the entire creation flow from analysis through evaluation per course-creation-flow"
+    - target: educational_standard
+      relation: supports
+      weight: expected
+      description: "Learning objectives support educational standards — success criteria and KPIs are aligned with business goals as measurable standards per course-creation-flow"
+    - target: alignment_marker
+      relation: supported_by
+      weight: required
+      description: "Learning objectives paired with content and activities through Content Map instructional alignment (Content Map Instructions v3)"
+      target_file: content_architecture_entities
+    taxonomy_mapping:
+    - taxonomy: learning_objectives_taxonomy
+      dimension: objective_hierarchy
+      values:
+      - bloom_verb
+      - cognitive_level
+      - kirkpatrick_level
+      strength: primary
+  cognitive_level:
+    description: Bloom's Taxonomy cognitive levels and thinking skills
+    canonical_id: cognitive_level
+    entity_kind: taxonomy_level
+    family: blooms_taxonomy
+    gliner_label: COGNITIVE_LEVEL
+    gliner_description: Bloom taxonomy cognitive level remember understand apply analyse evaluate create thinking skill
+    examples:
+    - Remember
+    - Understand
+    - Apply
+    - Analyse
+    - Evaluate
+    - Create
+    confidence_threshold: 0.8
+    taxonomy_reference: blooms_cognitive
+    validate_against_taxonomy: true
+    match_policy_ref: defaults
+    aliases:
+    - blooms_level
+    - cognitive_domain
+    - thinking_skill
+    - cognitive_complexity
+    indicators:
+    - remember
+    - understand
+    - apply
+    - analyse
+    - analyze
+    - evaluate
+    - create
+    - knowledge
+    - comprehension
+    - synthesis
+    color: '#f39c12'
+    relates_to:
+    - target: learning_objective
+      relation: specialises
+      weight: required
+      description: Bloom taxonomy levels (Remember through Create) determine content depth, practice type, and assessment
+        rigour
+    - target: analyze_verb
+      relation: specialises
+      weight: optional
+      description: Higher-order objectives (Analyse, Evaluate, Create) require scenario-based or applied practice activities
+      target_file: learning_objectives_entities
+    - target: learning_objective
+      relation: supports
+      weight: required
+      description: "CDT's three performance levels (Remember, Use, Find) classify the cognitive demand of each learning objective to prescribe appropriate instruction per Merrill"
+      target_file: learning_objectives_entities
+    - target: scenario_activity
+      relation: supports
+      weight: expected
+      description: "Higher cognitive levels (Apply, Analyse, Evaluate) require scenario-based practice for authentic skill demonstration per roleplay research"
+      target_file: activity_types_entities
+    - target: kirkpatrick_level
+      relation: supports
+      weight: expected
+      description: "Bloom cognitive levels map to Kirkpatrick evidence: Remember/Understand→L2 quizzes, Apply→L3 workplace observation, Create→L4 KPI/ROI (Applying_Learning_Theory_Practical_Checklist)"
+      target_file: assessment_entities
+    - target: learner_characteristic
+      relation: supported_by
+      weight: expected
+      description: "Strip Planning Matrix scores content on Complexity (1-3) and Prior Knowledge (1-3) — cognitive level demands are modulated by learner characteristics like existing familiarity (Essentials_Course_Gold_Structure)"
+    - target: assessment_type
+      relation: enables
+      weight: required
+      description: "Cognitive levels (Bloom's) enable matching assessment types — ensure assessments match objective levels: Remember→quiz, Apply→demonstration, Create→project per ILT&VILT Best Practice"
+    - target: remember_verb
+      relation: contains
+      weight: required
+      description: "Bloom's Taxonomy defines cognitive progression from basic recall to creative synthesis — cognitive_level contains the specific verb levels including Remember per Activities Research v4"
+      target_file: learning_objectives_entities
+    - target: microlearning_format
+      relation: supports
+      weight: expected
+      description: "AI decomposes learning objectives from lower-order (remembering, understanding) to higher-order skills; each microlearning module addresses one cognitive level per AI Microlearning Guide"
+      target_file: content_format_entities
+    - target: instructional_strategy
+      relation: enables
+      weight: expected
+      description: "Cognitive levels determine module archetype selection: Remember/Understand maps to Core Concept, Apply/Analyse to Application Practice, Evaluate/Create to Integration Challenge per course_structure_hierarchy_corpus_research"
+    taxonomy_mapping:
+    - taxonomy: pedagogical_frameworks_taxonomy
+      dimension: bloom_taxonomy
+      values:
+      - remember
+      - understand
+      - apply
+      - analyze
+      - evaluate
+      - create
+      strength: primary
+    parent_entity: learning_objective
+  learner_characteristic:
+    description: Characteristics and profiles of target learners
+    canonical_id: learner_characteristic
+    entity_kind: audience_segment
+    family: learner_profiles
+    gliner_label: LEARNER_CHARACTERISTIC
+    gliner_description: Learner profile audience adult self-directed novice expert visual kinesthetic employee practitioner
+    examples:
+    - adult learners
+    - self-directed learners
+    - corporate employees
+    - novice learners
+    - expert learners
+    - visual learners
+    - kinesthetic learners
+    - experienced practitioners
+    - subject matter experts
+    - millennials
+    - Gen Z learners
+    - remote workers
+    - frontline employees
+    confidence_threshold: 0.6
+    match_policy_ref: defaults
+    aliases:
+    - learner_profile
+    - audience
+    - target_learner
+    - participant_profile
+    indicators:
+    - learner
+    - student
+    - participant
+    - audience
+    - user
+    - employee
+    - practitioner
+    patterns:
+    - \w+ learners?
+    - \w+ students?
+    - \w+ practitioners?
+    - target audience
+    color: '#16a085'
+    relates_to:
+    - target: instructional_strategy
+      relation: enables
+      weight: expected
+      description: Learner experience (novice vs expert) triggers expertise-reversal effect determining scaffolding and pre-training
+        needs
+    - target: delivery_mode
+      relation: supports
+      weight: expected
+      description: Learner tech-savviness, language level, and role experience determine modality mix, pacing, and visual
+        density
+    - target: expertise_reversal_marker
+      relation: triggers
+      weight: optional
+      description: Expert learners benefit from skip-ahead options and advanced content while novices benefit from segmentation
+      target_file: cognitive_load_entities
+    - target: novice_learner
+      relation: contains
+      weight: expected
+      description: "Learner characteristics contain novice learner attributes determining content complexity and scaffolding needs per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    - target: roleplay_activity
+      relation: limits
+      weight: expected
+      description: "Learner characteristics limit roleplay complexity — novice learners need more structured scenarios while experts benefit from open-ended interpersonal challenges per roleplay research"
+      target_file: activity_types_entities
+    - target: assessment_type
+      relation: limits
+      weight: expected
+      description: "Learner characteristics limit assessment type selection — novice learners require lower-stakes formative assessments while expert learners can handle complex performance-based summative assessments per Corporate Learning Assessment research"
+    - target: adult_learner
+      relation: specialises
+      weight: expected
+      description: "Learner characteristics specialise into adult learner profiles characterised as self-directed, experience-rich, and goal-oriented per Knowles' andragogy (Best-Practice Learning Activities)"
+      target_file: audience_entities
+    - target: accessibility_feature
+      relation: triggers
+      weight: required
+      description: "Learner characteristics trigger accessibility features — learning personas' accessibility requirements directly drive the accessibility plan including WCAG compliance and alternative formats per course-creation-flow"
+      target_file: visual_elements_entities
+    taxonomy_mapping:
+    - taxonomy: pedagogical_frameworks_taxonomy
+      dimension: learner_profile
+      values:
+      - novice
+      - intermediate
+      - expert
+      - prior_knowledge
+      strength: secondary
+  delivery_mode:
+    description: Methods and modalities for delivering instruction
+    canonical_id: delivery_mode
+    entity_kind: pedagogical_method
+    family: instructional_design
+    gliner_label: DELIVERY_MODE
+    gliner_description: Delivery mode format asynchronous synchronous self-paced instructor-led e-learning VILT blended mobile
+    examples:
+    - asynchronous learning
+    - synchronous learning
+    - video-based
+    - microlearning modules
+    - in-person workshop
+    - blended learning
+    - self-paced
+    - instructor-led
+    - mobile learning
+    - virtual classroom
+    - webinar
+    - VILT
+    - ILT
+    - e-learning
+    - hybrid
+    - on-demand
+    confidence_threshold: 0.65
+    match_policy_ref: defaults
+    aliases:
+    - instructional_modality
+    - delivery_method
+    - learning_format
+    indicators:
+    - learning
+    - training
+    - delivery
+    - format
+    - modality
+    - mode
+    patterns:
+    - \w+-paced
+    - \w+-led
+    - \w+ learning
+    - \w+-based
+    color: '#27ae60'
+    relates_to:
+    - target: delivery_modality
+      relation: specialises
+      weight: expected
+      description: Self-paced modules require interactive elements and progress markers while vILT requires real-time polls
+        and breakouts
+      target_file: delivery_entities
+    - target: engagement_cue
+      relation: supported_by
+      weight: expected
+      description: Live modes (vILT, webinar) require frequent engagement cues; asynchronous modes need visual signposting
+      target_file: delivery_entities
+    - target: instructional_strategy
+      relation: enables
+      weight: expected
+      description: Four delivery modes (E-Learning, ILT, VILT, Blended) enable different instructional strategies — ILT enables
+        group discussions, VILT enables breakout rooms for small group work (Comprehensive Learning Design Framework)
+    - target: learner_characteristic
+      relation: supported_by
+      weight: expected
+      description: "Inadequate learner analysis results in mismatched delivery methods and inappropriate difficulty levels — delivery mode selection depends directly on learner characteristics per Essential Inputs for Learning Objectives"
+    - target: delivery_modality_marker
+      relation: specialises
+      weight: expected
+      description: "Pedagogical delivery mode specialises the delivery modality marker — the framework-level concept of delivery mode (live, self-paced, blended) maps to the content architecture marker that tracks modality in planning artefacts per High-Level Planning Tools research"
+      target_file: content_architecture_entities
+    - target: mayer_essential_principle
+      relation: supported_by
+      weight: expected
+      description: "Delivery mode choices are constrained by Mayer's Modality Principle — when visuals are displayed, narration (auditory channel) is more effective than on-screen text (visual channel), directly shaping delivery mode selection per mayers_15_principles"
+      target_file: cognitive_load_entities
+    - target: assessment_type
+      relation: enables
+      weight: expected
+      description: "Delivery mode enables specific assessment types — synchronous ILT enables live demonstrations and oral assessments while asynchronous e-learning enables auto-graded quizzes and scenario branching per Corporate Learning Assessment research"
+    - target: virtual_platform_feature
+      relation: enables
+      weight: expected
+      description: "VILT delivery mode enables specific virtual platform features for assessment — breakout rooms for group evaluation, polling for knowledge checks, screen sharing for live demonstrations per Corporate Learning Assessment research"
+      target_file: delivery_entities
+    - target: delivery_modality
+      relation: bridges
+      weight: expected
+      description: "Pedagogical delivery mode bridges to performance delivery modality, as the research organises all activities by synchronous vs asynchronous delivery modes (Best-Practice Learning Activities)"
+      target_file: delivery_entities
+    - target: microlearning_format
+      relation: contains
+      weight: expected
+      description: "Microlearning leverages multimodal delivery: visual, auditory, interactive, and mixed reality modalities to accommodate diverse learning preferences per AI Microlearning Guide"
+      target_file: content_format_entities
+    - target: learning_objective
+      relation: limits
+      weight: expected
+      description: "Delivery mode constrains which learning objectives are achievable — online modes limit hands-on practice objectives while face-to-face enables direct observation per innovative learning experiments"
+    - target: delivery_modality_marker
+      relation: supports
+      weight: expected
+      description: "Content Map resources column specifies tools and formats like LMS platforms (Content Map Instructions v3)"
+      target_file: content_architecture_entities
+    taxonomy_mapping:
+    - taxonomy: content_format_taxonomy
+      dimension: format_modality
+      values:
+      - self_paced_elearning
+      - vilt
+      - webinar
+      - microlearning
+      strength: primary
+  instructional_event:
+    description: Gagné's Nine Events of Instruction and instructional phases
+    canonical_id: instructional_event
+    entity_kind: framework_element
+    family: gagne_nine_events
+    gliner_label: INSTRUCTIONAL_EVENT
+    gliner_description: Gagné nine events gain attention state objectives stimulate recall present guidance elicit feedback
+    examples:
+    - gain attention
+    - state objectives
+    - stimulate recall
+    - present content
+    - provide guidance
+    - elicit performance
+    - provide feedback
+    - assess performance
+    - enhance retention
+    confidence_threshold: 0.75
+    taxonomy_reference: gagne_nine_events
+    validate_against_taxonomy: true
+    match_policy_ref: defaults
+    aliases:
+    - instructional_phase
+    - gagnes_event
+    - learning_event
+    indicators:
+    - attention
+    - objective
+    - recall
+    - content
+    - guidance
+    - practice
+    - feedback
+    - assessment
+    - retention
+    - transfer
+    color: '#8e44ad'
+    relates_to:
+    - target: learning_objective
+      relation: contains
+      weight: required
+      description: 'Events sequence: Hook/Intro, Roadmap, Pre-training, Segmented Core, In-line Practice, Summary, Assessment'
+    - target: pedagogical_model
+      relation: enables
+      weight: expected
+      description: Seven-step gold-standard structure operationalises CLT-based sequencing for effective instructional design
+    - target: content_structure_marker
+      relation: enables
+      weight: expected
+      description: Instructional events map to content architecture markers for planning, sequencing, interaction, and alignment
+      target_file: content_architecture_entities
+    - target: feedback_modality
+      relation: contains
+      weight: required
+      description: "CDT prescribes feedback as a critical secondary presentation form during Application phase for guided mastery per Merrill"
+      target_file: assessment_entities
+    - target: formative_assessment
+      relation: contains
+      weight: expected
+      description: "FPI Application phase requires learners to practice and apply knowledge, functioning as formative assessment with guided feedback per Merrill"
+      target_file: assessment_entities
+    - target: monroe_sequence_marker
+      relation: supported_by
+      weight: expected
+      description: "Each MMS stage maps to instructional events: Attention = gaining attention, Need = stimulating recall, Satisfaction = presenting content, Visualization = providing guidance, Action = eliciting performance per Monroe's Motivated Sequence research"
+      target_file: rhetorical_devices_entities
+    - target: scenario_activity
+      relation: contains
+      weight: expected
+      description: "SBT delivery follows structured instructional events: pre-briefing for psychological safety, the simulation itself, and structured debriefing for knowledge consolidation per SBT guide"
+      target_file: activity_types_entities
+    - target: instructional_strategy
+      relation: supported_by
+      weight: required
+      description: "Each of Gagné's nine events requires specific instructional strategies (storytelling, scaffolding, multimedia, worked examples) to be executed effectively per theory_gagne_s_nine_events_of_instruction"
+    - target: motivation_element
+      relation: triggers
+      weight: expected
+      description: "Gagné's Event 1 (Gain Attention) directly triggers learner motivation through compelling hooks, surprising facts, and emotional connections per theory_gagne_s_nine_events_of_instruction"
+    - target: assessment_type
+      relation: triggers
+      weight: required
+      description: "Gagné's Event 8 (Assess Performance) directly triggers assessment to measure whether learners have met the learning objectives per theory_gagne_s_nine_events_of_instruction"
+    - target: delivery_mode
+      relation: supported_by
+      weight: expected
+      description: "Gagné's events align with multiple delivery modes including e-learning, corporate training, and classroom instruction per theory_gagne_s_nine_events_of_instruction"
+    - target: cognitive_level
+      relation: supports
+      weight: expected
+      description: "Gagné's nine events structure lessons to optimize how learners process and retain information at different cognitive levels per theory_gagne_s_nine_events_of_instruction"
+    - target: interaction_element_marker
+      relation: specialises
+      weight: expected
+      description: "Instructional events specialise interaction elements — specific pedagogical events like demonstrations, guided practice, and feedback sessions are concrete instances of the interaction elements planned in course blueprints per High-Level Planning Tools research"
+      target_file: content_architecture_entities
+    - target: facilitation_technique
+      relation: supported_by
+      weight: optional
+      description: "Instructional events in synchronous delivery are supported by facilitation techniques — psychological safety setting, breakout room practice, volunteer showcases with group feedback (Essentials_Course_Gold_Structure)"
+      target_file: delivery_entities
+    - target: session_structure_marker
+      relation: supported_by
+      weight: expected
+      description: "Instructional events (Engage-Educate-Apply sequence) are supported by session structure markers that organize when each event occurs within the training timeline per ILT&VILT Best Practice"
+      target_file: delivery_entities
+    - target: mayer_essential_principle
+      relation: supported_by
+      weight: expected
+      description: "Instructional events such as pre-training vocabulary introduction and content segmentation are directly prescribed by Mayer's Pre-training and Segmenting Principles as sequenced learning episodes per mayers_15_principles"
+      target_file: cognitive_load_entities
+    - target: practice_activity
+      relation: contains
+      weight: expected
+      description: "Gagné's instructional events contain practice activities as the 'Elicit Performance' event, requiring learners to actively demonstrate skills (Best-Practice Learning Activities)"
+      target_file: activity_types_entities
+    - target: pedagogical_sequence_marker
+      relation: specialises
+      weight: expected
+      description: "Instructional events specialise pedagogical sequence markers — Gagné's nine events (gain attention, present content, elicit performance, etc.) are specific instantiations of the broader pedagogical sequencing concept (Gold Standard Structure)"
+      target_file: content_architecture_entities
+    - target: pedagogical_sequence_marker
+      relation: supported_by
+      weight: expected
+      description: "Content Map ensures instructional events follow logical sequence (Content Map Instructions v3)"
+      target_file: content_architecture_entities
+    - target: engagement_cue
+      relation: triggers
+      weight: expected
+      description: "Instructional events at each hierarchy level trigger engagement cues; the framework mandates interactive elements every 3-5 minutes as event-driven engagement per Comprehensive Learning Design Framework"
+      target_file: delivery_entities
+    - target: progressive_disclosure_marker
+      relation: supported_by
+      weight: expected
+      description: "Segmenting structures instructional events into user-paced chunks with pause points per Applying Mayer's Principles Practical Checklist"
+      target_file: cognitive_load_entities
+    taxonomy_mapping:
+    - taxonomy: pedagogical_frameworks_taxonomy
+      dimension: instructional_sequence
+      values:
+      - hook
+      - roadmap
+      - pre_training
+      - segmented_content
+      - retrieval_practice
+      - summary
+      - assessment
+      strength: primary
+  motivation_element:
+    description: ARCS model and SDT motivation components
+    canonical_id: motivation_element
+    entity_kind: framework_element
+    family: arcs_model
+    gliner_label: MOTIVATION_ELEMENT
+    gliner_description: ARCS motivation attention relevance confidence satisfaction autonomy competence relatedness engagement
+    examples:
+    - attention grabber
+    - relevance statement
+    - confidence builder
+    - satisfaction element
+    - curiosity trigger
+    - goal orientation
+    - autonomy support
+    - competence feedback
+    - relatedness
+    confidence_threshold: 0.65
+    taxonomy_reference: arcs_model
+    match_policy_ref: defaults
+    aliases:
+    - arcs_element
+    - motivational_strategy
+    - engagement_element
+    indicators:
+    - attention
+    - relevance
+    - confidence
+    - satisfaction
+    - motivation
+    - engagement
+    - interest
+    - autonomy
+    - competence
+    - relatedness
+    color: '#e67e22'
+    relates_to:
+    - target: instructional_strategy
+      relation: supports
+      weight: expected
+      description: Motivation via advance organisers (priming), social presence (vILT), relevance (real scenarios), and peer
+        cohorts
+    - target: engagement_cue
+      relation: enables
+      weight: expected
+      description: Engagement cues (questions, polls, activities) sustain motivation while spaced reinforcement maintains
+        momentum
+      target_file: delivery_entities
+    - target: audience_motivator
+      relation: supported_by
+      weight: expected
+      description: "Motivation elements are supported by audience motivators that identify functional emotional social and aspirational needs per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    - target: scenario_activity
+      relation: supported_by
+      weight: expected
+      description: "FPI's problem-centered anchor creates intrinsic need-to-know motivation by presenting authentic real-world problems learners must solve per Merrill"
+      target_file: activity_types_entities
+    - target: monroe_sequence_marker
+      relation: supported_by
+      weight: expected
+      description: "MMS parallels Keller's ARCS model — Attention maps to Attention, Need maps to Relevance, Visualization maps to Confidence, and Action maps to Satisfaction — systematically maintaining learner motivation per Monroe's Motivated Sequence research"
+      target_file: rhetorical_devices_entities
+    - target: roleplay_activity
+      relation: supports
+      weight: expected
+      description: "Motivation elements support roleplay engagement — relevance of real-world scenarios and confidence built through safe practice sustain learner motivation per roleplay research"
+      target_file: activity_types_entities
+    - target: kirkpatrick_level
+      relation: supported_by
+      weight: expected
+      description: "Intent to Use and Barriers to Use constructs directly measure learner motivation and transfer intent at Kirkpatrick Level 3 per recommended-training-effectiveness-questions"
+      target_file: assessment_entities
+    - target: proficiency_level
+      relation: supported_by
+      weight: expected
+      description: "Incentive programs and recognition serve as motivation elements supported by achievement of proficiency milestones and exceeding onboarding targets (core_knowledge_and_progress_measurement)"
+      target_file: assessment_entities
+    - target: narrative_hook
+      relation: supported_by
+      weight: expected
+      description: "Hook Cards use narrative hooks for motivation — '$2.3M ROI story', 'The story that closed a $5M deal' — narrative hooks directly support motivational engagement at strip entry (Essentials_Course_Gold_Structure)"
+      target_file: narrative_entities
+    - target: pain_point
+      relation: supported_by
+      weight: expected
+      description: "Hook Cards leverage pain points for motivation — 'I missed this signal and lost $400K', '73% of sales teams fail here' — pain points drive motivational engagement (Essentials_Course_Gold_Structure)"
+      target_file: narrative_entities
+    - target: data_statistic
+      relation: supported_by
+      weight: optional
+      description: "Hook Cards use data statistics for motivation — '73% of sales teams fail here', '10-second workflow saves 2 hours' — data statistics provide credible motivational triggers (Essentials_Course_Gold_Structure)"
+      target_file: evidence_types_entities
+    - target: learner_characteristic
+      relation: supports
+      weight: expected
+      description: "ARCS model (Attention, Relevance, Confidence, Satisfaction) sustains motivation across learner characteristics; personalisation principle increases engagement 20-46% through conversational tone (Applying_Learning_Theory_Practical_Checklist)"
+    - target: adult_learner
+      relation: supported_by
+      weight: required
+      description: "Motivation elements are supported by adult learner characteristics — adults have intrinsic motivation from career goals and personal growth, requiring relevance and autonomy to maintain engagement per ILT&VILT Best Practice"
+      target_file: audience_entities
+    - target: audience_motivator
+      relation: specialises
+      weight: expected
+      description: "Pedagogical motivation elements specialise audience motivators in the learning context — intrinsic motivation, growth mindset, and learning culture are specific motivational drivers for training per ILT&VILT Best Practice"
+      target_file: audience_entities
+    - target: mayer_generative_principle
+      relation: supported_by
+      weight: expected
+      description: "Motivation elements are supported by Mayer's Personalization Principle (conversational language keeps learners engaged) and Voice Principle (warm human narration fosters connection) per mayers_15_principles"
+      target_file: cognitive_load_entities
+    - target: conversational_register
+      relation: supported_by
+      weight: expected
+      description: "Mayer's personalization principle shows conversational tone increases learner motivation per Applying Mayer's Principles Practical Checklist"
+      target_file: writing_entities
+    - target: formative_assessment
+      relation: supported_by
+      weight: expected
+      description: "Motivation elements are supported by formative assessment — immediate feedback on low-stakes checks sustains learner confidence and satisfaction (ARCS model) by showing progress per Corporate Learning Assessment research"
+      target_file: assessment_entities
+    - target: collaborative_activity
+      relation: supported_by
+      weight: expected
+      description: "Motivation is supported by collaborative activities — Grand Challenge courses used collaborative team projects that students described as inspiring, empowering, and character-building per innovative learning experiments"
+      target_file: activity_types_entities
+    taxonomy_mapping:
+    - taxonomy: pedagogical_frameworks_taxonomy
+      dimension: motivation_design
+      values:
+      - relevance_cue
+      - social_presence
+      - achievement_recognition
+      strength: secondary
+  educational_standard:
+    description: Educational standards, frameworks, and compliance requirements
+    canonical_id: educational_standard
+    entity_kind: compliance_standard
+    family: e_learning_standards
+    gliner_label: EDUCATIONAL_STANDARD
+    gliner_description: Educational standard SCORM xAPI Kirkpatrick ADDIE Section 508 WCAG cmi5 LTI QM compliance
+    examples:
+    - SCORM
+    - xAPI
+    - Kirkpatrick Model
+    - ADDIE phases
+    - Section 508
+    - WCAG
+    - cmi5
+    - LTI
+    - QM standards
+    confidence_threshold: 0.7
+    match_policy_ref: defaults
+    aliases:
+    - compliance_standard
+    - e-learning_standard
+    - accessibility_standard
+    indicators:
+    - standard
+    - compliance
+    - SCORM
+    - xAPI
+    - WCAG
+    - '508'
+    - accessibility
+    color: '#c0392b'
+    relates_to:
+    - target: assessment_type
+      relation: supported_by
+      weight: expected
+      description: WCAG 2.2 accessibility standards mandate captions, alt-text, keyboard navigation across all content modalities
+    - target: accessibility_dimension
+      relation: enables
+      weight: required
+      description: Accessibility features (captions, alt-text, colour contrast, keyboard nav) required for inclusive learning
+        per WCAG AA
+      target_file: scoring_entities
+    taxonomy_mapping:
+    - taxonomy: pedagogical_frameworks_taxonomy
+      dimension: compliance_standard
+      values:
+      - wcag_2_2
+      - wcag_aa
+      - udl
+      - accessibility_requirement
+      strength: primary
+  pedagogical_model:
+    description: Instructional design models and educational frameworks
+    canonical_id: pedagogical_model
+    entity_kind: framework
+    family: instructional_design
+    gliner_label: PEDAGOGICAL_MODEL
+    gliner_description: Instructional design model ADDIE SAM Backward Design UDL 4C/ID Merrill Gagné Dick Carey Kemp
+    examples:
+    - ADDIE
+    - SAM
+    - Backward Design
+    - Universal Design for Learning
+    - Agile Instructional Design
+    - Dick and Carey Model
+    - Kemp Design Model
+    - Action Mapping
+    - 4C/ID
+    - Merrill's First Principles
+    - Gagné's Nine Events
+    anti_examples:
+    - business model
+    - revenue model
+    - operating model
+    confidence_threshold: 0.75
+    match_policy_ref: defaults
+    aliases:
+    - instructional_design_model
+    - id_model
+    - design_framework
+    indicators:
+    - model
+    - framework
+    - approach
+    - methodology
+    - design
+    color: '#d35400'
+    relates_to:
+    - target: instructional_event
+      relation: contains
+      weight: required
+      description: Pedagogical models (Mayer, CLT, scaffolding, Kirkpatrick, Bloom) integrate to define the instructional
+        event sequence
+    - target: learning_principle
+      relation: enables
+      weight: required
+      description: Seven-step model operationalises CLT, dual coding, retrieval practice, scaffolding, and spaced reinforcement
+        principles
+    - target: learning_objective
+      relation: contains
+      weight: required
+      description: "FPI/CDT integrated system requires classifying learning objectives via the Performance-Content Matrix before prescribing instructional strategy per Merrill"
+      target_file: learning_objectives_entities
+    - target: instructional_strategy
+      relation: contains
+      weight: required
+      description: "CDT prescribes specific instructional strategies (rules, examples, practice) based on content-type and performance-level classification per Merrill"
+    - target: instructional_event
+      relation: contains
+      weight: required
+      description: "FPI defines five cyclical instructional events: Problem-Centered, Activation, Demonstration, Application, Integration per Merrill"
+    - target: scenario_activity
+      relation: contains
+      weight: expected
+      description: "Action mapping as a pedagogical model directly contains scenario-based practice activities as its primary learning mechanism, replacing information presentation with realistic decision-making challenges per map-it Cathy Moore"
+      target_file: activity_types_entities
+    - target: alignment_marker
+      relation: enables
+      weight: required
+      description: "The Bloom-Gagné-Kirkpatrick alignment framework is a pedagogical model that enables alignment markers — every module must map outcomes, events, and evidence measures (Applying_Learning_Theory_Practical_Checklist)"
+      target_file: content_architecture_entities
+    - target: mayer_extraneous_principle
+      relation: contains
+      weight: required
+      description: "Mayer's Multimedia Learning Theory as a pedagogical model contains the extraneous processing principles — 5 principles grounded in dual-channel and limited capacity cognitive science foundations per mayers_15_principles"
+      target_file: cognitive_load_entities
+    - target: mayer_essential_principle
+      relation: contains
+      weight: required
+      description: "Mayer's pedagogical model contains the essential processing principles — Segmenting, Pre-training, and Modality address how learners focus on key content per mayers_15_principles"
+      target_file: cognitive_load_entities
+    - target: mayer_generative_principle
+      relation: contains
+      weight: required
+      description: "Mayer's pedagogical model contains the generative processing principles — Multimedia, Personalization, Voice, Image, Embodiment, Immersion, and Generative Activity foster active learning per mayers_15_principles"
+      target_file: cognitive_load_entities
+    - target: assessment_type
+      relation: contains
+      weight: expected
+      description: "Pedagogical models contain assessment type specifications — ADDIE includes evaluation design, Backward Design starts from assessment evidence, and Merrill's FPI requires application-level assessment per Corporate Learning Assessment research"
+    - target: content_structure_marker
+      relation: enables
+      weight: expected
+      description: "The CoE 5-Phase Learning Cycle (Foundation, Development, Integration, Consolidation, Assessment) determines the course-level architecture and module phase allocation per course_structure_hierarchy_corpus_research"
+      target_file: content_architecture_entities
+    taxonomy_mapping:
+    - taxonomy: pedagogical_frameworks_taxonomy
+      dimension: pedagogical_school
+      values:
+      - mayer_multimedia
+      - cognitive_load_theory
+      - scaffolding
+      - kirkpatrick_evaluation
+      - bloom_taxonomy
+      strength: primary
+gliner_config:
+  model: gliner-large-v2
+  batch_size: 32
+  use_hybrid_extraction: true
+  llm_fallback_for_types:
+  - learning_objective
+  - cognitive_level
+  - instructional_event
+  - motivation_element
+  context_window: 50
+  default_confidence_threshold: 0.7
+domain_keywords:
+  primary:
+  - bloom
+  - gagne
+  - gagné
+  - addie
+  - kirkpatrick
+  - mayer
+  - merrill
+  - knowles
+  - andragogy
+  - pedagogy
+  - instructional design
+  - learning objectives
+  - cognitive load
+  - scaffolding
+  - formative
+  - summative
+  - assessment
+  - rubric
+  secondary:
+  - metacognition
+  - multimedia learning
+  - constructivism
+  - behaviorism
+  - cognitivism
+  - adult learning
+  - self-directed
+  - experiential
+  - kolb
+  - arcs
+  - motivation
+  - schema
+  - worked example
+  - chunking
+  - spaced practice
+  - retrieval practice
+  - transfer
+  - learning outcome
+  - competency
+quality_indicators:
+  framework_alignment:
+    no_framework: No pedagogical framework entity detected — design rationale not grounded in theory
+    single_framework: One INSTRUCTIONAL_STRATEGY detected — some evidence-based intent present
+    multi_framework: Multiple pedagogical entities across design — consistently evidence-based approach
+  bloom_alignment:
+    mismatch: COGNITIVE_LEVEL entity present but misaligned with activity or assessment type
+    aligned: COGNITIVE_LEVEL matches activity verb and assessment type — Bloom's constructive alignment met
+  research_grounding:
+    absent: No cognitive science or instructional theory reference detected — intuitive rather than evidence-based design
+    present: Cognitive science principle cited (CLT, Mayer, Bloom, Gagné) — evidence-based design rationale

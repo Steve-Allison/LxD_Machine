@@ -1,0 +1,207 @@
+# ==============================================================================
+# Discussion-Based Learning
+# Research-validated specifications for facilitated discussion in corporate training
+# ==============================================================================
+
+_meta:
+  id: discussion_based_learning_framework
+  title: "Discussion-Based Learning"
+  description: "Session timing, phase architecture, group sizing, and effectiveness metrics for facilitating discussion-based learning in corporate training environments."
+  domain: pedagogical
+  domain_type: workflow
+  purpose: methodology
+  version: "1.2.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Discussion-based Learning.md"
+  relationships:
+# ==============================================================================
+# SESSION TIMING
+# ==============================================================================
+
+session_timing:
+  in_person:
+    optimal_duration:
+      min_minutes: 45
+      max_minutes: 90
+      research_basis: "Optimal discussion duration for adult engagement and learning transfer"
+    activity_rotation:
+      min_minutes: 15
+      max_minutes: 20
+      research_basis: "Rotate activities every 15-20 minutes to optimize adult attention"
+
+  virtual:
+    max_duration_minutes: 60
+    recommended_duration_minutes: 45
+    buffer_between_meetings_minutes: 15
+    research_basis: "Virtual sessions shorter due to screen fatigue; 15-minute buffers prevent meeting overload"
+    pre_meeting_materials:
+      min_hours_before: 24
+      max_hours_before: 48
+      research_basis: "Pre-reading distributed 24-48 hours before session improves discussion quality"
+
+# ==============================================================================
+# THREE-PHASE ARCHITECTURE
+# ==============================================================================
+
+phase_architecture:
+  description: "Reliable framework balancing idea generation, synthesis, and practical application"
+
+  divergent_thinking:
+    order: 1
+    name: "Divergent Thinking"
+    time_allocation_percent:
+      min: 30
+      max: 40
+    purpose: "Generate diverse ideas, perspectives, and possibilities"
+    techniques:
+      - "Open-ended questioning"
+      - "Brainstorming rounds"
+      - "Think-pair-share"
+      - "Gallery walks"
+    research_basis: "First phase opens exploration space before narrowing"
+
+  convergent_thinking:
+    order: 2
+    name: "Convergent Thinking"
+    time_allocation_percent:
+      min: 40
+      max: 50
+    purpose: "Synthesize ideas, find patterns, build consensus"
+    techniques:
+      - "Affinity grouping"
+      - "Priority voting"
+      - "Structured debate"
+      - "Devil's advocate"
+    research_basis: "Largest time allocation for deep synthesis and meaning-making"
+
+  application:
+    order: 3
+    name: "Application"
+    time_allocation_percent:
+      min: 20
+      max: 30
+    purpose: "Connect insights to workplace reality and plan action"
+    techniques:
+      - "Action planning"
+      - "Commitment statements"
+      - "Peer accountability pairs"
+      - "Transfer planning worksheets"
+    research_basis: "Final phase bridges discussion to workplace application"
+
+# ==============================================================================
+# GROUP SIZING
+# ==============================================================================
+
+group_sizing:
+  small:
+    min: 3
+    max: 5
+    description: "Intimate dialogue, sensitive topics, deep problem-solving"
+    participation_level: "Maximum individual contribution"
+    research_basis: "Small groups ensure every voice is heard"
+
+  medium:
+    min: 6
+    max: 10
+    description: "Sweet spot balancing diverse perspectives with manageability"
+    participation_level: "Good balance of diversity and depth"
+    research_basis: "Optimal group size for most corporate discussion-based learning"
+
+  large:
+    min: 15
+    description: "Require structured formats like breakout sessions or fishbowl"
+    required_structures:
+      - "Breakout sessions"
+      - "Fishbowl format"
+      - "World Cafe"
+      - "Jigsaw"
+    research_basis: "Groups >15 must use structured facilitation to ensure participation"
+
+# ==============================================================================
+# EFFECTIVENESS METRICS
+# ==============================================================================
+
+effectiveness:
+  retention:
+    discussion_based_24h_percent: 70
+    passive_lecture_24h_percent: 5
+    research_basis: "Discussion-based learning achieves 70% retention at 24 hours vs 5% for passive lecture"
+
+  meta_analysis:
+    effect_size: 0.63
+    classification: "moderate to strong"
+    optimal_conditions:
+      adult_learning_principles_applied: "5-6 minimum"
+      group_size_max: 30
+      total_session_hours_min: 10
+    research_basis: "Meta-analysis of adult discussion-based learning studies"
+
+  knowledge_transfer:
+    implementation_rate_percent: 85
+    sustained_application_6mo_percent: 60
+    research_basis: "Discussion-derived solutions achieve 85% implementation rate; 60% sustained at 6 months"
+
+# ==============================================================================
+# BUSINESS IMPACT
+# ==============================================================================
+
+business_impact:
+  roi:
+    min_ratio: 3
+    max_ratio: 7
+    format: "3:1 to 7:1"
+    research_basis: "ROI range for organizations implementing discussion-based learning"
+
+  leadership_development:
+    productivity_increase_max_percent: 250
+    timeframe_months: 12
+    research_basis: "Leadership development programs showing up to 250% productivity increases within one year"
+
+  team_engagement:
+    profitability_increase_percent: 21
+    profit_margin_increase_percent: 24
+    turnover_reduction_percent: 30
+    research_basis: "Companies with highly engaged teams through discussion-based approaches"
+
+# ==============================================================================
+# THEORETICAL FOUNDATIONS
+# ==============================================================================
+
+theoretical_foundations:
+  pillars:
+    - name: "Constructivism"
+      application: "Learners co-construct knowledge through dialogue"
+    - name: "Zone of Proximal Development"
+      source: "Vygotsky"
+      application: "Peer discussion scaffolds learning beyond individual capacity"
+    - name: "Dialogic Teaching"
+      source: "Alexander"
+      principles: ["collective", "reciprocal", "supportive", "cumulative", "purposeful"]
+    - name: "Cognitive Apprenticeship"
+      source: "Collins"
+      methods: ["modeling", "coaching", "scaffolding", "articulation", "reflection", "exploration"]
+    - name: "Social Cognitive Theory"
+      source: "Bandura"
+      application: "Observational learning and self-efficacy through peer interaction"
+    - name: "Gibbs' Reflective Cycle"
+      stages: ["description", "feelings", "evaluation", "analysis", "conclusion", "action_plan"]
+    - name: "Universal Design for Learning"
+      application: "Multiple means of engagement, representation, and expression in discussion"
+
+# ==============================================================================
+# FACILITATION QUALITY CRITERIA
+# ==============================================================================
+
+facilitation_quality:
+  required_competencies:
+    - "Active listening and paraphrasing"
+    - "Open-ended questioning technique"
+    - "Managing dominant and quiet participants"
+    - "Redirecting off-topic contributions"
+    - "Synthesizing key themes in real time"
+    - "Creating psychological safety"
+  quality_indicators:
+    participation_balance: "No single participant exceeds 25% of talk time"
+    question_ratio: "Facilitator asks more questions than makes statements"
+    silence_tolerance: "Comfortable with 5-10 seconds of silence after questions"

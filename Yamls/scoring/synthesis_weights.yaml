@@ -1,0 +1,668 @@
+_meta:
+  id: synthesis_weights
+  title: "Synthesis Weights"
+  description: "Weighting logic for synthesising the final 'Story Score' based on content profile, including formulas, rationale, calibration guidance, and score band anchors."
+  domain: pedagogical
+  domain_type: workflow
+  purpose: scoring
+  version: "2.3.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Canonical Presentation Methodology Research.md"
+    - "Corpus/Research/Adobe Case Study Excellence Framework.md"
+  relationships:
+    - target: scoring/narrative_quality_rubric.yaml
+      type: depends_on
+      description: "Narrative scoring criteria"
+    - target: scoring/accessibility_rubric.yaml
+      type: depends_on
+      description: "Accessibility pass/fail gates"
+    - target: scoring/cognitive_load_rubric.yaml
+      type: depends_on
+      description: "Cognitive load scoring"
+# ==============================================================================
+# SYNTHESIS FORMULA
+# ==============================================================================
+
+synthesis_formula:
+  description: "Master formula for calculating final Story Score"
+
+  base_formula: |
+    Story Score = Σ(Dimension Score × Dimension Weight × Profile Modifier)
+
+    Where:
+    - Dimension Score: 0-100 score from individual rubric
+    - Dimension Weight: Base weight from profile (sums to 1.0)
+    - Profile Modifier: Adjustment based on content type
+
+  weighted_calculation: |
+    Story Score = (
+      (Editorial Score × editorial_weight) +
+      (Visual Score × visual_weight) +
+      (Pedagogical Score × pedagogical_weight) +
+      (Accessibility Score × accessibility_weight)
+    ) × Quality Gate Modifier
+
+  quality_gates:
+    description: "Pass/fail criteria that can override or cap scores"
+    accessibility:
+      gate: "If WCAG AA failures exist, cap final score at 70"
+      severity: "hard"
+    lie_factor:
+      gate: "If lie factor > 1.5 on any chart, cap final score at 60"
+      severity: "hard"
+    cognitive_overload:
+      gate: "If CLT score < 50, apply 0.9 multiplier"
+      severity: "soft"
+      calibration_note: "The 0.9 multiplier may under-represent the actual outcome drag from poor CLT compliance. Research on CLT-informed design interventions (Full Research Findings - Slide-Based Presentation Design) shows 25-35% improvement in comprehension and recall outcomes when CLT principles are applied. A more accurate multiplier range may be 0.80-0.85 for severe CLT failures (score <40)."
+      recalibration_guidance: "Consider staged multiplier: CLT 40-49 → ×0.88; CLT <40 → ×0.80"
+    evidence_specificity:
+      gate: "If zero quantified outcomes are present in a case study or sales deck, cap final score at 65"
+      severity: "hard"
+      applies_to: ["case_study_deck", "standard_sales_deck", "interactive_case_study"]
+      description: "Content that makes qualitative claims without a single quantified result cannot achieve strong-band scores regardless of editorial or visual quality. This gate enforces the minimum evidence standard."
+      research_basis: "Adobe Case Study Excellence Framework.md"
+      violation_label: "evidence_specificity_gate_triggered"
+
+# ==============================================================================
+# CONTENT PROFILES
+# ==============================================================================
+
+profiles:
+  # ---------------------------------------------------------------------------
+  # KEYNOTE PRESENTATION
+  # ---------------------------------------------------------------------------
+  keynote_presentation:
+    description: "High stakes, visual-led, emotional impact"
+    typical_contexts:
+      - "Executive keynotes"
+      - "Conference presentations"
+      - "All-hands meetings"
+      - "Investor pitches"
+
+    weights:
+      visual: 0.45           # Visuals carry the story
+      editorial: 0.30        # Script/speech must be tight
+      pedagogical: 0.15      # Education is secondary to inspiration
+      accessibility: 0.10    # Must be inclusive
+
+    rationale: |
+      Keynotes are primarily about impact and memorability. Visual design
+      creates the first impression and reinforces key messages. Editorial
+      clarity ensures the spoken narrative lands. Pedagogical structure
+      matters less as the goal is inspiration over instruction.
+
+    key_metrics:
+      - "Opening hook strength (first 30 seconds)"
+      - "Visual consistency and brand alignment"
+      - "Data-ink ratio on charts"
+      - "Emotional arc progression"
+      - "Call-to-action clarity"
+
+    score_interpretation:
+      excellent: "Memorable, impactful, likely to be shared"
+      good: "Professional, clear, achieves objectives"
+      adequate: "Serviceable, no major issues"
+      weak: "Forgettable, lacks polish"
+      poor: "Confusing, undermines credibility"
+
+  # ---------------------------------------------------------------------------
+  # TECHNICAL TRAINING
+  # ---------------------------------------------------------------------------
+  technical_training:
+    description: "Skill transfer, accuracy, retention"
+    typical_contexts:
+      - "Software training"
+      - "Process documentation"
+      - "Certification courses"
+      - "Technical onboarding"
+
+    weights:
+      pedagogical: 0.45      # Learning science is primary
+      visual: 0.30           # Clarity of diagrams/screenshots
+      editorial: 0.15        # Instructions must be clear
+      accessibility: 0.10    # Must be inclusive
+
+    rationale: |
+      Technical training prioritises knowledge transfer and skill development.
+      Pedagogical structure (objectives, practice, assessment) is critical.
+      Visual clarity supports understanding of complex concepts. Editorial
+      clarity ensures instructions are unambiguous.
+
+    key_metrics:
+      - "Learning objectives clarity (Bloom's verb usage)"
+      - "Practice opportunity frequency"
+      - "Cognitive load management"
+      - "Diagram/screenshot quality"
+      - "Assessment alignment to objectives"
+
+    score_interpretation:
+      excellent: "Learners will master skills; high transfer"
+      good: "Effective learning with minor gaps"
+      adequate: "Learning occurs with effort"
+      weak: "Confusing; learners struggle"
+      poor: "Unlikely to achieve skill transfer"
+
+  # ---------------------------------------------------------------------------
+  # EXECUTIVE SUMMARY DOCUMENT
+  # ---------------------------------------------------------------------------
+  executive_summary_doc:
+    description: "Decision-making, density, skim-ability"
+    typical_contexts:
+      - "Board papers"
+      - "Investment memos"
+      - "Strategy summaries"
+      - "Business cases"
+
+    weights:
+      editorial: 0.50        # Clarity and concise writing are king
+      visual: 0.25           # Data viz must be accurate
+      pedagogical: 0.15      # Structure matters for navigation
+      accessibility: 0.10    # Must be inclusive
+
+    rationale: |
+      Executive documents are consumed under time pressure. Editorial
+      excellence (BLUF structure, concise prose, clear recommendations)
+      is paramount. Visuals must communicate data accurately. Structure
+      enables skimming.
+
+    key_metrics:
+      - "BLUF presence (recommendation in first paragraph)"
+      - "Reading grade level (target: 10-12)"
+      - "Sentence length (target: 15-20 words)"
+      - "Data visualisation accuracy"
+      - "Scannable structure (headers, bullets)"
+
+    score_interpretation:
+      excellent: "Executives can decide in one read"
+      good: "Clear recommendation; minor clarifications needed"
+      adequate: "Decision possible with effort"
+      weak: "Confusing; requires follow-up"
+      poor: "Cannot support decision-making"
+
+  # ---------------------------------------------------------------------------
+  # STANDARD SALES DECK
+  # ---------------------------------------------------------------------------
+  standard_sales_deck:
+    description: "Persuasion, value prop, conversation aid"
+    typical_contexts:
+      - "Customer presentations"
+      - "Sales conversations"
+      - "Partnership pitches"
+      - "Product demos"
+
+    weights:
+      visual: 0.35           # Professionalism and trust signal
+      editorial: 0.35        # Persuasive copy and narrative
+      pedagogical: 0.20      # Structuring the argument
+      accessibility: 0.10    # Must be inclusive
+
+    rationale: |
+      Sales decks must persuade while building trust. Visual professionalism
+      signals credibility. Editorial excellence ensures value propositions
+      resonate. Pedagogical structure creates logical flow for the argument.
+
+    key_metrics:
+      - "SOAR compliance (Situation, Opportunity, Action, Results)"
+      - "Value proposition clarity"
+      - "Social proof presence"
+      - "Objection handling"
+      - "Call-to-action strength"
+
+    score_interpretation:
+      excellent: "Compelling; high conversion potential"
+      good: "Persuasive; addresses key concerns"
+      adequate: "Professional; some gaps"
+      weak: "Unconvincing; misses pain points"
+      poor: "Damages credibility"
+
+  # ---------------------------------------------------------------------------
+  # E-LEARNING MODULE
+  # ---------------------------------------------------------------------------
+  elearning_module:
+    description: "Self-paced learning, engagement, retention"
+    typical_contexts:
+      - "SCORM courses"
+      - "Onboarding modules"
+      - "Compliance training"
+      - "Product education"
+
+    weights:
+      pedagogical: 0.40      # Instructional design is core
+      visual: 0.30           # Multimedia engagement
+      editorial: 0.15        # Content clarity
+      accessibility: 0.15    # WCAG compliance critical
+
+    rationale: |
+      E-learning must teach without an instructor. Pedagogical soundness
+      (Gagné's events, Mayer's principles) is essential. Visual design
+      maintains engagement. Accessibility is elevated due to varied
+      learner contexts.
+
+    key_metrics:
+      - "Mayer principle compliance"
+      - "Interaction frequency"
+      - "Assessment alignment"
+      - "Cognitive load score"
+      - "WCAG 2.1 AA compliance"
+
+    score_interpretation:
+      excellent: "High completion and learning transfer"
+      good: "Effective learning; engaging"
+      adequate: "Functional learning experience"
+      weak: "Click-through experience; low retention"
+      poor: "Fails to educate"
+
+  # ---------------------------------------------------------------------------
+  # VIDEO CONTENT
+  # ---------------------------------------------------------------------------
+  video_content:
+    description: "Engagement, retention, production quality"
+    typical_contexts:
+      - "Training videos"
+      - "Product demos"
+      - "Explainer videos"
+      - "Thought leadership"
+
+    weights:
+      visual: 0.40           # Production quality and pacing
+      editorial: 0.30        # Script quality and narration
+      pedagogical: 0.20      # Structure and learning design
+      accessibility: 0.10    # Captions, transcripts
+
+    rationale: |
+      Video is consumed passively and must capture attention. Visual
+      quality (production, pacing, graphics) is primary. Editorial
+      quality (script, narration) carries the content. Pedagogical
+      structure ensures learning outcomes.
+
+    key_metrics:
+      - "Opening hook (first 10 seconds)"
+      - "Segmenting (video length)"
+      - "Modality principle (narration vs on-screen text)"
+      - "Caption availability"
+      - "Visual variety (no static screens >30s)"
+
+    score_interpretation:
+      excellent: "High completion rate; memorable"
+      good: "Engaging; viewers stay to end"
+      adequate: "Watchable; some drop-off"
+      weak: "High abandonment; forgettable"
+      poor: "Unwatchable; damages brand"
+
+  # ---------------------------------------------------------------------------
+  # INFOGRAPHIC
+  # ---------------------------------------------------------------------------
+  infographic:
+    description: "Visual data storytelling, shareability"
+    typical_contexts:
+      - "Social media content"
+      - "Report summaries"
+      - "Quick reference guides"
+      - "Marketing collateral"
+
+    weights:
+      visual: 0.55           # Visual design is paramount
+      editorial: 0.25        # Concise, punchy copy
+      pedagogical: 0.10      # Simple hierarchy
+      accessibility: 0.10    # Alt text, contrast
+
+    rationale: |
+      Infographics are visual-first communication. Design quality, data
+      visualisation accuracy, and visual hierarchy are paramount. Copy
+      must be extremely concise. Simple learning hierarchy (key message,
+      supporting points).
+
+    key_metrics:
+      - "Data-ink ratio"
+      - "Visual hierarchy clarity"
+      - "Key message prominence"
+      - "Text conciseness (<200 words)"
+      - "Color accessibility"
+
+    score_interpretation:
+      excellent: "Viral potential; clear at glance"
+      good: "Shareable; message lands"
+      adequate: "Understandable; some clutter"
+      weak: "Confusing; text-heavy"
+      poor: "Misleading or illegible"
+
+  # ---------------------------------------------------------------------------
+  # CASE STUDY DECK
+  # New profile — Adobe Case Study Excellence Framework
+  # ---------------------------------------------------------------------------
+  case_study_deck:
+    description: "Narrative proof, evidence quality, storytelling excellence"
+    typical_contexts:
+      - "Customer success stories"
+      - "ROI case studies"
+      - "Award submissions"
+      - "Partner co-marketing case studies"
+      - "Sales proof-point decks"
+
+    weights:
+      editorial: 0.50        # Narrative quality and evidence specificity dominate
+      visual: 0.30           # Visual reinforcement of the transformation story
+      pedagogical: 0.10      # Structural completeness (6-component framework)
+      accessibility: 0.10    # Inclusive presentation
+
+    rationale: |
+      Case study decks live or die on editorial quality — specifically on the
+      specificity and credibility of the evidence presented. Visual design
+      reinforces the transformation narrative. Pedagogical structure ensures
+      the six required story components are all present (Challenge/Context/
+      Solution/Implementation/Results/Validation). Accessibility ensures broad
+      distribution without barriers.
+
+    research_basis: "Adobe Case Study Excellence Framework.md"
+
+    required_structural_components:
+      - challenge: "The specific problem or business challenge — quantified if possible"
+      - context: "The customer's situation and why this challenge was critical"
+      - solution: "What was implemented and why this approach was chosen"
+      - implementation: "How it was done — timeline, team, process"
+      - results: "Quantified outcomes — at least one hard metric required"
+      - validation: "Evidence that the results are real (quote, third-party, methodology)"
+
+    evidence_specificity_gate:
+      description: "A case study without at least one quantified outcome cannot score above 65, regardless of narrative quality or visual excellence."
+      minimum_hard_metrics: 1
+      ideal_metrics: 2
+      gate_cap_score: 65
+
+    key_metrics:
+      - "Evidence specificity (quantified outcomes present)"
+      - "Six-component structural completeness"
+      - "Before/after comparison clarity"
+      - "Authentic customer voice (direct quote)"
+      - "SOAR narrative compliance"
+
+    score_interpretation:
+      excellent: "Definitive proof point; likely to close deals and win awards"
+      good: "Credible story with strong evidence"
+      adequate: "Tells the story but evidence could be stronger"
+      weak: "Vague claims; no quantification"
+      poor: "Marketing platitudes; no credibility"
+
+  # ---------------------------------------------------------------------------
+  # INTERACTIVE CASE STUDY
+  # New profile — digital/interactive format with engagement mechanics
+  # ---------------------------------------------------------------------------
+  interactive_case_study:
+    description: "Engagement-driven, navigable, multimedia case study"
+    typical_contexts:
+      - "Interactive PDF case studies"
+      - "Microsite case studies"
+      - "Scrollytelling case stories"
+      - "Digital experience case studies"
+
+    weights:
+      visual: 0.40           # Visual design and UX are primary in interactive format
+      pedagogical: 0.25      # Navigation structure and progressive disclosure
+      editorial: 0.25        # Narrative quality and evidence specificity
+      accessibility: 0.10    # WCAG compliance for digital format
+
+    rationale: |
+      Interactive case studies succeed through the combination of visual
+      experience quality and structural navigability. Visual design (40%)
+      creates the first impression and drives engagement with the interactive
+      elements. Pedagogical structure (25%) covers navigation architecture,
+      progressive disclosure logic, and chapter/section organization.
+      Editorial quality (25%) ensures the underlying story and evidence
+      are credible. Accessibility (10%) reflects the requirement for
+      WCAG compliance in digital formats.
+
+    research_basis: "Adobe Case Study Excellence Framework.md"
+
+    key_metrics:
+      - "Navigation intuitiveness and chapter structure"
+      - "Progressive disclosure appropriateness"
+      - "Visual engagement (before/after comparisons, animation)"
+      - "Evidence specificity (quantified outcomes)"
+      - "Mobile and cross-device accessibility"
+
+    score_interpretation:
+      excellent: "Highly shareable; sets category standard"
+      good: "Engaging and credible"
+      adequate: "Navigable; some UX friction"
+      weak: "Static content in interactive wrapper"
+      poor: "Poor UX undermines the story"
+
+# ==============================================================================
+# DIMENSION DEFINITIONS
+# ==============================================================================
+
+dimensions:
+  editorial:
+    description: "Quality of written/spoken content"
+    components:
+      - "Narrative structure"
+      - "Argument quality (Toulmin)"
+      - "Language clarity"
+      - "SOAR compliance"
+      - "Hedge/booster balance"
+    scoring_reference: "narrative/shared/scoring.yaml"
+    six_component_structural_completeness:
+      description: "For case study content: editorial score includes structural completeness across all six required components (Challenge/Context/Solution/Implementation/Results/Validation). Each missing component reduces the editorial dimension score."
+      research_basis: "Adobe Case Study Excellence Framework.md"
+      components_required:
+        - challenge
+        - context
+        - solution
+        - implementation
+        - results
+        - validation
+      penalty_per_missing_component: 8  # Applied to editorial dimension score
+
+  visual:
+    description: "Quality of visual design and data presentation"
+    components:
+      - "Layout and hierarchy"
+      - "Data visualisation accuracy"
+      - "Brand consistency"
+      - "Cognitive load (visual)"
+      - "Animation appropriateness"
+    scoring_reference: "visual/shared/scoring.yaml"
+    case_study_visual_components:
+      description: "For case study and sales content: visual dimension should specifically evaluate these high-impact elements."
+      research_basis: "Adobe Case Study Excellence Framework.md"
+      validated_inclusions:
+        - architecture_diagrams: "Technical architecture or solution diagrams showing how the solution was implemented"
+        - workflow_visualizations: "Process flows showing before/after or current/future state"
+        - before_after_comparisons: "Side-by-side comparison of state before and after implementation"
+        - progressive_disclosure: "Complex visuals scaffolded across multiple slides or sections"
+
+  pedagogical:
+    description: "Quality of instructional design"
+    components:
+      - "Learning objectives"
+      - "Gagné's events coverage"
+      - "Mayer principle compliance"
+      - "Practice opportunities"
+      - "Assessment alignment"
+    scoring_reference: "pedagogical/shared/scoring.yaml"
+    validated_pedagogical_frameworks:
+      description: "For training and e-learning content: these frameworks have validated research backing for corporate learning effectiveness."
+      research_basis: "Adobe Case Study Excellence Framework.md"
+      validated_inclusions:
+        - kolb_experiential_cycle: "Concrete Experience → Reflective Observation → Abstract Conceptualization → Active Experimentation"
+        - situated_learning: "Learning embedded in authentic activity context (Lave & Wenger 1991)"
+        - cognitive_load_theory: "CLT-informed design showing measurable comprehension improvements (25-35% per research)"
+        - adult_learning_principles: "Andragogy (Knowles): self-direction, experience-based, readiness, problem orientation"
+
+  accessibility:
+    description: "WCAG compliance and inclusive design"
+    components:
+      - "Color contrast"
+      - "Alt text coverage"
+      - "Keyboard navigation"
+      - "Caption availability"
+      - "Reading level"
+    scoring_reference: "rubrics/accessibility_rubric.yaml"
+
+# ==============================================================================
+# SCORE CALCULATION EXAMPLES
+# ==============================================================================
+
+calculation_examples:
+  description: "Worked examples of score calculation"
+
+  example_1:
+    profile: "standard_sales_deck"
+    dimension_scores:
+      editorial: 85
+      visual: 78
+      pedagogical: 72
+      accessibility: 90
+    calculation: |
+      Score = (85 × 0.35) + (78 × 0.35) + (72 × 0.20) + (90 × 0.10)
+            = 29.75 + 27.30 + 14.40 + 9.00
+            = 80.45
+    final_score: 80
+    interpretation: "Strong sales deck - meets quality bar"
+
+  example_2:
+    profile: "technical_training"
+    dimension_scores:
+      editorial: 70
+      visual: 65
+      pedagogical: 88
+      accessibility: 55  # WCAG failure triggers gate
+    calculation: |
+      Base Score = (70 × 0.15) + (65 × 0.30) + (88 × 0.45) + (55 × 0.10)
+                 = 10.50 + 19.50 + 39.60 + 5.50
+                 = 75.10
+
+      Accessibility Gate Applied: Score capped at 70 due to WCAG failures
+    final_score: 70
+    interpretation: "Adequate - but accessibility must be fixed"
+
+  example_3:
+    profile: "case_study_deck"
+    dimension_scores:
+      editorial: 82
+      visual: 75
+      pedagogical: 70
+      accessibility: 88
+    calculation: |
+      Base Score = (82 × 0.50) + (75 × 0.30) + (70 × 0.10) + (88 × 0.10)
+                 = 41.00 + 22.50 + 7.00 + 8.80
+                 = 79.30
+    evidence_check: "2 quantified outcomes present — evidence_specificity gate NOT triggered"
+    final_score: 79
+    interpretation: "Good case study — strong editorial and evidence; minor visual and structural improvements would push to strong band"
+
+  example_4:
+    profile: "case_study_deck"
+    dimension_scores:
+      editorial: 78
+      visual: 80
+      pedagogical: 72
+      accessibility: 85
+    calculation: |
+      Base Score = (78 × 0.50) + (80 × 0.30) + (72 × 0.10) + (85 × 0.10)
+                 = 39.00 + 24.00 + 7.20 + 8.50
+                 = 78.70
+
+      Evidence Specificity Gate: Zero quantified outcomes detected → Cap at 65
+    final_score: 65
+    interpretation: "Adequate — but evidence_specificity gate prevents strong-band score. Add at least one quantified outcome to unlock 78+ score."
+
+# ==============================================================================
+# CALIBRATION GUIDANCE
+# ==============================================================================
+
+calibration:
+  description: "Guidance for calibrating scores across content types"
+
+  principles:
+    - "Scores should be comparable across profiles"
+    - "80+ should represent production-ready content"
+    - "Below 60 indicates significant revision needed"
+    - "Gates prevent high scores masking critical failures"
+
+  score_bands:
+    excellent:
+      range: [90, 100]
+      meaning: "Exemplary; use as reference"
+      action: "Publish without changes"
+      separator_criterion: "Format modality excellence: the strongest differentiator between strong (80-89) and excellent (90-100) is whether the content fully exploits the delivery format's native capabilities — interactive elements in digital, visual storytelling in keynote, perfect six-component structure in case study."
+
+    strong:
+      range: [80, 89]
+      meaning: "Production ready with minor polish"
+      action: "Publish after quick review"
+      separator_criterion: "CLT compliance and format modality are the primary separators. Content scoring 80-89 typically has strong editorial and evidence quality but has not fully optimized for the delivery format's strengths."
+
+    adequate:
+      range: [70, 79]
+      meaning: "Meets minimum bar; room for improvement"
+      action: "Consider revisions before high-stakes use"
+      separator_criterion: "CLT compliance is the primary separator between adequate (70-79) and strong (80-89). Research shows 25-35% improvement in comprehension outcomes when CLT principles are applied (Full Research Findings - Slide-Based Presentation Design). Content below this band typically has at least one significant CLT violation (split-attention, redundancy effect, or cognitive overload)."
+
+    developing:
+      range: [60, 69]
+      meaning: "Below standard; needs work"
+      action: "Revise before publishing"
+
+    weak:
+      range: [50, 59]
+      meaning: "Significant issues throughout"
+      action: "Major revision required"
+
+    critical:
+      range: [0, 49]
+      meaning: "Fundamental problems; start over"
+      action: "Complete rework needed"
+
+  score_band_anchors:
+    description: "Research-validated calibration anchors for the two most consequential band transitions."
+    research_basis: "Full Research Findings - Slide-Based Presentation Design.md; Adobe Case Study Excellence Framework.md"
+
+    adequate_to_strong_70_80:
+      primary_separator: "CLT compliance"
+      mechanism: "CLT-informed design interventions improve comprehension and recall by 25-35%. Content lacking CLT discipline scores in the 70-79 band; content applying CLT principles consistently crosses into 80+."
+      key_checks:
+        - "No split-attention violations"
+        - "No redundancy effect violations"
+        - "Cognitive load within working memory bounds (Miller 7±2)"
+        - "Rest points every 5-7 content slides"
+
+    strong_to_excellent_80_90:
+      primary_separator: "Format modality optimization"
+      mechanism: "Excellent content doesn't just meet format requirements — it exploits the unique affordances of the delivery modality. An interactive case study that uses progressive disclosure, before/after comparisons, and navigable chapters outperforms one that uses identical content in a linear slide format."
+      key_checks:
+        - "Visual format-specific elements present and high-quality"
+        - "Progressive disclosure appropriately applied to complex content"
+        - "Before/after comparisons or transformation visualizations included"
+        - "Authentic customer voice (direct quote or named outcome)"
+
+  normalisation:
+    description: "Adjustments to ensure cross-profile comparability"
+    approach: "Profile-specific thresholds for each dimension"
+    example: |
+      A 75 for visual in 'infographic' is harder to achieve than 75 for
+      visual in 'technical_training' - the bar is higher for visual-first
+      content.
+
+# ==============================================================================
+# REPORTING OUTPUT
+# ==============================================================================
+
+reporting:
+  summary_format:
+    overall_score: "0-100 with band label"
+    dimension_breakdown: "Score per dimension with weight"
+    quality_gates: "Pass/fail status"
+    top_strengths: "2-3 highlights"
+    top_improvements: "2-3 priority actions"
+
+  visualisation:
+    primary: "Radar chart showing dimension scores"
+    secondary: "Score band indicator (gauge)"
+    detail: "Dimension drill-down tables"
+
+  export_formats:
+    - "JSON (programmatic)"
+    - "PDF (human-readable report)"
+    - "Markdown (documentation)"

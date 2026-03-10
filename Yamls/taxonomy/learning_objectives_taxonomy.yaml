@@ -1,0 +1,445 @@
+_meta:
+  id: learning_objectives_taxonomy
+  title: "Learning Objectives Taxonomy"
+  description: "Bloom's Revised Taxonomy 6-level classification hierarchy for learning objectives — with action verbs, measurability signals, aligned activity types, and assessment approaches"
+  domain: pedagogical
+  domain_type: classification
+  purpose: taxonomy
+  version: "1.4.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Writing Learning Objectives.md"
+    - "Corpus/Research/Research - Essential Inputs for Learning Objectives.md"
+  academic_sources:
+    - "Anderson & Krathwohl (2001) - A Taxonomy for Learning, Teaching, and Assessing"
+    - "Bloom et al. (1956) - Taxonomy of Educational Objectives"
+    - "Krathwohl (2002) - A Revision of Bloom's Taxonomy"
+
+  relationships:
+    - target: entities/learning_objectives_entities.yaml
+      type: depends_on
+      description: "Learning objective entity types for NER extraction"
+classification_dimensions:
+  - name: bloom_level
+    description: "Bloom's Revised Taxonomy cognitive level from Remember (1) to Create (6)"
+    values:
+      - remember
+      - understand
+      - apply
+      - analyze
+      - evaluate
+      - create
+  - name: cognitive_category
+    description: "Higher-order vs lower-order thinking classification"
+    values:
+      - lower_order_thinking
+      - higher_order_thinking
+  - name: objective_quality
+    description: "ABCD formula compliance and measurability quality rating"
+    values:
+      - strong
+      - acceptable
+      - weak_or_invalid
+
+# ==============================================================================
+# BLOOM'S REVISED TAXONOMY — 6 LEVELS
+# Ordered from lower-order to higher-order thinking
+# ==============================================================================
+
+levels:
+
+  # --------------------------------------------------------------------------
+  # LEVEL 1: REMEMBER
+  # --------------------------------------------------------------------------
+  remember:
+    level: 1
+    label: "Remember"
+    cognitive_category: "lower_order"
+    description: "Retrieve, recognise, or recall relevant knowledge from long-term memory"
+    definition: "The learner can reproduce or recognise previously encountered information"
+
+    action_verbs:
+      strong:
+        - define
+        - list
+        - name
+        - recall
+        - identify
+        - state
+        - label
+        - recognise
+        - match
+        - select
+      acceptable:
+        - describe
+        - repeat
+        - locate
+        - outline
+      weak_or_invalid:
+        - understand
+        - know
+        - learn
+        - be aware of
+        - appreciate
+
+    measurability:
+      signals: ["can list", "can name", "can identify", "can select"]
+      typical_condition: "given a list or a closed question"
+      typical_degree: '"with 100% accuracy" or "without reference material"'
+
+    aligned_activities:
+      - knowledge_check
+      - live_demonstration
+      - video_watch
+      - qa_session
+
+    aligned_assessments:
+      - multiple_choice
+      - true_false
+      - matching
+      - fill_in_the_blank
+
+    example_objectives:
+      good:
+        - "Define the five stages of the ADDIE model."
+        - "List the three components of the SOAR framework."
+        - "Name the Gagné events that apply to skill acquisition."
+      poor:
+        - "Understand the importance of ADDIE." # vague, unmeasurable
+        - "Know about the stages." # not a verb, not measurable
+
+  # --------------------------------------------------------------------------
+  # LEVEL 2: UNDERSTAND
+  # --------------------------------------------------------------------------
+  understand:
+    level: 2
+    label: "Understand"
+    cognitive_category: "lower_order"
+    description: "Construct meaning from instructional messages including oral, written, and graphic communication"
+    definition: "The learner can interpret, classify, compare, or explain knowledge in their own words"
+
+    action_verbs:
+      strong:
+        - explain
+        - describe
+        - interpret
+        - summarise
+        - classify
+        - compare
+        - contrast
+        - paraphrase
+        - differentiate
+        - infer
+      acceptable:
+        - discuss
+        - translate
+        - extend
+        - illustrate
+      weak_or_invalid:
+        - understand
+        - appreciate
+        - know about
+        - be familiar with
+
+    measurability:
+      signals: ["can explain", "can describe", "can distinguish between"]
+      typical_condition: '"in their own words" or "without referring to notes"'
+      typical_degree: '"correctly" or "to the satisfaction of a manager"'
+
+    aligned_activities:
+      - facilitated_discussion
+      - peer_instruction
+      - reading_reflection
+      - video_watch
+
+    aligned_assessments:
+      - short_answer
+      - concept_map
+      - explanation_prompt
+      - analogy_task
+
+    example_objectives:
+      good:
+        - "Explain the difference between synchronous and asynchronous learning activities."
+        - "Describe how cognitive load affects learner performance."
+        - "Compare the Challenger and SPIN selling methodologies."
+      poor:
+        - "Understand how learning design works." # not measurable
+        - "Appreciate the value of storytelling." # not actionable
+
+  # --------------------------------------------------------------------------
+  # LEVEL 3: APPLY
+  # --------------------------------------------------------------------------
+  apply:
+    level: 3
+    label: "Apply"
+    cognitive_category: "lower_order"
+    description: "Carry out or use a procedure in a given situation"
+    definition: "The learner can execute or implement a process, method, or skill in a new context"
+
+    action_verbs:
+      strong:
+        - apply
+        - use
+        - execute
+        - implement
+        - demonstrate
+        - operate
+        - produce
+        - calculate
+        - complete
+        - solve
+      acceptable:
+        - practice
+        - perform
+        - illustrate
+        - construct
+      weak_or_invalid:
+        - understand how to apply
+        - be able to use
+        - know how to
+
+    measurability:
+      signals: ["can demonstrate", "can produce", "can complete"]
+      typical_condition: '"given a customer scenario" or "using the product"'
+      typical_degree: '"following the recommended process" or "achieving the target outcome"'
+
+    aligned_activities:
+      - roleplay_simulation
+      - hands_on_workshop
+      - job_aid_application
+      - practice_exercise
+
+    aligned_assessments:
+      - skill_demonstration
+      - roleplay_observation
+      - process_checklist
+      - project_submission
+
+    example_objectives:
+      good:
+        - "Apply the Monroe's Motivated Sequence framework to structure a customer pitch."
+        - "Demonstrate the product discovery workflow using the sandbox environment."
+        - "Use the SOAR framework to complete a pre-call planning template."
+      poor:
+        - "Apply their knowledge of SOAR." # no context or condition
+        - "Practice good selling." # vague, not measurable
+
+  # --------------------------------------------------------------------------
+  # LEVEL 4: ANALYZE
+  # --------------------------------------------------------------------------
+  analyze:
+    level: 4
+    label: "Analyze"
+    cognitive_category: "higher_order"
+    description: "Break material into constituent parts and determine how parts relate to one another and to an overall structure or purpose"
+    definition: "The learner can differentiate, organise, and attribute meaning to components within content"
+
+    action_verbs:
+      strong:
+        - analyze
+        - examine
+        - differentiate
+        - distinguish
+        - break down
+        - categorise
+        - compare
+        - deconstruct
+        - diagnose
+        - investigate
+      acceptable:
+        - attribute
+        - outline
+        - order
+        - select
+        - separate
+      weak_or_invalid:
+        - think about
+        - consider
+        - explore generally
+
+    measurability:
+      signals: ["can identify the root cause", "can distinguish between", "can deconstruct"]
+      typical_condition: "given a real or simulated scenario"
+      typical_degree: '"identifying at least 3 contributing factors" or "accurately categorised"'
+
+    aligned_activities:
+      - collaborative_problem_solving
+      - case_study_analysis
+      - debate
+      - research_task
+
+    aligned_assessments:
+      - analytical_report
+      - case_study_debrief
+      - annotated_example
+      - structured_critique
+
+    example_objectives:
+      good:
+        - "Analyze a customer presentation to identify which SOAR elements are missing."
+        - "Differentiate between surface-level objections and deep buying blockers."
+        - "Examine a storyboard and identify cognitive load violations."
+      poor:
+        - "Think about what makes a good presentation." # not measurable
+        - "Explore the reasons for customer objections." # not specific
+
+  # --------------------------------------------------------------------------
+  # LEVEL 5: EVALUATE
+  # --------------------------------------------------------------------------
+  evaluate:
+    level: 5
+    label: "Evaluate"
+    cognitive_category: "higher_order"
+    description: "Make judgements based on criteria and standards"
+    definition: "The learner can check, critique, or judge the quality, relevance, or appropriateness of content, processes, or decisions"
+
+    action_verbs:
+      strong:
+        - evaluate
+        - judge
+        - critique
+        - justify
+        - assess
+        - recommend
+        - defend
+        - rate
+        - prioritise
+        - argue
+      acceptable:
+        - select
+        - decide
+        - rank
+        - support
+      weak_or_invalid:
+        - see if
+        - think about whether
+        - look at
+
+    measurability:
+      signals: ["can justify", "can recommend", "can assess"]
+      typical_condition: '"using the scoring rubric" or "against defined criteria"'
+      typical_degree: '"with a written rationale" or "to the standard required"'
+
+    aligned_activities:
+      - scenario_assessment
+      - self_assessment
+      - peer_instruction
+      - debate
+
+    aligned_assessments:
+      - evaluative_essay
+      - scored_observation
+      - justified_recommendation
+      - rubric_based_review
+
+    example_objectives:
+      good:
+        - "Evaluate a customer-facing presentation against the SOAR scoring rubric."
+        - "Justify the choice of activity type for a given learning objective."
+        - "Recommend the most appropriate play for a given sales scenario."
+      poor:
+        - "Evaluate everything about the presentation." # too vague
+        - "Think about whether the approach is good." # not measurable
+
+  # --------------------------------------------------------------------------
+  # LEVEL 6: CREATE
+  # --------------------------------------------------------------------------
+  create:
+    level: 6
+    label: "Create"
+    cognitive_category: "higher_order"
+    description: "Put elements together to form a new, coherent, or functional whole; reorganise elements into a new pattern or structure"
+    definition: "The learner can design, plan, produce, or originate a novel product or perspective"
+
+    action_verbs:
+      strong:
+        - create
+        - design
+        - develop
+        - produce
+        - construct
+        - generate
+        - plan
+        - build
+        - formulate
+        - compose
+      acceptable:
+        - write
+        - draft
+        - assemble
+        - reorganise
+      weak_or_invalid:
+        - make something
+        - try to create
+        - attempt to build
+
+    measurability:
+      signals: ["can produce", "can design", "can build"]
+      typical_condition: "for a real or practice customer scenario"
+      typical_degree: '"meeting all rubric criteria" or "approved by manager"'
+
+    aligned_activities:
+      - portfolio_project
+      - hackathon
+      - research_task
+      - brainstorming
+
+    aligned_assessments:
+      - portfolio_submission
+      - capstone_project
+      - peer_reviewed_product
+      - manager_sign_off
+
+    example_objectives:
+      good:
+        - "Create a 3-slide customer value story using the Monroe's Motivated Sequence framework."
+        - "Design an onboarding activity sequence for a new product launch."
+        - "Build a discovery question bank aligned to the SOAR framework."
+      poor:
+        - "Create something that shows understanding." # vague
+        - "Develop a feel for good design." # not measurable
+
+# ==============================================================================
+# OBJECTIVE QUALITY RULES
+# ==============================================================================
+
+objective_quality_rules:
+  abcd_formula:
+    audience: "Who will be doing the learning — explicit or implied"
+    behaviour: "Observable, measurable verb from Bloom's taxonomy"
+    condition: "Context in which the behaviour will be demonstrated"
+    degree: "Standard or criteria for success"
+
+  red_flags:
+    unmeasurable_verbs:
+      - understand
+      - know
+      - appreciate
+      - learn
+      - be aware of
+      - be familiar with
+      - grasp
+      - feel
+
+    vague_conditions:
+      - "in general"
+      - "when appropriate"
+      - "as needed"
+
+  verb_level_mismatches:
+    too_low: "Objective says 'list' but activity requires 'create'"
+    too_high: "Objective says 'design' but assessment is multiple choice"
+
+# ==============================================================================
+# COGNITIVE CATEGORY SUMMARY
+# ==============================================================================
+
+cognitive_categories:
+  lower_order_thinking:
+    levels: [remember, understand, apply]
+    notes: "Foundation knowledge and skill — necessary but not sufficient for transfer"
+
+  higher_order_thinking:
+    levels: [analyze, evaluate, create]
+    notes: "Transfer, judgment, and creation — indicates deep learning"

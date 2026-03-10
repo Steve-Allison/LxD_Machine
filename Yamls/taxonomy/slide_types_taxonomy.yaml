@@ -1,0 +1,416 @@
+# slide_types_taxonomy.yaml
+# 28 slide types across 7 categories, mapped to 4 prompt groups.
+# Source of truth for SlideClassifier and PomlSlideRunner.
+
+_meta:
+  id: slide_types_taxonomy
+  purpose: taxonomy
+  version: "2.4.0"
+  last_updated: "2026-03-01"
+  description: "28 slide types across 7 categories mapped to 4 prompt groups. Source of truth for SlideClassifier and PomlSlideRunner."
+  domain: visual
+  domain_type: cross_cutting
+  consumers:
+    - SlideClassifier
+    - PomlSlideRunner
+  corpus_sources:
+    - "Corpus/Research/Research - Canonical Presentation Methodology Research.md"
+    - "Corpus/Research/Visual Narrative Flow Pass.md"
+    - "Corpus/Research/The Unseen Structure: A Technical Deep-Dive into Narrative, Visualization, and Accessibility.md"
+
+  relationships:
+    - target: entities/slide_types_entities.yaml
+      type: depends_on
+      description: "Slide type entity types for NER extraction"
+# Definitive Slide Type Taxonomy — Source of Truth
+#
+# 28 types across 7 categories, mapped to 4 prompt groups.
+# Used by SlideClassifier (SigLIP2 visual + text heuristics) and
+# PomlSlideRunner (type-specific POML prompt routing).
+#
+# SigLIP2 prompts follow the recommended "This is a presentation slide showing ..." pattern.
+# Text signals are case-insensitive regex patterns matched against Docling-extracted slide text.
+#
+# v2 changelog:
+#   - Added timeline_roadmap (structural) — visually distinct temporal axis pattern
+#   - Added table_matrix (content) — rows/columns structured data, ubiquitous in corporate decks
+#   - Moved two_column_detail from product → content (generic layout, not product-specific)
+#   - Renamed speaker_notes → section_break (avoids confusion with PowerPoint notes pane)
+#   - Broadened content_cards body_patterns (added grid, tile, module, capability)
+#   - Broadened photo_led text signals (added imagery terms, visual/image title patterns)
+#   - Moved temporal patterns (q[1-4], fy\d{2}) from chart_data → timeline_roadmap
+#   - Added ©, \d{4} to title_cover body_patterns
+#   - Added learning objectives?, by the end to agenda body_patterns
+#   - Added nps, csat, rated to customer_proof body_patterns
+
+classification_dimensions:
+  - name: slide_category
+    description: "Functional category of the slide type determining layout template and prompt group"
+    values:
+      - structural
+      - data_proof
+      - content
+      - product
+      - narrative
+      - functional
+      - complex
+  - name: soar_alignment
+    description: "SOAR narrative stage the slide type primarily serves"
+    values:
+      - situation
+      - opportunity
+      - action
+      - result
+      - cta
+
+version: 2
+
+categories:
+  structural:
+    display_name: "Structural"
+    prompt_group: "structural"
+    types:
+      architecture_stack:
+        display_name: "Architecture / Stack"
+        siglip_prompts:
+          - "This is a presentation slide showing a layered architecture stack."
+          - "This is a presentation slide showing a technology platform with layers."
+          - "This is a presentation slide showing a system architecture diagram."
+        text_signals:
+          title_patterns: ["architect", "platform", "stack", "layers?", "infra"]
+          body_patterns: ["foundation", "infrastructure", "capabilit", "integrat", "microservice"]
+
+      hub_spoke:
+        display_name: "Hub & Spoke"
+        siglip_prompts:
+          - "This is a presentation slide showing a hub and spoke diagram."
+          - "This is a presentation slide showing a central element connected to surrounding elements."
+          - "This is a presentation slide showing a radial layout with a center and branches."
+        text_signals:
+          title_patterns: ["ecosystem", "connected", "integrat", "hub"]
+          body_patterns: ["central", "connect", "surround", "radial", "spoke"]
+
+      cycle_process:
+        display_name: "Cycle / Process Loop"
+        siglip_prompts:
+          - "This is a presentation slide showing a circular process cycle."
+          - "This is a presentation slide showing a repeating workflow loop."
+          - "This is a presentation slide showing numbered steps in a circular flow."
+        text_signals:
+          title_patterns: ["cycle", "loop", "iterati", "continuous"]
+          body_patterns: ["repeat", "circular", "phase", "stage", "step"]
+
+      process_flow:
+        display_name: "Process / Workflow Flow"
+        siglip_prompts:
+          - "This is a presentation slide showing a linear process flow with steps."
+          - "This is a presentation slide showing a workflow diagram with arrows."
+          - "This is a presentation slide showing a step by step process."
+        text_signals:
+          title_patterns: ["workflow", "process", "pipeline", "how it works", "steps?"]
+          body_patterns: ["step \\d", "then", "next", "arrow", "sequence", "phase \\d"]
+
+      hierarchy_tree:
+        display_name: "Hierarchy / Tree"
+        siglip_prompts:
+          - "This is a presentation slide showing a hierarchical tree structure."
+          - "This is a presentation slide showing an organizational hierarchy."
+          - "This is a presentation slide showing a tree diagram with parent and child nodes."
+        text_signals:
+          title_patterns: ["hierarch", "org chart", "structure", "tree"]
+          body_patterns: ["parent", "child", "branch", "level", "tier"]
+
+      timeline_roadmap:
+        display_name: "Timeline / Roadmap"
+        siglip_prompts:
+          - "This is a presentation slide showing a timeline or roadmap with dates."
+          - "This is a presentation slide showing a horizontal timeline with milestones."
+          - "This is a presentation slide showing a project roadmap with phases and dates."
+        text_signals:
+          title_patterns: ["timeline", "roadmap", "mileston", "plan", "schedule"]
+          body_patterns: ["q[1-4]", "fy\\d{2}", "\\d{4}", "quarter", "year", "month", "deadline", "launch"]
+
+  data_proof:
+    display_name: "Data & Proof"
+    prompt_group: "data_proof"
+    types:
+      stats_metrics:
+        display_name: "Stats / Metrics"
+        siglip_prompts:
+          - "This is a presentation slide showing large statistics and key metrics."
+          - "This is a presentation slide showing big numbers and percentage values."
+          - "This is a presentation slide showing key performance indicators."
+        text_signals:
+          title_patterns: ["metric", "stat", "number", "result", "kpi", "performance"]
+          body_patterns: ["\\d+%", "\\d+x", "\\$[\\d,]+", "billion", "million", "increase", "decrease"]
+
+      business_impact:
+        display_name: "Business Impact / ROI"
+        siglip_prompts:
+          - "This is a presentation slide showing business impact and return on investment."
+          - "This is a presentation slide showing cost savings and revenue growth."
+          - "This is a presentation slide showing before and after business results."
+        text_signals:
+          title_patterns: ["impact", "roi", "value", "benefit", "saving", "outcome"]
+          body_patterns: ["revenue", "cost", "saving", "return", "growth", "efficien", "reduc"]
+
+      comparison:
+        display_name: "Comparison / Before-After"
+        siglip_prompts:
+          - "This is a presentation slide showing a comparison between two or more options."
+          - "This is a presentation slide showing a before and after comparison."
+          - "This is a presentation slide showing side by side differences."
+        text_signals:
+          title_patterns: ["compar", "vs\\.?", "versus", "before.*after", "differ"]
+          body_patterns: ["without", "with", "before", "after", "traditional", "modern", "old", "new"]
+
+      chart_data:
+        display_name: "Chart / Data Visualization"
+        siglip_prompts:
+          - "This is a presentation slide showing a bar chart or line graph."
+          - "This is a presentation slide showing a data chart with axes and values."
+          - "This is a presentation slide showing a pie chart or donut chart."
+        text_signals:
+          title_patterns: ["chart", "graph", "trend", "growth", "forecast", "data"]
+          body_patterns: ["axis", "legend", "year over year", "yoy", "series", "plot"]
+
+      customer_proof:
+        display_name: "Customer Proof / Testimonial"
+        siglip_prompts:
+          - "This is a presentation slide showing a customer testimonial or quote."
+          - "This is a presentation slide showing customer logos and success stories."
+          - "This is a presentation slide showing a case study with customer results."
+        text_signals:
+          title_patterns: ["customer", "client", "testimonial", "case stud", "success stor"]
+          body_patterns: ["logo", "brand", "partner", "trust", "said", "quote", "nps", "csat", "rated"]
+
+      competitive_landscape:
+        display_name: "Competitive Landscape"
+        siglip_prompts:
+          - "This is a presentation slide showing a competitive landscape or market map."
+          - "This is a presentation slide showing a quadrant chart with competitor positions."
+          - "This is a presentation slide showing a feature comparison matrix."
+        text_signals:
+          title_patterns: ["competit", "landscape", "market", "position", "quadrant"]
+          body_patterns: ["leader", "challenger", "niche", "gartner", "forrester", "analyst"]
+
+  content:
+    display_name: "Content"
+    prompt_group: "content_product"
+    types:
+      content_cards:
+        display_name: "Content Cards / Grid"
+        siglip_prompts:
+          - "This is a presentation slide showing a grid of content cards with icons."
+          - "This is a presentation slide showing multiple equal-sized boxes arranged in a grid."
+          - "This is a presentation slide showing a card layout with icons and short text."
+        text_signals:
+          title_patterns: ["service\\s+portfolio", "solutions?\\s+overview", "offerings?", "use\\s+cases?", "service\\s+lines?"]
+          body_patterns: ["icon", "card", "grid", "tile", "module", "capability"]
+
+      text_points:
+        display_name: "Text / Bullet Points"
+        siglip_prompts:
+          - "This is a presentation slide showing bullet points of text."
+          - "This is a presentation slide showing a list of text items."
+          - "This is a presentation slide with mostly text content and bullet points."
+        text_signals:
+          title_patterns: ["\\boverview\\b", "\\bsummary\\b", "\\bkey\\s+points?\\b", "\\bhighlights?\\b"]
+          body_patterns: ["\\bkey\\s+takeaways?\\b", "\\bmain\\s+points?\\b", "\\bfirst\\b", "\\bsecond\\b", "\\bthird\\b"]
+
+      framework_pillars:
+        display_name: "Framework / Pillars"
+        siglip_prompts:
+          - "This is a presentation slide showing framework pillars or columns."
+          - "This is a presentation slide showing three or four pillars with headings."
+          - "This is a presentation slide showing a strategic framework with categories."
+        text_signals:
+          title_patterns: ["framework", "pillar", "principle", "foundation", "strateg"]
+          body_patterns: ["pillar", "column", "principle", "tenet", "dimension"]
+
+      feature_map:
+        display_name: "Feature Map / Inventory"
+        siglip_prompts:
+          - "This is a presentation slide showing a feature map or product capabilities."
+          - "This is a presentation slide showing a categorized list of features."
+          - "This is a presentation slide showing product feature inventory."
+        text_signals:
+          title_patterns: ["feature", "capabilit", "what's new", "release", "product"]
+          body_patterns: ["feature\\s+set", "enhanced", "improved", "added", "support\\s+for", "release\\s+note"]
+
+      glossary_reference:
+        display_name: "Glossary / Reference"
+        siglip_prompts:
+          - "This is a presentation slide showing a glossary or reference table."
+          - "This is a presentation slide showing definitions and terminology."
+          - "This is a presentation slide showing a lookup table or quick reference."
+        text_signals:
+          title_patterns: ["glossary", "terminolog", "definition", "reference", "appendix"]
+          body_patterns: ["means", "defined as", "refers to", "acronym"]
+
+      two_column_detail:
+        display_name: "Two-Column Detail"
+        siglip_prompts:
+          - "This is a presentation slide showing content split into two columns."
+          - "This is a presentation slide with text on one side and an image on the other."
+          - "This is a presentation slide showing a two column layout with details."
+        text_signals:
+          title_patterns: ["detail", "deep dive", "closer look", "spotlight"]
+          body_patterns: ["left\\s+column", "right\\s+column", "side\\s+by\\s+side", "split\\s+view", "two\\s+column"]
+
+      table_matrix:
+        display_name: "Table / Matrix"
+        siglip_prompts:
+          - "This is a presentation slide showing a data table with rows and columns."
+          - "This is a presentation slide showing a matrix or grid of structured data."
+          - "This is a presentation slide showing a comparison table with headers."
+        text_signals:
+          title_patterns: ["table", "matrix", "pricing", "specification", "schedule"]
+          body_patterns: ["row", "column", "header", "total", "cell", "\\btier\\b"]
+
+  product:
+    display_name: "Product"
+    prompt_group: "content_product"
+    types:
+      screenshot_demo:
+        display_name: "Screenshot / Demo"
+        siglip_prompts:
+          - "This is a presentation slide showing a software screenshot or product demo."
+          - "This is a presentation slide showing a user interface or application screen."
+          - "This is a presentation slide showing a product walkthrough with screenshots."
+        text_signals:
+          title_patterns: ["demo", "screenshot", "interface", "\\bui\\b", "walkthrough"]
+          body_patterns: ["click", "select", "navigate", "panel", "toolbar", "menu"]
+
+  narrative:
+    display_name: "Narrative"
+    prompt_group: "narrative_functional"
+    types:
+      title_cover:
+        display_name: "Title / Cover"
+        siglip_prompts:
+          - "This is a presentation title slide or cover page."
+          - "This is a presentation slide showing a large title with minimal text."
+          - "This is a presentation slide that introduces the topic with a headline."
+        text_signals:
+          title_patterns: ["\\bpresentation\\b", "\\bintroduction\\b", "\\bwelcome\\b", "\\bopening\\b"]
+          body_patterns: ["confidential", "internal use", "draft", "©", "\\d{4}"]
+
+      brand_vision:
+        display_name: "Brand / Vision"
+        siglip_prompts:
+          - "This is a presentation slide showing a brand vision or mission statement."
+          - "This is a presentation slide showing an inspirational message with bold text."
+          - "This is a presentation slide with a large tagline or slogan."
+        text_signals:
+          title_patterns: ["vision", "mission", "purpose", "why we", "our story"]
+          body_patterns: ["believe", "inspire", "transform", "imagine", "future"]
+
+      photo_led:
+        display_name: "Photo-Led"
+        siglip_prompts:
+          - "This is a presentation slide dominated by a large photograph."
+          - "This is a presentation slide showing a full bleed photo with text overlay."
+          - "This is a presentation slide with a prominent image and minimal text."
+        text_signals:
+          title_patterns: ["\\bin\\s+focus\\b", "\\bspotlight\\b", "\\bin\\s+action\\b", "\\bvisual\\b", "\\bimage\\b", "\\bgallery\\b"]
+          body_patterns: ["\\bphoto\\b", "\\bimage\\b", "\\bcourtesy\\b", "\\bsource:\\b", "\\bcredit\\b", "\\bshutterstock\\b", "\\bgetty\\b"]
+
+      agenda:
+        display_name: "Agenda / Table of Contents"
+        siglip_prompts:
+          - "This is a presentation slide showing an agenda or table of contents."
+          - "This is a presentation slide showing a numbered list of session topics."
+          - "This is a presentation slide showing a meeting agenda with time slots."
+        text_signals:
+          title_patterns: ["\\bagenda\\b", "table\\s+of\\s+contents?", "\\boutline\\b", "\\btopics?\\b", "today'?s\\s+agenda"]
+          body_patterns: ["\\d+\\.", "session", "break", "min(ute)?s?", "topic", "learning\\s+objectives?", "by\\s+the\\s+end"]
+
+      presenter_team:
+        display_name: "Presenter / Team"
+        siglip_prompts:
+          - "This is a presentation slide showing team members or speaker bios."
+          - "This is a presentation slide showing headshot photos with names and titles."
+          - "This is a presentation slide introducing presenters or panelists."
+        text_signals:
+          title_patterns: ["team", "speaker", "presenter", "panelist", "about us", "who we are"]
+          body_patterns: ["director", "manager", "vp", "chief", "lead", "head of", "senior"]
+
+  functional:
+    display_name: "Functional"
+    prompt_group: "narrative_functional"
+    types:
+      section_break:
+        display_name: "Section Break / Divider"
+        siglip_prompts:
+          - "This is a presentation slide that is a section divider."
+          - "This is a presentation slide with very little content acting as a transition."
+          - "This is a presentation slide showing a single word or short phrase as a section break."
+        text_signals:
+          title_patterns: ["q&a", "question", "discussion", "break", "thank"]
+          body_patterns: ["\\bthank\\s+you\\b", "\\bquestions?\\b", "\\bq\\s*&\\s*a\\b", "\\bnext\\s+section\\b", "\\bsection\\s+\\d+\\b"]
+
+      resource_card:
+        display_name: "Resource / CTA Card"
+        siglip_prompts:
+          - "This is a presentation slide showing links and resources."
+          - "This is a presentation slide with a call to action and contact information."
+          - "This is a presentation slide showing QR codes or URLs."
+        text_signals:
+          title_patterns: ["resource", "learn more", "next step", "contact", "get started"]
+          body_patterns: ["http", "www\\.", "email", "scan", "qr", "@"]
+
+  complex:
+    display_name: "Complex"
+    prompt_group: "structural"
+    types:
+      multi_zone:
+        display_name: "Multi-Zone / Dashboard"
+        siglip_prompts:
+          - "This is a presentation slide showing multiple distinct zones or sections."
+          - "This is a presentation slide showing a dashboard layout with different data areas."
+          - "This is a presentation slide with a complex layout combining charts, text, and images."
+        text_signals:
+          title_patterns: ["dashboard", "at a glance", "snapshot", "control tower"]
+          body_patterns: ["\\bkpi\\b", "\\bstatus\\b", "\\bowner\\b", "\\bpriority\\b", "\\baction\\s+items?\\b"]
+
+# ==============================================================================
+# SOAR NARRATIVE SLIDE MAPPING
+# Sources: Research - Canonical Presentation Methodology Research.md;
+#          Visual Narrative Flow Pass.md
+# ==============================================================================
+
+soar_slide_mapping:
+  description: "Mapping of slide_type categories and types to SOAR narrative stages — for narrative arc analysis and quality scoring"
+
+  situation:
+    primary_slide_types: ["title_cover", "agenda", "executive_summary", "two_column_detail"]
+    secondary_slide_types: ["stat_callout", "chart_data"]
+    scoring_note: "Situation slides should not contain ROI claims or CTA content — if found, flag as misplaced content"
+
+  opportunity:
+    primary_slide_types: ["stat_callout", "chart_data", "comparison_table", "quote_testimonial"]
+    secondary_slide_types: ["photo_led", "two_column_detail"]
+    scoring_note: "Opportunity slides should convey urgency (concerned or urgent tone) — neutral tone may signal underpowered Opportunity stage"
+
+  action:
+    primary_slide_types: ["architecture_stack", "process_flow", "content_cards", "timeline_roadmap"]
+    secondary_slide_types: ["two_column_detail", "chart_data"]
+    scoring_note: "Action slides should be mechanism-specific — generic product description without explanation scores lower"
+
+  result:
+    primary_slide_types: ["stat_callout", "chart_data", "quote_testimonial", "customer_proof", "comparison_table"]
+    secondary_slide_types: ["photo_led"]
+    scoring_note: "Result slides require quantified outcomes — validated outcome evidence scores highest; aspirational statements without data score lowest"
+    validated_outcome_requirement: "At least one Result slide must contain VALIDATED_OUTCOME or BEFORE_AFTER_COMPARISON entity to pass evidence_specificity gate"
+
+  cta:
+    primary_slide_types: ["resource_card", "section_break"]
+    note: "CTA slides are typically brief — resource_card with next steps or section_break with closing message"
+
+  narrative_arc_completeness:
+    description: "Quality indicator for narrative arc coverage — does the deck contain slide types from all 4 SOAR stages?"
+    complete_arc: "All 4 stages represented: +5 points narrative_arc_completeness"
+    missing_result: "No Result-category slides: -8 points (most damaging gap)"
+    missing_opportunity: "No Opportunity-category slides: -5 points"
+    missing_action: "No Action-category slides: -4 points"

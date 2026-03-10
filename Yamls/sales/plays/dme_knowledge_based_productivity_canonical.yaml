@@ -1,0 +1,110 @@
+_meta:
+  id: dme_knowledge_based_productivity_canonical
+  title: DMe Knowledge Based Productivity Canonical
+  description: Knowledge Based Productivity strategic play (L2) under End-User Productivity, using Acrobat Studio and Express to extract document insights and create executive-ready on-brand outputs
+  domain: sales
+  domain_type: cross_cutting
+  purpose: reference
+  version: "1.2.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md"
+    - "Corpus/Research/Best Practices for Writing Effective Corporate Learning Content.md"
+    - "Corpus/Research/Crafting Powerful Opening Plays.md"
+    - "Corpus/Research/Research - Using SOAR Storytelling most effectively.md"
+    - "Corpus/Research/The Universal Narrative Methodology: A Framework for Crafting and Improving Stories.md"
+
+
+  relationships:
+    - target: sales/play_catalog_reference.yaml
+      type: depends_on
+      description: "Play instance references the play catalog for classification context"
+sales_play:
+  tier: L2
+  id: L2_KNOWLEDGE_BASED_PRODUCTIVITY
+  name: Knowledge Based Productivity
+  parent_portfolio_play:
+    id: L1_END_USER_PRODUCTIVITY
+    name: End-User Productivity
+  description: Deliver measurable AI-driven productivity for business professionals by extracting trusted insights from documents
+    and rapidly transforming those insights into executive-ready, on-brand outputs.
+  transformational_vision: Move business teams from reading/searching/summarizing manually to an AI-enabled, collaborative
+    workflow where document knowledge becomes decisions and deliverables—securely and at scale.
+  business_problem: Knowledge is trapped in documents; teams lose time to information overload, manual synthesis, version
+    chaos, and slow creation of stakeholder-ready communications.
+  solution_approach: Use Acrobat Studio (AI Assistant + PDF Spaces/Projects) to extract and organize insights across documents,
+    then use Express to convert insights into presentations, briefs, and communications with brand controls.
+  differentiation: Trusted, PDF-native AI with grounded answers/citations and enterprise security; integrated creation capabilities
+    reduce tool sprawl and accelerate time-to-output.
+  target_customers:
+    segment: Enterprise organizations with heavy document workflows
+    functions:
+    - Finance
+    - Legal
+    - Sales
+    - HR
+    - Procurement
+    - Marketing (business-side)
+  target_personas:
+  - persona: CIO/IT & Innovation Leaders
+    notes: Executive pitch entry; drives cross-department expansion.
+  - persona: Department Leaders (LOB)
+    notes: Need faster decisions and consistent stakeholder-ready output.
+  - persona: Business Professionals / Knowledge Workers
+    notes: Daily document consumers/creators who need AI + creation in workflow.
+  applications_included:
+  - Acrobat Studio
+  - Adobe Express
+  key_use_cases:
+  - Summarize and extract key insights from large document sets with citations
+  - Create shared project workspaces for multi-document collaboration (PDF Spaces/Projects)
+  - Generate executive-ready presentations and briefs from prompts and/or source materials
+  - Turn document insights into on-brand communications (templates, locked elements, brand controls)
+  related_entities:
+    customer_groups:
+    - Business Pros
+    adjacent_offers:
+    - Acrobat Sign (optional attach)
+    - Acrobat Services / PDF Services (optional attach)
+
+soar_narrative_blueprint:
+  purpose: "Canonical SOAR arc and opening strategy for Knowledge Based Productivity L2 play"
+  source: "Research - Using SOAR Storytelling most effectively.md"
+  arc_shape: rags_to_riches
+
+  stages:
+    situation:
+      opening_frame: "Business professionals in Finance, Legal, HR, and Sales spend disproportionate time synthesizing and recreating document knowledge that should be instantly accessible"
+      data_anchor: "IDC: professionals who search for information that already exists spend an average of 2.3 hours per day; 80% report difficulty finding the right document version"
+      status_quo_pain: "High-stakes business decisions are delayed because insight is trapped in static documents — requiring hours of reading, cross-referencing, and manual synthesis before outputs can be created"
+
+    opportunity:
+      villain_frame: "The document knowledge gap — insights buried in contracts, reports, and research that cannot be surfaced, queried, or converted to deliverables without significant manual effort"
+      pain_vocabulary:
+        - information_overload
+        - manual_synthesis
+        - version_chaos
+        - stakeholder_communication_delays
+        - decision_latency
+        - tool_context_switching
+      loss_aversion_frame: "Every quarter without embedded AI in document workflows is weeks of senior-professional time lost to tasks that AI can handle in minutes"
+      kairos_trigger: "Acrobat Studio AI Assistant now delivers grounded, cited answers across multi-document workspaces — trusted for regulated industries where hallucination is not acceptable"
+
+    action:
+      value_frame: "Acrobat Studio (AI Assistant for multi-document Q&A + PDF Spaces for collaborative workspaces + Express for on-brand creation) transforms document knowledge into fast decisions and polished outputs"
+      differentiation_language: "PDF-native grounded AI with citations and enterprise security — not a general-purpose LLM but a document-expert AI trained for high-stakes professional workflows"
+      champion_story: "Department Leader (LOB) as champion who owns the business outcome; IT validates the governance and security model"
+
+    result:
+      proof_pattern: "Before/after: [Finance or Legal or HR team] reduced document review-to-output cycle from X days to Y hours, saving Z hours per professional per week"
+      validated_outcome_types:
+        - time_to_decision_reduction
+        - professional_hours_saved_per_week
+        - document_review_cycle_reduction
+        - tool_consolidation_savings
+        - stakeholder_output_quality_improvement
+
+  audience_calibration:
+    cio: "Lead with security, grounded AI (no hallucination), and per-seat TCO; A to R frame"
+    department_lob_leader: "Lead with decision speed and stakeholder output quality; O to R frame"
+    knowledge_worker: "Lead with relatable workflow pain and immediate productivity demo; S to A frame"

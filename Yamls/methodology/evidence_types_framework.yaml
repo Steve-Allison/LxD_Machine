@@ -1,0 +1,389 @@
+# Evidence Type Classification
+# Based on: IAM dataset and argumentation theory
+# Source: Evidence categorization for claim support validation
+
+_meta:
+  id: evidence_types_framework
+  title: "Evidence Types"
+  description: "Classification of evidence types (statistic, anecdote, expert, etc.) for claim support validation based on IAM dataset and argumentation theory."
+  domain: narrative
+  domain_type: cross_cutting
+  purpose: methodology
+  version: "1.2.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Argument Mining with MTL and PDL.md"
+    - "Corpus/Research/Research - Researching Narrative and Discourse Analysis.md"
+    - "Corpus/Research/Research - Operationalizing Multi-Task Learning for Argument Mining: A Structured Framework Using IBM Prompt Declarative Language.md"
+
+  relationships:
+    - target: methodology/toulmin_framework.yaml
+      type: depends_on
+      description: "Both model argumentation; Toulmin provides the structure evidence types fill"
+
+# Primary Evidence Categories
+evidence_categories:
+  statistic:
+    definition: "Numerical data, percentages, quantified facts, or metrics"
+    am_component_label: "Premise"  # Argumentation mining canonical label (Farzam et al. 2023)
+    rhetorical_appeal: "logos"  # Appeals to logic and reason
+    persuasive_strength: "high"
+    verifiability: "high"  # Can be fact-checked against sources
+    rhetorical_technique_risk: "Appeal to Authority (selective data from one source), Bandwagon (citing majority adoption without context)"
+
+    patterns:
+      percentage: ["X%", "X percent", "percentage points"]
+      absolute_numbers: ["X million", "X billion", "$X", "X users", "X customers"]
+      growth_metrics: ["increased by X%", "grew by X%", "declined by X%", "decreased by X%"]
+      ratios: ["X times more", "X:Y ratio", "X to Y"]
+      comparative: ["X% higher than", "X% lower than", "outperformed by X%"]
+
+    linguistic_markers:
+      quantifiers: ["million", "billion", "thousand", "dozens", "hundreds"]
+      measurement_units: ["%", "$", "users", "customers", "hours", "days", "years"]
+      temporal_frames: ["in 2023", "over 5 years", "since 2020", "year-over-year", "quarter-over-quarter"]
+      change_verbs: ["increased", "decreased", "grew", "declined", "rose", "fell", "doubled", "tripled"]
+
+    examples:
+      revenue_growth: "Revenue increased 45% year-over-year to $2.3B"
+      market_share: "We captured 23% of the enterprise market"
+      performance_metric: "Response time decreased from 500ms to 50ms (90% improvement)"
+      adoption_rate: "Customer adoption grew 3x in Q4"
+      cost_reduction: "Operating costs declined $5M (18% decrease)"
+
+    presentation_context:
+      slide_titles: "Often highlighted in titles or callout boxes"
+      chart_labels: "Appears as data labels on charts and graphs"
+      speaker_notes: "May provide additional statistical detail or methodology"
+
+    validation:
+      source_required: true
+      citation_examples: ["(Source: Gartner)", "(Internal data)", "(Q4 2023 results)"]
+      red_flags: ["Unsourced statistics", "Round numbers without context", "Vague quantifiers"]
+
+  testimonial:
+    definition: "Personal accounts, customer quotes, reviews, or endorsements"
+    am_component_label: "Premise"
+    rhetorical_appeal: "pathos"  # Appeals to emotion and personal experience
+    persuasive_strength: "medium-high"
+    verifiability: "medium"  # Can verify quote exists, harder to verify accuracy
+    rhetorical_technique_risk: "Testimonial (celebrity/authority endorsement out of context), Appeal to Emotion (manipulative framing of personal experience)"
+
+    patterns:
+      direct_quote: ["\"quoted text\"", "Customer X says: 'text'"]
+      reported_speech: ["Customer X reports that...", "Client Y states..."]
+      review_excerpts: ["According to reviewer Z...", "User A writes..."]
+      satisfaction_metrics: ["X% of customers report satisfaction", "NPS score of X"]
+
+    linguistic_markers:
+      attribution: ["says", "reports", "states", "claims", "mentions", "notes", "explains"]
+      first_person: ["I", "we", "our", "us"]  # Inside quoted testimonial
+      evaluative_language: ["love", "hate", "amazing", "terrible", "fantastic", "disappointing"]
+      emotional_language: ["excited", "frustrated", "delighted", "concerned"]
+
+    examples:
+      customer_quote: "\"The platform transformed our operations\" - Jane Smith, CTO, Acme Corp"
+      user_feedback: "Users report 'the interface is intuitive and easy to learn'"
+      satisfaction_metric: "94% of customers rate our support as 'excellent' or 'very good'"
+      case_reference: "Client X states that deployment took only 2 weeks instead of expected 3 months"
+
+    presentation_context:
+      callout_boxes: "Often displayed in quote boxes or highlighted sections"
+      customer_logo_slides: "Paired with customer logos for credibility"
+      video_testimonials: "May reference video clips in speaker notes"
+
+    validation:
+      attribution_required: true
+      company_context: "Include company name/industry for credibility"
+      red_flags: ["Anonymous testimonials", "Vague attribution", "Overly promotional language"]
+
+  expert_opinion:
+    definition: "Authority citations, expert statements, analyst reports, academic research"
+    am_component_label: "Premise"
+    rhetorical_appeal: "ethos"  # Appeals to credibility and authority
+    persuasive_strength: "high"
+    verifiability: "high"  # Can verify source and credentials
+    rhetorical_technique_risk: "Appeal to Authority (citing credential without claim relevance), False Authority (expert in unrelated domain)"
+
+    patterns:
+      analyst_citation: ["According to Gartner...", "Forrester reports...", "IDC predicts..."]
+      academic_citation: ["Research by MIT...", "Stanford study shows...", "Published in Nature..."]
+      industry_expert: ["Expert X argues...", "Thought leader Y believes...", "Authority Z claims..."]
+      credential_mention: ["Dr. X", "Professor Y", "PhD", "Chief Scientist"]
+
+    linguistic_markers:
+      authority_verbs: ["confirms", "validates", "demonstrates", "proves", "establishes"]
+      research_markers: ["research shows", "studies indicate", "data reveals", "findings suggest"]
+      prediction_markers: ["predicts", "forecasts", "projects", "estimates"]
+      source_names: ["Gartner", "Forrester", "IDC", "McKinsey", "BCG", "Deloitte", "MIT", "Stanford"]
+
+    examples:
+      analyst_report: "Gartner positions us as a Leader in the Magic Quadrant for Enterprise AI"
+      academic_research: "MIT research confirms that our approach reduces latency by 60%"
+      industry_expert: "According to AI researcher Andrew Ng, 'This technology represents a paradigm shift'"
+      technical_validation: "Independent security audit by NCC Group verified zero critical vulnerabilities"
+
+    presentation_context:
+      awards_accolades: "Third-party recognition (Gartner Leader, Forbes Cloud 100)"
+      partnership_slides: "Citations from strategic partners or advisors"
+      technical_deep_dives: "Academic papers or whitepapers referenced in appendix"
+
+    validation:
+      source_credibility: "Verify authority is recognized in domain"
+      recency: "Check date of citation (older than 2 years may be stale)"
+      red_flags: ["Unknown sources", "Uncredited quotes", "Cherry-picked data"]
+
+  anecdote:
+    definition: "Stories, examples, illustrative narratives, or use cases"
+    am_component_label: "Premise"
+    rhetorical_appeal: "pathos + logos"  # Combines emotional appeal with illustrative logic
+    persuasive_strength: "medium"
+    verifiability: "low"  # Difficult to independently verify narrative details
+    rhetorical_technique_risk: "Emotional Appeal (manipulative framing), Name Calling (negative anecdote targeting competitor)"
+
+    patterns:
+      narrative_structure: "Beginning (problem) → Middle (action) → End (outcome)"
+      temporal_markers: ["When we first...", "Initially...", "After implementing..."]
+      character_introduction: "Often introduces specific person or organization"
+      outcome_focus: "Ends with measurable or observable result"
+
+    linguistic_markers:
+      narrative_verbs: ["faced", "struggled", "implemented", "achieved", "overcame"]
+      temporal_sequences: ["first", "then", "next", "finally", "ultimately"]
+      contrast_markers: ["before", "after", "used to", "now"]
+      specificity: "Includes specific names, numbers, timeframes"
+
+    examples:
+      problem_solution_story: "When Acme Corp faced scalability issues processing 1M daily transactions, they deployed our platform and reduced processing time from hours to minutes"
+      transformation_narrative: "Client X struggled with manual data entry (200 hours/month). After automation, they freed up 85% of that time for strategic work"
+      failure_to_success: "Before adopting our solution, Customer Y experienced 12% annual churn. Within 6 months, churn dropped to 3%"
+
+    presentation_context:
+      case_study_slides: "Full narratives in dedicated case study sections"
+      problem_slides: "Anecdotes of customer pain points to establish need"
+      success_slides: "Stories of positive outcomes to demonstrate value"
+
+    validation:
+      specificity_check: "More specific = more credible (names, numbers, dates)"
+      outcome_verification: "Can outcomes be cross-referenced with testimonials or statistics?"
+      red_flags: ["Vague details", "Unnamed customers", "Unverifiable claims"]
+
+  case_study:
+    definition: "Detailed customer success story or implementation example with comprehensive data"
+    am_component_label: "Premise"
+    rhetorical_appeal: "logos + ethos"  # Combines data with credibility
+    persuasive_strength: "very high"
+    verifiability: "high"  # Most comprehensive form of evidence
+    rhetorical_technique_risk: "Cherry Picking (selecting only positive outcomes), Straw Man (distorting competitor scenario for comparison)"
+
+    structure:
+      company_profile: "Industry, size, geography, use case"
+      challenge: "Specific problem or pain point customer faced"
+      solution: "How product/service was implemented"
+      results: "Quantified outcomes with timeframes"
+      quote: "Customer testimonial validating results"
+
+    patterns:
+      comprehensive_data: "Multiple statistics and metrics"
+      named_customer: "Specific company with logo and attribution"
+      timeframe: "Implementation timeline and time-to-value"
+      multi_dimensional: "Covers multiple aspects (cost, time, quality, satisfaction)"
+
+    linguistic_markers:
+      challenge_language: ["struggled with", "faced challenges", "needed to", "required"]
+      solution_language: ["implemented", "deployed", "adopted", "leveraged"]
+      results_language: ["achieved", "realized", "delivered", "improved"]
+      quantified_outcomes: "Multiple statistics validating success"
+
+    examples:
+      enterprise_case: "Global Fortune 500 retailer deployed our platform across 500 stores, reducing inventory costs 23% ($12M annually) while improving stock availability from 87% to 96%. Implementation took 4 months. CFO states: 'ROI exceeded expectations'"
+      smb_case: "Regional healthcare provider (15 clinics) automated patient scheduling, reducing no-shows 40% and freeing 200 admin hours/month. Deployment: 6 weeks"
+
+    presentation_context:
+      dedicated_slides: "Often full slide or multi-slide case study section"
+      leave_behinds: "Detailed case study PDFs provided as appendix"
+      proof_points: "Summary metrics extracted as standalone statistics"
+
+    validation:
+      customer_permission: "Ensure customer approved public use"
+      data_accuracy: "Verify all statistics with customer"
+      logo_usage: "Customer logo included with permission"
+
+  major_claim:
+    definition: "The central, contestable thesis that the entire argument structure supports — root node of the argument graph from which all claims and premises descend"
+    am_component_label: "MajorClaim"  # Canonical argumentation mining label (Farzam et al. 2023)
+    rhetorical_appeal: "logos + ethos + pathos"  # Major claims often invoke all three appeals
+    persuasive_strength: "highest"  # The claim all other evidence is marshalled to support
+    verifiability: "low-medium"  # Claims are contestable by definition; verifiability varies by claim type
+    distinction_from_claim: "A Major Claim is the root thesis; Claims are intermediate propositions; Premises/evidence support Claims"
+    position_in_document: "Typically stated in title, introduction, or conclusion; may be implicit in persuasive content"
+    linguistic_markers:
+      thesis_indicators: ["In conclusion", "The evidence shows", "We argue that", "Our position is", "This demonstrates"]
+      implicit_indicators: "Often embedded in slide titles or slide deck themes — the 'headline' of the presentation"
+    extraction_guidance:
+      step: "Identify before classifying individual evidence units — all subsequent classifications are relative to this root"
+      method: "Look for the primary thesis in title/introduction; if absent, reconstruct from the weight of supporting claims"
+    research_source: "Farzam et al. (2023), Section 3.1 — component label taxonomy"
+
+# Evidence Strength Assessment
+evidence_strength:
+  factors:
+    source_credibility:
+      high: "Recognized authority, peer-reviewed, reputable analyst"
+      medium: "Industry publication, verified customer"
+      low: "Anonymous source, unverified claim"
+
+    recency:
+      high: "Within last 12 months"
+      medium: "1-3 years old"
+      low: "Older than 3 years"
+
+    specificity:
+      high: "Named sources, precise numbers, detailed context"
+      medium: "General attribution, approximate numbers"
+      low: "Vague references, no attribution, round numbers"
+
+    relevance:
+      high: "Directly supports claim, same domain/context"
+      medium: "Indirectly supports, requires inference"
+      low: "Tangential connection, different domain"
+
+    coherence:
+      high: "Logic flow between evidence and claim is transparent and unambiguous"
+      medium: "Connection requires one inference step; reasonable audience will accept"
+      low: "Relationship between evidence and claim requires multiple inferential leaps"
+      research_source: "Farzam et al. (2023), MTL for Argument Mining — quality_metrics.coherence (0.0–1.0 float)"
+
+    source_credibility_temporal:
+      description: "Credibility scores can decay as world knowledge changes — evidence strong in 2020 may be weak or false in 2024"
+      implication: "Add version-date check: flag evidence older than 12 months for recency audit"
+      research_source: "Farzam et al. (2023), Section 6.2 — Agentic Scaling: verify_fact tool pattern"
+
+  composite_scoring:
+    formula: "(source_credibility * 0.25) + (recency * 0.15) + (specificity * 0.25) + (relevance * 0.20) + (coherence * 0.15)"
+    formula_v1_original: "(source_credibility * 0.3) + (recency * 0.2) + (specificity * 0.3) + (relevance * 0.2)"
+    formula_change_note: "v1.1.0 — Added coherence as 5th factor (Farzam et al. 2023); redistributed weights. Empirical calibration pending."
+    thresholds:
+      strong: ">0.75"
+      medium: "0.50-0.75"
+      weak: "<0.50"
+
+# Presentation-Specific Evidence Patterns
+presentation_patterns:
+  data_slide:
+    primary_evidence: "statistic"
+    supporting_evidence: "expert_opinion (source citation)"
+    pattern: "Large number + chart + source attribution"
+
+  customer_slide:
+    primary_evidence: "case_study"
+    supporting_evidence: "testimonial + statistic"
+    pattern: "Logo + quote + quantified results"
+
+  competitive_slide:
+    primary_evidence: "statistic (benchmark comparison)"
+    supporting_evidence: "expert_opinion (third-party validation)"
+    pattern: "Head-to-head metrics + analyst citation"
+
+  problem_slide:
+    primary_evidence: "anecdote (customer pain point)"
+    supporting_evidence: "statistic (market data showing problem prevalence)"
+    pattern: "Story + industry data validating problem exists"
+
+  solution_slide:
+    primary_evidence: "case_study (how solution works)"
+    supporting_evidence: "statistic (outcome metrics)"
+    pattern: "Implementation narrative + results"
+
+# Evidence Gaps and Red Flags
+quality_issues:
+  unsupported_claims:
+    issue: "Claim with no evidence in 15-sentence window"
+    recommendation: "Add citation, statistic, or testimonial"
+
+  weak_evidence:
+    issue: "Evidence present but low strength score"
+    recommendation: "Replace with stronger source or add corroborating evidence"
+
+  evidence_contradiction:
+    issue: "Evidence supports conflicting claims"
+    recommendation: "Clarify scope or remove contradictory evidence"
+
+  stale_evidence:
+    issue: "Evidence older than 3 years"
+    recommendation: "Update with recent data or note timeframe explicitly"
+
+  anonymous_evidence:
+    issue: "Testimonial or case study without attribution"
+    recommendation: "Add company name and title, or get permission for named reference"
+
+  orphaned_premise:
+    issue: "Identified evidence unit with no relation edge connecting it to any claim"
+    detection: "No support or attack edge in the argument graph — evidence exists but plays no argumentative function"
+    recommendation: "Link the evidence to a specific claim or remove it; orphaned evidence misleads the audience"
+    research_source: "Farzam et al. (2023), Section 5.1 — Logic Validation Block (no orphaned edges rule)"
+
+  circular_reasoning:
+    issue: "Evidence and claim form a logical cycle (A supports B, B supports A)"
+    detection: "Cycle in the argument graph (Directed Acyclic Graph violation)"
+    recommendation: "Break the cycle by grounding one node in an external verifiable source"
+    distinction: "Different from evidence_contradiction (factual conflict) — this is a structural logic failure"
+    research_source: "Farzam et al. (2023), Section 5.1 — DAG validation"
+
+  cross_corpus_bias:
+    issue: "Evidence type appropriate in one domain (e.g., academic citations in peer review) performs poorly in another (e.g., sales pitch to non-experts)"
+    detection: "Domain mismatch between evidence source type and presentation context"
+    recommendation: "Match evidence type to audience domain — translating academic evidence into practitioner language before presenting"
+    research_source: "Farzam et al. (2023), Section 1.1 and 4.1 — transferability between training and target corpora"
+
+# GLiNER2 Extraction Guidance
+extraction_strategy:
+  step_1_identify_type:
+    description: "Classify evidence segment by primary category"
+    markers: "Look for numerical data (statistic), quotes (testimonial), authority citations (expert), narratives (anecdote), or comprehensive examples (case study)"
+    major_claim_detection:
+      description: "Before classifying individual evidence units, identify the document's Major Claim (root thesis) as an anchor node"
+      definition: "Major Claim — the central, contestable proposition that the entire argument supports; root node of the argument graph from which all claims and premises descend"
+      am_label: "MajorClaim (Farzam et al. 2023, Table 1)"
+      method: "Scan for the primary thesis statement, usually in title, introduction, or conclusion; all other claims relate to this root"
+      importance: "All subsequent Claim and Premise classifications are relative to this root — misidentifying it creates cascading classification errors"
+      research_source: "Farzam et al. (2023), Section 3.1 — component label enum: MajorClaim, Claim, Premise"
+    linguistic_marker_caveat: "Linguistic markers are probabilistic heuristics, not deterministic classifiers — models that over-rely on surface signals (e.g., 'therefore' for causation) fail under adversarial perturbation"
+    research_source_caveat: "Farzam et al. (2023), Section 1.1 — STL models 'latch onto superficial markers' causing classification failures"
+
+  step_2_extract_details:
+    statistic: "Extract number, unit, timeframe, change metric"
+    testimonial: "Extract quote, attribution (name + company), sentiment"
+    expert_opinion: "Extract source name, credential, claim statement"
+    anecdote: "Extract problem, action, outcome narrative"
+    case_study: "Extract company profile, challenge, solution, results, quote"
+
+  step_3_assess_strength:
+    description: "Score evidence on source, recency, specificity, relevance"
+    output: "Strength label (strong/medium/weak)"
+
+  step_4_link_to_claim:
+    description: "Verify evidence appears in 15-sentence window of claim"
+    validation: "Check vocabulary overlap >10% and logical support relationship"
+    graph_framing:
+      description: "Formal graph-theoretic model — each evidence unit is a node; relations are directed edges"
+      relation_types: ["support", "attack"]
+      node_id_format: "u{digit} (e.g., u1, u2, u3)"
+      relation_format: "{source: id, target: id, type: support|attack}"
+    proximity_caveat: "15-sentence window and 10% vocabulary overlap are proximity heuristics — necessary but not sufficient for logical support; coherence scoring (Step 3) must also be applied"
+
+  step_5_validate_graph:
+    description: "Structural integrity validation of the full argument graph after linking"
+    checks:
+      no_orphaned_edges: "All relation source/target IDs must match identified evidence unit IDs"
+      no_self_loops: "A unit cannot support or attack itself"
+      dag_check: "Flag cycles as circular_reasoning quality issue — argument graph should be a Directed Acyclic Graph"
+      claim_coverage: "Every identified claim should have at least one supporting premise; unsupported claims trigger unsupported_claims quality issue"
+    feedback_loop: "If validation fails, re-examine segmentation phase and re-classify units before proceeding"
+    research_source: "Farzam et al. (2023), Section 5.1 — Logic Validation Block"
+
+  holistic_processing_note:
+    description: "Evidence type, relation classification, rhetorical technique, and quality strength are semantically coupled — treating them as independent sequential tasks severs logical threads and reduces accuracy"
+    recommendation: "Where possible, treat component identification, relation classification, and quality assessment as simultaneous co-analysis rather than strictly serial pipeline stages"
+    empirical_finding: "Farzam et al. (2023) — MTL approach achieves 31% reduction in computation time vs. single-task pipelines while improving performance (Section 7)"
+    research_source: "Farzam et al. (2023), Sections 1.2 and 4.2 — Shared Representation Hypothesis"

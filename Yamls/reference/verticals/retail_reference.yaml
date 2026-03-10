@@ -1,0 +1,467 @@
+_meta:
+  id: retail_reference
+  title: "Retail & Consumer Goods Vertical"
+  description: "Retail industry configuration including sub-verticals (general merchandise, specialty, grocery, fashion, CPG), seasonal considerations, terminology, value propositions, and competitive landscape."
+  domain: sales
+  domain_type: cross_cutting
+  purpose: reference
+  version: "1.3.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Comprehensive Audience Analysis.md"
+    - "Corpus/Research/Research - Canonical Presentation Methodology Research.md"
+    - "Corpus/Research/The Universal Narrative Methodology: A Framework for Crafting and Improving Stories.md"
+
+
+vertical:
+  id: retail
+  name: "Retail & Consumer Goods"
+  aliases:
+    - Retail
+    - CPG
+    - Consumer Goods
+    - E-commerce
+    - D2C
+
+# ==============================================================================
+# Sub-Verticals
+# ==============================================================================
+
+sub_verticals:
+  general_merchandise:
+    name: "General Merchandise Retail"
+    description: "Department stores, big box, discount"
+    key_players:
+      - Walmart
+      - Target
+      - Costco
+      - Home Depot
+      - Lowe's
+    focus_areas:
+      - Omnichannel commerce
+      - Store experience
+      - Supply chain visibility
+      - Customer loyalty
+
+  specialty_retail:
+    name: "Specialty Retail"
+    description: "Category-focused retailers"
+    key_players:
+      - Best Buy
+      - Sephora
+      - Ulta
+      - Dick's Sporting Goods
+      - Williams-Sonoma
+    focus_areas:
+      - Personalised recommendations
+      - Expert/advisor enablement
+      - Loyalty programs
+      - Clienteling
+
+  grocery:
+    name: "Grocery & Food Retail"
+    description: "Supermarkets, grocery, convenience"
+    key_players:
+      - Kroger
+      - Albertsons
+      - Publix
+      - Whole Foods
+      - Trader Joe's
+    focus_areas:
+      - Digital circular/offers
+      - Delivery/pickup
+      - Recipe/meal inspiration
+      - Loyalty and rewards
+
+  fashion_apparel:
+    name: "Fashion & Apparel"
+    description: "Clothing, footwear, accessories"
+    key_players:
+      - Nike
+      - Gap Inc
+      - Lululemon
+      - Nordstrom
+      - H&M
+    focus_areas:
+      - Trend responsiveness
+      - Size/fit technology
+      - Sustainable fashion
+      - Brand experience
+
+  cpg:
+    name: "Consumer Packaged Goods"
+    description: "CPG manufacturers (not retailers)"
+    key_players:
+      - Procter & Gamble
+      - Unilever
+      - PepsiCo
+      - Nestlé
+      - Coca-Cola
+    focus_areas:
+      - Direct-to-consumer
+      - Retail media
+      - Brand building
+      - First-party data
+
+# ==============================================================================
+# Industry Pain Points
+# ==============================================================================
+
+pain_points:
+  strategic:
+    - id: amazon_effect
+      description: "Competitive pressure from Amazon and digital natives"
+      severity: critical
+      affected_personas: [cmo, ceo]
+      related_products: [Commerce, RTCDP, AJO]
+
+    - id: margin_pressure
+      description: "Shrinking margins due to competition and costs"
+      severity: high
+      affected_personas: [cfo, cmo, coo]
+      related_products: [Analytics, RTCDP]
+
+    - id: customer_expectations
+      description: "Consumers expect seamless omnichannel experiences"
+      severity: high
+      affected_personas: [cmo, director_ecommerce]
+      related_products: [AJO, RTCDP, Commerce]
+
+  operational:
+    - id: seasonal_peaks
+      description: "Massive content needs for peak seasons"
+      severity: high
+      affected_personas: [director_content_strategy, cmo]
+      related_products: [GenStudio, AEM Assets, Workfront]
+      peaks: ["Black Friday", "Holiday", "Back to School"]
+
+    - id: channel_proliferation
+      description: "Too many channels to manage consistently"
+      severity: high
+      affected_personas: [vp_marketing, director_marketing_ops]
+      related_products: [AJO, AEM]
+
+    - id: product_content_volume
+      description: "Thousands of SKUs requiring content"
+      severity: high
+      affected_personas: [director_content_strategy, director_ecommerce]
+      related_products: [AEM Assets, GenStudio, Commerce]
+
+  technical:
+    - id: data_fragmentation
+      description: "Customer data across POS, e-comm, loyalty, etc."
+      severity: high
+      affected_personas: [director_marketing_ops, director_analytics, cio]
+      related_products: [RTCDP, AEP, CJA]
+
+    - id: real_time_requirements
+      description: "Need for real-time inventory and personalisation"
+      severity: high
+      affected_personas: [director_ecommerce, it_director]
+      related_products: [RTCDP, Commerce, Target]
+
+    - id: legacy_commerce_platform
+      description: "Ageing e-commerce infrastructure"
+      severity: high
+      affected_personas: [cio, director_ecommerce]
+      related_products: [Commerce]
+
+# ==============================================================================
+# Industry Terminology
+# ==============================================================================
+
+terminology:
+  retail_metrics:
+    AOV:
+      full_name: "Average Order Value"
+      context: "Key e-commerce metric"
+    ROAS:
+      full_name: "Return on Ad Spend"
+      context: "Marketing efficiency metric"
+    CAC:
+      full_name: "Customer Acquisition Cost"
+      context: "Cost to acquire new customer"
+    LTV:
+      full_name: "Lifetime Value"
+      context: "Total customer value over time"
+    RPV:
+      full_name: "Revenue Per Visit"
+      context: "Website monetisation metric"
+    GMV:
+      full_name: "Gross Merchandise Value"
+      context: "Total transaction value"
+    SSS:
+      full_name: "Same-Store Sales"
+      context: "Comparable store growth"
+
+  retail_concepts:
+    SKU:
+      full_name: "Stock Keeping Unit"
+      context: "Individual product identifier"
+    PDP:
+      full_name: "Product Detail Page"
+      context: "E-commerce product page"
+    PLP:
+      full_name: "Product Listing Page"
+      context: "Category or search results page"
+    BOPIS:
+      full_name: "Buy Online, Pick Up In Store"
+      context: "Omnichannel fulfillment"
+    BOSS:
+      full_name: "Buy Online, Ship from Store"
+      context: "Store fulfillment model"
+    endless_aisle:
+      description: "Access to full inventory from store"
+    clienteling:
+      description: "Personalised in-store service"
+    planogram:
+      description: "Visual merchandising diagram"
+
+  customer_journey_stages:
+    - Awareness / Discovery
+    - Browse / Research
+    - Consideration
+    - Add to Cart
+    - Checkout
+    - Fulfillment
+    - Use / Enjoy
+    - Review / Share
+    - Repurchase
+    - Loyalty / Advocacy
+
+# ==============================================================================
+# Value Propositions
+# ==============================================================================
+
+value_propositions:
+  general:
+    primary:
+      - headline: "Personalisation that drives conversion"
+        proof_point: "25% increase in conversion rate"
+      - headline: "Omnichannel experience customers expect"
+        proof_point: "40% higher LTV for omnichannel customers"
+      - headline: "Content velocity for retail speed"
+        proof_point: "10x faster campaign production"
+    differentiators:
+      - "Real-time personalisation at scale"
+      - "Unified commerce and experience"
+      - "AI-powered product recommendations"
+
+  fashion_apparel:
+    specific:
+      - headline: "Trend-responsive content at speed"
+        proof_point: "Launch campaigns in days, not weeks"
+      - headline: "Personalised style recommendations"
+        proof_point: "30% increase in items per order"
+      - headline: "Sustainable storytelling at scale"
+        proof_point: "Brand content for sustainability messaging"
+
+  grocery:
+    specific:
+      - headline: "Digital circular transformation"
+        proof_point: "50% cost reduction vs print"
+      - headline: "Personalised offers that drive trips"
+        proof_point: "20% increase in visit frequency"
+      - headline: "Recipe-to-cart experiences"
+        proof_point: "35% higher basket size from recipes"
+
+  cpg:
+    specific:
+      - headline: "First-party data at scale"
+        proof_point: "Build direct consumer relationships"
+      - headline: "D2C experience excellence"
+        proof_point: "Control the brand experience"
+      - headline: "Retail media optimisation"
+        proof_point: "Better ROAS on retail media spend"
+
+# ==============================================================================
+# Seasonal Considerations
+# ==============================================================================
+
+seasonal:
+  peak_periods:
+    - name: "Holiday / Black Friday"
+      timing: "November - December"
+      content_needs:
+        - Gift guides
+        - Deal promotions
+        - Holiday creative
+        - Shipping deadlines
+      preparation_lead_time: "3-6 months"
+
+    - name: "Back to School"
+      timing: "July - September"
+      content_needs:
+        - Category campaigns
+        - Value messaging
+        - Student/parent targeting
+      preparation_lead_time: "3-4 months"
+
+    - name: "Spring/Summer"
+      timing: "March - June"
+      content_needs:
+        - Seasonal refresh
+        - Outdoor/garden
+        - Summer fashion
+      preparation_lead_time: "2-3 months"
+
+  value_proposition:
+    headline: "Handle seasonal surges without seasonal staff"
+    pain_addressed: "10x content needs during peak with same team"
+    solution: "GenStudio + Workfront for scalable content production"
+
+# ==============================================================================
+# Competitive Landscape
+# ==============================================================================
+
+competitive_landscape:
+  key_competitors:
+    - name: Salesforce Commerce Cloud
+      positioning: "CRM-centric commerce"
+      strengths:
+        - Strong CRM integration
+        - B2B and B2C capability
+        - Large partner ecosystem
+      weaknesses:
+        - Weak content management
+        - No native DAM
+        - Complex pricing
+      adobe_advantage: "Unified content and commerce experience"
+
+    - name: Shopify Plus
+      positioning: "E-commerce simplicity at scale"
+      strengths:
+        - Easy implementation
+        - Strong app ecosystem
+        - D2C focus
+      weaknesses:
+        - Limited enterprise features
+        - Dependent on apps
+        - Less personalisation depth
+      adobe_advantage: "Enterprise-grade personalisation and content"
+
+    - name: Dynamic Yield (Mastercard)
+      positioning: "Personalisation and experimentation"
+      strengths:
+        - Strong A/B testing
+        - Personalisation engine
+        - Quick implementation
+      weaknesses:
+        - Point solution
+        - Limited content capability
+        - Separate data silo
+      adobe_advantage: "Integrated personalisation within full platform"
+
+# ==============================================================================
+# Success Stories
+# ==============================================================================
+
+success_stories:
+  - customer: "Major Fashion Retailer"
+    use_case: "Personalised shopping experience"
+    results:
+      - "25% increase in conversion rate"
+      - "35% higher AOV"
+      - "40% improvement in email engagement"
+    products: [RTCDP, Target, AJO]
+    quotable: true
+
+  - customer: "National Grocery Chain"
+    use_case: "Digital circular and personalised offers"
+    results:
+      - "50% reduction in print costs"
+      - "20% increase in store visits"
+      - "15% higher basket size"
+    products: [AJO, RTCDP, Analytics]
+    quotable: true
+
+  - customer: "Global CPG Company"
+    use_case: "D2C experience and first-party data"
+    results:
+      - "10M+ first-party profiles built"
+      - "3x ROAS on owned channels"
+      - "Direct consumer relationship established"
+    products: [RTCDP, AEM, Commerce]
+    quotable: true
+
+# ==============================================================================
+# Messaging Guidelines
+# ==============================================================================
+
+messaging:
+  tone:
+    - "Customer-obsessed"
+    - "Speed and agility"
+    - "Data-driven"
+    - "Experience-focused"
+    - "Results-oriented"
+
+  preferred_terms:
+    - "customer (not consumer in B2C retail context)"
+    - "shopper"
+    - "omnichannel"
+    - "personalisation"
+    - "real-time"
+    - "conversion"
+    - "experience"
+
+  avoid_terms:
+    - "brick and mortar (dated)"
+    - "e-tail (dated)"
+    - "click and mortar (dated)"
+    - "phygital (jargon)"
+
+  key_themes:
+    - Customer experience differentiation
+    - Speed and agility
+    - Omnichannel consistency
+    - Personalisation at scale
+    - Operational efficiency
+
+# ==============================================================================
+# SOAR NARRATIVE GUIDANCE — RETAIL & CONSUMER GOODS
+# Sources: Research - Canonical Presentation Methodology Research.md;
+#          The Universal Narrative Methodology.md
+# ==============================================================================
+
+soar_narrative_guidance:
+  description: "SOAR stage framing tailored to Retail & Consumer Goods audience expectations"
+
+  situation:
+    typical_opening_frames:
+      - "Retail is operating in a permanent state of disruption: Amazon-level convenience expectations, inflationary pressure on margins, and the rise of social commerce are redefining what winning looks like."
+      - "Your customers are shopping everywhere simultaneously — mobile, in-store, social, voice — and they expect a seamless, personalised experience across every touchpoint."
+      - "CPG brands are losing direct consumer relationships as retail media networks become the new battleground for attention and data."
+    data_anchors:
+      - "76% of consumers say personalised experiences influence their purchase decisions (McKinsey 2023)"
+      - "Retailers with omnichannel personalisation generate 40% more revenue from personalisation than those without (Epsilon 2024)"
+
+  opportunity:
+    villain_frame: "Retail's villains are fragmented data architecture (preventing personalisation at scale), margin erosion (requiring cost efficiency), and disintermediation (losing direct-to-consumer relationships)"
+    pain_vocabulary:
+      - "Seasonal campaign ROI unmeasurable due to attribution gaps between online and in-store"
+      - "Loyalty programme personalisation limited to basic email segmentation"
+      - "Inventory-driven promotions not synchronised with real-time demand signals"
+      - "CPG brands losing sight of consumer purchase intent as retail data walled gardens proliferate"
+    loss_aversion_frame: "Personalisation at scale isn't optional — retailers without it are systematically ceding wallet share to those that have it."
+
+  action:
+    adobe_value_frame: "Adobe's Retail Experience Cloud connects first-party loyalty data, transactional data, and real-time browsing behaviour into unified profiles — enabling personalised journeys from discovery to post-purchase"
+    differentiation_language:
+      - "Real-time product recommendation at the moment of intent — not 24 hours later via batch email"
+      - "Adobe's retail-specific accelerators: unified commerce data model, loyalty data connector, real-time inventory-signal integration"
+    champion_story: "The champion in retail is typically the Chief Digital Officer or VP eCommerce — equip with a revenue-per-customer and margin impact narrative; avoid platform complexity discussions in early conversations"
+
+  result:
+    proof_pattern: "Before: [Retailer] personalised 3 audience segments across email only. After: Adobe-powered 200+ micro-segments across email, web, and app — average order value increased 15%, email open rate +31%."
+    validated_outcome_types:
+      - "Average order value improvement"
+      - "Customer retention / repeat purchase rate improvement"
+      - "Loyalty programme engagement lift"
+      - "Campaign ROI improvement (attributed revenue vs. cost)"
+      - "Cart abandonment recovery rate improvement"
+
+  audience_calibration:
+    economic_buyer: "CFO / CEO — frame in same-store sales growth, margin impact, and LTV; connect personalisation to revenue, not technology"
+    technical_buyer: "CTO / VP Engineering — frame around composable commerce integration, real-time data pipeline, API-first architecture"
+    champion: "CDO / VP eCommerce / Head of Digital — frame around customer segment growth, personalisation capability maturity, team velocity"

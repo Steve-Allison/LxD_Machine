@@ -1,0 +1,488 @@
+# ==============================================================================
+# Toulmin Argument Structure Patterns
+# Based on: IAM (Integrated Argument Mining) dataset
+# Source: Cheng et al. 2022 - Context-Dependent Claims and Evidence
+# ==============================================================================
+
+_meta:
+  id: toulmin_framework
+  title: "Toulmin Structure"
+  description: "Toulmin argument model patterns (claim, evidence, warrant, backing, qualifier, rebuttal) based on IAM dataset for argument mining."
+  domain: narrative
+  domain_type: workflow
+  purpose: methodology
+  version: "1.3.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Argument Mining with MTL and PDL.md"
+    - "Corpus/Research/Research - LLM Argument Mining with PDL.md"
+    - "Corpus/Research/Research - TACAM Argument Mining with PDL.md"
+
+
+# ==============================================================================
+# TOULMIN MODEL COMPONENTS
+# ==============================================================================
+
+toulmin_components:
+  claim:
+    definition: "A statement that directly supports or contests a specific topic"
+    context_dependency: "Must be evaluated relative to debate topic; same sentence may be claim for Topic A but not Topic B"
+    topic_dependency: "Argumentative function requires BOTH topic context AND local discourse context as independent dimensions; a sentence can be contextually coherent but topically irrelevant (Fromm et al. 2019)"
+    component_hierarchy:
+      major_claim:
+        definition: "Central thesis — root node of the argument graph; the overarching position the entire argument seeks to establish"
+        role: "Root of DAG; all intermediate claims ultimately support or attack the major claim"
+        source: "Farzam et al. 2023 (MTL schema: MajorClaim)"
+      intermediate_claim:
+        definition: "Controversial statement that directly supports or attacks the major claim"
+        role: "Non-root node with support/attack edges to major_claim or other claims"
+    linguistic_properties:
+      mean_length: 21  # words
+      complexity: "Often complex compound sentences with qualifiers"
+    types:
+      value_claim: "Asserts judgment about worth, morality, or desirability"
+      policy_claim: "Proposes course of action or change"
+      factual_claim: "Asserts truth or existence of something"
+    detection_patterns:
+      assertion_verbs: ["should", "must", "need to", "ought to", "have to"]
+      evaluative_adjectives: ["better", "worse", "essential", "critical", "important", "necessary"]
+      modal_auxiliaries: ["will", "would", "could", "may", "might"]
+      comparative_structures: ["more than", "less than", "superior to", "inferior to"]
+      prescriptive_language: ["recommend", "propose", "suggest", "advocate", "urge"]
+      reasoning_step: "Require Chain-of-Thought analysis field populated before assigning is_claim label; model must articulate WHY sentence qualifies relative to topic (CESC schema)"
+    anti_patterns:
+      opinionated_but_off_topic: "A sentence exhibiting all surface features of a claim (evaluative language, hedges, modals) may be irrelevant to the debate topic; topic-free detection misclassifies these as claims (Fromm et al. 2019)"
+      topic_free_detection: "Running claim detection without an established controversy profile causes false positives on opinionated-but-irrelevant sentences"
+    confidence_score:
+      type: float
+      range: "0.0 to 1.0"
+      purpose: "Downstream graph filtering; low-confidence claims excluded or flagged before evidence search is triggered"
+      source: "CESC output schema (LLM Argument Mining with PDL)"
+    examples:
+      value_claim: "Nuclear energy is too dangerous for widespread adoption"
+      policy_claim: "We should invest in renewable energy infrastructure"
+      factual_claim: "Solar power has become more cost-effective than coal"
+    presentation_context:
+      slide_titles: "Often contain main claim of slide"
+      bullet_points: "May express sub-claims supporting title claim"
+      speaker_notes: "Often elaborate on implicit claims in slide content"
+
+  evidence:
+    definition: "Text segment that directly supports a claim"
+    context_dependency: "Must be within 10-15 sentence window of claim (IAM locality constraint)"
+    cross_schema_mapping: "Premise (MTL / IBM Debater schema) = Evidence (Toulmin); these labels are interchangeable when integrating with BERT-based MTL classifiers (Farzam et al. 2023)"
+    linguistic_properties:
+      mean_length: "Slightly longer than claims"
+      vocabulary_overlap: "20.14% shared vocabulary with paired claim (vs 8.73% random pairs)"
+    types:
+      statistic: "Numerical data, percentages, quantified facts"
+      testimonial: "Personal accounts, customer quotes, reviews"
+      expert_opinion: "Authority citations, expert statements, credibility markers"
+      anecdote: "Stories, examples, illustrative narratives"
+      case_study: "Detailed success stories or implementation examples"
+    detection_patterns:
+      numerical_data: ["X%", "X percent", "X million", "increased by", "decreased by"]
+      citation_markers: ["according to", "research shows", "studies indicate", "data reveals"]
+      testimonial_markers: ["customer X reports", "client Y states", "user Z says"]
+      expert_markers: ["Gartner", "IDC", "Forrester", "McKinsey", "Professor X", "Dr. Y"]
+      temporal_markers: ["in 2023", "over the last year", "since 2020", "recently"]
+      causal_language: ["led to", "resulted in", "caused", "due to", "because of"]
+    pre_filtering_heuristic: "Sort candidate evidence sentences by lexical overlap with claim text before LLM evaluation; elevated overlap (above 8.73% baseline) raises candidate priority; reduces token cost on LLM verification pass (LLM Argument Mining with PDL)"
+    extraction_architecture: "Use generative extraction returning full evidence sentence as string; BIO-tagging NER models are inadequate for multi-sentence evidence spans; local context window is sufficient — RAG against whole corpus is not required for CEPE (LLM Argument Mining with PDL)"
+    examples:
+      statistic: "Solar installation costs have dropped 89% since 2010 (NREL data)"
+      testimonial: "Customer X reports 30% reduction in energy costs after switching"
+      expert_opinion: "According to MIT researchers, solar efficiency will reach 30% by 2030"
+      anecdote: "Company Y saved $500K annually by adopting solar power"
+      case_study: "Enterprise client Z deployed solar across 50 locations, achieving ROI in 3 years"
+    locality_constraint:
+      window_size: 15  # sentences — IAM claim-evidence pairing search radius
+      direction: "bidirectional"  # Evidence can precede or follow claim
+      rationale: "IAM research shows 10-15 sentence window captures majority of evidence"
+      implemented_window_radius: "10 sentences each side of candidate (~20-sentence total window) for LLM evidence verification (LLM Argument Mining with PDL)"
+      classification_window: "k=3 sentences each side of target (7-sentence total) for sentence-level argument classification — TACAM-validated (Fromm et al. 2019)"
+    fact_verification:
+      structural_validity: "Span exists in source text, correct label, within locality window"
+      factual_validity: "Checkable assertions may be externally verified; a structurally valid premise may be factually false — these are independent checks (Farzam et al. 2023)"
+
+  warrant:
+    definition: "Reasoning that links evidence to claim; explains WHY evidence supports claim"
+    function: "Bridges gap between data and conclusion"
+    implicitness: "Often implicit in business presentations; must be inferred"
+    detection_patterns:
+      logical_connectives: ["therefore", "thus", "consequently", "this shows", "this proves"]
+      explanatory_phrases: ["because", "since", "given that", "considering that"]
+      general_principles: ["In general", "Typically", "Usually", "As a rule"]
+    examples:
+      explicit_warrant: "Since renewable energy is cheaper (evidence), we should invest in it (claim). Lower costs improve ROI (warrant)."
+      implicit_warrant: "Solar costs dropped 89% (evidence). We should adopt solar (claim). [IMPLICIT: Cost reduction justifies adoption]"
+    presentation_context:
+      speaker_notes: "Warrants often appear in notes rather than slides"
+      transition_slides: "May explicitly state reasoning between problem and solution"
+
+  backing:
+    definition: "Additional support or justification for the warrant itself"
+    function: "Provides credibility to the warrant; often appeals to authority or common knowledge"
+    detection_patterns:
+      authority_appeals: ["experts agree", "research confirms", "industry standards show"]
+      common_knowledge: ["it is well known", "everyone knows", "obviously", "clearly"]
+      theoretical_support: ["economic theory suggests", "studies demonstrate", "data confirms"]
+    examples:
+      warrant: "Lower costs improve ROI"
+      backing: "Financial theory confirms that cost reduction directly impacts return on investment"
+
+  rebuttal:
+    definition: "Counter-argument, exception, or condition that undermines the claim"
+    function: "Acknowledges limitations or opposing viewpoints"
+    graph_operationalization: "In argument graph terms, a rebuttal is an attack-type directed edge from a counter-claim to the original claim (Farzam et al. 2023)"
+    detection_patterns:
+      concessive_markers: ["however", "although", "even though", "despite", "admittedly"]
+      exception_markers: ["except", "unless", "but", "in some cases", "sometimes"]
+      limitation_language: ["may not apply when", "does not work if", "fails in situations where"]
+      objection_phrases: ["critics argue", "opponents claim", "some say", "it could be argued"]
+    structural_constraints:
+      valid_rebuttal: "Introduces an attack-type directed edge from counter-claim to original claim in the argument graph"
+      invalid_pattern: "Attack edges forming cycles (A attacks B, B attacks A) indicate circular reasoning — detectable via DAG validation (Farzam et al. 2023)"
+    examples:
+      claim: "Solar energy is cost-effective"
+      rebuttal: "However, initial installation costs remain high for residential customers"
+    presentation_context:
+      risk_slides: "Often appear as 'Risks', 'Considerations', or 'Limitations' sections"
+      qa_preparation: "Rebuttals may be prepared in speaker notes for anticipated objections"
+
+  qualifier:
+    definition: "Degree of certainty modifier; indicates strength or scope of claim"
+    function: "Limits claim to prevent overstatement"
+    detection_patterns:
+      modal_adverbs: ["possibly", "probably", "likely", "perhaps", "maybe", "certainly", "definitely"]
+      frequency_adverbs: ["usually", "often", "sometimes", "rarely", "always", "never"]
+      scope_limiters: ["in most cases", "generally", "typically", "for the most part"]
+      hedging_verbs: ["might", "could", "may", "seems", "appears", "tends to"]
+      boosting_adverbs: ["clearly", "obviously", "undoubtedly", "absolutely", "definitely"]
+    examples:
+      hedged_claim: "Solar energy is likely the most cost-effective option for large enterprises"
+      boosted_claim: "Solar energy is definitely the most cost-effective option"
+      unqualified_claim: "Solar energy is the most cost-effective option"
+
+# ==============================================================================
+# COMPONENT RELATIONS (Argument Graph Edges)
+# ==============================================================================
+
+component_relations:
+  support:
+    definition: "Directed edge from Premise/Evidence to Claim — source grounds or justifies target"
+    direction: "Premise → Claim OR intermediate Claim → MajorClaim"
+    operationalization: "High vocabulary overlap (>20%), logical connective present or inferred"
+  attack:
+    definition: "Directed edge from one Claim to another — source challenges or rebuts target"
+    direction: "Counter-Claim → Claim"
+    operationalization: "Concessive markers present; counter-claim opposes target claim's stance"
+    anti_pattern: "Cycle of attack edges (A attacks B, B attacks A) = circular reasoning; detected by DAG validation"
+  graph_constraints:
+    no_orphaned_edges: "Every relation's source and target must reference an existing component unit"
+    no_self_loops: "A component cannot support or attack itself"
+    dag_preferred: "Directed Acyclic Graph structure is preferred; cycles flag circular reasoning"
+  source: "Farzam et al. 2023 (MTL): Relation Classification — Premise supports Claim; Claim attacks Claim"
+
+# ==============================================================================
+# STANCE CLASSIFICATION
+# ==============================================================================
+
+stance_classification:
+  definition: "Orientation of claim relative to debate topic"
+  logical_constraint: "Any confirmed Claim must have non-zero stance (+1 or -1); a Claim with stance 0 is a logical contradiction in the IAM schema — such a sentence is a non-argument, not a claim (LLM Argument Mining with PDL)"
+  disambiguation: "IAM stance 0 ('neutral') means 'no argumentative relation to topic' — categorically distinct from semantic neutrality or balanced opinion; do not conflate these"
+  categories:
+    support:
+      label: "+1"
+      tacam_label: "PRO"
+      definition: "Claim argues IN FAVOR of the topic"
+      markers: ["beneficial", "advantageous", "positive impact", "should adopt", "recommend"]
+      example:
+        topic: "Nuclear Energy"
+        claim: "Nuclear energy provides reliable baseload power"
+        stance: "support"
+    contest:
+      label: "-1"
+      tacam_label: "CON"
+      definition: "Claim argues AGAINST the topic"
+      markers: ["problematic", "disadvantageous", "negative impact", "should avoid", "oppose"]
+      example:
+        topic: "Nuclear Energy"
+        claim: "Nuclear energy poses unacceptable safety risks"
+        stance: "contest"
+    neutral:
+      label: "0"
+      tacam_label: "NON_ARGUMENT"
+      definition: "Statement has no argumentative relation to the debate topic"
+      note: "In IAM framework, Neutral = Not a claim regarding this topic; a sentence with stance 0 is not a claim — do not assign it Toulmin components"
+      example:
+        topic: "Nuclear Energy"
+        claim: "France produces 70% of its electricity from nuclear power"
+        stance: "neutral"  # Factual, doesn't argue for or against
+  controversy_profile:
+    definition: "Pre-extraction topic profiling step — generates key pro and con arguments for the topic before sentence-level classification begins"
+    pro_anchors: "3 typical supporting arguments for the topic"
+    con_anchors: "3 typical opposing arguments for the topic"
+    function: "Semantic filter that anchors stance classification in topic-relevant concepts; prevents misclassification of opinionated-but-irrelevant sentences as claims"
+    source: "Fromm et al. 2019 (TACAM); PDL Definition 3: Topic Expansion"
+  context_dependency:
+    same_sentence_different_topics:
+      sentence: "The costs are too high"
+      topic_a:
+        topic: "Nuclear Energy"
+        stance: "contest"
+      topic_b:
+        topic: "Space Exploration"
+        stance: "contest"
+      topic_c:
+        topic: "Budget Cuts"
+        stance: "support"
+
+# ==============================================================================
+# CLAIM-EVIDENCE PAIRING
+# ==============================================================================
+
+claim_evidence_pairing:
+  definition: "Explicit relationship between claim and supporting evidence"
+  cardinality_note: "One claim may have multiple evidence items (1:N); one evidence segment may support multiple claims (M:N); distinguish claim-specific evidence from general topic-level evidence when assigning pairs (LLM Argument Mining with PDL)"
+  relation_strength_enum:
+    values: ["Strong", "Moderate", "Weak"]
+    source: "CEPE output schema (IAM)"
+  relationship_types:
+    direct_support:
+      description: "Evidence explicitly proves or substantiates claim"
+      example:
+        claim: "Solar costs have decreased"
+        evidence: "Solar installation costs dropped 89% since 2010 (NREL)"
+    statistical_support:
+      description: "Numerical data quantifies claim's assertion"
+      example:
+        claim: "Renewable energy adoption is accelerating"
+        evidence: "Global renewable capacity increased 45% from 2019-2024 (IEA)"
+    expert_endorsement:
+      description: "Authority citation lends credibility to claim"
+      example:
+        claim: "AI will transform healthcare"
+        evidence: "According to Stanford researchers, AI diagnostic accuracy now exceeds human physicians in radiology"
+    illustrative_support:
+      description: "Anecdote or case study demonstrates claim in practice"
+      example:
+        claim: "Our platform reduces operational costs"
+        evidence: "Customer X reduced costs 30% within 6 months of deployment"
+  pairing_strength:
+    strong:
+      criteria: "Evidence directly proves claim; high lexical overlap; same semantic domain"
+      vocabulary_overlap: ">20%"
+    medium:
+      criteria: "Evidence supports claim but connection requires inference"
+      vocabulary_overlap: "10-20%"
+    weak:
+      criteria: "Evidence tangentially related; connection unclear"
+      vocabulary_overlap: "<10%"
+
+# ==============================================================================
+# PRESENTATION-SPECIFIC ARGUMENT PATTERNS
+# ==============================================================================
+
+presentation_context:
+  problem_solution_structure:
+    pattern:
+      claim: "We should adopt Solution X"
+      evidence_problem: "Current state has Problem Y (evidence: statistics, pain points)"
+      evidence_solution: "Solution X addresses Problem Y (evidence: ROI data, case studies)"
+      warrant: "Solving Problem Y improves business outcomes"
+  competitive_positioning:
+    pattern:
+      claim: "Our product is superior to competitors"
+      evidence_our_product: "Our metrics: speed, cost, features (evidence: benchmarks)"
+      evidence_competitors: "Competitor metrics: slower, more expensive, fewer features (evidence: third-party data)"
+      warrant: "Superior metrics indicate better value proposition"
+  value_proposition:
+    pattern:
+      claim: "Customers should buy our product"
+      evidence_benefits: "Product delivers benefits X, Y, Z (evidence: testimonials, case studies)"
+      evidence_differentiation: "No competitor offers all three (evidence: market analysis)"
+      warrant: "Unique combination of benefits justifies purchase"
+
+# ==============================================================================
+# EXTRACTION STRATEGIES
+# ==============================================================================
+
+extraction_strategies:
+  inference_parameters:
+    recommended_temperature: 0.1
+    rationale: "Low temperature ensures deterministic stance and is_claim outputs; prevents stochastic label variation (LLM Argument Mining with PDL)"
+
+  pipeline_order:
+    principle: "Serialize extraction — CESC first, then CEPE conditioned on claim detection; do not run evidence search on non-claim sentences"
+    pass_1:
+      name: "CESC — Claim Extraction with Stance Classification"
+      action: "Classify each sentence as claim or non-claim; assign stance (+1/-1/0); assign confidence score (0.0-1.0)"
+    pass_2:
+      name: "CEPE — Claim-Evidence Pair Extraction"
+      trigger: "Only when is_claim == true from pass_1"
+      action: "Search locality window (10 sentences each side) for evidence; pre-filter by lexical overlap; generative extraction"
+    rationale: "Eliminates expensive evidence search on non-claim sentences; enforces IAM dependency structure (LLM Argument Mining with PDL)"
+
+  joint_extraction_principle:
+    principle: "Extract all Toulmin components in a single unified inference pass per document, not sequentially in isolation"
+    rationale: "Argument components occupy a common semantic space (Farzam et al. 2023); sequential single-task extraction severs logical threads between components"
+    stl_failure_mode: "Single-Task Learning models overfit to dataset-specific surface markers and fail to generalize across corpora"
+    mtl_advantage: "31% reduction in computation time vs sequential single-task pipelines; 3-5 high-quality examples achieve performance parity in low-resource domains (Farzam et al. 2023)"
+
+  topic_aware_extraction:
+    description: "TACAM four-phase topic-conditioned argument extraction (Fromm et al. 2019)"
+    phases:
+      phase_1_topic_profiling: "Generate controversy profile (3 pro anchors + 3 con anchors) for the topic before processing any sentences"
+      phase_2_window_generation: "Segment document into sentences; generate sliding windows of k=3 sentences each side of each target (7-sentence window total)"
+      phase_3_classification: "Classify each target sentence using topic profile (system context) AND sliding window (local context) simultaneously; output class (PRO/CON/NON_ARGUMENT) + relevance_score (0.0-1.0) + reasoning_trace"
+      phase_4_aggregation: "Collect all classifications; filter NON_ARGUMENT sentences; compute pro_count, con_count, arguments_found, total_sentences"
+
+  reasoning_trace: "Each classified sentence must include a reasoning_trace field explaining how topic and local context influenced the decision; enables audit to distinguish genuine ambiguity from model error (Fromm et al. 2019)"
+
+  claim_extraction:
+    step_1: "Establish controversy profile for the topic (pro/con anchors) before sentence evaluation"
+    step_2: "Inject topic variable into every prompt evaluation; assess sentence relative to topic, not in isolation"
+    step_3: "Check for prescriptive/evaluative language (should, must, better, worse)"
+    step_4: "Require Chain-of-Thought analysis before assigning is_claim label"
+    step_5: "Classify stance (+1/-1/0); enforce non-zero stance for confirmed claims"
+    step_6: "Extract qualifiers (likely, usually, definitely) as separate entities"
+
+  evidence_extraction:
+    step_1: "Gate on CESC result — only run if is_claim == true"
+    step_2: "Search 10-sentence window each side of claim (~20-sentence implementation window)"
+    step_3: "Pre-filter: sort candidates by lexical overlap with claim (baseline: 8.73% random, target: >20%)"
+    step_4: "Classify evidence type (statistic, testimonial, expert, anecdote, case study)"
+    step_5: "Generative extraction of full evidence text (not BIO tagging)"
+    step_6: "Apply critic verification (relevance, factual support, logical connection)"
+
+  warrant_extraction:
+    step_1: "Look for logical connectives (therefore, thus, because) between evidence and claim"
+    step_2: "Infer implicit warrant if explicit markers absent"
+    step_3: "Extract general principles or theoretical backing"
+
+  rebuttal_extraction:
+    step_1: "Search for concessive markers (however, although, despite)"
+    step_2: "Identify objections or limitations to claim"
+    step_3: "Extract opposing viewpoints or counter-arguments"
+    step_4: "Validate as attack-type edge in argument graph; run DAG check to detect circular attack cycles"
+
+  anti_patterns:
+    - "One-shot prompting for all Toulmin components simultaneously causes LLM cognitive overload — serialize extraction tasks (LLM Argument Mining with PDL)"
+    - "BIO-tagging NER for evidence spans fails on multi-sentence evidence; use generative extraction"
+    - "Topic-free claim detection misclassifies opinionated-but-off-topic sentences as claims"
+    - "I.I.D. classification: treating each sentence as independent, ignoring discourse structure, reduces accuracy (Fromm et al. 2019)"
+    - "Binary Argument/Non-Argument classification loses PRO/CON nuance; use ternary taxonomy"
+    - "LLM may hallucinate evidence not present in source text; constrained decoding and critic loop mitigate this"
+
+# ==============================================================================
+# QUALITY VALIDATION
+# ==============================================================================
+
+validation_criteria:
+  claim_validity:
+    conditions:
+      - "Must be topic-relevant (evaluated against both topic AND local discourse context)"
+      - "Must express assertion, not fact"
+      - "Must have clear non-zero stance (support/contest)"
+      - "Must be self-contained sentence or clause"
+      - "Confirmed claims must have non-zero stance; stance 0 indicates non-claim classification"
+  evidence_validity:
+    conditions:
+      - "Must appear within 15-sentence window of claim"
+      - "Must logically support claim (not just related)"
+      - "Must contain verifiable data, citation, or testimonial"
+      - "Must share significant vocabulary with claim (>10%)"
+    structural_validity: "Span exists in source text, correct label, within locality window"
+    factual_validity: "Structurally valid evidence may still be factually false; these are independent checks (Farzam et al. 2023)"
+  pairing_validity:
+    conditions:
+      - "Evidence must not support multiple conflicting claims"
+      - "Claim must have at least one evidence instance"
+      - "Pairing strength should be medium or strong"
+    deduplication_threshold: "Cosine similarity > 0.85 between claim text vectors indicates duplicate claim; merge into single claim node (LLM Argument Mining with PDL)"
+  graph_integrity:
+    no_orphaned_edges: "Every relation's source and target must reference an existing component unit; orphaned edges propagate silently downstream"
+    no_self_loops: "A component cannot support or attack itself"
+    dag_check: "Argument graph should be a Directed Acyclic Graph; cycles indicate circular reasoning and are flagged as structural errors"
+    source: "Farzam et al. 2023 (MTL)"
+  critic_verification:
+    trigger: "Post-CEPE, per evidence item"
+    criteria:
+      relevance: "Does the evidence relate to the claim topic?"
+      factual_support: "Is the evidence factual (data/citation/logic) rather than opinion?"
+      logical_connection: "Does the evidence explicitly support the claim inference?"
+    outputs:
+      - "verified (boolean)"
+      - "critique (string)"
+    effect: "Filters weak edges from argument graph; raises precision of final claim-evidence pairs (LLM Argument Mining with PDL)"
+  annotation_disagreement:
+    challenge: "Inter-annotator disagreement on borderline sentences is a persistent challenge in argument mining (Fromm et al. 2019)"
+    mitigation: "Reasoning traces enable audit to distinguish genuine ambiguity from model error; flag borderline cases for human review"
+
+# ==============================================================================
+# SCORING THRESHOLDS
+# ==============================================================================
+
+scoring_thresholds:
+  claim_evidence_linking:
+    similarity_threshold: 0.7  # Minimum semantic similarity for linking
+    proximity_window: 1  # Max slide distance for claim-evidence pairs
+    link_ratio_weak: 0.5  # Warn if <50% of claims have evidence
+    link_ratio_good: 0.7  # Good if >70% of claims have evidence
+
+  toulmin_completeness:
+    incomplete: 0.5  # <50% of Toulmin components present
+    partial: 0.75  # 50-75% of components present
+    complete: 1.0  # All 6 components present
+
+  evidence_diversity:
+    low: 0.3  # <30% of evidence types used
+    good: 0.5  # >50% of evidence types used
+
+  stance_balance:
+    very_one_sided: 80.0  # >80% in one category
+    somewhat_one_sided: 60.0  # >60% in one category
+    balanced: 60.0  # <=60% max in any category
+
+  quality_metrics:
+    coherence_score:
+      type: float
+      range: "0.0 to 1.0"
+      definition: "Logic flow score — measures whether argument graph has consistent, non-contradictory directional flow"
+      source: "Farzam et al. 2023 (MTL)"
+    strength_score:
+      type: float
+      range: "0.0 to 1.0"
+      definition: "Evidence strength score — measures quality and sufficiency of premises supporting claims"
+      source: "Farzam et al. 2023 (MTL)"
+
+  claim_confidence:
+    type: float
+    range: "0.0 to 1.0"
+    purpose: "Per-claim confidence from CESC output; used as downstream graph filter; low-confidence claims excluded before evidence search"
+    source: "CESC output schema (LLM Argument Mining with PDL)"
+
+  document_level_metrics:
+    total_sentences: "Count of all sentences in document"
+    arguments_found: "Count of sentences classified as PRO or CON"
+    pro_count: "Count of PRO-stance arguments"
+    con_count: "Count of CON-stance arguments"
+    argumentativeness_ratio: "arguments_found / total_sentences — proportion of document that is argumentative"
+    pro_con_ratio: "pro_count / con_count — balance of pro vs con argumentation"
+    source: "Fromm et al. 2019 (TACAM); PDL Definition 6: The Filter"
+
+# ==============================================================================
+# PERFORMANCE BENCHMARKS
+# ==============================================================================
+
+performance_benchmarks:
+  mtl_vs_stl:
+    computation_reduction: "31% reduction in computation time for MTL vs sequential single-task pipelines (Farzam et al. 2023)"
+    few_shot_parity: "3-5 high-quality examples achieve performance parity with fully fine-tuned models in low-resource domains"
+    cross_corpora_failure: "STL models overfit to surface markers in training corpus; primary failure mode is cross-corpora generalization"
+  tacam:
+    topic_awareness_benefit: "Considering topic information provides significant performance boost for argument mining (Fromm et al. 2019)"
+    window_size_finding: "Local context (k=3) is crucial; global context provides diminishing returns"
+    pro_con_nuance: "Topic-awareness was particularly effective in distinguishing PRO vs CON — a nuance lost in binary Argument/Non-Argument classifiers"

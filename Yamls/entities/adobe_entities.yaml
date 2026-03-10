@@ -1,0 +1,831 @@
+_meta:
+  id: adobe_entities
+  purpose: entity
+  version: 3.6.0
+  last_updated: '2026-03-06'
+  description: Adobe Experience Cloud product portfolio vocabulary with full/short names, acronyms, and deprecated products
+    for FY26 field enablement.
+  domain: ai
+  domain_type: cross_cutting
+  corpus_sources:
+  - Corpus/Research/Crafting Powerful Opening Plays.md
+  - Corpus/Research/SOAR - A Universal Storytelling Framework for Learning Professionals.md
+  - Corpus/Research/SOAR Narrative Mapping by Sales Stage.md
+  relationships: null
+entity_types:
+  adobe_product:
+    description: Adobe product names including Experience Cloud, Creative Cloud, and Document Cloud offerings
+    canonical_id: adobe_product
+    entity_kind: product
+    family: adobe_portfolio
+    gliner_label: ADOBE_PRODUCT
+    gliner_description: Adobe product AEM AEP AJO Analytics Target Campaign Workfront Marketo Commerce GenStudio
+    examples:
+    - Adobe Experience Manager
+    - Adobe Analytics
+    - Adobe Journey Optimizer
+    - Adobe Real-Time CDP
+    - Adobe GenStudio
+    - Adobe Workfront
+    anti_examples:
+    - adobe.com
+    - Adobe Inc
+    - Adobe stock price
+    confidence_threshold: 0.85
+    validators:
+    - type: allowlist
+      ref: adobe_products_core
+    match_policy_ref: product
+    aliases:
+    - adobe_solution
+    - product
+    - platform
+    indicators:
+    - Adobe
+    - AEM
+    - AEP
+    - AJO
+    - RTCDP
+    - CJA
+    patterns:
+    - Adobe \w+
+    - AEM \w+
+    - \w+ Cloud
+    color: '#fa0f00'
+  adobe_technology:
+    description: Adobe technologies, AI/ML capabilities, and platform components
+    canonical_id: adobe_technology
+    entity_kind: technology
+    family: adobe_portfolio
+    gliner_label: ADOBE_TECHNOLOGY
+    gliner_description: Adobe technology Sensei Firefly AI GenAI XDM Edge Network SDK Web Mobile platform
+    examples:
+    - Adobe Sensei
+    - Adobe Firefly
+    - Sensei GenAI
+    - Experience Data Model
+    - Edge Network
+    - Web SDK
+    anti_examples:
+    - edge browser
+    - network cable
+    - SDK documentation
+    confidence_threshold: 0.8
+    validators:
+    - type: allowlist
+      ref: adobe_technologies_core
+    match_policy_ref: defaults
+    aliases:
+    - technology
+    - capability
+    - component
+    indicators:
+    - Sensei
+    - Firefly
+    - GenAI
+    - XDM
+    - SDK
+    - Edge
+    patterns:
+    - \w+ SDK
+    - \w+ Network
+    - Adobe \w+ Services
+    color: '#ff6f00'
+  adobe_concept:
+    description: Adobe solution concepts, frameworks, and strategic initiatives
+    canonical_id: adobe_concept
+    entity_kind: concept
+    family: adobe_portfolio
+    gliner_label: ADOBE_CONCEPT
+    gliner_description: Content Supply Chain Digital Experience Platform CDP Customer Journey Personalization Omnichannel
+      DXP
+    examples:
+    - Content Supply Chain
+    - Digital Experience Platform
+    - Real-Time Customer Profile
+    - Journey Orchestration
+    - Audience Segmentation
+    anti_examples:
+    - supply chain logistics
+    - platform shoes
+    - customer service
+    confidence_threshold: 0.75
+    validators:
+    - type: requires_anchors
+      ref: adobe_brand
+    match_policy_ref: defaults
+    aliases:
+    - concept
+    - framework
+    - initiative
+    indicators:
+    - supply chain
+    - platform
+    - journey
+    - orchestration
+    - segmentation
+    - personalization
+    patterns:
+    - \w+ Supply Chain
+    - \w+ Platform
+    - Customer \w+
+    color: '#0d66d0'
+  business_acronym:
+    description: Business and technical acronyms used in enterprise contexts
+    canonical_id: business_acronym
+    entity_kind: abbreviation
+    family: business_terminology
+    gliner_label: BUSINESS_ACRONYM
+    gliner_description: Acronym abbreviation ROI KPI SLA API B2B B2C SaaS CDP DXP PLG ABM MQL SQL
+    examples:
+    - ROI
+    - KPI
+    - B2B
+    - SaaS
+    - CDP
+    - DXP
+    anti_examples:
+    - SQL database
+    - API documentation
+    - B2B vitamins
+    confidence_threshold: 0.9
+    abbreviation_rules:
+      uppercase_only: true
+      word_boundary: true
+      requires_anchors:
+      - b2b_marketing
+      - tech_context
+      anchors_min: 1
+      anchors_window_tokens: 15
+      denylist_ref: ambiguous_abbreviations
+    validators:
+    - type: regex
+      ref: business_acronym_pattern
+    match_policy_ref: defaults
+    aliases:
+    - acronym
+    - abbreviation
+    indicators: []
+    patterns:
+    - '[A-Z]{2,5}'
+    - '[A-Z]\d[A-Z]'
+    color: '#666666'
+canonical_products:
+  adobe_experience_manager:
+    display_name: Adobe Experience Manager
+    canonical_id: adobe_experience_manager
+    entity_kind: product
+    family: experience_cloud
+    gliner_label: PRODUCT
+    gliner_description: Adobe Experience Manager AEM CMS DXP Sites Assets Forms content management web
+    examples:
+    - Adobe Experience Manager
+    - AEM Sites
+    - Experience Manager Assets
+    anti_examples:
+    - experience manager role
+    - customer experience manager
+    validators:
+    - type: allowlist
+      ref: adobe_products_core
+    match_policy_ref: product
+    confidence_threshold: 0.72
+  aem:
+    display_name: AEM
+    canonical_id: aem
+    normalize_to: adobe_experience_manager
+    entity_kind: abbreviation
+    family: experience_cloud
+    gliner_label: PRODUCT
+    gliner_description: AEM abbreviation for Adobe Experience Manager; Adobe context only
+    abbreviation_rules:
+      uppercase_only: true
+      word_boundary: true
+      requires_anchors:
+      - adobe_brand
+      - experience_platform
+      anchors_min: 1
+      anchors_window_tokens: 18
+      denylist_ref: ambiguous_abbreviations
+    match_policy_ref: defaults
+    confidence_threshold: 0.8
+  adobe_experience_platform:
+    display_name: Adobe Experience Platform
+    canonical_id: adobe_experience_platform
+    entity_kind: product
+    family: experience_cloud
+    gliner_label: PRODUCT
+    gliner_description: Adobe Experience Platform AEP CDP data customer real-time profile XDM
+    examples:
+    - Adobe Experience Platform
+    - Experience Platform
+    validators:
+    - type: allowlist
+      ref: adobe_products_core
+    match_policy_ref: product
+    confidence_threshold: 0.72
+  aep:
+    display_name: AEP
+    canonical_id: aep
+    normalize_to: adobe_experience_platform
+    entity_kind: abbreviation
+    family: experience_cloud
+    gliner_label: PRODUCT
+    gliner_description: AEP abbreviation for Adobe Experience Platform; Adobe context only
+    abbreviation_rules:
+      uppercase_only: true
+      word_boundary: true
+      requires_anchors:
+      - adobe_brand
+      - experience_platform
+      anchors_min: 1
+      anchors_window_tokens: 18
+      denylist_ref: ambiguous_abbreviations
+    match_policy_ref: defaults
+    confidence_threshold: 0.8
+  adobe_journey_optimizer:
+    display_name: Adobe Journey Optimizer
+    canonical_id: adobe_journey_optimizer
+    entity_kind: product
+    family: experience_cloud
+    gliner_label: PRODUCT
+    gliner_description: Adobe Journey Optimizer AJO orchestration customer journey messaging campaigns
+    examples:
+    - Adobe Journey Optimizer
+    - Journey Optimizer
+    validators:
+    - type: allowlist
+      ref: adobe_products_core
+    match_policy_ref: product
+    confidence_threshold: 0.72
+  ajo:
+    display_name: AJO
+    canonical_id: ajo
+    normalize_to: adobe_journey_optimizer
+    entity_kind: abbreviation
+    family: experience_cloud
+    gliner_label: PRODUCT
+    gliner_description: AJO abbreviation for Adobe Journey Optimizer; Adobe context only
+    abbreviation_rules:
+      uppercase_only: true
+      word_boundary: true
+      requires_anchors:
+      - adobe_brand
+      - experience_platform
+      anchors_min: 1
+      anchors_window_tokens: 18
+    match_policy_ref: defaults
+    confidence_threshold: 0.8
+  adobe_real_time_cdp:
+    display_name: Adobe Real-Time CDP
+    canonical_id: adobe_real_time_cdp
+    entity_kind: product
+    family: experience_cloud
+    gliner_label: PRODUCT
+    gliner_description: Adobe Real-Time CDP RTCDP customer data platform segments profiles activation
+    examples:
+    - Adobe Real-Time CDP
+    - Real-Time Customer Data Platform
+    - RTCDP
+    validators:
+    - type: allowlist
+      ref: adobe_products_core
+    match_policy_ref: product
+    confidence_threshold: 0.72
+  rtcdp:
+    display_name: RTCDP
+    canonical_id: rtcdp
+    normalize_to: adobe_real_time_cdp
+    entity_kind: abbreviation
+    family: experience_cloud
+    gliner_label: PRODUCT
+    gliner_description: RTCDP abbreviation for Adobe Real-Time CDP; Adobe context only
+    abbreviation_rules:
+      uppercase_only: true
+      word_boundary: true
+      requires_anchors:
+      - adobe_brand
+      - experience_platform
+      anchors_min: 1
+      anchors_window_tokens: 18
+    match_policy_ref: defaults
+    confidence_threshold: 0.8
+  adobe_customer_journey_analytics:
+    display_name: Adobe Customer Journey Analytics
+    canonical_id: adobe_customer_journey_analytics
+    entity_kind: product
+    family: experience_cloud
+    gliner_label: PRODUCT
+    gliner_description: Adobe Customer Journey Analytics CJA cross-channel analysis reporting insights
+    examples:
+    - Adobe Customer Journey Analytics
+    - Customer Journey Analytics
+    validators:
+    - type: allowlist
+      ref: adobe_products_core
+    match_policy_ref: product
+    confidence_threshold: 0.72
+  cja:
+    display_name: CJA
+    canonical_id: cja
+    normalize_to: adobe_customer_journey_analytics
+    entity_kind: abbreviation
+    family: experience_cloud
+    gliner_label: PRODUCT
+    gliner_description: CJA abbreviation for Customer Journey Analytics; Adobe context only
+    abbreviation_rules:
+      uppercase_only: true
+      word_boundary: true
+      requires_anchors:
+      - adobe_brand
+      - experience_platform
+      anchors_min: 1
+      anchors_window_tokens: 18
+    match_policy_ref: defaults
+    confidence_threshold: 0.8
+  adobe_analytics:
+    display_name: Adobe Analytics
+    canonical_id: adobe_analytics
+    entity_kind: product
+    family: experience_cloud
+    gliner_label: PRODUCT
+    gliner_description: Adobe Analytics web analytics digital measurement reporting insights attribution
+    examples:
+    - Adobe Analytics
+    - Analytics
+    validators:
+    - type: allowlist
+      ref: adobe_products_core
+    match_policy_ref: product
+    confidence_threshold: 0.72
+  adobe_target:
+    display_name: Adobe Target
+    canonical_id: adobe_target
+    entity_kind: product
+    family: experience_cloud
+    gliner_label: PRODUCT
+    gliner_description: Adobe Target A/B testing personalization optimization experimentation recommendations
+    examples:
+    - Adobe Target
+    - Target
+    anti_examples:
+    - target audience
+    - target market
+    - target customer
+    validators:
+    - type: allowlist
+      ref: adobe_products_core
+    - type: requires_anchors
+      ref: adobe_brand
+    match_policy_ref: product
+    confidence_threshold: 0.75
+  adobe_workfront:
+    display_name: Adobe Workfront
+    canonical_id: adobe_workfront
+    entity_kind: product
+    family: experience_cloud
+    gliner_label: PRODUCT
+    gliner_description: Adobe Workfront work management projects tasks planning collaboration workflows
+    examples:
+    - Adobe Workfront
+    - Workfront
+    validators:
+    - type: allowlist
+      ref: adobe_products_core
+    match_policy_ref: product
+    confidence_threshold: 0.72
+  adobe_genstudio:
+    display_name: Adobe GenStudio
+    canonical_id: adobe_genstudio
+    entity_kind: product
+    family: experience_cloud
+    gliner_label: PRODUCT
+    gliner_description: Adobe GenStudio generative AI content creation marketing performance brand
+    examples:
+    - Adobe GenStudio
+    - GenStudio
+    - GenStudio for Performance Marketing
+    validators:
+    - type: allowlist
+      ref: adobe_products_core
+    match_policy_ref: product
+    confidence_threshold: 0.72
+  adobe_marketo_engage:
+    display_name: Adobe Marketo Engage
+    canonical_id: adobe_marketo_engage
+    entity_kind: product
+    family: experience_cloud
+    gliner_label: PRODUCT
+    gliner_description: Adobe Marketo Engage B2B marketing automation lead management nurturing campaigns
+    examples:
+    - Adobe Marketo Engage
+    - Marketo
+    - Marketo Engage
+    validators:
+    - type: allowlist
+      ref: adobe_products_core
+    match_policy_ref: product
+    confidence_threshold: 0.72
+  salesforce:
+    display_name: Salesforce
+    canonical_id: salesforce
+    entity_kind: competitor
+    family: enterprise_platform
+    gliner_label: COMPETITOR
+    gliner_description: Salesforce CRM platform Marketing Cloud Sales Cloud competitor enterprise
+    examples:
+    - Salesforce
+    - Salesforce Marketing Cloud
+    - Sales Cloud
+    validators:
+    - type: allowlist
+      ref: competitors_core
+    match_policy_ref: defaults
+    confidence_threshold: 0.75
+  sfdc:
+    display_name: SFDC
+    canonical_id: sfdc
+    normalize_to: salesforce
+    entity_kind: abbreviation
+    family: enterprise_platform
+    gliner_label: COMPETITOR
+    gliner_description: SFDC abbreviation for Salesforce; business CRM context only
+    abbreviation_rules:
+      uppercase_only: true
+      word_boundary: true
+      requires_anchors:
+      - b2b_marketing
+      anchors_min: 1
+      anchors_window_tokens: 18
+      denylist_ref: ambiguous_abbreviations
+    match_policy_ref: defaults
+    confidence_threshold: 0.82
+adobe_products:
+  experience_cloud:
+    full_names:
+    - Adobe Experience Manager
+    - Adobe Experience Manager Sites
+    - Adobe Experience Manager Assets
+    - Adobe Experience Manager Forms
+    - Adobe Experience Manager Screens
+    - Adobe Analytics
+    - Adobe Target
+    - Adobe Campaign
+    - Adobe Audience Manager
+    - Adobe Experience Platform
+    - Adobe Journey Optimizer
+    - Adobe Real-Time CDP
+    - Adobe Customer Journey Analytics
+    - Adobe Workfront
+    - Adobe Marketo Engage
+    - Adobe Commerce
+    - Adobe Advertising Cloud
+    - Adobe GenStudio
+    - Adobe GenStudio for Performance Marketing
+    - Adobe GenStudio Foundation
+    - Adobe Frame.io
+    - Adobe Express
+    - Adobe Stock
+    - Brand Concierge
+    - Success Studio
+    - Federated Search
+    - Adobe Mix Modeler
+    - Adobe Product Analytics
+    - Adobe Learning Manager
+    - Adobe Journey Optimizer B2B Edition
+    - Adobe Real-Time CDP B2B Edition
+    - Adobe Marketo Measure
+    - Adobe Experience Manager Guides
+    - Adobe Experience Manager Sites Optimizer
+    - Adobe LLM Optimizer
+    - Adobe Experience Manager Edge Delivery Services
+    - Adobe Workfront Planning
+    - Adobe Advertising
+    - Adobe Customer Journey Analytics B2B Edition
+    - Adobe Workfront Workflow
+    - Adobe Brand Concierge
+    - Adobe Content Analytics
+    - Adobe Real-Time CDP Collaboration
+    - Adobe Journey Optimizer Experimentation Accelerator
+    - Adobe Commerce as a Cloud Service
+    - Adobe GenStudio for Content Marketing
+    - Adobe Dynamic Chat
+    abbreviations:
+    - AEM
+    - AEP
+    - AJO
+    - RTCDP
+    - CJA
+    - WF
+    - MKE
+    - AC
+    - GEN
+    - MMM
+    - CJA B2B
+    - RTCDP B2B
+    aliases:
+    - Experience Manager
+    - Experience Platform
+    - Journey Optimizer
+    - Real-Time Customer Data Platform
+    - Customer Journey Analytics
+    - Marketo
+    - Workfront
+    - GenStudio
+    - Frame.io
+    - Express
+    - Stock
+    - Brand Concierge
+    - Federated Search
+    - Mix Modeler
+    - Product Analytics
+    - Learning Manager
+    - AJO B2B Edition
+    - RTCDP B2B Edition
+    - Marketo Measure
+    - LLM Optimizer
+    - Sites Optimizer
+    - AEM Guides
+    - Edge Delivery Services
+    - EDS
+    - Workfront Planning
+    - Adobe Advertising Cloud
+    - Advertising
+    - CJA B2B Edition
+    - Workfront Workflow
+    - Content Analytics
+    - RTCDP Collaboration
+    - AJO Experimentation Accelerator
+    - Commerce as a Cloud Serv.
+    - GenStudio for Content Mktg
+    - Dynamic Chat
+  creative_cloud:
+    full_names:
+    - Adobe Photoshop
+    - Adobe Illustrator
+    - Adobe InDesign
+    - Adobe Premiere Pro
+    - Adobe Premiere (Mobile)
+    - Adobe After Effects
+    - Adobe XD
+    - Adobe Lightroom
+    - Adobe Lightroom Classic
+    - Adobe Acrobat Pro
+    - Adobe Animate
+    - Adobe Audition
+    - Adobe Dimension
+    - Adobe Dreamweaver
+    - Adobe Character Animator
+    - Adobe Fresco
+    - Adobe Substance 3D Designer
+    - Adobe Substance 3D Painter
+    - Adobe Substance 3D Sampler
+    - Adobe Substance 3D Stager
+    - Adobe Firefly
+    - Adobe Express
+    - Adobe Frame.io
+    - Adobe Stock
+    - Adobe InCopy
+    - Adobe Bridge
+    - Adobe Media Encoder
+    - Adobe Capture
+    - Adobe Photoshop Express
+    - Adobe Portfolio
+    - Adobe Fonts
+    - Adobe Color
+    - Adobe Photoshop (web)
+    - Adobe Illustrator (web)
+    - Adobe Lightroom (web)
+    - Adobe Firefly Services
+    - Adobe Firefly Custom Models
+    - Adobe Firefly Foundry
+    - Adobe Firefly Creative Production
+    - Adobe Firefly Design Intelligence
+    abbreviations:
+    - Ps
+    - Ai
+    - Id
+    - Pr
+    - Ae
+    - Lr
+    - LrC
+    - An
+    - Au
+    - Dn
+    - Dw
+    - Ch
+    - Fr
+    - S3D
+    aliases:
+    - Photoshop
+    - Illustrator
+    - InDesign
+    - Premiere
+    - After Effects
+    - Lightroom
+    - Firefly
+    - Express
+    - Frame.io
+    - Stock
+    - InCopy
+    - Bridge
+    - Media Encoder
+    - Capture
+    - Photoshop Express
+    - Portfolio
+    - Fonts
+    - Firefly Services
+    - Firefly Custom Models
+    - Firefly Foundry
+    - Firefly Creative Production
+    - Firefly Design Intelligence
+  document_cloud:
+    full_names:
+    - Adobe Acrobat (Desktop)
+    - Adobe Acrobat (Web)
+    - Adobe Acrobat (Mobile)
+    - Adobe Acrobat Reader
+    - Adobe Acrobat Sign
+    - Adobe Scan
+    - Adobe Document Cloud
+    - Adobe PDF Services API
+    - Adobe Acrobat Standard
+    - Adobe Acrobat Studio
+    - Adobe Acrobat AI Assistant
+    - PDF Spaces
+    - Adobe Acrobat Services
+    abbreviations:
+    - DC
+    - PDF
+    aliases:
+    - Acrobat
+    - Acrobat Reader
+    - Acrobat Sign
+    - PDF Services
+    - Acrobat Standard
+    - Acrobat Studio
+    - Acrobat AI Assistant
+    - Acrobat Services
+adobe_technologies:
+  ai_ml:
+  - Adobe Sensei
+  - Sensei GenAI
+  - Adobe Firefly
+  - Firefly Services
+  - Audience AI
+  - AI Assistant
+  - Generative Fill
+  - Generative Expand
+  - Content Aware Fill
+  - Adobe Firefly Custom Models
+  - Firefly Video Model
+  - Adobe Firefly Services
+  platforms:
+  - Adobe I/O
+  - Adobe Developer Console
+  - Adobe Exchange
+  - Adobe Stock
+  - Adobe Fonts
+  - Creative Cloud Libraries
+  - GenStudio Services
+  - Adobe Experience Platform Edge Network
+  - Adobe Experience Platform Data Collection
+  - Tags
+  - Event Forwarding
+  - Datastreams
+  technical_components:
+  - Experience Data Model
+  - XDM
+  - Edge Network
+  - Data Collection
+  - Offer Decisioning
+  - Content Fragments
+  - Experience Fragments
+  - Launch
+  - Tags
+  - Web SDK
+  - Mobile SDK
+  - Content Supply Chain
+  - Federated Search
+core_concepts:
+- Content Supply Chain
+- CSC
+- Workflows, Planning & Metadata
+- Creation & Production
+- Delivery & Activation
+- Reporting & Insights
+- Digital Experience
+- DXP
+- Customer Data Platform
+- CDP
+- Real-Time Customer Profile
+- Identity Graph
+- Data Governance
+- Headless CMS
+- Digital Asset Management
+- DAM
+- Marketing Automation
+- Omnichannel Marketing
+- Personalization Engine
+- A/B Testing
+- Multivariate Testing
+- Journey Orchestration
+- Campaign Management
+- Lead Scoring
+- Attribution Modeling
+- Customer Journey Mapping
+- Audience Segmentation
+- Predictive Analytics
+- Customer Experience
+- CX
+- Customer Engagement Platform
+- CEP
+- CDN
+- SPA
+- PWA
+- API-First
+- Cloud-Native
+acronyms:
+  adobe_specific:
+    AEM: Adobe Experience Manager
+    AEP: Adobe Experience Platform
+    AJO: Adobe Journey Optimizer
+    CJA: Customer Journey Analytics
+    RTCDP: Real-Time Customer Data Platform
+    DAM: Digital Asset Management
+    XDM: Experience Data Model
+    GEN: Adobe GenStudio
+    CSC: Content Supply Chain
+  general_business:
+    ROI: Return on Investment
+    KPI: Key Performance Indicator
+    SLA: Service Level Agreement
+    API: Application Programming Interface
+    UI: User Interface
+    UX: User Experience
+    B2B: Business-to-Business
+    B2C: Business-to-Consumer
+    SaaS: Software as a Service
+    TCO: Total Cost of Ownership
+    DXP: Digital Experience Platform
+    CEP: Customer Engagement Platform
+    CDN: Content Delivery Network
+    SPA: Single Page Application
+    PWA: Progressive Web App
+    PLG: Product-Led Growth
+    ABM: Account-Based Marketing
+    MQL: Marketing Qualified Lead
+    SQL: Sales Qualified Lead
+    CAC: Customer Acquisition Cost
+    ROAS: Return on Ad Spend
+    NPS: Net Promoter Score
+    CSAT: Customer Satisfaction Score
+    CES: Customer Effort Score
+    CLV: Customer Lifetime Value
+    CLTV: Customer Lifetime Value
+gliner_config:
+  model: gliner-large-v2
+  batch_size: 32
+  use_hybrid_extraction: true
+  llm_fallback_for_types:
+  - adobe_concept
+  context_window: 50
+  default_confidence_threshold: 0.7
+  prefer_vocabulary_lookup: true
+domain_keywords:
+  primary:
+  - Adobe
+  - Experience Cloud
+  - Creative Cloud
+  - Document Cloud
+  - AEM
+  - AEP
+  - GenStudio
+  - Sensei
+  - Firefly
+  - CDP
+  - DXP
+  - Content Supply Chain
+  secondary:
+  - digital experience
+  - customer journey
+  - personalization
+  - omnichannel
+  - headless
+  - composable
+  - edge delivery
+  - real-time
+  - analytics
+  - targeting
+  - orchestration
+quality_indicators:
+  product_specificity:
+    generic: No Adobe product entity detected — content may not be Adobe-specific
+    single_product: One ADOBE_PRODUCT detected — targeted but missing portfolio context
+    portfolio_coverage: Multiple ADOBE_PRODUCT entities across clouds — full portfolio awareness demonstrated
+  solution_alignment:
+    misaligned: Adobe product referenced without use-case context — spec without value connection
+    aligned: ADOBE_PRODUCT paired with business outcome — solution-to-value connection present
+  vocabulary_accuracy:
+    deprecated_name: Deprecated product name detected — update to current FY26 naming convention
+    current_name: Current product name used — FY26 nomenclature compliant

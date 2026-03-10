@@ -1,0 +1,596 @@
+# Discourse Markers and Connectives
+# Based on: DATS (Discourse-Aware Text Simplification) research
+# Source: Niklaus et al. 2023 - Linguistic cue phrases for rhetorical relation detection
+
+_meta:
+  id: discourse_markers_framework
+  title: "Discourse Markers"
+  description: "Linguistic cue phrases and connectives for detecting and using rhetorical relations. Integrates RST frequency analysis (elaboration 25.65%, joint 23.78%, cause 13.42%, temporal 10.75%, condition 8.34%, contrast 8.12%, background 5.14%, evaluation 4.80%) with nucleus-satellite structure and pedagogical applications."
+  domain: narrative
+  domain_type: cross_cutting
+  purpose: methodology
+  version: "1.2.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - PDL for Discourse-Aware Text Simplification.md"
+    - "Corpus/Research/Research - Researching Narrative and Discourse Analysis.md"
+    - "Corpus/Research/Research - Operationalizing Discourse-Aware Text Simplification: A Neuro-Symbolic Methodology Using IBM's Prompt Declaration Language.md"
+    - "Corpus/Research/Structural Paradigms in Natural Language Processing.md"
+
+  relationships:
+    - target: methodology/rst_framework.yaml
+      type: depends_on
+      description: "Both model discourse structure; RST relations classify discourse marker functions"
+
+# ==============================================================================
+# RHETORICAL RELATIONS OVERVIEW
+# ==============================================================================
+
+rhetorical_relations_overview:
+  description: "Eight core RST relations identified in discourse analysis, with frequency distributions from corpus analysis and nucleus-satellite structure definitions."
+
+  elaboration:
+    frequency: "25.65%"
+    definition: "Satellite provides specification, example, or detail about nucleus content"
+    nucleus_satellite: "nucleus = main claim, satellite = supporting detail"
+    common_markers: ["specifically", "in particular", "for example", "namely", "that is", "in other words"]
+    typical_contexts: ["relative clauses", "appositives", "parenthetical remarks", "examples and specifications"]
+    pedagogical_value: "Helps readers understand abstract concepts through concrete examples; critical for novice-oriented content"
+    extraction_tip: "Look for markers that introduce examples, definitions, or clarifications"
+
+  joint:
+    frequency: "23.78%"
+    definition: "Two or more nuclei of equal weight linked without explicit hierarchy"
+    nucleus_satellite: "dual nuclei (no satellite)"
+    common_markers: ["and", "also", "additionally", "furthermore", "moreover", "as well as", "in addition"]
+    typical_contexts: ["coordinate clauses", "bullet lists", "enumerated features", "parallel structure"]
+    pedagogical_value: "Natural way to enumerate benefits, features, or reasons; supports scanning and list comprehension"
+    extraction_tip: "Look for coordinate conjunctions and additive markers; check for parallel grammatical structure"
+
+  cause:
+    frequency: "13.42%"
+    definition: "Satellite provides reason, purpose, or enabling condition that leads to nucleus result"
+    nucleus_satellite: "nucleus = result/consequence, satellite = reason/cause"
+    common_markers: ["because", "since", "as", "due to", "given that", "thanks to", "therefore", "thus", "consequently", "as a result", "so"]
+    typical_contexts: ["causal chains", "goal-oriented narratives", "problem-solution structures", "decision justification"]
+    pedagogical_value: "Essential for explaining why decisions were made; supports cause-effect reasoning and business justification"
+    extraction_tip: "Look for 'because/since + reason' or 'therefore + consequence' patterns"
+
+  temporal:
+    frequency: "10.75%"
+    definition: "Satellite establishes time sequence or simultaneous timing relative to nucleus event"
+    nucleus_satellite: "nucleus = main event, satellite = time reference"
+    common_markers: ["when", "after", "before", "until", "during", "while", "then", "next", "finally", "subsequently", "following"]
+    typical_contexts: ["step-by-step procedures", "chronological narratives", "project timelines", "process sequences"]
+    pedagogical_value: "Critical for procedure-heavy content; guides learners through sequential understanding"
+    extraction_tip: "Look for time markers and tense sequences; temporal markers often appear at clause boundaries"
+
+  condition:
+    frequency: "8.34%"
+    definition: "Satellite establishes prerequisite, constraint, or enabling assumption for nucleus content"
+    nucleus_satellite: "nucleus = main claim, satellite = prerequisite/constraint"
+    common_markers: ["if", "unless", "provided that", "assuming", "in case"]
+    typical_contexts: ["decision-making scenarios", "conditional statements", "feature limitations", "edge cases"]
+    pedagogical_value: "Essential for decision trees and scenario-based learning; clarifies when rules apply"
+    extraction_tip: "Look for 'if...then' or 'unless...will' conditional structures"
+
+  contrast:
+    frequency: "8.12%"
+    definition: "Two nuclei or nucleus-satellite present opposing, contradictory, or surprising relationship"
+    nucleus_satellite: "typically dual nuclei or nucleus + contrasting satellite"
+    common_markers: ["but", "however", "nevertheless", "yet", "on the other hand", "although", "though", "even though", "while", "whereas", "in contrast", "conversely", "unlike"]
+    typical_contexts: ["trade-offs", "misconception correction", "competitive comparison", "expectation violation"]
+    pedagogical_value: "Powerful for addressing misconceptions and highlighting trade-offs; supports critical thinking"
+    extraction_tip: "Look for markers signaling opposition and check for antonym or contradiction patterns"
+
+  background:
+    frequency: "5.14%"
+    definition: "Satellite provides contextual setting, historical information, or prerequisite knowledge for nucleus"
+    nucleus_satellite: "nucleus = main focus, satellite = background context"
+    common_markers: ["Before, X happened", "Originally, Y was true", "Historically, Z existed", "In the past"]
+    typical_contexts: ["case study background", "historical context", "competitive landscape", "market conditions"]
+    pedagogical_value: "Orients learners to context; supports case study and scenario-based content"
+    extraction_tip: "Look for past-tense statements that frame the main narrative"
+
+  evaluation:
+    frequency: "4.80%"
+    definition: "Satellite provides author's assessment, judgment, or evaluation of nucleus content"
+    nucleus_satellite: "nucleus = fact/claim, satellite = author's evaluation"
+    common_markers: ["Importantly", "Notably", "Significantly", "This is critical because", "This reveals"]
+    typical_contexts: ["emphasis of key points", "normative judgment", "assessment of impact", "prioritization"]
+    pedagogical_value: "Guides learners to focus on what matters; supports value-based narratives (sales, strategy)"
+    extraction_tip: "Look for adjectives like 'critical', 'important', 'significant' and author commentary"
+
+# Causal Discourse Markers
+causal_markers:
+  reason_markers:
+    - marker: "because"
+      relation: "cause"
+      position: "subordinate_initial"  # "Because X, Y"
+      nucleus_satellite: "satellite = reason, nucleus = result"
+      pedagogical_note: "Simplest causal marker; use in novice-oriented content for cause-effect clarity"
+      research_citation: "RST Discourse Treebank, Niklaus et al. 2023"
+      example: "Because we invested, we succeeded"
+
+    - marker: "since"
+      relation: "cause"
+      position: "subordinate_initial"
+      nucleus_satellite: "satellite = reason, nucleus = result"
+      ambiguity: "temporal"  # Can mean time ("since 1990") or reason ("since you asked")
+      disambiguation: "Check for time expression; if absent, likely causal"
+      pedagogical_note: "Ambiguous; clarify with context. Use 'because' instead for clarity in learning content"
+      research_citation: "DATS framework"
+      example: "Since we have the budget, we should proceed"
+
+    - marker: "as"
+      relation: "cause"
+      position: "subordinate_initial"
+      nucleus_satellite: "satellite = reason, nucleus = result"
+      ambiguity: "temporal, manner"
+      pedagogical_note: "Highly ambiguous; avoid in formal instruction. Prefer 'because' or 'since'"
+      research_citation: "RST Discourse Treebank"
+      example: "As demand increased, we expanded"
+
+    - marker: "due to"
+      relation: "cause"
+      position: "phrase"
+      nucleus_satellite: "satellite = reason (nominalised), nucleus = result"
+      formality: "formal"
+      pedagogical_note: "Professional tone; use in business/technical content. Clear noun phrase structure aids understanding"
+      research_citation: "DATS framework"
+      example: "Due to market demand, we expanded"
+
+    - marker: "given that"
+      relation: "cause"
+      position: "subordinate_initial"
+      nucleus_satellite: "satellite = reason/assumption, nucleus = consequence"
+      formality: "formal"
+      pedagogical_note: "Formal and precise; use when stating assumptions in decision-making scenarios"
+      research_citation: "RST Discourse Treebank"
+      example: "Given that costs are rising, we must optimize"
+
+    - marker: "thanks to"
+      relation: "cause"
+      position: "phrase"
+      nucleus_satellite: "satellite = positive reason, nucleus = favorable result"
+      valence: "positive"  # Implies positive outcome
+      pedagogical_note: "Carries positive emotional charge; use in motivation and success narrative contexts"
+      research_citation: "RST Discourse Treebank"
+      example: "Thanks to our team, we delivered on time"
+
+  consequence_markers:
+    - marker: "therefore"
+      relation: "cause"
+      position: "main_initial"  # "X; therefore, Y"
+      nucleus_satellite: "nucleus = consequence, satellite = prior cause"
+      formality: "formal"
+      pedagogical_note: "Classical logical connector; use in formal arguments and decision-justification narratives"
+      research_citation: "RST Discourse Treebank"
+      example: "Costs increased; therefore, we adjusted pricing"
+
+    - marker: "thus"
+      relation: "cause"
+      position: "main_initial"
+      nucleus_satellite: "nucleus = consequence, satellite = prior cause"
+      formality: "formal"
+      pedagogical_note: "Synonym for 'therefore' with slightly stronger logical finality; use in conclusions"
+      research_citation: "RST Discourse Treebank"
+      example: "Revenue declined; thus, we pivoted strategy"
+
+    - marker: "consequently"
+      relation: "cause"
+      position: "main_initial"
+      nucleus_satellite: "nucleus = consequence, satellite = prior cause"
+      formality: "formal"
+      pedagogical_note: "Emphasizes inevitable consequence; use when outcome is deterministic"
+      research_citation: "DATS framework"
+      example: "Demand surged; consequently, we scaled operations"
+
+    - marker: "as a result"
+      relation: "cause"
+      position: "main_initial"
+      nucleus_satellite: "nucleus = result (effect), satellite = prior action/condition"
+      pedagogical_note: "Conversational yet clear; use in professional content where 'therefore' feels too formal"
+      research_citation: "RST Discourse Treebank"
+      example: "We invested in R&D; as a result, innovation accelerated"
+
+    - marker: "so"
+      relation: "cause"
+      position: "main_initial"
+      nucleus_satellite: "nucleus = consequence, satellite = prior cause"
+      formality: "informal"
+      pedagogical_note: "Casual and natural; effective in conversational learning (interviews, case studies, storytelling)"
+      research_citation: "RST Discourse Treebank"
+      example: "We had excess capacity, so we took on new clients"
+
+# Adversative (Contrastive) Discourse Markers
+adversative_markers:
+  direct_contrast:
+    - marker: "but"
+      relation: "contrast"
+      position: "coordinate"  # Links two clauses of equal weight
+      nucleus_satellite: "typically dual nuclei of equal weight"
+      pedagogical_note: "Most natural contrast marker; use in conversational content. Signals expectation violation—powerful for learning"
+      research_citation: "RST Discourse Treebank"
+      example: "Revenue increased, but costs also rose"
+
+    - marker: "however"
+      relation: "contrast"
+      position: "main_initial"
+      nucleus_satellite: "nucleus = main point, satellite = counter-point"
+      formality: "formal"
+      pedagogical_note: "Formal register; use in professional business content. Reader expects contradiction before marker appears"
+      research_citation: "RST Discourse Treebank, DATS framework"
+      example: "We improved speed. However, quality declined"
+
+    - marker: "nevertheless"
+      relation: "contrast"
+      position: "main_initial"
+      nucleus_satellite: "nucleus = action despite obstacle, satellite = obstacle"
+      formality: "formal"
+      pedagogical_note: "Emphasizes persistence despite contradiction; use in determination/resilience narratives"
+      research_citation: "RST Discourse Treebank"
+      example: "Costs are high. Nevertheless, we will proceed"
+
+    - marker: "yet"
+      relation: "contrast"
+      position: "coordinate"
+      nucleus_satellite: "typically dual nuclei of equal weight"
+      pedagogical_note: "Synonym for 'but' with slightly more formal tone; use when contrast surprises reader"
+      research_citation: "RST Discourse Treebank"
+      example: "We invested heavily, yet results were modest"
+
+    - marker: "on the other hand"
+      relation: "contrast"
+      position: "main_initial"
+      nucleus_satellite: "nucleus = second perspective, satellite = first perspective (implicit)"
+      pedagogical_note: "Signals balanced comparison; use when presenting multiple perspectives (comparative analysis)"
+      research_citation: "RST Discourse Treebank"
+      example: "Product A succeeded. On the other hand, Product B failed"
+
+  concession:
+    - marker: "although"
+      relation: "contrast"
+      position: "subordinate_initial"
+      example: "Although expensive, the product succeeded"
+
+    - marker: "though"
+      relation: "contrast"
+      position: "subordinate_initial"
+      formality: "informal"
+      example: "Though challenging, we completed the project"
+
+    - marker: "even though"
+      relation: "contrast"
+      position: "subordinate_initial"
+      emphasis: "strong"
+      example: "Even though we warned them, they proceeded"
+
+    - marker: "while"
+      relation: "contrast"
+      position: "subordinate_initial"
+      ambiguity: "temporal"  # Can mean time or contrast
+      example: "While we succeeded in sales, we failed in retention"
+
+    - marker: "whereas"
+      relation: "contrast"
+      position: "subordinate_initial"
+      formality: "formal"
+      example: "Product A is expensive, whereas Product B is affordable"
+
+  comparison:
+    - marker: "in contrast"
+      relation: "contrast"
+      position: "main_initial"
+      example: "Product A succeeded. In contrast, Product B failed"
+
+    - marker: "conversely"
+      relation: "contrast"
+      position: "main_initial"
+      formality: "formal"
+      example: "Costs increased. Conversely, efficiency improved"
+
+    - marker: "unlike"
+      relation: "contrast"
+      position: "phrase"
+      example: "Unlike our competitors, we offer free support"
+
+# Additive Discourse Markers
+additive_markers:
+  expansion:
+    - marker: "and"
+      relation: "joint"
+      position: "coordinate"
+      example: "We improved speed and we reduced costs"
+
+    - marker: "also"
+      relation: "joint"
+      position: "main_internal"
+      example: "We increased revenue. We also reduced costs"
+
+    - marker: "additionally"
+      relation: "joint"
+      position: "main_initial"
+      formality: "formal"
+      example: "We hired engineers. Additionally, we expanded R&D"
+
+    - marker: "furthermore"
+      relation: "joint"
+      position: "main_initial"
+      formality: "formal"
+      example: "Revenue grew. Furthermore, profitability improved"
+
+    - marker: "moreover"
+      relation: "joint"
+      position: "main_initial"
+      formality: "formal"
+      example: "We met targets. Moreover, we exceeded expectations"
+
+    - marker: "as well as"
+      relation: "joint"
+      position: "coordinate"
+      example: "We offer support as well as training"
+
+    - marker: "in addition"
+      relation: "joint"
+      position: "main_initial"
+      example: "We launched Product A. In addition, we updated Product B"
+
+  elaboration:
+    - marker: "specifically"
+      relation: "elaboration"
+      position: "main_initial"
+      example: "We improved performance. Specifically, we reduced latency by 30%"
+
+    - marker: "in particular"
+      relation: "elaboration"
+      position: "main_initial"
+      example: "We focus on enterprise clients. In particular, we target Fortune 500 companies"
+
+    - marker: "for example"
+      relation: "elaboration"
+      position: "main_initial"
+      example: "We serve diverse industries. For example, we work with healthcare and finance"
+
+    - marker: "namely"
+      relation: "elaboration"
+      position: "phrase"
+      formality: "formal"
+      example: "We offer three tiers, namely Basic, Pro, and Enterprise"
+
+    - marker: "that is"
+      relation: "elaboration"
+      position: "main_initial"
+      example: "We focus on ROI, that is, return on investment"
+
+    - marker: "in other words"
+      relation: "elaboration"
+      position: "main_initial"
+      example: "We prioritize velocity. In other words, we ship fast"
+
+# ==============================================================================
+# ENRICHMENT NOTE (v1.0.0 → v1.1.0)
+# ==============================================================================
+# Enhanced with nucleus_satellite structure, pedagogical_note, and research_citation
+# fields across causal, adversative, and temporal marker sections. Rhetorical_relations_overview
+# section added with RST frequency data and extraction guidance. See metadata for research sources.
+#
+
+# Temporal Discourse Markers
+temporal_markers:
+  sequence:
+    - marker: "when"
+      relation: "temporal"
+      position: "subordinate_initial"
+      nucleus_satellite: "satellite = temporal trigger, nucleus = event"
+      pedagogical_note: "Simple and clear; use in procedures and step-by-step narratives to anchor timing"
+      research_citation: "RST Discourse Treebank"
+      example: "When we launched the product, demand surged"
+
+    - marker: "after"
+      relation: "temporal"
+      position: "subordinate_initial"
+      nucleus_satellite: "satellite = preceding event, nucleus = subsequent event"
+      sequence: "posterior"  # Event B happens after Event A
+      pedagogical_note: "Essential for procedure documentation and project timelines; establishes causality through sequence"
+      research_citation: "RST Discourse Treebank"
+      example: "After completing the pilot, we scaled deployment"
+
+    - marker: "before"
+      relation: "temporal"
+      position: "subordinate_initial"
+      nucleus_satellite: "satellite = future event/condition, nucleus = prior action"
+      sequence: "anterior"  # Event B happens before Event A
+      pedagogical_note: "Use for prerequisites and preparation steps in learning sequences"
+      research_citation: "RST Discourse Treebank"
+      example: "Before launching, we validated the market"
+
+    - marker: "until"
+      relation: "temporal"
+      position: "subordinate_initial"
+      nucleus_satellite: "satellite = endpoint/condition, nucleus = iterative action"
+      pedagogical_note: "Use for iterative processes, loops, and convergence narratives (repeat until success)"
+      research_citation: "DATS framework"
+      example: "We tested until we achieved 99% reliability"
+
+    - marker: "while"
+      relation: "temporal"
+      position: "subordinate_initial"
+      nucleus_satellite: "satellite = simultaneous event, nucleus = main event"
+      ambiguity: "contrast"  # Can mean during or contrastive
+      pedagogical_note: "Ambiguous; context determines meaning (simultaneous vs contrastive). Clarify with explicit contrast markers if needed"
+      research_citation: "RST Discourse Treebank"
+      example: "While we developed Product A, we maintained Product B"
+
+    - marker: "during"
+      relation: "temporal"
+      position: "phrase"
+      nucleus_satellite: "satellite = time period (nominalised), nucleus = event"
+      pedagogical_note: "Nominalised form; use in reports and formal documentation for temporal context"
+      research_citation: "RST Discourse Treebank"
+      example: "During Q3, we expanded operations"
+
+  sequencing:
+    - marker: "first"
+      relation: "temporal"
+      position: "main_initial"
+      sequence: "initial"
+      example: "First, we identified the problem"
+
+    - marker: "then"
+      relation: "temporal"
+      position: "main_initial"
+      sequence: "subsequent"
+      example: "We analyzed the data, then we formulated a solution"
+
+    - marker: "next"
+      relation: "temporal"
+      position: "main_initial"
+      sequence: "subsequent"
+      example: "Next, we validated assumptions with customers"
+
+    - marker: "finally"
+      relation: "temporal"
+      position: "main_initial"
+      sequence: "terminal"
+      example: "Finally, we deployed the solution"
+
+    - marker: "subsequently"
+      relation: "temporal"
+      position: "main_initial"
+      formality: "formal"
+      example: "We launched in the US. Subsequently, we expanded to Europe"
+
+    - marker: "following"
+      relation: "temporal"
+      position: "phrase"
+      example: "Following the acquisition, we integrated systems"
+
+# Restatement Discourse Markers
+restatement_markers:
+  - marker: "in other words"
+    relation: "elaboration"
+    function: "paraphrase"
+    example: "We need agility. In other words, we need to adapt quickly"
+
+  - marker: "that is to say"
+    relation: "elaboration"
+    function: "clarification"
+    formality: "formal"
+    example: "We prioritize NPS, that is to say, Net Promoter Score"
+
+  - marker: "to put it differently"
+    relation: "elaboration"
+    function: "alternative_formulation"
+    example: "Revenue grew 20%. To put it differently, we added $2M in ARR"
+
+  - marker: "in essence"
+    relation: "elaboration"
+    function: "summary"
+    example: "We improved speed, reduced cost, and increased quality. In essence, we optimized operations"
+
+# Attribution Discourse Markers
+attribution_markers:
+  reporting_verbs:
+    - marker: "according to"
+      relation: "attribution"
+      formality: "formal"
+      example: "According to Gartner, the market will grow 15%"
+
+    - marker: "says"
+      relation: "attribution"
+      formality: "informal"
+      example: "The CEO says revenue will double"
+
+    - marker: "claims"
+      relation: "attribution"
+      epistemic_stance: "neutral_to_skeptical"
+      example: "The vendor claims 99.9% uptime"
+
+    - marker: "reports"
+      relation: "attribution"
+      formality: "formal"
+      example: "IDC reports enterprise adoption is accelerating"
+
+    - marker: "stated"
+      relation: "attribution"
+      formality: "formal"
+      example: "The CFO stated that margins improved"
+
+    - marker: "announced"
+      relation: "attribution"
+      formality: "formal"
+      example: "Microsoft announced the acquisition"
+
+    - marker: "believes"
+      relation: "attribution"
+      epistemic_stance: "opinion"
+      example: "Analysts believe the trend will continue"
+
+# Conditional Discourse Markers
+conditional_markers:
+  - marker: "if"
+    relation: "condition"
+    position: "subordinate_initial"
+    example: "If we invest in AI, we will gain competitive advantage"
+
+  - marker: "unless"
+    relation: "condition"
+    position: "subordinate_initial"
+    polarity: "negative"
+    example: "Unless we act, we will lose market share"
+
+  - marker: "provided that"
+    relation: "condition"
+    position: "subordinate_initial"
+    formality: "formal"
+    example: "We will proceed, provided that funding is secured"
+
+  - marker: "assuming"
+    relation: "condition"
+    position: "phrase"
+    example: "Assuming demand holds, we will expand capacity"
+
+  - marker: "in case"
+    relation: "condition"
+    position: "subordinate_initial"
+    example: "In case demand surges, we have contingency plans"
+
+# Discourse Marker Ambiguity Resolution
+ambiguity_resolution:
+  since:
+    temporal_context: "Followed by time expression (year, date, duration)"
+    causal_context: "Followed by proposition without time reference"
+    example_temporal: "Since 1990, we have grown 10x"
+    example_causal: "Since we have the resources, we should proceed"
+
+  while:
+    temporal_context: "Describes simultaneous events"
+    contrastive_context: "Describes opposing situations"
+    example_temporal: "While we developed Product A, we maintained Product B"
+    example_contrastive: "While Product A succeeded, Product B failed"
+
+  as:
+    temporal_context: "Describes simultaneous events"
+    causal_context: "Provides reason"
+    manner_context: "Describes how something is done"
+    example_temporal: "As we scaled, costs increased"
+    example_causal: "As demand increased, we expanded"
+    example_manner: "We executed as planned"
+
+# Presentation-Specific Marker Usage
+presentation_context:
+  slide_transitions:
+    sequential: ["first", "second", "then", "next", "finally"]
+    contrastive: ["but", "however", "on the other hand"]
+    additive: ["also", "additionally", "furthermore"]
+
+  common_patterns:
+    problem_solution: "We faced X (problem). Therefore, we implemented Y (solution)"
+    benefit_enumeration: "First, benefit A. Second, benefit B. Finally, benefit C"
+    before_after: "Before, situation X. After, situation Y. Therefore, improvement Z"
+
+  pedagogical_guidance:
+    explicit_markers: "Use explicit discourse markers to aid non-expert comprehension"
+    consistency: "Use consistent markers within a slide deck (formal vs informal)"
+    redundancy: "Combine linguistic markers with visual cues (arrows, icons) for clarity"

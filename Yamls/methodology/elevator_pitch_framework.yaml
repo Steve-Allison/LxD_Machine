@@ -1,0 +1,464 @@
+# ==============================================================================
+# Elevator Pitch Framework
+# Research-validated structure for 30-60 second persuasive pitches
+# ==============================================================================
+
+_meta:
+  id: elevator_pitch_framework
+  title: "Elevator Pitch Framework"
+  description: "Six-phase structure for 30-60 second persuasive pitches with duration specs, persuasion taxonomy, rhetorical appeals, detection patterns, and preparation inputs."
+  domain: narrative
+  domain_type: workflow
+  purpose: methodology
+  version: "1.4.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Best-Practice Elevator Pitches.md"
+    - "Corpus/Research/Research - Canonical Presentation Methodology Research.md"
+  relationships:
+# ==============================================================================
+# DURATION SPECIFICATIONS
+# ==============================================================================
+
+duration:
+  spoken:
+    min_seconds: 30
+    max_seconds: 60
+    research_basis: "Standard elevator pitch constraint - captures attention within one elevator ride"
+  written:
+    min_words: 100
+    max_words: 150
+    research_basis: "Written pitch length at average speaking rate of 150 WPM"
+
+# ==============================================================================
+# PHASE DEFINITIONS
+# ==============================================================================
+
+phases:
+  hook:
+    order: 1
+    name: "Hook & Introduction"
+    required: true
+    purpose: "Capture immediate attention and establish who you are"
+    techniques:
+      - "Startling statistic"
+      - "Provocative question"
+      - "Bold claim"
+      - "Relatable scenario"
+    detection_patterns:
+      - "Did you know"
+      - "What if"
+      - "Imagine"
+      - "Every day"
+      - "I help"
+    quality_criteria:
+      - "Grabs attention in first 5 seconds"
+      - "Relevant to audience's world"
+      - "Creates curiosity or urgency"
+    cognitive_threshold:
+      max_seconds_to_engagement: 3
+      basis: "3-Second Rule — main takeaway must be cognitively accessible within 3 seconds of delivery onset"
+      research_source: "Canonical Presentation Lifecycle, Section 6.1"
+
+  problem:
+    order: 2
+    name: "Problem Statement"
+    required: true
+    purpose: "Define the pain point or gap your audience faces"
+    max_sentences: 1
+    techniques:
+      - "Quantify the cost of the problem"
+      - "Make it personal to the audience"
+      - "Use concrete language, not abstractions"
+      - "Anchor with one agreed-upon fact before stating the problem (SCQA Situation) to reduce audience defensiveness"
+    narrative_role: "Creates tension by rendering the status quo untenable — a necessary precondition for engagement (SCQA Complication mechanism)"
+    research_basis_narrative: "Canonical Presentation Lifecycle, Section 4.1.2"
+    detection_patterns:
+      - "The problem is"
+      - "Most companies struggle with"
+      - "The challenge"
+      - "are losing"
+      - "waste"
+      - "without"
+    quality_criteria:
+      - "Clearly defined in one sentence"
+      - "Audience-relevant (their problem, not yours)"
+      - "Creates urgency"
+    research_basis: "Constraint of 1 sentence enforces clarity and brevity"
+
+  solution:
+    order: 3
+    name: "Solution & Value Proposition"
+    required: true
+    purpose: "Present your solution and its primary benefit"
+    max_sentences: 2
+    techniques:
+      - "Lead with the outcome, not the feature"
+      - "Use active, specific language"
+      - "Frame as transformation (before → after)"
+      - "State the solution outcome first (BLUF — Bottom Line Up Front) so subsequent evidence reads as proof, not build-up (Pyramid Principle, McKinsey/Minto)"
+    detection_patterns:
+      - "We help"
+      - "Our solution"
+      - "enables"
+      - "delivers"
+      - "transforms"
+      - "reduces"
+      - "increases"
+    quality_criteria:
+      - "Directly addresses the stated problem"
+      - "Outcome-focused, not feature-focused"
+      - "Specific and concrete"
+    research_basis: "1-2 sentence constraint enforces focus on core value"
+
+  differentiators:
+    order: 4
+    name: "Uniqueness / Differentiators"
+    required: false
+    purpose: "Explain what makes your approach distinct"
+    techniques:
+      - "Unlike X, we Y"
+      - "The only solution that..."
+      - "Patent-pending / proprietary approach"
+    detection_patterns:
+      - "Unlike"
+      - "The only"
+      - "What makes us different"
+      - "No one else"
+      - "unique"
+    quality_criteria:
+      - "Defensible claim (not generic)"
+      - "Relevant to the audience's decision criteria"
+
+  evidence:
+    order: 5
+    name: "Evidence & Credibility"
+    required: false
+    purpose: "Build trust with proof points"
+    techniques:
+      - "Quantitative metrics (percentages, dollar amounts)"
+      - "Customer testimonials or logos"
+      - "Case study snapshots"
+      - "Awards, certifications, backing"
+    detection_patterns:
+      - "percent"
+      - "customers"
+      - "proven"
+      - "awarded"
+      - "backed by"
+      - "trusted by"
+    quality_criteria:
+      - "Specific numbers, not vague claims"
+      - "Recent and relevant evidence"
+      - "From credible, recognizable sources"
+      - "Evidence must visibly prove the stated solution claim — if evidence does not support the claim, the pitch is logically invalid (Dot-Dash Rule)"
+      - "Address the primary counterargument or risk dimension, not just the most favorable data point (MECE Collectively Exhaustive)"
+
+  call_to_action:
+    order: 6
+    name: "Call to Action"
+    required: true
+    purpose: "Provide a specific, low-friction next step"
+    techniques:
+      - "Offer to send a summary"
+      - "Suggest a brief meeting"
+      - "Provide a demo link"
+      - "Exchange contact information"
+    detection_patterns:
+      - "Can I send you"
+      - "Would you be open to"
+      - "Let's schedule"
+      - "Here's my card"
+      - "I'd love to show you"
+    quality_criteria:
+      - "Specific and concrete next step"
+      - "Low friction (easy to say yes)"
+      - "Time-bound when possible"
+      - "Names a specific observable behavioral action (e.g., 'Schedule a 30-min demo by Friday') — vague goals ('Learn more', 'Consider this') fail the behavioral specificity test"
+    research_basis: "Nudge theory - make desired action feel natural and easy"
+    effectiveness_metric:
+      primary: "behavioral_change"
+      framework: "Kirkpatrick Level 3 (adapted)"
+      rationale: "Positive sentiment (Level 1) or comprehension (Level 2) without behavioral action constitutes pitch failure — the CTA is the only measurable success criterion"
+      research_source: "Canonical Presentation Lifecycle, Section 6.3"
+
+# ==============================================================================
+# VALIDATION RULES
+# ==============================================================================
+
+validation:
+  phase_completeness:
+    description: "Required phases must be present for a complete elevator pitch"
+    required_phases: ["hook", "problem", "solution", "call_to_action"]
+    optional_phases: ["differentiators", "evidence"]
+    minimum_phases: 4
+    ideal_phases: 6
+
+  duration_check:
+    description: "Total pitch should fit within duration constraints"
+    warning_over_seconds: 60
+    error_over_seconds: 90
+
+  cognitive_load:
+    max_core_ideas: 1
+    description: "If you try to say everything, you say nothing"
+    research_basis: "Cognitive Load Theory - minimize intrinsic load through single core message"
+
+# ==============================================================================
+# PERSUASION TAXONOMY
+# ==============================================================================
+
+persuasion_taxonomy:
+  nudge_theory:
+    description: "Make the desired next step feel natural and effortless"
+    application: "Low-friction CTAs, default options, social proof"
+    research_basis: "Thaler & Sunstein (2008) - Nudge: choice architecture"
+
+  framing_effect:
+    gain_framing:
+      description: "Emphasize what the audience gains by acting"
+      keywords: ["save", "gain", "boost", "increase", "unlock"]
+    loss_framing:
+      description: "Emphasize what the audience loses by not acting"
+      keywords: ["losing", "waste", "miss", "risk", "cost of inaction"]
+    research_basis: "Kahneman & Tversky (1979) - Prospect theory: loss aversion is 2x stronger than gain"
+
+  rhetorical_appeals:
+    ethos:
+      description: "Credibility and trustworthiness"
+      signals: ["expertise", "track record", "certifications", "testimonials"]
+    pathos:
+      description: "Emotional connection through story and empathy"
+      signals: ["relatable scenario", "shared frustration", "aspirational vision"]
+      think_feel_do_basis: "Emotional state (Feel) is prerequisite for behavioral action (Do); pitches addressing only rational belief without resolving emotional blockers fail to produce CTA behavior"
+      research_source: "Canonical Presentation Lifecycle, Section 3.1.1"
+    logos:
+      description: "Logic through facts, data, and evidence"
+      signals: ["statistics", "case studies", "ROI calculations", "benchmarks"]
+    research_basis: "Aristotle's three modes of persuasion"
+
+  scqa_narrative:
+    full_name: "Situation-Complication-Question-Answer"
+    mechanism: "Creates narrative tension via a complication that renders the status quo untenable, then resolves with the pitch answer"
+    origin: "McKinsey Pyramid Principle; Barbara Minto (1987)"
+    pitch_phase_mapping: "Situation → hook/context, Complication → problem, Answer → solution (BLUF)"
+    research_source: "Canonical Presentation Lifecycle, Section 4.1"
+
+  alternative_frameworks:
+    aida:
+      full_name: "Attention, Interest, Desire, Action"
+      best_for: "Sales-heavy or marketing pitches where the goal is immediate transactional conversion"
+      research_source: "Canonical Presentation Lifecycle, Section 4.2"
+    freytags_pyramid:
+      full_name: "Dramatic Model (Exposition, Rising Action, Climax, Falling Action, Denouement)"
+      best_for: "Visionary or change-management pitches requiring emotional catharsis"
+      research_source: "Canonical Presentation Lifecycle, Section 4.2"
+    what_so_what_now_what:
+      description: "Simplified three-part structure for agile or crisis-context pitches"
+      best_for: "Brief updates, crisis communication, rapid stakeholder alignment"
+      research_source: "Canonical Presentation Lifecycle, Section 4.2"
+
+# ==============================================================================
+# PITCH MODES
+# ==============================================================================
+
+pitch_modes:
+  value_driven:
+    description: "Lead with outcomes, benefits, and business impact"
+    recommended: true
+    audience: "Decision-makers, executives, non-technical stakeholders"
+    structure_emphasis: "problem → outcome → evidence"
+    research_basis: "Value-driven pitches resonate more broadly across stakeholder types"
+
+  technical:
+    description: "Lead with features, specifications, and implementation details"
+    recommended: false
+    audience: "Technical evaluators, architects, developers"
+    structure_emphasis: "problem → approach → specifications"
+    note: "Use only when audience is confirmed technical; always tie back to business value"
+
+# ==============================================================================
+# PREPARATION INPUTS
+# ==============================================================================
+
+preparation_inputs:
+  required:
+    - id: "audience_profile"
+      description: "Who are you pitching to? Role, concerns, decision authority"
+      framework: "Audience Transformation Roadmap (Know/Believe/Feel/Do)"
+      dimensions:
+        know:
+          point_a: "What facts, data, or misinformation do they currently hold?"
+          point_b: "What specific information must they retain to justify the decision?"
+          gap_type: "Information Gap — debunk false priors before building new knowledge"
+        believe:
+          point_a: "What representational models or biases guide their thinking?"
+          point_b: "What new conviction must they adopt?"
+          gap_type: "Persuasion Gap — beliefs require narrative to shift, not data alone"
+        feel:
+          point_a: "What is the current emotional climate? (Anxiety, Apathy, Skepticism)"
+          point_b: "What emotional state facilitates action? (Confidence, Urgency)"
+          gap_type: "Emotional Gap — prerequisite for behavioral action"
+        do:
+          point_a: "What are their current behaviors or blockers?"
+          point_b: "What specific physical or digital action is required?"
+          gap_type: "Behavioral Gap — ultimate KPI of the pitch"
+      research_source: "Canonical Presentation Lifecycle, Section 3.1; Ideas on Stage Audience Transformation Roadmap"
+    - id: "delivery_context"
+      description: "What format is this pitch? Determines density, pacing, and modality"
+      options:
+        ballroom: "Large audience, keynote-style — maximize emotional resonance, minimize data density"
+        boardroom: "Small group — maximize logos, tolerate higher data density; written format viable"
+        hybrid: "Mixed live and remote — modular, simplified visuals, assume partial attention"
+      research_source: "Canonical Presentation Lifecycle, Section 3.2"
+    - id: "problem_definition"
+      description: "What specific problem does your audience face?"
+    - id: "solution_value_prop"
+      description: "What is your solution and its primary benefit?"
+    - id: "call_to_action"
+      description: "What specific next step do you want? (Must be a specific observable behavior, not a vague goal)"
+  recommended:
+    - id: "differentiators"
+      description: "What makes your approach unique?"
+    - id: "evidence"
+      description: "What proof points support your claims?"
+    - id: "emotional_rational_appeals"
+      description: "What emotional hook and logical proof will you use?"
+    - id: "psychological_framing"
+      description: "Gain frame or loss frame? Nudge or urgency?"
+    - id: "stakeholder_map"
+      description: "Identify decision-makers, blockers (who loses power if you succeed?), and champions (who gains?) beyond the primary audience"
+      research_source: "Canonical Presentation Lifecycle, Section 3.2"
+
+# ==============================================================================
+# USE CASE SUITABILITY
+# ==============================================================================
+
+use_cases:
+  high_suitability:
+    - "Networking events and conferences"
+    - "Investor meetings"
+    - "Sales prospecting conversations"
+    - "Job interviews"
+    - "Internal project pitches"
+
+  moderate_suitability:
+    - "Email introductions"
+    - "LinkedIn connection messages"
+    - "Panel introductions"
+
+  low_suitability:
+    - "Detailed technical proposals"
+    - "Written business cases"
+    - "Training content delivery"
+
+# ==============================================================================
+# DELIVERY FORMATS
+# ==============================================================================
+
+delivery_formats:
+  ballroom:
+    description: "Large audience, keynote or conference setting"
+    characteristics:
+      - "High emotional resonance required"
+      - "Low data density — audience cannot process dense slides at distance"
+      - "Large visual elements dominate"
+    pitch_adaptation: "Maximize pathos; minimize evidence density; open with high-impact emotional hook"
+  boardroom:
+    description: "Small group, intimate or read-ahead setting"
+    characteristics:
+      - "High data density tolerated"
+      - "Rigorous logic scrutiny expected"
+      - "Written 'slidument' format viable"
+    pitch_adaptation: "Maximize logos; include quantitative evidence; be prepared for interruption and Q&A"
+  hybrid:
+    description: "Mixed live and remote audience (video call + in-room)"
+    characteristics:
+      - "Requires modular chunk design"
+      - "Must work on shared screen and laptop simultaneously"
+      - "Assume partial attention from remote participants"
+    pitch_adaptation: "Simplify visuals; use chunked structure with clear signposting; repeat key points"
+  research_source: "Canonical Presentation Lifecycle, Section 3.2"
+
+# ==============================================================================
+# PITCH LOGIC AUDIT
+# ==============================================================================
+
+pitch_logic_audit:
+  description: "Pre-delivery validation protocol to ensure logical coherence before pitching"
+  dot_dash_method:
+    description: "Map each phase claim (Dot) to its supporting evidence (Dash) before finalizing delivery"
+    rule: "Dashes must prove the Dot — if evidence does not visibly support the claim, the pitch is logically invalid"
+    application: "Write one bullet per phase; verify each evidence item directly supports its phase claim"
+    research_source: "Canonical Presentation Lifecycle, Section 4.3"
+  mece_check:
+    mutually_exclusive: "Are the solution benefits/differentiators distinct from each other with no overlap?"
+    collectively_exhaustive: "Does the pitch address the full problem space, including the primary counterargument?"
+    research_source: "Canonical Presentation Lifecycle, Section 4.4"
+  horizontal_flow_test:
+    description: "Reading only the phase labels and key sentences should produce a coherent standalone summary of the pitch argument"
+    pass_criterion: "Phase summaries in sequence tell a complete story without the supporting detail"
+    research_source: "Canonical Presentation Lifecycle, Section 5.3"
+
+# ==============================================================================
+# EFFECTIVENESS MEASUREMENT
+# ==============================================================================
+
+effectiveness_measurement:
+  framework: "Kirkpatrick Model (adapted for pitch contexts)"
+  primary_metric: "level_3_behavior"
+  note: "If the audience liked the pitch but did not take the action, the pitch failed"
+  levels:
+    level_1_reaction:
+      metric_type: "sentiment"
+      measurement_tools: ["NPS", "post-event survey", "real-time reaction pulse"]
+      canonical_goal: "Positive emotional shift (Feel dimension of Audience Transformation Roadmap)"
+    level_2_learning:
+      metric_type: "retention"
+      measurement_tools: ["recall test", "Q&A quality assessment", "follow-up comprehension check"]
+      canonical_goal: "Acquisition of target information (Know dimension)"
+    level_3_behavior:
+      metric_type: "action"
+      measurement_tools: ["CTA completion rate", "meeting booked", "budget authorized", "intro email sent"]
+      canonical_goal: "Execution of the Do objective — the primary success criterion of any pitch"
+    level_4_results:
+      metric_type: "business_impact"
+      measurement_tools: ["deal closed", "ROI realized", "risk reduction", "strategic alignment achieved"]
+      canonical_goal: "Downstream business value from the behavioral action"
+  research_source: "Canonical Presentation Lifecycle, Section 6.3"
+
+# ==============================================================================
+# ANTI-PATTERNS (COMMON PITCH FAILURES)
+# ==============================================================================
+
+anti_patterns:
+  assumption_trap:
+    description: "Pitching without validating Point A assumptions about what the audience already knows, believes, or feels"
+    consequence: "May alienate with jargon they don't know, or waste time on defensiveness they don't have"
+    fix: "Run Know/Believe/Feel/Do audit before drafting pitch content"
+    research_source: "Canonical Presentation Lifecycle, Section 3.3"
+  template_trap:
+    description: "Using a rigid pitch structure that ignores the specific behavioral objective of the current audience"
+    consequence: "Structure-audience mismatch causes pitch failure regardless of content quality"
+    fix: "Select structure (SCQA, AIDA, Freytag) based on audience's Point B behavioral goal"
+    research_source: "Canonical Presentation Lifecycle, Section 2.2"
+  premature_convergence:
+    description: "Deciding on the pitch solution/structure before fully understanding the audience's problem"
+    consequence: "Produces a pitch that answers the wrong question"
+    fix: "Complete audience diagnostic and stakeholder map before drafting"
+    research_source: "Canonical Presentation Lifecycle, Section 2.2 (Double Diamond)"
+  vague_cta:
+    description: "Ending with 'Let's connect' or 'Happy to share more' instead of a specific behavioral action"
+    consequence: "Fails Kirkpatrick Level 3 — no measurable behavioral outcome"
+    fix: "Replace with specific, time-bound action: 'Can I send you a 1-page summary by tomorrow?'"
+    research_source: "Canonical Presentation Lifecycle, Sections 6.3 and 7.1"
+  feel_neglect:
+    description: "Addressing only rational beliefs (ROI data) without addressing emotional state (anxiety, skepticism)"
+    consequence: "Audience may intellectually agree but fail to act due to unresolved emotional blockers"
+    fix: "Map current emotional climate (Point A Feel) and design a narrative beat that shifts it"
+    research_source: "Canonical Presentation Lifecycle, Section 3.1.1"
+  dot_dash_mismatch:
+    description: "Evidence presented does not visibly prove the stated claim (Dashes don't prove the Dot)"
+    consequence: "Pitch fails logical scrutiny from analytical decision-makers; destroys credibility"
+    fix: "Run Dot-Dash audit: write claim → verify each evidence item directly supports it"
+    research_source: "Canonical Presentation Lifecycle, Section 4.3"

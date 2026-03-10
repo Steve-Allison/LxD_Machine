@@ -1,0 +1,919 @@
+_meta:
+  id: character_archetypes_entities
+  title: Character Archetypes Entities
+  description: GLiNER2 entity definitions for detecting character archetypes and narrative roles in stories, presentations,
+    and case studies
+  domain: narrative
+  domain_type: cross_cutting
+  purpose: entity
+  version: 1.11.0
+  last_updated: '2026-03-09'
+  corpus_sources:
+  - Corpus/Research/research_-_canonical_presentation_methodology_research.md
+  - 'Corpus/Research/The Architecture of Persuasion: A Deep Synthesis of Visual Communication and Narrative Storytelling.md'
+  - Corpus/Research/SOAR Narrative Mapping by Sales Stage.md
+  - Corpus/Research/Research - Using SOAR Storytelling in B2B Presentations.md
+  - Corpus/Research/Research - Analyzing Story for Business Communication.md
+  - Corpus/Research/UNIFIED_NARRATIVE_METHODOLOGY_v2.md
+  - Corpus/Research/Research - Using SOAR Storytelling most effectively.md
+  - Corpus/Research/Research - Slide Deck Design Playbook Research.md
+  - Corpus/Research/research_-_elite_speaker_linguistic_analysis_taxonomy.md
+  - Corpus/Research/research_-_comprehensive_audience_analysis.md
+  academic_sources:
+  - Campbell (1949) - The Hero with a Thousand Faces
+  - Vogler (2007) - The Writer's Journey
+  - Jung (1969) - The Archetypes and the Collective Unconscious
+  - Propp (1968) - Morphology of the Folktale
+  - McKee (1997) - Story
+  relationships:
+  - target: taxonomy/character_archetypes_taxonomy.yaml
+    type: depends_on
+    description: Archetype classification values for entity label validation
+entity_types:
+  hero:
+    label: HERO
+    field_description: Hero protagonist journey transformation struggle overcame achieved stepped up took action led the change
+    description: The central figure who faces a challenge and undergoes transformation through action
+    entity_kind: character_archetype
+    family: hero_journey
+    examples:
+    - She stepped up when no one else would.
+    - He overcame years of resistance to change.
+    - They took action where others hesitated.
+    - Our team led the transformation.
+    - The customer who faced this challenge...
+    - I decided to do something different.
+    - Against the odds, they succeeded.
+    confidence_threshold: 0.68
+    field: narrative
+    indicators:
+    - stepped up
+    - overcame
+    - took action
+    - led the
+    - against the odds
+    - achieved
+    - transformed
+    patterns:
+    - stepped up \w+
+    - overcame \w+
+    - took (action|charge|initiative)
+    - led the \w+
+    - against the odds
+    color: '#e74c3c'
+    soar_stage_mapping: SITUATION and RESULT — the hero's challenge is established in S; the hero's transformation is shown
+      in R
+    relates_to:
+    - target: mentor
+      relation: supported_by
+      weight: required
+      description: The hero receives guidance, tools, and wisdom from the mentor per Campbell's Monomyth Stage 4 Meeting the Mentor
+    - target: villain
+      relation: contrasts_with
+      weight: required
+      description: The hero faces the villain as the primary opposing force; transformation is defined by overcoming the antagonist's
+        challenge
+    - target: threshold_guardian
+      relation: precedes
+      weight: expected
+      description: The hero must pass the threshold guardian's test before crossing into the Special World at Stage 5 of the Hero's
+        Journey
+    - target: ally
+      relation: supported_by
+      weight: expected
+      description: At Stage 6 (Tests, Allies, Enemies) the hero gathers allies who assist through trials in the Special World
+    - target: narrative_tension
+      relation: enables
+      weight: required
+      description: The hero's journey generates narrative tension through Want vs Need conflict and escalating complications across
+        the three-act structure
+      target_file: narrative_entities
+    - target: pain_point
+      relation: supported_by
+      weight: expected
+      description: The hero's journey is driven by External, Internal, and Philosophical problem dimensions that map to pain points
+        per StoryBrand framework
+      target_file: narrative_entities
+    - target: situation_marker
+      relation: bridges
+      weight: expected
+      description: The hero archetype bridges to the SOAR Situation stage where the protagonist and their context are established
+        for the audience
+      target_file: sales_entities
+    - target: pathos_appeal
+      relation: enables
+      weight: optional
+      description: The hero's emotional journey of frustration, struggle, and triumph enables pathos-driven engagement with the
+        audience
+      target_file: rhetorical_devices_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - setup
+      strength: secondary
+  mentor:
+    label: MENTOR
+    field_description: Mentor wise guide advisor teacher coach showed them helped them taught trained guided enabled
+    description: The wise figure who provides knowledge, tools, or encouragement to the hero
+    entity_kind: character_archetype
+    family: hero_journey
+    examples:
+    - Her manager saw the potential and coached her.
+    - The consultant who guided us through...
+    - Adobe's team helped us navigate the change.
+    - He taught me everything I needed to know.
+    - The advisor who showed them the path.
+    - With their guidance, we were able to...
+    confidence_threshold: 0.68
+    field: narrative
+    indicators:
+    - guided us
+    - coached
+    - taught
+    - showed them
+    - helped us navigate
+    - their guidance
+    - mentor
+    - advisor
+    patterns:
+    - (guided|coached|taught|mentored) \w+
+    - showed (us|them|her|him) (the|a) \w+
+    - with (their|his|her) (guidance|help|support)
+    - (mentor|advisor|coach) who \w+
+    color: '#f39c12'
+    soar_stage_mapping: ACTION — the mentor/vendor equips the hero with tools, platform, or methodology to act
+    note: In B2B narrative, the vendor MUST occupy mentor role, never hero. Customer-as-hero, vendor-as-mentor is the required
+      framing per SOAR Narrative Mapping by Sales Stage
+    relates_to:
+    - target: hero
+      relation: supports
+      weight: required
+      description: The mentor provides the hero with tools, wisdom, or plan to succeed; in B2B the vendor must occupy mentor role
+        per SOAR Narrative Mapping
+    - target: villain
+      relation: contrasts_with
+      weight: expected
+      description: Mentor and villain represent opposing influences on the hero — the villain embodies the Lie while the mentor
+        presents the Truth per StoryBrand
+    - target: action_marker
+      relation: bridges
+      weight: expected
+      description: The mentor archetype bridges to the SOAR Action stage by equipping the hero with tools and methodology to act
+      target_file: sales_entities
+    - target: ethos_appeal
+      relation: enables
+      weight: expected
+      description: The mentor role requires demonstrating Empathy and Authority, directly enabling the ethos rhetorical appeal per
+        StoryBrand SB7 framework
+      target_file: rhetorical_devices_entities
+    - target: value_proposition
+      relation: enables
+      weight: expected
+      description: The mentor role enables the value proposition by framing the vendor's contribution as guidance rather than heroism,
+        making the solution credible
+      target_file: narrative_entities
+    - target: customer_hero
+      relation: enables
+      weight: expected
+      description: "SOAR research positions the company/product as the guide enabling the customer hero — position your customer as the hero and your product or team as the guide that helped them per SOAR Storytelling research"
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - setup
+      strength: secondary
+  villain:
+    label: VILLAIN
+    field_description: Villain antagonist obstacle threat competitor shadow blocked prevented disrupted challenged stood in
+      the way
+    description: The force of opposition — could be a competitor, market condition, or internal resistance
+    entity_kind: character_archetype
+    family: hero_journey
+    examples:
+    - The legacy system that blocked their progress.
+    - Competitors who threatened their market share.
+    - Internal resistance stood in the way.
+    - Budget cuts that nearly derailed the project.
+    - The fear that stopped them from acting.
+    - Market disruption threatened everything.
+    confidence_threshold: 0.65
+    field: narrative
+    indicators:
+    - blocked
+    - threatened
+    - stood in the way
+    - derailed
+    - resistance
+    - disrupted
+    - nearly failed
+    patterns:
+    - \w+ (blocked|threatened|derailed|disrupted)
+    - stood in the way
+    - (resistance|opposition) (to|from)
+    - nearly (failed|collapsed|derailed)
+    color: '#8e44ad'
+    b2b_villain_types:
+    - legacy systems and technical debt
+    - market disruption or competitive threat
+    - internal resistance and change fatigue
+    - budget constraints and procurement delays
+    - data silos and fragmented processes
+    note: In B2B context, the villain is rarely a person — it is typically a structural or systemic force (per Architecture
+      of Persuasion)
+    relates_to:
+    - target: hero
+      relation: contrasts_with
+      weight: required
+      description: The villain is the force of opposition the hero must overcome; their conflict drives the entire narrative arc
+        and creates stakes
+    - target: narrative_tension
+      relation: triggers
+      weight: required
+      description: The villain creates narrative tension by embodying the External, Internal, and Philosophical obstacles that drive
+        the story's conflict per StoryBrand
+      target_file: narrative_entities
+    - target: pain_point
+      relation: supports
+      weight: expected
+      description: In StoryBrand the villain IS the problem — legacy systems, competitive threats, internal resistance manifest
+        as audience-recognised pain points
+      target_file: narrative_entities
+    - target: herald
+      relation: supported_by
+      weight: expected
+      description: The herald announces or signals the villain's disruption — the Call to Adventure reveals the problem the villain
+        represents
+    - target: mentor
+      relation: contrasts_with
+      weight: expected
+      description: Villain and mentor represent opposing influences on the hero — the villain embodies the Lie while the mentor
+        presents the Truth
+    - target: opportunity_marker
+      relation: bridges
+      weight: expected
+      description: The villain archetype bridges to the SOAR Opportunity stage where challenges, obstacles, and stakes are articulated
+        to build narrative urgency
+      target_file: sales_entities
+    - target: resolution_signal
+      relation: precedes
+      weight: expected
+      description: The villain's obstacle must be established before the resolution can be meaningful — the challenge precedes the
+        payoff in narrative structure
+      target_file: narrative_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - setup
+      strength: secondary
+  herald:
+    label: HERALD
+    field_description: Herald catalyst signal call to change announcement trigger what started this event that prompted forced
+    description: The event, person, or signal that calls the hero to action and sets the story in motion
+    entity_kind: character_archetype
+    family: hero_journey
+    examples:
+    - The pandemic forced a complete rethink.
+    - A data breach that changed everything.
+    - When the CEO announced the new strategy...
+    - The announcement that triggered the journey.
+    - A customer complaint that started it all.
+    - The market shift that forced our hand.
+    confidence_threshold: 0.65
+    field: narrative
+    indicators:
+    - forced a
+    - changed everything
+    - triggered
+    - that started it
+    - forced our hand
+    - the announcement
+    - what started this
+    patterns:
+    - \w+ (forced|triggered|prompted|sparked) \w+
+    - changed everything
+    - the (announcement|event|moment) that \w+
+    - what started \w+
+    color: '#3498db'
+    soar_stage_mapping: OPPORTUNITY — the herald signals the gap or threat that creates urgency for action
+    relates_to:
+    - target: hero
+      relation: triggers
+      weight: required
+      description: The herald delivers the Call to Adventure (Stage 2) that disrupts the hero's Ordinary World and initiates the
+        journey per Campbell's Monomyth
+    - target: villain
+      relation: supports
+      weight: expected
+      description: The herald announces or reveals the villain's disruption — the Call to Adventure exposes the problem or challenge
+        the villain represents
+    - target: narrative_hook
+      relation: bridges
+      weight: expected
+      description: The herald functions as a narrative hook by introducing the catalytic disruption that captures attention and sets
+        the story in motion
+      target_file: narrative_entities
+    - target: narrative_tension
+      relation: triggers
+      weight: expected
+      description: The herald triggers narrative tension by posing the major dramatic question that the story must answer per three-act
+        structure
+      target_file: narrative_entities
+    - target: opportunity_marker
+      relation: bridges
+      weight: required
+      description: The herald archetype bridges to the SOAR Opportunity stage where the gap or threat that creates urgency for action
+        is articulated
+      target_file: sales_entities
+    - target: threshold_guardian
+      relation: precedes
+      weight: expected
+      description: The herald's Call to Adventure (Stage 2) precedes the threshold guardian's test at the boundary between Ordinary
+        and Special Worlds (Stage 5)
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - setup
+      strength: secondary
+  threshold_guardian:
+    label: THRESHOLD_GUARDIAN
+    field_description: Threshold guardian gatekeeper test barrier approval compliance legal IT security before they could
+      proceed
+    description: A test, barrier, or gatekeeper that must be passed before progress can continue
+    entity_kind: character_archetype
+    family: hero_journey
+    examples:
+    - Legal approval was the final hurdle.
+    - The IT security review that nearly stopped the project.
+    - The approval process took six months.
+    - Before they could proceed, they needed buy-in.
+    - Compliance requirements blocked the first attempt.
+    - The procurement process was the first barrier.
+    confidence_threshold: 0.65
+    field: narrative
+    indicators:
+    - final hurdle
+    - approval
+    - compliance
+    - before they could proceed
+    - barrier
+    - security review
+    - procurement
+    patterns:
+    - (final|first|main) (hurdle|barrier|obstacle)
+    - (approval|compliance|security) (was|blocked|stopped)
+    - before (they|we) could (proceed|continue|start)
+    - (procurement|legal|IT) (process|review|gate)
+    color: '#e67e22'
+    relates_to:
+    - target: hero
+      relation: limits
+      weight: required
+      description: The threshold guardian tests, blocks, or limits the hero's progress, forcing readiness proof before entering
+        the Special World
+    - target: mentor
+      relation: supported_by
+      weight: expected
+      description: The mentor's guidance and tools help the hero overcome the threshold guardian's tests at the boundary of the
+        Special World
+    - target: villain
+      relation: supports
+      weight: optional
+      description: Threshold guardians can serve as agents of the villain's opposition, representing early obstacles in the escalating
+        series of complications
+    - target: narrative_tension
+      relation: triggers
+      weight: expected
+      description: The threshold guardian raises narrative tension by presenting a test or barrier that must be overcome before the
+        journey can continue
+      target_file: narrative_entities
+    - target: champion_marker
+      relation: supported_by
+      weight: expected
+      description: Internal champions help overcome threshold guardians by securing buy-in and navigating gatekeepers within the
+        customer organisation
+      target_file: sales_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - setup
+      strength: secondary
+  shapeshifter:
+    label: SHAPESHIFTER
+    field_description: Shapeshifter ambiguous unclear unreliable changed position reversed seemed supportive but then turned
+    description: A character whose allegiance or role is unclear or shifts during the story
+    entity_kind: character_archetype
+    family: hero_journey
+    examples:
+    - The partner who seemed helpful but then withdrew support.
+    - He supported the project until it became inconvenient.
+    - An ally who became a critic.
+    - She appeared enthusiastic at first, then reversed position.
+    - The stakeholder whose commitment was uncertain.
+    confidence_threshold: 0.6
+    field: narrative
+    indicators:
+    - seemed helpful but
+    - until it became
+    - ally who became
+    - reversed position
+    - appeared enthusiastic
+    - uncertain
+    - but then
+    patterns:
+    - seemed \w+ but (then )?\w+
+    - (ally|supporter|partner) who (became|turned)
+    - reversed (their|the|his|her) \w+
+    - appeared \w+ (at first|initially|then)
+    color: '#7f8c8d'
+    relates_to:
+    - target: hero
+      relation: limits
+      weight: expected
+      description: The shapeshifter's shifting allegiance introduces doubt and uncertainty that limits the hero's ability to trust
+        and plan confidently
+    - target: ally
+      relation: contrasts_with
+      weight: expected
+      description: The shapeshifter contrasts with the reliable ally — where the ally provides consistent support, the shapeshifter's
+        commitment is uncertain or reversed
+    - target: villain
+      relation: bridges
+      weight: optional
+      description: The shapeshifter can bridge between ally and villain roles, embodying characters whose allegiance shifts from
+        supportive to antagonistic
+    - target: narrative_tension
+      relation: enables
+      weight: expected
+      description: Ambiguity in the shapeshifter's allegiance generates narrative tension through uncertainty about whether they
+        will help or hinder the hero
+      target_file: narrative_entities
+    - target: buyer_psychology_signal
+      relation: bridges
+      weight: optional
+      description: The shapeshifter archetype bridges to buyer psychology signals representing stakeholders whose commitment or
+        position is uncertain in sales contexts
+      target_file: sales_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - setup
+      strength: secondary
+  trickster:
+    label: TRICKSTER
+    field_description: Trickster disruptor provocateur unexpected challenger questioned defied broke the rules disrupted norms
+    description: A character who disrupts the status quo, challenges assumptions, or introduces unexpected change
+    entity_kind: character_archetype
+    family: hero_journey
+    examples:
+    - The startup that disrupted the whole industry.
+    - She challenged every assumption in the room.
+    - He broke every rule they had set.
+    - The unexpected voice that reframed the problem.
+    - A competitor nobody saw coming.
+    - The intern who asked the uncomfortable question.
+    confidence_threshold: 0.62
+    field: narrative
+    indicators:
+    - disrupted
+    - challenged every
+    - broke every rule
+    - nobody saw coming
+    - uncomfortable question
+    - reframed
+    patterns:
+    - disrupted \w+
+    - challenged (every|all|the) \w+
+    - nobody (saw|expected) \w+
+    - reframed (the|a|their) \w+
+    color: '#16a085'
+    relates_to:
+    - target: hero
+      relation: limits
+      weight: optional
+      description: The trickster challenges the hero's assumptions and disrupts established approaches, forcing creative adaptation
+        or rethinking of strategy
+    - target: villain
+      relation: contrasts_with
+      weight: optional
+      description: The trickster disrupts through provocation and reframing rather than direct opposition, unlike the villain who
+        actively opposes the hero
+    - target: ally
+      relation: bridges
+      weight: optional
+      description: The trickster can function as an unconventional ally who helps the hero by reframing problems or challenging
+        flawed assumptions
+    - target: narrative_tension
+      relation: enables
+      weight: optional
+      description: The trickster introduces unexpected disruption that generates narrative tension through surprise and reframing
+        of the problem
+      target_file: narrative_entities
+    - target: displacement_trigger
+      relation: bridges
+      weight: optional
+      description: The trickster archetype bridges to displacement triggers representing unexpected competitors or disruptors that
+        challenge the status quo
+      target_file: sales_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - setup
+      strength: secondary
+  ally:
+    label: ALLY
+    field_description: Ally helper supporter partner team member alongside with us supported helped backed contributed
+    description: A supporting character who assists the hero but does not lead the journey
+    entity_kind: character_archetype
+    family: hero_journey
+    examples:
+    - Their IT team supported every step.
+    - The partner who contributed the technical expertise.
+    - A colleague who backed the project from day one.
+    - Adobe worked alongside them through the process.
+    - The broader team who made it possible.
+    - She helped me see a different angle.
+    confidence_threshold: 0.65
+    field: narrative
+    indicators:
+    - supported every
+    - worked alongside
+    - backed the project
+    - helped me
+    - the broader team
+    - contributed the
+    patterns:
+    - worked alongside \w+
+    - (supported|backed|helped) (the|this|every) \w+
+    - the (broader|whole|wider) team \w+
+    - (partner|colleague|team member) who \w+
+    color: '#1abc9c'
+    relates_to:
+    - target: hero
+      relation: supports
+      weight: required
+      description: The ally assists the hero through trials at Stage 6 (Tests, Allies, Enemies), providing support without leading
+        the journey
+    - target: mentor
+      relation: supported_by
+      weight: optional
+      description: The ally's effectiveness is often enabled by the mentor's guidance — allies may be recruited or empowered through
+        the mentor's influence
+    - target: villain
+      relation: contrasts_with
+      weight: expected
+      description: Allies stand in opposition to the villain's forces — at Stage 6 the hero distinguishes allies from enemies in
+        the Special World
+    - target: internal_champion
+      relation: enables
+      weight: expected
+      description: The classical ally archetype enables the internal champion B2B specialisation — an internal advocate who supports
+        the hero's initiative
+    - target: action_marker
+      relation: bridges
+      weight: expected
+      description: The ally archetype bridges to the SOAR Action stage alongside the vendor-as-mentor, supporting execution of
+        the solution
+      target_file: sales_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - setup
+      strength: secondary
+  customer_hero:
+    label: CUSTOMER_HERO
+    field_description: Customer hero protagonist client company achieved overcame transformed their business their challenge
+    description: A specific customer cast as the hero of a business case study or success story
+    entity_kind: business_archetype
+    family: b2b_narrative
+    examples:
+    - ACME Corporation faced a critical challenge.
+    - Their team of 50 engineers needed to...
+    - The retail giant that transformed its supply chain.
+    - A mid-market company who took the leap.
+    - Their IT director took the bold decision.
+    - The customer who proved it was possible.
+    confidence_threshold: 0.68
+    field: narrative
+    indicators:
+    - faced a critical
+    - their team
+    - took the leap
+    - took the bold decision
+    - the customer who
+    patterns:
+    - (\w+ \w+|\w+) faced (a|the) \w+
+    - their (team|organisation|company) (of )?\w+
+    - took the (leap|bold|first) \w+
+    color: '#2980b9'
+    soar_stage_mapping: SITUATION — customer hero is introduced with context and challenge in the S stage
+    relates_to:
+    - target: hero
+      relation: specialises
+      weight: required
+      description: Customer-as-hero is a B2B specialisation of the hero archetype
+    - target: customer_story
+      relation: supported_by
+      weight: expected
+      description: Customer hero narratives need customer stories as evidence
+      target_file: evidence_types_entities
+    - target: vendor_as_mentor
+      relation: supports
+      weight: expected
+      description: In sales narratives, positioning the customer as the hero requires the vendor to serve as the mentor archetype.
+        The mentor guides the hero toward the desired outcome without overshadowing them.
+    - target: vendor_as_mentor
+      relation: supported_by
+      weight: required
+      description: "Customer-as-Hero requires Vendor-as-Mentor — StoryBrand SB7 framework mandates customer is protagonist and brand/product is the guide/mentor per UNIFIED_NARRATIVE_METHODOLOGY_v2"
+    - target: pain_point
+      relation: supported_by
+      weight: expected
+      description: "Customer Hero's journey begins with their pain point — SOAR Situation/Obstacle maps to the hero's challenge per UNIFIED_NARRATIVE_METHODOLOGY_v2"
+      target_file: narrative_entities
+    - target: inclusive_we
+      relation: supported_by
+      weight: expected
+      description: "Customer hero archetype is supported by inclusive 'we' — elite speakers dissolve the barrier between stage and audience making the audience the protagonist (elite_speaker_taxonomy)"
+      target_file: rhetorical_devices_entities
+    - target: audience_pain_point
+      relation: triggers
+      weight: expected
+      description: "The customer hero archetype triggers recognition of audience pain points through identification — prospects see their own challenges mirrored in the hero's journey per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - setup
+      - result
+      strength: primary
+    parent_entity: hero
+  vendor_as_mentor:
+    label: VENDOR_AS_MENTOR
+    field_description: Vendor mentor Adobe partner solution provider enabled helped guided equipped transformed alongside
+    description: The vendor or solution provider cast in the mentor role — enabling rather than heroic
+    entity_kind: business_archetype
+    family: b2b_narrative
+    examples:
+    - Adobe enabled them to move faster.
+    - With our platform, they were able to...
+    - We helped them navigate the transformation.
+    - Our solution gave them the tools they needed.
+    - Working with us, they achieved...
+    - Together we built the foundation.
+    confidence_threshold: 0.65
+    field: narrative
+    indicators:
+    - enabled them
+    - with our platform
+    - we helped them
+    - our solution gave
+    - working with us
+    - together we
+    patterns:
+    - (Adobe|we) enabled (them|the|a) \w+
+    - with our \w+, they \w+
+    - we helped (them|the customer|the team) \w+
+    - working with (us|Adobe) \w+
+    color: '#f39c12'
+    soar_stage_mapping: ACTION — vendor as mentor provides the tools, capability, or methodology in the A stage
+    relates_to:
+    - target: mentor
+      relation: specialises
+      weight: required
+      description: Vendor-as-mentor is a B2B specialisation of the mentor archetype
+    - target: action_marker
+      relation: supports
+      weight: required
+      description: The mentor archetype directly supports the Action phase of SOAR by providing guidance and tools that the
+        customer (hero) uses to solve their problem.
+      target_file: sales_entities
+    - target: customer_hero
+      relation: supports
+      weight: required
+      description: "The vendor-as-mentor directly supports the customer-hero by providing the plan, demonstrating Empathy and Authority as the Guide per Analyzing Story for Business Communication"
+    - target: value_proposition
+      relation: contains
+      weight: expected
+      description: "The mentor role contains the value proposition — the mentor's tools/plan IS the product's value proposition per UNIFIED_NARRATIVE_METHODOLOGY_v2 StoryBrand SB7"
+      target_file: narrative_entities
+    - target: personal_anecdote
+      relation: supported_by
+      weight: optional
+      description: "Vendor-as-mentor archetype is supported by personal vulnerability anecdotes — 'I was scared' from a powerful leader establishes mentorship via High Warmth (elite_speaker_taxonomy)"
+      target_file: evidence_types_entities
+    parent_entity: mentor
+  everyman_character:
+    label: EVERYMAN
+    description: A relatable, ordinary character with whom the audience identifies — not exceptional, but recognisable from
+      the audience's own experience
+    field_description: Everyman ordinary person like us typical team just like you everyday professional recognisable situation
+      someone who
+    entity_kind: business_archetype
+    family: b2b_narrative
+    examples:
+    - A typical marketing team, just like yours.
+    - Someone who had never touched a line of code.
+    - An everyday project manager facing impossible deadlines.
+    - Someone just like you, trying to do more with less.
+    - A team no different from the ones in this room.
+    - One of those professionals everyone knows — brilliant but overwhelmed.
+    - A mid-level manager with no budget and a tight timeline.
+    confidence_threshold: 0.63
+    field: narrative
+    indicators:
+    - just like you
+    - just like yours
+    - typical team
+    - like everyone in this room
+    - someone who had never
+    - no different from
+    - everyday
+    - ordinary
+    patterns:
+    - just like (you|yours|the ones|those)
+    - a typical \w+
+    - someone (who|just) \w+
+    - no different from \w+
+    - like (everyone|many|most) (in|of) \w+
+    color: '#95a5a6'
+    psychological_principle: Identification (Aristotle) — audiences engage more deeply when they recognise themselves in the
+      character; reduces perceived distance from the outcome
+    note: 'Everyman character is distinct from CUSTOMER_HERO — the hero must achieve something, while the everyman creates
+      audience identification before the arc begins. Per Architecture of Persuasion: use everyman to open, then elevate to
+      hero through the journey.'
+    relates_to:
+    - target: hero
+      relation: contrasts_with
+      weight: expected
+      description: Everyman (relatable ordinary person) vs hero (exceptional protagonist)
+  internal_champion:
+    label: CHAMPION
+    description: The internal advocate or change agent within the customer organisation who drives the initiative, secures
+      buy-in, and pushes the project to completion
+    field_description: Champion internal advocate change agent drove the initiative pushed for championed the project secured
+      approval internal sponsor
+    entity_kind: business_archetype
+    family: b2b_narrative
+    examples:
+    - Their VP of Marketing championed the initiative.
+    - One internal advocate who drove the change.
+    - She pushed for the project despite internal scepticism.
+    - The IT director who secured board approval.
+    - Without his sponsorship, the project would not have happened.
+    - The change agent who built the internal coalition.
+    - She became the internal champion who made it possible.
+    - He secured executive buy-in against significant resistance.
+    confidence_threshold: 0.67
+    field: narrative
+    indicators:
+    - championed the
+    - drove the initiative
+    - pushed for
+    - secured approval
+    - internal advocate
+    - built the coalition
+    - internal sponsor
+    - made it possible
+    patterns:
+    - championed (the|this) \w+
+    - drove the (initiative|project|change) \w+
+    - pushed for \w+ (despite|against)
+    - secured (board|executive|leadership|budget) \w+
+    - (internal|change) (champion|advocate|sponsor|agent)
+    color: '#e67e22'
+    soar_stage_mapping: ACTION — the champion enables the action stage by securing internal resources, buy-in, and momentum
+    scoring_note: CHAMPION detection signals a well-structured B2B narrative — adds credibility by showing real internal stakeholder
+      engagement
+    relates_to:
+    - target: champion
+      relation: specialises
+      weight: expected
+      description: Narrative internal champion specialises the buying role champion
+      target_file: audience_entities
+    - target: ally
+      relation: specialises
+      weight: expected
+      description: Internal champion is a B2B specialisation of the ally archetype
+    parent_entity: ally
+soar_archetype_mapping:
+  description: Maps hero's journey archetypes to their expected SOAR narrative stages in B2B storytelling
+  situation:
+    primary_archetypes:
+    - CUSTOMER_HERO
+    - EVERYMAN
+    function: Establishes the protagonist and their context — who they are and what world they inhabit
+    detection_signal: Named customer/client + role + challenge context in opening
+    relates_to:
+    - target: pain_point
+      relation: precedes
+      weight: required
+      description: "In SOAR framework, Situation establishes shared context that precedes identification of the customer's pain points and opportunities per Slide Deck Design Playbook"
+      target_file: narrative_entities
+    - target: opportunity
+      relation: precedes
+      weight: required
+      description: "In SOAR, the Situation phase (audience discovery) must precede the Opportunity phase (narrative architecture); opening PowerPoint before strategy is explicitly prohibited (Canonical Presentation Methodology)"
+  opportunity:
+    primary_archetypes:
+    - VILLAIN
+    - HERALD
+    function: Reveals the tension — the antagonistic force or catalytic event that creates urgency
+    detection_signal: Structural threat, market disruption, or call-to-change language
+    relates_to:
+    - target: action
+      relation: precedes
+      weight: required
+      description: "In SOAR, the Opportunity phase (defining the strategic gap and narrative logic) must precede the Action/Approach phase (visual translation); text-based storylining comes before design (Canonical Presentation Methodology)"
+  action:
+    primary_archetypes:
+    - VENDOR_AS_MENTOR
+    - ALLY
+    - CHAMPION
+    function: Shows what the mentor/vendor equipped the hero to do — tools, platform, methodology
+    detection_signal: Vendor enablement language + internal champion securing buy-in
+    critical_rule: Vendor must appear in mentor/enabler role ONLY — never as hero at this stage
+    relates_to:
+    - target: result
+      relation: precedes
+      weight: required
+      description: "In SOAR, the Approach phase (visual design and translation) must precede the Results phase (execution, delivery, measurement) in the canonical lifecycle (Canonical Presentation Methodology)"
+  result:
+    primary_archetypes:
+    - HERO
+    - CUSTOMER_HERO
+    function: Shows the hero's transformation — before/after contrast, validated outcomes
+    detection_signal: Customer-owned outcomes, before/after comparison, validated result language
+gliner_config:
+  model: gliner-large-v2
+  batch_size: 32
+  default_confidence_threshold: 0.65
+  context_window: 512
+  entity_groups:
+    hero_journey_archetypes:
+    - HERO
+    - MENTOR
+    - VILLAIN
+    - HERALD
+    - THRESHOLD_GUARDIAN
+    - SHAPESHIFTER
+    - TRICKSTER
+    - ALLY
+    business_archetypes:
+    - CUSTOMER_HERO
+    - VENDOR_AS_MENTOR
+    - EVERYMAN
+    - CHAMPION
+domain_keywords:
+  primary:
+  - archetype
+  - hero
+  - mentor
+  - villain
+  - character
+  - protagonist
+  - antagonist
+  - narrative role
+  - herald
+  - ally
+  - trickster
+  - champion
+  - everyman
+  secondary:
+  - Campbell
+  - Vogler
+  - hero's journey
+  - monomyth
+  - Jungian
+  - shadow
+  - threshold
+  - transformation
+  - journey
+  - story arc
+  - change agent
+  - internal advocate
+quality_indicators:
+  archetype_coverage:
+    minimal: Only hero detected — flat, underdeveloped story
+    developing: Hero + 1-2 supporting archetypes
+    rich: Hero + mentor + villain + herald detected — full narrative tension
+  business_narrative_fit:
+    vendor_centric: 'Vendor as hero detected — reframe so customer is hero (penalty: -8 points)'
+    balanced: Customer hero + vendor as mentor — ideal business narrative
+    customer_centric: Customer hero prominent, vendor in background — strong
+    champion_present: CHAMPION detected alongside CUSTOMER_HERO — narrative has internal credibility signal (+3 points)
+  soar_narrative_alignment:
+    description: Checks whether detected archetypes appear in expected SOAR stages
+    misalignment_signals:
+    - VENDOR_AS_MENTOR language appearing in RESULT stage — vendor overclaiming ownership of outcome
+    - HERO language assigned to vendor — customer hero displaced
+    - No VILLAIN or HERALD detected — narrative lacks tension, story falls flat
+    - CHAMPION absent in multi-stakeholder deal narrative — reduces credibility
+    alignment_bonus: +5 points when CUSTOMER_HERO + VENDOR_AS_MENTOR + VILLAIN all detected in correct SOAR sequence

@@ -1,0 +1,98 @@
+_meta:
+  id: motion_physics_standards
+  title: "Motion Physics"
+  description: "Animation timing, easing curves, and transition rules for motion design including duration, pacing, and visual continuity."
+  domain: visual
+  domain_type: cross_cutting
+  purpose: methodology
+  version: "1.2.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Crafting Powerful Opening Plays.md"
+    - "Corpus/Research/Research - Corporate Learning Assessment- Strategies, Modalities, and Best Practices.md"
+    - "Corpus/Research/Research - Slide Deck Design Playbook Research.md"
+
+
+scoring_anchors: !include ../shared/scoring_visual.yaml
+
+principles:
+  duration:
+    definition: "The length of time an animation takes to complete"
+    rules:
+      - "Micro-interactions (hover, click): 0.1s - 0.2s"
+      - "Standard transitions (slide, fade): 0.3s - 0.5s"
+      - "Complex entrances: 0.5s - 0.8s"
+    anti_patterns:
+      - "Instant changes (0s) feeling abrupt"
+      - "Sluggish animations (>0.8s) causing waiting fatigue"
+      - "Inconsistent durations for similar actions"
+    remediation_strategies:
+      too_slow:
+        action: "Reduce duration to 0.3s-0.5s range."
+      too_fast:
+        action: "Increase duration to minimum 0.2s for perceptibility."
+
+  easing:
+    definition: "The rate of change of speed over time"
+    rules:
+      - "Entrances: ease-out (decelerate)"
+      - "Exits: ease-in (accelerate)"
+      - "On-screen movement: ease-in-out"
+    anti_patterns:
+      - "Linear motion (robotic, unnatural)"
+      - "Bounce/Elastic effects in professional contexts"
+    remediation_strategies:
+      linear_motion:
+        action: "Apply 'ease-out' curve for natural entrance."
+
+  choreography:
+    definition: "Coordination of multiple moving elements"
+    rules:
+      - "Stagger entrances by 0.05s - 0.1s"
+      - "Group related elements to move together"
+      - "Motion direction should follow reading path (Left -> Right, Top -> Bottom)"
+    anti_patterns:
+      - "Everything moving at once (chaos)"
+      - "Random entrance directions"
+      - " excessive staggering (>0.2s) slowing down perception"
+    remediation_strategies:
+      chaos:
+        action: "Group elements and apply single transition to the group container."
+
+  narrative_alignment:
+    definition: "Motion supporting the story beat"
+    rules:
+      - "New idea: Slide/Fade In"
+      - "Continuation: Morph/Transform"
+      - "Drill-down: Zoom In"
+    anti_patterns:
+      - "Distracting transitions (Checkerboard, Dissolve, Spin)"
+      - "Motion contradicting the logical flow"
+
+# ==============================================================================
+# PRESENTATION SPECIFIC GUIDELINES
+# ==============================================================================
+
+presentation_guidelines:
+  purposeful_animation:
+    progressive_disclosure:
+      purpose: "Reveal content in sync with narration"
+      technique: "Appear or fade in"
+      pacing: "Match speaking pace"
+    emphasis:
+      purpose: "Draw attention to specific element"
+      technique: "Subtle highlight or pulse"
+    process_visualisation:
+      purpose: "Show sequence or flow"
+      technique: "Step-by-step reveal"
+
+  animation_to_avoid:
+    - "Spinning, bouncing, or flying entrances"
+    - "Sound effects (unless audio is the content)"
+    - "Animation for every bullet point (fatigue)"
+    - "Transitions between every slide (unless subtle)"
+
+  build_order:
+    principle: "Match the order you'll discuss"
+    technique: "Build sequentially, not randomly"
+    timing: "On click, not automatic (maintain control)"

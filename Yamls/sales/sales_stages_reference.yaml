@@ -1,0 +1,552 @@
+_meta:
+  id: sales_stages_reference
+  title: Sales Stages
+  description: Adobe sales methodology defining 10 stages from Prospect Outreach to
+    Renewal & Expand, with SOAR emphasis weights, exit criteria, and stakeholder mapping
+    per stage (SS0–SS10 aligned)
+  domain: sales
+  domain_type: cross_cutting
+  purpose: reference
+  version: "2.3.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Crafting Powerful Opening Plays.md"
+    - "Corpus/Research/Learner Outcomes - Instructions v4.md"
+    - "Corpus/Research/Research - Corporate Learning Assessment- Strategies, Modalities, and Best Practices.md"
+    - "Corpus/Research/Research - Using SOAR Storytelling most effectively.md"
+    - "Corpus/Research/The Universal Narrative Methodology: A Framework for Crafting and Improving Stories.md"
+
+
+  relationships:
+    - target: sales/soar_mapping_reference.yaml
+      type: depends_on
+      description: "Sales stages map to SOAR phases; stages reference used for SOAR stage classification"
+method_id: AdobeSalesMethod
+notes: 'Complete Adobe sales methodology covering pre-sales (stages 1-7) and post-sales (stages 8-10).
+
+  SOAR emphasis weights shape narrative generation and scoring per stage.
+
+  Customer journey phases: Discover → Explore → Buy → Implement → Adopt → Grow
+
+  Aliases are intentionally curated to onboarding + main Corporate/ACE language only (no low-confidence shorthand).'
+sales_stages:
+- id: SS0
+  legacy_ids:
+  - '0'
+  name: Account Planning
+  customer_journey_phase: Discover
+  hierarchy_level: L1
+  objectives:
+  - Prioritize accounts/territory using data and insights
+  - Develop Account/Business Plan and Big Idea hypothesis
+  - Identify target stakeholders and outreach plan
+  - Align internal ecosystem on account strategy
+  story_emphasis:
+    S: 0.4
+    O: 0.3
+    A: 0.2
+    R: 0.1
+  tone: Strategic, insight-led
+  exit_criteria_customer:
+  - Target account(s) and initial stakeholders identified for outreach
+  exit_criteria_internal:
+  - Account/territory prioritized and documented
+  - Account plan (Full or Lite) and Big Idea drafted
+  - Outreach next steps logged in CRM
+  key_stakeholders:
+  - Account Team (AE/AD, Specialists)
+  - BDR/SDR (where applicable)
+  - Solution Consultant / DSG (as needed)
+  example_messages:
+  - Based on our research, we believe your team may be facing…
+  - Here is our hypothesis on the biggest opportunity for you in the next 6–12 months…
+  aliases_by_context:
+    onboarding:
+    - Account Planning/Outreach
+    - Account Planning
+    - Account / Business Planning/Outreach
+    corporate:
+    - Prospecting
+  aliases:
+  - Account / Business Planning/Outreach
+  - Account Planning
+  - Account Planning/Outreach
+  - Prospecting
+- id: SS1
+  name: Prospect Outreach
+  customer_journey_phase: Discover
+  hierarchy_level: L1
+  objectives:
+  - Initial contact with potential stakeholders
+  - Validate research on challenges, issues, and business objectives
+  - Articulate Big Idea and seek alignment
+  - Qualification of account against ICP
+  story_emphasis:
+    S: 0.4
+    O: 0.4
+    A: 0.1
+    R: 0.1
+  tone: Visionary, thought-provoking
+  exit_criteria_customer:
+  - Secure a meeting or conversation with customer or prospect
+  exit_criteria_internal:
+  - Internal agreement on account level strategies, challenges, and objectives
+  - Validate Big Idea with existing partners
+  - Next steps identified with ecosystem and updated in CRM
+  key_stakeholders:
+  - Marketing Leaders (CMO, VP of Marketing)
+  - Creative Leaders (CCO, Creative Director)
+  example_messages:
+  - We're seeing X trend transforming the industry...
+  - What if you could achieve Y transformation?
+  - Industry leaders are facing this strategic challenge...
+  legacy_ids:
+  - '1'
+  aliases_by_context:
+    onboarding:
+    - Prospect Outreach
+    corporate:
+    - Prospecting
+  aliases:
+  - Prospect Outreach
+  - Prospecting
+- id: SS2
+  name: Opportunity Evaluation
+  customer_journey_phase: Discover
+  hierarchy_level: L1
+  objectives:
+  - Conduct structured initial discovery call
+  - Understand business challenges and identify issues to solve
+  - Determine interest in exploring Adobe solutions
+  - Confirmation of next steps
+  story_emphasis:
+    S: 0.3
+    O: 0.4
+    A: 0.2
+    R: 0.1
+  tone: Consultative, empathetic
+  exit_criteria_customer:
+  - Confirmation of high-quality business issue and desire to engage
+  - Confirmation of next steps and future meeting
+  exit_criteria_internal:
+  - Opportunity Driver determined
+  - Business issue confirmed
+  - Compelling event established (timing)
+  - Use case defined and agreed to
+  - BBAT information confirmed
+  key_stakeholders:
+  - Marketing Leaders
+  - Creative Leaders
+  - Marketing Operations
+  example_messages:
+  - Tell us about your current challenges with...
+  - How does this impact your team's ability to...
+  - What would success look like for you?
+  legacy_ids:
+  - '2'
+  aliases_by_context:
+    onboarding:
+    - Opportunity Evaluation
+    corporate:
+    - Opportunity Evaluation
+  aliases:
+  - Opportunity Evaluation
+- id: SS3
+  name: Detailed Discovery and Vision
+  customer_journey_phase: Explore
+  hierarchy_level: L2
+  objectives:
+  - Gain deep understanding of business priorities and challenges
+  - Confirm use cases accurately reflect customer needs
+  - Develop tailored Adobe POV
+  - Establish mutual plan with sequence of events
+  story_emphasis:
+    S: 0.2
+    O: 0.4
+    A: 0.3
+    R: 0.1
+  tone: Collaborative, insightful
+  exit_criteria_customer:
+  - Customer reviews POV and agrees to at least one use case to be resolved with Adobe
+  - Customer and Adobe agree to next steps and initial Mutual Success Plan
+  exit_criteria_internal:
+  - Business Driver determined
+  - Business issue confirmed with stakeholder
+  - Compelling event established (timing)
+  - Use case defined and validated internally
+  key_stakeholders:
+  - Marketing Operations
+  - Creative Operations
+  - IT Leaders
+  example_messages:
+  - Based on what we've learned, here's how we see the opportunity...
+  - Our POV on addressing your use case...
+  - Here's the mutual plan to move forward...
+  legacy_ids:
+  - '3'
+  aliases_by_context:
+    onboarding:
+    - Detailed Discovery & Vision
+    - Detailed Discovery and Vision
+    corporate:
+    - Qualification
+  aliases:
+  - Detailed Discovery & Vision
+  - Detailed Discovery and Vision
+  - Qualification
+- id: SS4
+  name: Circle of Influence & Qualification
+  customer_journey_phase: Explore
+  hierarchy_level: L2
+  objectives:
+  - Align with key decision makers
+  - Review discovery findings and POV
+  - Define key stakeholder priorities and commitment criteria
+  - Develop Mutual Success Plan
+  story_emphasis:
+    S: 0.1
+    O: 0.3
+    A: 0.4
+    R: 0.2
+  tone: Strategic, relationship-building
+  exit_criteria_customer:
+  - Confirmation from Key Decision Maker on evolved POV
+  - Customer confirms business case makes Adobe preferred choice
+  - Customer agrees to revised Mutual Plan with timeline
+  exit_criteria_internal:
+  - Key decision makers agreed to updated POV
+  - Stakeholder requirements addressed
+  - Confirmation of financial resources (budget) and buying timeline
+  key_stakeholders:
+  - C-Level Marketing (CMO)
+  - C-Level Tech (CIO, CTO)
+  - Senior Leaders of Marketing (VP, Director)
+  example_messages:
+  - Here's how our solution addresses your strategic priorities...
+  - We've validated this approach with similar organizations...
+  - The business case shows clear ROI in your timeline...
+  legacy_ids:
+  - '4'
+  aliases_by_context:
+    onboarding:
+    - Circle of Influence & Qualification
+    - Circle of Influence & Validation
+    - Circle of Influence
+    corporate:
+    - Value Mapping
+  aliases:
+  - Circle of Influence
+  - Circle of Influence & Qualification
+  - Circle of Influence & Validation
+  - Value Mapping
+- id: SS5
+  name: Solution Definition & Validation
+  customer_journey_phase: Explore
+  hierarchy_level: L3
+  objectives:
+  - Build compelling business case with ROI quantification
+  - Validate technical case and identify risks
+  - Conduct tailored demo
+  - Finalize proposal and scoping documents
+  story_emphasis:
+    S: 0.1
+    O: 0.2
+    A: 0.5
+    R: 0.2
+  tone: Detailed, evidence-based
+  exit_criteria_customer:
+  - Confirmation of POV with full set of decision stakeholders
+  - Business and Technical Case accepted
+  - Customer agrees to revised Mutual Plan with timeline to close
+  exit_criteria_internal:
+  - POV completed with Business/Tech Case and accepted by decision makers
+  - Security & compliance requirements addressed
+  - Proposal completed with internal alignment
+  key_stakeholders:
+  - Senior Leaders of Marketing
+  - IT Leaders
+  - Practitioners (Marketing Managers, Designers)
+  example_messages:
+  - The technical architecture addresses your requirements...
+  - Here's the implementation timeline and milestones...
+  - ROI analysis shows payback period of...
+  legacy_ids:
+  - '5'
+  aliases_by_context:
+    onboarding:
+    - Solution Definition & Validation
+    - Solution Definition and Validation
+    corporate:
+    - Solution Validation
+  aliases:
+  - Solution Definition & Validation
+  - Solution Definition and Validation
+  - Solution Validation
+- id: SS6
+  name: Customer Commit
+  customer_journey_phase: Buy
+  hierarchy_level: L4
+  objectives:
+  - Present full proposal to key decision makers
+  - Address pricing and contract concerns
+  - Establish clear next steps for approvals
+  - Align Post-Sales resources
+  story_emphasis:
+    S: 0.1
+    O: 0.1
+    A: 0.3
+    R: 0.5
+  tone: Confident, outcome-focused
+  exit_criteria_customer:
+  - Verbal agreement on pricing and terms with key decision makers
+  - Confirmation customer will purchase according to timeline
+  exit_criteria_internal:
+  - Security & compliance requirements addressed
+  - Mutual Success Plan delivered (includes procurement and signature)
+  - Post-Sales ecosystem set up
+  key_stakeholders:
+  - C-Level Marketing (CMO)
+  - C-Level Tech (CIO, CTO)
+  example_messages:
+  - The immediate value you'll realize includes...
+  - Here's what the first 90 days will look like...
+  - The risk mitigation plan ensures...
+  legacy_ids:
+  - '6'
+  aliases_by_context:
+    onboarding:
+    - Customer Commit
+    corporate:
+    - Economic Buyer Commit
+  aliases:
+  - Customer Commit
+  - Economic Buyer Commit
+- id: SS7
+  name: Execute to Close
+  customer_journey_phase: Buy
+  hierarchy_level: L4
+  objectives:
+  - Finalize contract negotiations
+  - Submit final contract for execution
+  - Conduct CS Value Handoff Call
+  - Complete Post-Sales transition
+  story_emphasis:
+    S: 0.1
+    O: 0.1
+    A: 0.4
+    R: 0.4
+  tone: Assuring, transition-focused
+  exit_criteria_customer:
+  - Customer has bought from Adobe
+  - Contract signed
+  exit_criteria_internal:
+  - Internal close plan completion
+  - Provisioning preparation complete
+  - Post-Sales handover finalized
+  key_stakeholders:
+  - C-Level Marketing
+  - C-Level Tech
+  - Legal
+  example_messages:
+  - The onboarding process begins with...
+  - Your dedicated team will be...
+  - Success metrics we'll track together...
+  legacy_ids:
+  - '7'
+  aliases_by_context:
+    onboarding:
+    - Execute to Close
+    - Commit/Close
+    corporate:
+    - Execute to Close
+  aliases:
+  - Commit/Close
+  - Execute to Close
+- id: SS8
+  name: Launch Health
+  customer_journey_phase: Implement and Onboard Solution
+  hierarchy_level: L4
+  objectives:
+  - Conduct kick-off meeting and introduce Post-Sales team
+  - Complete onboarding and share essential resources
+  - Integrate solution with customer infrastructure
+  - Achieve go-live milestone
+  - Establish customer cadence post go-live
+  story_emphasis:
+    S: 0.1
+    O: 0.2
+    A: 0.2
+    R: 0.5
+  tone: Supportive, adoption-focused
+  exit_criteria_customer:
+  - Solution successfully implemented and live
+  - Established customer cadence post go-live
+  - Mutual Success Plan aligned between customer and Adobe
+  exit_criteria_internal:
+  - Internal sales handoff signoff from AE to Post-Sales team
+  - Post-Sales team has full understanding of customer case
+  - Onboarding coordination completed
+  key_stakeholders:
+  - Practitioners (Marketing Managers, Designers)
+  - Marketing Operations
+  - Implementation Partners
+  example_messages:
+  - Here's how to get started with...
+  - Your first quick wins will be...
+  - We're here to support you through...
+  legacy_ids:
+  - '8'
+  aliases_by_context:
+    onboarding:
+    - Launch Health
+    corporate: []
+  aliases:
+  - Launch Health
+- id: SS9
+  name: Run & Operate
+  customer_journey_phase: Drive Adoption and Business Impact
+  hierarchy_level: L4
+  objectives:
+  - Conduct Strategic Business Reviews
+  - Monitor usage and adoption metrics
+  - Provide proactive support and guidance
+  - Promote customer events and communities
+  - Develop mutual plans for value realization
+  story_emphasis:
+    S: 0.1
+    O: 0.3
+    A: 0.1
+    R: 0.5
+  tone: Partnership, value-realization
+  exit_criteria_customer:
+  - Strategic alignment and mutual plans from Business Review
+  - Regular check-in cadence in place
+  - Active engagement in customer events and communities
+  exit_criteria_internal:
+  - Customer Solution and Account Health Greenzones are Green
+  - Prompt customer support ticket resolutions
+  - 'For at-risk customers: Get Well plan executed'
+  key_stakeholders:
+  - Practitioners
+  - Marketing Operations
+  - CSM/SAM
+  example_messages:
+  - Your adoption metrics show...
+  - We recommend expanding usage to...
+  - Here's what other teams are achieving...
+  legacy_ids:
+  - '9'
+  aliases_by_context:
+    onboarding:
+    - Run & Operate
+    - Run Operate
+    corporate: []
+  aliases:
+  - Run & Operate
+  - Run Operate
+- id: SS10
+  name: Renewal & Expand
+  customer_journey_phase: Grow Customer Relationship
+  hierarchy_level: L2
+  objectives:
+  - Present renewal proposal 90 days before contract end
+  - Propose expansion opportunities
+  - Negotiate and finalize renewal
+  - Identify upsell and cross-sell opportunities
+  story_emphasis:
+    S: 0.1
+    O: 0.4
+    A: 0.1
+    R: 0.4
+  tone: Growth-focused, value-reinforcing
+  exit_criteria_customer:
+  - Signed Renewal Contracts/Sales Order
+  - Signed Purchase Order (if needed)
+  exit_criteria_internal:
+  - Updated outlooks in CRM
+  - On-time completion for Order Management process
+  - Complete Handover document for new ASV
+  - Renewal readiness confirmed at T-180 days
+  key_stakeholders:
+  - C-Level Marketing (CMO)
+  - C-Level Tech (CIO, CTO)
+  - Senior Leaders of Marketing
+  example_messages:
+  - The value delivered over the past year includes...
+  - New opportunities to expand your capabilities...
+  - Here's how other customers are growing with us...
+  legacy_ids:
+  - '10'
+  aliases_by_context:
+    onboarding:
+    - Renewal & Expand
+    - Renew and Expand
+    corporate: []
+  aliases:
+  - Renew and Expand
+  - Renewal & Expand
+
+# ==============================================================================
+# NARRATIVE ARC GUIDANCE
+# Stage-by-stage SOAR opening pattern recommendations
+# Source: Research - Using SOAR Storytelling most effectively.md
+# ==============================================================================
+
+narrative_arc_guidance:
+  purpose: "Recommended narrative opening patterns and SOAR beat emphasis per sales stage"
+  source: "Research - Using SOAR Storytelling most effectively.md; Crafting Powerful Opening Plays.md"
+
+  by_stage:
+    SS0_account_planning:
+      opening_pattern: "Hypothesis-led: Based on our research, we believe you are facing X — here is the hypothesis we want to validate"
+      soar_beat: "S-dominant (80%)"
+      hook_type: "Research-backed insight"
+      narrative_goal: "Secure agreement on the problem before proposing any solution"
+
+    SS1_prospect_outreach:
+      opening_pattern: "Industry trend + provocative question: X trend is reshaping your industry — what is your strategy for Y?"
+      soar_beat: "S to O transition"
+      hook_type: "Provocative statistic or trend observation (Kairos)"
+      narrative_goal: "Create curiosity and urgency; book the next conversation"
+
+    SS2_opportunity_evaluation:
+      opening_pattern: "Consultative discovery: Tell us about your current situation with X — what is working and what is not?"
+      soar_beat: "S-focused, O emerging"
+      hook_type: "Open question that surfaces pain"
+      narrative_goal: "Confirm the business issue; establish Compelling Event"
+
+    SS3_detailed_discovery_vision:
+      opening_pattern: "Adobe POV: Based on what we have learned, here is how we see the opportunity to transform X"
+      soar_beat: "O to A transition"
+      hook_type: "Customer-specific insight framed as forward-looking opportunity"
+      narrative_goal: "Align on use cases; get customer to co-author the solution narrative"
+
+    SS4_circle_of_influence:
+      opening_pattern: "Stakeholder-specific value frame: For your role, the key business case is X — here is how peers in your position have succeeded"
+      soar_beat: "A-heavy, R emerging"
+      hook_type: "Peer proof + role-specific value"
+      narrative_goal: "Win C-suite commitment; validate business case ROI"
+
+    SS5_solution_definition:
+      opening_pattern: "Technical credibility: Here is the solution architecture and the verified outcomes it delivers"
+      soar_beat: "A-dominant, R as proof"
+      hook_type: "Architecture + validated case study"
+      narrative_goal: "Remove technical objections; finalize proposal alignment"
+
+    SS6_customer_commit:
+      opening_pattern: "Results-first: Here is the immediate value you will realize in the first 90 days — and here is what we need to make it happen"
+      soar_beat: "R-dominant (50%)"
+      hook_type: "Quick-win timeline + risk mitigation"
+      narrative_goal: "Secure verbal commitment; address pricing objections with value recapping"
+
+    SS7_execute_to_close:
+      opening_pattern: "Transition-focused: The journey begins with X — here is how your team will be supported every step"
+      soar_beat: "A + R balanced"
+      hook_type: "Onboarding roadmap + success metrics"
+      narrative_goal: "Smooth handover; sustain buyer confidence through signature"
+
+    SS8_SS10_post_sales:
+      opening_pattern: "Value realization: Here is the progress against your goals — and the next opportunity to expand value"
+      soar_beat: "R-dominant (50-60%)"
+      hook_type: "KPI dashboard + expansion story"
+      narrative_goal: "Reinforce ROI; surface expansion opportunity with peer proof"

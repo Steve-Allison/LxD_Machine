@@ -1,0 +1,150 @@
+_meta:
+  id: editorial_standards
+  title: Editorial Standards
+  description: Comprehensive editorial standards including clarity, confidence, brand
+    tone, and jargon management.
+  domain: writing
+  domain_type: cross_cutting
+  purpose: methodology
+  version: "2.1.0"
+  last_updated: '2026-03-01'
+  corpus_sources:
+    - "Corpus/Research/Best Practices for Writing Effective Corporate Learning Content.md"
+    - "Corpus/Research/RESEARCH-BASED_ENHANCEMENTS FOR VOICE.md"
+    - "Corpus/Research/Research - Corporate Learning Assessment- Strategies, Modalities, and Best Practices.md"
+
+
+  relationships:
+    - target: methodology/style_guide_standards.yaml
+      type: depends_on
+      description: "Complementary writing methodology: editorial rules and tone/voice conventions"
+    - target: methodology/inclusion_standards.yaml
+      type: depends_on
+      description: "Overlapping editorial scope: inclusive language is part of editorial practice"
+clarity:
+  description: "Ensuring message is understood instantly"
+  scoring_anchors:
+    excellent: "90-100 (Simple, direct, active voice, zero ambiguity)"
+    good: "70-89 (Mostly clear, minor passive voice)"
+    mixed: "50-69 (Academic tone, abstract nouns, requires effort)"
+    poor: "0-49 (Bureaucratic, dense, confusing)"
+
+  principles:
+    active_voice:
+      definition: "Subject performs the action (Who does what)"
+      observable_indicators:
+        - "Sentences follow Actor -> Action -> Object pattern"
+        - "Avoidance of 'to be' verbs + past participle"
+
+      anti_patterns:
+        - "Passive construction ('Mistakes were made')"
+        - "Buried actors ('It was decided by the committee')"
+
+      remediation_strategies:
+        passive_voice:
+          action: "Identify the 'Actor' and move them to the start of the sentence. Change 'The report was written by Sam' to 'Sam wrote the report'."
+
+    conciseness:
+      definition: "Maximum meaning, minimum words"
+      observable_indicators:
+        - "Short sentences (avg 15-20 words)"
+        - "No fluff words ('basically', 'actually', 'very')"
+
+      remediation_strategies:
+        wordiness:
+          action: "Remove all modifiers and qualifiers. Delete 'in order to', 'due to the fact that'. Use 'to' and 'because'."
+
+# ==============================================================================
+# TONE & CONFIDENCE
+# ==============================================================================
+
+confidence:
+  description: "Projecting authority and certainty"
+
+  principles:
+    weasel_words:
+      definition: "Words that weaken claims or evade responsibility"
+      indicators: ["maybe", "perhaps", "somewhat", "arguably", "it seems", "I think"]
+
+      remediation_strategies:
+        hedging:
+          action: "Delete the hedge word. If uncertain, state the condition explicitly ('If X, then Y') instead of softening the claim."
+
+    power_verbs:
+      definition: "Strong verbs that convey specific action"
+      indicators: ["accelerate", "transform", "generate", "eliminate", "guarantee"]
+
+      remediation_strategies:
+        weak_verbs:
+          action: "Replace 'help', 'do', 'make' with specific verbs like 'facilitate', 'execute', 'construct'."
+
+# ==============================================================================
+# JARGON MANAGEMENT
+# ==============================================================================
+
+jargon:
+  description: "Appropriate use of technical terminology"
+
+  rules:
+    - "Define acronyms on first use"
+    - "Avoid 'Zombie Nouns' (nominalizations like 'utilization', 'implementation')"
+
+  remediation_strategies:
+    zombie_nouns:
+      action: "Turn the noun back into a verb. Change 'The implementation of X occurred' to 'We implemented X'."
+    undefined_acronyms:
+      action: "Write out the full term followed by the acronym in parentheses."
+
+# ==============================================================================
+# COHERENCE (Flow)
+# ==============================================================================
+
+coherence:
+  description: "Logical flow between sentences and sections"
+
+  indicators:
+    - "Transition words (Therefore, However, Consequently)"
+    - "Logical bridging (Sentence B refers to concept in Sentence A)"
+
+  remediation_strategies:
+    choppy_flow:
+      action: "Add a transition word to show the logical relationship (Contrast, Causality, or Addition)."
+
+# ==============================================================================
+# ELITE SPEAKER METRICS (Quantitative Rhetoric)
+# ==============================================================================
+
+elite_speaker_metrics:
+  description: "Quantitative linguistic markers distinguishing elite communicators (TED/Keynote) from average speakers."
+
+  propositional_idea_density:
+    definition: "The number of unique ideas (propositions) per 10 words."
+    target: "< 0.50 (Conversational/Elite)"
+    anti_pattern: "> 0.55 (Academic/Dense)"
+
+    remediation_strategies:
+      high_density:
+        action: "Decompress the text. Turn one dense sentence into three shorter ones. Use repetition for emphasis."
+
+  verb_dynamism:
+    definition: "Ratio of Dynamic Verbs (run, build, decide) to Stative Verbs (be, have, seem)."
+    target: "High Dynamic Ratio"
+
+    remediation_strategies:
+      static_phrasing:
+        action: "Replace 'to be' verbs. Change 'There was a failure' to 'The system failed'."
+
+  linguistic_style_matching:
+    definition: "Matching the audience's use of function words (pronouns, prepositions) to build rapport."
+
+    remediation_strategies:
+      low_matching:
+        action: "Mirror the audience's pronoun usage. If they say 'We', use 'We'. Avoid jargon they don't use."
+
+  metaphor_density:
+    definition: "Frequency of metaphors per 1,000 words."
+    target: "High (especially for abstract concepts)"
+
+    remediation_strategies:
+      abstract_dryness:
+        action: "Insert a structural metaphor. Instead of 'The architecture is modular', say 'It works like Lego blocks'."

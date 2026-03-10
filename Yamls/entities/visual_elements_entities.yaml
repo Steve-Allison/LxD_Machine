@@ -1,0 +1,1382 @@
+_meta:
+  id: visual_elements_entities
+  purpose: entity
+  version: 3.32.0
+  last_updated: '2026-03-09'
+  description: Entity types and patterns for NLP-based visual content detection including design elements, chart types, layout
+    patterns, and visual hierarchy components.
+  domain: visual
+  domain_type: cross_cutting
+  corpus_sources:
+  - Corpus/Research/Best Practices for Writing Effective Corporate Learning Content.md
+  - Corpus/Research/Crafting Powerful Opening Plays.md
+  - Corpus/Research/Research - Corporate Learning Assessment- Strategies, Modalities, and Best Practices.md
+  - Corpus/Research/Visual Best Practices for Corporate Learning Videos.md
+  - Corpus/Research/mayers_15_principles.md
+  - 'Corpus/Research/The Architecture of Persuasion: A Deep Synthesis of Visual Communication and Narrative Storytelling.md'
+  - 'Corpus/Research/Semiotics of Strategy: Leveraging Visual Grammar for Persuasive Communication in High-Stakes Presentations.md'
+  - Corpus/Research/Slide Research Findings and Best Practices for Effective Presentations.md
+  - Corpus/Research/Research - Visual Communication and Storytelling.md
+  - Corpus/Research/Research - Canonical Presentation Methodology Research.md
+  - Corpus/Research/Research - The Anatomy of Presence.md
+  - Corpus/Research/Research - Slide Deck Design Playbook Research.md
+  - Corpus/Research/Research - Visual Analysis of Slide Decks.md
+  - Corpus/Research/Research - Infographics.md
+  - Corpus/Research/Research - visualisation_techniques_corporate_learning.md
+  - Corpus/Research/slide_design_research_monograph.md
+  - Corpus/Research/slide_design_research_monograph_part_2.md
+  - Corpus/Research/slide_design_research_monograph_part_3.md
+  - Corpus/Research/slide_design_research_monograph_part_4.md
+  - Corpus/Research/visual_narrative_flow_pass.md
+  - Corpus/Research/Research - Sketch Style for Wireframes and Storyboards.md
+  - Corpus/Research/theory_crap_design_principles.md
+  - Corpus/Research/High-Level Planning Tools in Corporate Learning - Wireframes, Content Maps & Course Blueprints.md
+  - Corpus/Research/Research - Narrative Visualization, Sketchnoting, Accessibility.md
+  - Corpus/Research/Research - Storyboard Best Practices.md
+  - Corpus/Research/research_-_slide_deck_design_playbook_research.md
+  - Corpus/Research/module-integration-strategy.md
+  - Corpus/Research/Research - Slide Deck Design Playbook Research.md
+  - Corpus/Research/course-creation-flow.md
+  relationships:
+  - target: methodology/visual_design_principles.yaml
+    type: depends_on
+    description: Design principle taxonomy for quality assessment
+  - target: ai_config/analyzer_catalog.yaml
+    type: depends_on
+    description: Slide analysis patterns and indicators
+entity_types:
+  chart_type:
+    description: Data visualization chart types and graph formats
+    canonical_id: chart_type
+    entity_kind: visual_component
+    family: data_visualization
+    gliner_label: CHART_TYPE
+    gliner_description: Data visualization bar line pie scatter chart graph plot diagram treemap heatmap
+    examples:
+    - bar chart
+    - line graph
+    - pie chart
+    - scatter plot
+    - treemap
+    - waterfall chart
+    - funnel chart
+    - Gantt chart
+    - heatmap
+    - bubble chart
+    - area chart
+    - donut chart
+    - radar chart
+    - Sankey diagram
+    confidence_threshold: 0.8
+    match_policy_ref: defaults
+    aliases:
+    - graph
+    - visualization
+    - data_viz
+    - diagram
+    indicators:
+    - chart
+    - graph
+    - plot
+    - diagram
+    - visualization
+    - visual
+    - map
+    patterns:
+    - \w+ chart
+    - \w+ graph
+    - \w+ plot
+    - \w+ diagram
+    color: '#3498db'
+    relates_to:
+    - target: data_proof_slide
+      relation: supports
+      weight: required
+      description: Chart types are the primary visual carrier for data proof slides. The choice of chart (bar, line, scatter,
+        pie) determines how effectively quantitative evidence is communicated. Chart type selection directly impacts the effectiveness
+        of proof-based narrative.
+      target_file: slide_types_entities
+    - target: claim
+      relation: supports
+      weight: required
+      description: "Charts serve as the Dashes (supporting evidence) that prove the Dot (Action Title claim) — the relationship is hierarchical and the chart data must explicitly prove the claim per Canonical Presentation Methodology"
+      target_file: narrative_entities
+    - target: cognitive_debt_marker
+      relation: triggers
+      weight: expected
+      description: "Charts with chartjunk (3D effects, backgrounds, legends) create cognitive debt by forcing viewers to process non-data ink per Slide Deck Design Playbook"
+    - target: design_principle
+      relation: supported_by
+      weight: expected
+      description: "Chart design must follow Tufte's data-ink ratio principle and CRAP framework for visual clarity per Slide Deck Design Playbook"
+    - target: layout_pattern
+      relation: supported_by
+      weight: expected
+      description: "Chart types depend on layout patterns for proper spatial positioning and sizing within slide compositions per Visualisation Techniques research"
+    - target: color_reference
+      relation: supported_by
+      weight: expected
+      description: "Charts rely on color encoding to distinguish data series, categories, and values; color choice directly affects chart readability per Visualisation Techniques research"
+    - target: accessibility_feature
+      relation: supported_by
+      weight: expected
+      description: "Charts require accessibility features (alt text descriptions, colour-blind safe palettes, pattern fills) to be perceivable by all audiences per Visualisation Techniques research"
+    - target: extraneous_load_marker
+      relation: triggers
+      weight: expected
+      description: "Complex chart types with decorative elements (3D effects, gradient fills, unnecessary gridlines) trigger extraneous cognitive load per Visualisation Techniques research"
+      target_file: cognitive_load_entities
+    - target: clarity_dimension
+      relation: enables
+      weight: expected
+      description: "Well-designed data visualisations with clear labels, appropriate chart type selection, and data-ink optimisation enable clarity scoring per Visualisation Techniques research"
+      target_file: scoring_entities
+    - target: working_memory_marker
+      relation: limits
+      weight: expected
+      description: "Complex or poorly chosen chart types with excessive data series overwhelm working memory capacity by demanding simultaneous comparison of too many visual elements per slide design research monograph part 4"
+      target_file: cognitive_load_entities
+    - target: quality_indicator
+      relation: supported_by
+      weight: expected
+      description: "Chart selection quality is governed by Cognitive Fit Theory — tables for symbolic/lookup tasks, line charts for trends, bar charts for comparison; misfit degrades comprehension (Cognitive Interface, §4.2)"
+    - target: intrinsic_load_marker
+      relation: supports
+      weight: expected
+      description: "Cognitive Fit Theory dictates chart selection: tables for lookup, line charts for trends, reducing intrinsic load"
+      target_file: cognitive_load_entities
+  layout_pattern:
+    description: Slide and page layout structures
+    canonical_id: layout_pattern
+    entity_kind: visual_component
+    family: design_structure
+    gliner_label: LAYOUT_PATTERN
+    gliner_description: Layout composition grid column split screen arrangement structure slide page template
+    examples:
+    - title slide
+    - two-column layout
+    - full-bleed image
+    - split screen
+    - grid layout
+    - asymmetrical layout
+    - Z-pattern
+    - F-pattern
+    - golden ratio
+    - rule of thirds
+    anti_examples:
+    - behavior pattern
+    - design pattern (software)
+    confidence_threshold: 0.7
+    match_policy_ref: defaults
+    aliases:
+    - layout
+    - composition
+    - structure
+    - arrangement
+    indicators:
+    - layout
+    - column
+    - grid
+    - pattern
+    - composition
+    - structure
+    - arrangement
+    - slide
+    patterns:
+    - \w+-column layout
+    - \w+ slide
+    - \w+ layout
+    - \w+ pattern
+    color: '#9b59b6'
+    relates_to:
+    - target: visual_quality_dimension
+      relation: supports
+      weight: required
+      description: Layout patterns directly impact visual quality assessment. Proper grid systems, alignment consistency,
+        and spatial organization are measurable components of visual quality scoring.
+      target_file: scoring_entities
+    - target: design_principle
+      relation: supported_by
+      weight: required
+      description: "Layout patterns are governed by the five design principles (Contrast, Repetition, Alignment, Proximity, Balance) applied via the mandatory 12-column grid system per Canonical Presentation Methodology"
+    - target: extraneous_load_marker
+      relation: limits
+      weight: expected
+      description: "Grid-based layouts with whitespace, alignment, and clear section boundaries directly limit extraneous cognitive load by creating visual order and preventing clutter per Infographics research"
+      target_file: cognitive_load_entities
+    - target: content_structure_marker
+      relation: enables
+      weight: expected
+      description: "Layout patterns establish the visual structure that content architecture markers detect per slide design research monograph"
+      target_file: content_architecture_entities
+    - target: storyboard_element
+      relation: supports
+      weight: expected
+      description: "Layout patterns using foreground/midground/background spatial language structure the composition of storyboard frames for visual clarity per Sketch Style for Wireframes and Storyboards"
+      target_file: media_entities
+    - target: planning_artefact_marker
+      relation: supported_by
+      weight: optional
+      description: "Layout patterns are supported by planning artefacts — LXD recommends sketching sample screen layouts or UI wireframes during the planning phase to confirm the learning experience will be intuitive, especially for digital courses per High-Level Planning Tools research"
+      target_file: content_architecture_entities
+    - target: slide_type
+      relation: supports
+      weight: required
+      description: "Layout patterns (1-column, 2-column, 3-pillar, hero+detail) directly determine which slide types can be effectively rendered per Slide Deck Design Playbook"
+      target_file: slide_types_entities
+    - target: chart_type
+      relation: supports
+      weight: expected
+      description: "Layout patterns (force-directed, clustering, ego-centric expansion) organize chart elements spatially to enable narrative reading of network and multi-dimensional data per Narrative Visualization research"
+    - target: microlearning_format
+      relation: supports
+      weight: expected
+      description: "High-definition graphics optimised for mobile viewing, consistent visual hierarchy, and spatial contiguity are specified layout requirements for microlearning per AI Microlearning Guide"
+      target_file: content_format_entities
+    - target: extraneous_load_marker
+      relation: resolves
+      weight: expected
+      description: "Layout patterns (line length 50-75 CPL, proximity spacing, left alignment) resolve extraneous cognitive load"
+      target_file: cognitive_load_entities
+    - target: SOAR_NARRATIVE_QUALITY
+      relation: supported_by
+      weight: expected
+      description: "Layout selection determined by SOAR phase: Situation=Grid, Obstacle=Metaphor, Approach=Flow, Results=Big Statistic"
+      target_file: sales_entities
+    - target: content_structure_marker
+      relation: supported_by
+      weight: expected
+      description: "OPML hierarchy maps deterministically to visual layouts: L1=headers, L2=cards, L3=atoms, L4=reveals"
+      target_file: content_architecture_entities
+  visual_element:
+    description: Individual design elements and components
+    canonical_id: visual_element
+    entity_kind: visual_component
+    family: design_elements
+    gliner_label: VISUAL_ELEMENT
+    gliner_description: Icon logo photograph illustration infographic screenshot diagram flowchart timeline callout
+    examples:
+    - icon
+    - logo
+    - photograph
+    - illustration
+    - infographic
+    - screenshot
+    - diagram
+    - flowchart
+    - timeline
+    - callout box
+    - pull quote
+    - data table
+    confidence_threshold: 0.75
+    match_policy_ref: defaults
+    aliases:
+    - element
+    - component
+    - graphic
+    - asset
+    indicators:
+    - icon
+    - logo
+    - image
+    - photo
+    - graphic
+    - illustration
+    - diagram
+    - screenshot
+    - table
+    patterns:
+    - \w+ icon
+    - \w+ graphic
+    - \w+ illustration
+    color: '#2ecc71'
+    relates_to:
+    - target: extraneous_load_marker
+      relation: triggers
+      weight: expected
+      description: Excessive visual elements (chartjunk, decorative graphics) increase extraneous cognitive load per Tufte
+        principles
+      target_file: cognitive_load_entities
+    - target: cognitive_load_dimension
+      relation: triggers
+      weight: required
+      description: Visual elements directly trigger cognitive load responses. High visual density creates extraneous load;
+        well-organized visual hierarchies reduce intrinsic load. The choice of visual_elements (color, typography, layout)
+        determines whether viewers experience germane (productive) or extraneous (wasteful) cognitive processing.
+      target_file: scoring_entities
+    - target: visual_narrative_element
+      relation: supports
+      weight: required
+      description: Visual elements (composition, framing, symbolism) are the tools used to express narrative story elements
+        visually per Visual Communication and Storytelling
+    - target: narrative_hook
+      relation: supports
+      weight: expected
+      description: Visual hierarchy directs the viewer's eye first to the hook then context then call to action in static
+        media per Visual Communication and Storytelling
+      target_file: narrative_entities
+    - target: design_principle
+      relation: supported_by
+      weight: expected
+      description: "Visual elements are governed by Gestalt principles (proximity, similarity, closure, figure-ground) and dual coding theory for effective multimodal communication per Visualisation Techniques research"
+    - target: germane_load_marker
+      relation: enables
+      weight: expected
+      description: "Well-designed visual elements enable germane cognitive processing by activating dual coding (verbal + visual channels) which doubles encoding pathways per Visualisation Techniques research"
+      target_file: cognitive_load_entities
+    - target: clarity_dimension
+      relation: supports
+      weight: expected
+      description: "Visual elements directly contribute to the clarity scoring dimension when properly designed per slide design research monograph"
+      target_file: scoring_entities
+    - target: storyboard_element
+      relation: bridges
+      weight: optional
+      description: "Visual elements used in sketchnoting (connectors, containers, icons, shadow/color) serve as rapid prototyping components that bridge to formal storyboard elements for high-fidelity visualization per Narrative Visualization research"
+      target_file: media_entities
+    - target: working_memory_marker
+      relation: limits
+      weight: expected
+      description: "Excessive visual elements limit working memory capacity — only graphics that directly support the learning objective should be included per the coherence principle per Visual Best Practices for Corporate Learning Videos"
+      target_file: cognitive_load_entities
+  color_reference:
+    description: Color names, values, and palette references
+    canonical_id: color_reference
+    entity_kind: visual_component
+    family: color_theory
+    gliner_label: COLOR_REFERENCE
+    gliner_description: Color palette gradient hue tone shade tint contrast monochromatic complementary scheme
+    examples:
+    - brand blue
+    - primary color
+    - accent color
+    - gradient
+    - monochromatic
+    - complementary colors
+    - warm palette
+    - cool palette
+    - high contrast
+    - muted tones
+    confidence_threshold: 0.7
+    validators:
+    - type: regex
+      ref: hex_color
+    match_policy_ref: defaults
+    aliases:
+    - color
+    - colour
+    - palette
+    - scheme
+    indicators:
+    - color
+    - colour
+    - palette
+    - gradient
+    - hue
+    - tone
+    - shade
+    - tint
+    - contrast
+    patterns:
+    - \w+ color
+    - \w+ palette
+    - \w+ gradient
+    - '#[0-9A-Fa-f]{6}'
+    - rgb\(\d+
+    color: '#e74c3c'
+    relates_to:
+    - target: accessibility_feature
+      relation: supports
+      weight: expected
+      description: Color choices must support accessibility through adequate contrast and consideration of color vision deficiency
+    - target: accessibility_feature
+      relation: bridges
+      weight: required
+      description: Color choices must work with accessibility features. High contrast color combinations support accessibility;
+        color-only information becomes inaccessible. Color decisions bridge visual design intent with inclusive design requirements.
+    - target: brand_element
+      relation: supports
+      weight: required
+      description: Color choices reinforce brand elements. Consistent color palettes across presentations strengthen brand
+        recognition and coherence. Brand colors become visual anchors that aid audience memory and emotional association.
+    - target: accessibility_feature
+      relation: supported_by
+      weight: required
+      description: Color usage must meet WCAG contrast ratios of 4.5:1 for normal text based on relative luminance not hue
+        per Visual Communication and Storytelling
+    - target: low_contrast_text
+      relation: triggers
+      weight: expected
+      description: Color choices that fail WCAG luminance contrast requirements trigger low contrast text accessibility violations
+        per Visual Communication and Storytelling
+      target_file: accessibility_entities
+    - target: pathos_appeal
+      relation: enables
+      weight: expected
+      description: Color is a potent driver of emotion and behavior with cultural and contextual associations evoking specific
+        feelings per Visual Communication and Storytelling
+      target_file: rhetorical_devices_entities
+    - target: ethos_appeal
+      relation: supports
+      weight: optional
+      description: "Color references support ethos appeal; navy signals trust/calm, black signals authority/sophistication, grey signals neutrality, and red signals power — serving credibility establishment through enclothed cognition per Anatomy of Presence research"
+      target_file: rhetorical_devices_entities
+    - target: nonverbal_cue
+      relation: specialises
+      weight: optional
+      description: "Color functions as a specialised nonverbal cue; attire colour choices signal specific psychological associations (navy=trust, black=authority, red=power) that perceivers process through thin-slicing per Anatomy of Presence research"
+      target_file: performance_entities
+    - target: color_only_indicator
+      relation: limits
+      weight: expected
+      description: "Color must never be the only means of conveying information; must be paired with labels, icons, or patterns per Slide Deck Design Playbook"
+      target_file: accessibility_entities
+    - target: design_principle
+      relation: supported_by
+      weight: expected
+      description: "Color choices are governed by design principles (contrast for readability, repetition for consistency, proximity for grouping) per Visualisation Techniques research"
+    - target: low_contrast_ratio
+      relation: triggers
+      weight: required
+      description: "Color references with insufficient contrast ratios directly trigger low contrast accessibility violations per slide design research monograph"
+      target_file: accessibility_entities
+    - target: narrative_tension
+      relation: supports
+      weight: expected
+      description: "Color progression (warm-to-cool, dark-to-bright) directly supports narrative tension by creating visual emotional pacing across the slide sequence per visual_narrative_flow_pass"
+      target_file: narrative_entities
+  typography_element:
+    description: Font and text styling references
+    canonical_id: typography_element
+    entity_kind: visual_component
+    family: typography
+    gliner_label: TYPOGRAPHY_ELEMENT
+    gliner_description: Font text headline title subtitle body caption label typeface typography styling
+    examples:
+    - headline
+    - body text
+    - caption
+    - pull quote
+    - callout
+    - label
+    - title
+    - subtitle
+    - bullet point
+    - numbered list
+    confidence_threshold: 0.75
+    match_policy_ref: defaults
+    aliases:
+    - text
+    - font
+    - type
+    - copy
+    indicators:
+    - headline
+    - title
+    - subtitle
+    - body
+    - caption
+    - label
+    - text
+    - font
+    - type
+    patterns:
+    - \w+ text
+    - \w+ font
+    - \w+ headline
+    color: '#f39c12'
+    relates_to:
+    - target: accessibility_feature
+      relation: supports
+      weight: required
+      description: Typography choices (font size, weight, contrast) are critical accessibility features. Sans-serif fonts,
+        adequate contrast, and minimum 18pt sizes support visual accessibility for diverse audiences including those with
+        low vision.
+    - target: brand_element
+      relation: supports
+      weight: expected
+      description: Typefaces possess distinct personalities and communicate brand voice beyond the words they spell per Visual
+        Communication and Storytelling
+    - target: low_contrast_text
+      relation: triggers
+      weight: expected
+      description: Typography choices in size weight and contrast with background directly affect legibility and can trigger
+        contrast violations per Visual Communication and Storytelling
+      target_file: accessibility_entities
+    - target: design_principle
+      relation: supported_by
+      weight: expected
+      description: "Typography elements depend on design principles (hierarchy, contrast, repetition) to establish clear reading order and visual emphasis per Visualisation Techniques research"
+    - target: readability_flag
+      relation: triggers
+      weight: expected
+      description: "Typography choices directly trigger readability flags when font size, weight or spacing violate legibility thresholds per slide design research monograph"
+      target_file: writing_entities
+    - target: small_font_size
+      relation: triggers
+      weight: required
+      description: "Typography elements below minimum size thresholds directly trigger small font size accessibility violations per slide design research monograph"
+      target_file: accessibility_entities
+    - target: extraneous_load_marker
+      relation: resolves
+      weight: expected
+      description: "Typographic hierarchy (H1 24-30pt, H2 18-20pt, H3 14-16pt, Body 10-12pt) reduces extraneous load by signaling importance levels and enabling scanning without reading all content (Cognitive Interface, §2.2.1)"
+      target_file: cognitive_load_entities
+    - target: clarity_dimension
+      relation: supports
+      weight: expected
+      description: "Typographic hierarchy supports clarity by enabling scanning behavior and signaling information importance"
+      target_file: scoring_entities
+  design_principle:
+    description: Visual design principles and concepts
+    canonical_id: design_principle
+    entity_kind: design_concept
+    family: design_theory
+    gliner_label: DESIGN_PRINCIPLE
+    gliner_description: Visual hierarchy white space alignment contrast repetition proximity balance emphasis unity gestalt
+      given new ideal real
+    examples:
+    - visual hierarchy
+    - white space
+    - alignment
+    - contrast
+    - repetition
+    - proximity
+    - balance
+    - emphasis
+    - unity
+    - gestalt
+    - Given/New
+    - Ideal/Real
+    - reading gravity
+    - Z-pattern reading
+    - F-pattern reading
+    anti_examples:
+    - guiding principle
+    - first principle
+    - business principle
+    confidence_threshold: 0.7
+    match_policy_ref: defaults
+    aliases:
+    - principle
+    - concept
+    - guideline
+    - rule
+    indicators:
+    - hierarchy
+    - alignment
+    - contrast
+    - balance
+    - white space
+    - negative space
+    - proximity
+    - repetition
+    - consistency
+    - given/new
+    - ideal/real
+    patterns:
+    - visual \w+
+    - \w+ principle
+    - \w+ space
+    - given[/-]new
+    - ideal[/-]real
+    color: '#1abc9c'
+    relates_to:
+    - target: visual_quality_dimension
+      relation: enables
+      weight: required
+      description: Application of design principles (contrast, alignment, proximity, repetition) enables high visual quality
+      target_file: scoring_entities
+    - target: clarity_dimension
+      relation: enables
+      weight: required
+      description: Design principles (hierarchy, contrast, proximity, alignment, whitespace) are the foundational tools for
+        achieving clarity. They control perception and guide viewer attention sequentially through content. Without adherence
+        to design principles, clarity scores cannot be optimized.
+      target_file: scoring_entities
+    - target: layout_pattern
+      relation: enables
+      weight: required
+      description: Design principles (hierarchy, contrast, balance, unity) govern how layout patterns are arranged to achieve
+        clarity per Visual Communication and Storytelling
+    - target: extraneous_load_marker
+      relation: limits
+      weight: expected
+      description: Effective design principles reduce extraneous cognitive load by organizing visual information for efficient
+        processing per Visual Communication and Storytelling
+      target_file: cognitive_load_entities
+    - target: color_reference
+      relation: contains
+      weight: expected
+      description: Design principles like contrast and hierarchy are implemented through color manipulation as a primary visual
+        tool per Visual Communication and Storytelling
+    - target: typography_element
+      relation: contains
+      weight: expected
+      description: Design principles like hierarchy and emphasis are implemented through typography variations in size weight
+        and color per Visual Communication and Storytelling
+    - target: extraneous_load_marker
+      relation: resolves
+      weight: expected
+      description: "Gestalt design principles resolve extraneous load by allowing brain to parse structure without conscious effort"
+      target_file: cognitive_load_entities
+    - target: semiotic_arrangement
+      relation: enables
+      weight: expected
+      description: Design principles provide the compositional grammar through which semiotic signs construct meaning per Visual
+        Communication and Storytelling
+    - target: nonverbal_cue
+      relation: enables
+      weight: optional
+      description: "Design principles enable nonverbal communication; in virtual contexts, background composition, lighting design, and camera angle function as environmental design elements that carry credibility signals per Anatomy of Presence research"
+      target_file: performance_entities
+    - target: novice_learner
+      relation: supports
+      weight: optional
+      description: "Design principles (progressive disclosure, signaling, spatial contiguity) support novice learners by reducing extraneous cognitive load and scaffolding visual comprehension per slide design research monograph part 3"
+      target_file: audience_entities
+    - target: storyboard_element
+      relation: supports
+      weight: expected
+      description: "Design principles of clarity, simplicity, and consistency govern storyboard frame composition — minimal shading, clean outlines, and spatial hierarchy ensure frames communicate layout and action without unnecessary detail per Sketch Style for Wireframes and Storyboards"
+      target_file: media_entities
+    - target: brand_element
+      relation: enables
+      weight: expected
+      description: "CRAP Repetition principle establishes brand identity by repeating consistent fonts, colours, and styles throughout designs, building visual cohesion and recognition per theory_crap_design_principles"
+    - target: accessibility_feature
+      relation: supports
+      weight: expected
+      description: "CRAP principles collectively improve readability and usability — Contrast ensures legibility, Proximity groups related content for scannability, Alignment creates clean reading paths per theory_crap_design_principles"
+    - target: cognitive_debt_marker
+      relation: limits
+      weight: optional
+      description: "Design principles like progressive disclosure and annotative scaffolding limit cognitive debt by preventing information overload when users encounter unfamiliar visualization grammars per Narrative Visualization research"
+    - target: accessibility_feature
+      relation: enables
+      weight: expected
+      description: "The Squint Test and 3-Second Rule ensure the focal point is cognitively accessible; design principles of contrast and hierarchy enable accessibility of key information (Canonical Presentation Methodology)"
+    - target: progressive_disclosure_marker
+      relation: bridges
+      weight: expected
+      description: "Design principles of progressive disclosure in visualization (ego-centric graph expansion, scrollytelling chunking) directly instantiate the progressive disclosure cognitive load pattern per Narrative Visualization research"
+      target_file: cognitive_load_entities
+    - target: mayer_extraneous_principle
+      relation: supported_by
+      weight: required
+      description: "Design principles are governed by Mayer's extraneous principles — Signalling uses bold text, arrows, highlighting to direct attention; Spatial Contiguity places labels near relevant visual parts per mayers_15_principles"
+      target_file: cognitive_load_entities
+    - target: microlearning_format
+      relation: supports
+      weight: expected
+      description: "Minimalist approach with coherence, signalling, and spatial contiguity reduces cognitive load while maintaining engagement through clean, mobile-optimised layouts per AI Microlearning Guide"
+      target_file: content_format_entities
+    - target: VISUAL_QUALITY_DIMENSION
+      relation: supports
+      weight: expected
+      description: "CRAP audit evaluates contrast, repetition, alignment, proximity determining visual quality scores"
+      target_file: scoring_entities
+    - target: layout_pattern
+      relation: contains
+      weight: expected
+      description: "Mayer's spatial contiguity requires layout patterns with labels adjacent to diagram elements per Applying Mayer's Principles Practical Checklist"
+  animation_type:
+    description: Motion and transition types
+    canonical_id: animation_type
+    entity_kind: visual_component
+    family: motion_design
+    gliner_label: ANIMATION_TYPE
+    gliner_description: Animation transition motion fade slide zoom morph wipe dissolve ease parallax effect
+    examples:
+    - fade in
+    - slide in
+    - zoom
+    - morph
+    - wipe
+    - dissolve
+    - bounce
+    - ease in
+    - ease out
+    - parallax
+    confidence_threshold: 0.75
+    match_policy_ref: defaults
+    aliases:
+    - animation
+    - transition
+    - motion
+    - effect
+    indicators:
+    - animation
+    - transition
+    - motion
+    - fade
+    - slide
+    - zoom
+    - morph
+    - ease
+    patterns:
+    - fade \w+
+    - slide \w+
+    - \w+ transition
+    - \w+ animation
+    color: '#8e44ad'
+    relates_to:
+    - target: slide_type
+      relation: supports
+      weight: optional
+      description: Animation types (reveal animations, motion graphics, transitions) should reinforce slide type function.
+        Data proof slides may use progressive reveal; narrative slides use transitions to signal scene shifts. Animation choice
+        depends on slide purpose.
+    - target: extraneous_load_marker
+      relation: limits
+      weight: expected
+      description: Animation principles mimicking real-world physics reduce cognitive load by making motion feel familiar and
+        intuitive per Visual Communication and Storytelling
+      target_file: cognitive_load_entities
+    - target: brand_element
+      relation: supports
+      weight: expected
+      description: Animation personality principles (anticipation, exaggeration, appeal) anthropomorphize interfaces to match
+        brand voice per Visual Communication and Storytelling
+    - target: progressive_disclosure_marker
+      relation: enables
+      weight: expected
+      description: "Build animations and staged reveals enable progressive disclosure by controlling information flow rate to manage cognitive load per Visualisation Techniques research"
+      target_file: cognitive_load_entities
+    - target: accessibility_feature
+      relation: limits
+      weight: expected
+      description: "Animation types must be constrained by accessibility requirements — motion-sensitive users need reduced-motion alternatives and essential content must remain accessible without animation per slide design research monograph part 4"
+    - target: visual_narrative_element
+      relation: supports
+      weight: expected
+      description: "Animation types (flow particles, path-pulse animation, ghosting past values) serve as narrative devices that make temporal dynamics and system behavior visible in interactive visualizations per Narrative Visualization research"
+    - target: keyboard_inaccessibility
+      relation: triggers
+      weight: optional
+      description: "Animation-driven narratives that require mouse-hover or slider interaction create keyboard inaccessibility barriers for users who cannot operate mouse-dependent controls per Narrative Visualization research"
+      target_file: accessibility_entities
+    - target: video_edit_transition
+      relation: bridges
+      weight: expected
+      description: "Animation types bridge with video edit transitions as coordinated visual movement elements — animated chart overlays appear alongside camera cuts during topic shifts per Visual Best Practices for Corporate Learning Videos"
+      target_file: media_entities
+  slide_type:
+    description: Common presentation slide categories
+    canonical_id: slide_type
+    entity_kind: visual_component
+    family: presentation_structure
+    gliner_label: SLIDE_TYPE
+    gliner_description: Slide page title agenda section divider content comparison quote data appendix frame
+    examples:
+    - title slide
+    - agenda slide
+    - section divider
+    - content slide
+    - comparison slide
+    - quote slide
+    - data slide
+    - thank you slide
+    - Q&A slide
+    - appendix slide
+    confidence_threshold: 0.8
+    match_policy_ref: defaults
+    aliases:
+    - slide
+    - page
+    - frame
+    indicators:
+    - slide
+    - page
+    - title
+    - agenda
+    - section
+    - divider
+    - content
+    - appendix
+    patterns:
+    - \w+ slide
+    - \w+ page
+    - section \w+
+    color: '#e67e22'
+    relates_to:
+    - target: video_shot_type
+      relation: bridges
+      weight: expected
+      description: "Slide types bridge with video shot types — green-screen compositing places slide content behind or beside the presenter, requiring coordinated framing for each slide style per Visual Best Practices for Corporate Learning Videos"
+      target_file: media_entities
+  brand_element:
+    description: Brand identity components
+    canonical_id: brand_element
+    entity_kind: visual_component
+    family: brand_identity
+    gliner_label: BRAND_ELEMENT
+    gliner_description: Brand logo wordmark identity colors fonts tagline guidelines visual assets style
+    examples:
+    - logo
+    - wordmark
+    - brand colors
+    - brand fonts
+    - tagline
+    - brand guidelines
+    - visual identity
+    - brand assets
+    - style guide
+    confidence_threshold: 0.75
+    match_policy_ref: defaults
+    aliases:
+    - brand
+    - identity
+    - branding
+    indicators:
+    - logo
+    - brand
+    - identity
+    - wordmark
+    - tagline
+    - guidelines
+    - style guide
+    patterns:
+    - brand \w+
+    - \w+ identity
+    - \w+ guidelines
+    color: '#16a085'
+    relates_to:
+    - target: design_principle
+      relation: limits
+      weight: expected
+      description: "Brand guidelines constrain design principle application — brand-mandated colors, fonts, and layouts override general design best practices per Visualisation Techniques research"
+    - target: executive_audience
+      relation: supports
+      weight: optional
+      description: "Brand elements (logos, wordmarks, visual identity) directly support executive audience expectations for professional polish and corporate identity alignment per slide design research monograph part 2"
+      target_file: audience_entities
+    - target: storyboard_element
+      relation: supports
+      weight: expected
+      description: "Brand style bibles and consistent color/character references prevent generic visuals in storyboards — brand elements govern storyboard visual coherence per Research - Storyboard Best Practices"
+      target_file: media_entities
+  accessibility_feature:
+    description: Accessibility-related visual elements
+    canonical_id: accessibility_feature
+    entity_kind: compliance_standard
+    family: accessibility
+    gliner_label: ACCESSIBILITY_FEATURE
+    gliner_description: Accessibility a11y alt text color contrast WCAG screen reader focus indicator inclusive
+    examples:
+    - alt text
+    - color contrast
+    - screen reader
+    - WCAG compliance
+    - keyboard navigation
+    - focus indicator
+    - aria label
+    - reading order
+    confidence_threshold: 0.7
+    match_policy_ref: defaults
+    aliases:
+    - a11y
+    - accessibility
+    - inclusive_design
+    indicators:
+    - accessibility
+    - a11y
+    - WCAG
+    - contrast
+    - alt text
+    - screen reader
+    - inclusive
+    patterns:
+    - alt \w+
+    - \w+ contrast
+    - WCAG \w+
+    - screen reader
+    color: '#27ae60'
+    relates_to:
+    - target: keyboard_inaccessibility
+      relation: resolves
+      weight: required
+      description: "Accessibility features (focus management, Tab-navigable data points, ARIA live regions) directly resolve keyboard inaccessibility barriers in interactive data visualizations per Narrative Visualization research"
+      target_file: accessibility_entities
+    - target: missing_alt_indicator
+      relation: resolves
+      weight: required
+      description: "Accessibility features including extended descriptions (aria-describedby), shadow DOM structures, and data sonification resolve missing alt-text barriers for complex data visualizations per Narrative Visualization research"
+      target_file: accessibility_entities
+    - target: microlearning_format
+      relation: supports
+      weight: required
+      description: "WCAG 2.1 AA compliance, keyboard navigation, screen reader compatibility, 200% text resizing, and neurodiversity accommodations are mandatory for microlearning per AI Microlearning Guide"
+      target_file: content_format_entities
+    - target: typography_element
+      relation: limits
+      weight: expected
+      description: "Accessibility requirements constrain typography choices — minimum font sizes, sufficient line spacing, and sans-serif defaults ensure readability for all users per slide deck design playbook"
+    - target: color_reference
+      relation: limits
+      weight: expected
+      description: "WCAG accessibility standards constrain colour palette choices — sufficient contrast ratios and colour-blind-safe palettes are mandatory per slide deck design playbook"
+    - target: learner_characteristic
+      relation: supports
+      weight: required
+      description: "Accessibility features support learner characteristics — neurodiversity accommodations (ADHD-friendly, autism-friendly, dyslexia-friendly) are generated based on learner profiles per module-integration-strategy"
+      target_file: pedagogical_frameworks_entities
+    - target: design_principle
+      relation: supported_by
+      weight: required
+      description: "Accessibility features are supported by design principles — WCAG compliance and navigation accommodations follow universal design principles applied during screenplan/storyboard creation per course-creation-flow"
+    - target: quality_indicator
+      relation: triggers
+      weight: expected
+      description: "Accessibility features trigger quality indicators — accessibility compliance checking is a defined quality gate activity during development per course-creation-flow"
+  quality_indicator:
+    description: Visual quality assessment markers
+    canonical_id: quality_indicator
+    entity_kind: quality_assessment
+    family: design_quality
+    gliner_label: QUALITY_INDICATOR
+    gliner_description: Quality resolution high low pixelated blurry crisp professional polished draft fidelity
+    examples:
+    - high resolution
+    - pixelated
+    - blurry
+    - crisp
+    - professional
+    - polished
+    - rough draft
+    - stock photo
+    - custom illustration
+    confidence_threshold: 0.65
+    match_policy_ref: defaults
+    aliases:
+    - quality
+    - resolution
+    - fidelity
+    indicators:
+    - resolution
+    - quality
+    - pixelated
+    - blurry
+    - crisp
+    - professional
+    - polished
+    - draft
+    - stock
+    patterns:
+    - high \w+
+    - low \w+
+    - \w+ quality
+    - \w+ resolution
+    color: '#c0392b'
+    relates_to:
+    - target: visual_quality_dimension
+      relation: supports
+      weight: required
+      description: Quality indicators (image resolution, design consistency, polish, attention to detail) directly support
+        visual quality dimension assessment. Presentations with high quality indicators score well on visual quality metrics.
+      target_file: scoring_entities
+    - target: engagement_dimension
+      relation: supports
+      weight: expected
+      description: "Quality indicators (image resolution, design consistency, visual polish) support engagement scoring by sustaining audience attention through professional visual presentation per slide design research monograph part 2"
+      target_file: scoring_entities
+    - target: video_shot_type
+      relation: supported_by
+      weight: expected
+      description: "Quality indicators like sharp focus, good contrast, crisp audio, and even lighting are directly supported by proper video shot type execution using professional techniques per Visual Best Practices for Corporate Learning Videos"
+      target_file: media_entities
+    - target: extraneous_load_marker
+      relation: resolves
+      weight: expected
+      description: "Tufte's Data-Ink Ratio quality indicator drives removal of chart junk (gridlines, 3D effects, backgrounds) that generates extraneous cognitive load (Cognitive Interface, §4.1)"
+      target_file: cognitive_load_entities
+  semiotic_arrangement:
+    description: Spatial arrangement signal reflecting Kress & van Leeuwen's visual grammar — Given/New (left/right axis)
+      and Ideal/Real (top/bottom axis) positioning as meaning-making structures
+    canonical_id: semiotic_arrangement
+    entity_kind: design_concept
+    family: visual_grammar
+    gliner_label: SEMIOTIC_ARRANGEMENT
+    gliner_description: Semiotic arrangement given new ideal real left right top bottom spatial positioning visual grammar
+      compositional meaning
+    examples:
+    - The 'before' state on the left, the 'after' state on the right.
+    - Aspirational vision at the top, operational detail below.
+    - Given information in the left panel; new information on the right.
+    - Ideal outcome framed in the upper section.
+    - Current state left, future state right.
+    - Headline promise at top; evidence below the fold.
+    - Problem in the upper-left; solution in the lower-right.
+    confidence_threshold: 0.65
+    match_policy_ref: defaults
+    aliases:
+    - visual grammar
+    - spatial arrangement
+    - compositional structure
+    indicators:
+    - left panel
+    - right panel
+    - upper section
+    - lower section
+    - before state
+    - after state
+    - given/new
+    - ideal/real
+    patterns:
+    - (left|right) (panel|column|side)
+    - (upper|top|lower|bottom) (section|half|panel)
+    - before.+left.+after.+right
+    - current state.+left.+future.+right
+    color: '#2c3e50'
+    theory_source: 'Kress & van Leeuwen (1996) Reading Images: The Grammar of Visual Design'
+    metafunctions:
+      compositional: Given/New (left/right) and Ideal/Real (top/bottom) positioning as semantic organisation
+      interactional: Gaze, angle, and distance encode power relationship between image and viewer
+      representational: Narrative vs conceptual processes — action vs classification structures
+    scoring_note: 'SEMIOTIC_ARRANGEMENT mismatch (e.g., solution in Given/left position, problem in New/right) detected by
+      scoring engine as compositional conflict: penalty -10 points'
+    relates_to:
+    - target: visual_narrative_element
+      relation: supports
+      weight: required
+      description: Semiotic arrangement (the position and relationship of visual elements) creates narrative meaning. Vectors,
+        placement, and spatial relationships between elements tell visual stories and establish cause-effect relationships.
+    - target: visual_narrative_element
+      relation: enables
+      weight: required
+      description: Semiotics is the explicit bridge connecting visual communication to visual storytelling through sign encoding
+        and decoding per Visual Communication and Storytelling
+    - target: brand_element
+      relation: supports
+      weight: expected
+      description: A brand is a symbol with mission and values coded into semiotic signifiers that audiences decode culturally
+        per Visual Communication and Storytelling
+    - target: metaphor
+      relation: specialises
+      weight: expected
+      description: Symbolic signs where signifier has no logical connection to signified represent learned cultural metaphorical
+        meaning per Visual Communication and Storytelling
+      target_file: rhetorical_devices_entities
+    - target: extraneous_load_marker
+      relation: limits
+      weight: expected
+      description: "Effective semiotic composition (intersemiotic complementarity using Elaboration and Extension modes) directly limits extraneous cognitive load; semiotic conflicts and decorative images increase it per Visual Analysis of Slide Decks"
+      target_file: cognitive_load_entities
+    - target: germane_load_marker
+      relation: supports
+      weight: expected
+      description: "Dual-coded semiotic arrangements (text + visuals) support germane processing by creating two memory pathways — verbal and visual — doubling recall chances per Infographics research on dual coding theory"
+      target_file: cognitive_load_entities
+    - target: design_principle
+      relation: supported_by
+      weight: expected
+      description: "Semiotic arrangements depend on design principles (proximity, contrast, alignment) to construct compositional meaning through Given/New and Ideal/Real axes per Visualisation Techniques research"
+    - target: semiotic_coherence_dimension
+      relation: enables
+      weight: expected
+      description: "Intentional semiotic arrangements using visual grammar directly enable semiotic coherence scoring by providing assessable compositional structure per Visualisation Techniques research"
+      target_file: scoring_entities
+    - target: working_memory_marker
+      relation: limits
+      weight: expected
+      description: "Overloaded semiotic arrangements limit working memory when too many symbolic elements compete for processing — arrangement must stay purposeful and coherent per Visual Best Practices for Corporate Learning Videos"
+      target_file: cognitive_load_entities
+    - target: SEMIOTIC_COHERENCE_DIMENSION
+      relation: supports
+      weight: expected
+      description: "Gestalt principles operationalized as layout rules define semiotic coherence in slide design"
+      target_file: scoring_entities
+  cognitive_debt_marker:
+    description: Visual anti-patterns that increase cognitive load — detectable signals of split-attention, redundancy effect,
+      wall-of-text, and bullet overload violations of Cognitive Load Theory
+    canonical_id: cognitive_debt_marker
+    entity_kind: quality_assessment
+    family: cognitive_load
+    gliner_label: COGNITIVE_DEBT
+    gliner_description: Cognitive debt marker wall of text bullet overload text heavy slide dense content split attention
+      redundancy text duplicates visual
+    examples:
+    - Wall of text — no visual relief.
+    - 12 bullets on one slide.
+    - Speaker notes duplicating slide text verbatim.
+    - Chart without label, label without chart (split-attention).
+    - Dense paragraph content without visual hierarchy.
+    - Every point in paragraph form instead of structured format.
+    - Text box repeating the chart title word for word.
+    - Slide with 8 data points and no clear hierarchy.
+    confidence_threshold: 0.68
+    match_policy_ref: defaults
+    aliases:
+    - cognitive overload
+    - CLT violation
+    - split-attention
+    - redundancy effect
+    indicators:
+    - wall of text
+    - too many bullets
+    - dense content
+    - text heavy
+    - split attention
+    - redundancy
+    - text-heavy slide
+    - no visual break
+    patterns:
+    - wall of text
+    - too many (bullets|points)
+    - text[- ]heavy \w+
+    - dense (content|slide|paragraph)
+    - split[- ]attention
+    - duplicat(es|ing) \w+
+    color: '#e74c3c'
+    clt_taxonomy:
+      split_attention:
+        description: Audience must mentally integrate two separated information sources (e.g., chart + distant legend)
+        penalty: -6
+      redundancy_effect:
+        description: Information presented in both text and visual simultaneously — doubles processing demand without adding
+          meaning
+        penalty: -7
+      wall_of_text:
+        description: Dense paragraph or bullet-heavy slide requiring reading mode, not visual processing mode
+        penalty: -8
+      bullet_overload:
+        description: More than 5 bullets per slide — forces serial reading instead of holistic comprehension
+        penalty: -5
+    scoring_note: 'COGNITIVE_DEBT marker detected: penalty applied per clt_taxonomy sub-type; multiple violations compound
+      (-2 extra per additional violation after the first)'
+    relates_to:
+    - target: clt_compliance_dimension
+      relation: limits
+      weight: required
+      description: Cognitive debt markers (poorly explained concepts, missing context, excessive jargon) accumulate during
+        presentations and reduce clt_compliance scores. Audiences with high cognitive debt cannot process subsequent complex
+        information.
+      target_file: scoring_entities
+    - target: extraneous_load_marker
+      relation: triggers
+      weight: required
+      description: "Cognitive debt markers (wall of text, bullet overload, split-attention) directly trigger extraneous load — design must reduce cognitive load not decorate per Canonical Presentation Methodology"
+      target_file: cognitive_load_entities
+    - target: clarity_dimension
+      relation: limits
+      weight: required
+      description: "Cognitive debt markers (wall of text, split attention, bullet overload) directly limit clarity dimension scores by obscuring the presenter's core message under visual noise per slide design research monograph part 4"
+      target_file: scoring_entities
+    - target: progressive_disclosure_marker
+      relation: resolves
+      weight: expected
+      description: "Progressive disclosure techniques (layered builds, staged reveals) resolve accumulated cognitive debt by breaking dense content into sequenced digestible units per slide design research monograph part 4"
+      target_file: cognitive_load_entities
+    - target: design_principle
+      relation: resolves
+      weight: expected
+      description: "CRAP design principles (Contrast, Alignment, Proximity) resolve cognitive debt — Proximity prevents scattered layouts, Alignment eliminates unstructured placement, Contrast prevents difficult-to-read content per theory_crap_design_principles"
+    - target: extraneous_load_marker
+      relation: specialises
+      weight: expected
+      description: "Visual cognitive debt specialises extraneous load — rapid-fire edits, busy backgrounds, and redundant on-screen text create visual cognitive debt that compounds over time per Visual Best Practices for Corporate Learning Videos"
+      target_file: cognitive_load_entities
+    - target: quality_indicator
+      relation: limits
+      weight: expected
+      description: "Cognitive debt directly degrades slide quality scores — slides scoring below 34/50 on the Slide Cognitive Score indicate redesign-level debt per Slide Deck Design Playbook"
+  visual_narrative_element:
+    description: Slide-level narrative elements that signal structured argumentation — action titles, dot-dash logic, SCQA
+      visual structure, and annotation markers
+    canonical_id: visual_narrative_element
+    entity_kind: design_concept
+    family: narrative_design
+    gliner_label: VISUAL_NARRATIVE
+    gliner_description: Visual narrative element action title dot dash annotation insight call out the takeaway is the implication
+      headline title claim
+    examples:
+    - 'Action title: ''Costs fell 40% after automation — proving ROI in 90 days'''
+    - 'Dot-dash label: ''Market Share — up 12pp since 2024'''
+    - 'Callout annotation: ''This is the inflection point'''
+    - 'Data annotation: ''↑23% YoY — above market benchmark'''
+    - 'Insight label: ''The key takeaway: speed, not scale, is the differentiator'''
+    - 'Headline title: ''Three facts that will change your view of this market'''
+    confidence_threshold: 0.67
+    match_policy_ref: defaults
+    aliases:
+    - action title
+    - insight headline
+    - dot-dash label
+    - narrative annotation
+    indicators:
+    - the takeaway is
+    - the key insight
+    - action title
+    - dot-dash
+    - the implication
+    - this is the inflection
+    - annotation
+    patterns:
+    - the (takeaway|insight|implication) (is|:)
+    - \w+ — \w+ (since|after|in \d+)
+    - this is the (inflection|critical|turning) point
+    color: '#2980b9'
+    relates_to:
+    - target: narrative_tension
+      relation: triggers
+      weight: expected
+      description: The visual arc uses contrast (dissonant colors, angular lines, asymmetry) to build narrative tension during
+        conflict phase per Visual Communication and Storytelling
+      target_file: narrative_entities
+    - target: resolution_signal
+      relation: triggers
+      weight: expected
+      description: The visual arc returns to affinity (harmonious colors, balanced compositions) to signal narrative resolution
+        per Visual Communication and Storytelling
+      target_file: narrative_entities
+    - target: progressive_disclosure_marker
+      relation: supported_by
+      weight: expected
+      description: "Visual narrative elements are revealed progressively using build animations to manage cognitive load per Slide Deck Design Playbook"
+      target_file: cognitive_load_entities
+    - target: narrative_quality_dimension
+      relation: enables
+      weight: expected
+      description: "Visual narrative elements (action titles, dot-dash annotations, insight labels) directly enable narrative quality scoring by providing assessable narrative structure per Visualisation Techniques research"
+      target_file: scoring_entities
+    - target: narrative_slide
+      relation: supports
+      weight: expected
+      description: "Visual narrative elements are the defining content components of narrative slide types per slide design research monograph"
+      target_file: slide_types_entities
+    - target: claim
+      relation: contains
+      weight: required
+      description: "Visual narrative elements (action titles, insight labels) contain claims as their core argumentative content — the action title IS the claim made visible per slide design research monograph part 3"
+      target_file: narrative_entities
+    - target: clarity_dimension
+      relation: enables
+      weight: required
+      description: "Visual narrative elements (action titles, dot-dash logic) with full result-mechanism-timeframe structure enable high clarity scores by making the presenter's argument visually explicit per slide design research monograph part 4"
+      target_file: scoring_entities
+    - target: narrative_hook
+      relation: supports
+      weight: optional
+      description: "Visual narrative elements such as story-driven simulation prompts ('What if we double R&D budget?') function as narrative hooks that draw users into interactive data exploration per Narrative Visualization research"
+      target_file: narrative_entities
+    - target: germane_load_marker
+      relation: triggers
+      weight: expected
+      description: "Visual narrative elements that require users to interpret clusters, trace paths, or run simulations trigger germane cognitive load — productive processing that builds mental models of the data per Narrative Visualization research"
+      target_file: cognitive_load_entities
+    - target: storyboard_element
+      relation: supported_by
+      weight: expected
+      description: "Visual narrative elements like recurring icons, visual mnemonics, and metaphorical imagery are planned through storyboard elements that sequence their appearance per Visual Best Practices for Corporate Learning Videos"
+      target_file: media_entities
+    - target: mayer_generative_principle
+      relation: supported_by
+      weight: required
+      description: "Multimedia Principle states words plus pictures improve understanding over words alone, establishing visual narrative elements as essential for effective multimedia learning per mayers_15_principles"
+      target_file: cognitive_load_entities
+    - target: chart_type
+      relation: contains
+      weight: expected
+      description: "Action captions transform chart types into visual narrative elements per Tufte's evidence-based approach"
+    - target: germane_load_marker
+      relation: supports
+      weight: expected
+      description: "Visual metaphors leverage existing schemas to maximize germane cognitive processing"
+      target_file: cognitive_load_entities
+    - target: narrative_tension
+      relation: supports
+      weight: expected
+      description: "Obstacle phase visual metaphors use dramatic imagery to reinforce narrative tension"
+      target_file: narrative_entities
+    action_title_rubric:
+      score_5: Result + Mechanism + Timeframe — 'Costs fell 40% after automation in Q3'
+      score_3: Assertion without mechanism — 'Costs improved significantly'
+      score_1: Topic label only — 'Cost Analysis' or 'Q3 Results'
+    scoring_note: 'VISUAL_NARRATIVE element detected with score_1 (topic label): -5 points narrative quality; score_5 (full
+      action title): +5 points'
+gliner_config:
+  model: gliner-large-v2
+  batch_size: 32
+  use_hybrid_extraction: true
+  llm_fallback_for_types:
+  - design_principle
+  - quality_indicator
+  - brand_element
+  - semiotic_arrangement
+  context_window: 50
+  default_confidence_threshold: 0.7
+  entity_groups:
+    visual_components:
+    - CHART_TYPE
+    - LAYOUT_PATTERN
+    - VISUAL_ELEMENT
+    - COLOR_REFERENCE
+    - TYPOGRAPHY_ELEMENT
+    - ANIMATION_TYPE
+    - SLIDE_TYPE
+    - BRAND_ELEMENT
+    design_quality:
+    - DESIGN_PRINCIPLE
+    - QUALITY_INDICATOR
+    - ACCESSIBILITY_FEATURE
+    semiotic_cognitive:
+    - SEMIOTIC_ARRANGEMENT
+    - COGNITIVE_DEBT
+    - VISUAL_NARRATIVE
+domain_keywords:
+  primary:
+  - visual
+  - design
+  - layout
+  - chart
+  - graph
+  - image
+  - graphic
+  - color
+  - font
+  - typography
+  - slide
+  - presentation
+  - infographic
+  - diagram
+  - illustration
+  secondary:
+  - hierarchy
+  - alignment
+  - contrast
+  - white space
+  - composition
+  - balance
+  - gestalt
+  - CRAP
+  - proximity
+  - repetition
+  - animation
+  - transition
+  - brand
+  - accessibility
+  - WCAG
+  - data visualization
+  - Tufte
+  - semiotic
+  - given/new
+  - ideal/real
+  - cognitive load
+  - CLT
+  - action title
+  - narrative design
+  - Kress
+  - van Leeuwen
+quality_indicators:
+  element_diversity:
+    single_type: Only one visual element category detected — limited visual vocabulary
+    mixed: Multiple visual element categories detected — balanced visual communication
+    rich: Data visualisation + structural + typographic elements all present — full visual grammar applied
+  accessibility_coverage:
+    absent: No accessibility-related visual entity detected — WCAG compliance unverified
+    partial: Some accessible design entities present but coverage incomplete
+    compliant: Alt text, contrast, and colour encoding entities all represented — accessible design
+  semiotic_intentionality:
+    decorative: Only decorative elements detected — visual rhetoric absent; images add no meaning
+    functional: Functional elements present (chart, diagram) but no semiotic arrangement applied
+    rhetorical: SEMIOTIC_ARRANGEMENT entity detected — intentional visual grammar applied to reinforce message

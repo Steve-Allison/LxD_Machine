@@ -1,0 +1,994 @@
+_meta:
+  id: data_visualization_standards
+  title: "Data Visualization Rules"
+  description: "Comprehensive data visualisation standards including chart selection framework, Tufte principles, Cleveland-McGill hierarchy, and cognitive load considerations."
+  domain: visual
+  domain_type: cross_cutting
+  purpose: methodology
+  version: "2.2.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - visualisation_techniques_corporate_learning.md"
+    - "Corpus/Research/Research - Infographics.md"
+  relationships:
+    - target: methodology/visual_design_principles.yaml
+      type: depends_on
+      description: "Gestalt principles, visual hierarchy rules"
+    - target: shared/scoring.yaml
+      type: depends_on
+      description: "Score bands and thresholds"
+# ==============================================================================
+# TUFTE'S PRINCIPLES
+# ==============================================================================
+
+tufte_principles:
+  description: "Edward Tufte's foundational data visualisation principles"
+  scoring_anchors: !include ../shared/scoring_visual.yaml
+
+  data_ink_ratio:
+    definition: "Proportion of ink used to display actual data vs total ink used"
+    formula: "Data-Ink Ratio = Data-Ink / Total Ink"
+    goal: "Maximise data-ink; minimise non-data-ink"
+    ideal_ratio: ">= 0.80"
+
+    observable_indicators:
+      - "Absence of decorative backgrounds"
+      - "Gridlines are light grey/dotted or removed"
+      - "Axes are minimal (or removed if direct labels exist)"
+      - "No 3D effects on 2D data"
+      - "No shadows or bevels on chart elements"
+      - "No clip-art or decorative icons within chart area"
+
+    remediation_strategies:
+      low_ratio:
+        action: "Remove background fill, borders, and heavy gridlines."
+        severity: "moderate"
+      decorative_noise:
+        action: "Remove 3D effects, shadows, and clip-art."
+        severity: "moderate"
+      heavy_axes:
+        action: "Use direct labels on data points; remove axes if redundant."
+        severity: "low"
+
+  chartjunk:
+    definition: "Visual elements that don't convey information"
+    categories:
+      - "Moiré vibration patterns"
+      - "Heavy gridlines dominating data"
+      - "Self-promoting graphics/logos inside chart area"
+      - "Decorative illustrations unrelated to data"
+      - "Excessive tick marks"
+      - "Ornamental fonts"
+
+    observable_indicators:
+      - "Moiré vibration patterns"
+      - "Heavy gridlines dominating data"
+      - "Self-promoting graphics/logos inside chart area"
+
+    remediation_strategies:
+      vibration:
+        action: "Replace hatched patterns with solid, desaturated fills."
+        severity: "moderate"
+      grid_dominance:
+        action: "Lighten gridlines to #E0E0E0 or remove vertical gridlines."
+        severity: "low"
+      logo_clutter:
+        action: "Move logos outside chart area; place in slide footer."
+        severity: "low"
+
+  lie_factor:
+    definition: "Ratio of size of effect in graphic to size of effect in data"
+    formula: "Lie Factor = (Visual Effect Size / Data Effect Size)"
+    acceptable_range: "0.95 - 1.05"
+    violation_threshold: "< 0.80 or > 1.20"
+
+    common_violations:
+      - "Truncated Y-axis exaggerating change"
+      - "Area/radius scaling errors in bubble charts"
+      - "Perspective distortion in 3D charts"
+      - "Non-zero baseline in bar charts"
+      - "Inconsistent axis intervals"
+
+    remediation_strategies:
+      truncated_axis:
+        action: "Reset Y-axis to start at 0, or use break indicator if necessary."
+        severity: "high"
+      area_distortion:
+        action: "Scale bubbles by Area (sqrt of radius), not Radius."
+        severity: "high"
+      perspective_distortion:
+        action: "Convert 3D chart to 2D equivalent."
+        severity: "moderate"
+
+    few_shot_examples:
+      bad:
+        description: "Bar chart starting Y-axis at 500 to show 'huge' growth from 510 to 520."
+        reasoning: "Lie Factor > 1. Visual change implies 100% growth, actual data is 2%."
+      good:
+        description: "Bar chart with Y-axis at 0, showing modest growth."
+        reasoning: "Visual representation matches data reality."
+
+  small_multiples:
+    definition: "Series of similar graphs using the same scale to compare across categories"
+    benefits:
+      - "Enables pattern comparison across groups"
+      - "Reduces cognitive load vs. overlapping lines"
+      - "Exploits human ability to detect visual differences"
+
+    when_to_use:
+      - "Comparing trends across 4+ categories"
+      - "When overlaid lines become spaghetti"
+      - "Time series across regions/products"
+
+    remediation_strategies:
+      spaghetti_chart:
+        action: "Split into small multiples panel, one series per cell."
+        severity: "moderate"
+
+# ==============================================================================
+# CLEVELAND-McGILL PERCEPTUAL HIERARCHY
+# ==============================================================================
+
+perceptual_hierarchy:
+  description: "Ranked accuracy of visual encoding channels (Cleveland & McGill, 1984)"
+  source: "Cleveland, W.S. & McGill, R. (1984). Graphical Perception"
+
+  # Most accurate to least accurate
+  ranking:
+    1:
+      channel: "Position along common scale"
+      accuracy: "highest"
+      examples: ["scatter plot", "dot plot", "bar chart (common baseline)"]
+      use_for: ["precise comparisons", "continuous data"]
+
+    2:
+      channel: "Position along non-aligned scales"
+      accuracy: "high"
+      examples: ["small multiples with separate axes", "grouped bar charts"]
+      use_for: ["category comparisons across groups"]
+
+    3:
+      channel: "Length"
+      accuracy: "high"
+      examples: ["bar chart", "Gantt chart", "timeline"]
+      use_for: ["comparing magnitudes", "duration"]
+
+    4:
+      channel: "Angle/Slope"
+      accuracy: "moderate"
+      examples: ["pie chart", "line chart slope"]
+      use_for: ["part-to-whole (limited)", "trend direction"]
+      warning: "Humans are poor at comparing angles; avoid >5 slices"
+
+    5:
+      channel: "Area"
+      accuracy: "low"
+      examples: ["bubble chart", "treemap", "proportional circles"]
+      use_for: ["rough magnitude comparison", "showing clusters"]
+      warning: "Area perception is inaccurate; use sparingly"
+
+    6:
+      channel: "Volume/3D"
+      accuracy: "very low"
+      examples: ["3D bar chart", "3D pie chart"]
+      use_for: "AVOID - perspective distorts perception"
+      warning: "Never use 3D for 2D data"
+
+    7:
+      channel: "Color saturation/hue"
+      accuracy: "lowest for quantitative"
+      examples: ["heatmap", "choropleth map"]
+      use_for: ["categorical distinctions", "relative density"]
+      warning: "Not for precise values; add data labels"
+
+  implications:
+    - "Use position-based charts (bar, scatter) for precise comparisons"
+    - "Avoid pie charts when exact comparison matters"
+    - "Never use 3D charts for 2D data"
+    - "Add data labels when using area or color encoding"
+
+# ==============================================================================
+# COMPREHENSIVE CHART CATALOGUE
+# ==============================================================================
+
+chart_catalogue:
+  description: "Complete chart type taxonomy with selection criteria"
+
+  # -------------------------------------------------------------------------
+  # COMPARISON CHARTS
+  # -------------------------------------------------------------------------
+  comparison:
+    purpose: "Compare values across categories or time"
+    data_requirements: !include ../shared/data_reqs_visual.yaml
+
+    bar_chart:
+      description: "Compares discrete categories using rectangular bars"
+      variants:
+        vertical: "Standard; good for <10 categories"
+        horizontal: "Better for long labels; easier to read"
+        stacked: "Shows composition within comparison"
+        grouped: "Compares multiple series side-by-side"
+      when_to_use:
+        - "Comparing discrete categories"
+        - "Showing rankings"
+        - "When labels are text-heavy (use horizontal)"
+      when_to_avoid:
+        - ">15 categories (consider filtering)"
+        - "Continuous data (use histogram)"
+      max_categories: 12
+      max_series: 4
+      perceptual_channel: "length"
+      accessibility:
+        - "Ensure 4.5:1 contrast ratio between bars"
+        - "Add data labels for screen readers"
+        - "Use patterns in addition to color for series"
+
+      remediation_strategies:
+        too_many_bars:
+          action: "Convert vertical bar chart to horizontal bar chart."
+          severity: "low"
+        too_many_series:
+          action: "Split grouped bar chart into 'Small Multiples' (panel chart)."
+          severity: "moderate"
+        cluttered_labels:
+          action: "Rotate labels 45° or switch to horizontal bars."
+          severity: "low"
+
+    column_chart:
+      description: "Vertical bar chart; standard for time-based comparisons"
+      when_to_use:
+        - "Time series with <12 time periods"
+        - "Showing growth/decline over time"
+      when_to_avoid:
+        - "Long category labels"
+        - ">12 time periods (use line chart)"
+
+    lollipop_chart:
+      description: "Dots connected to baseline by thin lines; cleaner than bars"
+      when_to_use:
+        - "Many categories where bars feel heavy"
+        - "Emphasizing the data point over the bar"
+      advantages:
+        - "Higher data-ink ratio than bar chart"
+        - "Less visual clutter"
+
+    dot_plot:
+      description: "Points positioned along a common scale"
+      when_to_use:
+        - "Comparing many items on single metric"
+        - "Showing distribution of values"
+        - "Alternative to bar when space is limited"
+      perceptual_channel: "position on common scale"
+
+    bullet_chart:
+      description: "Stephen Few's alternative to gauges; shows target vs actual"
+      components:
+        - "Actual value (bar)"
+        - "Target (marker line)"
+        - "Performance zones (background bands)"
+      when_to_use:
+        - "KPI dashboards"
+        - "Showing performance against target"
+        - "Space-efficient alternative to gauges"
+
+    slope_chart:
+      description: "Connects two time points to show change direction and magnitude"
+      when_to_use:
+        - "Before/after comparisons"
+        - "Comparing change across categories"
+        - "Showing rank changes"
+      max_lines: 10
+      warning: "Gets cluttered with many series; highlight key ones"
+
+  # -------------------------------------------------------------------------
+  # COMPOSITION CHARTS (Part-to-Whole)
+  # -------------------------------------------------------------------------
+  composition:
+    purpose: "Show parts of a whole"
+
+    pie_chart:
+      description: "Circular chart divided into proportional slices"
+      when_to_use:
+        - "2-5 segments maximum"
+        - "One segment is dominant (>50%)"
+        - "Showing simple proportions to general audience"
+      when_to_avoid:
+        - ">5 segments"
+        - "Similar-sized segments (hard to compare angles)"
+        - "Need for precise comparison"
+        - "Time-based composition"
+      max_segments: 5
+      perceptual_channel: "angle (low accuracy)"
+
+      design_rules:
+        - "Start largest segment at 12 o'clock"
+        - "Order segments by size (largest first)"
+        - "Use direct labels, not legend"
+        - "Group small segments into 'Other'"
+
+      remediation_strategies:
+        too_many_slices:
+          action: "Group small slices into 'Other' or convert to Bar Chart."
+          severity: "moderate"
+        similar_slices:
+          action: "Use Bar Chart for easier length comparison."
+          severity: "moderate"
+        legend_required:
+          action: "Add direct labels to slices; remove legend."
+          severity: "low"
+
+      few_shot_examples:
+        bad:
+          description: "Pie chart with 12 slices, similar sizes, using legend."
+          reasoning: "Too many categories; cognitive load to match legend colours."
+        good:
+          description: "Pie with 3 slices (60%, 25%, 15%), directly labelled."
+          reasoning: "Clear dominant segment; easy to interpret."
+
+    donut_chart:
+      description: "Pie chart with center cut out; allows central annotation"
+      when_to_use:
+        - "When you want to add a central KPI number"
+        - "Same rules as pie chart apply"
+      center_usage: "Display key total or percentage"
+
+    treemap:
+      description: "Nested rectangles showing hierarchical composition"
+      when_to_use:
+        - "Hierarchical part-to-whole data"
+        - "Large number of categories (>10)"
+        - "Space-efficient composition view"
+      when_to_avoid:
+        - "Need for precise comparison"
+        - "Non-hierarchical data"
+      perceptual_channel: "area (low accuracy)"
+      design_rules:
+        - "Use squarified algorithm for balanced rectangles"
+        - "Add data labels for key segments"
+        - "Limit to 2-3 hierarchy levels for readability"
+
+    stacked_bar_chart:
+      description: "Bar chart with segments showing composition within each bar"
+      variants:
+        absolute: "Shows actual values; bars may have different heights"
+        100_percent: "Normalised to 100%; easier composition comparison"
+      when_to_use:
+        - "Comparing composition across categories"
+        - "Showing how parts contribute to total"
+      max_segments: 5
+      warning: "Middle segments are hardest to compare; put key data at bottom"
+
+    waffle_chart:
+      description: "Grid of squares where filled squares show proportion"
+      when_to_use:
+        - "Showing percentages to general audience"
+        - "When exact 1% precision isn't needed"
+        - "More engaging alternative to pie for simple data"
+      grid_size: "10x10 (100 squares) is standard"
+
+    marimekko_chart:
+      description: "Variable-width stacked bar showing two dimensions of composition"
+      when_to_use:
+        - "Market share by segment and overall size"
+        - "Two-dimensional composition analysis"
+      complexity: "high - requires explanation"
+
+  # -------------------------------------------------------------------------
+  # TREND/CHANGE OVER TIME
+  # -------------------------------------------------------------------------
+  trend:
+    purpose: "Show patterns and changes over time"
+
+    line_chart:
+      description: "Points connected by lines showing continuous change"
+      when_to_use:
+        - "Time series data"
+        - "Continuous data with many points"
+        - "Showing trends and patterns"
+        - "Comparing 2-5 series over time"
+      when_to_avoid:
+        - "Discrete categories (use bar)"
+        - ">5 series (consider small multiples)"
+        - "Few data points (<5) - use column"
+      max_series: 5
+      perceptual_channel: "position, slope"
+
+      design_rules:
+        - "Use direct labels at line ends, not legend"
+        - "Highlight key series, grey out others"
+        - "Ensure lines have distinct appearance"
+        - "Consider interactive tooltip for detail"
+
+      remediation_strategies:
+        spaghetti:
+          action: "Reduce to 3-4 key series or use small multiples."
+          severity: "moderate"
+        overlapping_labels:
+          action: "Use leader lines or stagger labels vertically."
+          severity: "low"
+
+    area_chart:
+      description: "Line chart with filled area below the line"
+      variants:
+        single: "Emphasises magnitude over time"
+        stacked: "Shows composition changing over time"
+        100_percent: "Normalised composition over time"
+      when_to_use:
+        - "Emphasising cumulative magnitude"
+        - "Showing volume/quantity over time"
+      when_to_avoid:
+        - "Comparing multiple series (overlapping areas confuse)"
+      warning: "Stacked areas can be misleading; only bottom series has accurate baseline"
+
+    sparkline:
+      description: "Miniature line chart embedded in text or table cell"
+      when_to_use:
+        - "Showing trend direction within limited space"
+        - "Embedding in tables or dashboards"
+        - "Overview without detail"
+      design_rules:
+        - "No axes, gridlines, or labels"
+        - "Highlight min/max points optionally"
+        - "Same scale across related sparklines"
+
+    step_chart:
+      description: "Line chart with right-angle steps instead of diagonal connections"
+      when_to_use:
+        - "Discrete changes (price tiers, status changes)"
+        - "When change happens at a point, not gradually"
+      examples: ["pricing history", "status timelines"]
+
+  # -------------------------------------------------------------------------
+  # DISTRIBUTION
+  # -------------------------------------------------------------------------
+  distribution:
+    purpose: "Show how data is distributed across a range"
+
+    histogram:
+      description: "Bar chart showing frequency distribution of continuous data"
+      when_to_use:
+        - "Understanding data distribution shape"
+        - "Identifying outliers"
+        - "Continuous data binned into ranges"
+      design_rules:
+        - "Bars touch (continuous data)"
+        - "Consistent bin width"
+        - "Label axes clearly (value, frequency)"
+      bin_guidance: "Start with sqrt(n) bins; adjust for clarity"
+
+    box_plot:
+      description: "Shows median, quartiles, and outliers"
+      components:
+        - "Box: IQR (Q1 to Q3)"
+        - "Line in box: median"
+        - "Whiskers: 1.5×IQR or min/max"
+        - "Points: outliers beyond whiskers"
+      when_to_use:
+        - "Comparing distributions across categories"
+        - "Identifying outliers"
+        - "Summarising spread and center"
+      audience_note: "Requires statistical literacy; add explanation for general audience"
+
+    violin_plot:
+      description: "Combination of box plot and kernel density estimation"
+      when_to_use:
+        - "Showing distribution shape in addition to summary stats"
+        - "Technical/statistical audiences"
+      complexity: "high - requires explanation"
+
+    density_plot:
+      description: "Smooth curve showing probability distribution"
+      when_to_use:
+        - "Continuous distribution visualisation"
+        - "Comparing overlapping distributions"
+      aliases: ["kernel density plot", "KDE"]
+
+    strip_plot:
+      description: "Individual data points along a single axis"
+      variants:
+        jittered: "Points offset horizontally to avoid overlap"
+        beeswarm: "Points arranged to show density without overlap"
+      when_to_use:
+        - "Small-to-medium datasets (n < 200)"
+        - "Showing every observation"
+
+  # -------------------------------------------------------------------------
+  # CORRELATION/RELATIONSHIP
+  # -------------------------------------------------------------------------
+  relationship:
+    purpose: "Show relationships between variables"
+
+    scatter_plot:
+      description: "Points positioned by two continuous variables"
+      when_to_use:
+        - "Exploring correlation"
+        - "Identifying clusters or outliers"
+        - "Two continuous variables"
+      enhancements:
+        - "Add trend line for correlation"
+        - "Use color for third categorical variable"
+        - "Use size for third quantitative variable (bubble)"
+      max_points: 500
+      warning: "Overplotting with many points; use transparency or hexbin"
+      perceptual_channel: "position on common scale (highest accuracy)"
+
+    bubble_chart:
+      description: "Scatter plot with point size as third dimension"
+      when_to_use:
+        - "Three quantitative variables"
+        - "Comparing entities on multiple metrics"
+      design_rules:
+        - "Scale by AREA not radius"
+        - "Add size legend"
+        - "Limit to 20-30 bubbles maximum"
+      perceptual_channel: "position + area (area is inaccurate)"
+
+    connected_scatter:
+      description: "Scatter plot with points connected chronologically"
+      when_to_use:
+        - "Showing trajectory over time in 2D space"
+        - "Path analysis"
+
+    heatmap:
+      description: "Grid with cells colored by value"
+      when_to_use:
+        - "Showing patterns in matrix data"
+        - "Correlation matrices"
+        - "Time × category patterns"
+      design_rules:
+        - "Use sequential or diverging color scale appropriately"
+        - "Add data labels for key cells"
+        - "Sort rows/columns meaningfully"
+      perceptual_channel: "color (low accuracy for values)"
+      accessibility: "Provide numeric values; don't rely on color alone"
+
+    correlation_matrix:
+      description: "Heatmap showing pairwise correlations"
+      when_to_use:
+        - "Exploratory data analysis"
+        - "Feature selection"
+      display_options:
+        - "Full matrix"
+        - "Upper/lower triangle only"
+        - "Circle size for magnitude"
+
+  # -------------------------------------------------------------------------
+  # FLOW/PROCESS
+  # -------------------------------------------------------------------------
+  flow:
+    purpose: "Show movement, processes, or relationships between nodes"
+
+    sankey_diagram:
+      description: "Flow diagram with band widths proportional to quantity"
+      when_to_use:
+        - "Showing flow from source to destination"
+        - "Energy/money/user flow analysis"
+        - "Conversion funnels"
+      design_rules:
+        - "Order nodes by flow magnitude"
+        - "Use color to distinguish categories"
+        - "Label both nodes and flows"
+      complexity: "high - benefits from interactivity"
+
+    funnel_chart:
+      description: "Shows progressive reduction through stages"
+      when_to_use:
+        - "Sales/conversion pipelines"
+        - "Process with drop-off at each stage"
+      design_rules:
+        - "Label each stage with count and percentage"
+        - "Use consistent colors or gradient"
+
+    chord_diagram:
+      description: "Circular diagram showing flows between entities"
+      when_to_use:
+        - "Many-to-many relationships"
+        - "Showing mutual flows (imports/exports)"
+      complexity: "very high - requires interactivity"
+      warning: "Difficult to read statically; consider Sankey instead"
+
+    network_graph:
+      description: "Nodes and edges showing relationships"
+      when_to_use:
+        - "Social networks"
+        - "System dependencies"
+        - "Entity relationships"
+      remediation_strategies:
+        hairball:
+          action: "Apply community detection; show only top 5% connections."
+          severity: "high"
+      design_rules:
+        - "Use force-directed layout"
+        - "Encode node size by importance"
+        - "Filter to show key connections"
+
+  # -------------------------------------------------------------------------
+  # GEOGRAPHIC
+  # -------------------------------------------------------------------------
+  geographic:
+    purpose: "Show data with spatial context"
+
+    choropleth_map:
+      description: "Map with regions colored by data value"
+      when_to_use:
+        - "Showing rates/proportions by region"
+        - "Geographic patterns"
+      when_to_avoid:
+        - "Absolute values (large regions dominate)"
+        - "Need for precise comparison"
+      design_rules:
+        - "Use rates/per-capita, not raw counts"
+        - "Choose appropriate color scale (sequential/diverging)"
+        - "Consider cartogram for population-weighted view"
+
+    bubble_map:
+      description: "Map with sized circles at locations"
+      when_to_use:
+        - "Showing magnitude at specific locations"
+        - "Comparing values across geography"
+      design_rules:
+        - "Scale by area, not radius"
+        - "Add data labels for key bubbles"
+
+    cartogram:
+      description: "Map with region sizes distorted by data value"
+      when_to_use:
+        - "When geographic size misleads"
+        - "Population-weighted views"
+      complexity: "high - requires explanation"
+
+  # -------------------------------------------------------------------------
+  # SPECIALIZED
+  # -------------------------------------------------------------------------
+  specialized:
+    purpose: "Domain-specific or advanced visualizations"
+
+    gauge_chart:
+      description: "Dial showing single metric against target/range"
+      when_to_use:
+        - "Single KPI display"
+        - "Dashboard widgets"
+      when_to_avoid:
+        - "Multiple metrics (use bullet chart)"
+        - "Space efficiency matters"
+      alternative: "Bullet chart (more data-dense)"
+
+    radar_chart:
+      description: "Polygon showing multiple metrics on radial axes"
+      when_to_use:
+        - "Comparing profiles across multiple dimensions"
+        - "Skills/capability assessments"
+      when_to_avoid:
+        - "Precise comparison needed"
+        - ">8 dimensions"
+      max_dimensions: 8
+      warning: "Area can be misleading; consider parallel coordinates"
+
+    waterfall_chart:
+      description: "Shows cumulative effect of sequential positive/negative values"
+      when_to_use:
+        - "Financial reporting (revenue → profit)"
+        - "Explaining variance"
+        - "Bridge charts"
+      design_rules:
+        - "Color-code positive (green) and negative (red)"
+        - "Label each segment"
+        - "Show start and end totals"
+
+    gantt_chart:
+      description: "Horizontal bars showing task duration over time"
+      when_to_use:
+        - "Project timelines"
+        - "Scheduling"
+        - "Showing overlapping durations"
+
+    parallel_coordinates:
+      description: "Multiple vertical axes with lines connecting values"
+      when_to_use:
+        - "Multivariate data comparison"
+        - "Finding patterns across many dimensions"
+      complexity: "high - requires interactivity for usefulness"
+
+# ==============================================================================
+# COGNITIVE LOAD CONSIDERATIONS
+# ==============================================================================
+
+cognitive_load:
+  description: "Applying cognitive load theory to data visualization"
+  reference: !include mayer_principles.yaml
+
+  principles:
+    signalling:
+      rule: "Use visual cues to highlight important data"
+      techniques:
+        - "Bold/color key data points"
+        - "Add reference lines for targets"
+        - "Use arrows to direct attention"
+        - "Callout annotations for insights"
+
+    coherence:
+      rule: "Remove decorative elements that don't convey data"
+      remove:
+        - "Decorative backgrounds"
+        - "3D effects"
+        - "Excessive gridlines"
+        - "Brand imagery in chart area"
+
+    segmenting:
+      rule: "Break complex visualizations into digestible parts"
+      techniques:
+        - "Progressive disclosure (build charts)"
+        - "Small multiples instead of overlapping"
+        - "Animated transitions between states"
+
+    spatial_contiguity:
+      rule: "Place labels near the data they describe"
+      techniques:
+        - "Direct labeling on data points"
+        - "Legends placed within chart area"
+        - "Annotations with leader lines"
+
+  max_elements:
+    chart_series: 5
+    pie_segments: 5
+    bar_categories: 12
+    scatter_points_without_interaction: 200
+    colors_categorical: 7
+
+# ==============================================================================
+# DIRECT LABELLING & ANNOTATION
+# ==============================================================================
+
+direct_labelling:
+  description: "Labelling data directly rather than using legends"
+  principle: "Place labels near or on the data they describe"
+
+  benefits:
+    - "Eliminates split attention (legend ↔ data)"
+    - "Faster comprehension"
+    - "More accessible for screen readers"
+
+  techniques:
+    line_charts:
+      action: "Place series names at the end of lines"
+      example: "Label on last data point, aligned with line"
+
+    bar_charts:
+      action: "Place values inside or at end of bars"
+      threshold: "Inside if bar is wide enough; outside if narrow"
+
+    scatter_plots:
+      action: "Label key points only; use tooltip for rest"
+
+  remediation_strategies:
+    separate_legend:
+      action: "Remove legend. Place series names at the end of the lines (for line chart) or inside bars."
+      severity: "low"
+    overlapping_labels:
+      action: "Use leader lines or 'repel' layout algorithm."
+      severity: "low"
+
+# ==============================================================================
+# TEXT INTEGRATION & TITLES
+# ==============================================================================
+
+text_integration:
+  description: "How text interacts with data visualization"
+
+  action_titles:
+    definition: "Chart titles that state the conclusion, not just the subject."
+    rule: "Every chart title should be a full sentence answering 'So What?'"
+    formula: "[Subject] [Verb] [Key Insight] [Context/Timeframe]"
+
+    anti_patterns:
+      - "Revenue by Quarter"
+      - "Customer Satisfaction Scores"
+      - "Sales Data"
+      - "Figure 1"
+
+    best_practices:
+      - "Revenue grew 20% in Q4, driven by new product launch"
+      - "Customer satisfaction hit all-time low due to outages"
+      - "Enterprise segment dominates with 65% of revenue"
+
+    remediation_strategies:
+      passive_title:
+        action: "Rewrite the title to state the insight. Look at the highest bar/trend and describe it."
+        severity: "moderate"
+
+  annotations:
+    purpose: "Add context and call out key insights"
+    types:
+      - "Reference lines (targets, averages, benchmarks)"
+      - "Callout boxes for key data points"
+      - "Trend annotations explaining changes"
+      - "Source and methodology notes"
+
+# ==============================================================================
+# ACCESSIBILITY REQUIREMENTS
+# ==============================================================================
+
+accessibility:
+  description: "WCAG-aligned accessibility requirements for data viz"
+  reference: !include ../reference/accessibility_standards.yaml
+
+  color:
+    contrast_ratio: 4.5  # minimum for text
+    graphical_objects_ratio: 3.0
+    rules:
+      - "Never use color as the only way to convey information"
+      - "Add patterns or labels to distinguish chart elements"
+      - "Test with color blindness simulators"
+      - "Use colorblind-safe palettes (viridis, cividis)"
+
+  text:
+    minimum_font_size: 12  # points
+    data_label_size: 10
+    axis_label_size: 10
+    title_size: 14
+
+  alt_text:
+    requirement: "All charts must have descriptive alt text"
+    format: "[Chart type] showing [main insight]. Key findings: [1-3 points]"
+    example: "Line chart showing monthly revenue growth of 15% year-over-year. Key findings: Q4 peak at $5.2M, steady growth trend."
+
+  keyboard_navigation:
+    interactive_charts: "Must support keyboard navigation"
+    focus_indicators: "Visible focus state for all interactive elements"
+
+# ==============================================================================
+# SELECTION DECISION FRAMEWORK
+# ==============================================================================
+
+selection_framework:
+  description: "Decision tree for selecting appropriate chart type"
+
+  questions:
+    1:
+      question: "What is your primary purpose?"
+      options:
+        comparison: "Go to comparison charts"
+        composition: "Go to composition charts"
+        trend: "Go to trend charts"
+        distribution: "Go to distribution charts"
+        relationship: "Go to relationship charts"
+        flow: "Go to flow charts"
+        geographic: "Go to geographic charts"
+
+    2:
+      question: "How many categories/series?"
+      thresholds:
+        few: "1-5"
+        moderate: "6-12"
+        many: ">12"
+
+    3:
+      question: "Is your data continuous or discrete?"
+      implications:
+        continuous: "Consider line chart, histogram, scatter"
+        discrete: "Consider bar chart, dot plot"
+
+    4:
+      question: "What is your audience's data literacy?"
+      implications:
+        high: "Can use box plots, violin plots, parallel coordinates"
+        medium: "Standard charts with clear labelling"
+        low: "Simple charts only; heavy annotation"
+
+  common_mistakes:
+    - mistake: "Using pie chart for >5 categories"
+      fix: "Use horizontal bar chart"
+    - mistake: "Using 3D chart for 2D data"
+      fix: "Remove 3D; use 2D equivalent"
+    - mistake: "Line chart for discrete categories"
+      fix: "Use bar/column chart"
+    - mistake: "Starting Y-axis at non-zero for bar chart"
+      fix: "Start at zero or use break notation"
+
+# ==============================================================================
+# ADVANCED TECHNIQUES
+# ==============================================================================
+
+advanced_techniques:
+  description: "Specialized visualization techniques for complex data"
+
+  animation_and_transition:
+    purpose: "Guide attention and show change"
+    types:
+      build: "Progressively reveal chart elements"
+      transition: "Animate between data states"
+      emphasis: "Pulse or highlight key elements"
+    guidelines:
+      - "Keep animations brief (300-500ms)"
+      - "Use animation purposefully, not decoratively"
+      - "Ensure content is understandable without animation"
+
+  small_multiples:
+    description: "Grid of charts using same scale"
+    when_to_use:
+      - "Comparing many categories"
+      - "Avoiding spaghetti charts"
+      - "Faceting by dimension"
+    design_rules:
+      - "Use identical scales across all panels"
+      - "Arrange in meaningful order"
+      - "Label each panel clearly"
+
+  layered_disclosure:
+    description: "Progressive revelation of detail"
+    levels:
+      overview: "High-level summary chart"
+      zoom: "Detailed view on selection"
+      filter: "Subset of data"
+      details_on_demand: "Individual data point info"
+
+  system_dynamics:
+    description: "Visualising feedback loops and accumulation"
+
+    causal_loop_diagrams:
+      remediation_strategies:
+        spaghetti_diagram:
+          action: "Break full map into sequential 'builds', revealing one loop at a time."
+          severity: "moderate"
+
+    stock_flow_diagrams:
+      remediation_strategies:
+        static_confusion:
+          action: "Use animation to show the 'filling' of stocks over time."
+          severity: "moderate"
+
+# ==============================================================================
+# QUALITY SCORING
+# ==============================================================================
+
+quality_scoring:
+  description: "Rubric for assessing data visualization quality"
+
+  dimensions:
+    clarity:
+      weight: 0.30
+      criteria:
+        - "Chart type matches data/purpose"
+        - "Clear, actionable title"
+        - "Direct labelling used"
+        - "No chartjunk"
+
+    accuracy:
+      weight: 0.25
+      criteria:
+        - "Lie factor within acceptable range"
+        - "Appropriate baseline (zero for bars)"
+        - "Accurate scaling"
+        - "No misleading visual effects"
+
+    accessibility:
+      weight: 0.20
+      criteria:
+        - "Color not sole differentiator"
+        - "Sufficient contrast"
+        - "Alt text provided"
+        - "Readable font sizes"
+
+    cognitive_load:
+      weight: 0.15
+      criteria:
+        - "Within element limits"
+        - "Signalling for key data"
+        - "Coherent (no decorative elements)"
+        - "Spatial contiguity"
+
+    design_quality:
+      weight: 0.10
+      criteria:
+        - "Professional appearance"
+        - "Consistent styling"
+        - "Appropriate white space"
+        - "Grid alignment"
+
+  score_bands:
+    excellent: [90, 100]
+    strong: [80, 89]
+    adequate: [70, 79]
+    developing: [60, 69]
+    weak: [50, 59]
+    critical: [0, 49]

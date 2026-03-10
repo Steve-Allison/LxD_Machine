@@ -1,0 +1,357 @@
+_meta:
+  id: character_archetypes_taxonomy
+  purpose: taxonomy
+  version: "1.2.0"
+  last_updated: "2026-03-01"
+  description: "Classification of character archetypes by origin tradition, narrative role, archetype function, narrative valence, and corporate applicability."
+  domain: narrative
+  domain_type: cross_cutting
+  corpus_sources:
+    - "Corpus/Research/Storytelling_for_Different_Business_Personas.md"
+    - "Corpus/Research/Research - Analyzing Story for Business Communication.md"
+  academic_sources:
+    - "Campbell (1949) - The Hero with a Thousand Faces"
+    - "Vogler (2007) - The Writer's Journey"
+    - "Jung (1969) - The Archetypes and the Collective Unconscious"
+    - "Propp (1968) - Morphology of the Folktale"
+    - "McKee (1997) - Story"
+    - "Miller (2017) - Building a StoryBrand"
+    - "Duarte (2010) - Resonate"
+    - "Raskin (2016) - The Influential Product Manager"
+  relationships:
+    - target: entities/character_archetypes_entities.yaml
+      type: depends_on
+      description: "Character archetype entity types for NER extraction"
+    - target: methodology/character_archetypes_patterns.yaml
+      type: depends_on
+      description: "Archetype detection patterns and narrative scoring"
+# ==============================================================================
+# ORIGIN TRADITIONS
+# ==============================================================================
+
+origin_traditions:
+  heros_journey:
+    label: "Hero's Journey / Monomyth"
+    description: "Campbell's monomyth structure adapted by Vogler into 8 archetypal roles"
+    source: "Campbell (1949), Vogler (2007)"
+    archetypes:
+      - hero
+      - mentor
+      - threshold_guardian
+      - herald
+      - shapeshifter
+      - villain
+      - trickster
+      - ally
+
+  jungian:
+    label: "Jungian Archetypes"
+    description: "Jung's collective unconscious archetypes expressing universal patterns of human experience"
+    source: "Jung (1969)"
+    archetypes:
+      - self
+      - shadow
+      - anima_animus
+      - persona
+      - wise_old_man
+      - great_mother
+      - child
+      - trickster
+
+  proppian:
+    label: "Propp's Dramatis Personae"
+    description: "Propp's 7 character functions derived from Russian folktale analysis"
+    source: "Propp (1968)"
+    archetypes:
+      - villain
+      - donor
+      - helper
+      - princess  # sought-after person
+      - dispatcher
+      - hero
+      - false_hero
+
+  business_narrative:
+    label: "Business Narrative Archetypes"
+    description: "Corporate storytelling adaptations where customer is hero and vendor is mentor"
+    source: "Corporate narrative best practice"
+    archetypes:
+      - customer_hero
+      - vendor_as_mentor
+      - industry_villain
+      - market_herald
+      - regulatory_guardian
+      - influence_character
+
+  storybrand:
+    label: "StoryBrand Framework"
+    description: "Miller's SB7 framework positioning the customer as hero, the brand as guide, and three-layer obstacles (external/internal/philosophical) as the villain — brand wins by empathy and authority, not force"
+    source: "Miller (2017) - Building a StoryBrand"
+    archetypes:
+      - audience_hero
+      - presenter_as_guide
+      - problem_as_villain
+      - plan_giver
+
+  b2b_stakeholder:
+    label: "B2B Stakeholder Archetypes"
+    description: "Buying-committee roles in enterprise sales narratives — each stakeholder requires a tailored narrative approach based on their motivations and decision authority"
+    source: "Storytelling_for_Different_Business_Personas.md"
+    archetypes:
+      - champion
+      - approver
+      - influencer
+      - user
+      - technical_evaluator
+      - skeptic
+
+  learning_narrative:
+    label: "Learning Narrative Archetypes"
+    description: "Narrative roles adapted for instructional and training contexts where learners are heroes navigating skill gaps and educators serve as mentors"
+    source: "Research - Analyzing Story for Business Communication.md"
+    archetypes:
+      - learner_hero
+      - instructor_mentor
+      - fellow_learner_ally
+
+# ==============================================================================
+# NARRATIVE ROLES
+# ==============================================================================
+
+narrative_roles:
+  protagonist:
+    label: "Protagonist"
+    description: "The central character who drives the story forward through action and transformation"
+    maps_to_archetypes: [hero, customer_hero, audience_hero, learner_hero]
+    story_function: "Provides the audience's point of identification and emotional anchor"
+
+  guide:
+    label: "Guide / Enabler"
+    description: "The character who provides wisdom, tools, or support to the protagonist"
+    maps_to_archetypes: [mentor, vendor_as_mentor, ally, presenter_as_guide, instructor_mentor, plan_giver]
+    story_function: "Transfers knowledge or capability that enables the hero's success"
+
+  antagonist:
+    label: "Antagonist / Opposition"
+    description: "The force creating conflict, obstacles, or tension in the narrative"
+    maps_to_archetypes: [villain, industry_villain, problem_as_villain]
+    story_function: "Provides the necessary resistance that makes the hero's journey meaningful"
+
+  catalyst:
+    label: "Catalyst / Herald"
+    description: "The character or event that initiates the story and calls the hero to action"
+    maps_to_archetypes: [herald, market_herald]
+    story_function: "Disrupts the status quo and creates the inciting incident"
+
+  gatekeeper:
+    label: "Gatekeeper / Guardian"
+    description: "A test or barrier that must be overcome before progress can continue"
+    maps_to_archetypes: [threshold_guardian, regulatory_guardian, technical_evaluator]
+    story_function: "Tests readiness and raises stakes before the hero enters the next phase"
+
+  disruptor:
+    label: "Disruptor / Trickster"
+    description: "A character who challenges assumptions and introduces unexpected change"
+    maps_to_archetypes: [trickster, shapeshifter, skeptic]
+    story_function: "Prevents complacency and forces creative problem-solving"
+
+  transformer:
+    label: "Transformer / Witness"
+    description: "A character who undergoes visible change as a result of the protagonist's journey — validating the narrative arc for the audience"
+    maps_to_archetypes: [influence_character, fellow_learner_ally]
+    story_function: "Demonstrates the reality of change and builds audience credibility through observed transformation"
+
+  evaluator:
+    label: "Evaluator / Decision-Maker"
+    description: "A stakeholder who assesses the protagonist's solution or journey before committing — common in B2B purchase narratives"
+    maps_to_archetypes: [approver, champion, technical_evaluator]
+    story_function: "Represents the rational and political dimensions of commitment; must be persuaded before the journey concludes"
+
+# ==============================================================================
+# ARCHETYPE FUNCTIONS
+# ==============================================================================
+
+archetype_functions:
+  transformation:
+    label: "Transformation"
+    description: "Drives change from one state to another"
+    primary_archetypes: [hero, customer_hero, audience_hero, learner_hero]
+    story_phase: "climax and resolution"
+
+  enablement:
+    label: "Enablement"
+    description: "Provides tools, knowledge, or support to make success possible"
+    primary_archetypes: [mentor, vendor_as_mentor, ally, presenter_as_guide, instructor_mentor, plan_giver]
+    story_phase: "preparation and approach"
+
+  opposition:
+    label: "Opposition"
+    description: "Creates conflict and raises stakes"
+    primary_archetypes: [villain, industry_villain, problem_as_villain, skeptic]
+    story_phase: "complication and crisis"
+
+  initiation:
+    label: "Initiation"
+    description: "Triggers the narrative by disrupting the status quo"
+    primary_archetypes: [herald, market_herald]
+    story_phase: "inciting incident"
+
+  testing:
+    label: "Testing"
+    description: "Validates readiness and commitment"
+    primary_archetypes: [threshold_guardian, regulatory_guardian, technical_evaluator]
+    story_phase: "threshold crossing"
+
+  disruption:
+    label: "Disruption"
+    description: "Introduces chaos, humour, or unexpected perspectives"
+    primary_archetypes: [trickster, shapeshifter]
+    story_phase: "any phase — breaks expectations"
+
+  validation:
+    label: "Validation"
+    description: "Confirms the protagonist's solution or journey by demonstrating visible positive outcomes — builds credibility through proof"
+    primary_archetypes: [influence_character, fellow_learner_ally, champion]
+    story_phase: "resolution and proof"
+
+  advocacy:
+    label: "Advocacy"
+    description: "Actively champions the protagonist's cause within an organisation or buying committee — converts internal resistance and builds momentum"
+    primary_archetypes: [champion, influencer]
+    story_phase: "pre-decision and negotiation"
+
+# ==============================================================================
+# NARRATIVE VALENCE
+# ==============================================================================
+
+narrative_valence:
+  positive:
+    label: "Positive"
+    description: "Archetype contributes constructively to the protagonist's success"
+    archetypes: [hero, mentor, ally, customer_hero, vendor_as_mentor, audience_hero, presenter_as_guide, learner_hero, instructor_mentor, fellow_learner_ally, champion, influencer, plan_giver]
+
+  negative:
+    label: "Negative"
+    description: "Archetype creates obstacles or opposition to the protagonist"
+    archetypes: [villain, industry_villain, problem_as_villain]
+
+  ambiguous:
+    label: "Ambiguous"
+    description: "Archetype's role shifts or is contextually dependent"
+    archetypes: [shapeshifter, trickster, threshold_guardian, skeptic, influence_character]
+
+  neutral:
+    label: "Neutral"
+    description: "Archetype serves a structural function without inherent positive or negative charge"
+    archetypes: [herald, market_herald, regulatory_guardian, approver, user, technical_evaluator]
+
+# ==============================================================================
+# CORPORATE APPLICABILITY
+# ==============================================================================
+
+corporate_applicability:
+  high:
+    label: "High — Core Business Storytelling"
+    description: "Archetype maps directly to standard corporate narrative patterns"
+    archetypes: [customer_hero, vendor_as_mentor, hero, mentor, villain, audience_hero, presenter_as_guide, problem_as_villain, champion, approver]
+    usage: "Case studies, sales narratives, keynote stories, B2B proposal narratives"
+
+  medium:
+    label: "Medium — Situational Use"
+    description: "Archetype useful in specific corporate contexts"
+    archetypes: [herald, ally, threshold_guardian, market_herald, regulatory_guardian, technical_evaluator, influencer, skeptic, influence_character, plan_giver]
+    usage: "Change management narratives, compliance stories, team stories, stakeholder presentations"
+
+  low:
+    label: "Low — Literary / Advanced"
+    description: "Archetype primarily relevant to creative or literary narrative analysis"
+    archetypes: [shapeshifter, trickster, learner_hero, instructor_mentor, fellow_learner_ally]
+    usage: "Advanced narrative critique, competitive positioning stories, learning design narratives"
+
+# ==============================================================================
+# CLASSIFICATION DIMENSIONS
+# ==============================================================================
+
+classification_dimensions:
+  origin_tradition:
+    name: "Origin Tradition"
+    description: "The theoretical tradition the archetype derives from"
+    values:
+      - heros_journey
+      - jungian
+      - proppian
+      - business_narrative
+      - storybrand
+      - b2b_stakeholder
+      - learning_narrative
+
+  narrative_role:
+    name: "Narrative Role"
+    description: "The functional role the archetype plays in the story structure"
+    values:
+      - protagonist
+      - guide
+      - antagonist
+      - catalyst
+      - gatekeeper
+      - disruptor
+      - transformer
+      - evaluator
+
+  archetype_function:
+    name: "Archetype Function"
+    description: "What the archetype does within the narrative"
+    values:
+      - transformation
+      - enablement
+      - opposition
+      - initiation
+      - testing
+      - disruption
+      - validation
+      - advocacy
+
+  narrative_valence:
+    name: "Narrative Valence"
+    description: "Whether the archetype is constructive, destructive, or ambiguous"
+    values:
+      - positive
+      - negative
+      - ambiguous
+      - neutral
+
+  corporate_applicability:
+    name: "Corporate Applicability"
+    description: "How readily the archetype maps to business storytelling contexts"
+    values:
+      - high
+      - medium
+      - low
+
+  arc_types:
+    name: "Narrative Arc Type"
+    description: "The trajectory of change the archetype undergoes or catalyses across the story"
+    values:
+      - positive_change  # protagonist ends better than they started
+      - negative_change  # protagonist ends worse — tragedy or cautionary tale
+      - flat             # archetype remains unchanged — structural function only
+
+  buying_role:
+    name: "B2B Buying Role"
+    description: "The purchasing-committee role the archetype occupies in enterprise sales narratives"
+    values:
+      - approver          # final authority — economic buyer
+      - champion          # internal advocate who sponsors the solution
+      - influencer        # shapes opinion without holding final authority
+      - user              # day-to-day practitioner impacted by the solution
+      - technical_evaluator  # assesses technical fit and risk
+      - skeptic           # resistance persona who must be converted or neutralised
+
+  narrative_tier:
+    name: "Narrative Tier"
+    description: "The abstraction level at which the archetype operates in a multi-tier corporate storytelling system"
+    values:
+      - L1  # C-suite / board — strategic transformation story
+      - L2  # VP / Director — departmental impact and business case
+      - L3  # Manager / practitioner — workflow and feature relevance
+      - L4  # Technical — integration, security, and implementation detail

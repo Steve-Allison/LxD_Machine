@@ -1,0 +1,373 @@
+_meta:
+  id: "constructive_rst_corpus"
+  title: "Constructive RST Generation Blueprint"
+  description: "Knowledge base for top-down generative text planning, discourse-aware RAG, rhetorical blueprint synthesis, and prompt orchestration using Constructive RST."
+  domain: "narrative"
+  domain_type: "workflow"
+  purpose: "corpus"
+  version: "2.0.0"
+  last_updated: "2026-03-03"
+  corpus_sources:
+    - "Corpus/Research/Research - Advanced Computational Discourse Analysis_ Operationalizing Rhetorical Structure Theory with LLM.md"
+  relationships:
+    - target: corpus/Descriptive_RST_corpus.yaml
+      type: related_to
+      description: "Complementary RST corpus — descriptive (parsing) vs constructive (generation)"
+    - target: Design_Methodology/presentation_design_principles_corpus.yaml
+      type: downstream_dependency
+      description: "Presentation corpus validates visual realisation of narrative structures generated via RST discourse planning"
+  changelog:
+    - version: "1.2.0"
+      date: "2026-03-03"
+      summary: "Initial skeleton with 3 entries covering planning-realization separation, Disco-RAG, and recursive schema anti-pattern."
+    - version: "2.0.0"
+      date: "2026-03-03"
+      summary: "Full enrichment from RST research document. Expanded to 19 entries (7 principles, 8 best practices, 4 anti-patterns) covering goal-pursuit planning, 4-step blueprint pipeline, conditioned generation, RSTGen, Disco-RAG intra/inter-chunk graphs, Pydantic schema enforcement, and declarative orchestration patterns."
+schema_version: "1.0"
+domain: "narrative"
+last_updated: "2026-03-03"
+total_entries: 19
+tag_vocabulary:
+  - tag: "text_planning"
+    status: "active"
+  - tag: "disco_rag"
+    status: "active"
+  - tag: "prompt_orchestration"
+    status: "active"
+  - tag: "blueprint_generation"
+    status: "active"
+  - tag: "schema_enforcement"
+    status: "active"
+  - tag: "conditioned_generation"
+    status: "active"
+  - tag: "structural_validation"
+    status: "active"
+  - tag: "context_ingestion"
+    status: "active"
+  - tag: "coherence"
+    status: "active"
+  - tag: "factuality"
+    status: "active"
+entries:
+  # ─────────────────────────────────────────────
+  # PRINCIPLES (pr_001 – pr_007)
+  # ─────────────────────────────────────────────
+  - id: "pr_001"
+    entry_type: "principle"
+    title: "Separation of Planning and Realization"
+    description: "Constructive RST operates as a goal-pursuit method. The logical generation of the RST blueprint (structural planning phase) must precede and strictly condition the surface text generation phase (linguistic realization). This mirrors human cognitive writing processes where authors define communicative intent and select macro-rhetorical structures before generating exact surface text. The two phases must never be collapsed into a single generation step."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "Constructive RST and Generative Discourse: Building Content"
+      - document: "Rhetorical Structure Theory: Description and Construction of Text Structures"
+        section: "Constructive Theory"
+    tags:
+      - "text_planning"
+    added: "2026-03-03"
+    related_practices:
+      - "bp_001"
+      - "bp_004"
+
+  - id: "pr_002"
+    entry_type: "principle"
+    title: "Writing as Goal-Pursuit Method"
+    description: "Human writing is inherently a goal-pursuit method: authors define a specific communicative intent and select macro-rhetorical structures (e.g., core thesis followed by multiple evidence avenues culminating in preemptive concession to counter-arguments) before generating surface text. Generative models, as auto-regressive next-token predictors, lack this top-down planning capability. Constructive RST explicitly provides this missing global text planning layer."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "Constructive RST and Generative Discourse: Building Content"
+      - document: "Rhetorical Structure Theory: A Theory of Text Organization"
+        section: "Constructive Theory"
+    tags:
+      - "text_planning"
+      - "coherence"
+    added: "2026-03-03"
+
+  - id: "pr_003"
+    entry_type: "principle"
+    title: "Global Text Planner Necessity for Long-Form Generation"
+    description: "Auto-regressive generative models produce fluent, syntactically correct prose but suffer from severe logical drift, thematic contradiction, and structural collapse over long contexts. The root cause is the absence of a global text planner. Without explicit rhetorical structure conditioning, model outputs degrade in proportion to document length. Constructive RST solves this by providing the global planning layer that conditions generation."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "Constructive RST and Generative Discourse: Building Content"
+    tags:
+      - "text_planning"
+      - "coherence"
+    added: "2026-03-03"
+    related_practices:
+      - "bp_004"
+      - "bp_005"
+
+  - id: "pr_004"
+    entry_type: "principle"
+    title: "Root Nucleus as Indivisible Thesis Anchor"
+    description: "The first planning step in Constructive RST is identifying the Root Nucleus: the single, indivisible thesis statement or answer that satisfies the user's core query. All subsequent blueprint nodes (satellites) must trace back to and support this root. The Root Nucleus is the structural and semantic anchor from which the entire discourse tree is recursively elaborated."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "The Step-by-Step Rhetorical Prompting Process"
+    tags:
+      - "blueprint_generation"
+      - "text_planning"
+    added: "2026-03-03"
+    related_practices:
+      - "bp_002"
+
+  - id: "pr_005"
+    entry_type: "principle"
+    title: "Structural Validation Must Precede Generation"
+    description: "Before moving from blueprint to text generation, the structural blueprint must be validated to ensure logical soundness: all satellites must ultimately trace back to the root nucleus, dependent relations (e.g., a Result following a Cause) must be sequentially logical, and no circular reasoning exists at the structural level. This mathematically prevents hallucinated or circular reasoning before a single word of prose is drafted."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "The Step-by-Step Rhetorical Prompting Process"
+    tags:
+      - "structural_validation"
+      - "blueprint_generation"
+    added: "2026-03-03"
+    related_practices:
+      - "bp_003"
+
+  - id: "pr_006"
+    entry_type: "principle"
+    title: "Discourse Blueprint Conditioning of Generation"
+    description: "The validated JSON tree blueprint is passed back into the generative model as a rigid, inescapable structural constraint. The model generates final surface text by walking the tree, realizing each node into natural language while strictly adhering to the hierarchical rhetorical structure and utilizing discourse markers (e.g., 'however', 'therefore') dictated by the relation labels assigned during blueprint generation."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "The Step-by-Step Rhetorical Prompting Process"
+    tags:
+      - "conditioned_generation"
+      - "blueprint_generation"
+    added: "2026-03-03"
+    related_practices:
+      - "bp_004"
+
+  - id: "pr_007"
+    entry_type: "principle"
+    title: "Flat Relational Schemas Bypass Recursive API Limits"
+    description: "Current LLM structured output APIs (OpenAI, Gemini) reject recursive $ref JSON schemas. Constructive RST blueprints must therefore use flattened schemas: a flat list of DiscourseNode objects and a flat list of RhetoricalEdge objects with parent_id and child_id pointers. The nested tree is reconstructed deterministically in local memory. This constraint is architectural, not a workaround—it defines the production interface between LLM generation and tree assembly."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "Enforcing Structural Fidelity with Pydantic-AI and JSON Schema"
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "The Step-by-Step Rhetorical Prompting Process"
+    tags:
+      - "schema_enforcement"
+      - "blueprint_generation"
+    added: "2026-03-03"
+    related_practices:
+      - "bp_003"
+      - "bp_006"
+
+  # ─────────────────────────────────────────────
+  # BEST PRACTICES (bp_001 – bp_008)
+  # ─────────────────────────────────────────────
+  - id: "bp_001"
+    entry_type: "best_practice"
+    title: "Disco-RAG Intra-Chunk and Inter-Chunk Rhetorical Graphs"
+    description: "In discourse-aware Retrieval-Augmented Generation, explicitly construct intra-chunk RST trees to capture local hierarchies and coherence within each retrieved document, and inter-chunk rhetorical graphs to model cross-passage argumentative flow (how different sources contrast, elaborate, or corroborate each other). Merge these structures into a unified planning blueprint that mathematically conditions the LLM's generation, forcing rigorous evidence grounding."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "Advanced Generative Frameworks in Production"
+      - document: "Discourse-Aware Retrieval-Augmented Generation via Rhetorical Structure Modeling"
+        section: "Methodology"
+    tags:
+      - "disco_rag"
+      - "blueprint_generation"
+      - "factuality"
+    added: "2026-03-03"
+    evidence: "Disco-RAG achieves state-of-the-art results on knowledge-intensive QA benchmarks, dramatically improving factual consistency over standard flat-text RAG by forcing the LLM to respect evidential dependencies and cross-source argumentative structure."
+    context: "When building complex LLM generation pipelines that synthesize information from multiple external retrieved documents and require factual grounding."
+    confidence: "strong"
+    derived_from:
+      - "pr_001"
+      - "pr_006"
+
+  - id: "bp_002"
+    entry_type: "best_practice"
+    title: "Root Nucleus Identification via Context Ingestion"
+    description: "Before blueprint generation begins, ingest the raw knowledge base (from retrieval pipeline or user context) and instruct the LLM to identify the Root Nucleus—the single indivisible thesis statement or answer satisfying the core query. The system prompt must explicitly instruct the model not to write the essay, but to isolate and articulate the central proposition around which all supporting structure will be organized."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "The Step-by-Step Rhetorical Prompting Process"
+    tags:
+      - "context_ingestion"
+      - "blueprint_generation"
+    added: "2026-03-03"
+    evidence: "Explicit Root Nucleus extraction prevents the generative model from prematurely committing to surface text, ensuring the planning layer operates on a well-defined communicative anchor before structural elaboration begins."
+    context: "As the mandatory first step of any Constructive RST generation pipeline, before blueprint generation and text realization."
+    confidence: "strong"
+    derived_from:
+      - "pr_004"
+
+  - id: "bp_003"
+    entry_type: "best_practice"
+    title: "Flat Blueprint Generation via Pydantic Schema Enforcement"
+    description: "Pass a rigid Pydantic-generated JSON schema defining flattened DiscourseNode and RhetoricalEdge structures to the LLM during blueprint generation. The prompt forces the model to output a mathematical blueprint: assigning Evidence relations to supporting data points, Background relations to necessary context, and Concession relations to conflicting sources. Use Flat Relational Adjacency Extraction to bypass recursive schema limits while generating a valid tree."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "The Step-by-Step Rhetorical Prompting Process"
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "Enforcing Structural Fidelity with Pydantic-AI and JSON Schema"
+    tags:
+      - "schema_enforcement"
+      - "blueprint_generation"
+    added: "2026-03-03"
+    evidence: "Pydantic-AI validation bridges probabilistic model output and strict deterministic software engineering requirements. The flat-list schema approach trivially passes validation while preserving full hierarchical information for post-generation tree reconstruction."
+    context: "When generating discourse blueprints through LLM structured output APIs that reject recursive JSON schema definitions."
+    confidence: "strong"
+    derived_from:
+      - "pr_005"
+      - "pr_007"
+
+  - id: "bp_004"
+    entry_type: "best_practice"
+    title: "Conditioned Tree-Walking Generation"
+    description: "Pass the validated JSON discourse blueprint back to the generative model as a rigid structural constraint. Dynamically instruct the model to realize each node into natural language by walking the tree in order, utilizing appropriate discourse markers ('however', 'therefore', 'furthermore') dictated by the relation labels. The model must strictly adhere to the hierarchical structure, preventing logical drift and ensuring each generated segment fulfills its assigned rhetorical function."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "The Step-by-Step Rhetorical Prompting Process"
+    tags:
+      - "conditioned_generation"
+      - "coherence"
+    added: "2026-03-03"
+    evidence: "Conditioned generation from validated blueprints deterministically enforces logical coherence, closing the gap between artificial text generation and human cognitive planning. The model's output adheres to pre-validated structural constraints rather than relying on auto-regressive drift."
+    context: "As the final step in the Constructive RST pipeline, after blueprint generation and structural validation have been completed."
+    confidence: "strong"
+    derived_from:
+      - "pr_001"
+      - "pr_006"
+
+  - id: "bp_005"
+    entry_type: "best_practice"
+    title: "RSTGen Discourse-Controlled Long-Form Generation"
+    description: "Use the RSTGen methodology to strictly control discourse structure, semantics, and topics of generated text. Inject the target RST tree into the generation loss function, enabling controllable long-form text tasks such as automated argument generation and opinionated writing where varying parts must express contrasting features without losing coherence."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "Advanced Generative Frameworks in Production"
+      - document: "Introduction to RST"
+        section: "Constructive Applications"
+    tags:
+      - "conditioned_generation"
+      - "coherence"
+    added: "2026-03-03"
+    evidence: "RSTGen allows highly controllable long-form generation where the discourse structure is deterministically enforced, enabling precise control over how different sections of generated text relate argumentatively while preserving overall coherence."
+    context: "When generating long-form argumentative, opinionated, or persuasive text where different sections must express contrasting viewpoints under a unified coherent structure."
+    confidence: "strong"
+    derived_from:
+      - "pr_001"
+      - "pr_003"
+
+  - id: "bp_006"
+    entry_type: "best_practice"
+    title: "Declarative PDL Orchestration for Generative Blueprint Pipelines"
+    description: "Use IBM's Prompt Declaration Language (PDL) to orchestrate the multi-stage Constructive RST pipeline. PDL natively manages the sequential chain: context ingestion prompt, blueprint generation prompt (constrained by Pydantic schema), structural validation call, and conditioned generation prompt. Model chaining capabilities pass output of one model into the template of another, and conditional blocks handle validation failures with retry logic."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "Declarative Prompt Engineering with Prompt Declaration Language"
+    tags:
+      - "prompt_orchestration"
+      - "blueprint_generation"
+    added: "2026-03-03"
+    evidence: "Declarative orchestration via PDL ensures reproducibility, enables automated prompt optimization, and cleanly separates prompt logic from application plumbing. The framework supports the complex multi-model, multi-step chains required by Constructive RST pipelines."
+    context: "When building production-grade Constructive RST generation systems requiring reproducible, optimizable multi-stage prompt chains."
+    confidence: "strong"
+    derived_from:
+      - "pr_001"
+
+  - id: "bp_007"
+    entry_type: "best_practice"
+    title: "Structural Validation Phase via Pydantic-AI"
+    description: "After blueprint generation and before text realization, programmatically validate the generated JSON discourse tree using Pydantic-AI. Verify that: (1) all satellites trace back to the root nucleus, (2) dependent relations are sequentially logical (e.g., Result follows Cause), (3) no circular reasoning exists, (4) all node_ids are referenced by at least one edge, and (5) the graph forms a connected tree. Reject and re-prompt if validation fails."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "The Step-by-Step Rhetorical Prompting Process"
+    tags:
+      - "structural_validation"
+      - "schema_enforcement"
+    added: "2026-03-03"
+    evidence: "Pre-generation structural validation mathematically prevents hallucinated or circular reasoning at the blueprint level. This catches logical errors before any surface text is committed, reducing expensive re-generation cycles."
+    context: "As the mandatory intermediate step between blueprint generation and conditioned text realization in any Constructive RST pipeline."
+    confidence: "strong"
+    derived_from:
+      - "pr_005"
+
+  - id: "bp_008"
+    entry_type: "best_practice"
+    title: "Bypassing High-Latency Abstractions for Real-Time Generation"
+    description: "For real-time Constructive RST pipelines, bypass highly abstracted assistant interfaces and use direct chat completions with standard function-calling. While this allows slightly more relaxed schema parsing compared to strict logit-biasing modes, it can reduce latency by up to 70% while still allowing the Pydantic validation layer to catch and iteratively retry formatting errors."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "Enforcing Structural Fidelity with Pydantic-AI and JSON Schema"
+    tags:
+      - "schema_enforcement"
+      - "prompt_orchestration"
+    added: "2026-03-03"
+    evidence: "Direct chat completions with function-calling reduce latency by up to 70% compared to assistant-mode abstractions, while Pydantic's retry-on-validation-failure pattern maintains structural compliance."
+    context: "When building real-time or interactive Constructive RST generation systems where latency is a critical constraint."
+    confidence: "moderate"
+
+  # ─────────────────────────────────────────────
+  # ANTI-PATTERNS (ap_001 – ap_004)
+  # ─────────────────────────────────────────────
+  - id: "ap_001"
+    entry_type: "anti_pattern"
+    title: "Recursive JSON Schema Injection for Blueprints"
+    description: "Attempting to force an LLM to output a deeply nested, infinite-depth RST tree using recursive $ref schema references in structured output API calls."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "Enforcing Structural Fidelity with Pydantic-AI and JSON Schema"
+    tags:
+      - "schema_enforcement"
+    added: "2026-03-03"
+    consequences: "Strict structured output modes (OpenAI, Gemini) explicitly ban recursive references in their JSON schema engines. The strict validation mechanism outright rejects the payload. These modes also frequently prohibit optional fields, numerical boundary constraints, and unconstrained dictionaries, further compounding the failure."
+    instead: "Use Flat Relational Adjacency Extraction: prompt the LLM to output a flat list of DiscourseNode objects and a flat list of RhetoricalEdge objects linking parent_id to child_ids. Reconstruct the nested tree deterministically in local memory using graphing logic."
+    violates:
+      - "pr_007"
+
+  - id: "ap_002"
+    entry_type: "anti_pattern"
+    title: "Flat Bag-of-Facts RAG Without Discourse Structure"
+    description: "Treating retrieved passages in a RAG pipeline as a flat, unstructured bag of facts without constructing intra-chunk or inter-chunk rhetorical structure, then feeding this unstructured context directly to the generative model."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "Advanced Generative Frameworks in Production"
+      - document: "Discourse-Aware Retrieval-Augmented Generation via Rhetorical Structure Modeling"
+        section: "Motivation"
+    tags:
+      - "disco_rag"
+      - "factuality"
+    added: "2026-03-03"
+    consequences: "The model cannot synthesize dispersed evidence across sources, produces factually inconsistent outputs, and fails to respect evidential dependencies between retrieved passages. Generated text may contradict itself when sources present conflicting information without explicit rhetorical framing."
+    instead: "Construct intra-chunk RST trees for local coherence within each retrieved document and inter-chunk rhetorical graphs for cross-passage argumentative flow. Merge into a planning blueprint that conditions generation (Disco-RAG approach)."
+    violates:
+      - "pr_006"
+
+  - id: "ap_003"
+    entry_type: "anti_pattern"
+    title: "Monolithic Single-Prompt Generation Without Blueprint"
+    description: "Instructing a generative model to produce long-form structured text in a single prompt without first generating and validating a discourse blueprint. Relies entirely on the model's auto-regressive next-token prediction without any global text planning layer."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "Constructive RST and Generative Discourse: Building Content"
+    tags:
+      - "text_planning"
+      - "coherence"
+    added: "2026-03-03"
+    consequences: "Outputs over long contexts suffer from severe logical drift, thematic contradiction, and structural collapse. The absence of a global text planner means the model has no mechanism to maintain macro-level coherence, and degradation worsens proportionally with document length."
+    instead: "Implement the full Constructive RST 4-step pipeline: (1) context ingestion and Root Nucleus identification, (2) flat blueprint generation with Pydantic schema enforcement, (3) structural validation, (4) conditioned tree-walking generation."
+    violates:
+      - "pr_001"
+      - "pr_003"
+
+  - id: "ap_004"
+    entry_type: "anti_pattern"
+    title: "Skipping Structural Validation Before Generation"
+    description: "Proceeding directly from blueprint generation to text realization without programmatically validating the discourse tree structure for logical soundness."
+    sources:
+      - document: "Advanced Computational Discourse Analysis: Operationalizing RST with LLMs"
+        section: "The Step-by-Step Rhetorical Prompting Process"
+    tags:
+      - "structural_validation"
+    added: "2026-03-03"
+    consequences: "Structurally invalid blueprints (circular reasoning, orphaned nodes, disconnected subgraphs, reversed causal dependencies) propagate directly into the generated text, producing logically incoherent output that is expensive to detect and correct post-generation."
+    instead: "Implement a mandatory structural validation phase using Pydantic-AI before conditioned generation. Verify root nucleus reachability, sequential logic of dependent relations, absence of cycles, and full graph connectivity. Reject and re-prompt on validation failure."
+    violates:
+      - "pr_005"

@@ -1,0 +1,1009 @@
+_meta:
+  id: elevator_pitch_rubric
+  title: "Elevator Pitch Rubric"
+  description: "Scoring rubric for elevator pitch and value proposition quality covering time-to-value, core message clarity, differentiation, call-to-action quality, and memorability"
+  domain: sales
+  domain_type: workflow
+  purpose: scoring
+  version: "1.1.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Best-Practice Elevator Pitches.md"
+    - "Corpus/Research/Best-Practice Product Descriptions.md"
+    - "Corpus/Research/Research - Using SOAR Storytelling most effectively.md"
+    - "Corpus/Research/Storytelling_for_Different_Business_Personas.md"
+    - "Corpus/Research/soar_mapping_by_sales_stage.md"
+  academic_sources:
+    - "Cialdini (2001) - Influence: Science and Practice"
+    - "Pink (2012) - To Sell Is Human"
+    - "Heath & Heath (2007) - Made to Stick (SUCCESs framework)"
+    - "Rackham (1988) - SPIN Selling"
+  relationships:
+    - target: ../entities/sales_entities.yaml
+      type: depends_on
+      description: "Entity types for sales marker extraction"
+    - target: narrative_quality_rubric.yaml
+      type: related_to
+      description: "SOAR storytelling applied to pitches"
+    - target: audience_alignment_rubric.yaml
+      type: related_to
+      description: "Audience alignment in pitch delivery"
+    - target: ../sales/soar_hierarchy_framework.yaml
+      type: derived_from
+      description: "SOAR framework applied to pitch structure"
+
+
+# ==============================================================================
+# RUBRIC WEIGHTS
+# ==============================================================================
+
+rubric_weights:
+  time_to_value: 0.20       # Speed of communicating core value; BLUF; opening impact
+  core_message_clarity: 0.25 # Single clear message; jargon-free; audience-relevant framing
+  differentiation: 0.20     # Competitive distinction; unique value; specificity vs generic claims
+  cta_quality: 0.15         # Clear next step; appropriate urgency; specificity of ask
+  memorability: 0.20        # Sticky language; story elements; analogy/metaphor; emotional resonance
+
+
+# ==============================================================================
+# SCORING DIMENSIONS
+# ==============================================================================
+
+dimensions:
+
+  # ----------------------------------------------------------------------------
+  # DIMENSION 1: TIME TO VALUE
+  # ----------------------------------------------------------------------------
+  time_to_value:
+    name: "Time to Value"
+    description: >
+      Measures how quickly the pitch communicates its core value proposition.
+      The best pitches follow BLUF (Bottom Line Up Front): the listener should
+      understand what the product does and why it matters within the first
+      two sentences. Source: Best-Practice Elevator Pitches.md
+    evaluates:
+      - opening_hook: "Does the pitch open with a hook (question, statistic, or relatable scenario) rather than a company introduction?"
+      - bluf_compliance: "Is the core benefit stated in the first 30 words?"
+      - problem_then_solution: "Is the problem stated before the solution is introduced?"
+      - no_preamble: "Does the pitch avoid filler preamble ('I'd like to tell you about...')?"
+    score_levels:
+      5:
+        label: "Immediate value"
+        criteria:
+          - "Core value proposition in first 1-2 sentences"
+          - "Hook is specific and resonates with audience's known pain"
+          - "Problem-solution sequence present with no preamble"
+          - "Listener can articulate the product's purpose after sentence 1"
+      4:
+        label: "Clear and fast"
+        criteria:
+          - "Value proposition clear within first 40 words"
+          - "Hook present; may be slightly generic"
+          - "Problem-solution sequence followed"
+      3:
+        label: "Adequate pace"
+        criteria:
+          - "Value proposition emerges within first paragraph"
+          - "Hook may be weak or absent; pitch still navigable"
+          - "Some preamble present but limited"
+      2:
+        label: "Slow to value"
+        criteria:
+          - "Listener must read to mid-pitch before understanding core value"
+          - "No hook; pitch opens with company or product name"
+          - "Significant preamble delays the message"
+      1:
+        label: "No clear value"
+        criteria:
+          - "Core value proposition never explicitly stated"
+          - "Pitch opens with company history or feature list"
+          - "Listener cannot determine what the product does after reading"
+    research_note: "Best-Practice Elevator Pitches.md: 'The first few seconds are critical to avoid a tune-out. Begin with an attention-grabber — a compelling question, a startling statistic, or a bold statement.'"
+
+  # ----------------------------------------------------------------------------
+  # DIMENSION 2: CORE MESSAGE CLARITY
+  # ----------------------------------------------------------------------------
+  core_message_clarity:
+    name: "Core Message Clarity"
+    description: >
+      Evaluates whether the pitch communicates a single, coherent message in
+      plain language tailored to the audience. Cognitive load theory requires
+      one core idea per elevator pitch; multiple ideas compete and all lose.
+      Source: Best-Practice Elevator Pitches.md; Best-Practice Product Descriptions.md
+    evaluates:
+      - single_focus: "Does the pitch have one dominant message or does it diffuse across multiple points?"
+      - plain_language: "Is jargon avoided or immediately explained when used?"
+      - audience_language: "Does the pitch use the language and terminology the target audience uses?"
+      - benefit_over_feature: "Are benefits stated rather than features?"
+      - active_voice: "Are sentences written in active voice, present tense?"
+    score_levels:
+      5:
+        label: "Crystal clear"
+        criteria:
+          - "One dominant message; everything else supports it"
+          - "Zero unexplained jargon"
+          - "Benefits explicitly stated in audience's own vocabulary"
+          - "Active voice throughout; no passive constructions"
+          - "A non-expert could explain the pitch back accurately"
+      4:
+        label: "Clear"
+        criteria:
+          - "One dominant message with minor secondary points"
+          - "Minimal jargon; any technical term explained in context"
+          - "Benefits lead; features appear only in support"
+          - "Predominantly active voice"
+      3:
+        label: "Adequate clarity"
+        criteria:
+          - "Core message present but competes with secondary ideas"
+          - "Some jargon present; not always explained"
+          - "Mix of benefits and features without clear priority"
+      2:
+        label: "Unclear"
+        criteria:
+          - "Multiple messages of equal weight; no dominant idea"
+          - "Jargon present and unexplained; listener must decode"
+          - "Features listed without translating to benefits"
+      1:
+        label: "No clear message"
+        criteria:
+          - "No identifiable core message"
+          - "Heavy jargon makes pitch inaccessible"
+          - "Feature dump with no benefit translation"
+    research_note: "Best-Practice Elevator Pitches.md: 'Stick to one core idea. Resist the temptation to cram in multiple use-cases or secondary benefits — extra details create extraneous cognitive load and dilute the impact.'"
+
+  # ----------------------------------------------------------------------------
+  # DIMENSION 3: DIFFERENTIATION
+  # ----------------------------------------------------------------------------
+  differentiation:
+    name: "Differentiation"
+    description: >
+      Assesses whether the pitch clearly establishes what makes the offering
+      distinct from alternatives. Generic pitches that apply equally to any
+      competitor provide no reason to choose. Differentiation must be specific,
+      benefit-tied, and credible. Source: Best-Practice Elevator Pitches.md;
+      Best-Practice Product Descriptions.md
+    evaluates:
+      - explicit_differentiator: "Is a specific differentiator named, not just implied?"
+      - benefit_tied: "Is the differentiator tied to a concrete audience benefit?"
+      - specificity: "Does the claim avoid generic superlatives ('best-in-class', 'world-leading')?"
+      - competitive_framing: "Is there a clear 'unlike X, we Y' or equivalent positioning?"
+      - proof_point: "Is the differentiator supported by at least one proof point?"
+    score_levels:
+      5:
+        label: "Category-defining"
+        criteria:
+          - "Differentiator is specific, named, and benefit-tied"
+          - "No generic superlatives; all claims are falsifiable"
+          - "Competitive framing present (implicit or explicit)"
+          - "At least one proof point supports the differentiator"
+          - "Listener understands why this over the alternative"
+      4:
+        label: "Clear distinction"
+        criteria:
+          - "Differentiator clearly stated; benefit connection present"
+          - "Mostly specific; minor generic phrasing tolerated"
+          - "Competitive awareness implied if not explicit"
+      3:
+        label: "Partial differentiation"
+        criteria:
+          - "Differentiator mentioned but not fully developed"
+          - "Some generic language; specificity inconsistent"
+          - "No proof point; differentiation asserted not demonstrated"
+      2:
+        label: "Weak differentiation"
+        criteria:
+          - "Generic claims apply equally to any competitor"
+          - "Superlatives used without evidence"
+          - "No competitive awareness; pitch reads as category description"
+      1:
+        label: "No differentiation"
+        criteria:
+          - "No differentiator present; pitch describes a category not a product"
+          - "Heavy superlatives; nothing is falsifiable"
+          - "Listener would not know how to choose this over alternatives"
+    research_note: "Best-Practice Elevator Pitches.md: 'Emphasise what makes your solution unique or better than alternatives. Always frame differentiators around value to the listener.' Best-Practice Product Descriptions.md: 'Refrain from using too many superlatives and avoid vague buzzwords that sound grand but say little.'"
+
+  # ----------------------------------------------------------------------------
+  # DIMENSION 4: CTA QUALITY
+  # ----------------------------------------------------------------------------
+  cta_quality:
+    name: "Call-to-Action Quality"
+    description: >
+      Evaluates whether the pitch closes with a clear, specific, low-friction
+      next step appropriate to the pitch context. The CTA should feel
+      logically implied by the pitch — earned, not bolted on. Nudge theory
+      applies: present a choice architecture where the easy option is to
+      agree to a follow-up. Source: Best-Practice Elevator Pitches.md;
+      Research - Using SOAR Storytelling most effectively.md
+    evaluates:
+      - cta_present: "Is a clear call-to-action present at the close?"
+      - specificity_of_ask: "Is the CTA specific (demo, meeting, pilot) rather than generic ('reach out')?"
+      - low_friction: "Does the CTA present a low-commitment next step rather than a purchase request?"
+      - audience_appropriate: "Is the CTA calibrated to the audience and relationship stage?"
+      - logically_implied: "Does the CTA feel earned by the pitch content, not appended?"
+    score_levels:
+      5:
+        label: "Compelling and specific"
+        criteria:
+          - "CTA is specific, named, and low-friction"
+          - "Logically flows from the pitch narrative"
+          - "Single clear ask — no multiple CTAs competing"
+          - "Appropriate urgency without pressure"
+          - "Leaves the listener feeling in control of the next step"
+      4:
+        label: "Clear CTA"
+        criteria:
+          - "CTA present and specific"
+          - "Generally flows from pitch; minor disconnection tolerated"
+          - "Low-friction and single ask"
+      3:
+        label: "Generic CTA"
+        criteria:
+          - "CTA present but vague ('let me know if you're interested')"
+          - "Partial disconnection from pitch content"
+          - "Leaves next step undefined or ambiguous"
+      2:
+        label: "Weak or missing CTA"
+        criteria:
+          - "CTA implied but not stated; listener must infer the ask"
+          - "Or CTA is too aggressive (requests purchase or commitment on the spot)"
+          - "Multiple competing asks"
+      1:
+        label: "No CTA"
+        criteria:
+          - "Pitch ends with no next step"
+          - "Listener does not know what to do after hearing it"
+          - "Or CTA is so high-friction it will be refused"
+    research_note: "Best-Practice Elevator Pitches.md: 'End the pitch with a gentle call-to-action or next step. Rather than a hard sell, nudge the audience toward continued engagement. Frame CTA as easy, logical, and low-pressure.' Nudge theory: choice architecture makes the default option agreeing to follow-up."
+
+  # ----------------------------------------------------------------------------
+  # DIMENSION 5: MEMORABILITY
+  # ----------------------------------------------------------------------------
+  memorability:
+    name: "Memorability"
+    description: >
+      Assesses whether the pitch uses language, structure, and story elements
+      that make it stick after the conversation ends. Based on Heath & Heath
+      (2007) SUCCESs framework: Simple, Unexpected, Concrete, Credible,
+      Emotional, Stories. A pitch that is forgotten fails regardless of quality.
+      Source: Best-Practice Elevator Pitches.md; Research - Using SOAR Storytelling most effectively.md
+    evaluates:
+      - simple_core: "Is the core message reducible to one sentence that can be repeated?"
+      - unexpected_element: "Does the pitch contain something surprising or counter-intuitive?"
+      - concrete_language: "Are abstract claims made concrete through analogy, example, or imagery?"
+      - emotional_resonance: "Does the pitch evoke an emotion (relief, curiosity, excitement)?"
+      - story_element: "Is there a micro-story, scenario, or named character?"
+      - sticky_phrase: "Is there a tagline, analogy, or phrase that anchors the message?"
+    score_levels:
+      5:
+        label: "Highly memorable"
+        criteria:
+          - "Passes 4+ of 6 SUCCESs criteria"
+          - "Contains at least one concrete analogy or micro-story"
+          - "At least one emotional signal present"
+          - "Listener could accurately paraphrase the pitch 24 hours later"
+          - "Contains a sticky phrase or tagline that encapsulates the value"
+      4:
+        label: "Memorable"
+        criteria:
+          - "Passes 3 of 6 SUCCESs criteria"
+          - "Concrete language used; no analogy required"
+          - "Emotional resonance present even if minor"
+      3:
+        label: "Adequately memorable"
+        criteria:
+          - "Passes 2 of 6 SUCCESs criteria"
+          - "Some concrete elements but pitch is largely abstract"
+          - "Emotionally neutral; functional but not sticky"
+      2:
+        label: "Forgettable"
+        criteria:
+          - "Passes 1 of 6 SUCCESs criteria"
+          - "Abstract throughout; no imagery or analogy"
+          - "No emotional resonance; dry and functional only"
+      1:
+        label: "Highly forgettable"
+        criteria:
+          - "Passes 0 of 6 SUCCESs criteria"
+          - "Generic, abstract, emotionally flat"
+          - "Could be a pitch for any software product in any category"
+    research_note: "Heath & Heath (2007) SUCCESs: Simple, Unexpected, Concrete, Credible, Emotional, Stories. Research - Using SOAR Storytelling most effectively.md: 'Stories are up to 22 times more memorable than facts alone. When data and story are used together, audiences are moved both intellectually and emotionally.'"
+
+
+# ==============================================================================
+# PITCH STRUCTURES
+# ==============================================================================
+
+pitch_structures:
+  # Source: Best-Practice Elevator Pitches.md — Standard Structure of an Elevator Pitch
+  description: "Proven structural templates for elevator pitches. All share problem-first, solution-second ordering with explicit CTA."
+
+  problem_solution_bridge:
+    name: "Problem-Solution-Bridge"
+    sequence: ["hook", "problem", "solution", "differentiator", "proof", "cta"]
+    description: "The classic structure. Hook grabs attention, problem creates stakes, solution resolves, differentiator justifies choice, proof validates, CTA provides next step."
+    best_for: "Cold outreach, first-time introductions, mixed audiences"
+    example_flow: "Did you know 70% of employees forget training content within a day? [hook] Most LMS platforms serve the same content to everyone, which is why engagement stalls. [problem] Our platform uses adaptive AI to personalise each learning path. [solution] Unlike any other tool in this category, it learns from behaviour — not just job title. [differentiator] Beta clients saw 50% faster completion rates. [proof] I'd love to show you a 15-minute demo — when's a good time this week? [cta]"
+
+  before_after_bridge:
+    name: "Before-After-Bridge"
+    sequence: ["before_state", "after_state", "bridge_mechanism", "proof", "cta"]
+    description: "Contrast between the painful present state and the desirable future state, bridged by the product. Highly effective for loss-aversion framing."
+    best_for: "Prospects with a known pain point, follow-up conversations"
+    example_flow: "Right now, your sales team spends 40% of their time on content they create from scratch. [before] With our platform, that drops to near zero — sales reps pull on-brand content in seconds. [after] The bridge is a centralised asset library with AI-assisted search, built into the tools they already use. [bridge] One client cut content prep time by 60% in the first month. [proof] Could we walk through how that would look for your team? [cta]"
+
+  what_how_why:
+    name: "What-How-Why (Golden Circle)"
+    sequence: ["why", "how", "what", "cta"]
+    description: "Inspired by Simon Sinek's Golden Circle. Leads with purpose and belief before explaining mechanism or product. Builds identity-level resonance."
+    best_for: "Mission-aligned buyers, leadership audiences, brand storytelling contexts"
+    research_note: "Leads with values alignment before solution — increases likelihood of audience identifying with the offering."
+    example_flow: "We believe every employee deserves training that respects their time. [why] So we built a platform that adapts to how each person learns — not how an administrator categorises them. [how] That's Adobe Learning Manager: an AI-driven LMS that personalises paths automatically. [what] Want to see it in action? [cta]"
+
+  soar_condensed:
+    name: "SOAR Condensed (Pitch Format)"
+    sequence: ["situation", "opportunity", "approach_condensed", "results", "cta"]
+    description: "The full SOAR framework compressed to pitch length. Situation establishes context, Opportunity frames the problem and stakes, Approach is the solution in one sentence, Results provides proof, CTA closes."
+    best_for: "Accounts where context is known; warm leads; internal stakeholder pitches"
+    research_note: "Research - Using SOAR Storytelling most effectively.md: SOAR turns facts into a story with beginning, middle, and end — far more engaging and memorable than dry recitation of facts."
+    example_flow: "Your enterprise is scaling content production faster than your team can manage. [situation] Without a centralised system, brand inconsistency and rework costs spiral — and your team burns out. [opportunity] Our Content Supply Chain platform automates approval workflows, centralises assets, and integrates with your existing DAM. [approach] Clients using it report 30% reduction in time-to-publish and 25% less rework. [results] Can we walk through a 20-minute scoping call this week? [cta]"
+    stage_calibration:
+      description: "SOAR element weighting should match the sales stage. Elevator pitches operate at Stage 1-2 (Prospect Outreach / Opportunity Evaluation)."
+      prospect_outreach:
+        stage: 1
+        soar_weights: { s: 0.40, o: 0.40, a: 0.10, r: 0.10 }
+        rationale: "Visionary narrative dominates; Action and Result are minimal to avoid premature solution commitment"
+        scoring_implication: "A pitch over-investing in Action or Result detail at Stage 1 is a structural anti-pattern"
+      opportunity_evaluation:
+        stage: 2
+        soar_weights: { s: 0.30, o: 0.40, a: 0.20, r: 0.10 }
+        rationale: "Continue big-picture narrative; slightly more Action but still no verifiable case studies"
+    granularity_at_pitch_stage:
+      situation: "High-level industry trends and common business challenges — NOT the customer's specific context"
+      opportunity: "Visionary statement about a better future state — without product details"
+      approach: "Conceptual overview of types of actions possible — NOT a specific solution"
+      results: "Illustrative industry benchmarks and 'what if' scenarios to create intrigue — NOT verifiable customer testimonials"
+      source: "soar_mapping_by_sales_stage.md — Stage 1: Prospect Outreach, SOAR Granularity"
+
+
+# ==============================================================================
+# TIME CONSTRAINTS
+# ==============================================================================
+
+time_constraints:
+  # Source: Best-Practice Elevator Pitches.md — Aim to convey the entire structure in 30-60 seconds
+  description: "Word count and structural requirements by pitch duration. Tighter constraints require stricter element prioritisation."
+
+  thirty_second:
+    label: "30-Second Pitch"
+    word_count: { min: 60, ideal: 80, max: 100 }
+    speaking_pace_wpm: 130
+    required_elements: ["hook", "problem", "solution_benefit", "cta"]
+    optional_elements: ["differentiator"]
+    excluded_elements: ["proof", "extended_story"]
+    structure_note: "One sentence per required element. Hook and problem can merge. CTA must be concrete."
+    use_cases: ["networking events", "hallway conversations", "conference introductions"]
+
+  sixty_second:
+    label: "60-Second Pitch"
+    word_count: { min: 120, ideal: 150, max: 175 }
+    speaking_pace_wpm: 130
+    required_elements: ["hook", "problem", "solution_benefit", "differentiator", "cta"]
+    optional_elements: ["proof_point", "micro_story"]
+    structure_note: "Standard full structure. One standout differentiator. One proof point if available. CTA specific."
+    use_cases: ["sales introductions", "investor meetings", "product demos preamble"]
+
+  two_minute:
+    label: "2-Minute Pitch"
+    word_count: { min: 240, ideal: 280, max: 320 }
+    speaking_pace_wpm: 130
+    required_elements: ["hook", "problem", "solution_benefit", "differentiator", "proof_point", "cta"]
+    optional_elements: ["micro_story", "social_proof", "objection_preempt"]
+    structure_note: "Full SOAR condensed structure appropriate. Room for one micro-story and one supporting metric. Objection pre-emption recommended."
+    use_cases: ["recorded video pitches", "demo day presentations", "executive briefings"]
+
+
+# ==============================================================================
+# VALUE PROPOSITION FRAMEWORK
+# ==============================================================================
+
+value_proposition_framework:
+  # Source: Best-Practice Elevator Pitches.md — Solution & Value Proposition; Best-Practice Product Descriptions.md
+  description: "Standards for constructing the value proposition statement at the core of any pitch."
+
+  problem_solution_fit:
+    description: "The solution must directly address the stated problem. A mismatch destroys credibility."
+    test: "Does the solution claim explicitly resolve the problem stated 1-2 sentences earlier?"
+    failure: "Problem is 'slow content creation'; solution leads with 'AI-powered analytics' — no direct connection."
+    fix: "Restate the solution benefit using the same vocabulary as the problem statement."
+
+  benefit_hierarchy:
+    description: "Benefits should be ordered from most to least resonant for the target audience."
+    primary_benefit: "The single outcome the audience cares most about — must appear in first two sentences"
+    secondary_benefits: "Supporting outcomes — can appear after differentiator or as proof amplifiers"
+    research_note: "Best-Practice Elevator Pitches.md: 'Highlight the benefit before the how. Always frame your solution in terms of the value it provides to the listener, before delving briefly into how it works.'"
+
+  quantified_value:
+    description: "Quantified outcomes are significantly more persuasive than directional claims."
+    preferred_formats:
+      - "Percentage change: '30% reduction in time-to-publish'"
+      - "Absolute improvement: 'Save 8 hours per week per rep'"
+      - "Ratio framing: '2× faster than the previous workflow'"
+      - "Before-after: 'From 5 days to same-day approval cycles'"
+    avoid:
+      - "'Significantly improved' without a number"
+      - "'Much faster' without a comparator"
+      - "Percentages without a baseline"
+
+  social_proof:
+    description: "Brief social proof embeds credibility without requiring a full case study."
+    types:
+      customer_logos: "Name-dropping a recognised client in the same vertical as the prospect"
+      outcome_metrics: "Specific measurable result attributed to a customer type"
+      analyst_quotes: "Third-party validation from Gartner, Forrester, IDC, or equivalent"
+      awards_certifications: "Industry recognition that signals quality validation"
+    placement: "After differentiator; before CTA. Never opens the pitch."
+    format: "One proof point only in a 60-second pitch. Maximum two in a 2-minute pitch."
+    research_note: "Best-Practice Elevator Pitches.md: 'Mentioning recognizable companies acts as social proof, signalling that others have vetted and chosen your solution.'"
+    stage_appropriateness:
+      stage_1_prospect_outreach: "Industry benchmarks, statistics, and 'what if' scenarios only — no verifiable named-client ROI data"
+      stage_2_opportunity_evaluation: "Relevant customer stories from similar companies — still no detailed financial case studies"
+      stage_4_plus: "Named-client case studies with specific ROI calculations, implementation timelines, and verifiable outcome data"
+      source: "soar_mapping_by_sales_stage.md — Stage 1-4 Result element granularity"
+    persona_specificity:
+      principle: "Proof points must match the target persona's function and KPIs. Cross-persona proof actively erodes credibility."
+      cmo_cmb: "Revenue growth, market share, brand outcome, time-to-market reduction"
+      cio_cto: "TCO savings, SLA compliance, security posture, technical debt reduction, integration consolidation"
+      creative_leader: "Workflow output volume, brand consistency metrics, approval cycle time reduction"
+      operations_buyer: "Process efficiency metrics, tool consolidation, cross-departmental KPI visibility"
+      source: "Storytelling_for_Different_Business_Personas.md §Best Practices for Persona-Driven Storytelling #5"
+
+
+# ==============================================================================
+# DIFFERENTIATION STANDARDS
+# ==============================================================================
+
+differentiation_standards:
+  # Source: Best-Practice Elevator Pitches.md — Uniqueness/Differentiators section
+  description: "Standards for evaluating and constructing differentiation claims."
+
+  specificity_test:
+    description: "A differentiator passes the specificity test if it cannot also be claimed by a direct competitor."
+    passing_examples:
+      - "Unlike generic LMS platforms, ours creates hyper-personalised learning paths using behavioural data, not just job title."
+      - "The only platform that integrates with Adobe Creative Cloud natively — no middleware required."
+    failing_examples:
+      - "We're the most intuitive platform on the market."
+      - "Our solution is flexible and scalable."
+      - "We put the customer first."
+
+  category_of_one:
+    description: "The strongest pitches position the offering as a category of one — a combination of attributes no competitor replicates."
+    mechanism: "Combine two specific attributes to create a non-replicable positioning: 'The only [X] that [Y] for [Z].'"
+    example: "The only content supply chain platform built natively for Adobe Creative Cloud users who operate in regulated industries."
+
+  competitive_moats:
+    types:
+      technology: "Proprietary algorithm, model, or integration that competitors cannot easily replicate"
+      network: "Value increases with scale of adoption (community, integrations, data)"
+      switching_cost: "Deep workflow integration that makes migration costly for the customer"
+      brand: "Trusted category association; analyst recognition; industry partnerships"
+    pitch_application: "State one moat maximum. Explain it in one sentence. Tie it to a customer benefit."
+
+  proof_point_standards:
+    description: "Differentiators without proof are claims; differentiators with proof are positioning."
+    minimum: "One quantified result or named customer outcome"
+    preferred: "Named customer type + specific metric + time frame"
+    example: "Mid-market retailers using our platform reduced content production cycles by 40% in the first quarter."
+
+
+# ==============================================================================
+# SUCCESS FRAMEWORK (Heath & Heath)
+# ==============================================================================
+
+success_framework:
+  # Source: Heath & Heath (2007) - Made to Stick; Best-Practice Elevator Pitches.md
+  name: "SUCCESs Framework for Pitch Memorability"
+  description: "Six attributes that make ideas stick, applied to elevator pitch construction."
+  academic_source: "Heath & Heath (2007) - Made to Stick"
+
+  simple:
+    description: "Find the single most important thing and ruthlessly exclude everything else."
+    pitch_application: "Identify the Commander's Intent of the pitch — the one idea to survive the conversation."
+    test: "Can the listener repeat the core message in one sentence without coaching?"
+    failure: "The pitch has three equally weighted messages; none are remembered."
+
+  unexpected:
+    description: "Violate expectations to create curiosity. Open a gap, then close it."
+    pitch_application: "Lead with a surprising statistic, a counter-intuitive claim, or a provocative question."
+    example: "'70% of employees forget training content within a day — and most companies just repeat the same module.'"
+    test: "Does the opening sentence make the listener think 'I didn't know that' or 'That's a good question'?"
+
+  concrete:
+    description: "Make abstract ideas tangible with specific examples, numbers, or analogies."
+    pitch_application: "Replace 'improves engagement' with 'employees complete 3× more modules per quarter'."
+    analogy_power: "Analogies link unfamiliar concepts to familiar experiences, slashing cognitive load."
+    example_analogy: "'It's like Netflix for corporate learning — it recommends the right content at the right time for each person.'"
+    research_note: "Best-Practice Elevator Pitches.md: 'Use concrete imagery or examples. Concepts stick better when they are concrete. Concrete language reduces the mental effort to understand an idea by linking it to familiar experiences.'"
+
+  credible:
+    description: "Give the audience a way to verify or test the claim on their own terms."
+    pitch_application: "Use specific metrics, named customers, or an invitation to 'try before you buy' to establish credibility."
+    anti_pattern: "Claiming 'world-leading' or 'best-in-class' without a verifiable benchmark."
+
+  emotional:
+    description: "Make the audience care by connecting to identity, values, or a felt pain."
+    pitch_application: "Frame the outcome in human terms: 'Your team gets Friday afternoons back' not '20% efficiency gain'."
+    framing_approaches:
+      gain_frame: "Emphasise the positive outcomes of adoption: 'gain', 'save', 'boost'"
+      loss_frame: "Emphasise the cost of inaction: 'every month without this, competitors pull ahead'"
+    research_note: "Best-Practice Elevator Pitches.md: Framing effect — people make decisions based on how options are presented, not just objective facts. Combine both frames for maximum effect."
+
+  stories:
+    description: "Embed a micro-story or scenario that puts the listener in the world of the solution."
+    pitch_application: "One-sentence scenario: 'Imagine a new hire who feels supported from day one — that's what we enable.'"
+    soar_link: "SOAR condensed structure IS a micro-story: situation → problem → solution → outcome."
+    research_note: "Research - Using SOAR Storytelling most effectively.md: 'Stories are up to 22 times more memorable than facts alone. SOAR turns your message into a story with a beginning, middle, and end — far more engaging and memorable.'"
+
+
+# ==============================================================================
+# PITCH BY AUDIENCE
+# ==============================================================================
+
+pitch_by_audience:
+  # Source: Best-Practice Elevator Pitches.md — Value-Driven vs Technical-Driven; Know Your Audience
+  description: "Vocabulary, emphasis, and framing adjustments by audience archetype. The same product requires different pitch angles depending on who is listening."
+
+  c_suite:
+    titles: ["CEO", "CFO", "COO", "CMO", "CIO", "CTO"]
+    tone: "Strategic and visionary"
+    wiifm_core: "Revenue impact, competitive advantage, risk reduction, and strategic alignment"
+    emphasis:
+      - "Business outcomes, not product features"
+      - "ROI, payback period, and total cost of ownership framing"
+      - "Market positioning and competitive differentiation"
+      - "Risk of inaction framed as competitive threat"
+    vocabulary_use: ["market share", "ROI", "competitive edge", "operational efficiency", "scalability", "strategic fit"]
+    vocabulary_avoid: ["API", "integration architecture", "workflow automation details", "technical specs"]
+    proof_preference: "Peer company outcomes; analyst recognition; financial metrics"
+    cta_style: "Vision alignment + executive sponsor conversation or 30-minute strategy call"
+
+  technical_buyer:
+    titles: ["VP Engineering", "Solutions Architect", "IT Director", "Head of Technology"]
+    tone: "Confident and specific"
+    wiifm_core: "Integration quality, security, scalability, and total cost of ownership"
+    emphasis:
+      - "How the product integrates with existing stack"
+      - "Security, compliance, and enterprise-grade reliability"
+      - "Implementation timeline and migration complexity"
+      - "Technical differentiation with benefit translation"
+    vocabulary_use: ["API-first", "native integration", "SLAs", "security posture", "scalability", "technical debt reduction"]
+    vocabulary_avoid: ["brand equity", "creative empowerment", "visionary"]
+    proof_preference: "Architecture diagrams, SLA documentation, integration case studies"
+    cta_style: "Technical proof of concept or sandbox trial offer"
+    research_note: "Best-Practice Elevator Pitches.md: 'Use technical facts as supporting actors, not the lead role. Even a technical stakeholder will appreciate if you tie technical capabilities to value.'"
+
+  end_user:
+    titles: ["Individual contributor", "Manager", "Team lead", "Practitioner"]
+    tone: "Relatable and practical"
+    wiifm_core: "Time saved, frustration removed, daily workflow improvement"
+    emphasis:
+      - "How the product changes their day-to-day experience"
+      - "Ease of adoption; no steep learning curve"
+      - "Concrete before-and-after scenario"
+      - "Human outcomes: stress reduction, pride in work, time reclaimed"
+    vocabulary_use: ["saves you time", "works with what you already use", "no extra steps", "feels intuitive"]
+    vocabulary_avoid: ["enterprise grade", "ROI", "TCO", "scalability", "strategic alignment"]
+    proof_preference: "Peer testimonials; 'someone like you' success stories; trial access"
+    cta_style: "Free trial, live demo, or quick walkthrough offer"
+
+  creative_leader:
+    titles: ["CCO", "Chief Design Officer", "EVP Creative", "VP Creative", "Director of Creative", "VP Content", "Creative Director"]
+    buying_role: "Champion / Influencer"
+    tone: "Pragmatic"
+    wiifm_core: "Creative empowerment, removing workflow bottlenecks, quality at scale, brand consistency"
+    emphasis:
+      - "Removing rework and reducing approval cycle time"
+      - "Maintaining brand integrity at scale"
+      - "Increasing creative output volume without increasing headcount"
+      - "Concrete before-and-after process improvement"
+    vocabulary_use: ["brand consistency", "creative velocity", "review cycles", "content at scale", "time-to-market"]
+    vocabulary_avoid: ["technical architecture detail", "compliance as restriction", "governance overhead"]
+    proof_preference: "Before/after workflow examples, content volume output metrics, brand consistency case studies"
+    cta_style: "Show a concrete process improvement scenario — not a vision; a brief workflow walkthrough"
+    soar_stage_note: "Operates at Stage 1-2; Opportunity element should be visionary; Action should remain conceptual"
+    source: "Storytelling_for_Different_Business_Personas.md §Creative Leaders"
+
+  operations_buyer:
+    titles: ["VP Marketing Operations", "Director Marketing Operations", "VP Creative Operations", "Head of Content Operations"]
+    buying_role: "Champion / Influencer / User"
+    tone: "Detailed and technical"
+    wiifm_core: "Process consolidation, eliminating tool redundancy, end-to-end content lifecycle control, KPI visibility"
+    emphasis:
+      - "Integration capabilities and workflow efficiency"
+      - "Governance, compliance, and audit trail"
+      - "Cross-departmental visibility and metrics"
+      - "Reduction of disconnected tools and fragmented processes"
+    vocabulary_use: ["workflow automation", "KPIs", "tech stack consolidation", "campaign compliance", "content lifecycle", "process metrics"]
+    vocabulary_avoid: ["vision statements without process detail", "high-level strategy only"]
+    proof_preference: "Workflow diagrams, integration maps, before/after process efficiency metrics"
+    cta_style: "Demo of process workflows or integration architecture — tactical and specific"
+    common_objection: "Siloed org structure makes cross-departmental consensus difficult; too many disconnected processes already"
+    source: "Storytelling_for_Different_Business_Personas.md §Marketing Operations"
+
+
+# ==============================================================================
+# OBJECTION ANTICIPATION
+# ==============================================================================
+
+objection_anticipation:
+  # Source: Best-Practice Elevator Pitches.md — Framing Effect; Nudge Theory; Credibility section
+  description: "High-quality pitches proactively neutralise the most predictable objections within the pitch itself, before they are raised."
+
+  common_objections:
+    already_have_a_solution:
+      pattern: "We already use [competitor]."
+      preemption: "Unlike [category], we [specific differentiator]. Many teams come to us having already tried [category] — the switch typically pays back within one quarter."
+      framing: "Acknowledge the incumbent; reframe around what the incumbent cannot do"
+
+    too_expensive:
+      pattern: "What does it cost?"
+      preemption: "The ROI case is typically a 3–6 month payback — our [customer type] see [specific metric] within the first quarter."
+      framing: "Lead with outcome metric before cost is raised; reframe as investment not expense"
+
+    too_complex_to_implement:
+      pattern: "We don't have the bandwidth to implement something new."
+      preemption: "Implementation is typically completed in [timeframe] with [specific support model]. Your team doesn't carry the migration."
+      framing: "Quantify implementation cost; describe who does the work"
+
+    not_a_priority:
+      pattern: "That's not on our roadmap right now."
+      preemption: "The teams that delay tend to face [specific downstream cost]. The investment window where this pays back fastest is [now / Q[X]]."
+      framing: "Loss-aversion frame: cost of inaction, urgency of the window"
+
+    need_to_involve_others:
+      pattern: "I'd need to bring in my team."
+      preemption: "Absolutely — we typically start with a 20-minute scoping call with whoever owns [relevant area]. Who would that be for you?"
+      framing: "CTA pivots to enabling the stakeholder to involve others — lowers resistance"
+
+  technology_overhaul_cost_concern:
+    pattern: "That sounds like a comprehensive overhaul — what does that cost?"
+    target_persona: "marketing_leader"
+    preemption: "We typically start incrementally — clients see their first ROI milestone within the first quarter before committing to full rollout. The cost of the fragmented status quo is usually higher than the phased investment."
+    framing: "Lead with incremental adoption path and phased ROI milestones; anchor on cost of status quo"
+    source: "Storytelling_for_Different_Business_Personas.md §Marketing Leaders — Common Objections"
+
+  ai_capability_uncertainty:
+    pattern: "We're not sure what GenAI can actually do for us."
+    target_persona: "marketing_leader"
+    preemption: "That's fair — let me give you one concrete use case. [Role-relevant GenAI application with a measurable outcome.] That's the type of impact teams like yours are seeing."
+    framing: "Use a concrete, role-relevant GenAI use case with a measurable outcome; avoid abstract capability claims"
+    source: "Storytelling_for_Different_Business_Personas.md §Marketing Leaders — Common Objections"
+
+  change_management_cost:
+    pattern: "We don't have executive sponsorship for something like this."
+    target_persona: "creative_leader"
+    preemption: "We typically start with a quick win in one team that builds the business case internally. Our implementation path is designed to show impact in 30 days — the kind of result that gets executive attention."
+    framing: "Reference change management support, quick-win milestones, and phased rollout that builds internal sponsorship"
+    source: "Storytelling_for_Different_Business_Personas.md §Creative Leaders — Common Objections"
+
+  siloed_organization_consensus:
+    pattern: "We're too siloed — getting cross-departmental buy-in takes forever."
+    target_persona: "operations_buyer"
+    preemption: "Absolutely — most teams start with one department and expand from there. We can begin with your team, show the metrics, and let the results make the case cross-functionally."
+    framing: "Show how solution enables cross-functional visibility; offer a phased departmental rollout starting with the champion's team"
+    source: "Storytelling_for_Different_Business_Personas.md §Marketing Operations — Common Objections"
+
+  retiring_legacy_technology:
+    pattern: "We're stuck on legacy systems and don't have the budget to replace them."
+    target_persona: "technical_buyer"
+    preemption: "We're not asking you to replace anything today. Our platform integrates alongside your current stack and typically consolidates 2-3 overlapping tools within the first year — often making it cost-neutral."
+    framing: "Lead with TCO consolidation savings; offer coexistence/integration path; frame as reducing technical debt, not adding cost"
+    source: "Storytelling_for_Different_Business_Personas.md §IT / Technology Leaders — Common Objections"
+
+  pivot_phrases:
+    - "That's a fair point — here's how we address that:"
+    - "A lot of teams start there. What changes things is:"
+    - "We hear that often. The shift we see is:"
+    - "Understood — and here's the risk of waiting:"
+
+
+# ==============================================================================
+# ANTI-PATTERNS
+# ==============================================================================
+
+anti_patterns:
+  # Source: Best-Practice Elevator Pitches.md; Best-Practice Product Descriptions.md
+  description: "Common structural and language failure modes that degrade pitch quality."
+
+  feature_dump:
+    description: "Listing product features instead of translating them into audience benefits."
+    signal: "Three or more feature names in sequence without 'which means' or 'so you can' connectors"
+    impact: "Cognitive overload; listener cannot extract personal relevance"
+    fix: "For each feature, complete: '[Feature] — which means you can [benefit] without [cost/friction].'"
+    source: "Best-Practice Elevator Pitches.md: 'Don't focus on your product's features… mention features only when they help people overcome their pain points.'"
+
+  jargon_soup:
+    description: "Using technical, industry, or internal vocabulary the audience does not share."
+    signal: "More than 2 unexplained acronyms or technical terms per 100 words"
+    impact: "Audience disengages; credibility drops because speaker appears not to know the audience"
+    fix: "Read the pitch aloud to someone outside your team; flag every word they ask about"
+    source: "Best-Practice Elevator Pitches.md: 'Avoid all the technical jargon and focus on benefits and solutions in the pitch.'"
+
+  no_differentiator:
+    description: "The pitch describes the category, not the product. Could apply equally to any competitor."
+    signal: "No explicit claim that distinguishes this offering from alternatives"
+    impact: "Listener has no reason to choose this over an incumbent; credibility as a salesperson drops"
+    fix: "Add one falsifiable differentiator: 'Unlike [category norm], we [specific distinguishing claim].'"
+
+  weak_cta:
+    description: "Pitch ends without a clear next step, or ends with a high-friction ask the audience will refuse."
+    signal: "Ending with 'feel free to reach out' or 'let me know if interested' or 'would you like to buy?'"
+    impact: "Conversation ends with no momentum; listener does not know what to do next"
+    fix: "Replace with a specific, low-friction ask: 'Can we set up a 20-minute demo this week?'"
+
+  too_long:
+    description: "Pitch exceeds word-count limits for its context, causing listener fatigue and lost attention."
+    signal: "60-second pitch exceeds 175 words; 30-second pitch exceeds 100 words"
+    impact: "Key messages buried; listener disengages before the CTA"
+    fix: "Cut to the 3 most important elements. Remove proof points, secondary benefits, and caveats."
+    source: "Best-Practice Elevator Pitches.md: 'Trim out any fluff, jargon, or details that aren't crucial to your core message. Hitting only 2-3 main points will actually make your pitch more impactful.'"
+
+  company_first_not_customer:
+    description: "Pitch opens with company history, team credentials, or product origin before addressing the customer's problem."
+    signal: "First sentence contains company name, founding date, team size, or awards"
+    impact: "Listener immediately thinks 'why should I care?'; self-referential opening kills rapport"
+    fix: "Open with the audience's problem. Company credentials appear only as proof, after the value is established."
+    source: "Research - Using SOAR Storytelling most effectively.md: 'Don't make the company the hero; position your customer as the hero and your product as the guide.'"
+
+  vague_outcome_claims:
+    description: "Outcome claims use directional language without quantification or specificity."
+    signal: "Words like 'significantly', 'dramatically', 'much faster', 'greatly improved' without numbers"
+    impact: "Listener cannot evaluate the claim; credibility is reduced"
+    fix: "Replace with specific metrics: '30% faster', '2× improvement', 'saves 8 hours per week'."
+    source: "Best-Practice Elevator Pitches.md: 'Evidence is far more convincing. Specific metrics — 30% faster completion, 2× more engagement — provide a solid foundation.'"
+
+  solution_looking_for_a_problem:
+    description: "The pitch describes what the product does before establishing why the audience should care."
+    signal: "Product description appears before any problem statement or hook"
+    impact: "Listener has no frame of reference; product description lands in a vacuum"
+    fix: "Always state the problem (or hook that implies it) before introducing the solution."
+
+  death_by_superlative:
+    description: "Pitch relies on unverifiable superlatives that marketing-trained audiences automatically discount."
+    signal: "Use of 'world-leading', 'best-in-class', 'cutting-edge', 'revolutionary', 'innovative' without proof"
+    impact: "Signals marketing copy, not substance; analytical buyers immediately discount the pitch"
+    fix: "Replace every superlative with a specific, falsifiable claim or a customer outcome metric."
+    source: "Best-Practice Product Descriptions.md: 'Avoid marketing superlatives or exaggerated claims that aren't backed by facts. Such fluff doesn't add understanding — it undermines credibility.'"
+
+  no_emotional_hook:
+    description: "Pitch is entirely rational and factual with no moment of emotional connection or human relevance."
+    signal: "No scenario, no relatable character, no before-and-after experience described"
+    impact: "Pitch is understood but not felt; information is processed but not remembered"
+    fix: "Add one sentence that evokes a felt experience: 'Imagine your team spending Friday on strategy, not on chasing approvals.'"
+    source: "Research - Using SOAR Storytelling most effectively.md: 'Emotional content triggers oxytocin release, making listeners more receptive. Facts tell, but stories sell.'"
+
+  premature_solution_specificity:
+    description: "Presenting specific product/solution details (Action at L3/L4 resolution) in a prospect-outreach pitch where Approach should be conceptual"
+    signal: "Feature names, specific product modules, or detailed implementation steps appear in a Stage 1 (30-60 second) pitch"
+    impact: "Jumps to solution before establishing the problem's stakes; buyer has no context to evaluate the specifics; feels like a product demo not a vision conversation"
+    fix: "Keep Action conceptual at Stage 1-2: describe the type of approach possible, not the specific product. Save L3/L4 specificity for Stage 3+ (Solution Presentation)"
+    source: "soar_mapping_by_sales_stage.md Stage 1: Prospect Outreach — SOAR Granularity; Action element"
+
+  mismatched_result_evidence:
+    description: "Using detailed case study ROI figures, verifiable testimonials, or named-customer data in a Stage 1-2 elevator pitch"
+    signal: "Specific named-client ROI percentages, verifiable case study data, or detailed financial metrics appear in a 30-60 second pitch"
+    impact: "Triggers technical scrutiny before the buyer has formed an interest to justify it; premature specificity undermines the vision narrative"
+    fix: "Use industry benchmarks, anonymised statistics, and 'what if' scenarios at Stage 1-2. Reserve named-client case studies for Stage 4 (Proof/Validation)"
+    source: "soar_mapping_by_sales_stage.md Stage 1: Result element granularity"
+
+  soar_stage_mismatch:
+    description: "SOAR element weighting does not match the sales stage — e.g., a prospect-outreach pitch that is R-heavy when S+O should dominate"
+    signal: "In a 30-60 second pitch: Action element consumes >30% of pitch content; or Results element appears before Opportunity is fully established"
+    impact: "Pitch moves too fast through the buyer's decision process; listener has not formed an emotional connection before being asked to evaluate specific evidence or next steps"
+    fix: "Stage 1 pitch: S=40%/O=40%/A=10%/R=10%. Stage 2: S=30%/O=40%/A=20%/R=10%. Restructure accordingly."
+    source: "soar_mapping_by_sales_stage.md — Part 1: SOAR Weighting and Hierarchy Mapping table"
+
+  generic_proof_across_personas:
+    description: "Using proof points (case studies, metrics, testimonials) that are not matched to the target persona's role, KPIs, or industry"
+    signal: "A CMO receives TCO or infrastructure savings data; a CIO receives brand equity or creative velocity metrics; or all personas receive identical proof regardless of role"
+    impact: "Signals the seller is not listening; proof that is irrelevant to the persona's KPIs is not credible evidence — it is noise that erodes rapport"
+    fix: "Match proof to persona: CMO = revenue/market share/brand outcome; CIO = TCO/security/SLA; Creative Leader = workflow/output volume/brand consistency; Ops = process efficiency/tool consolidation metrics"
+    source: "Storytelling_for_Different_Business_Personas.md §Best Practices for Persona-Driven Storytelling #5"
+
+
+# ==============================================================================
+# CHECKS — VALIDATION RULES
+# ==============================================================================
+
+checks:
+  # Source: Best-Practice Elevator Pitches.md; Best-Practice Product Descriptions.md
+
+  bluf_check:
+    description: "Bottom Line Up Front — value proposition must appear in the first 30 words"
+    threshold_words: 30
+    test: "Does a benefit statement (outcome or problem resolution) appear within word 30?"
+    failure_label: "late_value_delivery"
+    penalty_ref: late_value_delivery
+
+  word_count_check:
+    description: "Validates pitch word count against declared duration target"
+    applies_to: ["thirty_second", "sixty_second", "two_minute"]
+    failure_conditions:
+      over_limit: "Word count exceeds declared duration maximum"
+      under_limit: "Word count falls below declared duration minimum — pitch is underdeveloped"
+    failure_labels: ["pitch_too_long", "pitch_too_short"]
+
+  jargon_ratio_check:
+    description: "Maximum ratio of unexplained technical terms to total words"
+    max_jargon_ratio: 0.08   # 8% — stricter than narrative rubric due to shorter format
+    methodology: "Count tokens not in plain-English lexicon and not immediately explained in context"
+    failure_label: "jargon_excess"
+    penalty_ref: jargon_excess
+
+  cta_present_check:
+    description: "A specific call-to-action must be present in all pitches"
+    required: true
+    test: "Does the pitch close with a named next step that is not generic?"
+    generic_patterns: ["reach out", "let me know", "feel free to contact", "get in touch"]
+    failure_label: "missing_or_weak_cta"
+    penalty_ref: missing_or_weak_cta
+
+  differentiator_check:
+    description: "At least one explicit differentiator must be present"
+    required: true
+    test: "Does the pitch contain a claim that cannot apply equally to a direct competitor?"
+    failure_label: "no_differentiator"
+    penalty_ref: no_differentiator
+
+  superlative_check:
+    description: "Superlatives without proof points are flagged for review"
+    banned_superlatives: ["world-leading", "best-in-class", "cutting-edge", "revolutionary", "innovative", "transformative", "game-changing", "industry-leading", "state-of-the-art"]
+    failure_label: "unsupported_superlative"
+    penalty_ref: unsupported_superlative
+
+  benefit_before_feature_check:
+    description: "Features should not appear before their associated benefit is stated"
+    test: "For each named feature, is the audience benefit stated in the same or preceding sentence?"
+    failure_label: "feature_before_benefit"
+    penalty_ref: feature_before_benefit
+
+  emotional_signal_check:
+    description: "At least one emotional signal must be present"
+    minimum_signals: 1
+    signal_patterns: ["imagine", "feel", "picture", "no longer", "finally", "without the", "instead of", "relief", "confidence", "pride", "frustrated", "overwhelmed"]
+    failure_label: "emotional_flatness"
+    penalty_ref: emotional_flatness
+
+  soar_stage_alignment:
+    description: "Validates that A-weight and R-weight in the SOAR structure are calibrated to prospect-outreach stage"
+    applies_to: "soar_condensed structure pitches at Stage 1-2"
+    max_action_share: 0.20    # Action element must not consume more than 20% of pitch content in prospect-outreach
+    max_result_share: 0.15    # Result element must not consume more than 15% of pitch content at Stage 1
+    failure_label: "soar_stage_mismatch"
+    penalty_ref: soar_stage_mismatch
+    source: "soar_mapping_by_sales_stage.md — Part 1: SOAR Weighting table (Stage 1: A=0.10, R=0.10)"
+
+
+# ==============================================================================
+# THRESHOLDS — NUMERIC LIMITS
+# ==============================================================================
+
+thresholds:
+  # Source: Best-Practice Elevator Pitches.md; Best-Practice Product Descriptions.md
+
+  word_counts:
+    thirty_second: { min: 60, ideal: 80, max: 100 }
+    sixty_second: { min: 120, ideal: 150, max: 175 }
+    two_minute: { min: 240, ideal: 280, max: 320 }
+
+  bluf_position:
+    max_words_before_value_prop: 30
+    description: "Value proposition or primary benefit must appear within first 30 words"
+
+  jargon_limits:
+    max_jargon_ratio: 0.08        # 8% of total tokens
+    max_unexplained_acronyms: 2   # Per 100 words
+
+  proof_points:
+    min_proof_points: 1           # At least one in any pitch
+    max_proof_points_30sec: 1
+    max_proof_points_60sec: 2
+    max_proof_points_2min: 3
+    description: "Exceeding proof point limits creates data overload and buries the CTA"
+
+  value_prop_sentence:
+    max_words: 25
+    description: "The core value proposition sentence must be 25 words or fewer to be instantly comprehensible"
+
+  cta_specificity:
+    min_specificity_words: 1      # CTA must name at least one specific next step (demo, call, trial)
+    max_commitment_level: "meeting"  # CTA must not ask for purchase, signature, or budget approval
+
+  success_criteria_minimum: 2     # Pitch must pass at least 2 of 6 SUCCESs criteria to achieve score >=3 on memorability
+
+
+# ==============================================================================
+# PENALTIES (Score Deductions)
+# ==============================================================================
+
+penalties:
+  # Source: Calibrated against narrative_quality_rubric.yaml penalty scale
+
+  no_differentiator: 0.12         # No claim distinguishing from competitors — fundamental failure
+  missing_or_weak_cta: 0.10       # No clear next step; or CTA is generic/too aggressive
+  late_value_delivery: 0.08       # Core value proposition does not appear within first 30 words
+  feature_dump: 0.08              # Three or more features listed without benefit translation
+  jargon_excess: 0.07             # Jargon ratio exceeds 8% of total tokens
+  company_first_opening: 0.07     # First sentence leads with company history, not customer problem
+  unsupported_superlative: 0.06   # Unverifiable superlative used without a proof point
+  pitch_too_long: 0.06            # Exceeds declared duration word count maximum
+  vague_outcome_claims: 0.05      # Outcome claims are directional without quantification
+  emotional_flatness: 0.05        # No emotional signal present in the pitch
+  feature_before_benefit: 0.04    # Feature named before its benefit is explained
+  no_hook: 0.04                   # Pitch opens without an attention-grabbing hook
+  solution_before_problem: 0.04   # Solution introduced before problem is established
+  multiple_competing_messages: 0.03  # Two or more equally weighted messages with no dominant idea
+  pitch_too_short: 0.03           # Word count falls below minimum for declared duration
+
+
+# ==============================================================================
+# BONUSES (Score Additions)
+# ==============================================================================
+
+bonuses:
+  # Source: Calibrated against narrative_quality_rubric.yaml bonus scale
+
+  quantified_proof_point: 0.03    # Includes at least one specific customer outcome metric (%, $, time)
+  concrete_analogy: 0.03          # Contains a memorable analogy that clarifies the value proposition
+  soar_structure_followed: 0.02   # Pitch follows SOAR condensed structure (situation → opportunity → approach → result)
+  audience_vocabulary_match: 0.02 # All language drawn from audience's known vocabulary (no alienating terms)
+  loss_and_gain_framing: 0.02     # Both gain-frame and loss-frame present (what you gain + cost of inaction)
+  objection_preempted: 0.02       # Proactively addresses one documented audience objection within the pitch
+  micro_story_present: 0.02       # Contains a one-sentence scenario or micro-story that grounds the value
+  rule_of_three: 0.01             # Uses rule-of-three structure for a key claim (save time, save money, upskill your team)
+  sticky_phrase: 0.01             # Contains a tagline, analogy, or encapsulating phrase likely to be recalled
+  customer_quote: 0.01            # Includes a brief customer testimonial or outcome attributed to a customer type
+  named_customer_type: 0.01       # References a specific customer vertical, role, or company type rather than a generic claim
+
+
+# ==============================================================================
+# RESEARCH BENCHMARKS
+# ==============================================================================
+
+research_benchmarks:
+  pitch_attention_window:
+    statistic: "Effective elevator pitches are 30–60 seconds; written equivalents are 100–150 words"
+    source: "Best-Practice Elevator Pitches.md"
+    implication: "Word count thresholds are not stylistic preferences — they reflect the actual attention window available"
+
+  story_memorability:
+    statistic: "Stories are up to 22 times more memorable than facts alone"
+    source: "Research - Using SOAR Storytelling most effectively.md"
+    implication: "A pitch with even one micro-story dramatically outperforms a purely factual pitch on recall"
+
+  statistic_in_story:
+    statistic: "22% more likely to remember a statistic embedded in a story vs standalone"
+    source: "Research - Using SOAR Storytelling most effectively.md"
+    implication: "Proof points should always be contextualised within narrative, not listed"
+
+  b2b_case_study_engagement:
+    statistic: "54% of B2B buyers engage with case studies during the purchase process"
+    source: "Research - Using SOAR Storytelling most effectively.md"
+    implication: "Social proof and outcome metrics are not optional — they are primary credibility drivers"
+
+  emotional_trust:
+    statistic: "Emotional content triggers oxytocin release, increasing trust and receptiveness"
+    source: "Research - Using SOAR Storytelling most effectively.md"
+    implication: "Emotional flatness is not a neutral state — it actively reduces the listener's openness to the CTA"
+
+  cognitive_load:
+    statistic: "Too much data or complexity at once overwhelms the audience, reducing what they understand and retain"
+    source: "Best-Practice Elevator Pitches.md"
+    implication: "One core message per pitch is a cognitive requirement, not an editorial preference"
+
+  superlative_credibility:
+    statistic: "Marketing superlatives or exaggerated claims undermine credibility if not backed by facts"
+    source: "Best-Practice Product Descriptions.md"
+    implication: "Every superlative must be replaced by a specific, falsifiable claim or removed"

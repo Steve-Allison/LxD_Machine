@@ -1,0 +1,1137 @@
+# ==============================================================================
+# Pedagogical Frameworks Configuration
+# 16 research-validated instructional design frameworks
+# ==============================================================================
+
+_meta:
+  id: pedagogical_frameworks
+  title: "Pedagogical Frameworks"
+  description: "16 research-validated instructional design frameworks including Gagné's Nine Events, ADDIE, Bloom's Taxonomy, and Kolb's Learning Cycle."
+  domain: pedagogical
+  domain_type: workflow
+  purpose: methodology
+  version: "1.3.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Crafting Powerful Opening Plays.md"
+    - "Corpus/Research/Learner Outcomes - Instructions v4.md"
+    - "Corpus/Research/Research - Comprehensive Learning Design Framework.md"
+    - "Corpus/Research/theory_gagne_s_nine_events_of_instruction.md"
+    - "Corpus/Research/theory_mayer_s_principles_of_multimedia_learning-_a_comprehensive_summary.md"
+    - "Corpus/Research/Activities - Research + Instructions v4.md"
+
+
+scoring_anchors: !include ../shared/scoring.yaml
+
+# ===========================================================================
+# STRUCTURAL FRAMEWORKS
+# ===========================================================================
+
+gagne_nine_events:
+  name: "Gagné's Nine Events of Instruction"
+  description: "Systematic instructional design framework for effective learning conditions"
+
+  events:
+    - id: 1
+      name: "gain_attention"
+      display: "Gain Attention"
+      purpose: "Activates the learner's orienting response and reticular activating system; attention is a biological prerequisite for encoding. Without attentional focus, no information enters working memory."
+      techniques: ["startling statistic", "provocative question", "short narrative scenario", "multimedia cold open", "cognitive dissonance statement", "surprising contradiction", "compelling visual or data reveal"]
+      cross_references: ["arcs_model.attention"]
+      indicators: ["hook", "surprise", "story", "provocative question"]
+
+      remediation_strategies:
+        missing_hook:
+          action: "Add a 'Cold Open': Start with a startling statistic (e.g., '70% of projects fail') or a provocative question before introducing the agenda."
+        weak_opening:
+          action: "Replace generic 'Welcome' with a relevant 30-second story that illustrates the problem this training solves."
+
+      few_shot_examples:
+        bad:
+          description: "Presenter says: 'Hello, welcome to Module 3. Today is Tuesday and we will cover safety protocols.'"
+          reasoning: "Generic greeting; zero cognitive arousal; reticular activating system ignores this."
+        good:
+          description: "Video opens with sound of breaking glass and black screen. Narrator: 'It took 0.5 seconds to lose $10,000. Here is how to stop it.'"
+          reasoning: "Immediate sensory hook; creates curiosity and urgency."
+
+    - id: 2
+      name: "inform_objectives"
+      display: "Inform Learners of Objectives"
+      purpose: "Metacognitive priming — sets learner expectations, reduces anxiety, and enables selective attention to relevant content. Allows learners to self-monitor their progress."
+      techniques: ["ABCD objectives (Audience, Behavior, Condition, Degree)", "SMART objectives aligned to business metrics", "visible roadmap or agenda slide", "'By the end you will...' statement", "self-efficacy check-in question"]
+      indicators: ["by the end", "you will be able to", "goals"]
+
+      remediation_strategies:
+        vague_objectives:
+          action: "Rewrite using the ABCD formula: Audience, Behavior (Verb), Condition, Degree."
+        buried_objectives:
+          action: "Place objectives on a dedicated slide immediately after the hook."
+
+    - id: 3
+      name: "stimulate_recall"
+      display: "Stimulate Recall"
+      purpose: "Activates relevant schema from long-term memory to form associative anchors for new information, reducing intrinsic cognitive load by leveraging existing mental models."
+      techniques: ["pre-quiz on prerequisite knowledge", "think-pair-share prompt", "analogy activation ('This is like...')", "KWL chart (Know / Want to know / Learned)", "brief summary of prerequisite concepts", "experience-sharing question ('Think about the last time you...')"]
+      indicators: ["remember when", "previously", "based on your experience"]
+
+      remediation_strategies:
+        no_bridge:
+          action: "Add a 'Recall' slide: 'Think about the last time you struggled with X. What happened?'"
+
+    - id: 4
+      name: "present_content"
+      display: "Present Content"
+      purpose: "Transfers new information into working memory through organized, chunked presentation aligned with the learner's schema. The manner of presentation directly determines extraneous and intrinsic load."
+      techniques: ["chunk into Rule + Example pairs (max 3 concepts per segment)", "dual coding — graphic + narration simultaneously", "apply segmenting principle (learner-paced progression)", "use signalling to highlight key structural elements", "progressive disclosure (reveal content step-by-step)", "limit segments to 8-10 minutes of complex content"]
+      cross_references: ["mayer_multimedia_principles.segmenting", "mayer_multimedia_principles.signalling", "cognitive_load_theory"]
+      indicators: ["key points", "process", "steps"]
+
+      remediation_strategies:
+        info_dump:
+          action: "Chunk content into 'Rule + Example' pairs. Never present more than 3 concepts without an example."
+
+    - id: 5
+      name: "provide_guidance"
+      display: "Provide Guidance"
+      purpose: "Accelerates schema construction by providing cognitive scaffolds. Worked examples reduce extraneous load while embedding new knowledge in authentic context; guidance is distinct from content presentation."
+      techniques: ["worked examples (complete → faded → independent)", "analogies bridging familiar knowledge to new concept", "non-examples (contrastive cases showing what is NOT correct)", "mnemonic devices for recall", "advance organizers framing the content structure", "step-by-step demonstration before practice"]
+      indicators: ["example", "analogy", "non-example", "mnemonic"]
+
+      remediation_strategies:
+        abstract_only:
+          action: "Add a 'Worked Example': Walk through a completed problem step-by-step before asking learners to solve one."
+
+    - id: 6
+      name: "elicit_performance"
+      display: "Elicit Performance (Practice)"
+      purpose: "Encodes learning through active retrieval — practice must be overt, observable, and must match the target cognitive level specified in the objective (per Bloom's taxonomy). Practice every 3-5 minutes for complex content."
+      techniques: ["branching scenario decision points", "stop-and-think prompts", "role-play simulations", "drag-and-drop exercises", "case study analysis", "think-aloud problem solving", "collaborative peer practice", "confidence-rated practice items"]
+      cross_references: ["blooms_taxonomy", "cognitive_load_theory"]
+      indicators: ["your turn", "try this", "scenario", "simulation"]
+
+      remediation_strategies:
+        passive_learning:
+          action: "Insert a 'Stop and Think' activity or a branching scenario decision point."
+
+    - id: 7
+      name: "provide_feedback"
+      display: "Provide Feedback"
+      purpose: "Corrects misconceptions, reinforces accurate performance, and motivates continued effort. Feedback must be explanatory (not just correct/incorrect) and delivered immediately to be effective."
+      techniques: ["explanatory feedback stating WHY correct or incorrect", "immediate confirmatory feedback", "hints presented before revealing the answer", "corrective model showing ideal response", "peer feedback protocols with structured criteria", "confidence ratings compared with actual performance"]
+      indicators: ["that is correct because", "try again", "feedback"]
+
+      remediation_strategies:
+        generic_feedback:
+          action: "Upgrade feedback to be explanatory: 'Incorrect. You chose X, but Y is better because...'"
+
+    - id: 8
+      name: "assess_performance"
+      display: "Assess Performance"
+      purpose: "Confirms that learning has occurred and that performance aligns with the stated objective. Assessment must require the same cognitive level as the objective — a Create-level objective cannot be validly assessed with multiple choice."
+      techniques: ["pre/post knowledge tests measuring gain", "skill demonstrations against stated criteria", "scenario-based assessments requiring decision-making", "confidence ratings calibrated against accuracy", "portfolio artifacts", "formative checkpoints during instruction", "diagnostic pre-assessments to identify gaps"]
+      cross_references: ["blooms_taxonomy", "kirkpatrick_model.level_2"]
+      indicators: ["quiz", "test", "demonstrate"]
+
+      remediation_strategies:
+        misaligned_assessment:
+          action: "Ensure the test requires the same cognitive level as the objective (e.g., if Objective = 'Create', Test cannot be 'Multiple Choice')."
+
+    - id: 9
+      name: "enhance_retention"
+      display: "Enhance Retention/Transfer"
+      purpose: "Moves learned material from short-term rehearsal to durable long-term storage and enables near/far transfer to novel performance contexts. Transfer is the ultimate goal of instruction."
+      techniques: ["spaced review at 1, 7, and 30 days post-training", "action planning templates (what will I do differently?)", "commitment devices (personal pledges, follow-up emails)", "manager collaboration tools (30/60/90 day check-ins)", "downloadable job aids and performance support tools", "teach-back activities (learner explains concept to peer)", "varied application contexts to support far transfer"]
+      cross_references: ["kirkpatrick_model.level_3"]
+      indicators: ["job aid", "next steps", "summary", "action plan"]
+
+      remediation_strategies:
+        abrupt_end:
+          action: "Add a 'Transfer Plan': A downloadable checklist or specific challenge for the learner to do tomorrow."
+
+merrill_first_principles:
+  name: "Merrill's First Principles of Instruction"
+  core_statement: "Problem-centred, Activation, Demonstration, Application, Integration"
+  description: "The core cycle for problem-centered learning."
+
+  phases:
+    1_problem_centered:
+      definition: "Learning is anchored to authentic, real-world problems."
+      validation_checklist:
+        - "Is the problem authentic to the learner's role?"
+        - "Is the whole task shown early (Pebble-in-the-Pond)?"
+        - "Is there a progression of complexity?"
+      remediation_strategies:
+        topic_centred:
+          action: "Reframe the course title from a Topic ('Fire Safety') to a Problem ('How to Survive a Building Fire')."
+
+    2_activation:
+      definition: "Activate existing knowledge as a foundation."
+      strategies:
+        - "Recall prior experience"
+        - "Use relevant analogies"
+        - "Pre-training assessments"
+
+    3_demonstration:
+      definition: "Show, don't just tell."
+      strategies:
+        - "Expert modeling (Worked Examples)"
+        - "Contrastive examples (Show what NOT to do)"
+        - "Visualizations"
+      few_shot_examples:
+        bad:
+          description: "Slide lists 5 steps for a software process in bullet points."
+          reasoning: "Telling, not showing. Requires high cognitive load to visualise."
+        good:
+          description: "Video capture of the mouse performing the 5 steps, with voiceover explaining the 'why' of each click."
+          reasoning: "Demonstration provides a direct mental model."
+
+    4_application:
+      definition: "Learner applies knowledge with feedback."
+      strategies:
+        - "Scaffolded practice (Fading support)"
+        - "Simulations"
+        - "Peer role-play"
+
+    5_integration:
+      definition: "Transfer knowledge to the real world."
+      strategies:
+        - "Reflection"
+        - "Public demonstration"
+        - "Personal adaptation plans"
+
+merrill_component_display_theory:
+  name: "Merrill's Component Display Theory (CDT)"
+  description: "Prescriptive rules based on Content Type x Performance Level."
+
+  performance_content_matrix:
+    content_types:
+      fact: "Arbitrary information (names, dates, symbols)."
+      concept: "Categories defined by shared attributes."
+      procedure: "Ordered sequence of steps."
+      principle: "Cause-and-effect relationships or rules."
+
+    performance_levels:
+      remember: "Recall or recognize."
+      use: "Apply to a specific case."
+      find: "Derive a new abstraction or solution."
+
+  prescriptions:
+    fact_remember:
+      strategy: "Repetition + Mnemonics"
+      feedback: "Correct/Incorrect"
+    concept_use:
+      strategy: "Definition (Rule) + Examples (Positive) + Non-Examples (Negative)"
+      feedback: "Explain WHY it is an example/non-example."
+    procedure_use:
+      strategy: "Step-by-step Demo + Guided Practice + Sandbox Simulation"
+      feedback: "Corrective feedback on specific steps."
+    principle_use:
+      strategy: "Statement of Principle + Cause/Effect Examples"
+      feedback: "Show natural consequences of choices."
+    principle_find:
+      strategy: "Heuristic guidelines + Novel Problem Solving"
+      feedback: "Critique of the diagnostic process, not just result."
+
+  presentation_forms:
+    primary:
+      expository_generality: "Rule/Definition (Tell)"
+      expository_instance: "Example (Show)"
+      inquisitory_generality: "Recall (Ask Rule)"
+      inquisitory_instance: "Practice (Ask Application)"
+    secondary:
+      elaborations: ["Context", "Prerequisites", "Mnemonics", "Feedback", "Help"]
+
+# ===========================================================================
+# COGNITIVE FRAMEWORKS
+# ===========================================================================
+
+blooms_taxonomy:
+  name: "Bloom's Taxonomy (Revised)"
+
+  cognitive_domain:
+    levels:
+      - id: 1
+        name: "remember"
+        display: "Remember"
+        description: "Recall facts and basic concepts"
+        verbs: ["define", "identify", "list", "name", "recall", "recognize", "state"]
+        question_stems: ["What is...?", "Who was...?", "When did...?", "Where is...?"]
+        assessment_types: ["multiple choice", "fill-in-the-blank", "matching", "true/false"]
+        recommended_tools: ["Quizizz", "Mentimeter", "Kahoot", "flashcard decks"]
+      - id: 2
+        name: "understand"
+        display: "Understand"
+        description: "Explain ideas or concepts"
+        verbs: ["describe", "explain", "interpret", "paraphrase", "summarize", "classify"]
+        question_stems: ["What does this mean?", "How would you explain...?", "What is the main idea?"]
+        assessment_types: ["essay", "summary", "explanation", "comparison"]
+        recommended_tools: ["Miro (concept mapping)", "H5P (interactive content)", "Padlet", "Google Slides annotations"]
+      - id: 3
+        name: "apply"
+        display: "Apply"
+        description: "Use information in new situations"
+        verbs: ["demonstrate", "execute", "implement", "solve", "use", "calculate"]
+        question_stems: ["How would you use...?", "What would happen if...?", "Solve this problem"]
+        assessment_types: ["problem-solving", "case study", "simulation", "demonstration", "scenario-based application"]
+        recommended_tools: ["Gitpod", "Codecademy", "Articulate Storyline scenarios", "branching simulations"]
+      - id: 4
+        name: "analyze"
+        display: "Analyze"
+        description: "Draw connections among ideas"
+        verbs: ["compare", "contrast", "differentiate", "examine", "organize", "deconstruct"]
+        question_stems: ["What are the parts of...?", "How does X relate to Y?", "What is the pattern?"]
+        assessment_types: ["analysis", "comparison", "diagram", "research paper"]
+        recommended_tools: ["Twine (branching narrative analysis)", "Articulate Rise (scenario deconstruction)", "Miro (system diagrams)", "Lucidchart"]
+      - id: 5
+        name: "evaluate"
+        display: "Evaluate"
+        description: "Justify a stand or decision"
+        verbs: ["appraise", "argue", "critique", "defend", "judge", "support"]
+        question_stems: ["What is your opinion of...?", "How would you judge...?", "Do you agree with...?"]
+        assessment_types: ["debate", "critique", "evaluation", "peer review", "portfolio-based assessment"]
+        recommended_tools: ["GitHub pull request reviews", "Zoom peer critique sessions", "structured debate platforms", "rubric-based peer assessment"]
+      - id: 6
+        name: "create"
+        display: "Create"
+        description: "Produce new or original work"
+        verbs: ["design", "construct", "invent", "compose", "formulate", "produce"]
+        question_stems: ["How would you design...?", "What would you create if...?", "Can you propose...?"]
+        assessment_types: ["project", "portfolio", "essay", "presentation", "invention", "performance simulation"]
+        recommended_tools: ["Replit (coding projects)", "Figma (design prototypes)", "Pitch (presentations)", "Articulate Rise (course creation)", "GitHub (collaborative projects)"]
+
+  remediation_strategies:
+    low_level_objectives:
+      action: "Elevate cognitive level. Change 'Understand' (passive) to 'Analyze' (active) or 'Evaluate' (critical)."
+    verb_misalignment:
+      action: "Replace non-measurable verbs ('know', 'understand', 'appreciate') with observable verbs ('list', 'describe', 'solve')."
+
+  few_shot_examples:
+    bad:
+      description: "Objective: 'Students will understand the importance of ethics.'"
+      reasoning: "'Understand' is internal and unmeasurable. 'Importance' is vague."
+    good:
+      description: "Objective: 'Students will evaluate three ethical dilemmas and defend their chosen solution.'"
+      reasoning: "Action verb 'Evaluate' and 'Defend' are measurable and high-level."
+
+cognitive_load_theory:
+  name: "Cognitive Load Theory"
+  description: "Managing mental effort for optimal learning (Sweller)"
+
+  load_types:
+    - id: 1
+      name: "intrinsic"
+      display: "Intrinsic Load"
+      description: "Inherent complexity of the material itself; determined by element interactivity"
+      indicators: ["complex topic", "many interacting elements", "prerequisite knowledge required"]
+      management_strategies:
+        - "Sequence content from simple to complex"
+        - "Use worked examples before problem-solving"
+        - "Ensure prerequisite knowledge is in place"
+
+    - id: 2
+      name: "extraneous"
+      display: "Extraneous Load"
+      description: "Unnecessary cognitive effort from poor instructional design"
+      indicators: ["split attention", "redundancy", "decorative elements", "confusing layout"]
+      management_strategies:
+        - "Integrate text with graphics (eliminate legends)"
+        - "Remove decorative images and background music"
+        - "Use consistent navigation and formatting"
+        - "Avoid redundant on-screen text with narration"
+
+    - id: 3
+      name: "germane"
+      display: "Germane Load"
+      description: "Productive mental effort spent on schema construction and automation"
+      indicators: ["pattern recognition", "schema building", "transfer practice", "elaboration"]
+      management_strategies:
+        - "Use varied examples to build robust schemas"
+        - "Encourage self-explanation"
+        - "Provide spaced practice for automation"
+        - "Connect new knowledge to existing mental models"
+
+  remediation_strategies:
+    split_attention:
+      action: "Physically integrate text labels into the diagram itself, eliminating the need for a legend."
+    redundancy:
+      action: "Mute the on-screen text. If you are narrating it, don't show it as text simultaneously."
+    high_intrinsic_load:
+      action: "Break complex content into smaller chunks; ensure prerequisites are covered first."
+    low_germane_load:
+      action: "Add self-explanation prompts and varied practice to encourage deep processing."
+
+  timing_benchmarks:
+    description: "Empirical thresholds for managing cognitive load in digital content design"
+    working_memory_capacity: "7 ±2 chunks (Miller, 1956)"
+    max_continuous_segment_minutes: "8-10 minutes for complex content before an interaction or break"
+    interaction_frequency: "Every 3-5 minutes of instructional content"
+    spaced_repetition:
+      intervals: ["1 day", "7 days", "30 days"]
+      claimed_benefit: "50% better retention compared to massed practice"
+      source: "Research - Comprehensive Learning Design Framework.md"
+    chunking_rule: "Limit information units to 7 ±2 per working memory cycle; use progressive disclosure for complex content"
+
+  clt_mayer_category_mapping:
+    description: "Mayer's multimedia principle categories map directly to CLT load types"
+    source: "theory_mayer_s_principles_of_multimedia_learning-_a_comprehensive_summary.md"
+    mappings:
+      - mayer_category: "reduce_extraneous"
+        clt_load_type: "extraneous"
+        rationale: "Principles removing seductive details, redundancy, and split attention directly reduce extraneous load"
+      - mayer_category: "manage_essential"
+        clt_load_type: "intrinsic"
+        rationale: "Principles that control pacing, spatial/temporal contiguity, and pre-training reduce the intrinsic load burden"
+      - mayer_category: "foster_generative"
+        clt_load_type: "germane"
+        rationale: "Principles promoting active processing (personalization, voice, generative activity) increase productive germane load"
+
+# ===========================================================================
+# MOTIVATIONAL FRAMEWORKS
+# ===========================================================================
+
+arcs_model:
+  name: "ARCS Model of Motivational Design"
+  components:
+    - id: 1
+      name: "attention"
+      display: "Attention"
+      description: "Capture and maintain learner attention through perceptual arousal, inquiry arousal, and variability"
+      indicators: ["hook", "surprise", "question", "variety", "visual change"]
+      coaching_if_weak: "Start with a provocative question or surprising statistic to capture attention immediately"
+      remediation_strategies:
+        boring_start:
+          action: "Use 'Perceptual Arousal': A sudden change in tone, volume, or visual style."
+
+    - id: 2
+      name: "relevance"
+      display: "Relevance"
+      description: "Connect content to learner goals, needs, and interests (WIIFM - What's In It For Me)"
+      indicators: ["benefit", "goal", "need", "value", "why this matters"]
+      coaching_if_weak: "Explicitly state why this content matters to the learner's job, goals, or challenges"
+      remediation_strategies:
+        no_wiifm:
+          action: "Add a 'Relevance Statement': 'You need this skill because it will save you 2 hours a week.'"
+
+    - id: 3
+      name: "confidence"
+      display: "Confidence"
+      description: "Help learners believe they can succeed through clear objectives, scaffolding, and success opportunities"
+      indicators: ["objectives", "scaffolding", "success", "achievable", "support"]
+      coaching_if_weak: "Break complex tasks into smaller steps and provide early wins to build confidence"
+      remediation_strategies:
+        overwhelming_difficulty:
+          action: "Add 'Scaffolding': Break the complex task into 3 smaller, achievable wins."
+
+    - id: 4
+      name: "satisfaction"
+      display: "Satisfaction"
+      description: "Provide intrinsic and extrinsic rewards, fair treatment, and opportunities to apply learning"
+      indicators: ["reward", "recognition", "application", "fairness", "outcome"]
+      coaching_if_weak: "Show immediate value and provide opportunities to apply learning in real contexts"
+      remediation_strategies: {}
+
+# ===========================================================================
+# MULTIMEDIA FRAMEWORKS
+# ===========================================================================
+
+mayer_multimedia_principles:
+  name: "Mayer's Multimedia Principles"
+
+  principles:
+    - id: 1
+      name: "coherence"
+      display: "Coherence Principle"
+      category: "reduce_extraneous"
+      description: "People learn better when extraneous words, pictures, and sounds are excluded rather than included"
+      guideline: "Remove all non-essential material that does not support the learning objective"
+      indicators: ["decorative graphics", "background music", "irrelevant text", "seductive details"]
+      violations: ["coherence_violation", "seductive details", "decorative elements"]
+
+    - id: 2
+      name: "modality"
+      display: "Modality Principle"
+      category: "manage_essential"
+      description: "People learn better from graphics and narration than from graphics and on-screen text"
+      guideline: "Use audio narration with graphics rather than on-screen text with graphics"
+      indicators: ["text on screen", "narration", "dual channel", "visual + audio"]
+      violations: ["modality_violation", "split attention", "text overload"]
+
+    - id: 3
+      name: "redundancy"
+      display: "Redundancy Principle"
+      category: "reduce_extraneous"
+      description: "People learn better from graphics and narration than from graphics, narration, and on-screen text"
+      guideline: "Avoid presenting the same information in multiple formats simultaneously"
+      indicators: ["text + narration", "redundant information", "multiple channels same content"]
+      violations: ["redundancy_violation", "duplicate information"]
+
+    - id: 4
+      name: "spatial_contiguity"
+      display: "Spatial Contiguity Principle"
+      category: "manage_essential"
+      description: "People learn better when corresponding words and pictures are presented near rather than far from each other"
+      guideline: "Place text labels close to the graphics they describe"
+      indicators: ["text near graphic", "labels", "proximity", "spatial relationship"]
+      violations: ["spatial_split", "distant labels", "legend required"]
+
+    - id: 5
+      name: "temporal_contiguity"
+      display: "Temporal Contiguity Principle"
+      category: "manage_essential"
+      description: "People learn better when corresponding words and pictures are presented simultaneously rather than successively"
+      guideline: "Present narration and graphics at the same time, not sequentially"
+      indicators: ["simultaneous", "synchronized", "timing", "co-presentation"]
+      violations: ["temporal_split", "sequential presentation", "delay"]
+
+    - id: 6
+      name: "signalling"
+      display: "Signalling Principle"
+      category: "reduce_extraneous"
+      description: "People learn better when cues are added to highlight the organisation and structure of the material"
+      guideline: "Use bold text, arrows, colour, callout boxes, or numbered labels to signal key concepts and structural relationships"
+      indicators: ["bold headings", "callout boxes", "numbered steps", "arrows", "colour-coded structure", "visual hierarchy"]
+      violations: ["flat unformatted text", "no visual hierarchy", "no structure cues"]
+      source: "theory_mayer_s_principles_of_multimedia_learning-_a_comprehensive_summary.md"
+
+    - id: 7
+      name: "segmenting"
+      display: "Segmenting Principle"
+      category: "manage_essential"
+      description: "People learn better when a multimedia lesson is presented in learner-paced segments rather than as a continuous unit"
+      guideline: "Break lessons into discrete chapters or modules; allow learner control over pacing and progression"
+      indicators: ["chapter breaks", "continue buttons", "learner-paced modules", "section summaries", "navigation control"]
+      violations: ["continuous content without breaks", "forced linear pacing", "no navigation control"]
+      source: "theory_mayer_s_principles_of_multimedia_learning-_a_comprehensive_summary.md"
+
+    - id: 8
+      name: "pre_training"
+      display: "Pre-Training Principle"
+      category: "manage_essential"
+      description: "People learn better when they know the names and characteristics of the main concepts before the main lesson"
+      guideline: "Provide terminology introductions, glossaries, or preview cards before the main lesson begins"
+      indicators: ["vocabulary pre-teach", "concept preview", "pre-training module", "key term glossary"]
+      violations: ["introducing unexplained technical terms mid-lesson", "skipping prerequisite vocabulary"]
+      evidence: "Studies indicate approximately 20% improvement in learning outcomes when pre-training is implemented (Research - Comprehensive Learning Design Framework.md)"
+      source: "theory_mayer_s_principles_of_multimedia_learning-_a_comprehensive_summary.md"
+
+    - id: 9
+      name: "multimedia"
+      display: "Multimedia Principle"
+      category: "foster_generative"
+      description: "People learn better from words and pictures than from words alone"
+      guideline: "Always pair verbal explanations with relevant visuals — do not use text-only slides when a diagram or graphic is feasible"
+      indicators: ["graphic + narration pairing", "diagram + explanation", "image + contextual caption"]
+      violations: ["text-only slides", "audio-only delivery without visuals", "bullets replacing diagrams"]
+      source: "theory_mayer_s_principles_of_multimedia_learning-_a_comprehensive_summary.md"
+
+    - id: 10
+      name: "personalization"
+      display: "Personalization Principle"
+      category: "foster_generative"
+      description: "People learn better when words are in conversational style rather than formal style"
+      guideline: "Use first and second person (I/you) and natural conversational language in narration and on-screen text"
+      indicators: ["first-person narration", "second-person address ('you')", "conversational tone", "contractions used"]
+      violations: ["formal third-person academic tone throughout", "passive voice dominating", "bureaucratic phrasing"]
+      source: "theory_mayer_s_principles_of_multimedia_learning-_a_comprehensive_summary.md"
+
+    - id: 11
+      name: "voice"
+      display: "Voice Principle"
+      category: "foster_generative"
+      description: "People learn better when narration is delivered in a human voice rather than a machine-generated voice"
+      guideline: "Use professional human voice-over talent rather than text-to-speech synthesis"
+      indicators: ["professional voice talent", "natural prosody", "varied intonation", "human narration"]
+      violations: ["robotic TTS voice", "monotone synthetic narration", "machine-generated audio"]
+      source: "theory_mayer_s_principles_of_multimedia_learning-_a_comprehensive_summary.md"
+
+    - id: 12
+      name: "image"
+      display: "Image Principle"
+      category: "foster_generative"
+      description: "Adding an image of the instructor on screen does not necessarily improve learning — screen real estate may be better used for content"
+      guideline: "Omit the talking-head video when screen space is needed for learning content; only include instructor image if it adds specific pedagogical or motivational value"
+      indicators: ["screen space prioritised for content", "instructor image absent or minimal", "content-to-presenter ratio favours content"]
+      violations: ["large talking-head video displacing content", "presenter image consuming >30% of screen"]
+      source: "theory_mayer_s_principles_of_multimedia_learning-_a_comprehensive_summary.md"
+
+    - id: 13
+      name: "embodiment"
+      display: "Embodiment Principle"
+      category: "additional"
+      description: "Learning can be enhanced when the instructor uses pedagogically relevant gestures and facial expressions that direct attention to content"
+      guideline: "In video instruction, use purposeful pointing and illustrative gestures that reinforce the content being discussed; avoid distracting or incongruent movements"
+      indicators: ["pointing gestures toward content", "illustrative hand movements", "facial expression congruent with tone", "purposeful movement"]
+      violations: ["distracting fidgeting", "incongruent body language", "gestures unrelated to content"]
+      source: "theory_mayer_s_principles_of_multimedia_learning-_a_comprehensive_summary.md"
+
+    - id: 14
+      name: "immersion"
+      display: "Immersion Principle"
+      category: "additional"
+      description: "Research does not consistently show that more immersive 3D or VR environments produce better learning than simpler alternatives"
+      guideline: "Select immersive media only when the learning objective genuinely requires spatial or experiential practice; do not use immersion for novelty alone"
+      indicators: ["purpose-driven VR/AR selection", "simulation matched to real performance context", "immersion justified by objective"]
+      violations: ["gamification used for entertainment only", "VR deployed for low-complexity content", "immersion as novelty rather than need"]
+      source: "theory_mayer_s_principles_of_multimedia_learning-_a_comprehensive_summary.md"
+
+    - id: 15
+      name: "generative_activity"
+      display: "Generative Activity Principle"
+      category: "additional"
+      description: "Learning is enhanced when learners engage in generative activities (summarising, mapping, drawing, self-testing, teaching others) during or after instruction"
+      guideline: "Build generative exercises into lessons — have learners create summaries, concept maps, or teach-back activities after content segments rather than passively reviewing"
+      indicators: ["summary activity", "concept mapping exercise", "teach-back task", "self-explanation prompt", "drawing or sketching activity"]
+      violations: ["passive observation only with no follow-up activity", "no generative task after content segment", "re-reading as the only consolidation method"]
+      source: "theory_mayer_s_principles_of_multimedia_learning-_a_comprehensive_summary.md"
+
+  remediation_strategies:
+    coherence_violation:
+      action: "Remove all 'seductive details' (background music, decorative clip art) that do not directly support the learning goal."
+    modality_violation:
+      action: "Move extensive text off-screen and deliver it as audio narration while showing a relevant animation."
+
+  few_shot_examples:
+    bad:
+      description: "Slide shows a complex diagram. Speaker reads 3 paragraphs of text located next to the diagram."
+      reasoning: "Violates Modality Principle (Text + Graphic vs Audio + Graphic) and creates Split Attention."
+    good:
+      description: "Slide shows the diagram building up part-by-part. Speaker explains each part as it appears. No heavy text on screen."
+      reasoning: "Uses dual channels (Visual + Auditory) effectively; reduces load."
+
+# ===========================================================================
+# EVALUATION FRAMEWORKS
+# ===========================================================================
+
+kirkpatrick_model:
+  name: "Kirkpatrick's Four-Level Training Evaluation Model"
+  description: "Systematic framework for evaluating training effectiveness from reaction to business results"
+
+  levels:
+    - id: 1
+      name: "reaction"
+      display: "Level 1: Reaction"
+      description: "Measure learner satisfaction and engagement with the training"
+      key_question: "Did participants find the training useful, engaging, and relevant?"
+      indicators: ["feedback forms", "satisfaction ratings", "engagement levels", "NPS scores"]
+      measurement_methods:
+        - "Post-training surveys"
+        - "Engagement metrics (participation, interaction)"
+        - "Open-ended feedback collection"
+        - "Real-time polling during training"
+      coaching_if_weak: "Improve training relevance, delivery, or instructor engagement"
+
+    - id: 2
+      name: "learning"
+      display: "Level 2: Learning"
+      description: "Measure knowledge acquisition and skill development"
+      key_question: "Did participants acquire the intended knowledge and skills?"
+      indicators: ["pre/post assessment", "skill demonstration", "knowledge gain"]
+      measurement_methods:
+        - "Pre- and post-assessments (knowledge tests)"
+        - "Skill demonstrations and role-plays"
+        - "Case study analysis"
+        - "Practical exercises with evaluation"
+      coaching_if_weak: "Review instructional methods, add more practice, or improve content clarity"
+
+    - id: 3
+      name: "behaviour"
+      display: "Level 3: Behaviour"
+      description: "Measure application of learning in the workplace"
+      key_question: "Are participants applying what they learned in their jobs?"
+      indicators: ["on-the-job observation", "manager feedback", "behaviour change"]
+      measurement_methods:
+        - "Manager and peer feedback (30-60-90 day check-ins)"
+        - "Workplace observations"
+        - "Self-assessment reports"
+        - "Performance metrics tracking"
+      coaching_if_weak: "Address transfer barriers, provide job aids, or enhance manager support"
+
+    - id: 4
+      name: "results"
+      display: "Level 4: Results"
+      description: "Measure business impact and organizational outcomes"
+      key_question: "Did the training contribute to business goals and ROI?"
+      indicators: ["KPI improvement", "ROI metrics", "business outcomes"]
+      measurement_methods:
+        - "Performance metrics (sales, quality, productivity)"
+        - "ROI analysis (benefits vs. training costs)"
+        - "Employee retention rates"
+        - "Customer satisfaction scores"
+      coaching_if_weak: "Align training more closely with business objectives"
+
+  remediation_strategies:
+    no_evaluation_plan:
+      action: "Define success metrics for each level before training begins"
+    only_level_1:
+      action: "Add pre/post knowledge assessments (Level 2) and follow-up behaviour checks (Level 3)"
+
+  industry_benchmarks:
+    description: "Target performance benchmarks by evaluation level. These are design targets, not empirically validated effect sizes."
+    source: "Research - Comprehensive Learning Design Framework.md"
+    level_2_learning:
+      knowledge_retention_at_90_days: "70%+ retention target"
+      assessment_types: ["formative (during learning)", "summative (end of section)", "diagnostic (pre-assessment)", "360-degree feedback"]
+    level_3_behaviour:
+      application_rate: "60%+ application within 30 days"
+      time_to_competency_reduction: "20-30%"
+      measurement_methods: ["30/60/90 day manager check-ins", "workplace observations", "360-degree feedback"]
+    level_4_results:
+      performance_improvement: "15-25% business performance improvement"
+      roi_target: "300%+ return on training investment"
+
+# ===========================================================================
+# ADULT LEARNING FRAMEWORKS
+# ===========================================================================
+
+knowles_andragogy:
+  name: "Knowles' Andragogy (Adult Learning Theory)"
+  description: "Six assumptions about how adults learn differently from children"
+
+  assumptions:
+    - id: 1
+      name: "need_to_know"
+      display: "Need to Know"
+      description: "Adults need to know WHY they need to learn something before learning it"
+      indicators: ["rationale provided", "WIIFM explained", "relevance stated"]
+      coaching_if_weak: "Explicitly state why this content matters to the learner's job, goals, or challenges"
+      remediation_strategies:
+        missing_rationale:
+          action: "Add a 'Why This Matters' section at the start explaining real-world relevance"
+
+    - id: 2
+      name: "self_concept"
+      display: "Learner Self-Concept"
+      description: "Adults have a self-concept of being responsible for their own decisions"
+      indicators: ["learner autonomy", "choice", "self-direction", "ownership"]
+      coaching_if_weak: "Provide options for how and when to learn; respect their experience"
+      remediation_strategies:
+        too_directive:
+          action: "Offer choices in learning paths, activities, or assessment methods"
+
+    - id: 3
+      name: "role_of_experience"
+      display: "Role of Experience"
+      description: "Adults bring rich experience that serves as a resource for learning"
+      indicators: ["experience sharing", "discussion", "peer learning", "reflection"]
+      coaching_if_weak: "Incorporate activities that draw on and value learner experiences"
+      remediation_strategies:
+        ignores_experience:
+          action: "Add discussion prompts, case sharing, or 'What's your experience?' questions"
+
+    - id: 4
+      name: "readiness_to_learn"
+      display: "Readiness to Learn"
+      description: "Adults are ready to learn things they need to know for real-life situations"
+      indicators: ["timely content", "relevant tasks", "immediate application"]
+      coaching_if_weak: "Connect learning to immediate job needs or life challenges"
+      remediation_strategies:
+        poor_timing:
+          action: "Sequence training to coincide with when learners will actually need the skill"
+
+    - id: 5
+      name: "orientation_to_learning"
+      display: "Orientation to Learning"
+      description: "Adults are problem-centered rather than subject-centered"
+      indicators: ["problem-based", "scenario", "case study", "real-world context"]
+      coaching_if_weak: "Frame content around problems to solve, not topics to cover"
+      remediation_strategies:
+        subject_centered:
+          action: "Restructure from 'Here's the theory' to 'Here's the problem, here's how to solve it'"
+
+    - id: 6
+      name: "motivation"
+      display: "Motivation to Learn"
+      description: "Adults are motivated by internal factors (growth, satisfaction, self-esteem)"
+      indicators: ["intrinsic motivation", "personal goals", "career growth", "mastery"]
+      coaching_if_weak: "Connect learning to personal growth, career advancement, or mastery"
+      remediation_strategies:
+        only_extrinsic:
+          action: "Highlight intrinsic benefits: competence, confidence, career growth"
+
+  overall_score_guidance: "Score reflects how well content respects adult learners' autonomy, experience, and need for relevance"
+
+# ===========================================================================
+# ACCESSIBILITY FRAMEWORKS
+# ===========================================================================
+
+universal_design_for_learning:
+  name: "Universal Design for Learning (UDL)"
+  description: "CAST framework for creating inclusive learning experiences"
+
+  principles:
+    - id: 1
+      name: "engagement"
+      display: "Multiple Means of Engagement (WHY)"
+      description: "Provide options for recruiting interest, sustaining effort, and self-regulation"
+      guidelines:
+        - name: "recruiting_interest"
+          display: "Recruiting Interest"
+          strategies: ["Offer choice and autonomy", "Connect to real-world applications", "Create safe learning environment"]
+        - name: "sustaining_effort"
+          display: "Sustaining Effort & Persistence"
+          strategies: ["Set clear goals", "Use progressive scaffolding", "Provide growth-focused feedback"]
+        - name: "self_regulation"
+          display: "Self-Regulation"
+          strategies: ["Encourage goal-setting", "Provide self-monitoring tools", "Support reflection"]
+      indicators: ["choice", "autonomy", "relevance", "scaffolding", "feedback"]
+      coaching_if_weak: "Add options for learner choice and connect content to real-world applications"
+
+    - id: 2
+      name: "representation"
+      display: "Multiple Means of Representation (WHAT)"
+      description: "Present information in different ways to reach all learners"
+      guidelines:
+        - name: "perception"
+          display: "Options for Perception"
+          strategies: ["Adjustable text sizes", "Captions and transcripts", "Audio descriptions"]
+        - name: "language_symbols"
+          display: "Language & Symbols"
+          strategies: ["Clarify vocabulary with glossaries", "Use multiple formats for math/science", "Provide translations"]
+        - name: "comprehension"
+          display: "Options for Comprehension"
+          strategies: ["Activate background knowledge", "Use concept maps and visuals", "Highlight patterns and relationships"]
+      indicators: ["multiple formats", "visual aids", "captions", "glossary", "concept maps"]
+      coaching_if_weak: "Provide content in multiple formats (text, visual, audio)"
+
+    - id: 3
+      name: "action_expression"
+      display: "Multiple Means of Action & Expression (HOW)"
+      description: "Allow different ways to demonstrate understanding"
+      guidelines:
+        - name: "physical_action"
+          display: "Physical Action"
+          strategies: ["Multi-device accessibility", "Alternative input methods", "Assistive technology support"]
+        - name: "expression_communication"
+          display: "Expression & Communication"
+          strategies: ["Multiple format options (essay, video, presentation)", "Digital tools for creation", "Multimedia projects"]
+        - name: "executive_functions"
+          display: "Executive Functions"
+          strategies: ["Graphic organizers and checklists", "Time management tools", "Structured planning supports"]
+      indicators: ["flexible assessment", "multiple output options", "assistive tools", "scaffolded tasks"]
+      coaching_if_weak: "Offer multiple ways for learners to demonstrate understanding"
+
+  remediation_strategies:
+    single_modality:
+      action: "Add alternative formats: transcript for video, alt-text for images, audio for text"
+    rigid_assessment:
+      action: "Allow learners to choose how to demonstrate mastery (written, oral, project)"
+
+# ===========================================================================
+# MICRO-LEVEL DESIGN FRAMEWORKS
+# ===========================================================================
+
+component_display_theory:
+  name: "Merrill's Component Display Theory (CDT)"
+  description: "Micro-level prescriptions matching content type to performance level"
+
+  content_types:
+    - id: 1
+      name: "fact"
+      display: "Fact"
+      description: "Specific, concrete information (names, dates, definitions)"
+      examples: ["The capital of France is Paris", "Water boils at 100°C"]
+
+    - id: 2
+      name: "concept"
+      display: "Concept"
+      description: "Categories or classes sharing common characteristics"
+      examples: ["What makes something a mammal", "Types of renewable energy"]
+
+    - id: 3
+      name: "procedure"
+      display: "Procedure"
+      description: "Step-by-step sequences to accomplish a task"
+      examples: ["How to complete a form", "Steps to solve an equation"]
+
+    - id: 4
+      name: "principle"
+      display: "Principle"
+      description: "Cause-effect relationships and rules"
+      examples: ["Supply and demand", "Newton's laws of motion"]
+
+  performance_levels:
+    - id: 1
+      name: "remember"
+      display: "Remember"
+      description: "Recognize or recall information"
+      verbs: ["recall", "recognize", "identify", "name"]
+
+    - id: 2
+      name: "use"
+      display: "Use"
+      description: "Apply information or perform a skill"
+      verbs: ["apply", "execute", "demonstrate", "solve"]
+
+    - id: 3
+      name: "find"
+      display: "Find"
+      description: "Discover or derive new information independently"
+      verbs: ["derive", "discover", "generate", "create"]
+
+  presentation_forms:
+    - name: "generality"
+      display: "Generality"
+      description: "The rule or definition"
+      example: "All mammals are warm-blooded"
+
+    - name: "instance"
+      display: "Instance"
+      description: "A concrete example"
+      example: "A dog is a mammal"
+
+    - name: "explanation"
+      display: "Explanation"
+      description: "Why the example fits the rule"
+      example: "Dogs are warm-blooded and nurse their young"
+
+    - name: "practice"
+      display: "Practice"
+      description: "Opportunity to apply with feedback"
+      example: "Classify these animals: whale, snake, bat"
+
+  prescriptions:
+    fact_remember: "Present the fact with context; use mnemonics for retention"
+    concept_remember: "Define with examples and non-examples"
+    concept_use: "Present varied instances for classification practice"
+    procedure_use: "Demonstrate steps then provide guided practice"
+    principle_use: "Present rule, show worked examples, then apply to new cases"
+    principle_find: "Present cases and guide discovery of underlying principle"
+
+  remediation_strategies:
+    missing_examples:
+      action: "Add concrete examples (instances) for every rule or definition (generality)"
+    no_practice:
+      action: "Add practice items with feedback for each content-performance combination"
+
+# ===========================================================================
+# ASSESSMENT QUALITY FRAMEWORKS
+# ===========================================================================
+
+solo_taxonomy:
+  name: "SOLO Taxonomy (Structure of the Observed Learning Outcome)"
+  source: "Biggs & Collis, 1982"
+  description: "Five hierarchical levels describing the structural complexity of a learner's response, from surface (pre-structural) to deep (extended abstract) understanding. Used for rubric design and formative feedback."
+  source_doc: "Activities - Research + Instructions v4.md"
+
+  levels:
+    - id: 1
+      name: "pre_structural"
+      display: "Pre-Structural"
+      description: "Response is irrelevant, circular, or misses the point entirely; no evidence of understanding"
+      rubric_indicator: "Learner has not engaged meaningfully with the question"
+    - id: 2
+      name: "uni_structural"
+      display: "Uni-Structural"
+      description: "Response identifies one relevant aspect but overlooks important connections"
+      rubric_indicator: "Single correct fact or step, but no integration"
+    - id: 3
+      name: "multi_structural"
+      display: "Multi-Structural"
+      description: "Response identifies several relevant aspects but treats them as a list, without integrating them"
+      rubric_indicator: "Multiple correct points enumerated but not connected"
+    - id: 4
+      name: "relational"
+      display: "Relational"
+      description: "Response integrates multiple aspects into a coherent whole; demonstrates understanding of relationships and cause-effect"
+      rubric_indicator: "Ideas connected, comparisons made, cause-effect articulated"
+    - id: 5
+      name: "extended_abstract"
+      display: "Extended Abstract"
+      description: "Response generalises principles beyond the immediate context; applies learning to new domains or generates novel hypotheses"
+      rubric_indicator: "Transfer to new context, original synthesis, or new question posed"
+
+  use_cases: ["rubric design", "formative assessment feedback", "learning objective quality check", "Bloom's level alignment verification"]
+
+# ===========================================================================
+# ADDITIONAL LEARNING DESIGN FRAMEWORKS
+# ===========================================================================
+
+cognitive_apprenticeship:
+  name: "Cognitive Apprenticeship"
+  source: "Collins, Brown & Newman, 1989"
+  description: "Instructional model that makes expert thinking visible and transfers it to novices through a scaffold-fade cycle: model → coach → fade"
+  source_doc: "Activities - Research + Instructions v4.md"
+
+  components:
+    - id: 1
+      name: "modelling"
+      display: "Modelling"
+      description: "Expert performs the task while making cognitive processes explicit through think-aloud narration; learner observes the expert's decision-making, not just the outcome"
+      techniques: ["think-aloud during worked example", "screen recording with narrated rationale", "expert commentary on what to notice"]
+    - id: 2
+      name: "coaching"
+      display: "Coaching"
+      description: "Learner performs the task with expert observation; coach provides hints, scaffolding, and targeted feedback in real time"
+      techniques: ["guided practice with immediate feedback", "graduated prompting", "error diagnosis and correction", "Socratic questioning"]
+    - id: 3
+      name: "fading"
+      display: "Fading"
+      description: "Support is gradually withdrawn as learner demonstrates competence, moving toward fully independent performance"
+      techniques: ["faded worked examples (complete → partial → independent)", "reducing feedback frequency", "learner self-monitoring prompts"]
+
+self_determination_theory:
+  name: "Self-Determination Theory (SDT)"
+  source: "Deci & Ryan, 1985"
+  description: "Motivational theory identifying three innate psychological needs whose fulfilment supports autonomous (intrinsic) motivation, engagement, and psychological well-being in learning contexts"
+  source_doc: "Activities - Research + Instructions v4.md"
+
+  needs:
+    - id: 1
+      name: "autonomy"
+      display: "Autonomy"
+      description: "Learner experiences agency and volition — perceives choice over their learning path, pace, or method"
+      design_implications: ["offer elective learning paths or topic sequences", "allow learner-paced modules", "provide choice in assessment format"]
+      indicators: ["learner choice available", "self-directed pacing", "optional content paths"]
+    - id: 2
+      name: "competence"
+      display: "Competence"
+      description: "Learner experiences mastery and effectiveness through optimally challenging tasks and informative feedback"
+      design_implications: ["scaffold difficulty progressively", "provide mastery checkpoints with success confirmation", "celebrate incremental wins"]
+      indicators: ["progressive difficulty", "mastery milestones", "positive reinforcement at checkpoints"]
+    - id: 3
+      name: "relatedness"
+      display: "Relatedness"
+      description: "Learner feels connected to peers, instructors, and a learning community; belonging supports motivation"
+      design_implications: ["incorporate peer discussion activities", "cohort-based learning structures", "collaborative group projects"]
+      indicators: ["social learning elements", "peer interaction", "community or cohort features"]
+
+constructive_alignment:
+  name: "Constructive Alignment"
+  source: "Biggs, 1996"
+  description: "Course design principle ensuring intended learning outcomes, teaching/learning activities, and assessment tasks are mutually reinforcing — the verb level in objectives must match the cognitive demand in activities and assessments"
+  source_doc: "Activities - Research + Instructions v4.md"
+
+  components:
+    - name: "intended_learning_outcomes"
+      description: "Explicit, observable statements specifying what learners will be able to DO (not just know)"
+      design_rule: "Use Bloom's taxonomy action verbs at the target cognitive level"
+    - name: "teaching_learning_activities"
+      description: "Learning tasks designed to elicit the target performance from learners during instruction"
+      design_rule: "Activities must require learners to practice the same cognitive operation specified in the outcome"
+    - name: "assessment_tasks"
+      description: "Assessment items requiring learners to demonstrate the intended outcomes at the specified cognitive level"
+      design_rule: "If outcome = 'Evaluate', assessment cannot be multiple-choice recall"
+
+  alignment_check: "Map each learning outcome to its teaching activity and assessment task; flag any verb-level mismatch"
+
+samr_model:
+  name: "SAMR Model"
+  source: "Puentedura, 2006"
+  description: "Framework for evaluating the degree to which technology transforms (or merely substitutes for) traditional learning activities; higher levels indicate deeper pedagogical transformation"
+  source_doc: "Activities - Research + Instructions v4.md"
+
+  levels:
+    - id: 1
+      name: "substitution"
+      display: "Substitution"
+      tier: "enhancement"
+      description: "Technology substitutes for a traditional tool with no functional change (e.g., typing an essay instead of handwriting it)"
+    - id: 2
+      name: "augmentation"
+      display: "Augmentation"
+      tier: "enhancement"
+      description: "Technology substitutes with functional improvement (e.g., adding spell-check, hyperlinks, or auto-save)"
+    - id: 3
+      name: "modification"
+      display: "Modification"
+      tier: "transformation"
+      description: "Technology allows significant task redesign (e.g., real-time collaborative editing, peer annotation layers)"
+    - id: 4
+      name: "redefinition"
+      display: "Redefinition"
+      tier: "transformation"
+      description: "Technology enables creation of new tasks previously inconceivable (e.g., global collaboration, VR simulation, AI-adaptive pathways)"
+
+  design_goal: "Aim for Modification or Redefinition when technology is used; Substitution alone does not improve learning"
+
+three_cs_scenario_design:
+  name: "3Cs Scenario-Based Design"
+  description: "Minimal effective structure for designing meaningful practice scenarios; every scenario must establish who is affected, what decision must be made, and why it matters"
+  source_doc: "Activities - Research + Instructions v4.md"
+
+  components:
+    - name: "context"
+      display: "Context"
+      description: "The realistic workplace or life situation establishing who, where, and what is at stake; grounds the learner in a plausible performance environment"
+      design_rule: "Use the learner's actual role and environment — avoid generic or abstract framing"
+    - name: "challenge"
+      display: "Challenge"
+      description: "The specific decision, problem, or task the learner must navigate within the context"
+      design_rule: "Make it a genuine decision with plausible distractors — not a trivially obvious choice"
+    - name: "consequence"
+      display: "Consequence"
+      description: "The outcome of the learner's decision — reveals why correct performance matters and reinforces the lesson"
+      design_rule: "Show realistic, proportionate consequences for both correct and incorrect choices"
+
+  construction_formula: "CONTEXT (who/where/situation) → CHALLENGE (what decision to make) → CONSEQUENCE (what happens as a result)"
+
+learning_tiers_extended_model:
+  name: "Learning Tiers Extended Model (LTEM)"
+  description: "Eight-tier hierarchy of learning performance, extending Kirkpatrick by distinguishing between surface knowledge and genuine capability. Most corporate training plateaus at Tier 4; effective design targets Tier 7."
+  source_doc: "Activities - Research + Instructions v4.md"
+
+  tiers:
+    - id: 1
+      name: "attendance"
+      display: "Attendance"
+      description: "Learner was present; no learning verified"
+    - id: 2
+      name: "activity"
+      display: "Activity"
+      description: "Learner completed activities; completion measured but not learning"
+    - id: 3
+      name: "learner_reaction"
+      display: "Learner Reaction"
+      description: "Learner reported satisfaction (equivalent to Kirkpatrick Level 1)"
+    - id: 4
+      name: "knowledge"
+      display: "Knowledge"
+      description: "Learner can recall or recognize information on a test (Kirkpatrick Level 2 surface)"
+    - id: 5
+      name: "decision_making_and_sensemaking"
+      display: "Decision-Making & Sensemaking"
+      description: "Learner can make sound decisions using the knowledge in scenarios"
+    - id: 6
+      name: "task_competency"
+      display: "Task Competency"
+      description: "Learner can perform the target task with acceptable proficiency"
+    - id: 7
+      name: "transfer"
+      display: "Transfer"
+      description: "Learner applies competency in novel real-world contexts (Kirkpatrick Level 3)"
+    - id: 8
+      name: "effects_of_transfer"
+      display: "Effects of Transfer"
+      description: "Learner performance produces measurable business or outcome impact (Kirkpatrick Level 4)"
+
+  design_principle: "Design backwards from Tier 7 (Transfer) — if the learning objective cannot produce transfer, reconsider the objective"
+
+alexanders_dialogic_principles:
+  name: "Alexander's Dialogic Teaching Principles"
+  source: "Alexander, 2004"
+  description: "Five principles for productive educational dialogue that moves beyond IRE (Initiate-Respond-Evaluate) patterns to deepen understanding and build collaborative thinking"
+  source_doc: "Activities - Research + Instructions v4.md"
+
+  principles:
+    - name: "collective"
+      display: "Collective"
+      description: "Teachers and learners work on tasks and problems together as a community of inquiry"
+      design_implication: "Structure activities as shared investigations, not individual exercises in parallel"
+    - name: "reciprocal"
+      display: "Reciprocal"
+      description: "Teachers and learners listen to each other, share ideas, and genuinely consider alternative viewpoints"
+      design_implication: "Build in response time; design prompts that invite disagreement or alternative framing"
+    - name: "cumulative"
+      display: "Cumulative"
+      description: "Teachers and learners build on each other's contributions, chaining ideas into coherent extended lines of inquiry"
+      design_implication: "Use discussion prompts that require building on the previous response, not restating it"
+    - name: "purposeful"
+      display: "Purposeful"
+      description: "Teachers structure dialogue with clear educational goals; conversation is disciplined by learning intent"
+      design_implication: "Each discussion activity must have a defined inquiry goal and a closing synthesis move"
+    - name: "supportive"
+      display: "Supportive"
+      description: "Teachers provide emotional and cognitive support so learners take intellectual risks without fear of humiliation"
+      design_implication: "Establish psychological safety norms at the start; model intellectual risk-taking"
+
+  application: "Design discussion-based learning using all five principles; checklist each dialogue activity against these criteria before deployment"

@@ -1,0 +1,223 @@
+# ==============================================================================
+# Roleplay & Scenario Design Framework
+# Research-validated specifications for experiential learning through roleplay
+# ==============================================================================
+
+_meta:
+  id: roleplay_scenario_framework
+  title: "Roleplay & Scenario Design Framework"
+  description: "Group sizing, assessment frameworks, facilitation patterns, and effectiveness metrics for roleplay and scenario-based learning in corporate training."
+  domain: pedagogical
+  domain_type: workflow
+  purpose: methodology
+  version: "1.2.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Roleplay & Scenarios for Learning.md"
+  relationships:
+# ==============================================================================
+# GROUP SIZING
+# ==============================================================================
+
+group_sizing:
+  small:
+    min_participants: 3
+    max_participants: 5
+    use_cases:
+      - "Intimate dialogue practice"
+      - "Sensitive topic exploration"
+      - "Deep problem-solving"
+    research_basis: "Small groups maximize individual participation and psychological safety"
+
+  medium:
+    min_participants: 6
+    max_participants: 10
+    use_cases:
+      - "General corporate scenarios"
+      - "Cross-functional team exercises"
+      - "Customer interaction simulations"
+    research_basis: "Sweet spot balancing diverse perspectives with manageability"
+
+  large:
+    min_participants: 15
+    structure_required: "breakout_sessions"
+    use_cases:
+      - "Organization-wide change scenarios"
+      - "Multi-stakeholder simulations"
+    research_basis: "Groups >15 require structured formats like breakouts or fishbowl"
+
+  virtual_breakout:
+    optimal_min: 3
+    optimal_max: 6
+    research_basis: "Virtual breakout room sizing - large enough for diverse perspectives yet small enough for meaningful participation"
+    platform_limits:
+      microsoft_teams_max_rooms: 50
+      zoom_features: ["ask_for_help", "breakout_rooms", "recording_capability"]
+
+# ==============================================================================
+# EFFECTIVENESS METRICS
+# ==============================================================================
+
+effectiveness:
+  meta_analysis:
+    effect_size_g: 0.85
+    study_count: 145
+    source: "Chernikova et al. (2020)"
+    research_basis: "Chernikova et al. 2020 meta-analysis of 145 studies on simulation-based learning"
+
+  skill_acquisition:
+    acceleration_percent: 40
+    research_basis: "40% faster skill acquisition when properly implemented with deliberate practice"
+
+  revenue_impact:
+    min_increase_percent: 15
+    max_increase_percent: 28
+    research_basis: "Organizations reporting revenue increases from roleplay-based sales training"
+
+  business_case_studies:
+    best_western:
+      revenue_generated_millions: 84
+      hotel_count: 2200
+      confidence_in_skill_application_percent: 97
+      platform: "Mursion AI roleplay"
+      research_basis: "Best Western implementation of Mursion AI-powered roleplay partners"
+
+# ==============================================================================
+# VR/AR TRAINING EFFECTIVENESS
+# ==============================================================================
+
+vr_effectiveness:
+  speed_multiplier: 4.0
+  confidence_increase_percent: 275
+  retention_improvement_percent: 75
+  research_basis: "VR training vs traditional methods - PwC study"
+
+  cost_effectiveness:
+    training_time_reduction_percent: 40
+    research_basis: "VR-based training time reduction across implementations"
+    walmart_case:
+      time_reduction_percent: 96
+      assessment_score_improvement_percent: 12.5
+      research_basis: "Walmart VR training implementation data"
+
+  ai_roleplay:
+    ramp_time_reduction_percent: 50
+    language_support_count: 25
+    research_basis: "Hyperbound AI-powered roleplay partners"
+
+# ==============================================================================
+# ASSESSMENT FRAMEWORKS
+# ==============================================================================
+
+assessment:
+  bars:
+    name: "Behaviorally Anchored Rating Scales"
+    scale_min: 1
+    scale_max: 5
+    research_basis: "Gold standard for roleplay assessment - provides specific observable behaviors at each level"
+    levels:
+      1:
+        label: "Novice"
+        example: "Responds defensively to customer complaints, escalates conflict"
+      2:
+        label: "Basic"
+        example: "Acknowledges complaint but provides generic responses"
+      3:
+        label: "Competent"
+        example: "Listens actively, provides relevant solutions within scope"
+      4:
+        label: "Proficient"
+        example: "Demonstrates empathy, offers creative solutions, follows up"
+      5:
+        label: "Expert"
+        example: "Transforms complaints into relationship-building opportunities through empathetic problem-solving"
+
+  feedback_360:
+    ideal_competencies: [4, 6]
+    max_competencies: 8
+    research_basis: "More than 8 key competencies causes survey fatigue and reduces feedback quality"
+    raters: ["self", "peers", "manager", "direct_reports"]
+
+  follow_up:
+    min_months: 6
+    max_months: 12
+    research_basis: "True behavior change requires 6-12 months post-training follow-up assessment"
+
+  employee_retention_impact:
+    turnover_cost_percent_of_salary: 150
+    research_basis: "Cost of employee turnover as percentage of annual salary"
+
+# ==============================================================================
+# FACILITATION FRAMEWORKS
+# ==============================================================================
+
+facilitation:
+  pearls:
+    name: "Promoting Excellence And Reflective Learning in Simulation"
+    stages:
+      - id: 1
+        name: "setting_the_scene"
+        description: "Establish context, roles, and objectives for the roleplay"
+      - id: 2
+        name: "description_of_events"
+        description: "Participants describe what happened during the scenario"
+      - id: 3
+        name: "analysis"
+        description: "Plus/delta analysis of performance and decisions"
+      - id: 4
+        name: "application"
+        description: "Connect insights to real workplace situations"
+    research_basis: "PEARLS debrief framework for simulation-based education"
+
+  forum_theatre:
+    description: "Observers stop and replace participants to demonstrate alternatives"
+    technique: "observer_intervention"
+    research_basis: "Augusto Boal's Theatre of the Oppressed applied to corporate learning"
+
+  side_coaching:
+    description: "Real-time guidance without disrupting scenario flow"
+    technique: "real_time_guidance"
+    research_basis: "Facilitation pattern for maintaining immersion while providing support"
+
+# ==============================================================================
+# THEORETICAL FOUNDATIONS
+# ==============================================================================
+
+theoretical_foundations:
+  pillars:
+    - name: "Constructivism"
+      application: "Learners construct meaning through active participation in scenarios"
+    - name: "Zone of Proximal Development"
+      source: "Vygotsky"
+      application: "Scenarios calibrated just beyond current ability with support"
+    - name: "Experiential Learning"
+      source: "Kolb"
+      application: "Concrete experience → reflective observation → abstract conceptualization → active experimentation"
+    - name: "Situated Learning"
+      application: "Learning embedded in authentic contexts mimicking workplace"
+    - name: "Andragogy"
+      source: "Knowles"
+      application: "Self-directed, experience-rich, goal-oriented adult learning"
+    - name: "Transformative Learning"
+      application: "Challenging assumptions through perspective-taking in roleplay"
+    - name: "Social Cognitive Theory"
+      source: "Bandura"
+      application: "Modeling, observation, and vicarious learning through peer roleplay"
+
+# ==============================================================================
+# SCENARIO DESIGN CHECKLIST
+# ==============================================================================
+
+design_checklist:
+  required_elements:
+    - "Clear learning objectives tied to business outcomes"
+    - "Realistic scenario context with authentic details"
+    - "Defined roles with character briefs"
+    - "Observable behaviors for assessment"
+    - "Structured debrief protocol"
+    - "Safe-to-fail environment established"
+  optional_elements:
+    - "Video recording for self-review"
+    - "Peer observation rubrics"
+    - "Progressive difficulty levels"
+    - "AI-powered practice partners"

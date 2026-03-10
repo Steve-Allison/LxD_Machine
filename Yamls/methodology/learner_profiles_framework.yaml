@@ -1,0 +1,2626 @@
+# ==============================================================================
+# Learner Profiles Configuration
+# Comprehensive learner characteristics for pedagogical analysis
+# ==============================================================================
+
+_meta:
+  id: learner_profiles_framework
+  title: Learner Profiles
+  description: Research-based learner profile definitions for instructional design
+    evaluation
+  domain: audience
+  domain_type: cross_cutting
+  purpose: methodology
+  version: "4.2.0"
+  last_updated: '2026-03-01'
+  corpus_sources:
+    - "Corpus/Research/Research - Learner Persona Research and Development.md"
+    - "Corpus/Research/Research - Comprehensive Learning Design Framework.md"
+    - "Corpus/Research/Research - The Architecture of the Modern Learner.md"
+
+# ==============================================================================
+# MACRO-ENVIRONMENTAL CONTEXT (2025-2026)
+# Structural forces shaping every learner profile — critical for scoring context
+# ==============================================================================
+
+macro_environmental_context:
+  skills_crisis:
+    headline_stat: "39% of workers' core skills projected to be transformed or outdated by 2025-2030"
+    source: "WEF Future of Jobs Report 2025"
+    learner_impact: "Pervasive background anxiety; learners treat current skills as depreciating assets"
+    execution_gap: "91% of L&D professionals agree continuous learning is critical; only 36% of orgs qualify as 'career development champions'"
+    org_barrier_stat: "63% of transformation barriers are skills gaps in critical thinking and complex problem-solving"
+
+  demographic_collision:
+    five_generation_workforce: true
+    primary_friction: "Exiting Baby Boomers, commanding Gen X/Millennials, entering Gen Z — simultaneously"
+    pedagogical_implication: "Standardized training programs structurally fail multi-generational audiences; persona-aware design is mandatory"
+    knowledge_transfer_risk: "Boomer retirement creating institutional knowledge loss in formats younger generations reject"
+
+  trust_deficit:
+    manager_trust_stat: "Trust in immediate managers has dropped to 29%"
+    source: "DDI Global Leadership Forecast 2025"
+    conscious_unbossing: "High-potential employees actively refusing management roles to avoid burnout"
+    mentorship_chain_break: "Best performers refusing management breaks traditional mentorship and knowledge transfer chain"
+    external_authority_shift: "Learners increasingly turn to LinkedIn influencers, Reddit peers, and industry communities over internal leadership"
+
+  economics_of_learning:
+    wage_gap: "Workers under 30 earn approximately 25% less than workers over 40"
+    source: "Forbes UK Average Salary by Age 2026; ONS April 2025 data"
+    learner_mindset: "Highly transactional; luxury of curiosity-based learning replaced by high-income skill focus"
+    priority_certifications: ["Data Analytics", "Project Management", "Generative AI"]
+
+  engagement_crisis:
+    global_cost: "Employee disengagement costs global economy approximately $438 billion annually in lost productivity"
+    source: "Gallup State of the Global Workplace Report"
+    implication: "Disengagement is not uniform — varies by generational persona and must be addressed per profile, not with blanket interventions"
+
+  structural_workforce_factors_2025_2026:
+    four_day_work_week:
+      adoption_stat: "Companies reporting 4-day week pilot: 92% retention improvement vs control groups"
+      source: "4 Day Week Global Pilot Programme 2025"
+      learning_implication: "Compressed schedule amplifies premium on time-efficient, high-density learning; eliminates tolerance for padding"
+    hybrid_work:
+      adoption_stat: "91% of UK knowledge workers in hybrid arrangements (2025)"
+      source: "CIPD UK Working Lives Survey 2025"
+      design_implication: "Learning delivery must be async-first with optional synchronous touchpoints; no assumption of shared physical space"
+    mental_health_as_infrastructure:
+      burnout_stat: "67% of UK knowledge workers report moderate to high burnout (2025)"
+      source: "Deloitte Mental Health at Work 2025"
+      l_and_d_implication: "Psychological safety and cognitive pace must be treated as design constraints; mandatory recovery windows between intensive modules"
+
+expertise_levels:
+  novice:
+    label: "Novice Learner"
+    description: "New to the domain with minimal prior knowledge"
+
+    characteristics:
+      prior_knowledge: "minimal"
+      schema_development: "building foundational schemas"
+      cognitive_load_tolerance: "low"
+      abstraction_capacity: "concrete examples required"
+      self_regulation: "needs external guidance"
+
+    instructional_needs:
+      - "Explicit scaffolding and step-by-step guidance"
+      - "Concrete examples before abstract concepts"
+      - "Frequent comprehension checks"
+      - "High redundancy to reinforce key points"
+      - "Clear definitions for domain terminology"
+      - "Visual aids and worked examples"
+
+    content_requirements:
+      max_concepts_per_slide: 2
+      jargon_tolerance: "low"
+      requires_definitions: true
+      example_to_concept_ratio: 3  # 3 examples per concept
+      prerequisite_checks: true
+
+    gagne_emphasis:
+      gain_attention: 1.2
+      inform_objectives: 1.3  # Critical: must know what they're learning
+      stimulate_recall: 0.7  # Less prior knowledge to activate
+      present_content: 1.0
+      provide_guidance: 1.5  # Heavy scaffolding needed
+      elicit_performance: 1.0
+      provide_feedback: 1.3  # Frequent feedback essential
+      assess_performance: 1.0
+      enhance_retention: 1.0
+
+    arcs_emphasis:
+      attention: 1.0
+      relevance: 1.3  # Must see "why this matters" clearly
+      confidence: 1.4  # Build confidence with achievable steps
+      satisfaction: 1.0
+
+  intermediate:
+    label: "Intermediate Learner"
+    description: "Has foundational knowledge, building competence"
+
+    characteristics:
+      prior_knowledge: "foundational"
+      schema_development: "integrating new with existing"
+      cognitive_load_tolerance: "moderate"
+      abstraction_capacity: "can handle some abstraction"
+      self_regulation: "developing self-direction"
+
+    instructional_needs:
+      - "Connections to existing knowledge"
+      - "Progressive complexity increase"
+      - "Opportunities for application"
+      - "Moderate scaffolding with gradual release"
+      - "Comparative examples and contrasts"
+
+    content_requirements:
+      max_concepts_per_slide: 3
+      jargon_tolerance: "moderate"
+      requires_definitions: "for advanced terms only"
+      example_to_concept_ratio: 2
+      prerequisite_checks: false
+
+    gagne_emphasis:
+      gain_attention: 1.0
+      inform_objectives: 1.0
+      stimulate_recall: 1.3  # Activate existing knowledge
+      present_content: 1.0
+      provide_guidance: 1.0
+      elicit_performance: 1.2  # More practice opportunities
+      provide_feedback: 1.0
+      assess_performance: 1.0
+      enhance_retention: 1.1
+
+    arcs_emphasis:
+      attention: 1.0
+      relevance: 1.0
+      confidence: 1.0
+      satisfaction: 1.1
+
+  advanced:
+    label: "Advanced Learner"
+    description: "Strong domain knowledge, seeking mastery"
+
+    characteristics:
+      prior_knowledge: "substantial"
+      schema_development: "refining and extending"
+      cognitive_load_tolerance: "high"
+      abstraction_capacity: "comfortable with abstraction"
+      self_regulation: "self-directed"
+
+    instructional_needs:
+      - "Challenge existing mental models"
+      - "Edge cases and exceptions"
+      - "Integration across domains"
+      - "Minimal scaffolding"
+      - "Opportunities for analysis and evaluation"
+
+    content_requirements:
+      max_concepts_per_slide: 5
+      jargon_tolerance: "high"
+      requires_definitions: false
+      example_to_concept_ratio: 1
+      prerequisite_checks: false
+
+    gagne_emphasis:
+      gain_attention: 0.8
+      inform_objectives: 0.8
+      stimulate_recall: 1.0
+      present_content: 1.0
+      provide_guidance: 0.6  # Less hand-holding
+      elicit_performance: 1.3  # Challenge them
+      provide_feedback: 0.9
+      assess_performance: 1.2
+      enhance_retention: 1.2  # Focus on transfer
+
+    arcs_emphasis:
+      attention: 0.9
+      relevance: 0.8  # Already motivated
+      confidence: 0.8
+      satisfaction: 1.2  # Mastery satisfaction
+
+  expert:
+    label: "Expert Learner"
+    description: "Deep expertise, seeking cutting-edge insights"
+
+    characteristics:
+      prior_knowledge: "extensive"
+      schema_development: "restructuring for new paradigms"
+      cognitive_load_tolerance: "very high"
+      abstraction_capacity: "prefers abstraction"
+      self_regulation: "fully autonomous"
+
+    instructional_needs:
+      - "Novel perspectives and research"
+      - "Debate and alternative viewpoints"
+      - "Synthesis opportunities"
+      - "Peer-level discourse"
+      - "Minimal instruction, maximum insight"
+
+    content_requirements:
+      max_concepts_per_slide: 7
+      jargon_tolerance: "native"
+      requires_definitions: false
+      example_to_concept_ratio: 0.5  # Fewer examples needed
+      prerequisite_checks: false
+
+    gagne_emphasis:
+      gain_attention: 0.7
+      inform_objectives: 0.6
+      stimulate_recall: 0.8
+      present_content: 1.0
+      provide_guidance: 0.4
+      elicit_performance: 1.0
+      provide_feedback: 0.7
+      assess_performance: 1.0
+      enhance_retention: 1.4  # Transfer to novel contexts
+
+    arcs_emphasis:
+      attention: 0.8
+      relevance: 0.7
+      confidence: 0.6
+      satisfaction: 1.3
+
+# ===========================================================================
+# LEARNING STYLE PREFERENCES - Modality Inclinations
+# ===========================================================================
+
+learning_styles:
+  visual:
+    label: "Visual Learner"
+    description: "Prefers diagrams, charts, and spatial representations"
+
+    content_preferences:
+      - "Diagrams and flowcharts"
+      - "Infographics and data visualizations"
+      - "Colour-coded information"
+      - "Mind maps and concept maps"
+      - "Video demonstrations"
+
+    instructional_adjustments:
+      visual_to_text_ratio: 0.6  # 60% visual
+      diagram_requirement: true
+      animation_beneficial: true
+      spatial_layout_important: true
+
+    mayer_emphasis:
+      multimedia_principle: 1.3
+      spatial_contiguity: 1.4
+      signalling: 1.2
+      segmenting: 1.0
+
+  verbal:
+    label: "Verbal/Reading Learner"
+    description: "Prefers text, written explanations, and reading"
+
+    content_preferences:
+      - "Detailed written explanations"
+      - "Bullet points and lists"
+      - "Textual definitions"
+      - "Reading materials and references"
+      - "Written summaries"
+
+    instructional_adjustments:
+      visual_to_text_ratio: 0.3  # 30% visual
+      diagram_requirement: false
+      bullet_points_preferred: true
+      detailed_notes: true
+
+    mayer_emphasis:
+      multimedia_principle: 0.8
+      coherence_principle: 1.3  # No extraneous visuals
+      redundancy_principle: 1.2  # Text reinforcement OK
+
+  auditory:
+    label: "Auditory Learner"
+    description: "Prefers spoken explanations and discussion"
+
+    content_preferences:
+      - "Narrated content"
+      - "Discussion and Q&A"
+      - "Verbal explanations"
+      - "Podcasts and audio"
+      - "Mnemonics and verbal cues"
+
+    instructional_adjustments:
+      narration_required: true
+      discussion_opportunities: true
+      verbal_summaries: true
+
+    mayer_emphasis:
+      modality_principle: 1.4  # Audio narration preferred
+      voice_principle: 1.3
+      personalization_principle: 1.2
+
+  kinesthetic:
+    label: "Kinesthetic Learner"
+    description: "Prefers hands-on practice and active engagement"
+
+    content_preferences:
+      - "Interactive exercises"
+      - "Simulations and labs"
+      - "Practice problems"
+      - "Case studies"
+      - "Role-playing scenarios"
+
+    instructional_adjustments:
+      practice_frequency: "high"
+      interactive_elements: true
+      simulation_beneficial: true
+      real_world_application: true
+
+    gagne_emphasis:
+      elicit_performance: 1.5
+      provide_feedback: 1.3
+
+# ===========================================================================
+# COGNITIVE PROFILES - Processing Characteristics
+# ===========================================================================
+
+cognitive_profiles:
+  analytical:
+    label: "Analytical Thinker"
+    description: "Systematic, logical, detail-oriented processing"
+
+    characteristics:
+      processing_style: "sequential"
+      detail_orientation: "high"
+      pattern_recognition: "through analysis"
+      decision_making: "data-driven"
+
+    content_preferences:
+      - "Logical flow and structure"
+      - "Data and evidence"
+      - "Step-by-step breakdowns"
+      - "Cause-effect relationships"
+      - "Comparative analysis"
+
+    instructional_adjustments:
+      structure_requirement: "high"
+      data_support: true
+      logical_sequencing: true
+
+  holistic:
+    label: "Holistic Thinker"
+    description: "Big-picture, intuitive, pattern-seeking processing"
+
+    characteristics:
+      processing_style: "parallel"
+      detail_orientation: "low"
+      pattern_recognition: "through intuition"
+      decision_making: "context-driven"
+
+    content_preferences:
+      - "Overview before details"
+      - "Conceptual frameworks"
+      - "Analogies and metaphors"
+      - "Visual summaries"
+      - "Connections across topics"
+
+    instructional_adjustments:
+      overview_first: true
+      conceptual_framework: true
+      metaphors_beneficial: true
+
+  reflective:
+    label: "Reflective Processor"
+    description: "Needs time to process, prefers individual work"
+
+    characteristics:
+      processing_speed: "deliberate"
+      social_preference: "individual"
+      depth_vs_breadth: "depth"
+
+    content_preferences:
+      - "Time for reflection"
+      - "Self-paced learning"
+      - "Written exercises"
+      - "Deep-dive content"
+
+    instructional_adjustments:
+      pacing: "self-directed"
+      reflection_prompts: true
+      individual_exercises: true
+
+  active:
+    label: "Active Processor"
+    description: "Learns by doing, prefers collaborative work"
+
+    characteristics:
+      processing_speed: "rapid"
+      social_preference: "collaborative"
+      depth_vs_breadth: "breadth"
+
+    content_preferences:
+      - "Immediate application"
+      - "Group activities"
+      - "Discussion-based learning"
+      - "Trial and error"
+
+    instructional_adjustments:
+      pacing: "brisk"
+      collaboration_opportunities: true
+      immediate_practice: true
+
+# ===========================================================================
+# MOTIVATION PROFILES - Why They Learn
+# ===========================================================================
+
+motivation_profiles:
+  achievement_oriented:
+    label: "Achievement-Oriented"
+    description: "Motivated by mastery, credentials, and recognition"
+
+    drivers:
+      - "Certification and credentials"
+      - "Performance metrics"
+      - "Competency demonstration"
+      - "Career advancement"
+
+    arcs_emphasis:
+      attention: 1.0
+      relevance: 1.2  # Career relevance
+      confidence: 1.1
+      satisfaction: 1.4  # Achievement recognition
+
+    content_needs:
+      - "Clear success criteria"
+      - "Progress indicators"
+      - "Assessment opportunities"
+      - "Credential pathways"
+
+  curiosity_driven:
+    label: "Curiosity-Driven"
+    description: "Motivated by intellectual interest and discovery"
+
+    drivers:
+      - "Novel information"
+      - "Understanding 'why'"
+      - "Exploration opportunities"
+      - "Intellectual challenge"
+
+    arcs_emphasis:
+      attention: 1.4  # High curiosity hook
+      relevance: 0.9
+      confidence: 0.9
+      satisfaction: 1.1
+
+    content_needs:
+      - "Intriguing questions"
+      - "Deep explanations"
+      - "Optional deep-dives"
+      - "Thought-provoking challenges"
+
+  problem_solver:
+    label: "Problem-Solver"
+    description: "Motivated by solving real problems"
+
+    drivers:
+      - "Immediate applicability"
+      - "Real-world problems"
+      - "Practical solutions"
+      - "Efficiency gains"
+
+    arcs_emphasis:
+      attention: 1.0
+      relevance: 1.5  # Must be immediately applicable
+      confidence: 1.0
+      satisfaction: 1.2
+
+    content_needs:
+      - "Problem-centred scenarios"
+      - "Practical examples"
+      - "Quick wins"
+      - "Tool/technique focus"
+
+  social_learner:
+    label: "Social Learner"
+    description: "Motivated by community and collaboration"
+
+    drivers:
+      - "Peer interaction"
+      - "Shared learning"
+      - "Discussion and debate"
+      - "Community belonging"
+
+    arcs_emphasis:
+      attention: 1.1
+      relevance: 1.0
+      confidence: 1.2  # Confidence through peer validation
+      satisfaction: 1.3
+
+    content_needs:
+      - "Discussion prompts"
+      - "Collaborative exercises"
+      - "Community references"
+      - "Peer examples"
+
+# ===========================================================================
+# COMPOSITE PROFILES - Common Combinations
+# ===========================================================================
+
+composite_profiles:
+  corporate_new_hire:
+    description: "New employee onboarding - varied backgrounds"
+    expertise_level: novice
+    motivation: achievement_oriented
+    typical_constraints:
+      - "Limited time for training"
+      - "Immediate job application needed"
+      - "Varied technical backgrounds"
+
+    recommended_approach:
+      format: microlearning
+      scaffolding: high
+      practical_focus: true
+      assessment: frequent_low_stakes
+
+  technical_upskill:
+    description: "Technical professional learning new technology"
+    expertise_level: intermediate
+    motivation: problem_solver
+    typical_constraints:
+      - "Already proficient in related areas"
+      - "Needs to apply immediately"
+      - "Low tolerance for basics"
+
+    recommended_approach:
+      format: self_paced_course
+      scaffolding: moderate
+      hands_on: critical
+      skip_basics: true
+
+  executive_briefing:
+    description: "Senior leader needing strategic understanding"
+    expertise_level: advanced
+    motivation: achievement_oriented
+    typical_constraints:
+      - "Extremely limited time"
+      - "Needs big picture, not details"
+      - "Decision-making focus"
+
+    recommended_approach:
+      format: microlearning
+      scaffolding: minimal
+      strategic_focus: true
+      data_driven: true
+
+  certification_candidate:
+    description: "Learner pursuing formal certification"
+    expertise_level: intermediate
+    motivation: achievement_oriented
+    typical_constraints:
+      - "Must cover all exam topics"
+      - "Needs assessment practice"
+      - "Accountability to credential"
+
+    recommended_approach:
+      format: instructor_led_workshop
+      scaffolding: moderate
+      assessment: frequent
+      comprehensive: true
+
+  # ===========================================================================
+  # Role-Based Personas - Adobe-Specific Learner Profiles
+  # ===========================================================================
+  # Note: Adobe personas provide complete progression tracks for Solutions Consultants and Enterprise Sales
+
+  # ===========================================================================
+  # Generational Personas - Cross-Role Generational Archetypes
+  # ===========================================================================
+  # Based on WEF Future of Jobs 2025, Gallup State of Global Workplace, DDI Global Leadership Forecast
+
+  gen_z_digital_pragmatist:
+    description: "Generation Z (1997-2012): Digital-first learner seeking security and values alignment"
+    persona_name: "Jordan Taylor"
+    role_context: "Entry-level to 3 years experience, digital native navigating first corporate role"
+
+    demographics:
+      age_range: "24-29"
+      birth_years: "1997-2012"
+      education: "Bachelor's degree or equivalent"
+      experience_years: "0-3"
+      workforce_share: "~30% globally (rising rapidly)"
+
+    expertise_level: novice
+    learning_style: ["visual", "kinesthetic"]
+    cognitive_profile: active
+    motivation: achievement_oriented
+
+    psychographic_profile:
+      primary_drive: "Security, Autonomy, and Values Alignment"
+      stress_level: "51% report high stress (highest among generations)"
+      defining_characteristic: "Anxiety and ambition shaped by pandemic and economic turbilence; witnessing Millennial burnout, increasingly skeptical of management career paths"
+      screen_time: "6+ hours daily on mobile devices"
+      economic_context:
+        salary_range_uk: "£23,000 - £32,000"
+        economic_mindset: "Survival and Ascent — training viewed as the only ladder out of financial precarity. High churn risk if training does not yield concrete skill gains or salary increases."
+        source: "ONS Employee Earnings UK 2025; Forbes UK Salary by Age 2026"
+
+    goals_and_drivers:
+      - "Build foundational professional skills to escape financial precarity"
+      - "Find meaningful work aligned with personal values"
+      - "Develop soft skills (resilience, conflict resolution, face-to-face communication)"
+      - "Navigate unwritten rules of corporate culture and office politics"
+      - "Achieve rapid upskilling to close 25% wage gap with workers over 40"
+
+    learning_barriers:
+      time_constraints:
+        - "High anxiety and stress consuming cognitive bandwidth"
+        - "Side hustles and gig work limiting dedicated learning time"
+
+      cognitive_barriers:
+        - "Soft skills paradox: 30% perception gap between self-assessment and employer assessment"
+        - "Lack of 'muscle memory' for high-stakes face-to-face interactions"
+        - "Struggle with synchronous, real-time communication after asynchronous upbringing"
+        - "Context gap: can Google 'how' but lacks understanding of 'why it matters' in corporate hierarchy"
+
+      social_barriers:
+        - "Preference for asynchronous communication (Slack, text) over face-to-face"
+        - "Fear of judgment in real-time interactions"
+        - "Limited professional network and mentorship access"
+
+      confidence_barriers:
+        - "Imposter syndrome in corporate environments"
+        - "56% report being left to learn complex tools like AI on their own"
+        - "Distrust of highly produced 'corporate' training content as inauthentic"
+
+      content_barriers:
+        - "Rejects long-form content (30-page PDFs) in favor of 3-minute videos"
+        - "Low tolerance for corporate polish; prefers user-generated content (UGC) style"
+
+      technical_barriers: []  # Digital natives, no technical barriers
+
+      language_considerations: []  # Varies by individual
+
+    digital_learning_perception:
+      attitude: "mobile_first_skeptic"
+      views:
+        - "Primary learning mode is visual, social search (YouTube, TikTok, Instagram Reels)"
+        - "Expects mobile-optimized experiences; desktop-only LMS effectively invisible"
+        - "Distrusts polished corporate videos; responds to authentic, informal tone"
+        - "Values peer-generated content over institutional content"
+        - "Craves mentorship despite digital independence (56% report need)"
+
+      trust_factors:
+        - "User-generated content and peer recommendations"
+        - "Authentic, unpolished presentation style"
+        - "Influencer endorsements on LinkedIn and professional communities"
+        - "Clear career progression milestones and certifications"
+
+    content_preferences:
+      format:
+        - "Bite-sized video content (3-5 minutes max)"
+        - "TikTok-style visual learning with captions"
+        - "Interactive mobile-first modules"
+        - "Hidden curriculum training (unwritten rules, email etiquette, stakeholder management)"
+        - "Peer cohort learning with social accountability"
+
+      engagement_drivers:
+        - "Values alignment and meaningful work connection"
+        - "Clear 'why this matters' for career progression"
+        - "Gamification with visible progress"
+        - "Community and peer support"
+
+      quality_requirements:
+        - "Mobile-optimized (6+ hour daily mobile usage)"
+        - "Authentic, informal tone (UGC aesthetic)"
+        - "Visual-first with minimal text"
+        - "High redundancy to reinforce key points"
+        - "Explicit scaffolding for soft skills and corporate norms"
+
+    technology_considerations:
+      devices:
+        - "Smartphone (primary device for 6+ hours daily)"
+        - "Laptop (secondary for deep work)"
+
+      tools_used:
+        - "TikTok, YouTube, Instagram Reels for learning"
+        - "Slack for asynchronous communication"
+        - "Mobile-first productivity apps"
+
+      requirements:
+        - "Mobile-first mandatory (not mobile-friendly, but mobile-primary)"
+        - "Offline capability for commute learning"
+        - "Social sharing and peer collaboration features"
+        - "Progress tracking with visible milestones"
+
+    recommended_approach:
+      format: mobile_first_microlearning
+      module_length: "3-5 minutes"
+      scaffolding: high
+      authentic_tone: critical
+      visual_primary: true
+      social_learning: true
+      hidden_curriculum: critical  # Teach unwritten rules
+      mentorship: critical
+      mobile_optimization: mandatory
+
+    arcs_emphasis:
+      attention: 1.2
+      relevance: 1.4  # Must see career path clearly
+      confidence: 1.5  # Critical for soft skills development
+      satisfaction: 1.1
+
+  millennial_overwhelmed_architect:
+    description: "Millennials (1981-1996): Mid-career professionals balancing competing demands"
+    persona_name: "Sarah Martinez"
+    role_context: "Mid-to-senior manager with 8-15 years experience, squeezed between leadership and workforce demands"
+
+    demographics:
+      age_range: "30-45"
+      birth_years: "1981-1996"
+      education: "Bachelor's or Master's degree"
+      experience_years: "8-15"
+      workforce_share: "~40% globally (dominant cohort)"
+
+    expertise_level: intermediate
+    learning_style: ["auditory", "kinesthetic"]
+    cognitive_profile: reflective
+    motivation: problem_solver
+
+    psychographic_profile:
+      primary_drive: "Flexibility, Efficiency, and Meaning"
+      stress_level: "The Burnout Generation"
+      defining_characteristic: "Engine room of economy, absorbing friction between executives and Gen Z"
+      sandwich_generation: "Caring for children and aging parents simultaneously"
+      promotion_basis: "technical_competence_not_leadership_aptitude — promoted for domain expertise, not readiness to lead"
+      conscious_unbossing:
+        definition: "High-potential Millennials actively refusing leadership roles to avoid management stress and burnout"
+        driver: "Seeing overworked, under-supported managers and deciding the career ladder is not worth the climb"
+        l_and_d_implication: "Traditional 'high potential' development programs face resistance; leadership aspirations cannot be assumed; career design must be presented as choice, not obligation"
+        trust_collapse_stat: "Trust in immediate managers: 29% (DDI Global Leadership Forecast 2025)"
+      economic_context:
+        salary_range_uk: "£45,000 - £65,000"
+        economic_mindset: "The Squeezed Middle — time-poor, mortgage and childcare pressured. Will only invest time in learning if it guarantees efficiency gain or promotion. Highly transactional ROI calculation."
+        source: "Forbes UK Average Salary by Age 2026; Research - Learner Persona Research and Development.md, Section 5.1"
+
+    goals_and_drivers:
+      - "Find efficiency tools to manage overwhelming workload"
+      - "Develop leadership skills as 'Accidental Manager' promoted for technical competence"
+      - "Maintain meaningful work amid exhaustion"
+      - "Prepare for career advancement while avoiding burnout"
+      - "Learn conflict resolution and strategy without formal management training"
+
+    learning_barriers:
+      time_constraints:
+        - "Cognitive surplus near zero due to work and caregiving"
+        - "Cannot dedicate weekends to learning"
+        - "Must fit learning into flow of work"
+        - "45% lack resources to develop teams effectively"
+
+      cognitive_barriers:
+        - "Accidental Manager crisis: promoted without leadership training"
+        - "Difficulty balancing technical expertise with people management"
+        - "Decision fatigue from constant context switching"
+
+      social_barriers:
+        - "Squeezed between executive demands and Gen Z expectations"
+        - "Isolated in middle management with limited peer support"
+
+      confidence_barriers:
+        - "Unsupported in new management roles"
+        - "Uncertainty about coaching and developing others"
+
+      content_barriers:
+        - "Long mandatory compliance modules viewed as disrespectful of time"
+        - "Theoretical content without immediate application generates resentment"
+
+      technical_barriers: []  # Bridge generation, comfortable with digital and analog
+
+      language_considerations: []  # Varies by individual
+
+    digital_learning_perception:
+      attitude: "pragmatic_time_poor"
+      views:
+        - "Values learning that saves time or relieves burden"
+        - "Appreciates efficiency of digital but values in-person connection"
+        - "Needs learning to fit into existing workflow, not add to it"
+        - "Podcast and audio learning for multitasking (commute, household chores)"
+
+      trust_factors:
+        - "Peer validation from others in similar roles"
+        - "Cohort-based learning for commiseration and best practices"
+        - "Time-saving tools with proven ROI"
+        - "Recognition of caregiving and work-life balance challenges"
+
+    content_preferences:
+      format:
+        - "Podcast and audio learning for multitasking"
+        - "Cohort-based learning with peer support"
+        - "Micro-learning that fits in flow of work (10-15 minutes)"
+        - "Tools and frameworks for immediate stress relief"
+        - "Hybrid options: efficient Zoom but values occasional in-person"
+
+      engagement_drivers:
+        - "Time savings and efficiency gains"
+        - "Peer connection and shared experiences"
+        - "Stress management and resilience tools"
+        - "Career progression without additional overwhelm"
+
+      quality_requirements:
+        - "Immediately applicable to reduce workload"
+        - "Respectful of limited time"
+        - "Practical over theoretical"
+        - "Flexible format for irregular schedules"
+
+    technology_considerations:
+      devices:
+        - "Laptop (primary for work)"
+        - "Smartphone for podcast listening during commute"
+
+      tools_used:
+        - "Podcast apps (Spotify, Apple Podcasts)"
+        - "Audiobook platforms"
+        - "Video conferencing (Zoom, Teams)"
+        - "Project management tools"
+
+      requirements:
+        - "Audio-first options for multitasking"
+        - "Bookmarkable progress for interrupted learning"
+        - "Hybrid accessibility (digital and occasional in-person)"
+        - "Calendar integration for scheduling"
+
+    recommended_approach:
+      format: audio_microlearning_with_cohorts
+      module_length: "10-15 minutes"
+      scaffolding: moderate
+      audio_primary: critical
+      peer_support: critical
+      stress_relief_focus: true
+      time_respectful: mandatory
+      practical_over_theory: true
+
+    arcs_emphasis:
+      attention: 1.0
+      relevance: 1.4  # Must save time or reduce stress
+      confidence: 1.2
+      satisfaction: 1.1
+
+  gen_x_autonomous_specialist:
+    description: "Generation X (1965-1980): Self-reliant senior leaders and technical experts"
+    persona_name: "David Chen"
+    role_context: "Senior director or specialized individual contributor with 20+ years experience"
+
+    demographics:
+      age_range: "46-61"
+      birth_years: "1965-1980"
+      education: "Bachelor's, Master's, or equivalent experience"
+      experience_years: "20-35"
+      workforce_share: "Senior leadership and specialized IC roles"
+
+    expertise_level: advanced
+    learning_style: ["verbal", "kinesthetic"]
+    cognitive_profile: analytical
+    motivation: problem_solver
+
+    psychographic_profile:
+      primary_drive: "Stability, Autonomy, and Competence"
+      defining_characteristic: "Latchkey generation grown up; values self-reliance and skepticism"
+      life_stage: "Maximizing earnings for retirement, health security focus"
+      sandwich_generation: "Often caring for aging parents while supporting adult children"
+
+    goals_and_drivers:
+      - "Maximize earnings and secure retirement benefits"
+      - "Maintain technical competence in evolving landscape"
+      - "Keep organization stable during leadership transitions"
+      - "Leverage experience for consulting or advisory roles"
+      - "Focus on external credentials with market value (MBA, PMP, industry certs)"
+
+    learning_barriers:
+      time_constraints:
+        - "Senior responsibilities limit dedicated learning time"
+        - "Caregiving for aging parents alongside work demands"
+
+      cognitive_barriers:
+        - "Skepticism toward trendy technologies without proven utility"
+        - "Preference for depth over breadth in specialized areas"
+
+      social_barriers: []  # Confident and self-directed
+
+      confidence_barriers: []  # Confident in expertise
+
+      content_barriers:
+        - "Low patience for gamification or forced social learning"
+        - "Rejects superficial or trendy content"
+
+      technical_barriers:
+        - "Views technology as utility, not novelty"
+        - "Will adopt AI if proven useful, not just because it's trendy"
+
+      language_considerations: []  # Varies by individual
+
+    digital_learning_perception:
+      attitude: "tech_realist_autonomous"
+      views:
+        - "Views digital learning as utility for specific knowledge needs"
+        - "Prefers searchable knowledge bases and executive summaries"
+        - "Values autonomy and self-directed learning paths"
+        - "Skeptical of hype; wants proven, practical solutions"
+
+      trust_factors:
+        - "Recognized external credentials (MBAs, PMP, industry certifications)"
+        - "Proven ROI and practical application"
+        - "Expert-level content from credible sources"
+        - "Self-paced, autonomous learning paths"
+
+    content_preferences:
+      format:
+        - "Searchable knowledge bases for just-in-time information"
+        - "Executive summaries for quick scanning"
+        - "Self-paced courses from credible providers (LinkedIn Learning, Coursera)"
+        - "Technical documentation and white papers"
+        - "Minimal instruction, maximum insight"
+
+      engagement_drivers:
+        - "Practical application and proven utility"
+        - "Professional credentials with market value"
+        - "Autonomy and self-direction"
+        - "Efficiency and time savings"
+
+      quality_requirements:
+        - "High-quality, expert-level content"
+        - "No gamification or forced social elements"
+        - "Searchable and quickly accessible"
+        - "Clear practical value"
+
+    technology_considerations:
+      devices:
+        - "Laptop (primary)"
+        - "Tablet for reading"
+
+      tools_used:
+        - "LinkedIn Learning"
+        - "Coursera for Enterprise"
+        - "Industry-specific platforms"
+        - "Documentation repositories"
+
+      requirements:
+        - "Searchable knowledge base architecture"
+        - "Bookmarking and annotation capabilities"
+        - "PDF downloads for offline reference"
+        - "No mandatory social or gamification features"
+
+    recommended_approach:
+      format: self_directed_knowledge_base
+      module_length: "flexible, user-controlled"
+      scaffolding: minimal
+      autonomous: critical
+      searchable: mandatory
+      credentialing: important
+      no_gamification: true
+      expert_level: true
+
+    arcs_emphasis:
+      attention: 0.9
+      relevance: 1.2  # Must be practical and proven
+      confidence: 0.8  # Already confident
+      satisfaction: 1.1
+
+  baby_boomer_legacy_mentor:
+    description: "Baby Boomers (1946-1964): Experienced professionals transitioning to legacy and mentorship"
+    persona_name: "Robert Williams"
+    role_context: "Senior executive or expert in phased retirement, focused on knowledge transfer"
+
+    demographics:
+      age_range: "62-80"
+      birth_years: "1946-1964"
+      education: "Varied; strong experiential knowledge"
+      experience_years: "35-50"
+      workforce_share: "Declining (retiring or phased retirement)"
+
+    expertise_level: expert
+    learning_style: ["verbal", "kinesthetic"]
+    cognitive_profile: reflective
+    motivation: social_learner
+
+    psychographic_profile:
+      primary_drive: "Respect, Legacy, and Knowledge Transfer"
+      defining_characteristic: "Generativity - desire to leave legacy and pass on knowledge"
+      life_stage: "Transition to retirement, longevity economy preparation"
+      organizational_role: "Institutional knowledge holder"
+
+    goals_and_drivers:
+      - "Pass on institutional knowledge before retirement"
+      - "Receive recognition for career contributions"
+      - "Maintain relevance in rapidly digitizing workplace"
+      - "Participate in reverse mentorship programs (teach soft skills, learn digital tools)"
+      - "Prepare for healthy, financially secure retirement"
+
+    learning_barriers:
+      time_constraints:
+        - "Phased retirement schedule with limited availability"
+        - "Focus on legacy activities over new skill acquisition"
+
+      cognitive_barriers:
+        - "Discomfort with rapid digitalization and changing social norms"
+        - "Preference for linear learning over exploratory digital environments"
+
+      social_barriers:
+        - "Alienation from workplace cultural shifts driven by younger generations"
+        - "Perception that face-to-face communication is superior to digital"
+
+      confidence_barriers:
+        - "Technology anxiety in unfamiliar digital learning platforms"
+        - "Concern about appearing outdated or incompetent"
+
+      content_barriers:
+        - "Overwhelming pace of digital content and interfaces"
+        - "Preference for structured, familiar formats"
+
+      technical_barriers:
+        - "Unfamiliarity with modern learning platforms and tools"
+        - "Difficulty with non-linear navigation"
+
+      language_considerations: []  # Varies by individual
+
+    digital_learning_perception:
+      attitude: "cautious_hierarchical"
+      views:
+        - "Values face-to-face interaction and hierarchical respect"
+        - "Sees digital communication as lacking nuance and humanity"
+        - "Prefers structured, linear learning with clear objectives"
+        - "Views own experience as valuable contribution to organizational learning"
+
+      trust_factors:
+        - "Institutional authority and recognized credentials"
+        - "Face-to-face interaction and personal relationships"
+        - "Clear structure and defined learning paths"
+        - "Respect for experience and seniority"
+
+    content_preferences:
+      format:
+        - "Structured, linear learning paths with clear objectives"
+        - "Face-to-face workshops and mentorship programs"
+        - "Reverse mentorship opportunities (teaching + learning)"
+        - "Video content with clear narration and minimal complexity"
+        - "Printed materials and supplementary documentation"
+
+      engagement_drivers:
+        - "Recognition of expertise and career contributions"
+        - "Opportunity to teach and mentor younger generations"
+        - "Health and wellness focus for retirement preparation"
+        - "Legacy creation and knowledge capture"
+
+      quality_requirements:
+        - "Clear, linear structure with defined objectives"
+        - "Patient pacing with minimal digital complexity"
+        - "Face-to-face options where possible"
+        - "Recognition of experience and seniority"
+
+    technology_considerations:
+      devices:
+        - "Desktop or laptop (primary)"
+        - "Prefers larger screens and keyboards"
+
+      tools_used:
+        - "Email (primary communication)"
+        - "Video conferencing with assistance"
+        - "Print materials and PDFs"
+
+      requirements:
+        - "Simple, intuitive interfaces"
+        - "Minimal navigation complexity"
+        - "Technical support readily available"
+        - "Option for printed materials"
+
+    recommended_approach:
+      format: structured_mentorship
+      module_length: "structured sessions with clear objectives"
+      scaffolding: high_for_technology
+      reverse_mentorship: critical
+      face_to_face_option: important
+      legacy_focus: true
+      knowledge_capture: critical
+      patient_pacing: true
+
+    arcs_emphasis:
+      attention: 1.0
+      relevance: 1.3  # Legacy and respect focus
+      confidence: 1.2  # Support for technology anxiety
+      satisfaction: 1.4  # Recognition and generativity
+
+  # ===========================================================================
+  # Functional Personas - Role-Specific Learner Profiles
+  # ===========================================================================
+  # Based on Stack Overflow Survey, WEF Skills Outlook, Industry Benchmarks
+
+  technical_specialist_skeptical_builder:
+    description: "Software Engineer / DevOps: Technical specialist navigating AI-augmented development"
+    persona_name: "Alex Kumar"
+    role_context: "Mid-level software engineer practicing 'vibe coding' with AI assistants"
+
+    demographics:
+      age: 32
+      education: "B.Sc. or M.Sc. Computer Science"
+      experience_years: 7
+      salary_range_uk: "£50,000 - £90,000+"
+
+    expertise_level: advanced
+    learning_style: ["kinesthetic", "verbal"]
+    cognitive_profile: analytical
+    motivation: problem_solver
+
+    role_responsibilities:
+      - "Develops and maintains microservices using AI-assisted coding (GitHub Copilot)"
+      - "Participates in agile ceremonies (stand-ups, sprint planning)"
+      - "Reviews AI-generated code for subtle errors and hallucinations"
+      - "Collaborates with non-technical stakeholders on feature timelines"
+      - "Manages technical debt and build pipelines"
+
+    goals_and_drivers:
+      - "Achieve technical mastery and peer recognition"
+      - "Build reputation as 'the person who knows the answer' on Stack Overflow"
+      - "Navigate shift from code writer to code editor/reviewer"
+      - "Develop stakeholder management skills for non-technical audiences"
+      - "Trust but verify AI tools without becoming dependent"
+
+    ai_augmented_work_model:
+      paradigm: "Vibe Coding — using AI assistants for rapid prototyping while maintaining critical review responsibility"
+      source: "Stack Overflow Developer Survey 2025"
+      adoption_rate: "84% of developers use AI coding tools in their workflow"
+      key_tension: "Speed-vs-quality tradeoff: AI generates code faster than it can be safely reviewed"
+      skill_shift:
+        declining: ["line-by-line code authorship", "syntax memorisation", "boilerplate generation"]
+        emerging: ["AI prompt engineering", "code review and hallucination detection", "systems architecture thinking", "stakeholder translation"]
+      hallucination_exposure: "Regular encounters with confident AI errors accelerate critical evaluation skills"
+      trust_calibration: "Experienced developers trust AI for scaffolding; distrust for edge cases, security, and domain-specific logic"
+      learning_implication: "Training must address meta-cognitive AI review skills, not just tool adoption"
+
+    learning_barriers:
+      time_constraints:
+        - "Deep work blocks interrupted by meetings and debugging"
+        - "Late nights fixing AI-generated bugs"
+
+      cognitive_barriers:
+        - "New cognitive load: constant vigilance against AI errors"
+        - "Role shift from writer to editor requires different skill set"
+        - "Difficulty communicating technical debt to non-technical stakeholders"
+
+      social_barriers:
+        - "Reluctance to reveal knowledge gaps in public forums"
+        - "Distrust of product managers who promise impossible timelines"
+
+      confidence_barriers:
+        - "Fear of appearing obstructionist when raising technical concerns"
+        - "Low trust in AI 'magic' due to hallucination experiences"
+
+      content_barriers:
+        - "Rejects video-heavy courses in favor of hands-on practice"
+        - "Low patience for AI hype without acknowledgment of limitations"
+
+      technical_barriers: []  # Not a barrier for this persona
+
+      language_considerations: []  # Varies by individual
+
+    digital_learning_perception:
+      attitude: "community_driven_skeptic"
+      views:
+        - "Trusts community upvotes (Stack Overflow) more than official documentation"
+        - "Learns by breaking and fixing code in sandbox environments"
+        - "Skeptical of AI tools that don't acknowledge limitations"
+        - "84% rely on Stack Overflow for learning (2025 survey)"
+
+      trust_factors:
+        - "Community validation (Stack Overflow upvotes)"
+        - "Open source contributions and peer review"
+        - "Sandbox environments for safe experimentation"
+        - "Transparent discussion of AI limitations"
+
+    content_preferences:
+      format:
+        - "Sandbox environments and interactive labs"
+        - "Code examples with explanations"
+        - "Stack Overflow and community forums"
+        - "Technical blogs and GitHub repositories"
+        - "Minimal video, maximum hands-on practice"
+
+      engagement_drivers:
+        - "Technical mastery and peer recognition"
+        - "Solving novel problems"
+        - "Contributing to community knowledge"
+        - "Building reputation as expert"
+
+      quality_requirements:
+        - "Hands-on, practical focus"
+        - "Real-world complexity, not simplified demos"
+        - "Acknowledgment of AI tool limitations"
+        - "Community-validated content"
+
+    technology_considerations:
+      devices:
+        - "Development laptop (high-spec)"
+        - "Multiple monitors"
+
+      tools_used:
+        - "GitHub Copilot, Stack Overflow, Jira, Slack"
+        - "IDEs (VS Code, IntelliJ)"
+        - "Docker, Kubernetes"
+
+      requirements:
+        - "Sandbox environments for experimentation"
+        - "Copy-paste friendly code examples"
+        - "Offline documentation access"
+
+    recommended_approach:
+      format: sandbox_community_learning
+      module_length: "flexible, hands-on focused"
+      scaffolding: minimal
+      sandbox_critical: true
+      community_validation: important
+      ai_limitations_acknowledged: critical
+      hands_on_primary: mandatory
+
+    arcs_emphasis:
+      attention: 1.0
+      relevance: 1.4  # Must be practically applicable
+      confidence: 1.1
+      satisfaction: 1.3  # Mastery satisfaction
+
+  sales_director_metric_warrior:
+    description: "Sales Director: Results-driven leader managing pipeline pressure and team coaching"
+    persona_name: "Jessica Moore"
+    role_context: "Sales director using data-driven coaching tools, managing revenue targets"
+
+    demographics:
+      age: 38
+      education: "BA Business, MBA"
+      experience_years: 12
+      salary_range_uk: "£55,000 - £100,000+ (OTE)"
+
+    expertise_level: advanced
+    learning_style: ["kinesthetic", "auditory"]
+    cognitive_profile: active
+    motivation: achievement_oriented
+
+    role_responsibilities:
+      - "Manages sales pipeline and revenue forecasting"
+      - "Coaches sales team using call recording analysis (Gong/Chorus)"
+      - "Delivers forecast calls to VP of Sales with accountability for numbers"
+      - "Balances strategic planning with reactive inbox management (90+ emails/day)"
+      - "Provides data-driven feedback to improve team performance"
+
+    goals_and_drivers:
+      - "Achieve and exceed revenue targets consistently"
+      - "Develop team into high-performing sellers"
+      - "Build resilience to handle rejection and pressure"
+      - "Master data-driven coaching techniques"
+      - "Advance to VP of Sales role"
+
+    learning_barriers:
+      time_constraints:
+        - "Cannot spare full hour for workshops"
+        - "90+ unread emails daily consuming time"
+        - "Reactive schedule prevents proactive learning"
+
+      cognitive_barriers:
+        - "Dashboard anxiety: constant pressure from pipeline metrics"
+        - "Imposter syndrome about whether deals will close"
+        - "Difficulty prioritizing strategic work over reactive tasks"
+
+      social_barriers: []  # Comfortable with people
+
+      confidence_barriers:
+        - "Uncertainty about forecast accuracy"
+        - "Stress from revenue accountability"
+
+      content_barriers:
+        - "Theoretical content immediately deprioritized"
+        - "No patience for content not tied to revenue"
+
+      technical_barriers: []  # Comfortable with sales tech stack
+
+      language_considerations: []  # Varies by individual
+
+    digital_learning_perception:
+      attitude: "just_in_time_pragmatist"
+      views:
+        - "Values micro-learning delivered in flow of work"
+        - "Needs content tied directly to revenue impact"
+        - "Appreciates CRM-embedded learning prompts"
+        - "Seeks resilience training for rejection and stress management"
+
+      trust_factors:
+        - "Direct revenue correlation"
+        - "Proven impact on win rates"
+        - "Top performer endorsements"
+        - "Data-driven results"
+
+    content_preferences:
+      format:
+        - "Micro-coaching moments embedded in CRM"
+        - "Pop-up suggestions before client calls"
+        - "5-minute tactical tips for specific situations"
+        - "Resilience and stress management resources"
+        - "Data-driven coaching playbooks"
+
+      engagement_drivers:
+        - "Immediate revenue impact"
+        - "Win rate improvement"
+        - "Team performance gains"
+        - "Stress reduction and resilience"
+
+      quality_requirements:
+        - "Ultra-concise (5 minutes or less)"
+        - "Tied directly to revenue"
+        - "Embedded in workflow (CRM, sales tools)"
+        - "Actionable with clear next steps"
+
+    technology_considerations:
+      devices:
+        - "Laptop (primary)"
+        - "Smartphone (high usage)"
+
+      tools_used:
+        - "Salesforce, Gong/Chorus, LinkedIn Sales Navigator"
+        - "Email and calendar apps"
+
+      requirements:
+        - "CRM integration for embedded learning"
+        - "Mobile-first for on-the-go access"
+        - "Pop-up format for just-in-time delivery"
+
+    recommended_approach:
+      format: embedded_microcoaching
+      module_length: "5 minutes or less"
+      scaffolding: minimal
+      crm_integrated: critical
+      revenue_tied: mandatory
+      just_in_time: true
+      resilience_focus: important
+
+    arcs_emphasis:
+      attention: 1.1
+      relevance: 1.5  # Must impact revenue immediately
+      confidence: 1.2
+      satisfaction: 1.2
+
+  marketing_manager_creative_automator:
+    description: "Marketing Manager: Creative professional orchestrating AI content generation"
+    persona_name: "Michael Chen"
+    role_context: "Marketing manager using AI for content creation, struggling with data literacy gap"
+
+    demographics:
+      age: 31
+      education: "BA Marketing or Communications"
+      experience_years: 6
+      salary_range_uk: "£40,000 - £60,000"
+
+    expertise_level: intermediate
+    learning_style: ["visual", "kinesthetic"]
+    cognitive_profile: holistic
+    motivation: achievement_oriented
+
+    role_responsibilities:
+      - "Orchestrates AI agents (Jasper, Copy.ai) to generate content variations"
+      - "Analyzes campaign performance in HubSpot/Google Analytics"
+      - "Manages freelancers and agencies for creative assets"
+      - "Maintains brand voice alignment across AI-generated content"
+      - "Struggles with data literacy and predictive analytics"
+
+    goals_and_drivers:
+      - "Master AI content orchestration and editing"
+      - "Develop data literacy for campaign analysis"
+      - "Achieve portable certifications (HubSpot Academy, LinkedIn Learning)"
+      - "Learn tool integration (AI writer → CRM)"
+      - "Advance to Marketing Director role"
+
+    learning_barriers:
+      time_constraints:
+        - "Balancing content creation with analysis and management"
+        - "Freelancer coordination consuming time"
+
+      cognitive_barriers:
+        - "Data literacy gap: overwhelmed by analytics volume"
+        - "Uncertainty about predictive analytics application"
+        - "Difficulty integrating multiple marketing tools"
+
+      social_barriers: []  # Comfortable with collaboration
+
+      confidence_barriers:
+        - "Feeling behind on data analytics skills"
+        - "Uncertainty about AI tool capabilities"
+
+      content_barriers:
+        - "Dismisses 'ugly' training content as low quality"
+        - "Expects high production value matching brand standards"
+
+      technical_barriers:
+        - "Integration complexity between marketing tools"
+
+      language_considerations: []  # Varies by individual
+
+    digital_learning_perception:
+      attitude: "visual_certification_driven"
+      views:
+        - "Appreciates high production value and aesthetic design"
+        - "Influenced by visual design and user experience"
+        - "Values certifications for LinkedIn display"
+        - "Seeks tool integration training"
+
+      trust_factors:
+        - "Platform certifications (HubSpot Academy, Google Analytics)"
+        - "Visual design quality as proxy for content quality"
+        - "Peer recommendations on LinkedIn"
+        - "Integration guides and technical documentation"
+
+    content_preferences:
+      format:
+        - "High-production video tutorials"
+        - "Interactive certification programs"
+        - "Visual design-focused content"
+        - "Tool integration guides"
+        - "LinkedIn-displayable badges"
+
+      engagement_drivers:
+        - "Portable certifications for career mobility"
+        - "Visual aesthetics and design quality"
+        - "Tool mastery and integration"
+        - "Peer recognition on LinkedIn"
+
+      quality_requirements:
+        - "High production value mandatory"
+        - "Visual-first presentation"
+        - "Certification pathways with badges"
+        - "Integration-focused tutorials"
+
+    technology_considerations:
+      devices:
+        - "Laptop (primary)"
+        - "Smartphone for social media monitoring"
+
+      tools_used:
+        - "HubSpot, Jasper/Copy.ai, Google Analytics, Canva"
+        - "LinkedIn Learning, HubSpot Academy"
+
+      requirements:
+        - "Certification platforms with LinkedIn integration"
+        - "Visual design matching brand standards"
+        - "Tool integration documentation"
+
+    recommended_approach:
+      format: certified_visual_learning
+      module_length: "15-30 minutes"
+      scaffolding: moderate
+      visual_production: high
+      certification_path: critical
+      integration_focused: true
+      badge_display: important
+
+    arcs_emphasis:
+      attention: 1.2
+      relevance: 1.2
+      confidence: 1.3  # Build data literacy confidence
+      satisfaction: 1.4  # Certification achievement
+
+  hr_manager_data_aspirant:
+    description: "Human Resources Manager: People professional bridging data and empathy"
+    persona_name: "Emily Johnson"
+    role_context: "HR manager struggling to translate people data into business strategy"
+
+    demographics:
+      age: 35
+      education: "BA Human Resources or Psychology"
+      experience_years: 10
+      salary_range_uk: "£35,000 - £55,000"
+
+    expertise_level: intermediate
+    learning_style: ["verbal", "reflective"]
+    cognitive_profile: reflective
+    motivation: social_learner
+
+    role_responsibilities:
+      - "Manages employee crises (resignations, burnout, toxic managers)"
+      - "Presents HR metrics to C-suite without data storytelling skills"
+      - "Handles administrative burden (onboarding, compliance)"
+      - "Researches workforce wellbeing initiatives"
+      - "Feels like 'compliance officer' rather than 'people strategist'"
+
+    goals_and_drivers:
+      - "Develop data storytelling skills for executive presentations"
+      - "Master people analytics to drive business strategy"
+      - "Balance hard legal knowledge with soft counseling skills"
+      - "Transition from compliance to strategic HR role"
+      - "Address workforce mental health while managing own stress"
+
+    learning_barriers:
+      time_constraints:
+        - "Crisis management consuming proactive time"
+        - "Administrative burden limiting strategic work"
+
+      cognitive_barriers:
+        - "People analytics gap: data without storytelling skills"
+        - "Difficulty translating HR metrics into business impact"
+        - "Balancing legal compliance with empathy"
+
+      social_barriers:
+        - "Bearing weight of organizational cultural failures"
+        - "Isolation in HR role with limited peer support"
+
+      confidence_barriers:
+        - "Uncertainty about executive-level data presentation"
+        - "Feeling reactive rather than strategic"
+
+      content_barriers: []  # Not a primary barrier
+
+      technical_barriers:
+        - "Data visualization and storytelling tools unfamiliar"
+
+      language_considerations: []  # Varies by individual
+
+    digital_learning_perception:
+      attitude: "community_seeking_learner"
+      views:
+        - "Values HR professional communities (SHRM, CIPD)"
+        - "Seeks peer best practices and validation"
+        - "Needs data literacy training urgently"
+        - "Appreciates empathy and legal content balance"
+
+      trust_factors:
+        - "HR professional associations (SHRM, CIPD)"
+        - "Peer-validated best practices"
+        - "Legal compliance experts"
+        - "Mental health and wellbeing specialists"
+
+    content_preferences:
+      format:
+        - "Data storytelling workshops"
+        - "HR community best practices"
+        - "Blended legal compliance and counseling training"
+        - "People analytics certification programs"
+        - "Wellbeing and stress management resources"
+
+      engagement_drivers:
+        - "Strategic HR role progression"
+        - "Data storytelling mastery"
+        - "Peer community connection"
+        - "Organizational impact evidence"
+
+      quality_requirements:
+        - "Practical data storytelling focus"
+        - "Balance of legal and empathy skills"
+        - "Community-validated approaches"
+        - "Self-care and resilience included"
+
+    technology_considerations:
+      devices:
+        - "Laptop (primary)"
+        - "Workday/BambooHR, Excel, Teams"
+
+      tools_used:
+        - "HRIS systems (Workday, BambooHR)"
+        - "Excel for data analysis"
+        - "HR community platforms"
+
+      requirements:
+        - "Data visualization training"
+        - "Template libraries for storytelling"
+        - "Community forum access"
+
+    recommended_approach:
+      format: data_storytelling_with_community
+      module_length: "20-30 minutes"
+      scaffolding: moderate
+      data_literacy: critical
+      storytelling_focus: critical
+      community_connection: important
+      empathy_legal_balance: true
+
+    arcs_emphasis:
+      attention: 1.1
+      relevance: 1.4  # Strategic impact critical
+      confidence: 1.4  # Data skills confidence-building
+      satisfaction: 1.2
+
+  c_suite_lonely_strategist:
+    description: "C-Suite Executive (CEO/CFO): Senior leader navigating strategic decisions under pressure"
+    persona_name: "Catherine Williams"
+    role_context: "CFO managing cash flow volatility, making high-stakes decisions with imperfect information"
+
+    demographics:
+      age: 52
+      education: "MBA or equivalent"
+      experience_years: 25
+      salary_range_uk: "£130,000+"
+
+    expertise_level: expert
+    learning_style: ["verbal", "reflective"]
+    cognitive_profile: analytical
+    motivation: achievement_oriented
+
+    role_responsibilities:
+      - "Manages global cash flow in volatile economic environment"
+      - "Makes million-dollar decisions with imperfect information"
+      - "Attends back-to-back 15-minute meetings all day"
+      - "Worries about Black Swan events (cyberattacks, geopolitical shifts)"
+      - "Cannot show weakness to team; feels isolated"
+
+    goals_and_drivers:
+      - "Stay ahead of strategic threats and opportunities"
+      - "Learn from peer executives in similar positions"
+      - "Develop crisis management and resilience capabilities"
+      - "Balance fiduciary duty with workforce wellbeing"
+      - "Access trusted advisors for confidential strategic thinking"
+
+    learning_barriers:
+      time_constraints:
+        - "Decision fatigue by noon from back-to-back meetings"
+        - "Travel and board commitments consuming all time"
+        - "No dedicated time for formal training"
+
+      cognitive_barriers:
+        - "Information overload from multiple sources"
+        - "Pressure to make decisions with incomplete data"
+        - "Black Swan event anxiety"
+
+      social_barriers:
+        - "Isolation at executive level; cannot show vulnerability"
+        - "Limited peer group for confidential discussion"
+
+      confidence_barriers: []  # Confident but isolated
+
+      content_barriers:
+        - "Rejects anything less than 1-page executive summary"
+        - "No time for formal training programs"
+
+      technical_barriers: []  # Focused on strategy, not technology
+
+      language_considerations: []  # Varies by individual
+
+    digital_learning_perception:
+      attitude: "peer_network_executive"
+      views:
+        - "Does not 'do training'; does consultation and peer learning"
+        - "Values executive peer groups (YPO, Chief)"
+        - "Needs 1-page summaries, not courses"
+        - "Seeks high-end executive coaching for safe strategic space"
+
+      trust_factors:
+        - "Executive peer networks (YPO, Chief, Vistage)"
+        - "Proven executive coaches with C-suite experience"
+        - "Board advisors and consultants"
+        - "Confidentiality and discretion"
+
+    content_preferences:
+      format:
+        - "1-page executive summaries"
+        - "Executive peer group discussions"
+        - "High-end executive coaching"
+        - "Board-level briefings and consultations"
+        - "Strategic foresight reports"
+
+      engagement_drivers:
+        - "Strategic advantage and risk mitigation"
+        - "Peer validation from other C-suite leaders"
+        - "Confidential safe space for vulnerability"
+        - "Access to exclusive executive networks"
+
+      quality_requirements:
+        - "Executive-level only (1-page summaries)"
+        - "Peer-validated insights"
+        - "Confidential and discreet"
+        - "Immediately strategically relevant"
+
+    technology_considerations:
+      devices:
+        - "Laptop and tablet"
+        - "Smartphone for constant connectivity"
+
+      tools_used:
+        - "Board reporting dashboards"
+        - "Financial systems"
+        - "Email (primary communication)"
+
+      requirements:
+        - "Executive summary format"
+        - "Mobile-accessible briefings"
+        - "Confidential platforms"
+
+    recommended_approach:
+      format: executive_peer_coaching
+      module_length: "1-page summary or peer discussion"
+      scaffolding: none
+      peer_network: critical
+      executive_coaching: important
+      confidential: mandatory
+      one_page_format: true
+
+    arcs_emphasis:
+      attention: 0.7
+      relevance: 1.5  # Strategic relevance critical
+      confidence: 0.6  # Isolated but needs safe space
+      satisfaction: 1.3
+
+  # ===========================================================================
+  # Adobe-Specific Learner Profiles (Original personas preserved)
+  # ===========================================================================
+
+  solutions_consultant_novice:
+    description: "Entry-level Solutions Consultant (Fresh graduate or career switcher)"
+    persona_name: "Alex Chen"
+    role_context: "Recent graduate joining Adobe as Solutions Consultant, undergoing initial training and shadowing"
+
+    demographics:
+      age: 24
+      education: "B.Sc. in Computer Science"
+      experience_years: 0
+      background: "Academic projects in web development, internship at tech startup"
+
+    expertise_level: novice
+    learning_style: ["visual", "kinesthetic"]
+    cognitive_profile: active
+    motivation: achievement_oriented
+
+    role_responsibilities:
+      - "Shadowing senior consultants on client calls and demos"
+      - "Learning core Adobe product portfolio (Creative Cloud, Document Cloud, Experience Cloud)"
+      - "Participating in internal training and certification programs"
+      - "Building foundational demo environment and test accounts"
+
+    goals_and_drivers:
+      - "Master fundamental product knowledge across Adobe's ecosystem"
+      - "Achieve initial product certifications (Adobe Certified Expert)"
+      - "Build confidence in client-facing interactions"
+      - "Understand pre-sales processes and sales cycle stages"
+      - "Transition from training phase to supporting live opportunities"
+
+    learning_barriers:
+      time_constraints:
+        - "Intensive onboarding schedule with multiple concurrent training streams"
+        - "Pressure to ramp quickly while maintaining learning quality"
+
+      cognitive_barriers:
+        - "Overwhelming product breadth; difficulty distinguishing between product lines"
+        - "Lack of business context; struggles connecting features to customer problems"
+        - "No prior experience with enterprise software sales cycles"
+        - "Difficulty translating technical knowledge into business value propositions"
+
+      social_barriers:
+        - "Reluctance to ask 'basic' questions in group settings"
+        - "Imposter syndrome when comparing to experienced team members"
+        - "Limited professional network within Adobe"
+
+      confidence_barriers:
+        - "Fear of appearing unprepared in client situations"
+        - "Uncertainty about when to speak vs. observe"
+
+      content_barriers: []  # Open to all content types at this stage
+
+      technical_barriers: []  # Tech-savvy generation, comfortable with tools
+
+      language_considerations: []  # Native English speaker
+
+    digital_learning_perception:
+      attitude: "enthusiastic_and_eager"
+      views:
+        - "Views digital learning as primary onboarding mechanism"
+        - "Comfortable with self-paced video content and interactive modules"
+        - "Expects modern, engaging UX similar to consumer learning platforms"
+        - "Values structured learning paths with clear progression milestones"
+
+      trust_factors:
+        - "Official Adobe certification programs"
+        - "Structured onboarding curricula with defined competencies"
+        - "Mentorship from senior consultants"
+        - "Peer cohort learning with other new hires"
+
+    content_preferences:
+      format:
+        - "Structured learning paths (beginner → intermediate → advanced)"
+        - "Video demonstrations with pause-and-practice exercises"
+        - "Interactive labs with guided walkthroughs"
+        - "Cohort-based training sessions for peer learning"
+        - "Checklists and competency frameworks for self-assessment"
+
+      engagement_drivers:
+        - "Clear progression milestones and certification badges"
+        - "Cohort-based learning with peer accountability"
+        - "Mentorship and shadowing opportunities"
+        - "Recognition for completing foundational training"
+
+      quality_requirements:
+        - "Foundational level with scaffolded complexity"
+        - "Visual demonstrations with step-by-step guidance"
+        - "Practice environments with low-stakes experimentation"
+        - "Frequent knowledge checks with constructive feedback"
+
+    technology_considerations:
+      devices:
+        - "Work laptop (primary)"
+        - "Smartphone for mobile learning during commute"
+
+      tools_used:
+        - "Adobe Experience League"
+        - "Internal LMS (Learning Management System)"
+        - "Slack for team communication"
+        - "Demo environment and sandbox accounts"
+
+      requirements:
+        - "Bookmarkable progress across multiple learning streams"
+        - "Mobile access for supplementary learning"
+        - "Easy navigation back to incomplete modules"
+
+    recommended_approach:
+      format: structured_onboarding_path
+      module_length: "15-30 minutes with hands-on practice"
+      scaffolding: high
+      hands_on: critical
+      social_learning: true
+      gamification: moderate
+      assessment: frequent_formative
+      visual_support: high
+      progression_tracking: required
+      mentor_support: critical
+
+    arcs_emphasis:
+      attention: 1.3
+      relevance: 1.4  # Must see career path clearly
+      confidence: 1.5  # Critical for early success
+      satisfaction: 1.2
+
+  solutions_consultant_early_career:
+    description: "Early-career Solutions Consultant (Pre-sales technical consultant)"
+    persona_name: "Emily Scott"
+    role_context: "Ambitious SC in Adobe Digital Experience division with 2 years experience"
+
+    demographics:
+      age: 27
+      education: "M.Sc. in Computer Science"
+      experience_years: 2
+      background: "Digital marketing technology"
+
+    expertise_level: intermediate
+    learning_style: ["visual", "kinesthetic"]
+    cognitive_profile: active
+    motivation: achievement_oriented
+
+    role_responsibilities:
+      - "Pre-sales technical consultant supporting UK & Ireland sales team"
+      - "Partners with account executives to craft demos & workshops"
+      - "Demonstrates Adobe Experience Cloud products (AEM, Real-Time CDP, Analytics)"
+
+    goals_and_drivers:
+      - "Build deep product mastery across Adobe's DX product ecosystem"
+      - "Master Adobe's enterprise sales cycle & consultative selling techniques"
+      - "Excel in delivering compelling, audience-tailored demos & presentations"
+      - "Develop strong communication & interpersonal (soft) skills for client engagement"
+      - "Achieve Adobe product certifications & progress toward Senior Solutions Consultant role"
+
+    learning_barriers:
+      time_constraints:
+        - "Limited dedicated time for training due to packed schedule of client work"
+        - "Learning in small time pockets; requires bookmarkable progress"
+
+      cognitive_barriers:
+        - "Overwhelming breadth of Adobe's DX product ecosystem; difficulty prioritizing topics"
+        - "Lack of hands-on exposure to advanced solution integrations, making concepts abstract"
+        - "Difficulty filtering relevant information from numerous internal resources"
+
+      social_barriers:
+        - "Hesitation to ask questions for fear of revealing knowledge gaps"
+
+      confidence_barriers: []  # Not a primary barrier for this persona
+
+      content_barriers: []  # Not a primary barrier for this persona
+
+      technical_barriers: []  # Not a primary barrier for this persona
+
+      language_considerations:
+        - "English is second language; idiomatic or jargon-heavy materials can slow comprehension"
+        - "Values learning materials with transcripts, glossaries, or visuals that reinforce key concepts"
+
+    digital_learning_perception:
+      attitude: "enthusiastic"
+      views:
+        - "Views e-learning as essential & convenient for fast-moving tech"
+        - "Values high-quality, interactive content; disengages with static/theoretical materials"
+        - "Sees digital learning as complementing on-the-job experience & mentoring"
+        - "Feels most confident when learning is clear, culturally inclusive, and complemented by visual cues or real-time Q&A"
+
+      trust_factors:
+        - "Certification programs from recognized providers"
+        - "Peer recommendations and community validation"
+        - "Hands-on labs that demonstrate real-world applicability"
+
+    content_preferences:
+      format:
+        - "Bite-sized (10-20 min) modules"
+        - "Interactive, hands-on labs"
+        - "On-demand webinars/videos during commutes; likes pause/replay flexibility"
+        - "In-person workshops and office-based learning for social engagement"
+
+      engagement_drivers:
+        - "Gamification: badges, points, certification prep paths"
+        - "Community/forums (Adobe Experience League, Slack) for social learning"
+        - "Interactive prompts & transcripts to maintain focus"
+        - "Transcripts, glossaries, visuals that reinforce concepts (supports second-language learning)"
+
+      quality_requirements:
+        - "Interactive and hands-on"
+        - "Clear structure with progress tracking"
+        - "Cultural inclusivity and second-language support"
+        - "Mobile-friendly with offline capability"
+
+    technology_considerations:
+      devices:
+        - "Work laptop (primary)"
+        - "Smartphone (on the go)"
+
+      requirements:
+        - "Needs offline access for travel"
+        - "Requires bookmarkable progress & recordings"
+        - "Single sign-on ease important; VPN/log-in hurdles can deter quick learning"
+        - "Mobile-friendly content for learning on commute"
+
+    recommended_approach:
+      format: microlearning_with_labs
+      module_length: "10-20 minutes"
+      scaffolding: moderate
+      hands_on: critical
+      social_learning: true
+      gamification: true
+      assessment: frequent_low_stakes
+      visual_support: high
+      language_support: "transcripts, glossaries, visual reinforcement"
+      offline_capability: required
+
+    arcs_emphasis:
+      attention: 1.2
+      relevance: 1.3
+      confidence: 1.4
+      satisfaction: 1.2
+
+  solutions_consultant_advanced:
+    description: "Advanced Solutions Consultant (Seasoned technical consultant)"
+    persona_name: "Priya Kapoor"
+    role_context: "Experienced Solutions Consultant with 7 years in tech, 4 at Adobe, specializing in complex integrations"
+
+    demographics:
+      age: 35
+      education: "M.Sc. in Information Systems"
+      experience_years: 7
+      adobe_tenure: 4
+      specialization: "Adobe Experience Cloud integrations"
+
+    expertise_level: advanced
+    learning_style: ["analytical", "kinesthetic"]
+    cognitive_profile: analytical
+    motivation: problem_solver
+
+    role_responsibilities:
+      - "Leads technical discovery for mid-to-large enterprise opportunities"
+      - "Designs custom solution architectures integrating multiple Adobe products"
+      - "Delivers advanced technical workshops and proof-of-concepts"
+      - "Mentors junior Solutions Consultants on technical best practices"
+      - "Contributes to internal knowledge base and best practices documentation"
+
+    goals_and_drivers:
+      - "Deepen specialization in complex solution architectures (multi-cloud, data integration)"
+      - "Build reputation as subject matter expert in specific Adobe verticals"
+      - "Develop thought leadership through speaking engagements and publications"
+      - "Transition toward Principal SC or Solutions Architect role"
+      - "Balance individual contributor excellence with mentoring responsibilities"
+
+    learning_barriers:
+      time_constraints:
+        - "High utilization on revenue-generating activities limits learning time"
+        - "Balancing client commitments with professional development"
+
+      cognitive_barriers:
+        - "Depth vs. breadth challenge: specialist expertise vs. generalist coverage"
+        - "Keeping pace with rapid product evolution across multiple platforms"
+
+      social_barriers: []  # Comfortable collaborating and leading
+
+      confidence_barriers: []  # Confident in core competencies, seeking edge cases
+
+      content_barriers:
+        - "Intermediate content too basic, expert content assumes too much context"
+        - "Difficulty finding advanced integration patterns and edge case handling"
+
+      technical_barriers:
+        - "Legacy system integration complexity in enterprise accounts"
+        - "Testing advanced scenarios requires significant infrastructure"
+
+      language_considerations: []  # Fluent professional communication
+
+    digital_learning_perception:
+      attitude: "strategic_and_selective"
+      views:
+        - "Values learning that directly advances specialization goals"
+        - "Prefers depth over breadth in advanced topics"
+        - "Seeks peer-level technical discussions and architecture reviews"
+        - "Balances formal learning with hands-on experimentation"
+
+      trust_factors:
+        - "Advanced certifications and specialization tracks"
+        - "Architect-level instructors with field experience"
+        - "Real-world architecture patterns from enterprise implementations"
+        - "Technical communities of practice with peer experts"
+
+    content_preferences:
+      format:
+        - "Advanced technical deep-dives (30-60 min) with architecture diagrams"
+        - "Hands-on labs with complex, multi-product integration scenarios"
+        - "Architecture review sessions and design pattern workshops"
+        - "Technical office hours with product engineering teams"
+        - "Case study analysis of complex enterprise implementations"
+
+      engagement_drivers:
+        - "Technical mastery and specialist recognition"
+        - "Contributing to knowledge base and thought leadership"
+        - "Solving novel integration challenges"
+        - "Peer recognition from SC community"
+
+      quality_requirements:
+        - "Advanced-level with deep technical detail"
+        - "Real-world complexity, not simplified demos"
+        - "Architecture patterns and anti-patterns"
+        - "Direct access to product team for edge cases"
+
+    technology_considerations:
+      devices:
+        - "Work laptop (primary)"
+        - "Tablet for architecture diagramming"
+        - "Multiple monitors for complex lab environments"
+
+      tools_used:
+        - "Adobe Experience League (advanced tracks)"
+        - "GitHub for sample code and integration patterns"
+        - "Postman for API testing"
+        - "Cloud sandbox environments (AWS, Azure, GCP)"
+
+      requirements:
+        - "Access to advanced sandbox environments"
+        - "Downloadable architecture diagrams and code samples"
+        - "Offline access for technical documentation"
+
+    recommended_approach:
+      format: advanced_technical_specialization
+      module_length: "30-60 minutes with complex labs"
+      scaffolding: low
+      hands_on: critical
+      self_directed: true
+      peer_learning: true
+      specialization_paths: true
+      advanced_only: true
+      architecture_focus: true
+
+    arcs_emphasis:
+      attention: 1.0
+      relevance: 1.4  # Must advance specialization
+      confidence: 1.0
+      satisfaction: 1.3  # Mastery satisfaction
+
+  solutions_consultant_senior:
+    description: "Veteran Solutions Consultant (Senior pre-sales technical lead)"
+    persona_name: "Mark Davis"
+    role_context: "Principal technical adviser on complex deals with 18 years in tech, 7 years at Adobe"
+
+    demographics:
+      age: 45
+      education: "B.Sc. in Computer Science"
+      experience_years: 18
+      adobe_tenure: 7
+
+    expertise_level: expert
+    learning_style: ["verbal", "kinesthetic"]
+    cognitive_profile: analytical
+    motivation: problem_solver
+
+    role_responsibilities:
+      - "Senior pre-sales technical lead for Field Sales"
+      - "Engages stakeholders from marketing managers to CIOs"
+      - "Designs custom demos, leads workshops, & strategizes deal positioning"
+      - "Competes against major competitors in complex enterprise deals"
+
+    goals_and_drivers:
+      - "Keep product knowledge current on new releases & emerging technologies (e.g., AI features, data privacy)"
+      - "Refine consultative selling: value propositions, ROI arguments, discovery techniques for C-level audiences"
+      - "Drive sales success & win major deals; maintain high win-rate"
+      - "Mentor junior consultants; develop management/coaching skills toward leadership role"
+      - "Adapt continuously to new digital paradigms & industry trends"
+
+    learning_barriers:
+      time_constraints:
+        - "Severe time constraints: fully booked calendar with client & travel commitments"
+        - "Learning in small time pockets during travel or between meetings"
+
+      cognitive_barriers:
+        - "Experience trap: reluctance to unlearn long-standing habits & adopt new methods"
+
+      social_barriers: []  # Not a primary barrier for this persona
+
+      confidence_barriers: []  # Confident in expertise, focused on staying current
+
+      content_barriers:
+        - "Few advanced training materials; basic courses feel too elementary"
+        - "Reactive vs. proactive learning: prioritises immediate client deliverables over formal training"
+
+      technical_barriers:
+        - "Connectivity constraints: Frequent travel means often lacks stable internet"
+        - "If content can't be downloaded for offline access, likely to be skipped"
+
+      language_considerations: []  # Not applicable for this persona
+
+    digital_learning_perception:
+      attitude: "pragmatic"
+      views:
+        - "Sees e-learning as necessary supplement to hands-on experience, not a replacement"
+        - "Expects high-quality, concise, expert-led content; critical of shallow or slow-paced materials"
+        - "Appreciates flexibility to pause, rewind, & access content 24/7 around unpredictable schedule"
+        - "Selective about platforms — expects expert-level content, clean UX, and clear practical value"
+
+      trust_factors:
+        - "Expert-level instructors with proven field experience"
+        - "Real-world case studies from comparable enterprise deals"
+        - "Peer-validated content from experienced practitioners"
+        - "Content that directly addresses current strategic challenges"
+
+    content_preferences:
+      format:
+        - "Just-in-time, self-directed learning - documentation, release notes, targeted resources"
+        - "Expert-led webinars & live sessions (or recordings at 1.5× speed) with Q&A for advanced use cases"
+        - "Case studies, peer war stories, & internal project post-mortems for concrete insights"
+        - "E-learning modules: skips to advanced sections, prefers accompanying transcripts/slides"
+        - "Internal Slack channels and technical blogs for peer-shared insights"
+
+      engagement_drivers:
+        - "Immediate applicability to current deals"
+        - "Peer recognition and knowledge sharing"
+        - "Access to exclusive expert networks"
+        - "Competitive advantage and win-rate improvement"
+
+      quality_requirements:
+        - "Expert-level content only"
+        - "Clean UX, fast navigation"
+        - "Ability to skip to relevant sections"
+        - "Transcript/slide access for quick scanning"
+
+    technology_considerations:
+      devices:
+        - "Work laptop (primary)"
+        - "Tablet while travelling"
+        - "Smartphone (occasionally)"
+
+      requirements:
+        - "All learning must be mobile-friendly"
+        - "Offline access critical for frequent travel"
+        - "Downloads content in advance (PDFs, video files, HTML guides)"
+        - "Bookmarkable progress essential"
+
+    recommended_approach:
+      format: just_in_time_expert
+      module_length: "flexible, skippable sections"
+      scaffolding: minimal
+      self_directed: true
+      advanced_only: true
+      playback_speed: "1.5x supported"
+      offline_capability: critical
+      peer_learning: true
+      case_study_focus: true
+      transcript_access: required
+
+    arcs_emphasis:
+      attention: 0.8
+      relevance: 1.5
+      confidence: 0.7
+      satisfaction: 1.3
+
+  enterprise_sales_early_career:
+    description: "Early-career Enterprise Sales Representative"
+    persona_name: "Layla Raj"
+    role_context: "Recently promoted from SDR to Enterprise Account Executive, managing mid-tier enterprise clients"
+
+    demographics:
+      age: 26
+      education: "BSc Business"
+      location: "London"
+      promotion_status: "Recently promoted from SDR"
+
+    expertise_level: novice
+    learning_style: ["kinesthetic", "visual"]
+    cognitive_profile: active
+    motivation: achievement_oriented
+
+    role_responsibilities:
+      - "Drives new business and account expansion across Document Cloud and Experience Cloud"
+      - "Prospecting-focused, manages stakeholder comms from managers to C-level"
+      - "Coordinates with legal, marketing, and engineering internally"
+      - "Learning to navigate long sales cycles and complex deals"
+
+    goals_and_drivers:
+      - "Hit/exceed quota, make President's Club"
+      - "Land a Fortune 500 reference account"
+      - "Progress to Senior Account Manager or Director"
+      - "Increase confidence and credibility in enterprise-level stakeholder interactions"
+      - "Develop advanced strategic selling and negotiation competencies"
+
+    learning_barriers:
+      time_constraints:
+        - "Extremely limited dedicated learning time – <1 hr/week"
+
+      cognitive_barriers:
+        - "Overwhelmed by extensive product suite; difficulty retaining comprehensive product knowledge"
+        - "Inexperienced with enterprise-level negotiations; struggles with procurement/legal complexities"
+        - "Low engagement with overly theoretical content; prefers directly actionable insights"
+
+      social_barriers: []  # Engaged with peers, but needs confidence building
+
+      confidence_barriers:
+        - "Experiences impostor syndrome during C-suite interactions"
+
+      content_barriers: []  # Not a primary barrier for this persona
+
+      technical_barriers: []  # Tech-savvy, not a primary barrier
+
+      language_considerations: []  # Not applicable for this persona
+
+    digital_learning_perception:
+      attitude: "positive_if_practical"
+      views:
+        - "Positive towards digital learning if immediately relevant, practical, and concise"
+        - "Impatient with outdated, generic, or abstract content; prefers real-world applicability"
+        - "Expects digital learning to directly impact sales performance and confidence-building"
+
+      trust_factors:
+        - "Success stories from peers at similar career stage"
+        - "Endorsed by quota-carrying reps"
+        - "Rapid, measurable impact on sales metrics"
+        - "Gamified progression systems with visible milestones"
+
+    content_preferences:
+      format:
+        - "Concise micro-learning (videos <15 mins, actionable tips)"
+        - "Gamification elements to boost engagement and motivation"
+        - "Interactive formats: scenario-based simulations, quizzes, role-play exercises"
+        - "Peer-driven, collaborative activities and discussion forums"
+        - "On-demand, searchable, and just-in-time content delivery tailored to immediate job tasks"
+
+      engagement_drivers:
+        - "Gamification (badges, leaderboards, points)"
+        - "Scenario-based simulations"
+        - "Role-play exercises"
+        - "Peer collaboration and forums"
+
+      quality_requirements:
+        - "Immediately actionable with clear next steps"
+        - "Scenario-based and relatable to current deals"
+        - "Mobile-optimized for learning on-the-go"
+        - "Fast-paced with minimal theory"
+
+    technology_considerations:
+      devices:
+        - "Laptop (office/home)"
+        - "Smartphone (commuting, client visits)"
+
+      tools_used:
+        - "Salesforce CRM"
+        - "LinkedIn Sales Navigator"
+        - "Slack"
+        - "Adobe-specific analytics tools"
+
+      requirements:
+        - "Fully mobile-compatible learning solutions"
+        - "Offline capabilities due to frequent travel and commutes"
+
+    recommended_approach:
+      format: microlearning_gamified
+      module_length: "<15 minutes"
+      scaffolding: high
+      practical_focus: critical
+      gamification: high
+      scenario_based: true
+      role_play: true
+      mobile_first: true
+      just_in_time: true
+      searchable: true
+      offline_capability: required
+
+    arcs_emphasis:
+      attention: 1.3
+      relevance: 1.5
+      confidence: 1.5
+      satisfaction: 1.3
+
+  enterprise_sales_intermediate:
+    description: "Mid-level Enterprise Account Executive"
+    persona_name: "Marcus Thompson"
+    role_context: "Established Account Executive with 5 years B2B tech sales, 3 at Adobe, managing growing enterprise accounts"
+
+    demographics:
+      age: 32
+      education: "BA in Business Administration"
+      experience_years: 5
+      adobe_tenure: 3
+      location: "San Francisco"
+
+    expertise_level: intermediate
+    learning_style: ["kinesthetic", "verbal"]
+    cognitive_profile: active
+    motivation: achievement_oriented
+
+    role_responsibilities:
+      - "Manages portfolio of mid-to-large enterprise accounts ($500K-$2M ACV)"
+      - "Drives new logo acquisition and account expansion strategies"
+      - "Navigates complex sales cycles involving multiple stakeholders"
+      - "Coordinates with Solutions Consultants, CSMs, and executives on strategic deals"
+      - "Developing skills in C-level engagement and strategic account planning"
+
+    goals_and_drivers:
+      - "Consistently achieve 100%+ of quota and qualify for President's Club"
+      - "Build strategic account planning skills for enterprise customers"
+      - "Master consultative selling and value-based selling methodologies (MEDDIC, Challenger)"
+      - "Develop executive presence for C-suite interactions"
+      - "Progress to Strategic Account Executive or Enterprise Account Director"
+
+    learning_barriers:
+      time_constraints:
+        - "Limited learning time due to active pipeline management (~2-3 hrs/week max)"
+        - "Balancing prospecting, deal management, and skill development"
+
+      cognitive_barriers:
+        - "Transitioning from transactional to strategic, consultative selling"
+        - "Difficulty articulating complex ROI and business value propositions"
+        - "Managing longer, more complex sales cycles with multiple decision-makers"
+
+      social_barriers:
+        - "Navigating organizational politics in large enterprise accounts"
+
+      confidence_barriers:
+        - "Uncertainty in high-stakes C-level negotiations"
+        - "Occasional self-doubt when competing against more experienced sellers"
+
+      content_barriers:
+        - "Basic sales training feels elementary, advanced content assumes more context"
+
+      technical_barriers: []  # Comfortable with sales tech stack
+
+      language_considerations: []  # Native English speaker
+
+    digital_learning_perception:
+      attitude: "pragmatic_and_results_focused"
+      views:
+        - "Values learning that directly improves win rates and deal velocity"
+        - "Prefers just-in-time content aligned to current deal challenges"
+        - "Expects actionable frameworks that can be applied immediately"
+        - "Appreciates blend of theory (why) and practice (how)"
+
+      trust_factors:
+        - "Proven frameworks endorsed by top performers"
+        - "Case studies from comparable enterprise deals"
+        - "Sales leaders and veteran reps as instructors"
+        - "Quantifiable ROI and success metrics"
+
+    content_preferences:
+      format:
+        - "Micro-learning modules (10-25 mins) focused on specific selling situations"
+        - "Sales playbooks with templates and talk tracks"
+        - "Role-play scenarios and objection handling practice"
+        - "Deal coaching and pipeline review methodologies"
+        - "Strategic account planning frameworks and workshops"
+
+      engagement_drivers:
+        - "Direct correlation to quota attainment"
+        - "Recognition and leaderboard visibility"
+        - "Peer learning from top performers"
+        - "Certification in advanced sales methodologies"
+
+      quality_requirements:
+        - "Intermediate-to-advanced level content"
+        - "Immediately applicable to current deals"
+        - "Real enterprise scenarios, not SMB examples"
+        - "Clear frameworks with practical tools"
+
+    technology_considerations:
+      devices:
+        - "Laptop (primary for deal work)"
+        - "Smartphone (CRM updates, mobile learning)"
+        - "Tablet for client presentations"
+
+      tools_used:
+        - "Salesforce CRM (daily)"
+        - "LinkedIn Sales Navigator"
+        - "Gong or Chorus for call recording/coaching"
+        - "Highspot or Seismic for sales content"
+
+      requirements:
+        - "Mobile-first for learning during commute or travel"
+        - "Integrated with Salesforce for just-in-time content"
+        - "Offline capability for travel"
+        - "Bookmarkable with progress tracking"
+
+    recommended_approach:
+      format: situation_based_microlearning
+      module_length: "10-25 minutes"
+      scaffolding: moderate
+      practical_focus: critical
+      scenario_based: true
+      role_play: true
+      frameworks_focus: true
+      mobile_first: true
+      just_in_time: true
+      peer_learning: true
+
+    arcs_emphasis:
+      attention: 1.1
+      relevance: 1.5  # Must impact current deals
+      confidence: 1.3
+      satisfaction: 1.2
+
+  enterprise_sales_senior:
+    description: "Senior Enterprise Account Director"
+    persona_name: "John Smith"
+    role_context: "Manages strategic Fortune 500 accounts, trusted advisor to C-suite clients"
+
+    demographics:
+      age: 45
+      education: "MBA"
+      experience_years: 20
+      adobe_tenure: 5
+      location: "New York"
+      industry_focus: ["Finance", "Retail"]
+
+    expertise_level: expert
+    learning_style: ["verbal", "kinesthetic"]
+    cognitive_profile: analytical
+    motivation: achievement_oriented
+
+    role_responsibilities:
+      - "Owns large, complex accounts and revenue targets"
+      - "Leads cross-functional pursuits and executive engagements"
+      - "Develops strategic multi-year account plans"
+      - "Fluent in MEDDIC and consultative selling frameworks"
+      - "Balances deal execution with mentoring junior reps"
+
+    goals_and_drivers:
+      - "Sustain consistent high-level sales performance (maintain President's Club status)"
+      - "Mentor emerging sales talent; progression into a leadership (VP) role"
+      - "Maintain trusted advisor status among C-level clients, going beyond transactional selling"
+      - "Stay current on strategic sales trends, including AI applications and industry-specific insights"
+      - "Deliver strategic and long-term client value through consultative selling"
+
+    learning_barriers:
+      time_constraints:
+        - "Limited availability due to extensive travel, client meetings, and team management responsibilities"
+
+      cognitive_barriers:
+        - "Initial resistance to new sales methodologies unless demonstrably effective"
+        - "Difficulty unlearning established habits and integrating modern sales tools/techniques"
+        - "Friction adopting newer digital platforms and AI-driven sales technologies"
+
+      social_barriers: []  # Comfortable with peers, but selective about collaboration
+
+      confidence_barriers: []  # Highly confident, focused on continuous improvement
+
+      content_barriers:
+        - "Scepticism towards generic, introductory content; requires advanced-level material"
+        - "Rejects compliance-oriented, checkbox-style learning as ineffective"
+
+      technical_barriers: []  # Adapting to new tools, but not a primary barrier
+
+      language_considerations: []  # Not applicable for this persona
+
+    digital_learning_perception:
+      attitude: "selective_and_demanding"
+      views:
+        - "Values digital learning when expertly curated, advanced-level, and highly relevant to immediate sales challenges"
+        - "Trusts learning content authored or vetted by proven sales professionals or recognised industry experts"
+        - "Appreciates personalised programmes that benchmark skills and recommend targeted content"
+
+      trust_factors:
+        - "Expert authorship or vetting"
+        - "Proven sales professionals as instructors"
+        - "Industry recognition"
+        - "Skill-based personalization"
+
+    content_preferences:
+      format:
+        - "Advanced, targeted case studies and peer-based learning (round-tables, expert panels)"
+        - "Expert-led webinars and strategic podcasts for professional development"
+        - "Highly practical, topic-specific modules that reflect advanced sales scenarios"
+        - "Embedded, just-in-time learning resources integrated within daily workflows"
+        - "Selectively engages with learning content at accelerated playback (1.5× speed)"
+
+      engagement_drivers:
+        - "Strategic advantage in high-stakes negotiations"
+        - "Thought leadership and industry recognition"
+        - "Mentoring excellence and leadership development"
+        - "Exclusive access to C-level selling frameworks"
+
+      quality_requirements:
+        - "Advanced-level only"
+        - "Expert-led content"
+        - "Real-world, complex scenarios"
+        - "Integrated into workflow"
+        - "Fast playback supported (1.5x)"
+
+    technology_considerations:
+      devices:
+        - "High-performance laptop for intensive tasks"
+        - "Tablet for client presentations"
+        - "Smartphone primarily for CRM and emails"
+
+      security_requirements:
+        - "Enterprise-secure platforms due to confidentiality concerns"
+
+      requirements:
+        - "Downloadable, printable materials for offline and travel use"
+        - "Dual monitors supported for multitasking during virtual training sessions"
+        - "Must be accessible during travel with offline capability"
+
+    recommended_approach:
+      format: expert_led_case_studies
+      module_length: "flexible, advanced topics"
+      scaffolding: minimal
+      self_directed: true
+      expert_only: true
+      peer_learning: critical
+      case_study_focus: true
+      workflow_integrated: true
+      playback_speed: "1.5x supported"
+      offline_capability: required
+      downloadable: true
+      printable: true
+
+    arcs_emphasis:
+      attention: 0.7
+      relevance: 1.5
+      confidence: 0.6
+      satisfaction: 1.4
+
+# ===========================================================================
+# Pedagogical Strategies 2025-2026
+# Evidence-based strategies aligned with current workforce and learning landscape
+# ===========================================================================
+
+pedagogical_strategies_2026:
+  superagency_assessment_model:
+    definition: "Structured self-assessment model helping learners identify where AI augments vs. replaces their expertise"
+    source: "McKinsey Superagency Framework 2025; Research - The Architecture of the Modern Learner.md"
+    target_personas: ["technical_specialist_skeptical_builder", "gen_z_digital_pragmatist"]
+    application: "Learners map personal skill stack against AI capability boundaries; identify 'last mile' human-only competencies"
+    delivery_format: "Reflective exercise + peer discussion; 15-20 minutes"
+
+  third_space_soft_skills:
+    definition: "Interpersonal and meta-cognitive skills that AI cannot automate — occupying the third space between technical and managerial competencies"
+    examples: ["influencing without authority", "navigating ambiguity", "psychological safety creation", "cross-generational facilitation"]
+    source: "WEF Future of Jobs Report 2025; Deloitte Human Capital Trends 2025; Research - The Architecture of the Modern Learner.md"
+    target_personas: ["millennial_overwhelmed_architect", "technical_specialist_skeptical_builder"]
+    delivery_format: "Case-based learning with role-play; scenario simulation"
+
+  micro_credentials_signaling:
+    definition: "Short, stackable credentials with visible market value — replacing traditional CPD points as motivation mechanism for transactional learners"
+    rationale: "Learners earning 25% less than older cohorts prioritise credentials with clear salary uplift evidence"
+    source: "Research - Learner Persona Research and Development.md"
+    target_personas: ["gen_z_digital_pragmatist", "millennial_overwhelmed_architect"]
+    design_requirement: "Each credential must display market salary correlation; integrate LinkedIn badge sharing where platform permits"
+
+  just_in_time_performance_support:
+    definition: "Point-of-need micro-resources embedded in workflow tools — replacing scheduled training for time-pressured personas"
+    source: "Research - Comprehensive Learning Design Framework.md"
+    target_personas: ["millennial_overwhelmed_architect", "sales_director_metric_warrior"]
+    formats: ["2-minute explainer clips", "searchable decision trees", "AI-powered chatbot coaches", "one-page job aids"]
+    design_rule: "Resource must be retrievable in under 30 seconds within the learner's existing digital environment"
+
+# ===========================================================================
+# Profile Inference Rules
+# ===========================================================================
+
+inference_rules:
+  # Content signals that suggest target learner profile
+  signals:
+    novice_indicators:
+      - "glossary terms used without definition"
+      - "assumes no prior knowledge"
+      - "step-by-step instructions"
+      - "basic concepts explained"
+
+    expert_indicators:
+      - "dense technical terminology"
+      - "assumes domain knowledge"
+      - "focuses on edge cases"
+      - "research citations"
+
+    visual_learner_indicators:
+      - "heavy use of diagrams"
+      - "visual metaphors"
+      - "infographic-style layouts"
+
+    kinesthetic_indicators:
+      - "hands-on exercises"
+      - "practice labs"
+      - "interactive elements"
+
+# ===========================================================================
+# Default Profile (when not specified)
+# ===========================================================================
+
+default_profile:
+  expertise_level: intermediate
+  learning_style: null  # Balanced approach
+  cognitive_profile: null  # Balanced approach
+  motivation: problem_solver
+
+  rationale: |
+    Default to intermediate expertise (most common corporate learner),
+    balanced learning style approach (multiple modalities), and
+    problem-solver motivation (practical application focus).

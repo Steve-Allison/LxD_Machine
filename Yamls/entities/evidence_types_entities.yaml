@@ -1,0 +1,1239 @@
+_meta:
+  id: evidence_types_entities
+  title: Evidence Types Entities
+  description: GLiNER2 entity definitions for detecting evidence type markers in presentations and professional communication
+    — statistical, anecdotal, expert, analogical, logical, visual, and validated
+  domain: narrative
+  domain_type: cross_cutting
+  purpose: entity
+  version: 2.20.0
+  last_updated: '2026-03-09'
+  corpus_sources:
+  - Corpus/Research/Adobe Case Study Excellence Framework.md
+  - 'Corpus/Research/The Architecture of Persuasion: A Deep Synthesis of Visual Communication and Narrative Storytelling.md'
+  - Corpus/Research/SOAR Narrative Mapping by Sales Stage.md
+  - Corpus/Research/Crafting Powerful Opening Plays.md
+  - Corpus/Research/Research - Personal Branding Framework for Early.md
+  - Corpus/Research/Research - Comprehensive Audience Analysis.md
+  - Corpus/Research/Research - Elite Speaker Linguistic Analysis Taxonomy.md
+  - Corpus/Research/Research - Visual Communication and Storytelling.md
+  - Corpus/Research/Research - Researching Narrative and Discourse Analysis.md
+  - Corpus/Research/Research - Canonical Presentation Methodology Research.md
+  - Corpus/Research/Research - Presentation Delivery_ Ethos and Physicality.md
+  - Corpus/Research/Research - Using Monroes Motivated Sequence.md
+  - Corpus/Research/Research - Using SOAR Storytelling most effectively.md
+  - Corpus/Research/Research - Advanced Computational Discourse Analysis_ Operationalizing Rhetorical Structure Theory with
+    LLM.md
+  - Corpus/Research/Research - Analyzing Story for Business Communication.md
+  - Corpus/Research/Research - The Anatomy of Presence.md
+  - Corpus/Research/Research - Scenario-Based Training_ A Comprehensive Guide.md
+  - Corpus/Research/Research - Roleplay & Scenarios for Learning.md
+  - Corpus/Research/Storytelling_for_Different_Business_Personas.md
+  - Corpus/Research/Research - Visual Analysis of Slide Decks.md
+  - Corpus/Research/Research - Best Practices for Writing Effective Corporate Learning Content.md
+  - Corpus/Research/Research - visualisation_techniques_corporate_learning.md
+  - Corpus/Research/36_audience_analysis_and_persuasion.md
+  - Corpus/Research/a-guide-to-good-reasoning-cultivating-intellectual-virtues-16112.md
+  - Corpus/Research/visual_narrative_flow_pass.md
+  - Corpus/Research/Research - Public_Speaking_research.md
+  academic_sources:
+  - Toulmin (2003) - The Uses of Argument
+  - Walton (2006) - Fundamentals of Critical Argumentation
+  - Hyland (2005) - Stance and Engagement
+  relationships:
+  - target: taxonomy/evidence_types_taxonomy.yaml
+    type: depends_on
+    description: Evidence type classification for entity label validation
+entity_types:
+  data_statistic:
+    label: DATA_STATISTIC
+    field_description: Data statistic hard number percentage metric X percent X times ROI increase decrease rate
+    description: 'Hard numerical data point used as evidence: percentages, multiples, growth figures'
+    entity_kind: statistical_evidence
+    family: quantitative
+    examples:
+    - 80% of customers report faster results
+    - 3x return on investment
+    - costs reduced by 40%
+    - adoption rates increased by 2.5x
+    - a 95% success rate
+    - saving 10,000 hours annually
+    - revenue up 127% year on year
+    - NPS score improved from 32 to 71
+    confidence_threshold: 0.75
+    field: evidence
+    indicators:
+    - '%'
+    - percent
+    - x ROI
+    - times faster
+    - per cent
+    - 3x
+    - doubled
+    - tripled
+    patterns:
+    - \d+%
+    - \d+x
+    - \$[\d,]+
+    - \d+\.\d+x
+    - \d+ (percent|times|fold)
+    color: '#2980b9'
+    relates_to:
+    - target: claim
+      relation: supports
+      weight: required
+      description: Data statistics provide quantitative backing that makes claims credible
+      target_file: narrative_entities
+    - target: research_citation
+      relation: contrasts_with
+      weight: expected
+      description: Data statistics and research citations are alternative evidence strategies — numbers vs authority
+    - target: statistic_hook
+      relation: supports
+      weight: expected
+      description: Data statistics support statistic hooks by providing the numerical evidence that serves as the core attention
+        anchor in statistical openings per Crafting Powerful Opening Plays
+      target_file: opening_hooks_entities
+    - target: technical_audience
+      relation: supports
+      weight: required
+      description: "Data statistics directly support technical audiences who require detailed quantitative evidence and performance benchmarks per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    - target: executive_audience
+      relation: supports
+      weight: expected
+      description: "Data statistics support executive audiences with ROI summaries and clear financial evidence per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    - target: chart_type
+      relation: supported_by
+      weight: required
+      description: "Data statistics require chart type visualizations to transform raw numbers into comprehensible data stories per Visual Communication and Storytelling"
+      target_file: visual_elements_entities
+    - target: boost_marker
+      relation: supports
+      weight: expected
+      description: "Data statistics support boost markers — specific metrics (67% gravitas perception, 77% public speaking fear) amplify confidence claims per Personal Branding Framework"
+      target_file: stance_markers_entities
+    - target: monroe_sequence_marker
+      relation: supports
+      weight: expected
+      description: "Statistics validate MMS's Need stage by demonstrating the scope of the problem, and strengthen Visualization with trend data and future projections per Monroe's Motivated Sequence research"
+      target_file: rhetorical_devices_entities
+    - target: outcome_statement
+      relation: supports
+      weight: expected
+      description: "Concrete metrics act as proof of transformation — numbers and KPIs solidify the story's impact per SOAR Storytelling research"
+      target_file: narrative_entities
+    - target: value_proposition
+      relation: supports
+      weight: expected
+      description: "When data and story are used together, audiences are moved both intellectually and emotionally, engaging their brains more completely per SOAR Storytelling research"
+      target_file: narrative_entities
+    - target: logos_appeal
+      relation: supports
+      weight: expected
+      description: "Data statistics directly support logos appeals by providing the quantitative proof that makes logical arguments credible per Analyzing Story for Business Communication"
+      target_file: rhetorical_devices_entities
+    - target: ethos_appeal
+      relation: supports
+      weight: expected
+      description: "Accurate presentation of factual data directly supports speaker credibility — presenting facts accurately maintains audience trust per Audience Analysis and Persuasion"
+      target_file: rhetorical_devices_entities
+    - target: result_marker
+      relation: supports
+      weight: expected
+      description: "Data statistics support result markers by providing quantitative evidence of outcomes per SOAR Narrative Mapping by Sales Stage"
+      target_file: sales_entities
+    - target: economic_buyer
+      relation: supports
+      weight: expected
+      description: "Data statistics directly support economic buyer decision-making through ROI calculations, cost-benefit analyses, and financial evidence that CFOs and budget holders require per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - evidence
+      strength: primary
+  research_citation:
+    label: RESEARCH_CITATION
+    field_description: Research citation study survey report findings published data according to analysis shows
+    description: Reference to a formal research study, survey, or published analysis as evidence
+    entity_kind: statistical_evidence
+    family: formal_research
+    examples:
+    - Research shows that...
+    - A study by McKinsey found...
+    - According to IDC's 2025 report...
+    - Gartner's analysis confirms...
+    - Data from a survey of 1,000 companies...
+    - Forrester found that 67% of...
+    - Peer-reviewed research indicates...
+    - The Aberdeen Group study of 500 enterprises...
+    confidence_threshold: 0.78
+    field: evidence
+    indicators:
+    - research shows
+    - a study
+    - according to
+    - data from
+    - survey of
+    - analysis confirms
+    - found that
+    - indicates that
+    - report shows
+    patterns:
+    - research (shows|indicates|suggests|confirms)
+    - a study (by|from|of) \w+
+    - according to \w+
+    - \w+ (found|confirmed|reported) that
+    color: '#1abc9c'
+    relates_to:
+    - target: claim
+      relation: supports
+      weight: required
+      description: Research citations provide authoritative academic backing for claims
+      target_file: narrative_entities
+    - target: expert_testimony
+      relation: contrasts_with
+      weight: expected
+      description: Published research vs individual expert opinion — different authority sources
+    - target: attribution_marker
+      relation: triggers
+      weight: expected
+      description: "Discourse-Aware TS shows citations embed attribution relations that are extractable as linked propositions during simplification per Researching Narrative and Discourse Analysis"
+      target_file: discourse_entities
+    - target: learning_principle
+      relation: supports
+      weight: required
+      description: "FPI's five principles are validated by empirical research including Thompson 2002 corporate study and MOOC VR quasi-experimental studies per Merrill"
+      target_file: pedagogical_frameworks_entities
+    - target: logos_appeal
+      relation: supports
+      weight: expected
+      description: "Research citations support logos appeals — studies on vocal pitch perception, negotiation confidence outcomes, and executive presence surveys provide logical evidence per Personal Branding Framework"
+      target_file: rhetorical_devices_entities
+    - target: monroe_sequence_marker
+      relation: supports
+      weight: expected
+      description: "Research citations bolster MMS's Satisfaction stage by providing proof that the proposed solution approach is evidence-based and effective per Monroe's Motivated Sequence research"
+      target_file: rhetorical_devices_entities
+    - target: ethos_appeal
+      relation: supports
+      weight: expected
+      description: "Research citations support ethos appeal; citing Ambady/Rosenthal, Gottman, Adam/Galinsky etc. builds the authority dimension of ethos by demonstrating scholarly grounding per Anatomy of Presence research"
+      target_file: rhetorical_devices_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - evidence
+      strength: primary
+    - taxonomy: rhetorical_devices_taxonomy
+      dimension: aristotelian_appeal
+      values:
+      - ethos
+      strength: secondary
+  customer_story:
+    label: CUSTOMER_STORY
+    field_description: Customer story case study example one customer client told us their experience when they
+    description: Reference to a specific customer experience or case study as evidence
+    entity_kind: anecdotal_evidence
+    family: experiential
+    examples:
+    - One of our customers told us...
+    - A client in healthcare reduced costs by...
+    - When Acme deployed the solution...
+    - Their experience shows that...
+    - Let me share a customer story.
+    - In one case study, a retailer...
+    - A global manufacturer we work with saw...
+    - Within six months of deployment, the client reported...
+    confidence_threshold: 0.72
+    field: evidence
+    indicators:
+    - one of our customers
+    - a client
+    - customer story
+    - case study
+    - when [company]
+    - their experience
+    - let me share
+    patterns:
+    - one (of )?our (customers?|clients?)
+    - a client (in|from|at) \w+
+    - let me share a \w+
+    - case study
+    - in one (case|example|instance)
+    color: '#e67e22'
+    relates_to:
+    - target: claim
+      relation: supports
+      weight: expected
+      description: Customer stories provide experiential evidence for commercial claims
+      target_file: narrative_entities
+    - target: personal_anecdote
+      relation: contrasts_with
+      weight: expected
+      description: Customer stories vs personal anecdotes — third-party vs first-person experiential evidence
+    - target: customer_hero
+      relation: enables
+      weight: expected
+      description: Customer stories provide the source material for customer-as-hero narrative framing
+      target_file: character_archetypes_entities
+    - target: executive_audience
+      relation: supports
+      weight: expected
+      description: "Customer stories support executive audiences as case studies from the same industry build social proof per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    - target: adult_learner
+      relation: supports
+      weight: expected
+      description: "Customer stories support adult learners by showing someone like them succeeded easing fear of failure per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    - target: scenario_activity
+      relation: supports
+      weight: expected
+      description: "FPI prescribes realistic case studies and customer scenarios as authentic problem-centered learning contexts per Merrill"
+      target_file: activity_types_entities
+    - target: monroe_sequence_marker
+      relation: supports
+      weight: expected
+      description: "Success stories and testimonials are recommended in MMS's Visualization stage to provide relatable hero's journeys that learners can aspire to per Monroe's Motivated Sequence research"
+      target_file: rhetorical_devices_entities
+    - target: narrative_tension
+      relation: triggers
+      weight: expected
+      description: "Customer stories trigger narrative tension by presenting relatable challenges — use a customer success story from the same industry so prospects can see themselves in it per SOAR Storytelling research"
+      target_file: narrative_entities
+    - target: pathos_appeal
+      relation: supports
+      weight: expected
+      description: "Customer stories directly support pathos appeals by providing emotional, relatable narratives that create audience connection per Analyzing Story for Business Communication"
+      target_file: rhetorical_devices_entities
+    - target: rebuttal
+      relation: supports
+      weight: expected
+      description: "Customer stories as case studies serve as proof points to generate tailored objection-handling responses per Storytelling for Different Business Personas"
+      target_file: narrative_entities
+    - target: before_after_comparison
+      relation: contains
+      weight: expected
+      description: "Customer stories contain before-after comparisons inherently — StoryBrand structures stories as movement from Failure to Success states per Analyzing Story for Business Communication"
+    - target: validated_outcome
+      relation: enables
+      weight: expected
+      description: "Customer stories enable validated outcomes by providing the narrative proof of transformation — case studies and success stories as proof per Analyzing Story for Business Communication"
+    - target: result_marker
+      relation: supports
+      weight: expected
+      description: "Customer stories support result markers by providing narrative proof of outcomes achieved per SOAR Narrative Mapping by Sales Stage"
+      target_file: sales_entities
+    - target: resolution_signal
+      relation: supports
+      weight: expected
+      description: "Customer stories provide visual proof in the resolution phase — happy customers and testimonials are explicit Result indicators in SOAR visual detection per visual_narrative_flow_pass"
+      target_file: narrative_entities
+    - target: audience_objection
+      relation: resolves
+      weight: expected
+      description: "Customer stories resolve audience objections by demonstrating real-world success — same-industry case studies provide social proof that preemptively addresses scepticism and risk concerns per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - evidence
+      - result
+      strength: primary
+    - taxonomy: rhetorical_devices_taxonomy
+      dimension: aristotelian_appeal
+      values:
+      - pathos
+      - ethos
+      strength: secondary
+  personal_anecdote:
+    label: PERSONAL_ANECDOTE
+    field_description: Personal anecdote first person story I remember when I saw I experienced I was working on
+    description: First-person story from the speaker's own experience used as evidence
+    entity_kind: anecdotal_evidence
+    family: experiential
+    examples:
+    - I remember when I first saw this problem...
+    - When I was working with a team in Singapore...
+    - I experienced this first-hand...
+    - Let me tell you what happened...
+    - I was in a meeting and someone said...
+    - My own experience taught me...
+    confidence_threshold: 0.7
+    field: evidence
+    indicators:
+    - I remember
+    - I saw
+    - I was
+    - I experienced
+    - let me tell you
+    - my own
+    - in my experience
+    patterns:
+    - I (remember|saw|experienced|was) \w+
+    - Let me tell you (what|about|a story)
+    - in my (experience|career|time)
+    - my own \w+ (shows|taught|tells)
+    color: '#e74c3c'
+    relates_to:
+    - target: claim
+      relation: supports
+      weight: expected
+      description: Personal anecdotes provide first-person experiential evidence
+      target_file: narrative_entities
+    - target: customer_story
+      relation: contrasts_with
+      weight: expected
+      description: First-person vs third-party experiential evidence
+    - target: story_hook
+      relation: supports
+      weight: expected
+      description: Personal anecdotes support story hooks by providing first-person narrative material that creates immediate
+        audience connection through lived experience per Crafting Powerful Opening Plays
+      target_file: opening_hooks_entities
+    - target: novice_learner
+      relation: supports
+      weight: expected
+      description: "Personal anecdotes support novice learners by sharing relatable stories of successful new hire journeys per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    - target: pathos_appeal
+      relation: enables
+      weight: expected
+      description: "Personal anecdotes enable pathos appeals by providing first-person emotional material that creates empathic resonance with the audience per Elite Speaker Linguistic Analysis"
+      target_file: rhetorical_devices_entities
+    - target: ethos_appeal
+      relation: supports
+      weight: expected
+      description: "Personal anecdotes build speaker credibility by demonstrating lived experience and authentic vulnerability, directly supporting ethos appeal per Ethos and Physicality research"
+      target_file: rhetorical_devices_entities
+    - target: before_after_comparison
+      relation: enables
+      weight: expected
+      description: "Personal anecdotes enable before-after comparisons — career pivot narratives frame transformation showing growth trajectory per Personal Branding Framework"
+    - target: monroe_sequence_marker
+      relation: supports
+      weight: expected
+      description: "Authentic personal anecdotes are recommended throughout MMS — as Attention hooks, to humanise Need, and to build trust through instructor vulnerability per Monroe's Motivated Sequence research"
+      target_file: rhetorical_devices_entities
+    - target: narrative_hook
+      relation: supports
+      weight: expected
+      description: "Personal anecdotes are a direct storytelling mechanism that hooks audience attention — opening with a short anecdote grabs attention per Public Speaking research"
+      target_file: narrative_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - evidence
+      - setup
+      strength: primary
+    - taxonomy: rhetorical_devices_taxonomy
+      dimension: aristotelian_appeal
+      values:
+      - pathos
+      strength: primary
+  expert_testimony:
+    label: EXPERT_TESTIMONY
+    field_description: Expert testimony named authority analyst CEO professor industry expert said stated argued believed
+    description: Evidence from a named expert, analyst, or authority figure
+    entity_kind: expert_evidence
+    family: authority
+    examples:
+    - According to Satya Nadella...
+    - Gartner analysts predict...
+    - Leading experts in AI agree...
+    - The Forrester Wave named us...
+    - Professor Smith's research concludes...
+    - Industry leaders recognise...
+    confidence_threshold: 0.72
+    field: evidence
+    indicators:
+    - according to
+    - analysts predict
+    - experts agree
+    - industry leaders
+    - Professor
+    - Dr.
+    - CEO
+    - named us
+    patterns:
+    - according to (\w+ \w+|\w+)
+    - (analysts?|experts?) (predict|agree|say|confirm)
+    - (Gartner|Forrester|IDC|McKinsey) \w+
+    color: '#9b59b6'
+    relates_to:
+    - target: claim
+      relation: supports
+      weight: expected
+      description: Expert testimony provides authority-based backing for claims
+      target_file: narrative_entities
+    - target: technical_buyer
+      relation: supports
+      weight: expected
+      description: "Expert testimony supports technical buyers via peer CTO testimonials providing social proof per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    - target: ethos_appeal
+      relation: supports
+      weight: expected
+      description: "Expert testimony supports ethos appeals — citations of leadership researchers (Hewlett on executive presence), psychologists (Goffman, Tajfel), and branding experts establish authority per Personal Branding Framework"
+      target_file: rhetorical_devices_entities
+    - target: monroe_sequence_marker
+      relation: supports
+      weight: expected
+      description: "Expert testimony and thought-leadership quotes validate MMS's Satisfaction stage and amplify Visualization with authoritative vision per Monroe's Motivated Sequence research"
+      target_file: rhetorical_devices_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - evidence
+      strength: primary
+    - taxonomy: rhetorical_devices_taxonomy
+      dimension: aristotelian_appeal
+      values:
+      - ethos
+      strength: primary
+  industry_benchmark:
+    label: INDUSTRY_BENCHMARK
+    field_description: Industry benchmark standard comparison industry average best practice world class above the norm
+    description: Reference to industry standard, benchmark, or best practice as evidence of quality
+    entity_kind: expert_evidence
+    family: authority
+    examples:
+    - Compared to the industry average...
+    - Above the industry benchmark...
+    - Exceeding world-class standards...
+    - Best-in-class performance on...
+    - Outperforming the market by...
+    - Against the Gartner benchmark...
+    confidence_threshold: 0.7
+    field: evidence
+    indicators:
+    - industry average
+    - industry benchmark
+    - world-class
+    - best-in-class
+    - outperforming
+    - exceeding standards
+    - compared to
+    patterns:
+    - (industry|market) (average|benchmark|standard)
+    - best[- ]in[- ]class
+    - world[- ]class \w+
+    - outperform(ing)? \w+
+    color: '#8e44ad'
+    relates_to:
+    - target: data_statistic
+      relation: specialises
+      weight: expected
+      description: Industry benchmarks are a specialised form of data statistics — comparative reference points
+    - target: claim
+      relation: supports
+      weight: expected
+      description: Industry benchmarks provide comparative context for commercial claims
+      target_file: narrative_entities
+    - target: technical_buyer
+      relation: supports
+      weight: expected
+      description: "Industry benchmarks support technical buyers with performance benchmarks and security standard compliance per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    - target: economic_buyer
+      relation: supports
+      weight: expected
+      description: "Industry benchmarks support economic buyers with ROI calculations and peer company comparisons per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    - target: monroe_sequence_marker
+      relation: supports
+      weight: optional
+      description: "Industry benchmarks are used in MMS's Need stage to show gaps, e.g., 'Our satisfaction is 85%, industry average is 95%' per Monroe's Motivated Sequence research"
+      target_file: rhetorical_devices_entities
+    - target: result_marker
+      relation: supports
+      weight: expected
+      description: "Industry benchmarks support result markers by providing comparative data that validates claimed outcomes per SOAR Narrative Mapping by Sales Stage"
+      target_file: sales_entities
+    - target: situation_marker
+      relation: supports
+      weight: optional
+      description: "Industry benchmarks support situation markers by establishing the competitive landscape context per SOAR Narrative Mapping by Sales Stage"
+      target_file: sales_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - evidence
+      strength: primary
+    parent_entity: data_statistic
+  analogy:
+    label: ANALOGY
+    field_description: Analogy explanatory comparison think of it like similar to works like the same way just as
+    description: Comparison to a familiar concept used to explain or validate a claim
+    entity_kind: analogical_evidence
+    family: comparative
+    examples:
+    - Think of it like a GPS for your data.
+    - It works the same way as air traffic control.
+    - Just as a doctor diagnoses before prescribing...
+    - In the same way that electricity transformed manufacturing...
+    - Similar to how the internet changed communication...
+    confidence_threshold: 0.7
+    field: evidence
+    indicators:
+    - think of it like
+    - works the same way
+    - just as
+    - in the same way
+    - similar to how
+    - comparable to
+    patterns:
+    - think of it (like|as) \w+
+    - just as \w+ \w+
+    - in the same way (that|as)
+    - similar to how \w+
+    color: '#16a085'
+    relates_to:
+    - target: warrant
+      relation: supports
+      weight: expected
+      description: Analogies support warrants by making abstract reasoning concrete and relatable
+      target_file: narrative_entities
+    - target: metaphor
+      relation: enables
+      weight: optional
+      description: Analogies provide the conceptual basis for extended metaphors
+      target_file: rhetorical_devices_entities
+    - target: contrast_hook
+      relation: supports
+      weight: expected
+      description: Analogies support contrast hooks by providing familiar reference points that make the expectation-vs-reality
+        gap more vivid and comprehensible per Crafting Powerful Opening Plays
+      target_file: opening_hooks_entities
+    - target: novice_learner
+      relation: supports
+      weight: expected
+      description: "Analogies support novice learners by providing background and familiar reference points to make complex concepts accessible per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    - target: semiotic_arrangement
+      relation: supported_by
+      weight: expected
+      description: "Analogies leverage semiotic iconic signs where the signifier resembles the signified to make abstract concepts concrete per Visual Communication and Storytelling"
+      target_file: visual_elements_entities
+    - target: claim
+      relation: supports
+      weight: optional
+      description: "Discourse-Aware TS semantic hierarchy shows analogies create elaboration-linked propositions that support core claims per Researching Narrative and Discourse Analysis"
+      target_file: narrative_entities
+    - target: instructional_event
+      relation: supports
+      weight: expected
+      description: "FPI Activation phase prescribes analogies to relate new concepts to familiar experiences activating prior knowledge per Merrill"
+      target_file: pedagogical_frameworks_entities
+    - target: elaboration_marker
+      relation: triggers
+      weight: expected
+      description: Analogies trigger elaboration relations in RST providing supplementary interpretive information as satellites
+        that contextualise the nuclear proposition per Advanced Computational Discourse Analysis research
+      target_file: discourse_entities
+    - target: germane_load_marker
+      relation: supports
+      weight: expected
+      description: "Analogies support germane cognitive load by connecting new concepts to existing mental models — familiar comparisons activate prior knowledge schemas and promote meaningful encoding per Best Practices for Writing"
+      target_file: cognitive_load_entities
+    - target: visual_element
+      relation: supported_by
+      weight: expected
+      description: "Analogies are supported by visual elements — visual metaphors, diagrams, and illustrations make abstract comparisons concrete and memorable through dual coding per Visualisation Techniques research"
+      target_file: visual_elements_entities
+    - target: engagement_cue
+      relation: enables
+      weight: optional
+      description: "Analogies and examples help maintain engagement throughout a talk, directly enabling audience connection per Public Speaking research"
+      target_file: delivery_entities
+    - target: working_memory_marker
+      relation: supports
+      weight: expected
+      description: "Analogies support working memory by exporting inference from known to unknown domains — like metaphors they reduce cognitive demands on the audience (elite_speaker_taxonomy)"
+      target_file: cognitive_load_entities
+    taxonomy_mapping:
+    - taxonomy: rhetorical_devices_taxonomy
+      dimension: device_family
+      values:
+      - comparison
+      strength: primary
+  hypothetical_scenario:
+    label: HYPOTHETICAL_SCENARIO
+    field_description: Hypothetical scenario what if imagine suppose consider a world where if we could if this were
+    description: What-if framing to project a future state or test a proposition as evidence
+    entity_kind: analogical_evidence
+    family: projective
+    examples:
+    - What if we could eliminate that friction?
+    - Imagine a world where every sale is data-driven.
+    - Suppose you could halve your onboarding time.
+    - Consider what happens when AI does the heavy lifting.
+    - If we could see every customer signal in real time...
+    confidence_threshold: 0.68
+    field: evidence
+    indicators:
+    - What if
+    - Imagine a world
+    - Suppose you
+    - Consider what
+    - If we could
+    - Picture a future
+    patterns:
+    - What if \w+
+    - Imagine (a world|if|when) \w+
+    - Suppose \w+
+    - If (we|you) could \w+
+    color: '#f39c12'
+    relates_to:
+    - target: narrative_tension
+      relation: triggers
+      weight: expected
+      description: Hypothetical scenarios create tension by projecting consequences or possibilities
+      target_file: narrative_entities
+    - target: question_hook
+      relation: supports
+      weight: expected
+      description: Hypothetical scenarios support question hooks by providing what-if framing that creates curiosity gaps and
+        invites the audience to imagine alternative futures per Crafting Powerful Opening Plays
+      target_file: opening_hooks_entities
+    - target: audience_pain_point
+      relation: supports
+      weight: expected
+      description: "Hypothetical scenarios support audience pain points by painting before/after visions that surface the audience's challenges per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    - target: narrative_hook
+      relation: enables
+      weight: expected
+      description: "Hypothetical scenarios enable narrative hooks by creating what-if projections that open curiosity gaps and engage imagination per Elite Speaker Linguistic Analysis"
+      target_file: narrative_entities
+    - target: monroe_sequence_marker
+      relation: supports
+      weight: expected
+      description: "Hypothetical scenarios are central to MMS's Visualization stage — guided mental imagery asking learners to imagine future success or failure outcomes per Monroe's Motivated Sequence research"
+      target_file: rhetorical_devices_entities
+    - target: condition_marker
+      relation: triggers
+      weight: expected
+      description: Hypothetical scenarios trigger condition markers in discourse — RST Condition relation maps contingent
+        propositions where the satellite specifies conditions for the nucleus per Advanced Computational Discourse Analysis
+        research
+      target_file: discourse_entities
+    - target: scenario_activity
+      relation: specialises
+      weight: expected
+      description: "Tabletop exercises are explicitly described as discussions of hypothetical emergency scenarios, making hypothetical_scenario a core evidence type within SBT design per SBT guide"
+      target_file: activity_types_entities
+    - target: rebuttal
+      relation: enables
+      weight: expected
+      description: "Hypothetical scenarios enable rebuttals by constructing counterexamples that demonstrate invalidity or false premises in opposing arguments per a-guide-to-good-reasoning"
+      target_file: narrative_entities
+    - target: pathos_appeal
+      relation: supports
+      weight: optional
+      description: "Hypothetical scenarios ('Imagine if...') support pathos by creating emotional engagement — identified as VISTA Pause nodes for reflection per UNIFIED_NARRATIVE_METHODOLOGY_v2"
+      target_file: rhetorical_devices_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - tension
+      - problem
+      strength: primary
+  deductive_reasoning:
+    label: DEDUCTIVE_REASONING
+    field_description: Deductive reasoning general to specific therefore it follows logically given this we can conclude since
+    description: Movement from general principle to specific conclusion as logical evidence
+    entity_kind: logical_evidence
+    family: reasoning
+    examples:
+    - Given this trend, we can conclude...
+    - It follows logically that...
+    - Therefore, the recommendation is...
+    - Since we know that X, Y must be true.
+    - The logical conclusion is...
+    - This reasoning leads us to...
+    confidence_threshold: 0.72
+    field: evidence
+    indicators:
+    - it follows
+    - therefore
+    - we can conclude
+    - the logical conclusion
+    - since we know
+    - given this
+    patterns:
+    - it follows (logically |that )
+    - therefore,? \w+
+    - (we can|the logical) conclude
+    - given (this|that) \w+
+    color: '#2980b9'
+    relates_to:
+    - target: warrant
+      relation: specialises
+      weight: expected
+      description: Deductive reasoning is a specialised warrant form — general principles applied to specific cases
+      target_file: narrative_entities
+    - target: inductive_reasoning
+      relation: contrasts_with
+      weight: expected
+      description: Deductive (general→specific) vs inductive (specific→general) reasoning strategies
+    - target: cause_marker
+      relation: triggers
+      weight: expected
+      description: Deductive reasoning triggers causal discourse markers — RST maps causal logical flow through Non-volitional
+        Cause/Result relations where premises lead deterministically to conclusions per Advanced Computational Discourse Analysis
+        research
+      target_file: discourse_entities
+    - target: logos_appeal
+      relation: supports
+      weight: required
+      description: "Deductive reasoning is a core mechanism of logos appeal providing logical structure from general principles to specific conclusions per UNIFIED_NARRATIVE_METHODOLOGY_v2"
+      target_file: rhetorical_devices_entities
+    taxonomy_mapping:
+    - taxonomy: rhetorical_devices_taxonomy
+      dimension: aristotelian_appeal
+      values:
+      - logos
+      strength: primary
+  inductive_reasoning:
+    label: INDUCTIVE_REASONING
+    field_description: Inductive reasoning pattern to general in every case we see this consistently across trends suggest
+    description: Evidence from observed patterns leading to a broader generalisation
+    entity_kind: logical_evidence
+    family: reasoning
+    examples:
+    - In every case we've seen, the pattern holds.
+    - Consistently across industries, we observe...
+    - The trend across all regions suggests...
+    - This pattern appears again and again.
+    - Time after time, the data shows...
+    - Across our entire customer base...
+    confidence_threshold: 0.68
+    field: evidence
+    indicators:
+    - in every case
+    - consistently
+    - time after time
+    - again and again
+    - across all
+    - the pattern
+    - the trend
+    patterns:
+    - in every (case|instance)
+    - consistently (across|in) \w+
+    - time after time
+    - again and again
+    - across (all|our|the) \w+
+    color: '#3498db'
+    relates_to:
+    - target: warrant
+      relation: specialises
+      weight: expected
+      description: Inductive reasoning is a specialised warrant form — specific observations generalised into conclusions
+      target_file: narrative_entities
+    - target: deductive_reasoning
+      relation: contrasts_with
+      weight: expected
+      description: Inductive (specific→general) vs deductive (general→specific) reasoning strategies
+    - target: logos_appeal
+      relation: supports
+      weight: expected
+      description: "Inductive reasoning supports logos appeal by building from specific evidence to general claims complementing deductive reasoning per UNIFIED_NARRATIVE_METHODOLOGY_v2"
+      target_file: rhetorical_devices_entities
+    taxonomy_mapping:
+    - taxonomy: rhetorical_devices_taxonomy
+      dimension: aristotelian_appeal
+      values:
+      - logos
+      strength: primary
+  visual_demonstration:
+    label: VISUAL_DEMONSTRATION
+    field_description: Visual demonstration chart graph this shows as you can see this chart reveals the data tells us
+    description: Marker signalling that visual evidence is being presented (chart, graph, diagram)
+    entity_kind: visual_evidence
+    family: demonstrated
+    examples:
+    - As you can see in this chart...
+    - This graph shows the trend over time.
+    - The data visualisation reveals...
+    - Looking at this diagram...
+    - If we look at the numbers here...
+    - This slide shows the breakdown.
+    confidence_threshold: 0.75
+    field: evidence
+    indicators:
+    - as you can see
+    - this chart shows
+    - this graph
+    - the data visualisation
+    - looking at this
+    - the numbers here
+    patterns:
+    - as you can see (in|on|here)
+    - this (chart|graph|diagram|slide) (shows|reveals|illustrates)
+    - looking at (this|the) \w+
+    - the data (shows|reveals|confirms)
+    color: '#1abc9c'
+    relates_to:
+    - target: claim
+      relation: supports
+      weight: expected
+      description: Visual demonstrations provide show-don't-tell evidence for claims
+      target_file: narrative_entities
+    - target: live_demonstration
+      relation: contrasts_with
+      weight: expected
+      description: Recorded/static visual demos vs real-time live demonstrations
+    - target: visual_narrative_element
+      relation: supported_by
+      weight: required
+      description: "Visual demonstrations rely on visual narrative elements to show rather than tell activating sensory and motor cortex per Visual Communication and Storytelling"
+      target_file: visual_elements_entities
+    - target: semiotic_arrangement
+      relation: supported_by
+      weight: expected
+      description: "Visual demonstrations depend on semiotic arrangement for structural meaning — Elaboration mode clarifies while Extension mode adds new information; Decoration mode adds no evidential value per Visual Analysis of Slide Decks"
+      target_file: visual_elements_entities
+    - target: visual_element
+      relation: contains
+      weight: expected
+      description: "Visual demonstrations contain visual elements (charts, diagrams, infographics) as their primary evidence carriers per Visualisation Techniques research"
+      target_file: visual_elements_entities
+    - target: engagement_dimension
+      relation: enables
+      weight: expected
+      description: "Visual demonstrations enable engagement scoring — show-don't-tell evidence through charts and diagrams maintains audience attention better than text-only proof per Visualisation Techniques research"
+      target_file: scoring_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - evidence
+      - action
+      strength: primary
+  live_demonstration:
+    label: LIVE_DEMONSTRATION
+    field_description: Live demonstration product demo let me show you watch what happens I will demonstrate see it in action
+    description: Marker signalling a live product demonstration or walkthrough as evidence
+    entity_kind: visual_evidence
+    family: demonstrated
+    examples:
+    - Let me show you this live.
+    - Watch what happens when...
+    - I'll demonstrate this in the product.
+    - See it in action.
+    - Let me walk you through this.
+    - Here's a live example.
+    confidence_threshold: 0.75
+    field: evidence
+    indicators:
+    - let me show you
+    - watch what happens
+    - I'll demonstrate
+    - see it in action
+    - let me walk you through
+    - here's a live
+    patterns:
+    - let me (show|demonstrate|walk) \w+
+    - watch (what|as|how) \w+
+    - see it in action
+    - here's a live \w+
+    color: '#27ae60'
+    relates_to:
+    - target: claim
+      relation: supports
+      weight: expected
+      description: Live demonstrations provide real-time proof for claims
+      target_file: narrative_entities
+    - target: visual_demonstration
+      relation: contrasts_with
+      weight: expected
+      description: Real-time live demos vs pre-recorded visual demonstrations
+    - target: roleplay_activity
+      relation: supported_by
+      weight: expected
+      description: "Live demonstrations are supported by roleplay as expert modelling of interpersonal skills before learner practice per roleplay research"
+      target_file: activity_types_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - evidence
+      - action
+      strength: primary
+  validated_outcome:
+    label: VALIDATED_OUTCOME
+    description: Independently verified or audited result — highest evidence quality tier; required for passing evidence_specificity
+      gate at score 65
+    field_description: Validated outcome independently verified audited confirmed third party validated results independently
+      assessed certified outcome
+    entity_kind: validated_evidence
+    family: verified
+    examples:
+    - Results independently verified by Deloitte.
+    - 'Audited outcome: 43% reduction in processing time.'
+    - 'Third-party validated: $2.4M cost avoidance in year one.'
+    - Certified by an independent auditor — 99.7% uptime achieved.
+    - Outcomes confirmed by Ernst & Young assessment.
+    - Independently assessed ROI of 312%.
+    - Verified by the client's finance team.
+    - Audit-confirmed savings of $1.8M in the first 12 months.
+    confidence_threshold: 0.78
+    field: evidence
+    indicators:
+    - independently verified
+    - audited outcome
+    - third-party validated
+    - certified by
+    - confirmed by
+    - independently assessed
+    - audit-confirmed
+    - verified by
+    patterns:
+    - independently (verified|assessed|validated)
+    - audited (outcome|result|savings)
+    - third[- ]party (validated|verified|confirmed)
+    - certified (by|result|outcome)
+    - (confirmed|verified) by \w+
+    color: '#27ae60'
+    evidence_quality: highest
+    note: Per Adobe Case Study Excellence Framework six-component structure — validated outcomes anchor the credibility of
+      case study evidence and satisfy the evidence_specificity gate (threshold 65) for case_study_deck scoring
+    relates_to:
+    - target: claim
+      relation: supports
+      weight: required
+      description: Validated outcomes provide verified, proven results that substantiate claims
+      target_file: narrative_entities
+    - target: result_marker
+      relation: enables
+      weight: expected
+      description: Validated outcomes provide the proof that SOAR result markers reference
+      target_file: sales_entities
+    - target: result_marker
+      relation: supports
+      weight: expected
+      description: Validated outcomes serve as proof points in the Results phase of SOAR, demonstrating that the promised
+        results are achievable and real.
+      target_file: sales_entities
+    - target: monroe_sequence_marker
+      relation: supports
+      weight: optional
+      description: "Validated outcomes serve as proof-of-concept in MMS's Satisfaction stage, reinforcing that the proposed solution works per Monroe's Motivated Sequence research"
+      target_file: rhetorical_devices_entities
+    - target: resolution_signal
+      relation: supports
+      weight: expected
+      description: "Validated outcomes support resolution — data backs up the claim that the challenge has been resolved, combining inspiration with credibility per SOAR Storytelling research"
+      target_file: narrative_entities
+    - target: outcome_statement
+      relation: supports
+      weight: required
+      description: "Validated outcome provides measurable proof supporting the outcome statement — SOAR Result stage requires demonstrated transformation per UNIFIED_NARRATIVE_METHODOLOGY_v2"
+      target_file: narrative_entities
+    - target: call_to_action
+      relation: supports
+      weight: expected
+      description: "Validated outcomes support calls to action with proven results as evidence — independently verified metrics provide the credibility foundation that makes CTAs compelling per Comprehensive Audience Analysis"
+      target_file: narrative_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - validated_result
+      - result
+      strength: primary
+  before_after_comparison:
+    label: BEFORE_AFTER_COMPARISON
+    description: Explicit baseline-to-result contrast enabling ROI calculation — required structural component per Adobe Case
+      Study Excellence Framework
+    field_description: Before after comparison baseline to result previously now before deployment after implementation was
+      now is from to improvement
+    entity_kind: validated_evidence
+    family: comparative_baseline
+    examples:
+    - 'Before: 14-day onboarding. After: 3 days.'
+    - 'Previously, the team spent 40 hours per week on manual reconciliation. Now: 4 hours.'
+    - From a 23% error rate down to 1.2%.
+    - 'Before the deployment, NPS was 31. Post-deployment: 67.'
+    - 'The baseline was $4.2M in annual rework costs. Today: $380K.'
+    - Prior to implementation, lead time was 12 weeks. It's now 5.
+    - We went from 72-hour incident response to under 4 hours.
+    - 'Previously: 3 approval layers. Now: single-click authorisation.'
+    confidence_threshold: 0.75
+    field: evidence
+    indicators:
+    - 'before:'
+    - 'after:'
+    - previously
+    - 'now:'
+    - from X to Y
+    - prior to
+    - post-deployment
+    - went from
+    - baseline was
+    - now it's
+    patterns:
+    - before[:\s].+after[:\s]
+    - previously.+now
+    - from (\d+|\w+) (to|down to|up to)
+    - prior to (implementation|deployment|the project)
+    - went from \w+ to \w+
+    - baseline (was|of) \w+
+    color: '#2ecc71'
+    evidence_quality: high
+    roi_enabler: true
+    note: Before/after comparison is a required component of Adobe Case Study Excellence Framework — without a baseline, ROI
+      claims cannot be substantiated. Detection of BEFORE_AFTER_COMPARISON triggers validation check for corresponding DATA_STATISTIC.
+    relates_to:
+    - target: claim
+      relation: supports
+      weight: expected
+      description: Before/after comparisons provide visual or temporal contrast evidence
+      target_file: narrative_entities
+    - target: data_statistic
+      relation: supported_by
+      weight: expected
+      description: Before/after comparisons are strongest when backed by quantitative data
+    - target: contrast_hook
+      relation: supports
+      weight: expected
+      description: "Before/after comparisons provide temporal contrast evidence that directly supports contrast hooks by establishing the Point A vs Point B states per Canonical Presentation Methodology"
+      target_file: opening_hooks_entities
+    - target: value_proposition
+      relation: supports
+      weight: expected
+      description: "Before-after comparisons support value propositions — career transition narratives (from executor to orchestrator, early-career promise to mid-career proof) demonstrate brand evolution per Personal Branding Framework"
+      target_file: narrative_entities
+    - target: monroe_sequence_marker
+      relation: supports
+      weight: expected
+      description: "Before-and-after comparisons are explicitly recommended in MMS's Visualization stage to sharpen learners' resolve by contrasting the problem scenario with the improved scenario per Monroe's Motivated Sequence research"
+      target_file: rhetorical_devices_entities
+    - target: outcome_statement
+      relation: supports
+      weight: expected
+      description: "Before/after comparisons directly support outcome statements — show how after implementing the solution, the customer was able to streamline processes and reduce errors per SOAR Storytelling research"
+      target_file: narrative_entities
+    - target: narrative_tension
+      relation: triggers
+      weight: expected
+      description: "Before-after comparisons trigger narrative tension by establishing the gap between the current state and the desired future per Analyzing Story for Business Communication"
+      target_file: narrative_entities
+    - target: data_proof_slide
+      relation: supported_by
+      weight: expected
+      description: "Before/after comparisons require visual proof showing contrast between old and new states per Slide Deck Design Playbook"
+      target_file: slide_types_entities
+    - target: chart_type
+      relation: supported_by
+      weight: expected
+      description: "Before/after comparisons are most effective when visualised through chart types (bar charts, line graphs) that clearly show the baseline-to-result contrast per Visualisation Techniques research"
+      target_file: visual_elements_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - evidence
+      - result
+      strength: primary
+    - taxonomy: visual_elements_taxonomy
+      dimension: spatial_arrangement
+      values:
+      - before_after_visual
+      strength: secondary
+gliner_config:
+  model: gliner-large-v2
+  batch_size: 32
+  default_confidence_threshold: 0.72
+  context_window: 512
+  entity_groups:
+    statistical_evidence:
+    - DATA_STATISTIC
+    - RESEARCH_CITATION
+    anecdotal_evidence:
+    - CUSTOMER_STORY
+    - PERSONAL_ANECDOTE
+    expert_evidence:
+    - EXPERT_TESTIMONY
+    - INDUSTRY_BENCHMARK
+    analogical_evidence:
+    - ANALOGY
+    - HYPOTHETICAL_SCENARIO
+    logical_evidence:
+    - DEDUCTIVE_REASONING
+    - INDUCTIVE_REASONING
+    visual_evidence:
+    - VISUAL_DEMONSTRATION
+    - LIVE_DEMONSTRATION
+    validated_evidence:
+    - VALIDATED_OUTCOME
+    - BEFORE_AFTER_COMPARISON
+domain_keywords:
+  primary:
+  - evidence
+  - research
+  - data
+  - statistics
+  - case study
+  - customer story
+  - analogy
+  - benchmark
+  - expert
+  - demonstration
+  - reasoning
+  - conclusion
+  - validated
+  - verified
+  - audited
+  - baseline
+  secondary:
+  - cite
+  - source
+  - show
+  - prove
+  - confirm
+  - support
+  - validate
+  - illustrate
+  - pattern
+  - trend
+  - before
+  - after
+  - previously
+  - improvement
+quality_indicators:
+  evidence_diversity:
+    single_type: Only one evidence type — weak credibility
+    adequate: 2-3 evidence types — reasonable balance
+    strong: '> 3 evidence types — strong multi-modal argument'
+  statistical_density:
+    data_light: < 1 statistical marker per 500 words
+    balanced: 1-3 per 500 words
+    data_heavy: '> 3 per 500 words — check for overwhelming audience'
+  toulmin_coverage:
+    claim_only: No evidence markers detected — claim unsupported
+    supported: Data + warrant markers present
+    well_argued: Data + expert + qualifier markers all present
+  evidence_specificity:
+    description: Gate check for case study and ROI evidence quality — requires validated or before/after evidence
+    gate_threshold: 65
+    applies_to: case_study_deck
+    pass_condition: VALIDATED_OUTCOME or BEFORE_AFTER_COMPARISON detected with accompanying DATA_STATISTIC
+    fail_condition: Only CUSTOMER_STORY or PERSONAL_ANECDOTE present — no quantified, validated, or baselined evidence
+    scoring_impact:
+      validated_outcome_present: +8 points per validated outcome (capped at +16)
+      before_after_present: +5 points per before/after comparison (capped at +10)
+      no_validated_evidence: -10 points when gate_threshold applies and no VALIDATED_OUTCOME or BEFORE_AFTER_COMPARISON detected
+    note: 'Source: Adobe Case Study Excellence Framework — six-component structure requires baseline context, validated outcome,
+      and quantified result'

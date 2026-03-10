@@ -1,0 +1,724 @@
+_meta:
+  id: rhetorical_devices_framework
+  title: "Rhetorical Devices"
+  description: "Catalog of rhetorical appeals and linguistic devices for persuasion analysis."
+  domain: narrative
+  domain_type: cross_cutting
+  purpose: methodology
+  version: "1.2.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Crafting Powerful Opening Plays.md"
+    - "Corpus/Research/RESEARCH-BASED_ENHANCEMENTS FOR VOICE.md"
+    - "Corpus/Research/Research - Comprehensive Audience Analysis.md"
+    - "Corpus/Research/36_audience_analysis_and_persuasion.md"
+    - "Corpus/Research/audience_analysis_for_presentations__how_to_know_your_audience_a.md"
+
+
+# ==============================================================================
+# ARISTOTLE'S RHETORICAL TRIANGLE
+# ==============================================================================
+
+rhetorical_triangle:
+  description: "The three pillars of persuasion."
+  scoring_anchors: !include ../shared/scoring_narrative.yaml
+
+  ethos:
+    name: "Ethos (Credibility)"
+    definition: "Appeal to authority, expertise, and trustworthiness."
+    indicators:
+      - "Mention of credentials or track record"
+      - "Shared values with audience"
+      - "Professional yet authentic tone"
+      - "Explicit identification of a shared experience or common concern with the audience (e.g., 'As a parent myself...')"
+    common_failures: "Arrogance (Low Warmth), lack of proof, borrowing authority. Demographic-coded language that signals insensitivity: age jargon, race-coded phrases, income-level assumptions, occupation-specific terminology with mixed audiences, gendered occupational titles."
+
+  pathos:
+    name: "Pathos (Emotion)"
+    definition: "Appeal to emotions, values, and imagination."
+    indicators:
+      - "Vivid storytelling and anecdotes"
+      - "Emotive vocabulary"
+      - "Metaphors and sensory language"
+    common_failures: "Dry data dumping, emotional manipulation, lack of human element."
+
+  logos:
+    name: "Logos (Logic)"
+    definition: "Appeal to reason, data, and evidence."
+    indicators:
+      - "Statistics and charts"
+      - "Logical flow (if/then, therefore)"
+      - "Case studies and proof points"
+      - "Explicit statement of purpose and actionable next steps (closes the logical arc for aligned audiences)"
+    common_failures: "Logical fallacies, confusing data, lack of structure."
+
+  balance_guideline: "Elite communication balances all three. A 'Logos-only' deck is boring; a 'Pathos-only' deck is untrustworthy."
+
+  audience_type_appeal_mapping:
+    description: "Maps four audience disposition types to their primary and secondary rhetorical appeals. Source: audience_analysis_for_presentations__how_to_know_your_audience_a.md"
+    hostile:
+      primary_appeal: "logos"
+      secondary_appeal: "ethos"
+      strategy: "Lead with evidence for all claims; stress common points; concise, clear data; avoid exaggeration which feeds distrust"
+      pathos_risk: "Over-emotionalising offends skeptical audiences; only use pathos after logic is established"
+    friendly:
+      primary_appeal: "pathos"
+      secondary_appeal: "logos"
+      strategy: "Tap emotions using analogies and models; tell them exactly what to do; logical case is already accepted"
+      best_device: "analogy — resonates with emotionally-receptive, aligned audiences"
+    apathetic:
+      primary_appeal: "pathos (relevance-first)"
+      secondary_appeal: "logos"
+      strategy: "Show why they should care (WIIFM) before any persuasive appeal; don't show off skills; use visuals to gauge interest"
+      sequencing_rule: "Establish relevance BEFORE emotional appeals; premature pathos on apathetic audiences produces indifference"
+    uninformed:
+      primary_appeal: "ethos (clarity-based)"
+      secondary_appeal: "logos"
+      strategy: "Start from basics; avoid jargon; teach before persuading; establish conceptual scaffold first"
+      pathos_caution: "Emotional appeals ineffective until foundational understanding is in place"
+
+# ==============================================================================
+# LINGUISTIC DEVICES (ELITE SPEAKER TAXONOMY)
+# ==============================================================================
+
+linguistic_devices:
+  description: "Micro-level sentence structures used by elite speakers."
+
+  repetition_patterns:
+    anaphora:
+      definition: "Repetition of a word/phrase at the START of successive clauses."
+      example: "'We cannot walk alone. We cannot turn back.'"
+      effect: "Builds rhythm and intensity."
+    epistrophe:
+      definition: "Repetition of a word/phrase at the END of successive clauses."
+      effect: "Creates emphasis and finality."
+    tricolon:
+      definition: "The Rule of Three. Three parallel elements."
+      example: "'Government of the people, by the people, for the people.'"
+      effect: "Satisfies cognitive desire for pattern and completeness."
+      cognitive_basis: "Three items match working memory capacity limits. Pair with 300-400ms inter-item pauses for maximum retention. Chunking with optimal pausing improves retention by 22% (National Training Laboratory; RESEARCH-BASED_ENHANCEMENTS FOR VOICE.md, Section 7)."
+
+  contrast_patterns:
+    antithesis:
+      definition: "Juxtaposition of opposing ideas in balanced phrases."
+      example: "'Ask not what your country can do for you...'"
+      effect: "Clarifies choice and creates conflict."
+    oxymoron:
+      definition: "A two-word paradox."
+      example: "'Deafening silence', 'Virtual reality'."
+
+  imagery_patterns:
+    metaphor:
+      definition: "Explaining one thing in terms of another (Source -> Target)."
+      elite_usage: "High density in explaining abstract concepts."
+      example: "'A bicycle for the mind' (Computer)."
+    analogy:
+      definition: "Extended comparison for explanation."
+      best_for_audience_type: "friendly (aligned, emotionally receptive) — analogies resonate when audience is already open to the message"
+      use_with_caution_for: "hostile — risks being dismissed as imprecise or deflecting from evidence demand"
+
+# ==============================================================================
+# COGNITIVE METRICS (QUANTITATIVE)
+# ==============================================================================
+
+cognitive_metrics:
+  description: "Measurable linguistic properties correlated with elite performance."
+
+  propositional_idea_density:
+    definition: "Number of distinct ideas (predicates) per word."
+    target_range: "0.40 - 0.45 (Conversational/Elite)"
+    warning: "> 0.55 (Academic/Dense)"
+    action: "Reduce density by using elaboration and decomposition."
+
+  verb_dynamism:
+    definition: "Ratio of Dynamic Verbs (run, build) to Stative Verbs (is, have)."
+    target: "High dynamic ratio."
+    effect: "Increases perception of Agency and Leadership."
+
+  lexical_diversity:
+    metric: "MTLD (Measure of Textual Lexical Diversity)"
+    target_profile: "Moderate (70-80). Avoid excessive variation (High cognitive load) or poverty (Low competence)."
+    strategy: "Repeat 'Anchor Words' to reinforce themes."
+
+  chunking_retention_benefit:
+    finding: "Breaking information into digestible segments improves retention by 22%"
+    mechanism: "Respects working memory capacity limits; three-item lists (tricolon) are cognitively optimal"
+    application: "Use tricolon structure for key enumerations; pair with 300-400ms list-item pauses for maximum consolidation"
+    source: "National Training Laboratory; RESEARCH-BASED_ENHANCEMENTS FOR VOICE.md, Section 7 (Cognitive Load Management)"
+
+# ==============================================================================
+# SOCIAL SIGNALING
+# ==============================================================================
+
+social_signaling:
+  description: "Linguistic cues for Warmth and Competence."
+
+  pronoun_strategy:
+    we:
+      role: "The Connector. Signals Warmth and shared identity."
+    i:
+      role: "The Vulnerable (if admitting fault) or The Authority (if taking responsibility)."
+      warning: "Excessive 'I' signals Hubris."
+      overuse_failure: "Foregrounding speaker's views too forcefully is perceived as aggressive; undermines audience inclusion even when the speaker is technically correct (audience_analysis_for_presentations__how_to_know_your_audience_a.md, 'Find a common ground' section)."
+    you:
+      role: "The Engagement hook. Can be direct (aggressive) or hypothetical (inviting)."
+
+  agency_markers:
+    high_agency: "We launched, we decided, we built."
+    low_agency: "Mistakes were made, it was decided, we hope to."
+
+# ==============================================================================
+# LEXICAL BUNDLES (DISCOURSE ORGANIZERS)
+# ==============================================================================
+
+lexical_bundles:
+  description: "Standardized 4-word sequences that distinguish elite speakers from average ones."
+
+  visionary_bundles:
+    description: "Bundles that ground the audience and guide attention (TED style)."
+    examples:
+      - "I want to show you..."
+      - "We are going to..."
+      - "Let me tell you..."
+      - "What I want to..."
+      - "One of the things..."
+      - "If you look at..."
+      - "This is why we..."
+      - "Here is the problem..."
+
+  academic_bundles:
+    description: "Bundles that create distance and increase cognitive load (Avoid)."
+    examples:
+      - "In the context of..."
+      - "On the other hand..."
+      - "It is important to..."
+      - "To the extent that..."
+      - "As a result of..."
+      - "In the case of..."
+
+# ==============================================================================
+# POWER VERB CORPUS
+# ==============================================================================
+
+power_verbs:
+  description: "High-dynamism verbs correlated with perceived leadership competence."
+
+  vision_phase:
+    elite: ["Spearheaded", "Ignited", "Transformed", "Accelerated"]
+    weak_substitutes: ["Thought about", "Wanted", "Hoped for"]
+
+  execution_phase:
+    elite: ["Mobilized", "Orchestrated", "Executed", "Propelled"]
+    weak_substitutes: ["Handled", "Dealt with", "Worked on"]
+
+  result_phase:
+    elite: ["Maximized", "Surpassed", "Generated", "Secured"]
+    weak_substitutes: ["Got", "Had", "Was good"]
+
+# ==============================================================================
+# PACING ANALYSIS FRAMEWORK
+# The rhythmic engine of narrative (speed, tension, breath)
+# ==============================================================================
+
+pacing_analysis:
+  description: "How quickly a story unfolds and answers audience's implicit questions."
+
+  pacing_types:
+    structural_pacing:
+      definition: "Controlled by physical text construction"
+      fast_pace_indicators:
+        - "Short, staccato sentences"
+        - "Single-word fragments"
+        - "Brief paragraphs"
+        - "Terse dialogue"
+        - "Action sequences"
+      slow_pace_indicators:
+        - "Long, complex sentences"
+        - "Dense paragraphs"
+        - "Detailed description"
+        - "Introspective passages"
+        - "Exposition"
+      effect: "Fast pace creates urgency; slow pace allows reflection"
+
+    content_pacing:
+      definition: "Balance of action versus reflection"
+      action_elements: ["Conflict", "Dialogue", "Movement", "Decisions"]
+      reflection_elements: ["Introspection", "Description", "Exposition", "Connection"]
+      key_rule: "All action burns out audience; all reflection is boring. Balance is essential."
+
+  genre_expectations:
+    thriller: "Fast pacing expected"
+    literary_fiction: "Variable pacing, more reflection"
+    business_presentation: "Fast pacing with strategic breathers for key points"
+
+  analysis_methods:
+    read_aloud_test:
+      description: "Read text aloud to hear rhythmic patterns"
+      purpose: "Reveals pacing problems not visible on page"
+    color_coding:
+      description: "Mark scenes as 'fast' (action/conflict) or 'slow' (reflection/exposition)"
+      purpose: "Visualize pacing balance across narrative"
+
+  vocal_pacing_thresholds:
+    description: "Empirically-derived timing thresholds for spoken delivery pacing. Source: RESEARCH-BASED_ENHANCEMENTS FOR VOICE.md, Sections 1 and 10."
+    speech_rate:
+      optimal_range_wpm: "150-160"
+      target_wpm: 155
+      cognitive_overload_threshold: ">170 WPM causes 17-25% drop in retention"
+      severe_impact_threshold: ">180 WPM significantly damages comprehension"
+      too_slow_threshold: "<120-130 WPM — perceived as lethargic or pedantic"
+      rationale: "Aligns with brain's natural processing speed; prevents Cognitive Backlog where listener processes previous sentence while new information arrives"
+    silence_ratio:
+      optimal_range: "15-20% of total speech time"
+      too_low: "<10% — run-on sentences, cognitive overload"
+      too_high: ">30% — perceived as hesitant and unsure"
+
+  pause_taxonomy:
+    description: "Research-defined pause types with empirical durations and perceptual effects. Source: RESEARCH-BASED_ENHANCEMENTS FOR VOICE.md, Sections 2 and 6."
+    emphatic_pause:
+      duration_ms: "500-600"
+      perceptual_effect: "Naturalness, emphasis, phrase boundary marking"
+      use_case: "Natural phrase boundaries and after rhetorical questions"
+    power_pause:
+      duration_ms: "1000-2000"
+      perceptual_effect: "'This is important' signal; allows cognitive consolidation"
+      use_case: "After key statistics, before major transitions"
+      warning: "Avoid mid-phrase — >1000ms mid-phrase signals uncertainty or lexical retrieval failure"
+    list_item_pause:
+      duration_ms: "300-500"
+      perceptual_effect: "Chunking separation for working memory — enables tricolon retention benefit"
+      use_case: "Between items in a list (tricolon or enumeration)"
+    transition_pause:
+      duration_ms: "800-1000"
+      perceptual_effect: "Signals topic shift; semantic boundary marker"
+      use_case: "Before new concept or section change"
+    micro_pause:
+      duration_ms: "<200"
+      perceptual_effect: "Just a breath — not rhetorically meaningful"
+      use_case: "Not strategic; does not count toward silence ratio"
+
+  common_failures:
+    relentless_pace: "No 'breathers' causes audience fatigue"
+    stagnant_pace: "Too much reflection with no forward momentum"
+    unearned_speed: "Fast pacing without established stakes feels hollow"
+    unguided_delivery:
+      name: "No Delivery Architecture"
+      description: "Script or content has no strategic pause or pace markings — cognitive overload risk is high"
+      consequence: "Speaker defaults to monotone rate, commonly exceeding 170 WPM threshold, triggering 17-25% retention loss"
+      prescription: "Embed explicit delivery markers in scripts: [PAUSE 1.0s], [SLOW DOWN], [EMPHASIZE], [FALLING TERMINAL]"
+      source: "RESEARCH-BASED_ENHANCEMENTS FOR VOICE.md, Section: Original Script Issues"
+
+# ==============================================================================
+# NARRATIVE WEAKNESS DIAGNOSTIC FRAMEWORK
+# Symptoms, Diagnoses, and Prescriptions
+# ==============================================================================
+
+weakness_diagnostics:
+  description: "Framework for identifying and fixing weak stories and presentations."
+
+  diagnosis_1_weak_logic:
+    name: "The Confusing Story"
+    symptoms:
+      - "I don't get the point"
+      - "It was all over the place"
+      - "What are you trying to say?"
+    diagnosis: "Story lacks clear structure. It is a 'data dump' with no clear Big Idea. Logos is broken."
+    prescriptions:
+      impose_structure:
+        action: "Force-structure using PAS (Problem-Agitate-Solve)"
+        steps:
+          - "State the Problem clearly"
+          - "Explain WHY it's painful"
+          - "Provide the Solution"
+      clarify_opening:
+        action: "Re-write opening using SCQA"
+        purpose: "Establish clear logical context"
+      visual_logic:
+        action: "Restructure deck to Pyramid Principle"
+        rule: "Answer first, then supporting data"
+
+  diagnosis_2_weak_character:
+    name: "The Arrogant Story"
+    symptoms:
+      - "It was all about them"
+      - "I just didn't care"
+      - "So what?"
+    diagnosis: "Presenter/brand is positioned as Hero. Audience is passive observer. Ethos is damaged."
+    prescriptions:
+      hero_shift:
+        action: "Recast entire story using StoryBrand (SB7)"
+        steps:
+          - "Make AUDIENCE the Character (Hero)"
+          - "Make their challenge the Problem"
+          - "Reposition presenter/product as Guide (Mentor)"
+          - "Provide a clear Plan"
+        impact: "Single most powerful enhancement for business storytelling"
+
+  diagnosis_3_weak_emotion:
+    name: "The Boring Story"
+    symptoms:
+      - "It was dry"
+      - "It put me to sleep"
+      - "The data was interesting, but..."
+    diagnosis: "Story is all Logos and no Pathos. Emotional arc is flat line."
+    prescriptions:
+      agitate_problem:
+        action: "Don't just state 'What Is' - make audience FEEL the pain"
+        technique: "Vivid, emotional language describing consequences"
+      add_anecdotes:
+        action: "Insert short, relevant, personal stories"
+        effect: "Builds both Ethos and Pathos"
+      vivid_language:
+        action: "Replace abstract jargon with concrete, sensory language"
+        example:
+          before: "Optimize synergistic efficiencies"
+          after: "Stop wasting time in pointless meetings"
+      strategic_pacing:
+        action: "Vary sentence length; insert strategic pauses after key points"
+        effect: "Builds tension, allows message to land"
+      visual_enhancement:
+        action: "Replace text-heavy slides with single powerful images"
+        rule: "Images should evoke the core emotion of the point"
+
+  diagnosis_4_weak_delivery:
+    name: "The Technically Sound But Undelivered Story"
+    symptoms:
+      - "Content is correct but the audience disengages anyway"
+      - "Speaker sounds robotic or reads the slide verbatim"
+      - "No variation in pace or tone"
+      - "Data lands but doesn't stick"
+    diagnosis: "Rhetorical content is structurally sound but delivery architecture is absent. Monotone pitch (<2.0 ST SD), uncontrolled pace (>170 WPM), and zero strategic pausing collapse both comprehension and authority simultaneously."
+    prescriptions:
+      embed_delivery_markers:
+        action: "Add quantitative delivery cues to scripts: [PAUSE 1.0s], [FALLING TERMINAL], [155 WPM]"
+        effect: "Converts written rhetoric into performed rhetoric"
+      apply_silence_ratio:
+        action: "Target 15-20% silence ratio across total delivery time"
+        effect: "Signals authority and creates cognitive consolidation windows"
+      pitch_variability_check:
+        action: "Target 3.0-4.0 semitones SD pitch variability"
+        warning: "Below 2.0 ST = monotone; above 5.0 ST = theatrical"
+      terminal_intonation_audit:
+        action: "Audit all declarative statements for falling terminal intonation"
+        anti_pattern: "Uptalk (>40% F0 rise) on declarative sentences undermines credibility"
+    source: "RESEARCH-BASED_ENHANCEMENTS FOR VOICE.md, Sections 3, 4, 8"
+
+  diagnosis_5_register_mismatch:
+    name: "The Mismatched Register"
+    symptoms:
+      - "Audience looks lost (jargon overload)"
+      - "Expert audience visibly disengaged or condescending (dumbing down)"
+      - "Vocabulary clearly tailored to wrong group"
+    diagnosis: "Speaker has not calibrated language register to audience expertise level. Jargon with uninformed audience causes cognitive overload; oversimplification with expert audience causes disrespect."
+    prescriptions:
+      calibrate_vocabulary:
+        action: "Conduct a 5-minute audience analysis before any preparation. Uninformed: define every technical term on first use. Expert: skip definitions, use field-standard vocabulary."
+      avoid_demographic_assumptions:
+        action: "Remove age-coded jargon, income-level assumptions, gendered occupational titles, race-coded phrases"
+        rationale: "Demographic-coded language erodes ethos by signaling social insensitivity"
+    source: "audience_analysis_for_presentations__how_to_know_your_audience_a.md; 36_audience_analysis_and_persuasion.md"
+
+  diagnosis_6_speaker_centric_framing:
+    name: "The Presenter as Hero"
+    symptoms:
+      - "Audience asks 'So what?'"
+      - "Impressive credentials but no audience buy-in"
+      - "Emphasis on speaker's skills, not audience's gain"
+    diagnosis: "Speaker has positioned themselves as the hero rather than the guide. Foregrounding the speaker's skills rather than audience benefit reduces buy-in, especially with apathetic audiences."
+    prescriptions:
+      hero_shift:
+        action: "Recast from 'Look what we achieved' to 'Here is what you can achieve'"
+        cross_reference: "diagnosis_2_weak_character.hero_shift (StoryBrand reframe)"
+      relevance_first:
+        action: "Open with WIIFM ('What's in it for them') before any credential presentation"
+    source: "audience_analysis_for_presentations__how_to_know_your_audience_a.md, Apathetic audience section"
+
+# ==============================================================================
+# PRESENTATION MULTIMODAL ANALYSIS
+# Deck (Visual) vs Talk Track (Spoken) coherence
+# ==============================================================================
+
+multimodal_analysis:
+  description: "A presentation is a multimodal narrative with two distinct channels."
+
+  channels:
+    visual_narrative:
+      medium: "PowerPoint slides (Deck)"
+      elements: ["Charts", "Images", "Text", "Layout"]
+    spoken_narrative:
+      medium: "Script or speech (Talk Track)"
+      elements: ["Words", "Tone", "Pace", "Pauses"]
+      pitch_variability:
+        monotone_threshold: "<2.0 semitones SD — perceived as flat, robotic, disengaged"
+        optimal_range: "3.0-4.0 semitones SD — dynamic, charismatic delivery"
+        over_theatrical: ">5.0 semitones SD — unstable or manic perception"
+        source: "RESEARCH-BASED_ENHANCEMENTS FOR VOICE.md, Section 3"
+      terminal_intonation:
+        falling: "Signals certainty, authority, command (Downtalk) — required for declarative statements"
+        rising_threshold: ">40% F0 increase signals uncertainty or validation-seeking (Uptalk)"
+        strong_uptalk_marker: "Terminal rise >4-5 semitones on declarative sentences"
+        rule: "All declarative statements should use falling or flat terminal intonation"
+        source: "RESEARCH-BASED_ENHANCEMENTS FOR VOICE.md, Section 4"
+      authority_phonation_markers:
+        jitter_target: "<1.04% (confidence marker)"
+        shimmer_target: "<3.81% (control marker)"
+        hnr_target: ">20 dB (vocal clarity marker)"
+        f0_register: "Lower register (bottom 25% of natural range) creates chest resonance and authority"
+        avoid: "Vocal fry (creaky voice) — undermines perceived stability and confidence"
+        source: "RESEARCH-BASED_ENHANCEMENTS FOR VOICE.md, Section 8"
+
+  dissonance_problem:
+    description: "Weak presentations often have visual-spoken dissonance"
+    example: "Talk track tells emotional Pathos story, but deck shows dense spreadsheet (Logos)"
+    effect: "Messages conflict, cognitive load increases, audience disengages"
+
+  deconstruction_checklist:
+    step_1_holistic:
+      name: "Core Story Analysis"
+      questions:
+        - "What is the single Big Idea?"
+        - "Who is the Hero? (Presenter or Audience?)"
+        - "Where is the core conflict? (What Is vs What Could Be)"
+        - "What is the underlying framework?"
+
+    step_2_deck:
+      name: "Visual Narrative Analysis"
+      dimensions:
+        structure_logos:
+          question: "Does deck follow Pyramid Principle?"
+          anti_pattern: "Linear 'spreadsheet explosion' forcing wait for conclusion"
+        pacing_visual:
+          question: "Are slides clean and visual (fast) or text-heavy slidedocs (slow)?"
+        rhetoric_visual:
+          logos_indicators: "Data charts, graphs, evidence"
+          pathos_indicators: "Evocative, high-quality images"
+          ethos_damage: "Low-quality, irrelevant, or cliched images"
+
+    step_3_talk_track:
+      name: "Spoken Narrative Analysis"
+      dimensions:
+        rhetorical_ratio:
+          question: "What is the spoken balance of Ethos, Pathos, Logos?"
+          sub_question: "Is it all data, or does it include personal stories?"
+        devices:
+          listen_for: ["Anecdotes", "Antithesis", "Anaphora", "Rhetorical questions"]
+        pacing_vocal:
+          elements: ["Strategic pauses", "Energy variation", "Tone shifts"]
+          purpose: "Build tension and let emotional beats land"
+
+# ==============================================================================
+# HUMAN ELEMENT ASSESSMENT
+# Evaluating authenticity, delivery, and audience engagement
+# ==============================================================================
+
+human_element_assessment:
+  description: "A story's impact is heavily influenced by human-centric elements and delivery."
+
+  authenticity_and_relatability:
+    what_to_analyze: "Personal anecdotes, stories, or first-person language"
+    indicators_present:
+      - "'I believe...'"
+      - "'We discovered...'"
+      - "'Let me tell you about a time when...'"
+      - "First-person narratives"
+      - "Personal failures or lessons learned"
+    absence_diagnosis: "Narrative is purely factual and lacks human connection"
+    effect: "Personal stories build trust and emotional connection"
+
+  delivery_cues:
+    what_to_analyze: "Speaker notes for explicit delivery instructions"
+    indicators_to_find:
+      - "[PAUSE]"
+      - "[EMPHASIZE THIS]"
+      - "[Tell personal story about X]"
+      - "[Make eye contact]"
+      - "[Slow down here]"
+      - "[Ask rhetorical question]"
+    presence_indicates: "Planned, intentional human delivery"
+    absence_indicates: "Slides meant to be read, not presented with human warmth"
+    quantitative_delivery_cues:
+      description: "Research-backed delivery markers using empirical timing. Source: RESEARCH-BASED_ENHANCEMENTS FOR VOICE.md, Section 10."
+      examples:
+        - "[PAUSE 0.5s] — emphatic boundary pause"
+        - "[PAUSE 1.0s] — power pause after key statistic"
+        - "[PAUSE 0.3s] — list item separator (tricolon)"
+        - "[TARGET 155 WPM] — optimal cognitive processing rate"
+        - "[SILENCE RATIO 18-20%] — authority and clarity balance"
+        - "[FALLING TERMINAL] — authority marker on declarative statements"
+      presence_indicates: "Delivery architecture applied; precision pause strategy embedded"
+      absence_indicates: "Cognitive overload risk; retention loss likely if pace exceeds 170 WPM"
+
+  audience_engagement:
+    what_to_analyze: "Direct connection with audience"
+    indicators_present:
+      - "Rhetorical questions ('Have you ever wondered...')"
+      - "Direct address ('Imagine you are...')"
+      - "Calls for interaction ('Raise your hand if...')"
+      - "Hypothetical scenarios ('What would you do if...')"
+      - "Second-person 'you' language"
+    effect: "Transforms passive audience into active participants"
+    absence_diagnosis: "Audience positioned as passive receivers, not engaged participants"
+
+  vulnerability_markers:
+    what_to_analyze: "Admissions of uncertainty, failure, or learning"
+    indicators_present:
+      - "'We didn't always get it right...'"
+      - "'I was wrong about...'"
+      - "'What we learned was...'"
+      - "'If I had to do it again...'"
+    effect: "Builds ethos through honesty; creates relatability"
+    warning: "Over-vulnerability can undermine confidence; balance needed"
+
+# ==============================================================================
+# CORE METHODOLOGY PRINCIPLES
+# Guiding principles for effective narrative design
+# ==============================================================================
+
+methodology_principles:
+  description: "Four core principles fundamental to effective narrative design."
+
+  ai_as_copilot:
+    principle: "AI as a Co-pilot, Not an Autopilot"
+    meaning: "Framework augments human intelligence, presenting analysis and suggestions"
+    implication: "Human storyteller makes final decisions; AI provides insights and options"
+
+  context_is_king:
+    principle: "Context is King"
+    meaning: "Narrative effectiveness is dictated by relevance to audience context"
+    factors: ["Sales stage", "Persona", "Industry", "Prior relationship", "Competitive situation"]
+    implication: "Same content may need different framing for different contexts"
+
+  coherence_is_key:
+    principle: "Coherence is Key"
+    meaning: "All narrative elements must be logically and thematically consistent"
+    scope: "From highest-level strategy to most granular detail"
+    implication: "Inconsistencies between levels or sections undermine credibility"
+
+  high_to_low_evolution:
+    principle: "From High-Level to Low-Level"
+    meaning: "Narrative must evolve from broad visionary message to specific detailed one"
+    pattern: "Early engagement: vision and transformation; Later engagement: specifics and proof"
+    implication: "Match content granularity to stage of relationship/sales cycle"
+
+# ==============================================================================
+# NEUROCHEMISTRY OF STORYTELLING
+# Biological mechanisms behind story effectiveness
+# ==============================================================================
+
+neurochemistry_of_storytelling:
+  description: "Storytelling as applied neurochemistry - stories deliver specific hormonal payloads."
+
+  neural_coupling:
+    phenomenon: "Brain activity synchronizes between storyteller and audience"
+    mechanism: "Neurons in listener's brain fire in same patterns as speaker's"
+    effect: "Audience literally simulates the storyteller's experience"
+    implication: "Stories create shared neural states - fundamental to connection"
+
+  whole_brain_activation:
+    finding: "Facts/data activate only language-processing centers (Broca's, Wernicke's)"
+    contrast: "Compelling narratives activate sensory cortex and motor cortex"
+    effect: "Audience experiences story as if tasting, touching, performing actions described"
+    principle: "This is the neurological basis for 'Show, Don't Tell'"
+
+  hormonal_cascade:
+    oxytocin:
+      trigger: "Character-driven, emotional stories"
+      nickname: "The trust hormone"
+      effect: "Builds emotional connection and fosters trust"
+      application: "Use personal stories, show vulnerability, create empathy with characters"
+
+    dopamine:
+      trigger: "Suspense, cliffhangers, satisfying resolution"
+      mechanism: "Released in anticipation of rewards, not just response to them"
+      effect: "Makes story more enjoyable AND more memorable"
+      application: "Build anticipation, use strategic reveals, provide satisfying payoffs"
+
+    norepinephrine:
+      trigger: "Emotionally charged content - conflict, suspense, unexpected turns"
+      effect: "Focuses attention, keeps audience alert and engaged"
+      visual_enhancement: "High-contrast imagery, dramatic shifts, quick pacing"
+      application: "Create tension, use surprise, vary emotional intensity"
+
+  strategic_deployment:
+    description: "The storyteller's goal is intentional deployment of these mechanisms"
+    formula:
+      oxytocin: "Use CHARACTER to build TRUST"
+      dopamine: "Use SUSPENSE to ensure MEMORY"
+      norepinephrine: "Use CONTRAST to command ATTENTION"
+
+# ==============================================================================
+# EMOTIONAL RESONANCE
+# The distinction between character emotion and audience emotion
+# ==============================================================================
+
+emotional_resonance:
+  description: "Critical distinction between what character feels and what audience feels."
+
+  definition: "Emotional resonance is NOT what the character is feeling - it is the EVOCATION of emotion WITHIN THE AUDIENCE."
+
+  key_insight: "A character can feel joy while the audience feels dread (if we know danger is coming)."
+
+  impact_on_memorability:
+    with_resonance: "Story becomes 'haunting' and memorable"
+    without_resonance: "Story is 'entertaining, beautifully written—and entirely forgettable'"
+
+  creating_resonance:
+    empathetic_link:
+      description: "Audience must see themselves in the character's situation"
+      technique: "Use universal experiences, relatable struggles, shared values"
+
+    emotional_stakes:
+      description: "Audience must care about the outcome"
+      technique: "Establish what the character stands to lose or gain"
+
+    validation_of_feeling:
+      description: "Allow the emotional beat to land before moving on"
+      technique: "Strategic pauses, pacing, letting moment breathe"
+
+    relevance_precondition:
+      description: "For apathetic or uninformed audiences, emotional appeals require relevance to be established first"
+      principle: "Premature pathos on apathetic audiences produces indifference or cynicism — establish WIIFM before any emotional appeal"
+      sequencing: "Relevance → Emotional connection → Persuasive appeal"
+      source: "audience_analysis_for_presentations__how_to_know_your_audience_a.md, Apathetic audience section"
+
+# ==============================================================================
+# POINT OF VIEW AS EMPATHY CONTROL
+# How narrative POV controls psychological distance
+# ==============================================================================
+
+pov_empathy_control:
+  description: "POV is the primary tool for calibrating psychological distance and relationship with audience."
+
+  first_person_subjective:
+    description: "Audience sees only what character sees"
+    effect: "Maximizes immediacy and visceral reaction"
+    limitation: "Difficult for audience to connect with protagonist as character (face not seen)"
+    empathy_effect: "FORCES shared experience"
+
+  third_person_limited:
+    description: "Most common narrative mode - audience as 'ideal observer'"
+    effect: "Allows seeing character expressions and interactions"
+    benefit: "Provides context and emotional cues"
+    empathy_effect: "ENABLES empathy while preserving distance for judgment"
+
+  omniscient:
+    description: "All-knowing perspective revealing information characters don't have"
+    effect: "Creates dramatic irony"
+    empathy_effect: "Creates SUSPENSE through information asymmetry"
+
+  participatory:
+    description: "Viewer is implicated IN the scene"
+    example: "Norman Rockwell positioning viewer inside crowd"
+    effect: "Viewer becomes participant, not just observer"
+    empathy_effect: "IMPLICATES audience in the narrative"
+
+  second_person:
+    description: "Direct address using 'you'"
+    common_in: "UX design, video games, instructional content"
+    effect: "Makes USER the protagonist"
+    empathy_effect: "PULLS audience directly into action"
+    operationalisation: "Supported by persona simulation — construct a representative audience member using demographic and expectation data, then calibrate all second-person address to that persona's language register and concerns (audience_analysis_for_presentations__how_to_know_your_audience_a.md, 'Create audience personas and practice' section)"
+
+  strategic_choice:
+    principle: "POV choice must serve intended emotional relationship with audience"
+    question: "What level of empathy, distance, or participation does this story require?"

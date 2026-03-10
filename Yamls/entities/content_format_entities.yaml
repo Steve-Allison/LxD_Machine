@@ -1,0 +1,769 @@
+_meta:
+  id: content_format_entities
+  purpose: entity
+  version: 1.20.0
+  last_updated: '2026-03-09'
+  description: GLiNER entity definitions for detecting content format references in instructional design text including course
+    types, microlearning formats, performance support assets, and communication materials.
+  domain: pedagogical
+  domain_type: workflow
+  corpus_sources:
+  - Corpus/Research/Best Practices for Structuring Corporate Learning Content.md
+  - Corpus/Research/Research - Strips & Cards.md
+  - Corpus/Research/Creating Learning Videos - Process v2.md
+  - Corpus/Research/Gold Standard Structure for Any Corporate-Learning Asset v3.md
+  - Corpus/Research/Research - Complete Guide to AI-powered Microlearning.md
+  - Corpus/Research/High-Level Planning Tools in Corporate Learning - Wireframes, Content Maps & Course Blueprints.md
+  - Corpus/Research/Research - Comprehensive Learning Design Framework.md
+  - Corpus/Research/Research - Merrills Instructional Design Theories Applied.md
+  - Corpus/Research/Research - Roleplay & Scenarios for Learning.md
+  - Corpus/Research/Essentials_Course_Gold_Structure_AI_Course_Playbook.md
+  - Corpus/Research/Applying_Learning_Theory_Practical_Checklist.md
+  - Corpus/Research/course_structure_hierarchy_corpus_research.md
+  - Corpus/Research/Research - Slide Deck Design Playbook Research.md
+  - Corpus/Research/Research - Best Video Script Prompts.md
+  relationships:
+  - target: taxonomy/content_format_taxonomy.yaml
+    type: depends_on
+    description: Canonical content format definitions and routing rules
+  - target: methodology/strip_card_framework.yaml
+    type: depends_on
+    description: Strip and card content architecture
+gliner_config:
+  model: urchade/gliner_multi_pii-v1
+  batch_size: 8
+  context_window: 512
+  domain_keywords:
+    primary:
+    - course
+    - module
+    - video
+    - infographic
+    - job aid
+    - checklist
+    - webinar
+    - eLearning
+    secondary:
+    - microlearning
+    - workshop
+    - bootcamp
+    - battle card
+    - enablement
+    - deck
+    - workbook
+entity_types:
+  course_format:
+    description: References to structured course or programme formats
+    canonical_id: course_format
+    entity_kind: content_format
+    family: formal_learning
+    gliner_label: COURSE_FORMAT
+    gliner_description: Course format full course learning programme curriculum module workshop bootcamp certification training
+    examples:
+    - full online course
+    - 3-module learning programme
+    - certification training course
+    - onboarding curriculum
+    - leadership development programme
+    - compliance training module
+    anti_examples:
+    - of course
+    - course of action
+    - course correction
+    confidence_threshold: 0.75
+    aliases:
+    - training programme
+    - learning programme
+    - curriculum
+    indicators:
+    - course
+    - module
+    - programme
+    - curriculum
+    - certification
+    - training
+    - learning path
+    - bootcamp
+    - workshop
+    patterns:
+    - (full|online|blended|self-paced) course
+    - (learning|training|certification|onboarding) (programme|course|curriculum|path)
+    - (\d+[- ]module|multi-module|single-module) (course|programme)
+    - (workshop|bootcamp|immersive) (session|programme|training)
+    color: '#2c3e50'
+    relates_to:
+    - target: pedagogical_sequence_marker
+      relation: contains
+      weight: required
+      description: Gold Standard prescribes mandatory module structure (Hook-Roadmap-Core-Practice-Summary-Assessment)
+        requiring pedagogical sequencing markers
+      target_file: content_architecture_entities
+    - target: content_structure_marker
+      relation: supported_by
+      weight: required
+      description: Course roadmaps, progress markers, and chunked delivery serve as content structure scaffolding
+        within structured course formats
+      target_file: content_architecture_entities
+    - target: formative_assessment
+      relation: contains
+      weight: required
+      description: Gold Standard requires embedded formative assessments throughout course modules for retrieval
+        practice and testing effect reinforcement
+      target_file: assessment_entities
+    - target: summative_assessment
+      relation: contains
+      weight: expected
+      description: Scenario-based summative assessments close each course topic aligned to learning objectives
+        with mastery-based branching pathways
+      target_file: assessment_entities
+    - target: progressive_disclosure_marker
+      relation: enables
+      weight: expected
+      description: Courses scaffold complexity by fading support across modules from maximum guidance to independent
+        practice with progressive autonomy
+      target_file: cognitive_load_entities
+    - target: extraneous_load_marker
+      relation: limits
+      weight: expected
+      description: Signalling, segmenting, and progress roadmaps in course design reduce extraneous cognitive
+        load per CLT research principles
+      target_file: cognitive_load_entities
+    - target: microlearning_format
+      relation: contains
+      weight: optional
+      description: Courses may contain microlearning as post-training reinforcement via daily micro-lessons
+        following workshops over two weeks
+    - target: job_aid_format
+      relation: triggers
+      weight: expected
+      description: Course training triggers creation of companion checklists and reference guides for consistent
+        on-the-job performance support
+    - target: delivery_modality
+      relation: supported_by
+      weight: required
+      description: Courses must adapt for delivery modality (e-learning, ILT, VILT) with format-specific interaction
+        patterns and platform requirements
+      target_file: delivery_entities
+    - target: learning_objective
+      relation: supported_by
+      weight: required
+      description: Each course module targets clear learning objectives stated up front so summative assessments
+        can align to measurable outcomes
+      target_file: pedagogical_frameworks_entities
+    - target: scenario_activity
+      relation: contains
+      weight: expected
+      description: Scenario-based modules within courses present realistic workplace situations with branching
+        consequences for applied practice
+      target_file: activity_types_entities
+    - target: question_hook
+      relation: contains
+      weight: expected
+      description: Course module openings require a Hook with surprising stat, relatable scenario, or question
+        to activate learner curiosity
+      target_file: opening_hooks_entities
+    - target: pedagogical_model
+      relation: supported_by
+      weight: expected
+      description: "FPI provides the macro-strategic cycle for full course design with CDT providing micro-level component prescriptions within per Merrill"
+      target_file: pedagogical_frameworks_entities
+    - target: roleplay_activity
+      relation: contains
+      weight: expected
+      description: "Course formats contain roleplay activities as structured interpersonal practice modules within ILT and VILT programme designs per roleplay research"
+      target_file: activity_types_entities
+    - target: planning_artefact_marker
+      relation: supported_by
+      weight: required
+      description: "Course format is supported by planning artefacts — the blueprint defines the overall course structure including modules, duration, schedule, delivery format, and how components fit together into a coherent program per High-Level Planning Tools research"
+      target_file: content_architecture_entities
+    - target: session_structure_marker
+      relation: contains
+      weight: expected
+      description: "Module 7 workshop has explicit session structure — Opening & Energy (10 min), Practice rounds (35 min each), Closing & Commitment (10 min) — course format contains session structure for synchronous components (Essentials_Course_Gold_Structure)"
+      target_file: delivery_entities
+    - target: alignment_marker
+      relation: contains
+      weight: required
+      description: "Courses must contain Bloom-Gagné-Kirkpatrick alignment — the evaluation matrix template maps outcomes, events, activities, and evidence across course modules (Applying_Learning_Theory_Practical_Checklist)"
+      target_file: content_architecture_entities
+    - target: quiz_activity
+      relation: contains
+      weight: expected
+      description: "Course format contains embedded quiz activities as knowledge checks after each section, with automated feedback and final assessments for module completion (Best-Practice Learning Activities)"
+      target_file: activity_types_entities
+    - target: formative_assessment
+      relation: supports
+      weight: expected
+      description: "Self-paced e-learning course formats support formative assessment through frequent embedded knowledge checks and scenario-based quizzes (Best-Practice Learning Activities)"
+      target_file: assessment_entities
+    - target: delivery_modality_marker
+      relation: supported_by
+      weight: required
+      description: "Course design requires specifying modality (Synchronous, Asynchronous, Blended) as mandatory metadata per Activities Research v4"
+      target_file: content_architecture_entities
+  webinar_format:
+    description: References to webinar, broadcast, and live online event formats
+    canonical_id: webinar_format
+    entity_kind: content_format
+    family: formal_learning
+    gliner_label: WEBINAR_FORMAT
+    gliner_description: Webinar format live session broadcast online event virtual event lunch and learn town hall AMA
+    examples:
+    - live webinar
+    - recorded webinar
+    - lunch-and-learn session
+    - virtual town hall
+    - AMA session
+    - expert panel webinar
+    anti_examples:
+    - web page
+    - online store
+    confidence_threshold: 0.8
+    aliases:
+    - online event
+    - virtual session
+    - live broadcast
+    indicators:
+    - webinar
+    - lunch and learn
+    - lunch-and-learn
+    - town hall
+    - AMA
+    - live session
+    - broadcast
+    - virtual event
+    patterns:
+    - (live|recorded|expert|panel) webinar
+    - lunch[- ]and[- ]learn
+    - (virtual|online) (town hall|event|broadcast)
+    color: '#3498db'
+    relates_to:
+    - target: virtual_platform_feature
+      relation: supported_by
+      weight: required
+      description: Webinar delivery depends on platform features including polls, breakout rooms, whiteboards,
+        chat, and live annotation tools
+      target_file: delivery_entities
+    - target: facilitation_technique
+      relation: supported_by
+      weight: required
+      description: Webinars rely on facilitation techniques like calling participants by name, dedicated moderator
+        roles, and real-time audience reading
+      target_file: delivery_entities
+    - target: session_structure_marker
+      relation: contains
+      weight: required
+      description: Webinars follow gold-standard session structure with hook, roadmap, segmented content, activities,
+        summary, assessment, and close
+      target_file: delivery_entities
+    - target: engagement_cue
+      relation: contains
+      weight: expected
+      description: Webcam encouragement, shorter segments with stretch breaks, and explicit participation norms
+        maintain virtual engagement in webinars
+      target_file: delivery_entities
+    - target: course_format
+      relation: specialises
+      weight: expected
+      description: Virtual ILT webinar format specialises instructor-led training with additional considerations
+        for shorter segments and screen fatigue
+    - target: collaborative_activity
+      relation: contains
+      weight: expected
+      description: Breakout rooms enable small group scenarios applying think-pair-share and peer discussion
+        for social constructivist learning in webinars
+      target_file: activity_types_entities
+    - target: discussion_activity
+      relation: contains
+      weight: expected
+      description: Live Q&A, chat discussions, and group report-outs capitalise on real-time synchronous presence
+        for social learning in webinars
+      target_file: activity_types_entities
+    - target: extraneous_load_marker
+      relation: limits
+      weight: expected
+      description: Virtual slides must avoid clutter with large text and small-screen visibility testing to
+        prevent extraneous cognitive load
+      target_file: cognitive_load_entities
+  microlearning_format:
+    description: References to short-form and bite-sized learning content
+    canonical_id: microlearning_format
+    entity_kind: content_format
+    family: microlearning
+    gliner_label: MICROLEARNING_FORMAT
+    gliner_description: Microlearning format bite-sized short video explainer video knowledge burst micro-scenario quick tip
+      learning nugget
+    examples:
+    - 2-minute explainer video
+    - bite-sized learning module
+    - knowledge burst
+    - micro-scenario
+    - daily learning tip
+    - learning nugget
+    - quick reference video
+    anti_examples:
+    - micro management
+    - small bite
+    confidence_threshold: 0.7
+    aliases:
+    - bite-sized learning
+    - nano learning
+    - learning nugget
+    indicators:
+    - microlearning
+    - micro-learning
+    - bite-sized
+    - knowledge burst
+    - micro-scenario
+    - learning nugget
+    - quick tip
+    - daily tip
+    - nano learning
+    - 2-minute
+    - 3-minute
+    - 5-minute
+    patterns:
+    - (micro[- ]?learning|bite[- ]sized|nano) (module|lesson|content|asset)
+    - (knowledge|learning) (burst|nugget|bite)
+    - (\d+[- ]minute|short|quick) (video|lesson|explainer)
+    - (daily|weekly) (tip|learning)
+    color: '#e74c3c'
+    relates_to:
+    - target: intrinsic_load_marker
+      relation: limits
+      weight: expected
+      description: Microlearning targets one objective per 2-5 minute unit, managing intrinsic cognitive load
+        through focused single-topic segmenting
+      target_file: cognitive_load_entities
+    - target: germane_load_marker
+      relation: triggers
+      weight: expected
+      description: Spaced repetition scheduling of microlearning promotes germane processing through distributed
+        retrieval practice over days and weeks
+      target_file: cognitive_load_entities
+    - target: working_memory_marker
+      relation: limits
+      weight: expected
+      description: Bite-sized micro-units avoid overloading working memory by keeping content within cognitive
+        capacity constraints per CLT research
+      target_file: cognitive_load_entities
+    - target: progressive_disclosure_marker
+      relation: enables
+      weight: expected
+      description: Scaffolding across microlearning modules builds complexity progressively with adaptive sequencing
+        reducing cognitive overload
+      target_file: cognitive_load_entities
+    - target: formative_assessment
+      relation: contains
+      weight: expected
+      description: Embedded quizzes and micro-assessments serve as stress-free formative knowledge checks within
+        each microlearning module
+      target_file: assessment_entities
+    - target: quiz_activity
+      relation: contains
+      weight: expected
+      description: Each micro-lesson includes quick MCQs, true/false, or drag-and-drop checks with instant
+        feedback for retrieval practice
+      target_file: activity_types_entities
+    - target: course_format
+      relation: supports
+      weight: expected
+      description: Microlearning serves as post-training reinforcement for formal courses via daily micro-lessons
+        leveraging the spacing effect
+    - target: job_aid_format
+      relation: bridges
+      weight: optional
+      description: Microlearning and job aids both provide just-in-time performance support at the point of
+        need in workplace contexts
+    - target: learning_objective
+      relation: supported_by
+      weight: required
+      description: Each microlearning unit must target one specific learning objective decomposed via Bloom's
+        taxonomy from lower to higher-order thinking
+      target_file: pedagogical_frameworks_entities
+    - target: delivery_modality
+      relation: supported_by
+      weight: expected
+      description: Microlearning requires mobile-first responsive delivery modality designed for phones and
+        tablets with offline caching capability
+      target_file: delivery_entities
+    - target: course_format
+      relation: specialises
+      weight: expected
+      description: Strips (3-5 min) and Cards (30-90 sec) represent microlearning formats that specialise the broader course
+        format of Modules (30-45 min) as atomic units within the learning architecture (Comprehensive Learning Design Framework)
+    - target: instructional_strategy
+      relation: specialises
+      weight: expected
+      description: "FPI and CDT are applicable to microlearning and just-in-time performance support not only macro courses per Merrill"
+      target_file: pedagogical_frameworks_entities
+    - target: formative_assessment
+      relation: supports
+      weight: expected
+      description: "Microlearning nuggets support formative assessment through ongoing completion tracking and spaced retrieval practice (Best-Practice Learning Activities)"
+      target_file: assessment_entities
+    - target: content_structure_marker
+      relation: supported_by
+      weight: expected
+      description: "Microlearning format is supported by content structure — modular segmenting into 5-7 minute sections with clear titles, headings, and progress indicators provides the structural scaffolding microlearning requires (Gold Standard Structure)"
+      target_file: content_architecture_entities
+    - target: practice_activity
+      relation: contains
+      weight: expected
+      description: "Microlearning format contains practice activities tied to real tasks and scenarios for immediate application of knowledge per Best Practices for Structuring Corporate Learning Content"
+      target_file: activity_types_entities
+    - target: accessibility_feature
+      relation: supported_by
+      weight: required
+      description: "WCAG 2.1 Level AA compliance is mandatory for microlearning: 4.5:1 contrast, keyboard nav, screen reader compatibility, 200% text resizing per AI Microlearning Guide"
+      target_file: visual_elements_entities
+    - target: video_shot_type
+      relation: contains
+      weight: expected
+      description: "Short videos maintaining 120-second attention spans are listed as most effective microlearning format; video modules follow 3-5 minute structures per AI Microlearning Guide"
+      target_file: media_entities
+    - target: adult_learner
+      relation: supports
+      weight: expected
+      description: "Microlearning's just-in-time delivery and immediate job applicability directly serve adult learner needs for practical, contextually relevant content per AI Microlearning Guide"
+      target_file: audience_entities
+    - target: delivery_modality_marker
+      relation: supported_by
+      weight: expected
+      description: "Microlearning format depends on delivery modality specification — mobile-first, asynchronous delivery with offline caching defines the modality context per course structure hierarchy research"
+      target_file: content_architecture_entities
+    - target: narrative_hook
+      relation: supported_by
+      weight: required
+      description: "Short-form TikTok formats demand immediate hook in first 2 seconds making hooks essential to microlearning (Best Video Script Prompts)"
+      target_file: narrative_entities
+    - target: progressive_disclosure_marker
+      relation: specialises
+      weight: expected
+      description: "Microlearning is course-level application of segmenting principle with short focused nuggets per Applying Mayer's Principles Practical Checklist"
+      target_file: cognitive_load_entities
+  job_aid_format:
+    description: References to job aids, checklists, quick reference guides, and decision tools
+    canonical_id: job_aid_format
+    entity_kind: content_format
+    family: performance_support
+    gliner_label: JOB_AID_FORMAT
+    gliner_description: Job aid format quick reference guide checklist decision tree cheat sheet reference card how-to guide
+      template
+    examples:
+    - pre-call checklist
+    - quick reference guide
+    - decision tree for escalation
+    - cheat sheet
+    - process template
+    - one-page job aid
+    - how-to guide
+    anti_examples:
+    - job application
+    - first aid
+    confidence_threshold: 0.75
+    aliases:
+    - quick reference
+    - cheat sheet
+    - reference card
+    indicators:
+    - job aid
+    - checklist
+    - quick reference
+    - decision tree
+    - cheat sheet
+    - reference card
+    - how-to guide
+    - template
+    - one-pager
+    - process guide
+    patterns:
+    - (job aid|quick reference|cheat sheet|reference card|one-pager)
+    - (pre-call|launch|process|quality) checklist
+    - (decision|escalation) (tree|guide|matrix)
+    - (how-to|step-by-step|process) guide
+    color: '#27ae60'
+    relates_to:
+    - target: course_format
+      relation: supports
+      weight: expected
+      description: Job aids reinforce steps taught during courses ensuring consistency between formal training
+        and on-the-job performance application
+    - target: microlearning_format
+      relation: bridges
+      weight: optional
+      description: Job aids and microlearning both provide just-in-time performance support bridging formal
+        training and workplace application
+    - target: visual_content_format
+      relation: contains
+      weight: expected
+      description: Effective job aids are highly visual using diagrams, annotated screenshots, infographics,
+        and flowcharts over text paragraphs
+    - target: extraneous_load_marker
+      relation: limits
+      weight: required
+      description: Job aids include only necessary information with ruthless coherence; extra background and
+        context belongs in training not the reference
+      target_file: cognitive_load_entities
+    - target: germane_load_marker
+      relation: enables
+      weight: expected
+      description: Job aids offload rote procedural information from working memory freeing cognitive capacity
+        for higher-level problem-solving tasks
+      target_file: cognitive_load_entities
+    - target: layout_pattern
+      relation: supported_by
+      weight: expected
+      description: Job aids use scannable formats including step-by-step numbered lists, decision trees, annotated
+        diagrams, and bullet points
+      target_file: visual_elements_entities
+    - target: accessibility_feature
+      relation: supported_by
+      weight: expected
+      description: Job aids must be accessible and distributable with digital versions for mobile tapping and
+        paper versions printable at standard size
+      target_file: visual_elements_entities
+    - target: chart_type
+      relation: contains
+      weight: optional
+      description: Flowcharts and decision trees are key job aid structures for troubleshooting and procedural
+        decision-making task support
+      target_file: visual_elements_entities
+    - target: reflection_activity
+      relation: supports
+      weight: expected
+      description: "FPI Integration phase prescribes job aids as performance support tools that sustain learning transfer at the moment of need per Merrill"
+      target_file: activity_types_entities
+    - target: instructional_strategy
+      relation: specialises
+      weight: expected
+      description: "CDT Procedure-Use cell provides the blueprint for job aid design: step-by-step demonstration supporting guided practice per Merrill"
+      target_file: pedagogical_frameworks_entities
+    - target: planning_artefact_marker
+      relation: supported_by
+      weight: expected
+      description: "Job aid format is supported by planning artefacts — action mapping explicitly includes deciding whether performance support tools like checklists and quick reference guides are more appropriate than formal training for certain objectives per High-Level Planning Tools research"
+      target_file: content_architecture_entities
+    - target: practice_activity
+      relation: supports
+      weight: optional
+      description: "Job aids in the form of documentation portals and reference materials support practice activities like treasure hunts that train learners in navigating reference resources (Best-Practice Learning Activities)"
+      target_file: activity_types_entities
+    - target: content_structure_marker
+      relation: supported_by
+      weight: required
+      description: "Job aid format is supported by content structure — modular content organisation with clear hierarchies and section headings enables job aids to reference specific content units and provide targeted just-in-time support (Gold Standard Structure)"
+      target_file: content_architecture_entities
+    - target: progressive_disclosure_marker
+      relation: supported_by
+      weight: expected
+      description: "Job aid format is supported by progressive disclosure, providing only essential task-focused information in concise single-page formats rather than exhaustive manuals per Best Practices for Structuring Corporate Learning Content"
+      target_file: cognitive_load_entities
+    - target: delivery_modality
+      relation: supported_by
+      weight: optional
+      description: "Job aids serve as performance support tools within blended delivery approaches; framework identifies them as post-session reinforcement materials supporting just-in-time access per Comprehensive Learning Design Framework"
+      target_file: delivery_entities
+  visual_content_format:
+    description: References to visual content formats like infographics, slide decks, and data visualisations
+    canonical_id: visual_content_format
+    entity_kind: content_format
+    family: visual_media
+    gliner_label: VISUAL_FORMAT
+    gliner_description: Visual content format infographic slide deck presentation poster data visualisation dashboard visual
+      summary
+    examples:
+    - infographic summary
+    - slide deck
+    - visual one-pager
+    - data dashboard
+    - process flow diagram
+    - visual summary poster
+    anti_examples:
+    - visual acuity
+    - slide rule
+    confidence_threshold: 0.7
+    aliases:
+    - visual asset
+    - graphic
+    - visual summary
+    indicators:
+    - infographic
+    - slide deck
+    - presentation
+    - poster
+    - dashboard
+    - data visualisation
+    - visual summary
+    - flow diagram
+    - process map
+    patterns:
+    - (infographic|visual) (summary|one-pager|card|poster)
+    - (slide|presentation|enablement) deck
+    - (data|analytics|performance) dashboard
+    - (process|workflow|system) (flow|diagram|map)
+    color: '#9b59b6'
+    relates_to:
+    - target: course_format
+      relation: supports
+      weight: expected
+      description: Visual roadmaps, progress indicators, and concept maps serve as integral visual elements
+        within structured course formats
+    - target: microlearning_format
+      relation: supports
+      weight: expected
+      description: Interactive infographics and visual progress tracking boost learner engagement and completion
+        rates in microlearning modules
+    - target: job_aid_format
+      relation: supports
+      weight: expected
+      description: Visual formats like infographics, annotated screenshots, and flowcharts are core components
+        of effective performance support job aids
+    - target: webinar_format
+      relation: supports
+      weight: expected
+      description: Graphics-rich slides with visual storytelling are essential for engaging webinar delivery
+        per multimedia learning principles
+    - target: design_principle
+      relation: supported_by
+      weight: expected
+      description: All visuals must serve instructional purpose per coherence principle; decorative images reduce
+        recall with negative effect size (d=-0.30)
+      target_file: visual_elements_entities
+    - target: extraneous_load_marker
+      relation: limits
+      weight: expected
+      description: Irrelevant decorative visuals produce negative retention effects; visual content design must
+        minimise extraneous cognitive load
+      target_file: cognitive_load_entities
+    - target: mayer_extraneous_principle
+      relation: supported_by
+      weight: expected
+      description: Visual content design follows Mayer's coherence, signalling, spatial contiguity, and redundancy
+        principles for multimedia learning
+      target_file: cognitive_load_entities
+    - target: accessibility_feature
+      relation: supported_by
+      weight: expected
+      description: WCAG 2.1 AA compliance required for visual content including 4.5:1 contrast ratios, alt
+        text, captions, and mobile optimisation
+      target_file: visual_elements_entities
+    - target: practice_activity
+      relation: supports
+      weight: optional
+      description: "Visual content formats including video libraries and screencasts support practice activities by providing on-demand expert demonstrations learners can pause, rewind, and study (Best-Practice Learning Activities)"
+      target_file: activity_types_entities
+    - target: layout_pattern
+      relation: supported_by
+      weight: required
+      description: "Visual content formats require specific layout patterns (1-column insight, 2-column comparison, 3-pillar benefits) matched to cognitive purpose per Slide Deck Design Playbook"
+      target_file: visual_elements_entities
+  enablement_format:
+    description: References to sales enablement and internal communication content formats
+    canonical_id: enablement_format
+    entity_kind: content_format
+    family: communication
+    gliner_label: ENABLEMENT_FORMAT
+    gliner_description: Enablement format battle card sales deck pitch deck briefing document enablement kit playbook internal
+      comms
+    examples:
+    - competitive battle card
+    - sales enablement deck
+    - pitch deck
+    - internal briefing document
+    - enablement kit
+    - sales playbook
+    - campaign brief
+    anti_examples:
+    - enable the feature
+    - battle plan
+    confidence_threshold: 0.75
+    aliases:
+    - sales collateral
+    - enablement material
+    - go-to-market asset
+    indicators:
+    - battle card
+    - sales deck
+    - pitch deck
+    - briefing
+    - enablement kit
+    - playbook
+    - campaign brief
+    - internal comms
+    - launch kit
+    patterns:
+    - (competitive|objection|win-loss) (battle card|card)
+    - (sales|enablement|pitch|launch) (deck|kit|playbook)
+    - (internal|executive|campaign) (briefing|brief|comms)
+    color: '#f39c12'
+    relates_to:
+    - target: course_format
+      relation: supported_by
+      weight: optional
+      description: Training courses generate foundational knowledge that enablement materials like playbooks
+        and battle cards operationalise for sales teams
+    - target: job_aid_format
+      relation: bridges
+      weight: expected
+      description: Job aid design principles of brevity, scannability, and point-of-need access apply directly
+        to battle cards and sales playbooks
+    - target: visual_content_format
+      relation: contains
+      weight: expected
+      description: Enablement decks and battle cards rely on visual content formats including slide decks, data
+        visualisations, and infographics
+    - target: delivery_modality
+      relation: supported_by
+      weight: optional
+      description: Enablement assets must work across multiple distribution channels including intranet portals,
+        mobile devices, and print formats
+      target_file: delivery_entities
+    - target: learning_objective
+      relation: supported_by
+      weight: optional
+      description: Enablement content benefits from Bloom's taxonomy-based objective decomposition for targeted
+        skill transfer in sales contexts
+      target_file: pedagogical_frameworks_entities
+    - target: course_format
+      relation: specialises
+      weight: expected
+      description: "The Essentials Course is a sales enablement format — structured specifically for onboarding new sales reps with product knowledge, sales plays, and qualification frameworks (Essentials_Course_Gold_Structure)"
+quality_indicators:
+  positive:
+  - format matches learning objective
+  - appropriate duration for content depth
+  - correct delivery mode selected
+  - clear routing signals
+  - complete artefact set
+  negative:
+  - format-objective mismatch
+  - overlong for format type
+  - missing key artefacts
+  - wrong delivery mode
+  - format not suited to audience
+domain_keywords:
+  primary:
+  - course
+  - module
+  - video
+  - infographic
+  - job aid
+  - checklist
+  - webinar
+  - eLearning
+  - microlearning
+  - podcast
+  - simulation
+  secondary:
+  - formal learning
+  - informal learning
+  - blended
+  - self-paced
+  - instructor-led
+  - performance support
+  - reference guide
+  - quick reference
+  - worksheet
+  - tip sheet

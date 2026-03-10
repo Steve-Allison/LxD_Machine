@@ -1,0 +1,673 @@
+_meta:
+  id: Descriptive_RST_taxonomy
+  purpose: taxonomy
+  version: "2.0.0"
+  last_updated: "2026-03-03"
+  description: "Classification system for RST rhetorical relations, discourse signal typologies, parsing strategies, tree topologies, and comparative discourse frameworks."
+  domain: narrative
+  domain_type: classification
+  corpus_sources:
+    - "Corpus/Research/Research - Advanced Computational Discourse Analysis_ Operationalizing Rhetorical Structure Theory with LLM.md"
+  academic_sources:
+    - "Mann & Thompson (1988) - Rhetorical Structure Theory"
+    - "RST Discourse Treebank (Carlson et al. 2001)"
+    - "RST Signalling Corpus (Taboada & Das 2013)"
+    - "eRST - Enhanced Rhetorical Structure Theory (Zeldes 2024)"
+    - "PDTB 3.0 (Prasad et al. 2019)"
+    - "SDRT (Asher & Lascarides 2003)"
+    - "DISRPT 2025 Shared Task"
+  relationships:
+    - target: entities/Descriptive_RST_entities.yaml
+      type: depends_on
+      description: "Entity types for NER extraction of RST signals, EDU boundaries, and coreference chains"
+    - target: entities/discourse_entities.yaml
+      type: related_to
+      description: "Complementary lexical discourse marker entities for GLiNER extraction"
+    - target: corpus/Descriptive_RST_corpus.yaml
+      type: related_to
+      description: "Best practices, principles, and anti-patterns for descriptive RST parsing"
+    - target: corpus/Constructive_RST_corpus.yaml
+      type: related_to
+      description: "Generative/constructive RST corpus for text planning applications"
+
+# ==============================================================================
+# CLASSIFICATION DIMENSIONS
+# ==============================================================================
+
+classification_dimensions:
+  - name: "relation_class"
+    description: "The 18 coarse-grained RST rhetorical relation classes mapped from 56 fine-grained relations in the RST Discourse Treebank. Used for computational evaluation and cross-system benchmarking."
+    values:
+      - attribution
+      - background
+      - cause
+      - comparison
+      - condition
+      - contrast
+      - elaboration
+      - enablement
+      - evaluation
+      - explanation
+      - joint
+      - manner_means
+      - same_unit
+      - summary
+      - temporal
+      - textual_organization
+      - topic_change
+      - topic_comment
+
+  - name: "signal_typology"
+    description: "Five distinct categories of discourse signals that indicate rhetorical relations, ranging from explicit lexical markers (~8.5-22% of relations) to implicit semantic, syntactic, morphological, and graphical cues (~78-91.5% of relations)."
+    values:
+      - semantic
+      - syntactic
+      - morphological
+      - graphical
+      - discourse_marker
+
+  - name: "nuclearity_configuration"
+    description: "Structural configuration indicating relative semantic weight between spans. Determines which span carries the core communicative intent."
+    values:
+      - nucleus_satellite
+      - satellite_nucleus
+      - nucleus_nucleus
+
+  - name: "parsing_strategy"
+    description: "Algorithmic approach for automated discourse tree construction from raw text."
+    values:
+      - bottom_up
+      - top_down
+      - hybrid
+
+  - name: "discourse_framework"
+    description: "Major computational discourse theories with distinct topological structures, scope, and recursion handling."
+    values:
+      - rst
+      - pdtb
+      - sdrt
+      - erst
+
+  - name: "tree_topology"
+    description: "The graph-theoretic structure used to represent discourse relations."
+    values:
+      - projective_tree
+      - augmented_graph
+      - flat_pairs
+      - directed_acyclic_graph
+
+  - name: "schema_extraction_pattern"
+    description: "Engineering pattern for extracting discourse tree structures from LLM outputs, constrained by API limitations on recursive schemas."
+    values:
+      - flat_relational_adjacency
+      - progressive_chunking
+      - direct_recursive
+
+  - name: "application_domain"
+    description: "Downstream NLP task that consumes parsed discourse structures as input features."
+    values:
+      - extractive_summarization
+      - abstractive_summarization
+      - sentiment_analysis
+      - coherence_evaluation
+      - authorship_attribution
+      - deception_detection
+      - question_answering
+      - argument_mining
+
+# ==============================================================================
+# RELATION TAXONOMY
+# 18 coarse-grained classes with fine-grained mappings and frequency data
+# Source: RST Discourse Treebank (RST-DT)
+# ==============================================================================
+
+relation_taxonomy:
+
+  # --- SUBJECT MATTER RELATIONS (content-level) ---
+
+  elaboration:
+    display_name: "Elaboration"
+    coarse_class: elaboration
+    frequency: 0.2565
+    nuclearity: nucleus_satellite
+    description: "Satellite provides additional detail, specification, or exemplification of the nucleus proposition."
+    fine_grained_mappings:
+      - "Elaboration-additional"
+      - "Elaboration-general-specific"
+      - "Elaboration-part-whole"
+      - "Elaboration-process-step"
+      - "Elaboration-object-attribute"
+      - "Elaboration-set-member"
+      - "Example"
+      - "Definition"
+    signal_profile:
+      primary_signals: [semantic, syntactic]
+      common_markers: ["specifically", "in particular", "for example", "such as", "namely", "that is"]
+      implicit_cues: "Meronymic entity links, appositive constructions, relative clauses expanding a referent"
+    notes: "Most frequent relation in natural text. Often unmarked — relies heavily on entity continuity and semantic coherence rather than explicit connectives."
+
+  joint:
+    display_name: "Joint"
+    coarse_class: joint
+    frequency: 0.2378
+    nuclearity: nucleus_nucleus
+    description: "Two or more spans of equal semantic weight presenting parallel information without subordination."
+    fine_grained_mappings:
+      - "List"
+      - "Disjunction"
+    signal_profile:
+      primary_signals: [discourse_marker, syntactic]
+      common_markers: ["and", "also", "additionally", "furthermore", "moreover", "in addition"]
+      implicit_cues: "Syntactic parallelism, numbered/bulleted lists, repeated sentence structure"
+    notes: "Second most frequent. Multinuclear — no span dominates. Parallel syntactic constructions are a mathematically reliable indicator."
+
+  attribution:
+    display_name: "Attribution"
+    coarse_class: attribution
+    frequency: 0.0997
+    nuclearity: nucleus_satellite
+    description: "Satellite identifies the source, speaker, or cognitive agent behind the nuclear proposition."
+    fine_grained_mappings:
+      - "Attribution"
+      - "Attribution-negative"
+    signal_profile:
+      primary_signals: [semantic, syntactic]
+      common_markers: ["according to", "said", "claims", "reports", "stated", "research shows"]
+      implicit_cues: "Cognitive verb + subordinate clause structure (tandem semantic-syntactic signal)"
+    notes: "Frequently marked by combined semantic and syntactic signals operating in tandem. High confidence when cognitive verb is followed by specific clause structure."
+
+  same_unit:
+    display_name: "Same-Unit"
+    coarse_class: same_unit
+    frequency: 0.0932
+    nuclearity: nucleus_nucleus
+    description: "Links portions of a single logical unit that has been interrupted by embedded content (parenthetical, appositive, relative clause)."
+    fine_grained_mappings:
+      - "Same-Unit"
+    signal_profile:
+      primary_signals: [graphical, syntactic]
+      common_markers: ["— ... —", "( ... )", ", which ...,"]
+      implicit_cues: "Dashes, parentheses, non-restrictive relative clauses splitting a main clause"
+    notes: "Structural relation. Signals the parser to rejoin split spans rather than treating them as independent units."
+
+  contrast:
+    display_name: "Contrast"
+    coarse_class: contrast
+    frequency: 0.05
+    nuclearity: nucleus_nucleus
+    description: "Two spans present contrasting, opposing, or alternative propositions of comparable weight."
+    fine_grained_mappings:
+      - "Contrast"
+      - "Concession"
+      - "Antithesis"
+    signal_profile:
+      primary_signals: [discourse_marker, semantic]
+      common_markers: ["however", "but", "although", "nevertheless", "despite", "on the other hand", "whereas"]
+      implicit_cues: "Antonymous lexical pairs, negation of prior proposition"
+    ambiguity_note: "Concession and condition often share identical, overlapping signal sets in written text, creating profound interpretative ambiguity."
+
+  temporal:
+    display_name: "Temporal"
+    coarse_class: temporal
+    frequency: 0.045
+    nuclearity: nucleus_nucleus
+    description: "Spans are sequenced by temporal ordering — before, during, or after."
+    fine_grained_mappings:
+      - "Temporal-before"
+      - "Temporal-after"
+      - "Temporal-same-time"
+      - "Sequence"
+    signal_profile:
+      primary_signals: [discourse_marker, morphological]
+      common_markers: ["when", "after", "before", "then", "next", "finally", "subsequently", "meanwhile"]
+      implicit_cues: "Verb tense shifts (past → present), temporal adverbs, date/time references"
+
+  cause:
+    display_name: "Cause"
+    coarse_class: cause
+    frequency: 0.04
+    nuclearity: nucleus_satellite
+    description: "Satellite presents the reason or cause for the situation in the nucleus."
+    fine_grained_mappings:
+      - "Cause"
+      - "Result"
+      - "Consequence"
+      - "Non-volitional-cause"
+      - "Non-volitional-result"
+      - "Volitional-cause"
+      - "Volitional-result"
+      - "Purpose"
+    signal_profile:
+      primary_signals: [discourse_marker, semantic]
+      common_markers: ["because", "since", "therefore", "thus", "consequently", "as a result", "due to"]
+      implicit_cues: "Causal lexical chains, temporal adjacency implying causation"
+    notes: "Fine-grained distinctions between volitional and non-volitional cause require deep semantic reasoning — a key area where LLMs outperform traditional parsers."
+
+  condition:
+    display_name: "Condition"
+    coarse_class: condition
+    frequency: 0.035
+    nuclearity: nucleus_satellite
+    description: "Satellite presents a hypothetical or conditional prerequisite for the nucleus to hold."
+    fine_grained_mappings:
+      - "Condition"
+      - "Hypothetical"
+      - "Contingency"
+      - "Otherwise"
+    signal_profile:
+      primary_signals: [discourse_marker]
+      common_markers: ["if", "unless", "provided that", "assuming", "in case", "should"]
+      implicit_cues: "Subjunctive mood, conditional verb forms"
+    ambiguity_note: "Shares overlapping signal sets with concession in written text, creating interpretative ambiguity."
+
+  background:
+    display_name: "Background"
+    coarse_class: background
+    frequency: 0.035
+    nuclearity: nucleus_satellite
+    description: "Satellite provides contextual background information necessary to understand the nucleus."
+    fine_grained_mappings:
+      - "Background"
+      - "Circumstance"
+    signal_profile:
+      primary_signals: [semantic, graphical]
+      common_markers: []
+      implicit_cues: "Paragraph-initial position, tense shift to past, introduction of previously unmentioned context"
+    notes: "Rarely marked by explicit connectives. Relies heavily on semantic signals and positional cues."
+
+  explanation:
+    display_name: "Explanation"
+    coarse_class: explanation
+    frequency: 0.03
+    nuclearity: nucleus_satellite
+    description: "Satellite explains or justifies a claim, action, or situation presented in the nucleus."
+    fine_grained_mappings:
+      - "Explanation-argumentative"
+      - "Reason"
+      - "Evidence"
+    signal_profile:
+      primary_signals: [discourse_marker, semantic]
+      common_markers: ["because", "the reason is", "this is due to"]
+      implicit_cues: "Inferential chains, supporting data following a claim"
+
+  enablement:
+    display_name: "Enablement"
+    coarse_class: enablement
+    frequency: 0.02
+    nuclearity: nucleus_satellite
+    description: "Satellite provides information that enables or facilitates the reader's comprehension or action regarding the nucleus."
+    fine_grained_mappings:
+      - "Enablement"
+      - "Motivation"
+      - "Justify"
+    signal_profile:
+      primary_signals: [semantic]
+      common_markers: []
+      implicit_cues: "Imperative mood in nucleus, practical/instructional content in satellite"
+    notes: "Includes Motivation (increasing reader's desire to act) and Justify (establishing authority for a claim)."
+
+  evaluation:
+    display_name: "Evaluation"
+    coarse_class: evaluation
+    frequency: 0.02
+    nuclearity: nucleus_satellite
+    description: "Satellite provides the author's evaluative commentary, judgement, or interpretation of the nucleus."
+    fine_grained_mappings:
+      - "Evaluation"
+      - "Interpretation"
+      - "Comment"
+    signal_profile:
+      primary_signals: [semantic]
+      common_markers: ["fortunately", "unfortunately", "remarkably", "surprisingly"]
+      implicit_cues: "Evaluative adverbs, attitudinal stance markers, subjective adjectives"
+
+  comparison:
+    display_name: "Comparison"
+    coarse_class: comparison
+    frequency: 0.015
+    nuclearity: nucleus_nucleus
+    description: "Two spans are compared in terms of similarities or differences."
+    fine_grained_mappings:
+      - "Comparison"
+      - "Analogy"
+      - "Preference"
+    signal_profile:
+      primary_signals: [discourse_marker, semantic]
+      common_markers: ["similarly", "like", "compared to", "in the same way", "unlike"]
+      implicit_cues: "Parallel syntactic structures with semantic variation"
+
+  manner_means:
+    display_name: "Manner-Means"
+    coarse_class: manner_means
+    frequency: 0.01
+    nuclearity: nucleus_satellite
+    description: "Satellite describes the method, manner, or instrument by which the nucleus action is performed."
+    fine_grained_mappings:
+      - "Manner"
+      - "Means"
+    signal_profile:
+      primary_signals: [syntactic]
+      common_markers: ["by", "through", "via", "using"]
+      implicit_cues: "Gerund phrases, prepositional phrases of instrument"
+
+  summary:
+    display_name: "Summary"
+    coarse_class: summary
+    frequency: 0.01
+    nuclearity: nucleus_satellite
+    description: "Satellite presents a condensed restatement of the nuclear content."
+    fine_grained_mappings:
+      - "Summary"
+      - "Restatement"
+    signal_profile:
+      primary_signals: [discourse_marker]
+      common_markers: ["in summary", "to conclude", "overall", "in short", "to sum up"]
+      implicit_cues: "Document-final position, reduced lexical specificity"
+
+  topic_change:
+    display_name: "Topic-Change"
+    coarse_class: topic_change
+    frequency: 0.005
+    nuclearity: nucleus_nucleus
+    description: "Signals an abrupt shift from one topic to another without logical continuity."
+    fine_grained_mappings:
+      - "Topic-Shift"
+      - "Topic-Drift"
+    signal_profile:
+      primary_signals: [graphical]
+      common_markers: ["turning to", "moving on", "now", "regarding"]
+      implicit_cues: "Section breaks, paragraph boundaries, heading markers"
+
+  topic_comment:
+    display_name: "Topic-Comment"
+    coarse_class: topic_comment
+    frequency: 0.005
+    nuclearity: nucleus_satellite
+    description: "Topic is introduced and then commented upon — the satellite provides commentary on the nuclear topic."
+    fine_grained_mappings:
+      - "Topic-Comment"
+      - "Comment"
+      - "Rhetorical-Question"
+    signal_profile:
+      primary_signals: [syntactic]
+      common_markers: []
+      implicit_cues: "Topicalization constructions, left-dislocated noun phrases"
+
+  textual_organization:
+    display_name: "Textual-Organization"
+    coarse_class: textual_organization
+    frequency: 0.005
+    nuclearity: nucleus_nucleus
+    description: "Meta-structural relation organising the text itself (headers, section markers, navigation cues)."
+    fine_grained_mappings:
+      - "TextualOrganization"
+    signal_profile:
+      primary_signals: [graphical]
+      common_markers: []
+      implicit_cues: "Heading hierarchy, numbered sections, table of contents references"
+
+# ==============================================================================
+# SIGNAL TYPE TAXONOMY
+# Five-class typology with sub-types and empirical frequency data
+# Source: RST Signalling Corpus (Taboada & Das 2013)
+# ==============================================================================
+
+signal_type_taxonomy:
+
+  semantic:
+    display_name: "Semantic Signals"
+    frequency_share: 0.41
+    description: "Signals derived from meaning-level relationships between lexical items across EDUs. The largest category of relation indicators."
+    sub_types:
+      lexical_chain:
+        description: "Sequence of related words spanning multiple EDUs maintaining topical coherence"
+        examples: ["revenue → sales → income → profit", "customer → client → buyer → user"]
+        rst_relations_served: [elaboration, joint, background]
+      synonymy:
+        description: "Use of synonymous terms across EDUs maintaining reference continuity"
+        examples: ["growth / expansion", "decrease / decline / reduction"]
+        rst_relations_served: [elaboration, same_unit]
+      meronymy:
+        description: "Part-whole relationships between entities across EDUs — when a newly introduced entity is a part of an entity in a preceding sentence"
+        examples: ["company → cloud division", "platform → API layer", "report → executive summary"]
+        rst_relations_served: [elaboration, explanation]
+        notes: "When a newly introduced entity is a meronym of a preceding entity, this provides computational proof to assign an Elaboration relation."
+      coreference:
+        description: "Pronominal anaphora and entity coreference linking distant EDUs"
+        examples: ["The CEO → she → the executive", "our product → it → the platform"]
+        rst_relations_served: [elaboration, same_unit, joint]
+        notes: "Accounts for 41.7% of all signal anchoring tokens in discourse parsing."
+      general_word:
+        description: "Superordinate or hypernymic terms that subsume more specific preceding references"
+        examples: ["this approach", "such challenges", "these results"]
+        rst_relations_served: [elaboration, summary, evaluation]
+    best_practices:
+      - "Track entity continuity across EDU boundaries to detect implicit elaboration"
+      - "Use embedding distances or knowledge graphs for meronymy detection"
+      - "Configure NER pipelines for pronominal anaphora resolution across distant spans"
+    anti_patterns:
+      - "Ignoring implicit semantic signals and relying solely on explicit markers — misses ~78% of relations"
+
+  syntactic:
+    display_name: "Syntactic Signals"
+    frequency_share: 0.18
+    description: "Signals derived from grammatical constructions and clause structure patterns."
+    sub_types:
+      parallel_construction:
+        description: "Repeated syntactic frame across adjacent clauses"
+        examples: ["We reduced costs. We improved quality. We accelerated delivery."]
+        rst_relations_served: [joint, contrast, comparison]
+        notes: "Mathematically highly reliable indicator of multinuclear relations."
+      relative_clause:
+        description: "Non-restrictive relative clauses providing elaborative content"
+        examples: ["The platform, which launched in Q3, exceeded targets"]
+        rst_relations_served: [elaboration, same_unit]
+      participial_clause:
+        description: "Present or past participial phrases modifying a main clause"
+        examples: ["Having completed the pilot, we scaled", "Results, measured quarterly, improved"]
+        rst_relations_served: [temporal, background, elaboration]
+      clause_mood:
+        description: "Imperative, interrogative, or subjunctive mood signalling relation type"
+        examples: ["Consider the implications [imperative → enablement]"]
+        rst_relations_served: [enablement, condition]
+      reported_speech:
+        description: "Cognitive verb followed by subordinate clause structure"
+        examples: ["The analyst stated that growth will continue"]
+        rst_relations_served: [attribution]
+        notes: "Attribution is frequently marked by combined semantic-syntactic signals: cognitive verb + specific subordinate clause structure."
+    best_practices:
+      - "Tag parallel constructions as primary indicators for contrastive and joint relations"
+      - "Distinguish restrictive from non-restrictive relative clauses — only non-restrictive create separate EDUs"
+    anti_patterns:
+      - "Treating all relative clauses as EDU boundaries — restrictive relative clauses are excluded from segmentation"
+
+  morphological:
+    display_name: "Morphological Signals"
+    frequency_share: 0.08
+    description: "Signals derived from word-form variations, particularly verb inflection and personal reference."
+    sub_types:
+      tense_shift:
+        description: "Change in verb tense between adjacent EDUs indicating temporal or causal boundaries"
+        examples: ["Revenue grew [past] → Revenue is growing [present]", "We planned [past] → We will execute [future]"]
+        rst_relations_served: [temporal, background, cause]
+      personal_reference:
+        description: "Shifts in person markers (first/second/third) indicating perspective changes"
+        examples: ["We achieved [1st] → Customers reported [3rd] → You will see [2nd]"]
+        rst_relations_served: [attribution, enablement, evaluation]
+    best_practices:
+      - "Monitor verb tense shifts as boundary indicators for temporal and background relations"
+    anti_patterns:
+      - "Ignoring morphological signals entirely — they provide critical boundary information even when explicit markers are absent"
+
+  graphical:
+    display_name: "Graphical Signals"
+    frequency_share: 0.12
+    description: "Signals derived from visual and typographic features of the text — punctuation, paragraph boundaries, and formatting."
+    sub_types:
+      punctuation_boundary:
+        description: "Commas, semicolons, colons, dashes, and parentheses creating bounding boxes for relations"
+        examples: ["The results — remarkable by any standard — exceeded projections"]
+        rst_relations_served: [same_unit, elaboration, evaluation]
+        notes: "Parentheticals set apart by dashes or parentheses are highly predictive of restatement or partial elaboration."
+      paragraph_boundary:
+        description: "Paragraph breaks signalling macro-level topic shifts or structural transitions"
+        examples: ["[paragraph break between background and main argument]"]
+        rst_relations_served: [topic_change, background, textual_organization]
+      section_heading:
+        description: "Heading hierarchy providing explicit textual organisation signals"
+        examples: ["## Results", "### Financial Performance"]
+        rst_relations_served: [textual_organization, topic_change]
+    best_practices:
+      - "Retain and analyse punctuation as explicit bounding boxes for relations like Elaboration and Same-Unit"
+      - "Use paragraph boundaries as macro-level segmentation signals before fine-grained EDU detection"
+    anti_patterns:
+      - "Stripping punctuation and formatting during preprocessing — destroys critical graphical signals"
+
+  discourse_marker:
+    display_name: "Discourse Markers (Explicit Connectives)"
+    frequency_share: 0.21
+    description: "Traditional lexical connectives that explicitly signal a specific rhetorical relation. Despite being the most studied signal type, they account for only 8.5-22% of all discourse relations."
+    sub_types:
+      subordinating_conjunction:
+        description: "Because, although, since, when, if, while, before, after, unless, until"
+        rst_relations_served: [cause, contrast, temporal, condition, background]
+      coordinating_conjunction:
+        description: "And, but, or, nor, yet, so, for"
+        rst_relations_served: [joint, contrast]
+      adverbial_connective:
+        description: "However, therefore, furthermore, consequently, nevertheless, moreover, meanwhile"
+        rst_relations_served: [contrast, cause, joint, temporal]
+    best_practices:
+      - "Use explicit markers as high-confidence anchors but never as the sole signal source"
+      - "Combine marker detection with semantic and syntactic signal analysis for robust prediction"
+    anti_patterns:
+      - "Configuring a parser to only detect relations when explicit markers are present — misses 78-91.5% of all relations"
+
+# ==============================================================================
+# FRAMEWORK COMPARISON
+# RST vs PDTB vs SDRT vs eRST — structural and scope differences
+# ==============================================================================
+
+framework_comparison:
+  rst:
+    display_name: "Rhetorical Structure Theory (RST)"
+    topology: projective_tree
+    scope: "Global document structure — hierarchical dependencies across entire text"
+    marker_dependency: "Both implicit and explicit semantic/syntactic signals; historically unanchored to specific tokens"
+    recursion: "Highly recursive — EDUs combine into spans, into macro-spans, until single root"
+    strengths:
+      - "Most mathematically robust scaffolding for downstream tasks"
+      - "Extractive summarization via deterministic tree pruning"
+      - "Sentiment propagation through hierarchical weighting"
+    limitations:
+      - "Strict tree-breaking restrictions force annotators to discard concurrent relations"
+      - "Cannot natively represent multi-parent dependencies"
+    benchmark: "F1 > 91 for raw segmentation; ~71% accuracy for complex relation classification (DISRPT 2025)"
+
+  pdtb:
+    display_name: "Penn Discourse Treebank (PDTB)"
+    topology: flat_pairs
+    scope: "Local structure — strictly evaluating adjacent clauses or explicit non-adjacent connectives"
+    marker_dependency: "Lexically anchored via explicit connectives; implicit relations inferred only between locally adjacent units"
+    recursion: "Non-recursive — flat paired relational mapping without global hierarchy"
+    strengths:
+      - "High precision for locally anchored, explicitly marked relations"
+      - "Simpler annotation guidelines enabling larger-scale treebanking"
+    limitations:
+      - "Cannot capture global document coherence"
+      - "Misses long-distance dependencies between non-adjacent spans"
+
+  sdrt:
+    display_name: "Segmented Discourse Representation Theory (SDRT)"
+    topology: directed_acyclic_graph
+    scope: "Global structure — particular efficacy in multi-party dialogue and complex narratives"
+    marker_dependency: "Relies heavily on semantic and pragmatic constraints, resolving complex anaphoric links"
+    recursion: "Highly recursive with explicit support for nested relations and overlapping graphs"
+    strengths:
+      - "Handles multi-parent dependencies and crossing edges"
+      - "Superior for dialogue and non-linear narrative"
+    limitations:
+      - "Higher annotation complexity and cost"
+      - "Fewer large-scale treebanks available"
+
+  erst:
+    display_name: "Enhanced RST (eRST)"
+    topology: augmented_graph
+    scope: "Global document structure with explicit token-level signal anchoring"
+    marker_dependency: "Recognises 40+ distinct signal types systematically linked directly to tokens"
+    recursion: "Highly recursive trees augmented by cross-branch references for complex dependencies"
+    strengths:
+      - "Resolves RST's strict tree-breaking limitation via secondary graph edges"
+      - "Captures multiple concurrent relations while preserving primary tree"
+      - "Explicit signal anchoring improves annotation reproducibility"
+    limitations:
+      - "Increased annotation complexity over classical RST"
+      - "Tooling ecosystem still maturing"
+
+# ==============================================================================
+# PARSING STRATEGY COMPARISON
+# Bottom-up vs Top-down vs Hybrid approaches
+# ==============================================================================
+
+parsing_strategies:
+  bottom_up:
+    display_name: "Bottom-Up (Shift-Reduce)"
+    description: "Iteratively evaluates adjacent units in a working memory stack, predicting Shift or Reduce actions to incrementally build the tree from leaf EDUs upward."
+    strengths:
+      - "Fine-grained intra-sentential boundary precision"
+      - "Robust cross-domain generalisation with LLMs"
+      - "State-of-the-art results on RST-DT, GUM, and Instructional Discourse Treebank"
+    limitations:
+      - "Sequential — each decision conditions the next, propagating early errors"
+      - "Requires orchestrated multi-turn prompting (PDL recommended)"
+    model_requirements: "Highly parameterised reasoning model (tens of billions of parameters)"
+    orchestration: "Repeat-until loop with shift/reduce action prediction, conditional relation labeling, and deterministic state updates"
+
+  top_down:
+    display_name: "Top-Down (Sequential Bisection)"
+    description: "Treats entire document as a single macro-span. Sequentially predicts optimal split points at token boundaries, recursively bisecting and assigning relations until terminal EDUs are reached."
+    strengths:
+      - "Naturally captures global document coherence and macro-level thematic shifts"
+      - "Efficient for long documents — logarithmic depth rather than linear passes"
+    limitations:
+      - "Precision degrades for fine-grained intra-sentential boundaries deep in the recursion"
+    model_requirements: "Sequence-to-sequence neural architecture"
+
+  hybrid:
+    display_name: "Hybrid (Ensemble)"
+    description: "Uses different models for different subtasks: efficient lower-parameter model for segmentation, highly parameterised reasoning model for relational assignment."
+    strengths:
+      - "Optimises both cost and accuracy across the pipeline"
+      - "Each model operates at its optimal cognitive granularity"
+    limitations:
+      - "Requires orchestration of model chaining and output handoff"
+    model_requirements: "Segmentation model + reasoning model, orchestrated via declarative framework (PDL)"
+
+# ==============================================================================
+# SCHEMA EXTRACTION PATTERNS
+# Engineering patterns for extracting discourse trees from LLM outputs
+# ==============================================================================
+
+schema_extraction_patterns:
+  flat_relational_adjacency:
+    display_name: "Flat Relational Adjacency Extraction"
+    description: "Output a flat list of DiscourseNode objects and a flat list of RhetoricalEdge objects with parent_id/child_id pointers. Reconstruct nested tree in local memory."
+    schema_objects:
+      discourse_node:
+        fields: ["node_id", "is_leaf", "text", "start_token", "end_token"]
+      rhetorical_edge:
+        fields: ["edge_id", "parent_id", "left_child_id", "right_child_id", "relation_type", "nuclearity", "signal_type"]
+    rationale: "Strict structured output APIs ban recursive $ref schemas. Flat lists bypass this limitation while perfectly preserving hierarchical data."
+    status: "recommended"
+
+  progressive_chunking:
+    display_name: "Progressive Chunk-Aware Extraction"
+    description: "Parse localized subtrees within individual paragraphs first. Validate and store. Build macro-tree by linking root nodes of established local subtrees in a secondary pass."
+    rationale: "Single-pass extraction of massive documents causes context window degradation and structural hallucination."
+    status: "recommended"
+
+  direct_recursive:
+    display_name: "Direct Recursive Schema"
+    description: "Attempt to output deeply nested tree objects using recursive $ref schema references."
+    rationale: "Conceptually clean but technically impossible — strict structured output modes explicitly ban recursive references."
+    status: "anti_pattern"

@@ -1,0 +1,274 @@
+_meta:
+  id: ai_systems_taxonomy
+  title: "AI Systems Taxonomy"
+  description: "Classification of AI-assisted content generation approaches by method type, prompt pattern, retrieval strategy, pipeline stage, and evaluation dimension"
+  domain: ai
+  domain_type: cross_cutting
+  purpose: taxonomy
+  version: "1.2.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Context Engineering vs- Prompt Engineering- Smarter AI with RAG - Agents.md"
+    - "Corpus/Research/RAG vs Fine-Tuning vs Prompt Engineering- Optimizing AI Models.md"
+    - "Corpus/Research/RAG vs- CAG- Solving Knowledge Gaps in AI Models.md"
+    - "Corpus/Research/Research - Multi-step Prompting Best Practices.md"
+    - "Corpus/Research/Research - Zero-loss Prompt Optimisation.md"
+    - "Corpus/Research/Research - AQE with LLMs via IBM PDL.md"
+    - "Corpus/Research/Research - LLM Argument Mining with PDL.md"
+    - "Corpus/Research/Research - Model Criticism for Long-Form Text.md"
+    - "Corpus/Research/Research - PDL for Discourse-Aware Text Simplification.md"
+  relationships:
+    - target: entities/ai_systems_entities.yaml
+      type: depends_on
+      description: "AI system entity types for NER extraction"
+    - target: ai_config/analyzer_catalog.yaml
+      type: depends_on
+      description: "Analyzer definitions that implement AI methods"
+# ==============================================================================
+# AI METHOD TYPES
+# ==============================================================================
+
+ai_method_types:
+  prompt_engineering:
+    label: "Prompt Engineering"
+    description: "Crafting effective input text to guide LLM behaviour without modifying model weights"
+    model_modification: none
+    knowledge_source: prompt_context
+    best_for: ["quick iteration", "general-purpose tasks", "no training data available"]
+    limitations: ["context window limits", "prompt sensitivity", "no persistent learning"]
+
+  rag:
+    label: "Retrieval-Augmented Generation (RAG)"
+    description: "Combining retrieval from external knowledge stores with LLM generation"
+    model_modification: none
+    knowledge_source: external_retrieval
+    best_for: ["domain-specific Q&A", "up-to-date information", "verifiable outputs"]
+    limitations: ["retrieval quality dependency", "latency overhead", "chunk boundary issues"]
+
+  fine_tuning:
+    label: "Fine-Tuning"
+    description: "Adapting model weights on domain-specific data for specialised behaviour"
+    model_modification: weight_update
+    knowledge_source: training_data
+    best_for: ["consistent style", "domain expertise", "classification tasks"]
+    limitations: ["training data requirements", "compute costs", "knowledge staleness"]
+
+  cag:
+    label: "Contextual Augmented Generation (CAG)"
+    description: "Pre-loading full knowledge into context window without runtime retrieval"
+    model_modification: none
+    knowledge_source: pre_loaded_context
+    best_for: ["small knowledge bases", "low-latency needs", "offline scenarios"]
+    limitations: ["context window limits", "no dynamic updates", "token costs"]
+
+  agentic:
+    label: "Agentic Systems"
+    description: "Multi-step reasoning agents that plan, use tools, and iterate toward goals"
+    model_modification: none
+    knowledge_source: tool_augmented
+    best_for: ["complex multi-step tasks", "tool integration", "autonomous workflows"]
+    limitations: ["error compounding", "cost escalation", "debugging complexity"]
+
+  pdl_declarative:
+    label: "PDL Declarative"
+    description: "IBM Prompt Declaration Language for structured, reproducible prompt programs"
+    model_modification: none
+    knowledge_source: declarative_program
+    best_for: ["reproducible pipelines", "argument mining", "structured extraction"]
+    limitations: ["learning curve", "IBM ecosystem dependency", "limited community tooling"]
+
+# ==============================================================================
+# PROMPT PATTERN TYPES
+# ==============================================================================
+
+prompt_patterns:
+  zero_shot:
+    label: "Zero-Shot"
+    description: "Direct instruction with no examples provided"
+    example_count: 0
+    complexity: low
+
+  few_shot:
+    label: "Few-Shot"
+    description: "Instruction with 2-5 input/output examples for calibration"
+    example_count: "2-5"
+    complexity: medium
+
+  chain_of_thought:
+    label: "Chain-of-Thought (CoT)"
+    description: "Eliciting step-by-step reasoning before the final answer"
+    example_count: varies
+    complexity: medium
+
+  tree_of_thought:
+    label: "Tree-of-Thought (ToT)"
+    description: "Exploring multiple reasoning branches and selecting the best path"
+    example_count: varies
+    complexity: high
+
+  react:
+    label: "ReAct"
+    description: "Interleaving reasoning traces with action steps (tool use)"
+    example_count: varies
+    complexity: high
+
+  self_consistency:
+    label: "Self-Consistency"
+    description: "Sampling multiple reasoning paths and selecting the most common answer"
+    example_count: varies
+    complexity: high
+
+  role_prompting:
+    label: "Role Prompting"
+    description: "Assigning a persona or expert identity to shape response style and depth"
+    example_count: 0
+    complexity: low
+
+  decomposition:
+    label: "Decomposition"
+    description: "Breaking complex tasks into sequential sub-tasks with intermediate outputs"
+    example_count: varies
+    complexity: high
+
+# ==============================================================================
+# RETRIEVAL STRATEGIES
+# ==============================================================================
+
+retrieval_strategies:
+  dense_retrieval:
+    label: "Dense Retrieval"
+    description: "Semantic similarity search using embedding vectors"
+    approach: embedding_similarity
+    strengths: ["semantic understanding", "handles paraphrasing"]
+    weaknesses: ["compute-intensive", "embedding quality dependent"]
+
+  sparse_retrieval:
+    label: "Sparse Retrieval"
+    description: "Keyword-based matching using TF-IDF or BM25"
+    approach: keyword_matching
+    strengths: ["fast", "interpretable", "handles exact terms"]
+    weaknesses: ["misses synonyms", "vocabulary mismatch"]
+
+  hybrid_retrieval:
+    label: "Hybrid Retrieval"
+    description: "Combining dense and sparse retrieval for broader coverage"
+    approach: combined
+    strengths: ["balances precision and recall", "robust"]
+    weaknesses: ["tuning complexity", "compute overhead"]
+
+  multi_hop:
+    label: "Multi-Hop Retrieval"
+    description: "Iterative retrieval where each step informs the next query"
+    approach: iterative
+    strengths: ["handles complex questions", "builds context progressively"]
+    weaknesses: ["latency", "error propagation"]
+
+  reranking:
+    label: "Reranking"
+    description: "Post-retrieval scoring to improve result relevance"
+    approach: secondary_scoring
+    strengths: ["improved precision", "flexible model choice"]
+    weaknesses: ["additional latency", "model dependency"]
+
+# ==============================================================================
+# PIPELINE STAGES
+# ==============================================================================
+
+pipeline_stages:
+  ingestion:
+    label: "Ingestion"
+    description: "Loading, parsing, and preprocessing source documents"
+    typical_components: ["document loader", "parser", "metadata extractor"]
+
+  chunking:
+    label: "Chunking"
+    description: "Splitting documents into retrieval-sized segments"
+    typical_components: ["text splitter", "chunk strategy", "overlap config"]
+
+  embedding:
+    label: "Embedding"
+    description: "Converting text chunks into vector representations"
+    typical_components: ["embedding model", "batch processor", "dimension config"]
+
+  indexing:
+    label: "Indexing"
+    description: "Storing embeddings in a searchable vector store"
+    typical_components: ["vector database", "index builder", "metadata store"]
+
+  retrieval:
+    label: "Retrieval"
+    description: "Querying the index to find relevant chunks for a given input"
+    typical_components: ["retriever", "query transformer", "filter"]
+
+  generation:
+    label: "Generation"
+    description: "Producing the final output using the LLM with retrieved context"
+    typical_components: ["LLM", "prompt template", "output parser"]
+
+  evaluation:
+    label: "Evaluation"
+    description: "Assessing output quality against criteria"
+    typical_components: ["LLM judge", "human review", "metric scorer"]
+
+# ==============================================================================
+# CLASSIFICATION DIMENSIONS
+# ==============================================================================
+
+classification_dimensions:
+  method_type:
+    name: "AI Method Type"
+    description: "The fundamental approach to using AI for content generation"
+    values:
+      - prompt_engineering
+      - rag
+      - fine_tuning
+      - cag
+      - agentic
+      - pdl_declarative
+
+  prompt_pattern:
+    name: "Prompt Pattern"
+    description: "The structural pattern used in prompt construction"
+    values:
+      - zero_shot
+      - few_shot
+      - chain_of_thought
+      - tree_of_thought
+      - react
+      - self_consistency
+      - role_prompting
+      - decomposition
+
+  retrieval_strategy:
+    name: "Retrieval Strategy"
+    description: "The approach used to find and surface relevant context"
+    values:
+      - dense_retrieval
+      - sparse_retrieval
+      - hybrid_retrieval
+      - multi_hop
+      - reranking
+
+  pipeline_stage:
+    name: "Pipeline Stage"
+    description: "The phase within an AI content generation pipeline"
+    values:
+      - ingestion
+      - chunking
+      - embedding
+      - indexing
+      - retrieval
+      - generation
+      - evaluation
+
+  evaluation_dimension:
+    name: "Evaluation Dimension"
+    description: "Criteria for assessing AI-generated output quality"
+    values:
+      - factual_accuracy
+      - coherence
+      - relevance
+      - completeness
+      - style_alignment
+      - hallucination_rate
+      - latency

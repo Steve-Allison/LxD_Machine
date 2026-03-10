@@ -1,0 +1,186 @@
+_meta:
+  id: accessibility_standards
+  title: "Accessibility Standards"
+  description: "Unified accessibility standards covering WCAG compliance, color contrast, and dual structure."
+  domain: visual
+  domain_type: cross_cutting
+  purpose: reference
+  version: "1.3.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Comprehensive Learning Design Framework.md"
+    - "Corpus/Research/Research - Corporate Learning Assessment- Strategies, Modalities, and Best Practices.md"
+    - "Corpus/Research/Research - Slide Deck Design Playbook Research.md"
+    - "Corpus/Research/The Unseen Structure: A Technical Deep-Dive into Narrative, Visualization, and Accessibility.md"
+    - "Corpus/Research/Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md"
+
+
+# ==============================================================================
+# WCAG CONTRAST REQUIREMENTS
+# ==============================================================================
+
+wcag_contrast:
+  description: "Web Content Accessibility Guidelines colour contrast standards"
+  scoring_anchors: !include ../shared/scoring_visual.yaml
+
+  level_aa_requirements:
+    normal_text:
+      ratio: "4.5:1 minimum"
+      applies_to: "Text under 18pt (or under 14pt bold)"
+    large_text:
+      ratio: "3:1 minimum"
+      applies_to: "Text 18pt+ (or 14pt+ bold)"
+    graphical_objects:
+      ratio: "3:1 minimum"
+      applies_to: "Icons, chart elements, meaningful graphics"
+
+  remediation_strategies:
+    low_contrast_text:
+      action: "Darken text color or lighten background. For text over images, add a solid container or 80% opacity overlay."
+    low_contrast_ui:
+      action: "Add a 1px solid border with 3:1 contrast to low-contrast buttons/inputs."
+
+# ==============================================================================
+# WCAG 2.2 UPDATES (beyond WCAG 2.1 AA)
+# Sources: The Unseen Structure; WCAG 2.2 specification
+# ==============================================================================
+
+wcag_2_2_additions:
+  description: "New or strengthened criteria introduced in WCAG 2.2 (published 2023-10-05)"
+
+  focus_appearance:
+    criterion: "2.4.11 Focus Appearance (AA)"
+    requirement: "Focus indicator must be at least 2px thick and enclose the focused component"
+    minimum_area: "Perimeter of component × 2px (or a 24×24px bounding box minimum)"
+    colour_contrast: "3:1 contrast between focused and unfocused state"
+    remediation: "Replace outline:none with a visible ring; minimum outline: 2px solid; offset: 2px"
+
+  target_size:
+    criterion: "2.5.8 Target Size (Minimum, AA)"
+    requirement: "Interactive targets must be at least 24×24 CSS pixels"
+    note: "Exception: spacing between targets may compensate if combined area ≥ 24×24px"
+    recommended: "44×44px for primary interactive controls (follows Apple HIG + Google Material)"
+    remediation: "Increase padding; use min-width/min-height declarations; ensure tap targets do not overlap"
+
+  consistent_help:
+    criterion: "3.2.6 Consistent Help (A)"
+    requirement: "If a help mechanism appears on multiple pages, it must appear in the same relative order"
+    applies_to: "Chatbots, FAQs, tooltips, contact links appearing in repeated UI regions"
+
+  redundant_entry:
+    criterion: "3.3.7 Redundant Entry (A)"
+    requirement: "Users must not be required to re-enter information already submitted in the same process"
+    remediation: "Pre-fill or allow copy of previously entered data across multi-step forms"
+
+  accessible_authentication:
+    criterion: "3.3.8 Accessible Authentication (Minimum, AA)"
+    requirement: "Cognitive function tests (e.g., 'identify the picture of a dog') are not permitted in authentication unless an alternative is provided"
+    remediation: "Provide text-based CAPTCHA alternatives or biometric/link-based auth paths"
+
+# ==============================================================================
+# COLOUR INDEPENDENCE
+# ==============================================================================
+
+colour_independence:
+  description: "Information must not be conveyed by colour alone (WCAG 1.4.1)"
+
+  remediation_strategies:
+    status_dots:
+      action: "Add icons inside the dots (Checkmark vs X) or text labels."
+    chart_series:
+      action: "Use different dash patterns (solid/dotted) or point shapes (circle/square) in addition to colour."
+    link_text:
+      action: "Underline links within body text."
+
+  few_shot_examples:
+    bad:
+      description: "Form showing 'Red fields are required'."
+      reasoning: "Users with achromatopsia cannot identify required fields."
+    good:
+      description: "Form showing 'Fields marked with * are required'."
+      reasoning: "Symbol provides independent visual cue."
+
+# ==============================================================================
+# MOTION AND ANIMATION ACCESSIBILITY
+# Sources: The Unseen Structure; Applying Mayer's Principles (modality + coherence)
+# ==============================================================================
+
+motion_accessibility:
+  description: "Standards for animated content and motion-sensitive users"
+
+  prefers_reduced_motion:
+    wcag_criterion: "2.3.3 Animation from Interactions (AAA) — WCAG 2.1"
+    best_practice: "Honor prefers-reduced-motion CSS media query at AA level for corporate/learning content"
+    implementation: |
+      @media (prefers-reduced-motion: reduce) {
+        * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+      }
+    cognitive_load_note: "Per Mayer's Coherence Principle: unnecessary animation increases extraneous cognitive load by up to 73% retention penalty (Mayer 2009)"
+
+  auto_play_controls:
+    requirement: "Any animation longer than 5 seconds that starts automatically must have pause/stop/hide controls (WCAG 2.2.2)"
+    exceptions: "Animation essential to content understanding (e.g., progress indicators) may auto-play"
+
+  seizure_prevention:
+    wcag_criterion: "2.3.1 Three Flashes or Below Threshold"
+    requirement: "Content must not flash more than 3 times per second"
+    photosensitive_threshold: "Flashing area < 25% of central field of vision at standard viewing distance"
+
+  corporate_presentation_guidance:
+    transitions: "Prefer fade or dissolve (< 0.3s) over kinetic wipes or spinning transitions"
+    builds: "Element builds should be instant or fade-in (< 0.2s); avoid bounce or elastic easings"
+    data_animation: "Animated charts must include a static screenshot as fallback for printed/PDF output"
+
+# ==============================================================================
+# DUAL STRUCTURE PATTERN (Complex Visualization)
+# ==============================================================================
+
+dual_structure:
+  description: "Visual presentation layer + semantic HTML layer"
+
+  remediation_strategies:
+    canvas_trap:
+      action: "Add a visually hidden <table> or <ul> inside the container that mirrors the data points."
+    keyboard_inaccessible:
+      action: "Implement 'Rover tabindex' pattern for navigating data points with arrow keys."
+
+# ==============================================================================
+# SCREEN READER COMPATIBILITY
+# ==============================================================================
+
+screen_reader_compatibility:
+  description: "Technical implementation for screen reader access"
+
+  remediation_strategies:
+    missing_alt:
+      action: "Add alt text describing the *intent* and *outcome* of the chart, not just its title."
+    heading_order:
+      action: "Restructure headings to follow strictly logical H1 -> H2 -> H3 hierarchy without skipping levels."
+
+# ==============================================================================
+# PRESENTATION-SPECIFIC ACCESSIBILITY
+# Sources: Research - Slide Deck Design Playbook Research.md; The Unseen Structure
+# ==============================================================================
+
+presentation_accessibility:
+  description: "Accessibility standards specific to slide decks and corporate presentations"
+
+  slide_structure:
+    title_required: "Every slide must have a unique, descriptive title — used as navigation landmark by screen readers"
+    reading_order: "Ensure slide tab order matches visual left-to-right, top-to-bottom reading order"
+    decorative_images: "Set decorative images as 'decorative' (empty alt or marked as background) in accessible export"
+
+  export_formats:
+    pdf_tagged: "Export to Tagged PDF for document accessibility (WCAG 1.3.1 compliance)"
+    alt_text_preservation: "Verify alt text survives export from PPTX → PDF (test in Acrobat Accessibility Checker)"
+    colour_mode: "Provide high-contrast and greyscale versions for print distribution"
+
+  live_presentation:
+    caption_provision: "Provide live captions for in-person and virtual presentations (WCAG 1.2.4 for live audio)"
+    interpreter_space: "Reserve slide layout space for sign language interpreter window in virtual setups"
+    verbalization: "Presenters must verbalize all chart data and visual content: 'This chart shows X increased by Y%'"
+
+  scoring_integration:
+    accessibility_score_basis: "WCAG 2.1 AA compliance"
+    wcag_2_2_bonus: "Compliance with target_size and focus_appearance earns +2 bonus points"
+    animation_penalty: "Excessive animation (> 5 auto-playing elements per slide) incurs -4 points cognitive_load penalty"

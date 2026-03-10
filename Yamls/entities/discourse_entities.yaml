@@ -1,0 +1,1739 @@
+_meta:
+  id: discourse_entities
+  purpose: entity
+  version: 2.21.0
+  last_updated: '2026-03-09'
+  description: GLiNER2 entity definitions for discourse structure analysis including RST relations, discourse connectives,
+    coherence markers, complexity indicators, and cross-modal references.
+  domain: narrative
+  domain_type: cross_cutting
+  corpus_sources:
+  - 'Corpus/Research/Structural Paradigms in Natural Language Processing: A Comprehensive Analysis of Narrative Orchestration,
+    Discourse Integration, and Latent Evaluation.md'
+  - 'Corpus/Research/PDL Architecture: Narrative & Discourse Analysis Series.md'
+  - Corpus/Research/Crafting Powerful Opening Plays.md
+  - Corpus/Research/Research - Elite Speaker Linguistic Analysis Taxonomy.md
+  - Corpus/Research/Research - Visual Communication and Storytelling.md
+  - Corpus/Research/Research - Researching Narrative and Discourse Analysis.md
+  - Corpus/Research/Research - Canonical Presentation Methodology Research.md
+  - Corpus/Research/Research - Advanced Computational Discourse Analysis_ Operationalizing Rhetorical Structure Theory with
+    LLM.md
+  - Corpus/Research/Research - Analyzing Story for Business Communication.md
+  - Corpus/Research/a-guide-to-good-reasoning-cultivating-intellectual-virtues-16112.md
+  - Corpus/Research/Research - The Architecture of Influence_ A Comprehensive Multimodal Taxonomy of Elite vs. Average Public
+    Speaking.md
+  - Corpus/Research/research_-_slide_deck_design_playbook_research.md
+  - Corpus/Research/Research - Slide Deck Design Playbook Research.md
+  - Corpus/Research/research_-_elite_speaker_linguistic_analysis_taxonomy.md
+  - Corpus/Research/research_-_the_architecture_of_influence__a_comprehensive_multim.md
+  academic_sources:
+  - Niklaus et al. (2023) - DATS framework
+  - Mann & Thompson (1988) - RST
+  - RST Discourse Treebank
+  - Halliday & Hasan (1976) - Cohesion
+  - Hyland (2005) - Stance and engagement
+  relationships: null
+entity_types:
+  cause_marker:
+    label: CAUSE_MARKER
+    field_description: Causal discourse marker because since therefore thus hence consequently due to as a result
+    description: Lexical marker signalling causal or consequential relationship
+    entity_kind: rst_relation
+    family: rhetorical_structure
+    examples:
+    - because we invested in R&D
+    - since market conditions improved
+    - due to customer demand
+    - therefore we succeeded
+    - thus revenue increased
+    - consequently costs decreased
+    - as a result of the changes
+    - hence the improvement
+    - owing to strong execution
+    - thanks to our team
+    confidence_threshold: 0.7
+    field: rst
+    indicators:
+    - because
+    - since
+    - as
+    - due to
+    - owing to
+    - given that
+    - therefore
+    - thus
+    - hence
+    - consequently
+    - as a result
+    - so
+    - accordingly
+    - thanks to
+    patterns:
+    - because \w+
+    - due to \w+
+    - as a result of
+    - therefore
+    - consequently
+    color: '#e74c3c'
+    relates_to:
+    - target: logos_appeal
+      relation: supports
+      weight: required
+      description: Cause markers (because, since, as, caused by) explicitly establish causal reasoning. They enable logos
+        appeals by articulating logical relationships between propositions.
+      target_file: rhetorical_devices_entities
+    - target: claim
+      relation: supports
+      weight: expected
+      description: "Discourse-Aware TS explicitly preserves causal links as Cause relations connecting propositions to claims per Researching Narrative and Discourse Analysis"
+      target_file: narrative_entities
+    - target: elaboration_marker
+      relation: contrasts_with
+      weight: optional
+      description: "RSTformer RST-attention heads specialize with causal relations occupying different attention heads than elaboration relations showing functional contrast per Researching Narrative and Discourse Analysis"
+    - target: warrant
+      relation: supports
+      weight: expected
+      description: "Cause markers (because, since, therefore) express the warrant — the logical connection between evidence (Dashes) and claim (Dot) in hierarchical argument structure per Canonical Presentation Methodology"
+      target_file: narrative_entities
+    - target: evidence
+      relation: enables
+      weight: expected
+      description: "Causal discourse markers enable evidence presentation forcing explicit causal connections in narrative prose"
+      target_file: narrative_entities
+    taxonomy_mapping:
+    - taxonomy: Descriptive_RST_taxonomy
+      dimension: relation_class
+      values:
+      - cause
+      strength: primary
+  contrast_marker:
+    label: CONTRAST_MARKER
+    field_description: Contrastive discourse marker however but although nevertheless despite yet on the other hand
+    description: Lexical marker signalling contrast, opposition, or concession
+    entity_kind: rst_relation
+    family: rhetorical_structure
+    examples:
+    - however costs also rose
+    - but quality declined
+    - although expensive, it succeeded
+    - yet results were modest
+    - nevertheless we proceeded
+    - on the other hand, Product B failed
+    - despite the challenges
+    - in contrast to expectations
+    - whereas competitors struggled
+    - unlike our competitors
+    confidence_threshold: 0.75
+    field: rst
+    indicators:
+    - but
+    - however
+    - although
+    - though
+    - even though
+    - yet
+    - nevertheless
+    - nonetheless
+    - despite
+    - in spite of
+    - on the other hand
+    - conversely
+    - in contrast
+    - whereas
+    - while
+    - unlike
+    patterns:
+    - however
+    - although \w+
+    - despite \w+
+    - on the other hand
+    - in contrast
+    - unlike \w+
+    color: '#9b59b6'
+    relates_to:
+    - target: antithesis
+      relation: enables
+      weight: expected
+      description: Discourse contrast markers provide the connective tissue for antithesis devices
+      target_file: rhetorical_devices_entities
+    - target: narrative_tension
+      relation: supports
+      weight: required
+      description: Contrast markers (but, however, yet, on the other hand) establish oppositions that create narrative tension.
+        They signal departures from expectations and prepare audiences for resolution.
+      target_file: narrative_entities
+    - target: contrast_hook
+      relation: supports
+      weight: expected
+      description: Contrast markers support contrast hooks by providing the discourse connectives (however, but, yet) that
+        signal the expectation-reality gap in opening contrasts per Crafting Powerful Opening Plays
+      target_file: opening_hooks_entities
+    - target: cause_marker
+      relation: bridges
+      weight: optional
+      description: "Elite discourse replaces academic contrast markers ('On the other hand') with cause-oriented navigation ('What this means is'), bridging contrastive and causal framing per Architecture of Influence"
+    - target: design_principle
+      relation: supported_by
+      weight: expected
+      description: "Discourse contrast markers map to visual contrast principles using perceptual opposites to make elements stand out per Visual Communication and Storytelling"
+      target_file: visual_elements_entities
+    - target: antithesis
+      relation: specialises
+      weight: expected
+      description: "RST framework treats contrast as a rhetorical relation type with antithesis being the rhetorical device form of the same structural opposition per Researching Narrative and Discourse Analysis"
+      target_file: rhetorical_devices_entities
+    - target: concession_marker
+      relation: bridges
+      weight: expected
+      description: Contrast and concession are related RST relations sharing overlapping signal sets — contrast marks balanced
+        opposition while concession marks acknowledged counterpoints with different nuclearity per Advanced Computational Discourse
+        Analysis research
+    - target: qualifier
+      relation: triggers
+      weight: expected
+      description: "Discount indicators (but, however, nevertheless, although, yet) signal qualifications that acknowledge objections while maintaining the main claim per a-guide-to-good-reasoning"
+      target_file: narrative_entities
+    - target: rebuttal
+      relation: supports
+      weight: expected
+      description: "Adversative markers (however, nevertheless, but) signal contrasting or rebutting content — RST Contrast relations use these markers to flag opposing arguments per UNIFIED_NARRATIVE_METHODOLOGY_v2"
+      target_file: narrative_entities
+    taxonomy_mapping:
+    - taxonomy: Descriptive_RST_taxonomy
+      dimension: relation_class
+      values:
+      - contrast
+      strength: primary
+  temporal_marker:
+    label: TEMPORAL_MARKER
+    field_description: Temporal sequence marker when after before then next finally subsequently during meanwhile
+    description: Lexical marker signalling temporal sequence or time frame
+    entity_kind: rst_relation
+    family: rhetorical_structure
+    examples:
+    - when we launched the product
+    - after completing the pilot
+    - before the merger
+    - then we expanded
+    - next we validated
+    - finally we deployed
+    - subsequently revenue grew
+    - during Q3
+    - meanwhile competitors struggled
+    - previously we had tried
+    - following the acquisition
+    confidence_threshold: 0.7
+    field: rst
+    indicators:
+    - when
+    - after
+    - before
+    - until
+    - while
+    - during
+    - first
+    - then
+    - next
+    - finally
+    - subsequently
+    - previously
+    - meanwhile
+    - eventually
+    - at first
+    - in the end
+    - following
+    - prior to
+    patterns:
+    - when \w+
+    - after \w+
+    - before \w+
+    - first,? \w+
+    - then,? \w+
+    - finally,? \w+
+    - following \w+
+    color: '#3498db'
+    relates_to:
+    - target: narrative_hook
+      relation: supports
+      weight: required
+      description: Temporal markers (first, then, finally, once, when) create narrative time sequence. They establish causal
+        and temporal relationships that generate narrative coherence and hook audience attention.
+      target_file: narrative_entities
+    - target: ACTION_MARKER
+      relation: supports
+      weight: expected
+      description: "Temporal markers map to sequential process flows in Approach phase with chronological steps"
+      target_file: sales_entities
+    taxonomy_mapping:
+    - taxonomy: Descriptive_RST_taxonomy
+      dimension: relation_class
+      values:
+      - temporal
+      strength: primary
+  elaboration_marker:
+    label: ELABORATION_MARKER
+    field_description: Elaboration marker specifically in particular for example such as namely that is in other words
+    description: Lexical marker signalling elaboration, specification, or exemplification
+    entity_kind: rst_relation
+    family: rhetorical_structure
+    examples:
+    - specifically we reduced latency
+    - in particular the enterprise segment
+    - for example healthcare clients
+    - such as API integration
+    - namely the core features
+    - that is return on investment
+    - in other words simplified workflow
+    - to illustrate the impact
+    - more precisely the algorithm
+    - for instance in finance
+    confidence_threshold: 0.65
+    field: rst
+    indicators:
+    - specifically
+    - in particular
+    - for example
+    - for instance
+    - such as
+    - namely
+    - that is
+    - i.e.
+    - e.g.
+    - in other words
+    - to illustrate
+    - more precisely
+    - to be specific
+    patterns:
+    - specifically
+    - in particular
+    - for example
+    - for instance
+    - such as \w+
+    - namely
+    - that is
+    color: '#2ecc71'
+    relates_to:
+    - target: clarity_dimension
+      relation: supports
+      weight: required
+      description: Elaboration markers (in other words, for example, that is to say) provide real-time definitions and clarification.
+        They reduce propositional density by unpacking complex ideas. Elaboration improves clarity scores.
+      target_file: scoring_entities
+    - target: intrinsic_load_marker
+      relation: contrasts_with
+      weight: expected
+      description: Elite speakers achieve lower propositional idea density through elaborative repetition unpacking density to reduce intrinsic load of complex content per Elite Speaker Linguistic Analysis
+      target_file: cognitive_load_entities
+    - target: claim
+      relation: supports
+      weight: expected
+      description: "RSTformer shows elaboration satellites provide supporting detail to nucleus claims per Researching Narrative and Discourse Analysis"
+      target_file: narrative_entities
+    - target: cause_marker
+      relation: contrasts_with
+      weight: expected
+      description: Elaboration provides supplementary detail on a nucleus while cause establishes causal dependency — these are
+        distinct RST relation types requiring different signal patterns per Advanced Computational Discourse Analysis research
+    - target: emphasis_marker
+      relation: enables
+      weight: optional
+      description: "Elaborative repetition (unpacking complex ideas into multiple shorter sentences) enables emphasis by giving audience cognitive processing time through lower Propositional Idea Density per Architecture of Influence"
+    - target: extraneous_load_marker
+      relation: triggers
+      weight: optional
+      description: "Excessive elaboration in slide text triggers extraneous cognitive load — over-specification and unnecessary detail consume working memory without advancing understanding per slide deck design playbook"
+      target_file: cognitive_load_entities
+    - target: germane_load_marker
+      relation: supports
+      weight: expected
+      description: "Elaboration through worked examples, analogies, and explanations directly supports germane load by aiding schema formation per Slide Deck Design Playbook Gagne Event 5"
+      target_file: cognitive_load_entities
+    - target: germane_load_marker
+      relation: enables
+      weight: optional
+      description: "Elaboration markers enable germane processing providing connective tissue in Deep Dive layer"
+      target_file: cognitive_load_entities
+    - target: extraneous_load_marker
+      relation: resolves
+      weight: expected
+      description: "Elaborative Repetition (unpacking dense propositions into multiple simpler clauses) reduces PID and cognitive processing burden — the core 'de-densification' tactic (Architecture of Influence, Section 1.1)"
+      target_file: cognitive_load_entities
+    - target: progressive_disclosure_marker
+      relation: supports
+      weight: optional
+      description: "Elaboration markers signal deep-dive content for nested card reveals preserving simple initial views"
+      target_file: cognitive_load_entities
+    taxonomy_mapping:
+    - taxonomy: Descriptive_RST_taxonomy
+      dimension: relation_class
+      values:
+      - elaboration
+      strength: primary
+  joint_marker:
+    label: JOINT_MARKER
+    field_description: Additive joint marker and also additionally furthermore moreover in addition as well plus
+    description: Lexical marker signalling addition or parallel information
+    entity_kind: rst_relation
+    family: rhetorical_structure
+    examples:
+    - and we reduced costs
+    - also we improved quality
+    - additionally we offer support
+    - furthermore profitability improved
+    - moreover we exceeded targets
+    - in addition the platform scales
+    - as well as training
+    - plus new features
+    - along with documentation
+    - what's more it's scalable
+    confidence_threshold: 0.6
+    field: rst
+    indicators:
+    - and
+    - also
+    - additionally
+    - furthermore
+    - moreover
+    - in addition
+    - as well
+    - plus
+    - along with
+    - besides
+    - what's more
+    - not only
+    - but also
+    patterns:
+    - additionally
+    - furthermore
+    - moreover
+    - in addition
+    - as well as \w+
+    - not only \w+ but also
+    color: '#1abc9c'
+    relates_to:
+    - target: coordination_marker
+      relation: specialises
+      weight: optional
+      description: Joint markers are a specific subtype of coordination markers that connect equal-status units. They maintain
+        symmetry and parallelism that generates rhetorical power.
+    taxonomy_mapping:
+    - taxonomy: Descriptive_RST_taxonomy
+      dimension: relation_class
+      values:
+      - joint
+      strength: primary
+  attribution_marker:
+    label: ATTRIBUTION_MARKER
+    field_description: Attribution source marker according to says claims reports stated research shows data indicates
+    description: Lexical marker signalling source attribution or citation
+    entity_kind: rst_relation
+    family: rhetorical_structure
+    examples:
+    - according to Gartner
+    - the CEO says revenue will double
+    - analysts claim growth will continue
+    - IDC reports adoption is rising
+    - the CFO stated margins improved
+    - research shows 80% of projects
+    - data indicates significant growth
+    - studies suggest a correlation
+    - experts believe the trend
+    - McKinsey found that
+    confidence_threshold: 0.75
+    field: rst
+    indicators:
+    - according to
+    - says
+    - said
+    - claims
+    - claimed
+    - reports
+    - reported
+    - states
+    - stated
+    - announced
+    - believes
+    - suggests
+    - research shows
+    - data indicates
+    - studies show
+    - experts say
+    - found that
+    patterns:
+    - according to \w+
+    - \w+ says
+    - \w+ claims
+    - \w+ reports
+    - research shows
+    - data indicates
+    - \w+ found that
+    color: '#f39c12'
+    relates_to:
+    - target: evidence
+      relation: supports
+      weight: required
+      description: Attribution markers (according to, as [expert] notes, research shows) establish evidence provenance and
+        credibility. They signal that claims are grounded in external authority rather than mere opinion.
+      target_file: narrative_entities
+    - target: subordination_marker
+      relation: supports
+      weight: expected
+      description: Attribution relations are frequently marked by combined semantic-syntactic signals — specifically cognitive
+        verbs followed by subordinate clause structures per Advanced Computational Discourse Analysis research
+    - target: expert_testimony
+      relation: triggers
+      weight: expected
+      description: "Report indicators ('according to', 'research shows', 'experts say') signal attributed claims from authorities whose reliability depends on expertise and potential bias per a-guide-to-good-reasoning"
+      target_file: evidence_types_entities
+    taxonomy_mapping:
+    - taxonomy: Descriptive_RST_taxonomy
+      dimension: relation_class
+      values:
+      - attribution
+      strength: primary
+  condition_marker:
+    label: CONDITION_MARKER
+    field_description: Conditional marker if unless provided that assuming in case on condition that supposing when
+    description: Lexical marker signalling conditional or hypothetical relationship
+    entity_kind: rst_relation
+    family: rhetorical_structure
+    examples:
+    - if we invest in AI
+    - unless we act now
+    - provided that funding continues
+    - assuming demand holds
+    - in case of delays
+    - on condition that goals are met
+    - supposing the market recovers
+    - should the need arise
+    - whether or not we proceed
+    confidence_threshold: 0.7
+    field: rst
+    indicators:
+    - if
+    - unless
+    - provided that
+    - providing
+    - assuming
+    - in case
+    - on condition that
+    - supposing
+    - should
+    - were to
+    - in the event
+    - whether
+    patterns:
+    - if \w+
+    - unless \w+
+    - provided that
+    - assuming \w+
+    - in case of
+    color: '#e67e22'
+    relates_to:
+    - target: qualifier
+      relation: supports
+      weight: required
+      description: Condition markers (if, unless, provided that, in case) establish scope limitations and conditional claims.
+        They function as qualifiers that moderate claim strength.
+      target_file: narrative_entities
+    - target: warrant
+      relation: triggers
+      weight: expected
+      description: "Conditional markers ('if...then', 'supposing that', 'so long as', 'only if') signal the logical form of if-then arguments that connect premises to conclusions per a-guide-to-good-reasoning"
+      target_file: narrative_entities
+    taxonomy_mapping:
+    - taxonomy: Descriptive_RST_taxonomy
+      dimension: relation_class
+      values:
+      - condition
+      strength: primary
+  same_unit_marker:
+    label: SAME_UNIT_MARKER
+    field_description: Embedded clause marker parenthetical appositive which who that interrupted unit relative clause
+    description: Marker of interrupted logical unit split by embedded clause or parenthetical
+    entity_kind: rst_relation
+    family: rhetorical_structure
+    examples:
+    - The product, which launched last quarter, exceeded expectations
+    - Our strategy—developed over months—proved effective
+    - Revenue (as shown in Figure 1) increased
+    - The team, led by Sarah, delivered
+    - Sales, particularly in EMEA, surpassed targets
+    - The CEO, a former engineer, understood
+    - Results, though preliminary, are promising
+    confidence_threshold: 0.7
+    field: rst
+    indicators:
+    - ', which'
+    - ', who'
+    - ', that'
+    - —
+    - ' ('
+    - ') '
+    - ', particularly'
+    - ', especially'
+    - ', including'
+    - ', led by'
+    - ', known as'
+    - ', a '
+    - ', the '
+    patterns:
+    - ', which \w+'
+    - ', who \w+'
+    - —\w+—
+    - \([^)]+\)
+    - ', particularly \w+'
+    color: '#95a5a6'
+    relates_to:
+    - target: coordination_marker
+      relation: bridges
+      weight: optional
+      description: "Discourse-Aware TS shows coordinate clause splitting decomposes same-units into separate propositions linked via coordination markers per Researching Narrative and Discourse Analysis"
+    taxonomy_mapping:
+    - taxonomy: Descriptive_RST_taxonomy
+      dimension: relation_class
+      values:
+      - same_unit
+      strength: primary
+  topic_shift_marker:
+    label: TOPIC_SHIFT_MARKER
+    field_description: Topic change marker turning to moving on now regarding as for with respect to concerning
+    description: Lexical marker signalling shift to new topic or section
+    entity_kind: discourse_marker
+    family: coherence_structure
+    examples:
+    - turning to the financials
+    - moving on to implementation
+    - now let's consider
+    - regarding the timeline
+    - as for the budget
+    - with respect to security
+    - concerning the next steps
+    - on the subject of
+    - speaking of which
+    confidence_threshold: 0.75
+    field: coherence
+    indicators:
+    - turning to
+    - moving on
+    - now
+    - regarding
+    - as for
+    - with respect to
+    - concerning
+    - on the subject of
+    - speaking of
+    - as regards
+    - in terms of
+    patterns:
+    - turning to \w+
+    - moving on to \w+
+    - now let's \w+
+    - regarding \w+
+    - as for \w+
+    color: '#8e44ad'
+    relates_to:
+    - target: transition_marker
+      relation: contains
+      weight: expected
+      description: Topic shifts subsume narrative transition markers
+      target_file: narrative_entities
+    - target: session_structure_marker
+      relation: supports
+      weight: required
+      description: Topic shift markers (now, moving on, let's turn to, shifting gears) signal major transitions in presentation
+        structure. They reduce listener anxiety by making structure explicit.
+      target_file: delivery_entities
+    - target: transition_marker
+      relation: supports
+      weight: expected
+      description: Frame markers and transition markers segment speech into digestible chapters providing structural signposting per Elite Speaker Linguistic Analysis
+      target_file: narrative_entities
+  summary_marker:
+    label: SUMMARY_MARKER
+    field_description: Summary conclusion marker in summary to conclude overall in short to sum up in conclusion
+    description: Lexical marker signalling summary or conclusion
+    entity_kind: discourse_marker
+    family: coherence_structure
+    examples:
+    - in summary the results show
+    - to conclude we recommend
+    - overall the project succeeded
+    - in short we delivered
+    - to sum up the key points
+    - in conclusion the data supports
+    - all in all a success
+    - the bottom line is
+    - ultimately we achieved
+    - to recap the main points
+    confidence_threshold: 0.8
+    field: coherence
+    indicators:
+    - in summary
+    - to summarise
+    - to conclude
+    - in conclusion
+    - overall
+    - in short
+    - to sum up
+    - all in all
+    - the bottom line
+    - ultimately
+    - in brief
+    - to recap
+    patterns:
+    - in summary
+    - to conclude
+    - in conclusion
+    - overall
+    - in short
+    - to sum up
+    - to recap
+    color: '#27ae60'
+    relates_to:
+    - target: resolution_signal
+      relation: supports
+      weight: required
+      description: Summary markers (in summary, to recap, in conclusion, the bottom line) signal narrative closure and consolidation.
+        They enable audiences to integrate information into long-term memory.
+      target_file: narrative_entities
+    - target: tricolon_marker
+      relation: supported_by
+      weight: expected
+      description: Steve Jobs frames talks as Just three stories with the Rule of Three meta-structure reducing cognitive load signaling completeness per Elite Speaker Linguistic Analysis
+    - target: structural_slide
+      relation: supports
+      weight: expected
+      description: "Summary discourse markers support structural recap slides — 'in summary', 'to conclude', and 'the bottom line' signal the transition to summary slides that consolidate key points per slide deck design playbook"
+      target_file: slide_types_entities
+    - target: claim
+      relation: contains
+      weight: expected
+      description: "Summary markers encapsulate the claim in executive summary form; Horizontal Flow requires that Action Titles serve as standalone summary statements (Canonical Presentation Methodology)"
+      target_file: narrative_entities
+    - target: working_memory_marker
+      relation: supports
+      weight: expected
+      description: "Summary markers consolidate information and reduce working memory demands by chunking content into retrievable packages aligned with the brain's limited processing capacity per elite_speaker_taxonomy"
+      target_file: cognitive_load_entities
+    - target: progressive_disclosure_marker
+      relation: supports
+      weight: expected
+      description: "Summary markers support progressive disclosure Billboard and Skim layers for core message extraction"
+      target_file: cognitive_load_entities
+  emphasis_marker:
+    label: EMPHASIS_MARKER
+    field_description: Emphasis importance marker importantly crucially notably significantly especially particularly above
+      all
+    description: Lexical marker signalling emphasis or importance
+    entity_kind: discourse_marker
+    family: coherence_structure
+    examples:
+    - importantly the data confirms
+    - crucially we maintained quality
+    - notably revenue increased
+    - significantly costs declined
+    - especially in the enterprise segment
+    - particularly for large customers
+    - above all security is paramount
+    - most importantly we delivered
+    - it is worth noting that
+    confidence_threshold: 0.7
+    field: coherence
+    indicators:
+    - importantly
+    - crucially
+    - notably
+    - significantly
+    - especially
+    - particularly
+    - above all
+    - most importantly
+    - it is worth noting
+    - of particular note
+    - remarkably
+    - strikingly
+    - critically
+    patterns:
+    - importantly
+    - crucially
+    - notably
+    - significantly
+    - above all
+    - most importantly
+    color: '#c0392b'
+    relates_to:
+    - target: anaphora
+      relation: supported_by
+      weight: expected
+      description: "Emphasis markers are supported by anaphora which creates emphatic repetition at the beginning of successive clauses per Analyzing Story for Business Communication"
+      target_file: rhetorical_devices_entities
+    - target: pause_marker
+      relation: triggers
+      weight: expected
+      description: "Emphasis markers trigger strategic pauses that provide prosodic weight and audience processing time; elite speakers place unfilled pauses after emphasis words for maximum impact per elite_speaker_taxonomy"
+      target_file: performance_entities
+    - target: mayer_extraneous_principle
+      relation: supported_by
+      weight: expected
+      description: "Bold and highlighting implement signaling principle guiding learner attention per Applying Mayer's Principles Practical Checklist"
+      target_file: cognitive_load_entities
+  concession_marker:
+    label: CONCESSION_MARKER
+    field_description: Concession acknowledgement marker admittedly granted of course certainly true that while it is
+    description: Lexical marker signalling concession or acknowledgement before counter-point
+    entity_kind: discourse_marker
+    family: coherence_structure
+    examples:
+    - admittedly costs increased
+    - granted there are challenges
+    - of course risks exist
+    - certainly the timeline is tight
+    - true that competitors are strong
+    - while it is difficult
+    - no doubt there are concerns
+    - it must be admitted that
+    - to be fair the process
+    confidence_threshold: 0.7
+    field: coherence
+    indicators:
+    - admittedly
+    - granted
+    - of course
+    - certainly
+    - 'true'
+    - no doubt
+    - it must be admitted
+    - to be fair
+    - to be sure
+    - indeed
+    - naturally
+    patterns:
+    - admittedly
+    - granted,? \w+
+    - of course
+    - certainly
+    - it must be admitted
+    - to be fair
+    color: '#7f8c8d'
+    relates_to:
+    - target: qualifier
+      relation: enables
+      weight: optional
+      description: Discourse concessions can introduce qualifiers for claims
+      target_file: narrative_entities
+    - target: ethos_appeal
+      relation: supports
+      weight: required
+      description: Concession markers (admittedly, I grant that, it's true that) enable ethos appeals by demonstrating fairness
+        and intellectual honesty. Strategic concessions increase credibility by acknowledging counterarguments before refuting
+        them.
+      target_file: rhetorical_devices_entities
+    - target: condition_marker
+      relation: bridges
+      weight: expected
+      description: Concession and condition relations share identical overlapping signal sets in written text creating interpretive
+        ambiguity that requires broad contextual evaluation to disambiguate per Advanced Computational Discourse Analysis research
+    - target: rebuttal
+      relation: precedes
+      weight: expected
+      description: "Concession markers precede rebuttals by acknowledging an opposing point before the counterargument is deployed per Analyzing Story for Business Communication"
+      target_file: narrative_entities
+    taxonomy_mapping:
+    - taxonomy: Descriptive_RST_taxonomy
+      dimension: relation_class
+      values:
+      - concession
+      strength: primary
+  reformulation_marker:
+    label: REFORMULATION_MARKER
+    field_description: Reformulation restatement marker in other words that is to say i.e. put differently meaning
+    description: Lexical marker signalling rephrasing or clarification
+    entity_kind: discourse_marker
+    family: coherence_structure
+    examples:
+    - in other words simplified
+    - that is to say reduced
+    - i.e. return on investment
+    - put differently we pivoted
+    - meaning faster delivery
+    - to put it another way
+    - what this means is
+    - essentially we automated
+    - in essence the core value
+    confidence_threshold: 0.75
+    field: coherence
+    indicators:
+    - in other words
+    - that is
+    - that is to say
+    - i.e.
+    - put differently
+    - put another way
+    - meaning
+    - what this means
+    - essentially
+    - in essence
+    - to put it simply
+    patterns:
+    - in other words
+    - that is to say
+    - i\.e\.
+    - put differently
+    - what this means
+    - in essence
+    color: '#16a085'
+    relates_to:
+    - target: clarity_dimension
+      relation: supports
+      weight: required
+      description: Reformulation markers (put differently, to put it another way, in simpler terms) allow speakers to rephrase
+        complex ideas. They enable low-idea-density presentation while maintaining content completeness.
+      target_file: scoring_entities
+    - target: working_memory_marker
+      relation: supports
+      weight: optional
+      description: "Reformulation reduces working memory load by re-encoding complex ideas in simpler terms; code glosses like 'in other words' and 'that is to say' provide real-time definitions for high-surprisal concepts per elite_speaker_taxonomy"
+      target_file: cognitive_load_entities
+  hedging_marker:
+    label: HEDGING_MARKER
+    field_description: Hedging uncertainty marker perhaps possibly might may could probably likely seemingly apparently
+    description: Lexical marker signalling uncertainty, tentativeness, or hedging
+    entity_kind: stance_marker
+    family: epistemic_stance
+    examples:
+    - perhaps the approach needs revision
+    - possibly due to market conditions
+    - this might indicate a trend
+    - results may vary
+    - could potentially improve
+    - probably the best option
+    - likely to succeed
+    - seemingly effective
+    - apparently the system works
+    - it appears that
+    confidence_threshold: 0.7
+    field: stance
+    indicators:
+    - perhaps
+    - possibly
+    - might
+    - may
+    - could
+    - probably
+    - likely
+    - seemingly
+    - apparently
+    - it appears
+    - it seems
+    - tends to
+    - somewhat
+    - rather
+    - suggests
+    - indicates
+    patterns:
+    - perhaps \w+
+    - possibly \w+
+    - might \w+
+    - may \w+
+    - could \w+
+    - probably \w+
+    - it appears that
+    - it seems that
+    color: '#f1c40f'
+    relates_to:
+    - target: hedge_marker
+      relation: contains
+      weight: expected
+      description: Discourse hedging markers subsume stance-level hedge markers
+      target_file: performance_entities
+    - target: authority_opener
+      relation: contrasts_with
+      weight: required
+      description: Hedging markers (it is important to note, it might be argued that, it is likely that) reduce authority
+        perception. Elite speakers avoid hedging in key assertions but may use strategic hedging for humility without sacrificing
+        competence. Hedging undermines authority openers.
+      target_file: performance_entities
+    - target: qualifier
+      relation: triggers
+      weight: expected
+      description: "Epistemic probability expressions ('probably', 'almost certainly', 'can't decide') function as hedging markers that calibrate claim strength to evidence strength per a-guide-to-good-reasoning"
+      target_file: narrative_entities
+    - target: academic_bundle
+      relation: specialises
+      weight: expected
+      description: "Hedging markers are a specialised function of academic bundles; expressions like 'it is likely that' and 'it might be argued' encode the cautious epistemic stance characteristic of academic register per elite_speaker_taxonomy"
+    - target: boost_marker
+      relation: contrasts_with
+      weight: expected
+      description: "Research contrasts academic 'Stance Bundles' that hedge/qualify with elite 'Discourse Organizers' that guide attention; hedging markers signal low agency vs boost markers signal high agency (Architecture of Influence, Section 1.3)"
+      target_file: stance_markers_entities
+  certainty_marker:
+    label: CERTAINTY_MARKER
+    field_description: Certainty confidence marker certainly definitely clearly obviously undoubtedly without doubt absolutely
+    description: Lexical marker signalling high certainty or confidence
+    entity_kind: stance_marker
+    family: epistemic_stance
+    examples:
+    - certainly the data supports
+    - definitely the right approach
+    - clearly the market is growing
+    - obviously we need to adapt
+    - undoubtedly a success
+    - without doubt the leader
+    - absolutely essential
+    - unquestionably the best
+    - there is no doubt that
+    - it is certain that
+    confidence_threshold: 0.75
+    field: stance
+    indicators:
+    - certainly
+    - definitely
+    - clearly
+    - obviously
+    - undoubtedly
+    - without doubt
+    - absolutely
+    - unquestionably
+    - there is no doubt
+    - it is certain
+    - beyond question
+    - inevitably
+    - proven
+    - established
+    patterns:
+    - certainly \w+
+    - definitely \w+
+    - clearly \w+
+    - obviously \w+
+    - undoubtedly
+    - without doubt
+    - there is no doubt
+    color: '#2980b9'
+    relates_to:
+    - target: boost_marker
+      relation: contains
+      weight: expected
+      description: Discourse certainty markers subsume stance-level boost markers
+      target_file: stance_markers_entities
+    - target: authority_opener
+      relation: supports
+      weight: required
+      description: Certainty markers (definitely, absolutely, without question) paired with conditional optimism create authority
+        without hubris. Extreme certainty markers risk signaling overconfidence; balanced certainty supports authority establishment.
+      target_file: performance_entities
+    - target: hedging_marker
+      relation: contrasts_with
+      weight: required
+      description: Excessive certainty without hedging signals hubris while elite speakers balance high agency with moderate certainty using conditional optimism per Elite Speaker Linguistic Analysis
+    - target: qualifier
+      relation: contrasts_with
+      weight: expected
+      description: "Certainty expressions ('certainly true', 'self-evidently true') contrast with qualifiers — only deductive validity and self-evident truths warrant certainty per a-guide-to-good-reasoning"
+      target_file: narrative_entities
+    - target: boost_marker
+      relation: supports
+      weight: expected
+      description: "Elite TED-style bundles express certainty ('We are going to...') rather than probability ('It is likely that...'); certainty markers reinforce boost stance (Architecture of Influence, Section 1.3)"
+      target_file: stance_markers_entities
+  evaluation_marker:
+    label: EVALUATION_MARKER
+    field_description: Evaluative stance marker fortunately unfortunately regrettably encouragingly disappointingly remarkably
+    description: Attitudinal adverb expressing author's evaluation of content
+    entity_kind: stance_marker
+    family: epistemic_stance
+    examples:
+    - fortunately we secured funding
+    - unfortunately costs exceeded budget
+    - regrettably the project was delayed
+    - encouragingly adoption rates increased
+    - disappointingly sales declined
+    - remarkably we achieved the target
+    - surprisingly the approach worked
+    - interestingly the data shows
+    confidence_threshold: 0.7
+    field: stance
+    indicators:
+    - fortunately
+    - unfortunately
+    - regrettably
+    - encouragingly
+    - disappointingly
+    - surprisingly
+    - remarkably
+    - interestingly
+    - happily
+    - sadly
+    - thankfully
+    - luckily
+    patterns:
+    - fortunately
+    - unfortunately
+    - regrettably
+    - surprisingly
+    - remarkably
+    color: '#9b59b6'
+    relates_to:
+    - target: pathos_appeal
+      relation: supports
+      weight: required
+      description: Evaluation markers (tragically, fortunately, remarkably) signal emotional stances toward propositions.
+        They enable pathos appeals by explicitly framing content as emotionally significant.
+      target_file: rhetorical_devices_entities
+  nominalisation:
+    label: NOMINALISATION
+    field_description: Nominalisation abstract noun -tion -ment -ance -ence -ity -ness transformation implementation performance
+    description: Abstract noun derived from verb or adjective (increases lexical density)
+    entity_kind: complexity_marker
+    family: lexical_complexity
+    examples:
+    - transformation
+    - implementation
+    - performance
+    - development
+    - excellence
+    - efficiency
+    - productivity
+    - effectiveness
+    - complexity
+    - establishment
+    - advancement
+    - consideration
+    confidence_threshold: 0.65
+    field: complexity
+    indicators:
+    - tion
+    - sion
+    - ment
+    - ance
+    - ence
+    - ity
+    - ness
+    patterns:
+    - \w+tion
+    - \w+sion
+    - \w+ment
+    - \w+ance
+    - \w+ence
+    - \w+ity
+    - \w+ness
+    color: '#34495e'
+    relates_to:
+    - target: nominalisation_marker
+      relation: contains
+      weight: expected
+      description: Discourse nominalisation subsumes writing-level nominalisation markers
+      target_file: writing_entities
+    - target: power_verb
+      relation: contrasts_with
+      weight: required
+      description: 'Nominalisations (converting verbs to nouns: ''implementation'' instead of ''implement'') reduce agency
+        and dynamism compared to power verbs. Elite speakers use fewer nominalisations and more dynamic verbs to signal action
+        orientation.'
+      target_file: performance_entities
+    - target: lexical_chain
+      relation: supports
+      weight: optional
+      description: Nominalisations contribute to lexical chain formation by providing nominal references to verbal concepts maintaining
+        thematic continuity in discourse per Advanced Computational Discourse Analysis research
+      target_file: Descriptive_RST_entities
+    - target: intrinsic_load_marker
+      relation: triggers
+      weight: expected
+      description: "High PID from nominalisations increases intrinsic processing load; the de-densification strategy specifically targets breaking nominalised constructions into simpler verb-based clauses (Architecture of Influence, Section 1.1)"
+      target_file: cognitive_load_entities
+  subordination_marker:
+    label: SUBORDINATION_MARKER
+    field_description: Subordinating conjunction because although since when if while before after unless until
+    description: Conjunction introducing subordinate clause (increases syntactic complexity)
+    entity_kind: complexity_marker
+    family: syntactic_complexity
+    examples:
+    - because we invested
+    - although expensive
+    - since the launch
+    - when we started
+    - if we proceed
+    - while we developed
+    - before the deadline
+    - after completing
+    - unless we change
+    - until we achieve
+    confidence_threshold: 0.7
+    field: complexity
+    indicators:
+    - because
+    - although
+    - though
+    - since
+    - when
+    - whenever
+    - if
+    - while
+    - whereas
+    - before
+    - after
+    - unless
+    - until
+    - as
+    - so that
+    - in order that
+    patterns:
+    - because \w+
+    - although \w+
+    - since \w+
+    - when \w+
+    - if \w+
+    - while \w+
+    color: '#2c3e50'
+    relates_to:
+    - target: clarity_dimension
+      relation: limits
+      weight: required
+      description: Excessive subordination (nested dependent clauses) increases cognitive load and reduces clarity. Elite
+        speakers limit subordination and prefer parataxis (coordinate structures) to maintain sentence simplicity and clarity.
+      target_file: scoring_entities
+    - target: elaboration_marker
+      relation: enables
+      weight: expected
+      description: "Discourse-Aware TS identifies subordinate clauses as embedding mechanisms with subordination syntactically enabling elaboration relations in discourse per Researching Narrative and Discourse Analysis"
+    - target: edu_clause_boundary
+      relation: triggers
+      weight: expected
+      description: Subordinating conjunctions are syntactic signals that trigger EDU clause boundaries marking where one clause
+        is structurally dependent on another per Advanced Computational Discourse Analysis research
+      target_file: Descriptive_RST_entities
+  coordination_marker:
+    label: COORDINATION_MARKER
+    field_description: Coordinating conjunction and but or nor yet so for joining independent clauses
+    description: Conjunction joining clauses of equal syntactic status
+    entity_kind: complexity_marker
+    family: syntactic_complexity
+    examples:
+    - we improved speed and we reduced costs
+    - revenue increased but costs also rose
+    - we can expand or we can consolidate
+    - we didn't rush nor did we delay
+    - challenges existed yet we succeeded
+    - demand surged so we scaled
+    confidence_threshold: 0.65
+    field: complexity
+    indicators:
+    - and
+    - but
+    - or
+    - nor
+    - yet
+    - so
+    - for
+    patterns:
+    - ', and \w+'
+    - ', but \w+'
+    - ', or \w+'
+    - ', yet \w+'
+    - ', so \w+'
+    color: '#7f8c8d'
+    relates_to:
+    - target: rhetorical_pattern
+      relation: supports
+      weight: required
+      description: Coordination markers (and, or, but) create parallel structures that generate rhetorical patterns. Coordinated
+        structures create rhythm and memorability. Elite speakers use coordination strategically to build discourse architecture.
+      target_file: performance_entities
+    - target: joint_marker
+      relation: supports
+      weight: expected
+      description: Coordinating conjunctions are syntactic discourse signals that support identification of joint multinuclear
+        relations where multiple EDUs possess equal semantic weight per Advanced Computational Discourse Analysis research
+  relative_clause_marker:
+    label: RELATIVE_CLAUSE_MARKER
+    field_description: Relative pronoun who whom whose which that introducing relative clause modifying noun
+    description: Pronoun introducing a clause that modifies a noun (increases embedding depth)
+    entity_kind: complexity_marker
+    family: syntactic_complexity
+    examples:
+    - the team who delivered
+    - the product which we launched
+    - customers that adopted early
+    - the CEO whose vision
+    - the strategy whom we consulted
+    - a solution that scales
+    confidence_threshold: 0.7
+    field: complexity
+    indicators:
+    - who
+    - whom
+    - whose
+    - which
+    - that
+    patterns:
+    - \w+ who \w+
+    - \w+ which \w+
+    - \w+ that \w+
+    - ', who \w+'
+    - ', which \w+'
+    color: '#1abc9c'
+    relates_to:
+    - target: clarity_dimension
+      relation: limits
+      weight: required
+      description: Embedded relative clauses increase propositional density and reduce clarity. Presentations with high relative
+        clause density exceed optimal working memory capacity (7±2 items). Clarity improves when relative clauses are minimized
+        or distributed across sentences.
+      target_file: scoring_entities
+    - target: elaboration_marker
+      relation: specialises
+      weight: expected
+      description: "Discourse-Aware TS lists relative clauses as a specific transformation pattern that creates Elaboration-linked propositions when disembedded per Researching Narrative and Discourse Analysis"
+    - target: edu_clause_boundary
+      relation: triggers
+      weight: expected
+      description: Relative clauses are syntactic signals that trigger EDU segmentation boundaries in discourse parsing per Advanced
+        Computational Discourse Analysis research
+      target_file: Descriptive_RST_entities
+  participial_marker:
+    label: PARTICIPIAL_MARKER
+    field_description: Participial phrase -ing -ed present past participle modifying noun clause reduction
+    description: Verb form (-ing/-ed) used as modifier (indicates clause reduction)
+    entity_kind: complexity_marker
+    family: syntactic_complexity
+    examples:
+    - the product launched last year
+    - customers using our platform
+    - revenue generated by sales
+    - costs incurred during development
+    - the team leading the project
+    - data collected from surveys
+    - challenges faced by customers
+    confidence_threshold: 0.65
+    field: complexity
+    indicators:
+    - ing
+    - ed
+    patterns:
+    - \w+ing \w+
+    - \w+ed by \w+
+    - ', \w+ing \w+'
+    - ', \w+ed \w+'
+    color: '#16a085'
+    relates_to:
+    - target: power_verb
+      relation: contrasts_with
+      weight: optional
+      description: Participial phrases (-ing constructions) reduce agency compared to finite verbs with power verb quality.
+        'Building partnerships' is less agentic than 'We built strategic partnerships.' Elite speakers prefer finite verb
+        forms for agency.
+      target_file: performance_entities
+    - target: elaboration_marker
+      relation: specialises
+      weight: optional
+      description: "Discourse-Aware TS treats participial phrases as embedding constructs that when extracted produce elaboration-linked context propositions per Researching Narrative and Discourse Analysis"
+    - target: edu_clause_boundary
+      relation: triggers
+      weight: optional
+      description: Present and past participial clauses function as syntactic signals that can trigger EDU clause boundaries
+        in discourse segmentation per Advanced Computational Discourse Analysis research
+      target_file: Descriptive_RST_entities
+  figure_reference:
+    label: FIGURE_REFERENCE
+    field_description: Figure chart diagram reference Figure 1 this chart the graph shows as shown in see illustration
+    description: Explicit reference to a visual element (figure, chart, diagram, table)
+    entity_kind: multimodal_marker
+    family: cross_modal_coherence
+    examples:
+    - Figure 1 shows the trend
+    - as shown in the chart
+    - see the diagram below
+    - the graph illustrates growth
+    - refer to Table 2
+    - this chart demonstrates
+    - the illustration depicts
+    - as depicted in Figure 3
+    confidence_threshold: 0.8
+    field: multimodal
+    indicators:
+    - Figure
+    - Fig.
+    - Chart
+    - Graph
+    - Diagram
+    - Table
+    - Image
+    - Illustration
+    - as shown in
+    - see the
+    - refer to
+    - depicted in
+    patterns:
+    - Figure \d+
+    - Fig\.? \d+
+    - Chart \d+
+    - Table \d+
+    - as shown in \w+
+    - see the \w+
+    - refer to \w+
+    color: '#3498db'
+    relates_to:
+    - target: visual_element
+      relation: bridges
+      weight: required
+      description: Verbal references to figures ('Look at this chart', 'Notice the trend line') bridge discourse with visual
+        elements. Explicit figure references leverage dual coding theory by coordinating visual and verbal channels.
+      target_file: visual_elements_entities
+  deictic_marker:
+    label: DEICTIC_MARKER
+    field_description: Deictic pointing marker this that here there above below left right these those spatial
+    description: Spatial or demonstrative word pointing to visual context
+    entity_kind: multimodal_marker
+    family: cross_modal_coherence
+    examples:
+    - this shows our growth
+    - here we see the trend
+    - that illustrates the problem
+    - there in the upper right
+    - these are the key metrics
+    - above you can see
+    - below is the breakdown
+    - on the left we have
+    - to the right is
+    confidence_threshold: 0.7
+    field: multimodal
+    indicators:
+    - this
+    - that
+    - these
+    - those
+    - here
+    - there
+    - above
+    - below
+    - left
+    - right
+    - top
+    - bottom
+    patterns:
+    - this \w+ shows
+    - here we see
+    - above you can see
+    - below is
+    - on the left
+    - to the right
+    color: '#9b59b6'
+  anaphora_marker:
+    label: ANAPHORA_MARKER
+    field_description: Anaphora repetition start of clause we will we can we must I believe repeated phrase
+    description: Repeated word or phrase at the beginning of successive clauses
+    entity_kind: rhetorical_device
+    family: repetition_pattern
+    examples:
+    - We will innovate. We will execute. We will succeed.
+    - I believe in our team. I believe in our product.
+    - This is about growth. This is about transformation.
+    - We can scale. We can expand. We can dominate.
+    confidence_threshold: 0.7
+    field: rhetoric
+    indicators:
+    - We will
+    - We can
+    - We must
+    - I believe
+    - This is
+    - It is
+    patterns:
+    - (We will \w+\.){2,}
+    - (We can \w+\.){2,}
+    - (I believe \w+\.){2,}
+    color: '#e74c3c'
+    relates_to:
+    - target: anaphora
+      relation: contains
+      weight: expected
+      description: Discourse anaphora patterns contain the rhetorical anaphora device
+      target_file: rhetorical_devices_entities
+    - target: rhetorical_pattern
+      relation: supports
+      weight: required
+      description: Anaphora (repetition at clause beginnings) is a primary generator of rhetorical power and rhythm. It creates
+        prosodic crescendos and trains audience response timing. Anaphora patterns directly trigger applause and emotional
+        response in elite rhetoric.
+      target_file: performance_entities
+    - target: emphasis_marker
+      relation: enables
+      weight: required
+      description: Anaphoric patterns created through repetition at clause beginnings enable emphasis markers. The rhythm
+        of anaphora is amplified through vocal emphasis on key repeated terms.
+    - target: emphasis_marker
+      relation: enables
+      weight: required
+      description: Anaphoric patterns created through repetition at clause beginnings enable emphasis markers. The rhythm
+        of anaphora is amplified through vocal emphasis on key repeated terms.
+      target_file: performance_entities
+    - target: coreference_chain
+      relation: supports
+      weight: required
+      description: Anaphoric references including pronominal anaphora directly support coreference chain construction — classified
+        as semantic discourse signals for tracking entity continuity per Advanced Computational Discourse Analysis research
+      target_file: Descriptive_RST_entities
+  tricolon_marker:
+    label: TRICOLON_MARKER
+    field_description: Tricolon rule of three three parallel elements speed quality cost reduce improve scale
+    description: Three parallel words, phrases, or clauses (rule of three)
+    entity_kind: rhetorical_device
+    family: repetition_pattern
+    examples:
+    - speed, quality, and cost
+    - reduce, improve, and scale
+    - faster, better, cheaper
+    - plan, execute, and deliver
+    - people, process, and technology
+    - simple, scalable, and secure
+    confidence_threshold: 0.7
+    field: rhetoric
+    indicators:
+    - ', and'
+    - ', or'
+    patterns:
+    - \w+, \w+, and \w+
+    - \w+, \w+, or \w+
+    - \w+er, \w+er, \w+er
+    color: '#2ecc71'
+    relates_to:
+    - target: tricolon
+      relation: contains
+      weight: expected
+      description: Discourse tricolon patterns contain the rhetorical tricolon device
+      target_file: rhetorical_devices_entities
+    - target: rhetorical_pattern
+      relation: supports
+      weight: required
+      description: The tricolon (rule of three) is one of the most pervasive rhetorical patterns in elite speech. It satisfies
+        the brain's desire for pattern completion (3 = minimal pattern) while avoiding cognitive overload. Tricolons create
+        rhythm and memorability.
+      target_file: performance_entities
+  rhetorical_question:
+    label: RHETORICAL_QUESTION
+    field_description: Rhetorical question what if why do how can have you imagine engaging question hook
+    description: Question asked for effect rather than expecting an answer
+    entity_kind: rhetorical_device
+    family: engagement_pattern
+    examples:
+    - What if we could double revenue?
+    - Why do 80% of transformations fail?
+    - How can we ignore this opportunity?
+    - Have you ever wondered why?
+    - Isn't it time we changed?
+    - Who wouldn't want faster results?
+    confidence_threshold: 0.75
+    field: rhetoric
+    indicators:
+    - What if
+    - Why do
+    - How can
+    - Have you
+    - Isn't it
+    - Who wouldn't
+    - Wouldn't you
+    - '?'
+    patterns:
+    - What if \w+\?
+    - Why do \w+\?
+    - How can \w+\?
+    - Have you \w+\?
+    color: '#f39c12'
+    relates_to:
+    - target: mayer_generative_principle
+      relation: supports
+      weight: optional
+      description: "Rhetorical questions prompt learners to generate mental responses per generative principle per Applying Mayer's Principles Practical Checklist"
+      target_file: cognitive_load_entities
+  visionary_bundle:
+    label: VISIONARY_BUNDLE
+    field_description: Visionary engagement phrase I want to show let me tell you imagine if picture this here is
+    description: Engaging 4-word phrase typical of TED talks and visionary speakers
+    entity_kind: rhetorical_device
+    family: lexical_bundle
+    examples:
+    - I want to show you
+    - Let me tell you
+    - Imagine if you could
+    - Picture this scenario
+    - Here is the thing
+    - What I want to
+    - This is why we
+    confidence_threshold: 0.7
+    field: rhetoric
+    indicators:
+    - I want to show
+    - Let me tell
+    - Imagine if
+    - Picture this
+    - Here is
+    - What I want
+    - This is why
+    patterns:
+    - I want to show you
+    - Let me tell you
+    - Imagine if \w+
+    - Picture this
+    - Here is the
+    color: '#1abc9c'
+    relates_to:
+    - target: performance_tier
+      relation: supports
+      weight: required
+      description: Visionary bundles (imagine a world where, the future of, together we can) are linguistic markers of elite
+        performance tier. They signal future-orientation, collective agency, and transformational intent.
+      target_file: performance_entities
+  academic_bundle:
+    label: ACADEMIC_BUNDLE
+    field_description: Academic formal phrase in the context of on the other hand it is important to as a result
+    description: Formal 4-word phrase creating distance (often overused in business)
+    entity_kind: rhetorical_device
+    family: lexical_bundle
+    examples:
+    - In the context of
+    - On the other hand
+    - It is important to
+    - To the extent that
+    - As a result of
+    - In the case of
+    - With respect to the
+    confidence_threshold: 0.7
+    field: rhetoric
+    indicators:
+    - In the context of
+    - On the other hand
+    - It is important to
+    - To the extent that
+    - As a result of
+    - In the case of
+    - With respect to
+    patterns:
+    - In the context of
+    - It is important to
+    - To the extent that
+    - In the case of
+    color: '#7f8c8d'
+    relates_to:
+    - target: performance_tier
+      relation: contrasts_with
+      weight: required
+      description: Academic bundles (in the case of, on the other hand, it is important to note) signal Technocrat tier performance
+        (high competence, low warmth). Elite speakers replace academic bundles with discourse organizers and participant-oriented
+        bundles.
+      target_file: performance_entities
+    - target: visionary_bundle
+      relation: contrasts_with
+      weight: expected
+      description: "Academic bundles contrast with visionary bundles in formality and rhetorical function; academic bundles prioritise stance-taking and objectivity while visionary bundles prioritise agency and audience engagement per elite_speaker_taxonomy"
+    - target: hedge_marker
+      relation: supports
+      weight: expected
+      description: "Academic bundles support hedging patterns through cautious epistemic stance; bundles like 'it is likely that' and 'it is important to note' encode tentative knowledge claims per elite_speaker_taxonomy"
+      target_file: stance_markers_entities
+gliner_config:
+  model: gliner-large-v2
+  batch_size: 32
+  default_confidence_threshold: 0.7
+  context_window: 512
+  entity_groups:
+    rst_relations:
+    - CAUSE_MARKER
+    - CONTRAST_MARKER
+    - TEMPORAL_MARKER
+    - ELABORATION_MARKER
+    - JOINT_MARKER
+    - ATTRIBUTION_MARKER
+    - CONDITION_MARKER
+    - SAME_UNIT_MARKER
+    coherence_markers:
+    - TOPIC_SHIFT_MARKER
+    - SUMMARY_MARKER
+    - EMPHASIS_MARKER
+    - CONCESSION_MARKER
+    - REFORMULATION_MARKER
+    stance_markers:
+    - HEDGING_MARKER
+    - CERTAINTY_MARKER
+    - EVALUATION_MARKER
+    complexity_markers:
+    - NOMINALISATION
+    - SUBORDINATION_MARKER
+    - COORDINATION_MARKER
+    - RELATIVE_CLAUSE_MARKER
+    - PARTICIPIAL_MARKER
+    multimodal_markers:
+    - FIGURE_REFERENCE
+    - DEICTIC_MARKER
+    rhetorical_devices:
+    - ANAPHORA_MARKER
+    - TRICOLON_MARKER
+    - RHETORICAL_QUESTION
+    - VISIONARY_BUNDLE
+    - ACADEMIC_BUNDLE
+domain_keywords:
+  primary:
+  - discourse
+  - coherence
+  - cohesion
+  - rhetorical
+  - RST
+  - relation
+  - connective
+  - marker
+  - transition
+  - therefore
+  - however
+  - because
+  - although
+  - furthermore
+  - in conclusion
+  secondary:
+  - elaboration
+  - contrast
+  - cause
+  - temporal
+  - attribution
+  - condition
+  - joint
+  - additive
+  - adversative
+  - hedging
+  - certainty
+  - nominalisation
+  - subordination
+  - anaphora
+  - tricolon
+expected_distributions:
+  rst_relations:
+    elaboration: 0.26
+    joint: 0.24
+    attribution: 0.1
+    same_unit: 0.09
+    contrast: 0.05
+    temporal: 0.045
+    cause: 0.04
+    condition: 0.035
+quality_indicators:
+  rst_diversity:
+    low: < 3 relation types detected
+    good: '> 5 relation types detected'
+    excellent: '> 7 relation types with balanced distribution'
+  coherence_density:
+    sparse: < 2 coherence markers per 500 words
+    adequate: 2-5 per 500 words
+    rich: '> 5 per 500 words'
+  hedging_balance:
+    over_hedged: '> 70% hedging vs certainty markers'
+    balanced: 30-70% hedging vs certainty
+    over_confident: < 30% hedging vs certainty markers
+  complexity_balance:
+    simple: < 20% subordination/relative markers
+    balanced: 20-40% subordination/relative markers
+    complex: '> 40% subordination/relative markers'
+  rhetorical_richness:
+    sparse: < 1 rhetorical device per 500 words
+    adequate: 1-3 per 500 words
+    rich: '> 3 per 500 words'

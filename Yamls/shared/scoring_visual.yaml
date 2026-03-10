@@ -1,0 +1,222 @@
+_meta:
+  id: scoring_visual
+  description: "Unified scoring configuration for visual analysis including score bands, severity levels, and dimension weights."
+  domain: ai
+  domain_type: meta
+  purpose: reference
+  version: "2.3.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Best Practices for Writing Effective Corporate Learning Content.md"
+    - "Corpus/Research/Research - Corporate Learning Assessment- Strategies, Modalities, and Best Practices.md"
+    - "Corpus/Research/Research - Slide Deck Design Playbook Research.md"
+    - "Corpus/Research/Visual Narrative Flow Pass.md"
+    - "Corpus/Research/The Unseen Structure: A Technical Deep-Dive into Narrative, Visualization, and Accessibility.md"
+
+
+# =============================================================================
+# SCORE BANDS
+# =============================================================================
+# Standard 0-100 scale interpretation for visual quality
+
+score_bands:
+  excellent:
+    range: [90, 100]
+    label: "Excellent"
+    description: "Professional quality, no violations, high visual impact"
+    color: "#22c55e"  # green
+    pass: true
+
+  good:
+    range: [70, 89]
+    label: "Good"
+    description: "Minor issues, generally effective visual communication"
+    color: "#84cc16"  # lime
+    pass: true
+
+  mixed:
+    range: [50, 69]
+    label: "Needs Work"
+    description: "Noticeable issues affecting visual clarity or impact"
+    color: "#eab308"  # yellow
+    pass: false
+
+  poor:
+    range: [0, 49]
+    label: "Poor"
+    description: "Significant visual problems requiring redesign"
+    color: "#ef4444"  # red
+    pass: false
+
+# =============================================================================
+# SEVERITY LEVELS
+# =============================================================================
+# How to classify issues found during visual analysis
+
+severity_levels:
+  critical:
+    score_impact: -20
+    label: "Critical"
+    description: "Fundamental visual flaw affecting comprehension or accessibility"
+    requires_action: true
+    examples:
+      - "Text unreadable (contrast ratio < 3:1)"
+      - "Key content obscured or cropped"
+      - "Completely inconsistent visual style (Frankendeck)"
+
+  high:
+    score_impact: -10
+    label: "High"
+    description: "Significant issue affecting visual effectiveness"
+    requires_action: true
+    examples:
+      - "Cognitive overload (>7 elements competing for attention)"
+      - "Poor visual hierarchy (unclear focal point)"
+      - "Accessibility violations (WCAG AA failures)"
+
+  medium:
+    score_impact: -5
+    label: "Medium"
+    description: "Notable issue that should be addressed"
+    requires_action: false
+    examples:
+      - "Inconsistent typography"
+      - "Suboptimal whitespace usage"
+      - "Minor alignment issues"
+
+  low:
+    score_impact: -2
+    label: "Low"
+    description: "Minor issue, nice to fix but not essential"
+    requires_action: false
+    examples:
+      - "Slight color inconsistency"
+      - "Minor spacing irregularities"
+      - "Could benefit from visual polish"
+
+# =============================================================================
+# DIMENSION WEIGHTS
+# =============================================================================
+# How different visual dimensions contribute to overall score
+
+dimension_weights:
+  # Accessibility compliance
+  accessibility:
+    weight: 0.20
+    description: "WCAG compliance, contrast ratios, color independence"
+
+  # Cognitive load management
+  cognitive_load:
+    weight: 0.20
+    description: "Element count, visual complexity, Mayer's principles"
+
+  # Design principles
+  design_principles:
+    weight: 0.20
+    description: "CRAP, Gestalt, visual hierarchy"
+
+  # Visual consistency
+  consistency:
+    weight: 0.15
+    description: "Typography, color palette, style coherence"
+
+  # Data visualization quality
+  data_viz:
+    weight: 0.15
+    description: "Tufte's principles, chartjunk, data-ink ratio"
+
+  # Visual-text alignment
+  alignment:
+    weight: 0.10
+    description: "CLIP coherence, figure references, complementarity"
+
+# =============================================================================
+# THRESHOLDS
+# =============================================================================
+# Numeric thresholds used across visual analysis
+
+thresholds:
+  # Accessibility
+  contrast_ratio_minimum_aa: 4.5      # WCAG AA for normal text
+  contrast_ratio_minimum_large: 3.0   # WCAG AA for large text (18pt+)
+  contrast_ratio_minimum_aaa: 7.0     # WCAG AAA
+
+  # Cognitive load
+  max_elements_per_slide: 7           # Miller's Law
+  max_bullet_points: 5
+  max_words_per_bullet: 12
+  max_hierarchical_levels: 3
+
+  # Typography
+  min_body_font_size: 18              # Points
+  min_title_font_size: 28
+  max_font_families: 2
+  line_height_ratio_minimum: 1.2
+
+  # Visual balance
+  whitespace_ratio_minimum: 0.30      # At least 30% whitespace
+  whitespace_ratio_ideal: 0.40
+
+  # CLIP visual-text alignment
+  clip_strong_alignment: 0.75
+  clip_medium_alignment: 0.60
+  clip_weak_alignment: 0.45
+  clip_misaligned: 0.30
+
+  # Data visualization
+  data_ink_ratio_minimum: 0.60        # Tufte's principle
+  lie_factor_maximum: 1.05            # Max acceptable distortion
+
+# =============================================================================
+# NARRATIVE-VISUAL ALIGNMENT THRESHOLDS
+# Thresholds for narrative-visual coherence scoring
+# Source: Visual Narrative Flow Pass.md; The Unseen Structure
+# =============================================================================
+
+narrative_visual_thresholds:
+  purpose: "Scoring thresholds for visual-narrative coherence and semiotic arrangement analysis"
+  source: "Visual Narrative Flow Pass.md; The Unseen Structure: A Technical Deep-Dive into Narrative, Visualization, and Accessibility.md"
+
+  soar_stage_visual_requirements:
+    situation:
+      clip_minimum: 0.65
+      preferred_visual_types: ["data_chart", "market_context_image", "status_quo_diagram"]
+      penalty_if_action_visual_in_situation: -5
+      rationale: "Situation visuals should ground the audience in reality; premature solution imagery creates cognitive dissonance"
+    opportunity:
+      clip_minimum: 0.70
+      preferred_visual_types: ["problem_diagram", "gap_visualization", "tension_imagery", "cost_of_inaction_chart"]
+      penalty_if_decorative_image_only: -4
+    action:
+      clip_minimum: 0.65
+      preferred_visual_types: ["solution_architecture", "workflow_diagram", "process_flow", "product_screenshot"]
+    result:
+      clip_minimum: 0.75
+      preferred_visual_types: ["before_after_chart", "case_study_metrics", "roi_visualization", "testimonial_with_logo"]
+      penalty_if_no_data_visual: -5
+      rationale: "Result stage without a data visual reduces credibility; audiences expect proof, not just claims"
+
+  semiotic_arrangement_thresholds:
+    given_new_mismatch:
+      score_impact: -10
+      condition: "New information placed in left (Given) zone; known information placed in right (New) zone"
+      source: "Kress & van Leeuwen (1996) Reading Images"
+    ideal_real_mismatch:
+      score_impact: -5
+      condition: "Grounded evidence placed in top (Ideal) zone; aspirational claim placed in bottom (Real) zone"
+
+  action_title_visual_alignment:
+    title_contradicts_visual:
+      score_impact: -8
+      condition: "CLIP similarity between action title assertion and primary image < 0.45"
+    title_supports_visual:
+      score_impact: +3
+      condition: "CLIP similarity between action title and primary image >= 0.75"
+
+  narrative_coherence_bonuses:
+    full_soar_visual_arc:
+      score_impact: +5
+      condition: "All 4 SOAR stages have appropriate visual type and CLIP score >= thresholds"
+    before_after_present:
+      score_impact: +3
+      condition: "Before/after visual detected in Result stage (highest evidence quality)"

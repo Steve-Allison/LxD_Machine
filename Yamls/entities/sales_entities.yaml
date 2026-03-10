@@ -1,0 +1,1075 @@
+_meta:
+  id: sales_entities
+  title: Sales Entities
+  description: GLiNER2 entity definitions for detecting SOAR elements, buying signals, objection types, play triggers, qualification
+    markers, deal dynamics, and narrative quality signals in sales conversations and presentations
+  domain: sales
+  domain_type: workflow
+  purpose: entity
+  version: 1.15.0
+  last_updated: '2026-03-09'
+  corpus_sources:
+  - Corpus/Research/SOAR Narrative Mapping by Sales Stage.md
+  - Corpus/Research/Research - Using SOAR Storytelling most effectively.md
+  - Corpus/Research/Crafting Powerful Opening Plays.md
+  - Corpus/Research/Research - Comprehensive Audience Analysis.md
+  - Corpus/Research/Research - Canonical Presentation Methodology Research.md
+  - Corpus/Research/Research - Case Study Excellence.md
+  - Corpus/Research/Research - Using Monroes Motivated Sequence.md
+  - Corpus/Research/Research - Analyzing Story for Business Communication.md
+  - Corpus/Research/Storytelling_for_Different_Business_Personas.md
+  - Corpus/Research/Research - Slide Deck Design Playbook Research.md
+  academic_sources:
+  - MEDDIC/MEDDPICC qualification framework
+  - SPIN Selling - Rackham (1988)
+  - Challenger Sale - Dixon & Adamson (2011)
+  - Adobe SOAR framework
+  relationships:
+  - target: taxonomy/sales_taxonomy.yaml
+    type: depends_on
+    description: Sales construct classification for entity label validation
+entity_types:
+  situation_marker:
+    label: SITUATION_MARKER
+    field_description: Situation current state context background today we are currently facing our challenge right now
+    description: Marker signalling description of current customer situation, pain, or context
+    entity_kind: soar_element
+    family: soar
+    examples:
+    - Currently, our team is struggling with...
+    - Today we are facing increased pressure...
+    - Our challenge right now is...
+    - The situation is that costs are rising.
+    - We're dealing with fragmented data.
+    - The current state of our process is...
+    - As it stands, our team can't move fast enough.
+    - The status quo is no longer sustainable.
+    confidence_threshold: 0.7
+    field: soar
+    indicators:
+    - currently
+    - today we
+    - right now
+    - the challenge is
+    - the situation is
+    - we are dealing with
+    - we're facing
+    - our problem is
+    - as it stands
+    - status quo
+    patterns:
+    - currently (we|our|the) \w+
+    - today (we|our) \w+
+    - (the challenge|the situation|our problem) is \w+
+    - we're (facing|dealing with|struggling with)
+    - as it stands,? \w+
+    strong_language_signals:
+    - currently
+    - right now
+    - as it stands
+    - today we
+    weak_language_signals:
+    - sometimes
+    - occasionally
+    - in some cases
+    color: '#e74c3c'
+    relates_to:
+    - target: opportunity_marker
+      relation: precedes
+      weight: required
+      description: 'SOAR: situation establishes context before opportunity is identified'
+    - target: pain_point
+      relation: contains
+      weight: expected
+      description: Situation markers often contain or frame customer pain points
+      target_file: narrative_entities
+    - target: customer_hero
+      relation: supports
+      weight: expected
+      description: The Situation in SOAR establishes the customer's current state, setting the stage for positioning them
+        as the hero of the narrative. The customer's context (Situation) motivates their heroic journey.
+      target_file: character_archetypes_entities
+    - target: scqa_marker
+      relation: specialises
+      weight: expected
+      description: "The SOAR Situation phase maps directly to the SCQA Situation component — both establish the known agreed-upon facts as common ground per Canonical Presentation Methodology"
+      target_file: rhetorical_devices_entities
+    - target: audience_pain_point
+      relation: supports
+      weight: expected
+      description: "Situation markers capture persona-specific pain points and daily challenges as opening context for SOAR-structured narratives per Storytelling for Different Business Personas"
+      target_file: audience_entities
+    - target: situation
+      relation: specialises
+      weight: expected
+      description: "The SOAR Situation phase maps directly to the sales situation marker; both audit the current state and audience reality before proposing solutions (Canonical Presentation Methodology)"
+      target_file: character_archetypes_entities
+    - target: layout_pattern
+      relation: triggers
+      weight: expected
+      description: "SOAR Situation phase triggers Bento Grid layout using Common Region principle for contextual data"
+      target_file: visual_elements_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: soar_stage
+      values:
+      - situation
+      strength: primary
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - setup
+      - problem
+      strength: primary
+  opportunity_marker:
+    label: OPPORTUNITY_MARKER
+    field_description: Opportunity potential upside growth untapped market potential we could gain if we were able to
+    description: Marker signalling an opportunity, upside, or unmet potential relevant to the deal
+    entity_kind: soar_element
+    family: soar
+    examples:
+    - There's a significant opportunity to...
+    - If we could streamline this, we'd gain...
+    - The untapped potential here is...
+    - We see an opportunity to grow...
+    - This could unlock new revenue streams.
+    - The market is moving towards...
+    - The window to act is closing.
+    - At risk of losing competitive ground.
+    - The cost of inaction is mounting.
+    confidence_threshold: 0.7
+    field: soar
+    indicators:
+    - opportunity to
+    - potential to
+    - if we could
+    - untapped
+    - unlock
+    - grow
+    - the market is moving
+    - window
+    - at risk
+    - cost of inaction
+    patterns:
+    - (there's|there is) (a|an) \w+ opportunity
+    - if we could \w+
+    - untapped (potential|market|opportunity)
+    - unlock \w+
+    - window (to|is|of) \w+
+    - at risk (of|to) \w+
+    tension_vocabulary:
+      high_tension:
+      - at risk
+      - window is closing
+      - falling behind
+      - cost of inaction
+      medium_tension:
+      - opportunity to
+      - potential to
+      - could gain
+      low_tension:
+      - nice to have
+      - would be good
+      - might improve
+    note: Opportunity element MUST include tension vocabulary — absence = weak O element
+    color: '#27ae60'
+    relates_to:
+    - target: situation_marker
+      relation: precedes
+      weight: required
+      description: 'SOAR: situation precedes opportunity'
+    - target: action_marker
+      relation: precedes
+      weight: required
+      description: 'SOAR: opportunity precedes action'
+    - target: value_proposition
+      relation: enables
+      weight: expected
+      description: Identified opportunities enable specific value propositions
+      target_file: narrative_entities
+    - target: urgency_signal
+      relation: enables
+      weight: expected
+      description: The Opportunity phase of SOAR establishes compelling reasons to act, which enables and supports urgency
+        signals that motivate immediate decision-making.
+    - target: narrative_tension
+      relation: triggers
+      weight: required
+      description: "The Obstacle/Opportunity triggers narrative tension — it maps to the Call to Adventure creating central conflict per Analyzing Story for Business Communication"
+      target_file: narrative_entities
+    - target: pain_point
+      relation: bridges
+      weight: expected
+      description: "The opportunity marker bridges to pain_point — SOAR's Obstacle is the problem or challenge faced per Analyzing Story for Business Communication"
+      target_file: narrative_entities
+    - target: opportunity
+      relation: specialises
+      weight: expected
+      description: "The SOAR Opportunity phase maps directly to the sales opportunity marker; both define the strategic gap and logical architecture needed to bridge it (Canonical Presentation Methodology)"
+      target_file: character_archetypes_entities
+    - target: layout_pattern
+      relation: triggers
+      weight: expected
+      description: "SOAR Obstacle phase triggers metaphor and split-screen layouts using contrast principles"
+      target_file: visual_elements_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: soar_stage
+      values:
+      - opportunity
+      strength: primary
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - insight
+      - opportunity
+      strength: primary
+  action_marker:
+    label: ACTION_MARKER
+    field_description: Action recommendation solution proposed what we recommend we suggest our approach would be
+    description: Marker signalling a proposed action, solution, or recommendation
+    entity_kind: soar_element
+    family: soar
+    examples:
+    - What we recommend is...
+    - Our proposal is to...
+    - The action we suggest is...
+    - Adobe's solution addresses this by...
+    - We propose a phased approach...
+    - Our recommended next step is...
+    - The approach we're proposing...
+    - Here's what we'd do in phase one...
+    confidence_threshold: 0.72
+    field: soar
+    indicators:
+    - we recommend
+    - our proposal
+    - we suggest
+    - the solution is
+    - our approach
+    - next step
+    - we propose
+    patterns:
+    - we (recommend|suggest|propose) \w+
+    - our (proposal|recommendation|approach) (is|would be)
+    - the (solution|answer|next step) is \w+
+    feature_restriction_note: Feature-level detail (product specs, tech capabilities) is inappropriate before Stage 4; restrict
+      Action to outcome framing in early stages
+    color: '#2980b9'
+    relates_to:
+    - target: opportunity_marker
+      relation: precedes
+      weight: required
+      description: 'SOAR: opportunity precedes action'
+    - target: result_marker
+      relation: precedes
+      weight: required
+      description: SOAR framework positions Action as preceding Result — the intervention must be articulated before the outcome
+    - target: value_proposition
+      relation: supports
+      weight: expected
+      description: "Action markers support value propositions by articulating the specific interventions that deliver promised benefits per SOAR Narrative Mapping by Sales Stage"
+      target_file: narrative_entities
+    - target: layout_pattern
+      relation: triggers
+      weight: expected
+      description: "SOAR Approach phase triggers timeline and process flow layouts using continuity principle"
+      target_file: visual_elements_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: soar_stage
+      values:
+      - action
+      strength: primary
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - action
+      - solution
+      strength: primary
+  result_marker:
+    label: RESULT_MARKER
+    field_description: Result outcome value proof ROI achieved delivered reduced improved customers saw gained as a result
+    description: Marker signalling achieved outcomes, proof of value, or ROI delivered
+    entity_kind: soar_element
+    family: soar
+    examples:
+    - As a result, they reduced costs by 30%.
+    - The outcome was a 2x improvement in...
+    - Customers achieved faster time-to-market.
+    - We delivered $2M in cost savings.
+    - The result was a 40% increase in...
+    - ROI was achieved within 6 months.
+    - Our customers confirm a 35% efficiency gain.
+    - Validated by independent audit.
+    confidence_threshold: 0.72
+    field: soar
+    indicators:
+    - as a result
+    - the outcome
+    - achieved
+    - delivered
+    - reduced
+    - improved
+    - ROI
+    - time-to-market
+    - savings
+    - confirmed
+    - validated
+    patterns:
+    - as a result,? \w+
+    - the (outcome|result) was \w+
+    - (achieved|delivered|realised) \w+
+    - ROI (was|achieved|within)
+    - (confirmed|validated) \w+
+    result_specificity_by_stage:
+      early_stages_1_3: illustrative — 'we have seen customers achieve'
+      mid_stages_4_6: verified — 'our customers are seeing'
+      commit_stages_7_9: confirmed — 'our customers confirm' with specific metrics
+    color: '#8e44ad'
+    relates_to:
+    - target: action_marker
+      relation: precedes
+      weight: required
+      description: Result validates Action retrospectively — outcome evidence strengthens the credibility of the action taken
+    - target: validated_outcome
+      relation: supported_by
+      weight: expected
+      description: Result markers need validated outcomes as proof
+      target_file: evidence_types_entities
+    - target: outcome_statement
+      relation: supports
+      weight: required
+      description: The Result marker in SOAR translates into an outcome statement that articulates the specific benefits and
+        achievements the customer realizes. Results are only meaningful when stated as concrete outcomes.
+      target_file: narrative_entities
+    - target: outcome_statement
+      relation: contains
+      weight: required
+      description: "The SOAR Results phase encompasses execution and impact measurement; the Result marker contains the outcome statement measuring behavioral change per Canonical Presentation Methodology"
+      target_file: narrative_entities
+    - target: positive_buying_signal
+      relation: triggers
+      weight: expected
+      description: "A strong result marker triggers positive buying signals by demonstrating measurable value and successful transformation per Analyzing Story for Business Communication"
+    - target: audience_kpi
+      relation: supported_by
+      weight: expected
+      description: "Result markers use role-appropriate KPIs and metrics — ROI for CMO, TCO for CIO, workflow metrics for Ops — to demonstrate outcomes per Storytelling for Different Business Personas"
+      target_file: audience_entities
+    - target: layout_pattern
+      relation: triggers
+      weight: expected
+      description: "SOAR Results phase triggers Hero Card and Big Number layouts for key success metrics"
+      target_file: visual_elements_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: soar_stage
+      values:
+      - result
+      strength: primary
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - result
+      - validated_result
+      strength: primary
+  positive_buying_signal:
+    label: POSITIVE_BUYING_SIGNAL
+    field_description: Positive buying signal interest intent tell me more how do we start when can we when would this
+    description: Customer statement signalling active purchase interest or forward intent
+    entity_kind: buying_signal
+    family: deal_dynamics
+    examples:
+    - Tell me more about that.
+    - How do we get started?
+    - When could we implement this?
+    - What would the next steps be?
+    - We're very interested in...
+    - This could work for us.
+    - Can you show us a demo?
+    - What does pricing look like?
+    - Who else do we need in the room?
+    confidence_threshold: 0.72
+    field: deal
+    indicators:
+    - tell me more
+    - how do we
+    - when could we
+    - next steps
+    - we're interested
+    - could work
+    - show us
+    - what does pricing
+    - who else
+    patterns:
+    - tell me more \w+
+    - how (do|would|can) we \w+
+    - what (would|are) the next steps
+    - we('re| are) (very )?interested
+    color: '#27ae60'
+    relates_to:
+    - target: stage_transition_signal
+      relation: triggers
+      weight: expected
+      description: Positive buying signals indicate readiness to advance the deal stage
+    - target: urgency_signal
+      relation: contrasts_with
+      weight: expected
+      description: Positive buying signals (interest) vs urgency signals (time pressure) — different deal accelerators
+    - target: transition_marker
+      relation: triggers
+      weight: expected
+      description: When positive buying signals emerge (agreement on value, urgency, budget), they trigger narrative transitions
+        to the next stage. Sales narratives shift emphasis based on these signals.
+      target_file: narrative_entities
+    - target: call_to_action
+      relation: enables
+      weight: expected
+      description: "Positive buying signals indicate readiness for the behavioral Do objective; they enable the call to action by confirming the audience has been transformed to Point B per Canonical Presentation Methodology"
+      target_file: narrative_entities
+    - target: audience_motivator
+      relation: supported_by
+      weight: expected
+      description: "Positive buying signals are supported by understanding audience motivators — when messaging aligns with what drives the buyer (ROI, efficiency, innovation), interest signals emerge per Comprehensive Audience Analysis"
+      target_file: audience_entities
+  urgency_signal:
+    label: URGENCY_SIGNAL
+    field_description: Urgency deadline time pressure we need this by end of quarter before launch board meeting deadline
+    description: Marker signalling customer time pressure, deadline, or urgency to decide
+    entity_kind: buying_signal
+    family: deal_dynamics
+    examples:
+    - We need this in place before Q3.
+    - Our board meeting is next month.
+    - The launch date is fixed.
+    - We're under pressure to act quickly.
+    - This is a priority for this quarter.
+    - We have a hard deadline of...
+    confidence_threshold: 0.72
+    field: deal
+    indicators:
+    - we need this by
+    - before Q
+    - board meeting
+    - launch date
+    - priority
+    - hard deadline
+    - this quarter
+    - under pressure
+    patterns:
+    - we need this (by|before|in) \w+
+    - (before|by) Q[1-4]
+    - (board|exec|leadership) meeting
+    - hard deadline (of|is)
+    - priority (for|this) \w+
+    color: '#e67e22'
+    relates_to:
+    - target: positive_buying_signal
+      relation: contrasts_with
+      weight: expected
+      description: Urgency (time-driven) vs interest (value-driven) buying signals
+    - target: stage_transition_signal
+      relation: triggers
+      weight: expected
+      description: Urgency signals can accelerate deal stage transitions
+    - target: kairos_marker
+      relation: specialises
+      weight: optional
+      description: Urgency signals specialise the rhetorical concept of kairos — seizing the right moment
+      target_file: rhetorical_devices_entities
+    - target: call_to_action
+      relation: supports
+      weight: expected
+      description: Urgency signals reinforce and motivate the call-to-action by establishing time-sensitive reasons to act,
+        making the CTA more compelling.
+      target_file: narrative_entities
+    - target: problem_statement_hook
+      relation: supports
+      weight: expected
+      description: Urgency signals support problem statement hooks by adding time-pressure context that makes the named problem
+        feel immediate and demanding of action per Crafting Powerful Opening Plays
+      target_file: opening_hooks_entities
+    - target: pain_point_sales
+      relation: supported_by
+      weight: expected
+      description: "Urgency signals are supported by quantified sales pain points — specific metrics like conversion rate declines and campaign shortfalls create time-sensitive motivation per Case Study Excellence"
+    - target: monroe_sequence_marker
+      relation: supported_by
+      weight: expected
+      description: "MMS's Need stage creates urgency by demonstrating stakes and consequences of inaction, while the Action stage pushes for immediate commitment per Monroe's Motivated Sequence research"
+      target_file: rhetorical_devices_entities
+    - target: narrative_tension
+      relation: triggers
+      weight: expected
+      description: "Urgency signals trigger narrative tension — phrasing in terms of stakes and risk of inaction creates the engagement that drives audience attention per SOAR Storytelling research"
+      target_file: narrative_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: emotional_tone
+      values:
+      - urgent
+      - kairos
+      strength: primary
+  budget_objection:
+    label: BUDGET_OBJECTION
+    field_description: Budget objection cost too expensive not in budget pricing concern no funding afford ROI unclear
+    description: Customer marker signalling cost, budget, or pricing as an obstacle
+    entity_kind: objection
+    family: deal_blockers
+    examples:
+    - We don't have the budget for this.
+    - That's too expensive right now.
+    - Cost is a concern.
+    - We're not sure of the ROI.
+    - We can't get funding approved.
+    - Pricing is higher than expected.
+    - What's the business case?
+    confidence_threshold: 0.72
+    field: objection
+    indicators:
+    - don't have the budget
+    - too expensive
+    - cost is a concern
+    - not sure of the ROI
+    - funding
+    - pricing is
+    - business case
+    patterns:
+    - (don't|do not) have (the )?budget
+    - too expensive
+    - (cost|price|pricing) is \w+
+    - not sure (of|about) (the )?ROI
+    - what's the business case
+    color: '#e74c3c'
+    relates_to:
+    - target: value_proposition
+      relation: rebuts
+      weight: expected
+      description: Budget objections challenge the cost-benefit claims of value propositions
+      target_file: narrative_entities
+    - target: timing_objection
+      relation: contrasts_with
+      weight: expected
+      description: Budget (cost) vs timing (schedule) — different objection categories
+    - target: competitor_objection
+      relation: contrasts_with
+      weight: expected
+      description: Budget (cost) vs competitor (alternative) — different objection categories
+    - target: outcome_statement
+      relation: contrasts_with
+      weight: expected
+      description: Budget objections (concerns about cost) are addressed and contrasted with outcome statements that demonstrate
+        ROI and value delivered, showing the return justifies the investment.
+      target_file: narrative_entities
+  timing_objection:
+    label: TIMING_OBJECTION
+    field_description: Timing objection not right time not ready bad timing too busy let's revisit next year later
+    description: Customer marker signalling timing, readiness, or capacity as an obstacle
+    entity_kind: objection
+    family: deal_blockers
+    examples:
+    - Now isn't the right time.
+    - We're not ready for this yet.
+    - Let's revisit this next quarter.
+    - We're too busy right now.
+    - We have other priorities at the moment.
+    - Maybe next year would be better.
+    confidence_threshold: 0.7
+    field: objection
+    indicators:
+    - not the right time
+    - not ready
+    - revisit
+    - too busy
+    - other priorities
+    - next year
+    - next quarter
+    patterns:
+    - not (the right time|ready)
+    - let's revisit \w+
+    - too busy (right now|at the moment)
+    - other priorities
+    - next (year|quarter|cycle)
+    color: '#c0392b'
+    relates_to:
+    - target: budget_objection
+      relation: contrasts_with
+      weight: expected
+      description: Timing (schedule/urgency) vs budget (cost) objections
+  competitor_objection:
+    label: COMPETITOR_OBJECTION
+    field_description: Competitor objection we are looking at already evaluating considering another vendor comparing with
+    description: Customer marker signalling consideration of a competing vendor or solution
+    entity_kind: objection
+    family: deal_blockers
+    examples:
+    - We're also looking at Salesforce.
+    - We're evaluating a few vendors.
+    - We have an existing relationship with...
+    - Our current provider handles this.
+    - We're comparing a few options.
+    - Another vendor has offered us...
+    confidence_threshold: 0.7
+    field: objection
+    indicators:
+    - also looking at
+    - evaluating
+    - existing relationship
+    - current provider
+    - comparing
+    - another vendor
+    patterns:
+    - also (looking at|evaluating|considering) \w+
+    - existing (relationship|contract|partner) with \w+
+    - current (provider|vendor|solution)
+    - (comparing|evaluating) (a few|multiple|several|other) \w+
+    color: '#9b59b6'
+    relates_to:
+    - target: budget_objection
+      relation: contrasts_with
+      weight: expected
+      description: Competitor (alternative) vs budget (cost) objections
+    - target: value_proposition
+      relation: rebuts
+      weight: expected
+      description: Competitor objections challenge differentiation claims in value propositions
+      target_file: narrative_entities
+  champion_marker:
+    label: CHAMPION_MARKER
+    field_description: Champion internal advocate supporter I can help I will push for this I believe in this I will present
+    description: Signal from an internal stakeholder acting as a champion for the deal
+    entity_kind: qualification_marker
+    family: meddpicc
+    examples:
+    - I can help make this happen internally.
+    - I'll push for this at the exec level.
+    - I believe in what you're offering.
+    - I'll present this to the board.
+    - Leave it with me — I'll get this approved.
+    - I want to help move this forward.
+    confidence_threshold: 0.7
+    field: qualification
+    indicators:
+    - I can help
+    - I'll push for
+    - I believe in
+    - I'll present
+    - leave it with me
+    - I want to help
+    patterns:
+    - I('ll| will|can) (help|push|present|get) \w+
+    - leave it with me
+    - I want to (help|move|get) \w+
+    color: '#f39c12'
+    relates_to:
+    - target: champion
+      relation: specialises
+      weight: required
+      description: MEDDPICC champion marker specialises the general champion buying role
+      target_file: audience_entities
+    - target: decision_maker_marker
+      relation: contrasts_with
+      weight: expected
+      description: Champion (internal advocate) vs decision maker (authority) — different MEDDPICC roles
+    - target: champion
+      relation: supports
+      weight: expected
+      description: Sales narratives identify champions (internal advocates) and tailor messaging to them. The champion marker
+        signals advocacy and internal alignment.
+      target_file: audience_entities
+  decision_maker_marker:
+    label: DECISION_MAKER_MARKER
+    field_description: Decision maker authority approval sign off final say CIO CFO board leadership needs to approve
+    description: Signal identifying who has final authority over the purchase decision
+    entity_kind: qualification_marker
+    family: meddpicc
+    examples:
+    - The CIO will need to sign off.
+    - Final approval sits with the CFO.
+    - The board needs to approve this.
+    - Our VP of Technology makes this call.
+    - I'm not the final decision maker.
+    - We'll need buy-in from the executive team.
+    confidence_threshold: 0.72
+    field: qualification
+    indicators:
+    - sign off
+    - final approval
+    - board
+    - VP
+    - CIO
+    - CFO
+    - makes this call
+    - decision maker
+    - buy-in
+    patterns:
+    - (sign|signing) off \w+
+    - (final|budget) approval \w+
+    - (CIO|CFO|CMO|CTO|CEO|VP|SVP) (needs|will|must)
+    - (decision maker|decision[- ]making) \w+
+    color: '#2980b9'
+    relates_to:
+    - target: economic_buyer
+      relation: specialises
+      weight: expected
+      description: MEDDPICC decision maker aligns with economic buyer role
+      target_file: audience_entities
+    - target: champion_marker
+      relation: contrasts_with
+      weight: expected
+      description: Decision maker (authority) vs champion (advocate) — different MEDDPICC roles
+    - target: executive_audience
+      relation: supported_by
+      weight: expected
+      description: "Decision maker markers are supported by executive audience context determining if decisions are risk-averse or data-driven per Comprehensive Audience Analysis"
+      target_file: audience_entities
+  expansion_trigger:
+    label: EXPANSION_TRIGGER
+    field_description: Expansion trigger cross-sell upsell additional products growing team new use case new department
+    description: Signal that an existing account has potential for expansion into new products or teams
+    entity_kind: play_trigger
+    family: sales_plays
+    examples:
+    - We're growing the team significantly.
+    - We're looking at using this for another department.
+    - Could this work for our EMEA operation?
+    - We'd like to add more licences.
+    - Are there other solutions that address...
+    - We're expanding our use of...
+    confidence_threshold: 0.68
+    field: play
+    indicators:
+    - growing the team
+    - another department
+    - EMEA
+    - add more
+    - expanding
+    - other solutions
+    patterns:
+    - (growing|expanding) (the|our) (team|use|footprint)
+    - another (department|division|region|team)
+    - (add|increase) (more|additional) \w+
+    - other (products?|solutions?|capabilities)
+    color: '#27ae60'
+    relates_to:
+    - target: displacement_trigger
+      relation: contrasts_with
+      weight: expected
+      description: Expansion (grow existing account) vs displacement (replace competitor) — different sales plays
+  displacement_trigger:
+    label: DISPLACEMENT_TRIGGER
+    field_description: Competitive displacement trigger frustrated with current vendor contract renewal switching considering
+      change
+    description: Signal that a customer is dissatisfied with an incumbent and open to switching
+    entity_kind: play_trigger
+    family: sales_plays
+    examples:
+    - We're frustrated with our current solution.
+    - Our contract is up for renewal.
+    - We're re-evaluating our vendor relationships.
+    - The current system isn't meeting our needs.
+    - We've been thinking about switching.
+    - Support has been poor from our current provider.
+    confidence_threshold: 0.7
+    field: play
+    indicators:
+    - frustrated with
+    - contract is up
+    - re-evaluating
+    - not meeting our needs
+    - thinking about switching
+    - support has been poor
+    patterns:
+    - frustrated (with|by) (our|the|current)
+    - contract (is up|renewal|expires)
+    - (re-evaluating|reconsidering) \w+
+    - not (meeting|delivering|solving)
+    - (thinking|considering) (about )?switching
+    color: '#e74c3c'
+    relates_to:
+    - target: expansion_trigger
+      relation: contrasts_with
+      weight: expected
+      description: Displacement (replace competitor) vs expansion (grow existing) — different sales plays
+    - target: competitor_objection
+      relation: triggers
+      weight: expected
+      description: Displacement attempts naturally trigger competitor objections
+  stage_transition_signal:
+    label: STAGE_TRANSITION_SIGNAL
+    field_description: Stage transition buyer behavioral signal ready to advance commitment request how do we proceed moving
+      forward
+    description: Buyer behavioral signal indicating readiness to progress to the next sales stage — NOT calendar-based
+    entity_kind: transition_signal
+    family: deal_dynamics
+    examples:
+    - How do we proceed from here?
+    - We'd like to move forward.
+    - We're ready to see a proof of concept.
+    - Can we get the team aligned on this?
+    - We need a formal proposal.
+    - Let's get the legal team involved.
+    - When can we run a pilot?
+    - We're committed to this direction.
+    confidence_threshold: 0.68
+    field: deal
+    indicators:
+    - how do we proceed
+    - move forward
+    - ready to see
+    - formal proposal
+    - legal team
+    - pilot
+    - committed
+    patterns:
+    - how (do|can|should) we (proceed|move|go)
+    - ready to (see|run|evaluate|begin)
+    - (formal|written) (proposal|agreement|contract)
+    - committed (to|on) \w+
+    note: Stage transition is triggered by buyer BEHAVIOUR (these signals), not calendar dates or seller assumptions
+    relates_to:
+    - target: positive_buying_signal
+      relation: supported_by
+      weight: expected
+      description: Stage transitions are justified by accumulated buying signals
+    - target: transition_marker
+      relation: specialises
+      weight: expected
+      description: "Stage transitions in the sales cycle specialise narrative transition markers; the SOAR lifecycle mandates sequential phase progression with quality gates between stages (Canonical Presentation Methodology)"
+      target_file: narrative_entities
+    - target: call_to_action
+      relation: triggers
+      weight: expected
+      description: "Stage transition signals trigger appropriate calls to action for each sales phase — buyer readiness signals (e.g. requesting proposals, involving legal) indicate the right moment for phase-specific CTAs per Comprehensive Audience Analysis"
+      target_file: narrative_entities
+    - target: transition_marker
+      relation: supported_by
+      weight: expected
+      description: "SOAR stage transitions supported by narrative markers signaling cognitive frame shifts between phases"
+      target_file: narrative_entities
+  buyer_psychology_signal:
+    label: BUYER_PSYCHOLOGY_SIGNAL
+    field_description: Buyer emotional cognitive state signal anxiety fear hope excitement scepticism curiosity relief confirmation
+    description: Language revealing the buyer's emotional or cognitive state at a given stage — signals appropriate narrative
+      register
+    entity_kind: psychology_signal
+    family: deal_dynamics
+    examples:
+    - I'm worried about what happens if we don't act.
+    - We're excited about the possibility.
+    - I'm not convinced yet.
+    - This is exactly what we've been looking for.
+    - We feel like we're being pushed.
+    - I need to see this working before I commit.
+    - This is making me nervous about the timeline.
+    - I'm relieved we found a solution.
+    confidence_threshold: 0.65
+    field: deal
+    indicators:
+    - worried about
+    - excited about
+    - not convinced
+    - exactly what we
+    - feeling pushed
+    - before I commit
+    - making me nervous
+    - relieved
+    patterns:
+    - (I'm|we're) (worried|anxious|nervous|scared) (about|that)
+    - (I'm|we're) (excited|hopeful|optimistic) (about|that)
+    - not (convinced|sure|ready) (yet|about)
+    - before (I|we) (commit|decide|sign)
+    buyer_state_by_stage_group:
+      early_1_3:
+      - unaware of urgency
+      - sceptical
+      - curious but uncommitted
+      mid_4_6:
+      - anxiety growing
+      - comparing alternatives
+      - seeking validation
+      commit_7_9:
+      - excited but nervous
+      - seeking internal approval
+      - checking final details
+      post_close:
+      - validated
+      - seeking confirmation of decision quality
+    relates_to:
+    - target: audience_motivator
+      relation: enables
+      weight: expected
+      description: Buyer psychology signals reveal underlying motivators
+      target_file: audience_entities
+    - target: audience_objection
+      relation: resolves
+      weight: expected
+      description: "Buyer psychology signals help resolve audience objections through targeted messaging — reading emotional and cognitive states (anxiety, scepticism, excitement) enables tailored objection handling per Comprehensive Audience Analysis"
+      target_file: audience_entities
+  soar_narrative_quality_marker:
+    label: SOAR_NARRATIVE_QUALITY
+    field_description: SOAR narrative quality signal strong weak missing element imbalanced all four elements present narrative
+      arc complete
+    description: Signal indicating the narrative quality of SOAR element construction — helps identify strong vs. weak SOAR
+      storytelling
+    entity_kind: quality_signal
+    family: soar
+    examples:
+    - The situation was compelling and specific.
+    - What's at stake is clear.
+    - The case for change is evident.
+    - No clear outcome was stated.
+    - Generic result — no specifics.
+    - Opportunity element is missing.
+    - Strong proof of value.
+    confidence_threshold: 0.65
+    field: quality
+    positive_signals:
+    - compelling situation
+    - clear opportunity
+    - specific outcome
+    - proof of value
+    - case for change
+    - what's at stake
+    negative_signals:
+    - generic result
+    - missing element
+    - no outcome stated
+    - vague situation
+    - opportunity unclear
+    note: Used to trigger narrative coaching feedback — when SOAR balance is incomplete or narrative arc is broken
+    relates_to:
+    - target: situation_marker
+      relation: contains
+      weight: required
+      description: SOAR quality assessment encompasses all four SOAR stage markers
+    - target: opportunity_marker
+      relation: contains
+      weight: required
+      description: SOAR quality assessment encompasses all four SOAR stage markers
+    - target: action_marker
+      relation: contains
+      weight: required
+      description: SOAR quality assessment encompasses all four SOAR stage markers
+    - target: result_marker
+      relation: contains
+      weight: required
+      description: SOAR quality assessment encompasses all four SOAR stage markers
+    - target: scqa_marker
+      relation: supported_by
+      weight: required
+      description: "SOAR narrative quality depends on SCQA providing the logical storyline structure within each SOAR phase; SCQA is the engine of story within the SOAR meta-structure per Canonical Presentation Methodology"
+      target_file: rhetorical_devices_entities
+    - target: before_after_comparison
+      relation: supported_by
+      weight: expected
+      description: "SOAR narrative quality is supported by before/after comparisons that show transformation from Situation through Opportunity/Action to Results per Slide Deck Design Playbook"
+      target_file: evidence_types_entities
+    - target: narrative_tension
+      relation: supports
+      weight: expected
+      description: "SOAR narrative quality evaluates whether the Complication creates sufficient tension and the Answer provides adequate resolution in the SCQA-driven storyline (Canonical Presentation Methodology)"
+      target_file: narrative_entities
+    - target: layout_pattern
+      relation: enables
+      weight: expected
+      description: "SOAR framework enables algorithmic layout selection via deterministic phase-to-archetype mapping"
+      target_file: visual_elements_entities
+    - target: NARRATIVE_QUALITY_DIMENSION
+      relation: supports
+      weight: expected
+      description: "SOAR narrative quality supports narrative quality scoring ensuring distinct section purposes"
+      target_file: scoring_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: soar_stage
+      values:
+      - situation
+      - opportunity
+      - action
+      - result
+      strength: primary
+gliner_config:
+  model: gliner-large-v2
+  batch_size: 32
+  default_confidence_threshold: 0.7
+  context_window: 512
+  entity_groups:
+    soar_elements:
+    - SITUATION_MARKER
+    - OPPORTUNITY_MARKER
+    - ACTION_MARKER
+    - RESULT_MARKER
+    buying_signals:
+    - POSITIVE_BUYING_SIGNAL
+    - URGENCY_SIGNAL
+    objections:
+    - BUDGET_OBJECTION
+    - TIMING_OBJECTION
+    - COMPETITOR_OBJECTION
+    qualification_markers:
+    - CHAMPION_MARKER
+    - DECISION_MAKER_MARKER
+    play_triggers:
+    - EXPANSION_TRIGGER
+    - DISPLACEMENT_TRIGGER
+    narrative_quality:
+    - STAGE_TRANSITION_SIGNAL
+    - BUYER_PSYCHOLOGY_SIGNAL
+    - SOAR_NARRATIVE_QUALITY
+domain_keywords:
+  primary:
+  - SOAR
+  - situation
+  - opportunity
+  - action
+  - result
+  - objection
+  - buying signal
+  - champion
+  - decision maker
+  - MEDDPICC
+  - qualification
+  - pipeline
+  - deal
+  - account
+  - stage
+  - narrative arc
+  secondary:
+  - budget
+  - timing
+  - competitor
+  - expansion
+  - displacement
+  - urgency
+  - revenue
+  - ROI
+  - proof of value
+  - business case
+  - contract
+  - renewal
+  - buyer psychology
+  - tension
+  - case for change
+quality_indicators:
+  soar_balance:
+    incomplete: < 3 of 4 SOAR elements detected
+    complete: All 4 SOAR elements represented
+    strong: All 4 SOAR elements with evidence markers present
+  soar_narrative_arc:
+    weak: Situation only — no opportunity tension; no result
+    adequate: S + R present; O or A weak
+    strong: All 4 elements with tension vocabulary in O; specific metrics in R
+  deal_health:
+    at_risk: Objection markers > buying signal markers
+    neutral: Even balance of signals and objections
+    progressing: Buying signals > objection markers
+  qualification_coverage:
+    weak: No champion or decision maker markers
+    partial: Champion OR decision maker identified
+    strong: Both champion AND decision maker identified
+  result_specificity:
+    weak: Vague result — 'improved', 'better', 'faster'
+    adequate: Directional metric — 'reduced costs significantly'
+    strong: Specific validated metric — 'confirmed 35% efficiency gain within 6 months'

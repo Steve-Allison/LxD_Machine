@@ -1,0 +1,1339 @@
+# ==============================================================================
+# data_visualisation_rubric.yaml
+# Scoring rubric for data visualisation quality in corporate presentations,
+# reports, and learning materials.
+#
+# Grounded in:
+#   - Tufte (1983) data-ink ratio and chartjunk principles
+#   - Cleveland & McGill (1984) graphical perception hierarchy
+#   - Vessey (1991) Cognitive Fit Theory (table vs graph task matching)
+#   - Cairo (2013) functional art principles
+#   - Few (2004) categorical palette and labelling standards
+#   - Mayer (2001) Spatial Contiguity Principle (direct labelling)
+#   - WCAG 2.1 AA colour contrast requirements
+#
+# Research corpus consulted:
+#   - Research - Infographics.md
+#   - Research - visualisation_techniques_corporate_learning.md
+#   - Research - Slide Deck Design Playbook Research.md
+#   - Research - The Cognitive Interface - Operationalizing UxD for Documents and Reports.md
+# ==============================================================================
+
+_meta:
+  id: data_visualisation_rubric
+  title: "Data Visualisation Rubric"
+  description: "Scoring rubric for data visualisation quality covering chart type appropriateness, data-ink ratio, labelling clarity, colour accessibility, and insight communication"
+  domain: visual
+  domain_type: cross_cutting
+  purpose: scoring
+  version: "1.1.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Infographics.md"
+    - "Corpus/Research/Research - visualisation_techniques_corporate_learning.md"
+    - "Corpus/Research/Research - Slide Deck Design Playbook Research.md"
+    - "Corpus/Research/Research - The Cognitive Interface - Operationalizing UxD for Documents and Reports.md"
+  academic_sources:
+    - "Tufte (1983) - The Visual Display of Quantitative Information"
+    - "Cleveland & McGill (1984) - Graphical Perception"
+    - "Few (2004) - Show Me the Numbers"
+    - "Vessey (1991) - Cognitive Fit Theory"
+    - "Cairo (2013) - The Functional Art"
+    - "Huang et al. (2018) - Effect of action captions on comprehension and decision speed in executive dashboards (RCT)"
+    - "Gottlieb et al. (2022) - Infographic design and information retention in adult learners"
+    - "Nightingale (1858) - Diagram of the Causes of Mortality in the Army of the East (polar area chart originator)"
+  relationships:
+    - target: ../methodology/data_visualization_standards.yaml
+      type: derived_from
+      description: "Data visualisation standards informing rubric criteria"
+    - target: visual_design_rubric.yaml
+      type: related_to
+      description: "Overall visual design quality"
+    - target: cognitive_load_rubric.yaml
+      type: related_to
+      description: "Cognitive load implications of data visualisation"
+    - target: accessibility_rubric.yaml
+      type: related_to
+      description: "Colour accessibility and alt text for data visualisations"
+
+
+# ==============================================================================
+# RUBRIC WEIGHTS
+# Proportional contribution of each dimension to the composite score.
+# Weights sum to 1.0.
+# ==============================================================================
+
+rubric_weights:
+  chart_type_appropriateness: 0.25
+  data_ink_ratio: 0.20
+  labelling_clarity: 0.20
+  colour_accessibility: 0.15
+  insight_communication: 0.20
+
+
+# ==============================================================================
+# SCORING DIMENSIONS
+# Each dimension scored 1-5. Dimension scores are multiplied by their weight
+# and summed to produce the composite data visualisation score.
+# ==============================================================================
+
+dimensions:
+
+  # ----------------------------------------------------------------------------
+  # DIMENSION 1: CHART TYPE APPROPRIATENESS
+  # Cognitive Fit Theory (Vessey 1991) — the representation must match the
+  # analytical task. Mismatched chart types force the viewer to perform
+  # additional cognitive work to extract the intended insight.
+  # Research basis: visualisation_techniques_corporate_learning.md (§2.1),
+  #                 The Cognitive Interface (§4.2)
+  # ----------------------------------------------------------------------------
+  chart_type_appropriateness:
+    name: "Chart Type Appropriateness"
+    description: >
+      Degree to which the selected chart type matches the analytical task
+      (lookup, comparison, trend, composition, correlation, distribution).
+      Based on Vessey's Cognitive Fit Theory: performance is maximised only
+      when the visual representation aligns with the task the viewer must perform.
+    weight: 0.25
+    score_levels:
+      1:
+        label: "Mismatched"
+        criteria: >
+          Chart type fundamentally mismatches the data or task. Examples: pie
+          chart used for time-series trend; 3D bar chart used for comparison;
+          line chart used for non-continuous categorical data. Viewer must
+          perform significant cognitive re-encoding to extract any insight.
+      2:
+        label: "Poor Fit"
+        criteria: >
+          Chart type is plausible but a clearly superior alternative exists.
+          Example: stacked bar used where a grouped bar would enable direct
+          comparison; single-axis scatter used where a line chart would show
+          trend more clearly. Some cognitive overhead from sub-optimal encoding.
+      3:
+        label: "Acceptable"
+        criteria: >
+          Chart type is appropriate for the data type but not optimised for
+          the specific analytical task stated in the title or caption.
+          Viewer can extract the insight without major difficulty.
+      4:
+        label: "Good Fit"
+        criteria: >
+          Chart type is well-matched to the task. The encoding method (length,
+          position, slope, area) aligns with what the viewer must judge. Minor
+          improvements possible (e.g., axis ordering not optimised).
+      5:
+        label: "Optimal Fit"
+        criteria: >
+          Chart type is the canonical best choice for the data type and
+          analytical task. Encoding method maximises perceptual accuracy per
+          Cleveland & McGill's graphical perception hierarchy (position along
+          common scale > position along non-aligned scale > length > angle/area).
+          No superior alternative exists given the data and context.
+
+  # ----------------------------------------------------------------------------
+  # DIMENSION 2: DATA-INK RATIO
+  # Tufte's principle (1983): maximise the proportion of ink devoted to
+  # representing data. Chartjunk is a pure source of extraneous cognitive load.
+  # Research basis: Slide Deck Design Playbook (§B.7.0),
+  #                 The Cognitive Interface (§4.1)
+  # ----------------------------------------------------------------------------
+  data_ink_ratio:
+    name: "Data-Ink Ratio"
+    description: >
+      Proportion of visual ink actually encoding data versus total ink in the
+      graphic. Target ratio >= 0.85. Chartjunk (3D effects, decorative fills,
+      heavy gridlines, moiré patterns, redundant tick marks, background fills)
+      is extraneous cognitive load and must be eliminated.
+      Formula: Data-Ink / Total Ink used to print the graphic.
+    weight: 0.20
+    score_levels:
+      1:
+        label: "Severe Chartjunk"
+        criteria: >
+          Estimated data-ink ratio below 0.40. Multiple chartjunk elements
+          present simultaneously: 3D perspective effects, patterned or gradient
+          fills, heavy gridlines, decorative background images, drop shadows,
+          and/or border boxes around every element. The non-data ink dominates
+          the visual field.
+      2:
+        label: "Significant Chartjunk"
+        criteria: >
+          Estimated data-ink ratio 0.40-0.60. Two or more chartjunk elements
+          present (e.g., 3D depth effect plus coloured background fill plus
+          major gridlines). Data signal is present but visually competed with.
+      3:
+        label: "Moderate Clutter"
+        criteria: >
+          Estimated data-ink ratio 0.60-0.75. One category of chartjunk
+          present (e.g., minor gridlines retained, or decorative fill used,
+          or redundant tick marks visible). Data is readable but ratio could
+          be improved with targeted erasure.
+      4:
+        label: "Clean"
+        criteria: >
+          Estimated data-ink ratio 0.75-0.85. Most non-data ink erased.
+          Light reference gridlines may remain where necessary for value
+          reading. Minor redundant elements present (e.g., axis tick marks
+          where direct labels exist).
+      5:
+        label: "Maximum Data-Ink"
+        criteria: >
+          Estimated data-ink ratio >= 0.85. Non-data ink eliminated. No 3D
+          effects, no decorative fills, no background colours, no redundant
+          gridlines. Micro/macro reading possible: immediate macro trend plus
+          precise micro data point upon closer inspection (Tufte 1983).
+
+  # ----------------------------------------------------------------------------
+  # DIMENSION 3: LABELLING CLARITY
+  # Spatial Contiguity Principle (Mayer) — labels placed on or immediately
+  # adjacent to data elements eliminate the split-attention effect.
+  # Research basis: Slide Deck Design Playbook (§B.7.0, §6.0 Golden Rule #7),
+  #                 visualisation_techniques_corporate_learning.md (§3.1)
+  # ----------------------------------------------------------------------------
+  labelling_clarity:
+    name: "Labelling Clarity"
+    description: >
+      Quality of axis labels, data labels, title informativeness, and absence
+      of separate legends requiring lookup. Direct labelling eliminates the
+      split-attention effect where the viewer must split gaze between a legend
+      and the data series to decode colour mapping. Titles must state the
+      analytical conclusion (action caption), not merely describe the subject.
+    weight: 0.20
+    score_levels:
+      1:
+        label: "Inadequate"
+        criteria: >
+          Axes unlabelled or labelled with variable codes only (e.g., 'Var1').
+          No units stated. Separate legend required for all data series.
+          Title is absent or entirely uninformative. Data labels absent where
+          values are critical. Viewer cannot interpret the chart without
+          external documentation.
+      2:
+        label: "Minimal"
+        criteria: >
+          Axes labelled but units missing or ambiguous. Separate legend
+          required for data series (split-attention effect present). Title
+          is a generic topic label (e.g., 'Sales by Region') providing no
+          analytical conclusion. Some data labels present but incomplete.
+      3:
+        label: "Adequate"
+        criteria: >
+          Axes labelled with units. Legend present but not yet converted to
+          direct labels. Title describes subject without stating conclusion.
+          Data labels present for key values but inconsistently applied.
+          Significant decimal places may be inconsistent.
+      4:
+        label: "Good"
+        criteria: >
+          Most data series directly labelled on chart, reducing or eliminating
+          separate legend. Title moves toward action caption (partial conclusion
+          stated). Axis labels clear with consistent units. Significant figures
+          appropriate to precision of underlying data.
+      5:
+        label: "Exemplary"
+        criteria: >
+          All data series directly labelled on chart — no separate legend
+          required. Title is a full action caption stating the key insight
+          (e.g., 'Northeast Revenue Grew 20%, Compensating for a 5% Decline
+          in the West'). Axes fully labelled with units. Significant figures
+          appropriate. Annotations mark key events or thresholds directly on
+          the chart where relevant. Spatial Contiguity Principle fully observed.
+
+  # ----------------------------------------------------------------------------
+  # DIMENSION 4: COLOUR ACCESSIBILITY
+  # WCAG 2.1 AA non-text contrast requirement: 3:1 for chart elements.
+  # Colour-only encoding violates the WCAG 'Color Only' rule (1.4.1).
+  # Approximately 1 in 12 men and 1 in 200 women have colour vision deficiency.
+  # Research basis: Infographics.md (Inclusivity section),
+  #                 visualisation_techniques_corporate_learning.md (§2.4),
+  #                 Slide Deck Design Playbook (§B.6.0)
+  # ----------------------------------------------------------------------------
+  colour_accessibility:
+    name: "Colour Accessibility"
+    description: >
+      Use of colorblind-safe palettes, adequate contrast ratios for chart
+      elements (WCAG 2.1 AA: 3:1 for non-text graphics), and avoidance of
+      colour as the sole encoding channel. Approximately 8% of males have
+      colour vision deficiency; red-green combinations are the most common
+      failure mode. Redundant encoding (colour + shape/pattern/label) is
+      required for accessible charts.
+    weight: 0.15
+    score_levels:
+      1:
+        label: "Inaccessible"
+        criteria: >
+          Colour is the only differentiator between data series with no
+          redundant encoding (no pattern, no direct label, no shape variation).
+          Red-green or blue-purple combinations used. Chart element contrast
+          falls below 2:1 against adjacent colours. Fails WCAG 2.1 AA 1.4.1
+          (Colour Only) and 1.4.11 (Non-text Contrast).
+      2:
+        label: "Poor Accessibility"
+        criteria: >
+          Problematic colour combinations present (red-green dominant without
+          redundancy). Contrast ratio 2:1 to 2.9:1 for chart elements — below
+          the 3:1 WCAG minimum. Colour is primary differentiator with minimal
+          redundant encoding. May pass a superficial review but fails under
+          simulation of deuteranopia or protanopia.
+      3:
+        label: "Partial Compliance"
+        criteria: >
+          Colour combinations avoid the most severe red-green conflicts but
+          are not drawn from a validated colorblind-safe palette. Contrast
+          ratio meets 3:1 for some but not all chart elements. Some redundant
+          encoding present (e.g., direct labels on some but not all series).
+      4:
+        label: "Good Accessibility"
+        criteria: >
+          Palette drawn from or consistent with a validated colorblind-safe
+          set (Okabe-Ito, viridis, ColorBrewer). Contrast ratio >= 3:1 for
+          all chart elements against adjacent colours (WCAG 2.1 AA 1.4.11).
+          Redundant encoding present for at least the primary differentiating
+          dimension. Design passes deuteranopia simulation.
+      5:
+        label: "Fully Accessible"
+        criteria: >
+          Palette explicitly from Okabe-Ito, viridis/magma/plasma, or a
+          validated ColorBrewer sequential/diverging/categorical set matched
+          to data type. Contrast >= 3:1 for all chart elements. Full redundant
+          encoding: colour + direct label + shape or pattern where multiple
+          series present. Design passes simulation of deuteranopia, protanopia,
+          and tritanopia. Does not rely on colour alone for any critical
+          distinction (WCAG 2.1 AA 1.4.1 fully observed).
+
+  # ----------------------------------------------------------------------------
+  # DIMENSION 5: INSIGHT COMMUNICATION
+  # Action captions reduce the cognitive cost of extracting conclusions.
+  # The viewer's task shifts from 'solve the puzzle' to 'verify the claim'.
+  # Research basis: The Cognitive Interface (§4.3),
+  #                 Slide Deck Design Playbook (§C.4.0, §Golden Rule #3)
+  # ----------------------------------------------------------------------------
+  insight_communication:
+    name: "Insight Communication"
+    description: >
+      Degree to which the chart's title and annotations communicate the key
+      analytical conclusion rather than merely labelling the subject matter.
+      A Topic Title ('Q4 Revenue') forces the viewer to analyse and conclude.
+      An Action Caption ('Q4 Revenue Grew 15%, Driven by the Premium Segment')
+      transfers the conclusion instantly, reducing cognitive load and increasing
+      decision-making speed. Annotation quality and key takeaway visibility
+      are also assessed.
+    weight: 0.20
+    score_levels:
+      1:
+        label: "No Insight Communicated"
+        criteria: >
+          Title is absent or is a generic variable label ('Chart 1', 'Data').
+          No annotations. Viewer must independently analyse the chart,
+          derive the conclusion, and assess its relevance to context.
+          Maximum cognitive cost imposed on the audience.
+      2:
+        label: "Topic Title Only"
+        criteria: >
+          Title describes the subject but states no conclusion (e.g.,
+          'Revenue by Region 2024'). No annotations marking key thresholds
+          or events. Viewer must identify the key pattern unaided. This is
+          the default failure mode in most corporate reporting.
+      3:
+        label: "Partial Insight"
+        criteria: >
+          Title hints at a conclusion but is incomplete or ambiguous
+          (e.g., 'Revenue Growth by Region'). At least one annotation or
+          callout present marking a notable value or event, but the primary
+          takeaway is not stated in the title.
+      4:
+        label: "Clear Action Caption"
+        criteria: >
+          Title is a full declarative sentence stating the primary insight
+          (e.g., 'West Region Revenue Fell 15% in Q3 Due to Supply Chain
+          Disruption'). One or more annotations mark supporting evidence
+          directly on the chart. Key takeaway is immediately visible without
+          analysis.
+      5:
+        label: "Exemplary Insight Communication"
+        criteria: >
+          Title is a precise, quantified action caption stating cause and
+          effect or trend direction and magnitude. Annotations mark all
+          material thresholds, inflection points, or events with concise
+          explanatory text. The chart functions as evidence for a pre-stated
+          claim rather than a puzzle to be solved. Action Title Test satisfied:
+          reading only the title conveys the full analytical conclusion.
+
+
+# ==============================================================================
+# COGNITIVE FIT MAPPING
+# Task-to-chart-type matrix derived from Vessey (1991) and
+# visualisation_techniques_corporate_learning.md (§2.1, Table 1).
+# Use this mapping to evaluate chart_type_appropriateness dimension.
+# ==============================================================================
+
+cognitive_fit_mapping:
+  description: >
+    Maps analytical tasks to optimal chart types. Selection should be driven
+    by the viewer's task, not the data's structure alone. A dataset of 12
+    monthly values could require a line chart (trend task), a bar chart
+    (comparison task), or a table (lookup task) depending on context.
+
+  task_to_chart:
+    lookup_precise_value:
+      task: "Extract a specific data point (e.g., 'What was March revenue?')"
+      optimal: ["table"]
+      acceptable: ["bar_chart_with_direct_labels"]
+      avoid: ["line_chart", "area_chart"]
+      rationale: >
+        Tables emphasise symbolic retrieval. The visual cortex offers no
+        advantage when a precise single value is required. (Cognitive Interface §4.2)
+
+    compare_categories:
+      task: "Compare magnitudes across discrete categories"
+      optimal: ["horizontal_bar_chart", "vertical_bar_chart"]
+      acceptable: ["dot_plot", "lollipop_chart"]
+      avoid: ["pie_chart", "donut_chart", "3d_bar_chart", "radar_chart"]
+      rationale: >
+        Aligned bar lengths are judged more accurately than angle or area.
+        Cleveland & McGill (1984) rank position along common scale highest
+        in the graphical perception accuracy hierarchy.
+
+    identify_trend:
+      task: "Identify direction and rate of change over time"
+      optimal: ["line_chart", "area_chart"]
+      acceptable: ["bar_chart_for_sparse_time_series"]
+      avoid: ["pie_chart", "scatter_without_time_axis", "stacked_bar"]
+      rationale: >
+        Slope and direction are judged from line angle. The visual cortex
+        performs instant calculus on the line; table arithmetic is slow.
+        (Cognitive Interface §4.2)
+
+    understand_composition:
+      task: "Understand what proportion each part contributes to the whole"
+      optimal: ["stacked_bar_chart", "treemap"]
+      acceptable: ["pie_chart_for_two_to_four_parts_only"]
+      avoid: ["3d_pie_chart", "donut_with_many_segments", "exploded_pie"]
+      rationale: >
+        Stacked bars allow part comparison across categories. Treemaps handle
+        hierarchical composition. Pie charts fail when more than 4 segments
+        are present because area/angle comparisons are inaccurate.
+        (Cognitive Interface §4.2; visualisation_techniques §2.1)
+
+    find_correlation:
+      task: "Identify relationship between two continuous variables"
+      optimal: ["scatter_plot", "scatter_with_trendline"]
+      acceptable: ["bubble_chart_for_three_variable_correlation"]
+      avoid: ["bar_chart", "line_chart", "pie_chart"]
+      rationale: >
+        Scatter plots encode both variables in Cartesian position, the most
+        accurate perceptual channel. Correlation cannot be assessed from
+        bar or line charts. (visualisation_techniques §Table 1)
+
+    show_distribution:
+      task: "Show how values are distributed across a range"
+      optimal: ["histogram", "box_plot", "violin_plot"]
+      acceptable: ["density_curve"]
+      avoid: ["bar_chart_for_raw_counts", "pie_chart"]
+      rationale: >
+        Histograms reveal shape (skew, multimodality). Box plots add median
+        and quartile information for audiences with statistical training.
+        (visualisation_techniques §2.1)
+
+    show_hierarchy:
+      task: "Show parent-child or taxonomic relationships"
+      optimal: ["tree_diagram", "org_chart", "indented_outline"]
+      acceptable: ["treemap_for_hierarchical_composition"]
+      avoid: ["network_diagram_for_strict_hierarchy", "pie_chart"]
+      rationale: >
+        Top-down or left-right tree layouts explicitly encode level and
+        grouping. (visualisation_techniques §2.1)
+
+    show_flow_quantity:
+      task: "Show quantitative flows between categories or stages"
+      optimal: ["sankey_diagram", "funnel_chart"]
+      acceptable: ["stacked_area_for_flow_over_time"]
+      avoid: ["bar_chart", "pie_chart"]
+      rationale: >
+        Sankey diagrams encode flow magnitude via ribbon width, enabling
+        comparison of flow volumes simultaneously. (visualisation_techniques §Table 1)
+
+
+# ==============================================================================
+# DATA-INK FRAMEWORK
+# Operational implementation of Tufte's (1983) data-ink principle.
+# Source: Slide Deck Design Playbook §B.7.0; The Cognitive Interface §4.1
+# ==============================================================================
+
+data_ink_framework:
+  description: >
+    Tufte's Data-Ink Ratio = Data-Ink / Total Ink. Goal: maximise this ratio
+    by erasing non-data ink and redundant data ink. Chartjunk is a pure source
+    of extraneous cognitive load — it forces the brain to process visual
+    information that conveys no data, slowing comprehension and competing with
+    the signal.
+
+  erase_non_data_ink:
+    description: "Elements that carry zero data and must be eliminated"
+    items:
+      - id: "3d_perspective_effect"
+        description: "3D depth applied to bars, pies, or axes"
+        cognitive_impact: "Distorts perceived bar lengths; introduces false area encoding"
+        fix: "Convert to 2D equivalent"
+      - id: "gradient_fill"
+        description: "Gradient colour applied to bars, backgrounds, or chart area"
+        cognitive_impact: "Creates false luminance gradient that implies a data dimension not present"
+        fix: "Replace with flat, single-colour fill"
+      - id: "decorative_background"
+        description: "Patterned, coloured, or image background behind chart area"
+        cognitive_impact: "Reduces foreground contrast; adds visual noise"
+        fix: "White or transparent background only"
+      - id: "drop_shadow"
+        description: "Shadow effect applied to bars, slices, or chart frame"
+        cognitive_impact: "Pure decoration; no data content"
+        fix: "Remove shadow effects entirely"
+      - id: "heavy_gridlines"
+        description: "Full-weight gridlines in both axes, or excessive tick marks"
+        cognitive_impact: "Compete with data for visual prominence"
+        fix: "Remove major gridlines; retain only light reference lines (20% opacity) if value reading requires them"
+      - id: "moiré_pattern"
+        description: "Cross-hatching or dense pattern fills"
+        cognitive_impact: "Creates visual vibration and interference; was common in pre-colour printing"
+        fix: "Use solid colour fills; patterns are unnecessary in digital colour output"
+      - id: "border_box"
+        description: "Heavy rectangular border framing the entire chart"
+        cognitive_impact: "No data content; adds visual weight"
+        fix: "Remove all chart borders; use whitespace to define chart boundaries"
+
+  erase_redundant_data_ink:
+    description: >
+      Data shown twice should be shown once. If a bar is directly labelled
+      '25%', the Y-axis tick at 25% and the gridline at 25% are redundant.
+    items:
+      - id: "axis_ticks_with_direct_labels"
+        description: "Y-axis scale retained alongside direct bar labels"
+        fix: "If all bars are directly labelled with values, remove Y-axis scale entirely"
+      - id: "legend_with_direct_labels"
+        description: "Separate colour legend retained alongside directly labelled series"
+        fix: "Remove legend once all series are directly labelled on chart"
+      - id: "both_axes_when_one_suffices"
+        description: "Full secondary Y-axis retained when values are also in data labels"
+        fix: "Eliminate redundant axis; use direct labels only"
+
+  target_metrics:
+    data_ink_ratio_minimum: 0.75
+    data_ink_ratio_target: 0.85
+    gridline_opacity_max: 0.20
+    max_non_data_visual_elements: 2
+
+
+# ==============================================================================
+# LABELLING STANDARDS
+# Spatial Contiguity Principle (Mayer): related text and data must be
+# physically proximate. Legends force split attention.
+# Source: Slide Deck Design Playbook §B.7.0 (Golden Rule #7), §B.7.0
+# ==============================================================================
+
+labelling_standards:
+  direct_labelling:
+    principle: >
+      Label data elements (bars, lines, pie slices, scatter points) directly
+      on or immediately adjacent to the element. Eliminate separate legends.
+      A legend forces the viewer to split attention between the legend and the
+      chart, increasing extraneous cognitive load with every glance.
+    implementation:
+      bar_chart: "Place value label at bar tip (outside) or inside bar if sufficient space"
+      line_chart: "Label line at terminal point; avoid overlapping labels with leader lines"
+      pie_chart: "Label each slice with category name and percentage directly on or outside slice"
+      scatter_plot: "Label outliers and key points; avoid labelling every point"
+    exceptions:
+      - condition: "More than 8 data series in a single chart"
+        guidance: "Consider splitting into small multiples rather than forcing 8+ direct labels"
+      - condition: "Interactive digital chart"
+        guidance: "Tooltip on hover acceptable in digital contexts; direct label still preferred for print"
+
+  axis_label_requirements:
+    x_axis:
+      - "Category or time unit label (e.g., 'Quarter', 'Week Ending')"
+      - "Date format consistent throughout (ISO 8601: YYYY-MM or Q1 2024)"
+      - "Tick label rotation: 0° preferred; max 45° if space-constrained; never 90°"
+    y_axis:
+      - "Unit always stated (e.g., 'Revenue (£000)', 'Percentage (%)', 'Headcount (FTE)')"
+      - "Scale starting at zero for bar charts (truncated axis is a deceptive anti-pattern)"
+      - "Scale may start above zero for line charts where baseline zero provides no context"
+
+  significant_figures:
+    currency_large: "Round to nearest £000 or £M; use 1-2 decimal places maximum (e.g., £1.4M not £1,423,456.78)"
+    percentages: "1 decimal place maximum (e.g., 12.5% not 12.453%)"
+    counts: "No decimals for whole-number counts"
+    ratios: "2 decimal places maximum"
+    growth_rates: "1 decimal place (e.g., +3.2% not +3.2471%)"
+    rationale: >
+      Excessive precision (false precision) implies an accuracy that does not
+      exist in projections and forecasts. It generates high extraneous cognitive
+      load processing irrelevant digits. (Cognitive Interface §1.1.2)
+
+  title_standards:
+    topic_title_example: "'Q4 Revenue by Region'" # Anti-pattern
+    action_caption_example: "'Q4 Revenue Grew 15%, Driven by the Premium Segment'" # Best practice
+    requirements:
+      - "Full declarative sentence stating the primary analytical conclusion"
+      - "Include direction and magnitude where applicable (grew, fell, exceeds, lags)"
+      - "Quantify the conclusion where the data permits (e.g., 'grew 15%' not 'grew')"
+      - "State cause or driver if identifiable from the data (e.g., 'due to supply chain failure')"
+    max_length_characters: 100
+
+  annotation_standards:
+    principle: >
+      Apply the Signaling Principle (Mayer 2009): use annotations — arrows,
+      callout boxes, highlighted regions — to direct attention to the key data
+      element that supports the action caption claim. Annotations eliminate the
+      visual search burden and accelerate insight confirmation. Without annotation,
+      the viewer must scan the full chart to locate the evidence for the title's claim.
+    implementation:
+      threshold_lines: "Add a horizontal reference line at the target, budget, or benchmark value with a direct label"
+      event_markers: "Add a vertical line at significant dates (product launch, policy change) with a concise label"
+      callout_boxes: "Use a callout box or leader line to annotate the single most important data point"
+      highlight_bars: "Colour-highlight the primary bar or segment; grey-out all non-critical elements"
+    font_size_guidance: >
+      Annotation text must be legible at the display or print size. Minimum 12pt
+      for projected slides; minimum 9pt for printed A4 reports. Illegible annotations
+      impose extraneous load from failed decoding attempts. (Infographics.md §Readability)
+    constraint: "Limit to 3 annotations per chart — more creates annotation noise that competes with the data signal"
+    source: "Research - Infographics.md (§Signaling); Mayer (2009) Signaling Principle"
+
+
+# ==============================================================================
+# COLOUR STANDARDS
+# WCAG 2.1 AA non-text contrast; validated colorblind-safe palettes.
+# Approximately 8% of males and 0.5% of females have colour vision deficiency.
+# Source: Infographics.md (Inclusivity), visualisation_techniques §2.4,
+#         Slide Deck Design Playbook §B.6.0
+# ==============================================================================
+
+colour_standards:
+  wcag_contrast_requirements:
+    normal_text: "4.5:1 minimum against background (WCAG 2.1 AA 1.4.3)"
+    large_text: "3:1 minimum — text ≥18pt or ≥14pt bold (WCAG 2.1 AA 1.4.3)"
+    chart_elements: "3:1 minimum for non-text graphics against adjacent colours (WCAG 2.1 AA 1.4.11)"
+    colour_only_rule: "Colour must never be the sole means of conveying information (WCAG 2.1 AA 1.4.1)"
+
+  colorblind_safe_palettes:
+    okabe_ito:
+      description: "Designed by Okabe & Ito (2008) specifically for colour vision deficiency. Default recommendation."
+      hex_values:
+        - "#E69F00"  # Orange
+        - "#56B4E9"  # Sky blue
+        - "#009E73"  # Bluish green
+        - "#F0E442"  # Yellow
+        - "#0072B2"  # Blue
+        - "#D55E00"  # Vermillion
+        - "#CC79A7"  # Reddish purple
+        - "#000000"  # Black
+      max_simultaneous_categories: 8
+
+    viridis_family:
+      description: "Sequential palettes (viridis, magma, plasma, inferno) — perceptually uniform, colorblind-safe. For ordered/continuous data."
+      use_cases: ["heatmaps", "choropleth_maps", "continuous_scales", "diverging_data"]
+      avoid_for: ["categorical_data_requiring_equal_salience"]
+
+    colorbrewer:
+      description: "Validated palette sets for cartographic and statistical graphics (Brewer 2002)"
+      sequential: "Single hue progression — for ordered data with a low end and high end"
+      diverging: "Two hues diverging from a neutral midpoint — for data with a meaningful zero (e.g., positive/negative change)"
+      categorical: "Maximally distinct hues — for unordered categorical series; max 8-12 categories"
+      source: "colorbrewer2.org"
+
+  palette_selection_rules:
+    sequential_data:
+      description: "Data that has inherent order from low to high (e.g., performance scores, age bands)"
+      recommended: ["viridis", "ColorBrewer_sequential"]
+      avoid: ["rainbow/jet_palette"]
+    diverging_data:
+      description: "Data with a meaningful midpoint (e.g., positive/negative variance, agree/disagree scales)"
+      recommended: ["ColorBrewer_diverging", "RdBu", "BrBG"]
+      avoid: ["sequential_palette", "random_categorical_colours"]
+    categorical_data:
+      description: "Unordered categories requiring equal visual salience"
+      recommended: ["Okabe-Ito", "ColorBrewer_qualitative"]
+      avoid: ["sequential_palette", "rainbow/jet_palette"]
+
+  forbidden_combinations:
+    - combination: ["red", "green"]
+      reason: "Indistinguishable for deuteranopia and protanopia (most common CVDs)"
+    - combination: ["blue", "purple"]
+      reason: "Low luminance contrast; difficult for tritanopia"
+    - combination: ["yellow", "white"]
+      reason: "Insufficient contrast against white backgrounds (<3:1)"
+
+  redundant_encoding_requirement:
+    description: >
+      When colour distinguishes data series or categories, a second redundant
+      encoding channel must be added so the chart remains interpretable in
+      greyscale or for viewers with CVD.
+    channels:
+      - "Direct text label on each series"
+      - "Different line style (solid, dashed, dotted)"
+      - "Different marker shape (circle, triangle, square)"
+      - "Different fill pattern (cross-hatch, solid, open)"
+
+  validation_methods:
+    grayscale_test:
+      description: >
+        Convert the chart to greyscale. If any data series or category becomes
+        indistinguishable, colour is being used as the sole encoding channel.
+        Remediation: add direct labels, different line styles, or marker shapes.
+      guidance: "Use 'Colour Blind' browser extension, Figma accessibility plugin, or print to greyscale as a quick diagnostic"
+    cvd_simulation:
+      description: >
+        Simulate deuteranopia (red-green), protanopia (red-green), and tritanopia
+        (blue-yellow) to verify all series remain distinguishable under each condition.
+        Red-green CVD accounts for approximately 95% of all CVD cases.
+      tools:
+        - "Coblis (colblindor.com) — upload chart image for CVD simulation"
+        - "Sim Daltonism (macOS app) — live screen overlay for any application"
+        - "Figma Colour Blind plugin — in-tool simulation during design"
+      population_note: >
+        Approximately 8% of males and 0.5% of females have some form of CVD
+        (combined population prevalence ~4%). In a 200-person audience, expect
+        approximately 8-9 viewers affected. Design for this population by default.
+        Source: Research - Infographics.md (§Inclusivity)
+
+  cross_chart_consistency:
+    principle: >
+      Gestalt Similarity Law: viewers assume that elements sharing the same colour
+      represent the same category across all charts in a report. Assign colours to
+      categories once at report design stage and apply consistently throughout.
+      Inconsistent colour mapping forces the viewer to re-learn the legend for
+      every chart, doubling the extraneous load on multi-chart reports.
+    implementation:
+      - "Define a colour-to-category mapping table before chart creation begins"
+      - "Use the same colour for 'Target' and 'Actual' across every chart in the document"
+      - "If a category is absent from a specific chart, leave its palette slot unused rather than reassigning the colour to a different category"
+    source: "Research - The Cognitive Interface §4.1; Gestalt Similarity Principle"
+
+
+# ==============================================================================
+# ACTION CAPTION STANDARD
+# Topic titles impose the full cognitive cost of analysis on the viewer.
+# Action captions transfer the conclusion; the chart becomes verification.
+# Source: The Cognitive Interface §4.3; Slide Deck Design Playbook §C.4.0
+# ==============================================================================
+
+action_caption_standard:
+  definition: >
+    An Action Caption is a full declarative sentence that states the key
+    analytical conclusion of the chart. It transforms the viewer's task from
+    'analyse this data and find a pattern' to 'verify this claim with the data.'
+    This significantly reduces cognitive cost, especially for executive audiences
+    operating under time pressure.
+
+  cognitive_cost_analysis:
+    topic_title:
+      label: "Topic Title (Anti-Pattern)"
+      example: "'Figure 1: Revenue by Region 2024'"
+      viewer_task: >
+        Viewer must: (1) scan all bars/lines, (2) identify the notable pattern,
+        (3) assess its magnitude, (4) determine its significance, (5) connect
+        it to the surrounding narrative argument.
+      cognitive_load: "High extraneous load — all analysis work imposed on viewer"
+    action_caption:
+      label: "Action Caption (Best Practice)"
+      example: "'Figure 1: West Region Revenue Fell 15% in Q3 Due to Supply Chain Disruption'"
+      viewer_task: >
+        Viewer must: (1) read the title, (2) verify claim against the data.
+        Steps 2-5 of the topic title workflow are eliminated.
+      cognitive_load: "Minimal extraneous load — viewer validates, not analyses"
+
+  implementation_examples:
+    - before: "'Sales Performance Q4'"
+      after: "'Q4 Sales Exceeded Target by 12%, Led by New Enterprise Contracts'"
+    - before: "'Customer Satisfaction Scores'"
+      after: "'Customer Satisfaction Recovered to 4.2/5 Following the May Service Update'"
+    - before: "'Headcount by Department'"
+      after: "'Engineering Headcount Grew 30% While Operations Decreased 10% Through Automation'"
+    - before: "'Training Completion Rates'"
+      after: "'Completion Rate Fell to 62% in Q2 — 18 Points Below the 80% Target'"
+
+  action_title_test: >
+    An executive reading only the chart titles of a report (without viewing the
+    charts) should be able to reconstruct the full analytical argument. If titles
+    require the chart to be meaningful, they are topic titles, not action captions.
+
+  research_evidence:
+    huang_2018:
+      finding: >
+        RCT comparing action-caption charts vs topic-title charts in executive
+        dashboards found significantly faster decision speed and higher comprehension
+        accuracy with action captions. Viewers with action captions reached the
+        correct decision faster and with greater accuracy than those given topic titles.
+      source: "Huang et al. (2018)"
+    shneiderman_mantra:
+      principle: "Overview first, zoom and filter, then details on demand"
+      application: >
+        Apply at report level: begin with an overview chart presenting the macro
+        trend or headline finding (with full action caption), then provide subordinate
+        charts for segment-level detail. The overview action caption frames all
+        subsequent analysis — viewers interpret detail charts through the lens of
+        the macro claim already stated. (Shneiderman 1996, Visual Information Seeking Mantra)
+      source: "Research - The Cognitive Interface §4.3"
+
+
+# ==============================================================================
+# CHART TYPE CATALOG
+# Per-chart guidance: use cases, requirements, dos and don'ts.
+# Source: visualisation_techniques_corporate_learning §2.1, Table 1;
+#         The Cognitive Interface §4.2
+# ==============================================================================
+
+chart_type_catalog:
+
+  bar_chart:
+    use_cases:
+      - "Comparing discrete categories on a single measure"
+      - "Ranking items by value"
+    orientation_rule: "Horizontal preferred when category labels are long (>15 characters)"
+    axis_rule: "Y-axis (or X-axis for horizontal) must start at zero"
+    sorting_rule: "Sort bars by value (ascending or descending) unless a natural order exists (e.g., time, ordinal scale)"
+    max_categories: 15
+    dos:
+      - "Direct-label each bar with its value"
+      - "Sort bars by value unless categories have an inherent order"
+    donts:
+      - "Do not use 3D perspective"
+      - "Do not apply gradient fills"
+      - "Do not truncate the value axis above zero to exaggerate differences"
+
+  line_chart:
+    use_cases:
+      - "Showing trend over continuous time"
+      - "Comparing 2-4 trend lines over the same time range"
+    max_series: 5
+    dos:
+      - "Label each line at its terminal point (right end)"
+      - "Use consistent time intervals on the X-axis"
+      - "Mark notable events or threshold values with a vertical reference line and annotation"
+    donts:
+      - "Do not connect non-continuous or categorical data with a line (implies a relationship that does not exist)"
+      - "Do not use more than 5 lines without considering small multiples"
+
+  scatter_plot:
+    use_cases:
+      - "Identifying correlation between two continuous variables"
+      - "Detecting outliers"
+    dos:
+      - "Add a trendline and report the R² if correlation is the key message"
+      - "Label outliers and notable clusters directly"
+      - "Ensure axes are scaled to include zero or clearly mark that they do not"
+    donts:
+      - "Do not use scatter plot for categorical X-axis data (use bar chart)"
+      - "Do not connect scatter points with lines unless each X value is unique and ordered"
+
+  histogram:
+    use_cases:
+      - "Showing the distribution and shape of a continuous variable"
+      - "Identifying skewness, bimodality, or outliers in a dataset"
+    dos:
+      - "Choose bin width that reveals the meaningful shape without over-smoothing"
+      - "Label axes with the variable name and unit (X) and frequency or count (Y)"
+    donts:
+      - "Do not use for categorical data — use bar chart"
+      - "Do not apply 3D effects"
+
+  box_plot:
+    use_cases:
+      - "Comparing distributions across multiple groups"
+      - "Showing median, quartiles, and outliers compactly"
+    audience_caveat: >
+      Requires statistical literacy. For non-specialist audiences, consider
+      paired histogram or supplementary explanation of box plot anatomy.
+    dos:
+      - "Label median line value directly on chart"
+      - "Plot individual outlier points explicitly"
+    donts:
+      - "Do not present without axis labels and units"
+      - "Do not use with very small samples (n < 10) — the quartile summary is misleading"
+
+  stacked_bar_chart:
+    use_cases:
+      - "Showing composition of a whole across multiple categories"
+      - "Comparing part-to-whole proportions across two to five groups"
+    limitation: >
+      Only the baseline segment (bottom or left) shares an aligned axis.
+      All other segments float, making their individual comparison inaccurate.
+      Prefer grouped bar for direct segment comparison; use stacked only when
+      the total and the first segment are the primary analytical interest.
+    max_segments: 5
+    dos:
+      - "Order segments consistently (largest to smallest or by meaningful category)"
+      - "Direct-label each segment with its value or percentage if segments are large enough"
+    donts:
+      - "Do not use for more than 5 segments — visual decoding fails"
+      - "Do not use 3D stacked bar — distortion is severe"
+
+  treemap:
+    use_cases:
+      - "Showing hierarchical composition where the hierarchy and relative size both matter"
+      - "Budget breakdowns with two levels of hierarchy (department → cost type)"
+    dos:
+      - "Label each cell with category name and value"
+      - "Use a single sequential or categorical palette — avoid rainbow"
+    donts:
+      - "Do not use for more than 2-3 levels of hierarchy — visual decoding fails"
+      - "Do not use when precise comparison of similar-size cells is required (use bar chart)"
+
+  small_multiples:
+    description: >
+      A grid of identically scaled charts, each showing the same measure for
+      a different category or segment. Invented by Tufte as the preferred
+      alternative to overloaded multi-series charts.
+    use_cases:
+      - "Comparing a pattern (trend, distribution) across many categories without overplotting"
+      - "More than 5 lines would appear in a single line chart"
+    dos:
+      - "Share the same axis scale across all panels"
+      - "Label each panel clearly with the category it represents"
+    donts:
+      - "Do not use different scales across panels — direct comparison becomes impossible"
+
+
+# ==============================================================================
+# FALSE PRECISION
+# Excessive decimal places are a form of extraneous cognitive load and
+# erode trust by implying accuracy that does not exist.
+# Source: The Cognitive Interface §1.1.2; Cognitive Interface §1.1.2
+# ==============================================================================
+
+false_precision:
+  definition: >
+    Reporting values with more decimal places or significant figures than the
+    underlying data's accuracy warrants. False precision in forecasts and
+    projections implies certainty that does not exist and forces the viewer to
+    process digits that carry no information.
+
+  rounding_rules_by_context:
+    revenue_and_cost_large:
+      threshold: "Values >= £1,000,000"
+      format: "£XM with 1 decimal (e.g., £1.4M)"
+      avoid: "£1,423,456.78"
+    revenue_and_cost_medium:
+      threshold: "Values >= £1,000 and < £1,000,000"
+      format: "£X,000 or £Xk with 1 decimal (e.g., £142k)"
+      avoid: "£142,456.00"
+    percentages:
+      format: "X.X% — one decimal place maximum"
+      avoid: "12.453%"
+    growth_rates:
+      format: "+X.X% or -X.X%"
+      avoid: "+12.4531%"
+    counts_integers:
+      format: "Whole numbers only — no decimal places"
+      avoid: "12.0 employees"
+    ratios:
+      format: "X.XX — two decimal places maximum"
+      avoid: "1.234567"
+
+  chart_label_rounding:
+    description: >
+      All data labels applied directly to chart elements must follow the
+      rounding rules above. Axis tick labels must use the same precision
+      as data labels for consistency.
+
+
+# ==============================================================================
+# ANTI-PATTERNS
+# Named violations with cognitive impact and required remediation.
+# Source: across all four corpus documents; Tufte (1983); Cleveland & McGill (1984)
+# ==============================================================================
+
+anti_patterns:
+
+  pie_chart_comparison:
+    description: "Using a pie chart to compare similar-sized segments"
+    cognitive_impact: >
+      Human perception of angles and areas is significantly less accurate
+      than perception of lengths along a common scale (Cleveland & McGill 1984).
+      Adjacent pie slices of similar size (e.g., 28% vs 32%) cannot be
+      reliably ranked without reading the data labels directly.
+    remediation: "Replace with a horizontal bar chart sorted by value"
+    severity: high
+
+  three_d_chart:
+    description: "Any 3D perspective effect applied to a 2D chart (3D bars, 3D pie, 3D surface)"
+    cognitive_impact: >
+      3D perspective distorts bar heights and pie slice areas, making all
+      values encoded by the visual channel inaccurate. Introduces false depth
+      cues that carry no data. Pure chartjunk (Tufte 1983).
+    remediation: "Remove 3D effect; use 2D equivalent"
+    severity: critical
+
+  chartjunk:
+    description: "Decorative visual elements with no data content (moiré fills, clip art, illustrated characters, decorative borders)"
+    cognitive_impact: >
+      Every non-data visual element consumes processing resources. Multiple
+      chartjunk elements create extraneous cognitive load that prevents
+      germane processing of the actual data.
+    remediation: "Apply Tufte's erasure principle — remove all elements that do not encode data"
+    severity: high
+
+  topic_title:
+    description: "Chart title that describes the subject without stating the analytical conclusion"
+    cognitive_impact: >
+      Forces the viewer to perform the full analytical sequence: scan, identify
+      pattern, quantify, assess significance, connect to narrative. This is the
+      most common and most costly labelling failure in corporate reporting.
+    example_bad: "'Revenue by Region Q4'"
+    example_good: "'Northeast Revenue Grew 20%, Compensating for a 5% Decline in the West'"
+    remediation: "Convert to Action Caption — full declarative sentence with direction, magnitude, and cause"
+    severity: high
+
+  truncated_axis:
+    description: "Bar chart with Y-axis not starting at zero, exaggerating differences between bars"
+    cognitive_impact: >
+      A truncated bar chart creates a false visual impression of magnitude.
+      A 2% difference appears as a 200% difference when the axis starts at 98%.
+      This is a deceptive encoding that misleads the viewer.
+    remediation: "Set bar chart Y-axis to zero baseline; use a line chart if starting above zero is necessary"
+    severity: critical
+
+  dual_axes_abuse:
+    description: "Secondary Y-axis used to plot two unrelated measures on the same chart"
+    cognitive_impact: >
+      Dual axes allow arbitrary scaling of two independent series, making
+      apparent correlations completely artificial. The viewer cannot tell
+      whether correlation reflects reality or axis manipulation.
+    remediation: "Use two separate charts (small multiples) or normalise both series to a common baseline (index = 100)"
+    severity: high
+
+  rainbow_palette:
+    description: "Rainbow or jet colour palette applied to continuous or ordered data"
+    cognitive_impact: >
+      Rainbow palettes are not perceptually uniform. The yellow-green band
+      appears far more prominent than the blue or red ends, creating false
+      visual salience that misrepresents the data. Also fails for colour
+      vision deficiency.
+    remediation: "Replace with viridis, magma, or a validated ColorBrewer sequential palette"
+    severity: high
+
+  legend_instead_of_direct_label:
+    description: "Separate colour legend requiring the viewer to match colour to category"
+    cognitive_impact: >
+      Each legend lookup requires a saccade from the data element to the legend
+      and back. With multiple series, this compounds into significant extraneous
+      load (split-attention effect — Mayer Spatial Contiguity Principle).
+    remediation: "Remove legend; label each data series directly on the chart"
+    severity: medium
+
+  overloaded_line_chart:
+    description: "Single line chart containing more than 5 trend lines"
+    cognitive_impact: >
+      Colour discrimination degrades rapidly beyond 5-6 distinct hues. The
+      viewer cannot track individual series without constant legend reference.
+      The chart collapses into visual noise.
+    remediation: "Convert to small multiples (one panel per category, shared axis scale)"
+    severity: high
+
+  false_precision_labels:
+    description: "Data labels with excessive decimal places (e.g., '£1,423,456.78', '12.453%')"
+    cognitive_impact: >
+      Processing irrelevant digits consumes working memory capacity without
+      conveying additional information. Also implies a precision that typically
+      does not exist in projections, eroding analytical credibility.
+    remediation: "Round to meaningful significant figures per context (£1.4M, 12.5%)"
+    severity: medium
+
+  chartjunk_background:
+    description: "Image or complex pattern placed behind chart area"
+    cognitive_impact: >
+      Background patterns reduce foreground contrast for all chart elements
+      and introduce competing visual texture. Particularly severe for lines
+      and scatter points.
+    remediation: "White or light neutral background only; ensure >= 3:1 contrast for all chart elements"
+    severity: high
+
+  colour_only_encoding:
+    description: "Data series or categories distinguished only by colour with no redundant encoding"
+    cognitive_impact: >
+      Inaccessible for the 8% of males with colour vision deficiency.
+      Also fails in greyscale print. Violates WCAG 2.1 AA 1.4.1.
+    remediation: "Add a second encoding channel: direct label, different line style, or different marker shape"
+    severity: critical
+
+  information_overload:
+    description: "Single chart contains more data series, categories, or annotation layers than can be processed simultaneously"
+    cognitive_impact: >
+      Working memory holds approximately 4 ± 1 items simultaneously (Cowan 2001).
+      Charts with 8+ categories, 5+ overlapping series, or 4+ simultaneous annotations
+      exceed cognitive capacity — the viewer disengages or skims rather than analyses.
+      The chart communicates less by trying to communicate more.
+    remediation: "Apply Shneiderman's mantra: overview first, then small-multiples or progressive drill-down for detail"
+    severity: high
+    source: "Research - Infographics.md (§Cognitive Load)"
+
+  unclear_reading_order:
+    description: "Chart layout does not establish a clear reading path consistent with Western left-to-right, top-to-bottom conventions"
+    cognitive_impact: >
+      When the intended reading sequence is ambiguous, viewers impose their own
+      search strategy, increasing extraneous load and reducing the likelihood they
+      identify the intended key message. The cognitive effort is directed at
+      navigation rather than comprehension.
+    remediation: "Number callouts sequentially; use visual hierarchy (size, weight) to establish priority; place the most important element in the top-left anchor position"
+    severity: medium
+    source: "Research - Infographics.md (§Layout and Visual Hierarchy)"
+
+  inconsistent_visual_style:
+    description: "Fonts, colours, chart styles, or layout grids vary across charts within the same document without semantic reason"
+    cognitive_impact: >
+      Style inconsistency triggers Gestalt violation detection — viewers notice
+      inconsistency before they process content, consuming attentional resources
+      that should be applied to the analytical message. Cross-chart colour
+      reassignment destroys the Gestalt Similarity assumption and forces re-learning.
+    remediation: "Apply a single chart template across all charts; enforce via style guide or templated chart library; define colour-to-category mapping once and hold it constant"
+    severity: medium
+    source: "Research - Infographics.md (§Design Consistency); The Cognitive Interface §4.1"
+
+  decorative_icon_in_chart_area:
+    description: "Illustrative icons or images placed within the chart area as decoration, or icon-substituted bars replacing standard bar encoding"
+    cognitive_impact: >
+      Icon-substituted bars destroy positional accuracy — a stack of 4 icons and
+      a stack of 4.3 icons cannot be perceptually distinguished. The Coherence
+      Principle (Mayer 2009) predicts worse retention when decorative images
+      compete with data encoding. Icon bar charts are chartjunk with a pictorial justification.
+    remediation: "Replace icon bars with standard bars; use icon arrays only for proportional representation with a fixed denominator (e.g., 7 shaded icons in a row of 10 = 70%)"
+    severity: high
+    source: "Research - Infographics.md (§Chart Type Selection); Mayer (2009) Coherence Principle"
+
+  god_table:
+    description: "Table with more than 8 columns or 15 rows used as a slide element to communicate a single analytical finding"
+    cognitive_impact: >
+      Dense tables impose maximum extraneous load — the viewer must scan rows,
+      locate relevant cells, and synthesise the pattern entirely within working
+      memory. A table that fills a spreadsheet page is not a presentation chart;
+      it transfers the full analytical workload to the audience.
+    remediation: "Extract the single relevant comparison into a chart; highlight the 1-3 cells that support the analytical claim; move the full table to an appendix"
+    severity: high
+    source: "Research - The Cognitive Interface §1.1.2"
+
+  slide_ument:
+    description: "Dense text-heavy slide functioning as a document rather than a visual aid — more than 100 words of body text on a single slide"
+    cognitive_impact: >
+      When a slide contains full paragraphs, the verbal and visual channels both
+      process text simultaneously, creating a split-attention effect. The Redundancy
+      Effect (Mayer 2009) predicts that reading slide text while the presenter speaks
+      the same content impairs comprehension relative to either mode alone. The
+      slide becomes an obstacle to the speaker's message, not a support for it.
+    remediation: "Separate into a speaker-supported slide deck (visual aid) and a leave-behind document. Slides: one key message, one primary visual per slide"
+    severity: high
+    source: "Research - The Cognitive Interface §Introduction; Mayer (2009) Redundancy Effect"
+
+
+# ==============================================================================
+# CHECKS — VALIDATION RULES
+# Binary pass/fail checks applied before the scored dimensions.
+# A fail on a critical check automatically caps the composite score at 2.0.
+# ==============================================================================
+
+checks:
+  critical:
+    - id: "no_3d_chart_effects"
+      rule: "Chart contains no 3D perspective effects on any axis or data element"
+      failure_action: "Cap composite score at 2.0"
+    - id: "no_colour_only_encoding"
+      rule: "All data series have at least one redundant encoding channel beyond colour"
+      failure_action: "Cap composite score at 2.0"
+    - id: "bar_axis_starts_at_zero"
+      rule: "Bar chart Y-axis (or X-axis for horizontal) begins at zero"
+      failure_action: "Apply penalty; flag as deceptive encoding"
+    - id: "chart_type_not_fundamentally_mismatched"
+      rule: "Chart type is not in the 'avoid' list for the stated analytical task"
+      failure_action: "Cap chart_type_appropriateness dimension at score 1"
+
+  standard:
+    - id: "title_is_present"
+      rule: "Chart has a visible title"
+      failure_action: "Apply penalty; insight_communication dimension capped at 2"
+    - id: "axes_are_labelled"
+      rule: "Both axes (where applicable) have labels including units"
+      failure_action: "Apply penalty to labelling_clarity"
+    - id: "wcag_contrast_3to1_chart_elements"
+      rule: "All chart elements meet minimum 3:1 contrast ratio against adjacent colours"
+      failure_action: "Apply penalty to colour_accessibility"
+    - id: "no_rainbow_palette"
+      rule: "Rainbow or jet palette not applied to continuous or ordered data"
+      failure_action: "Apply penalty to colour_accessibility"
+    - id: "significant_figures_appropriate"
+      rule: "Data labels use appropriate significant figures per context; no false precision"
+      failure_action: "Apply penalty to labelling_clarity"
+    - id: "legend_vs_direct_label"
+      rule: "Data series with fewer than 9 entries use direct labels rather than separate legend"
+      failure_action: "Apply penalty to labelling_clarity"
+
+
+# ==============================================================================
+# THRESHOLDS — NUMERIC LIMITS
+# Hard quantitative limits used by automated scoring and validation.
+# ==============================================================================
+
+thresholds:
+  data_ink_ratio:
+    minimum_acceptable: 0.60
+    target: 0.85
+    critical_fail_below: 0.40
+
+  colour_contrast:
+    text_normal_wcag_aa: 4.5       # WCAG 2.1 AA 1.4.3
+    text_large_wcag_aa: 3.0        # WCAG 2.1 AA 1.4.3 (>= 18pt or >= 14pt bold)
+    chart_elements_wcag_aa: 3.0    # WCAG 2.1 AA 1.4.11
+
+  legend_items:
+    max_before_direct_label_required: 8
+    max_before_small_multiples_required: 5   # For line chart series
+
+  bar_chart:
+    max_categories: 15
+    axis_zero_baseline: true
+
+  line_chart:
+    max_series_before_small_multiples: 5
+
+  pie_chart:
+    max_segments: 4
+    preferred_alternative: "bar_chart"
+
+  labelling:
+    max_decimal_places_percentage: 1
+    max_decimal_places_currency: 1      # When expressed in £M or £k
+    max_decimal_places_ratio: 2
+    max_decimal_places_count: 0
+    max_title_characters: 100
+
+  font_size_in_chart:
+    minimum_label_pt: 8
+    recommended_label_pt: 10
+    minimum_title_pt: 11
+    recommended_title_pt: 13
+
+  redundant_encoding:
+    minimum_channels_when_colour_used: 2   # colour + at least one other
+
+
+# ==============================================================================
+# PENALTIES
+# Applied as negative adjustments to the composite score.
+# Composite score = (weighted dimension score) + bonuses - penalties.
+# Minimum composite score after penalties: 0.0
+# ==============================================================================
+
+penalties:
+  - id: "three_d_effect_present"
+    score_deduction: -0.15
+    description: "3D perspective effect applied to any chart element"
+    anti_pattern_ref: "three_d_chart"
+
+  - id: "truncated_bar_axis"
+    score_deduction: -0.15
+    description: "Bar chart axis does not start at zero — deceptive encoding"
+    anti_pattern_ref: "truncated_axis"
+
+  - id: "colour_only_encoding"
+    score_deduction: -0.12
+    description: "Data series differentiated by colour alone; no redundant encoding"
+    anti_pattern_ref: "colour_only_encoding"
+
+  - id: "rainbow_palette_used"
+    score_deduction: -0.12
+    description: "Rainbow or jet palette applied to continuous or ordered data"
+    anti_pattern_ref: "rainbow_palette"
+
+  - id: "chart_type_fundamentally_mismatched"
+    score_deduction: -0.12
+    description: "Chart type is in the 'avoid' list for the stated analytical task"
+    anti_pattern_ref: "pie_chart_comparison"
+
+  - id: "topic_title_used"
+    score_deduction: -0.10
+    description: "Title is a topic label not an action caption"
+    anti_pattern_ref: "topic_title"
+
+  - id: "separate_legend_retained"
+    score_deduction: -0.08
+    description: "Separate legend used when fewer than 9 data series could be directly labelled"
+    anti_pattern_ref: "legend_instead_of_direct_label"
+
+  - id: "dual_axes_without_justification"
+    score_deduction: -0.10
+    description: "Secondary Y-axis used for an unrelated measure on the same chart"
+    anti_pattern_ref: "dual_axes_abuse"
+
+  - id: "axes_unlabelled_or_missing_units"
+    score_deduction: -0.08
+    description: "One or both axes lack labels or units"
+
+  - id: "false_precision_data_labels"
+    score_deduction: -0.06
+    description: "Data labels display excessive decimal places beyond meaningful precision"
+    anti_pattern_ref: "false_precision_labels"
+
+  - id: "background_image_or_pattern"
+    score_deduction: -0.06
+    description: "Chart uses a decorative image or pattern as chart area background"
+    anti_pattern_ref: "chartjunk_background"
+
+  - id: "wcag_contrast_below_3to1"
+    score_deduction: -0.10
+    description: "Chart element contrast ratio below WCAG 2.1 AA 3:1 minimum"
+
+  - id: "overloaded_line_chart"
+    score_deduction: -0.06
+    description: "Line chart contains more than 5 series without small-multiples split"
+    anti_pattern_ref: "overloaded_line_chart"
+
+  - id: "no_chart_title"
+    score_deduction: -0.06
+    description: "Chart has no visible title"
+
+
+# ==============================================================================
+# BONUSES
+# Applied as positive adjustments to the composite score.
+# Bonuses reflect exemplary practice beyond the rubric standard.
+# Maximum bonus accumulation: +0.15
+# ==============================================================================
+
+bonuses:
+  - id: "action_caption_quantified"
+    score_addition: 0.03
+    description: "Title is a quantified action caption including direction, magnitude, and cause"
+    example: "'West Region Revenue Fell 15% in Q3 Due to Supply Chain Disruption'"
+
+  - id: "small_multiples_used_appropriately"
+    score_addition: 0.02
+    description: "Small multiples used instead of an overloaded multi-series chart; all panels share a common axis scale"
+
+  - id: "okabe_ito_palette"
+    score_addition: 0.02
+    description: "Explicitly uses the Okabe-Ito colorblind-safe palette for categorical data"
+
+  - id: "direct_label_all_series"
+    score_addition: 0.02
+    description: "All data series directly labelled; no separate legend present"
+
+  - id: "annotation_marks_key_event"
+    score_addition: 0.02
+    description: "Annotation with explanatory text marks a key event, threshold, or inflection point directly on the chart"
+
+  - id: "data_ink_ratio_above_target"
+    score_addition: 0.01
+    description: "Estimated data-ink ratio >= 0.85; all chartjunk eliminated"
+
+  - id: "cognitive_fit_optimal"
+    score_addition: 0.02
+    description: "Chart type is the optimal fit per the cognitive_fit_mapping for the stated analytical task"
+
+  - id: "false_precision_eliminated"
+    score_addition: 0.01
+    description: "All data labels use contextually appropriate rounding; no false precision"
+
+  - id: "redundant_encoding_full"
+    score_addition: 0.02
+    description: "Colour differentiation supplemented by both direct labelling AND shape or line style variation"
+
+  - id: "action_title_test_satisfied"
+    score_addition: 0.02
+    description: "All chart titles in the document collectively satisfy the Action Title Test: reading titles alone reconstructs the full analytical argument"

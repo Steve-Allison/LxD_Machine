@@ -1,0 +1,1072 @@
+# ==============================================================================
+# Assessment Frameworks
+# Kirkpatrick-Phillips model and assessment design specifications
+# ==============================================================================
+
+_meta:
+  id: assessment_scoring_frameworks
+  title: "Assessment Frameworks"
+  description: "Kirkpatrick-Phillips L1-L5 evaluation model, assessment timing patterns, modality-specific specifications, rubric design standards, and quality metrics for corporate learning assessment."
+  domain: pedagogical
+  domain_type: workflow
+  purpose: scoring
+  version: "1.4.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Corporate Learning Assessment- Strategies, Modalities, and Best Practices.md"
+    - "Corpus/Research/Recommended Training Effectiveness Questions For Postcourse Evaluations.md"
+    - "Corpus/Research/Assessment_Design_Module Enhancement Notes.md"
+  relationships:
+
+dimensions:
+  - name: evaluation_level
+    description: "Kirkpatrick-Phillips model level (L1-L5) determining evaluation depth and ROI measurement"
+    score_levels:
+      - score: 0
+        label: no_evaluation
+        description: "No formal evaluation planned or conducted"
+      - score: 1
+        label: reaction_only
+        description: "Level 1 reaction/satisfaction data collected only"
+      - score: 2
+        label: learning_and_behavior
+        description: "Levels 1-3 assessed — reaction, knowledge gain, and behavior transfer measured"
+      - score: 3
+        label: full_roi
+        description: "All five levels assessed including business results and ROI calculation"
+  - name: assessment_timing
+    description: "Alignment of assessment events to learning milestones (pre, during, post, transfer)"
+    score_levels:
+      - score: 0
+        label: absent
+        description: "No assessment timing strategy defined"
+      - score: 1
+        label: post_only
+        description: "Post-training assessment only — no pre-test or transfer measurement"
+      - score: 2
+        label: pre_and_post
+        description: "Pre- and post-training assessment with knowledge gain measurement"
+      - score: 3
+        label: longitudinal
+        description: "Pre, immediate, 30/60/90-day follow-up, and transfer assessments in place"
+  - name: rubric_design_quality
+    description: "Adherence to rubric design standards for objectivity, clarity, and inter-rater reliability"
+    score_levels:
+      - score: 0
+        label: absent
+        description: "No rubric or assessment criteria defined"
+      - score: 1
+        label: basic
+        description: "Criteria defined but vague; low inter-rater reliability"
+      - score: 2
+        label: structured
+        description: "Clear criteria with behavioural anchors; acceptable reliability"
+      - score: 3
+        label: exemplary
+        description: "Validated rubric with anchor examples, calibration, and demonstrated reliability"
+  - name: modality_specification
+    description: "Assessment design appropriateness for delivery modality (elearning, ILT, blended)"
+    score_levels:
+      - score: 0
+        label: misaligned
+        description: "Assessment method incompatible with delivery modality"
+      - score: 1
+        label: generic
+        description: "Generic assessment applied without modality-specific adaptation"
+      - score: 2
+        label: adapted
+        description: "Assessment adapted for delivery modality with appropriate methods"
+      - score: 3
+        label: optimised
+        description: "Assessment fully optimised for modality with technology-enhanced features"
+
+# ==============================================================================
+# KIRKPATRICK-PHILLIPS MODEL
+# ==============================================================================
+
+kirkpatrick_phillips:
+  level_1:
+    name: "Reaction"
+    focus: "Participant satisfaction and perceived relevance"
+    timing: "Immediately post-training"
+    methods:
+      - "Satisfaction surveys (Likert scale)"
+      - "Net Promoter Score"
+      - "Feedback forms"
+      - "Real-time polling"
+    constructs:
+      relevance:
+        question: "How relevant is this course to your current work?"
+        scale: "5-point: Not at all relevant / Slightly relevant / Moderately relevant / Very relevant / Extremely relevant"
+        source: "CDC Recommended Training Effectiveness Questions (2019)"
+      intent_to_apply:
+        question: "Will you use what you learned in this course in your work?"
+        scale: "5-point: Definitely not / Probably not / Possibly / Probably yes / Definitely yes"
+        additional_option: "Not applicable — I did not learn anything new from this course"
+        open_ended_companion: "What, if anything, do you plan to use from this course?"
+        source: "CDC Recommended Training Effectiveness Questions (2019)"
+      instructional_balance:
+        question: "What is your opinion of the balance of lecture and interactivity in this course?"
+        scale: "3-point balance: Too much lecture / Right amount of both / Too much interactive learning"
+        note: "Uses balance scale, not Likert agreement scale"
+        source: "CDC Recommended Training Effectiveness Questions (2019)"
+      training_strengths:
+        question: "What part of this course was most helpful to your learning?"
+        type: "Open-ended"
+      training_weaknesses:
+        question: "How could this course be improved to make it a more effective learning experience?"
+        type: "Open-ended"
+    key_questions:
+      - "Was the content relevant to your role?"
+      - "Was the delivery engaging?"
+      - "Would you recommend this to colleagues?"
+    research_basis: "Kirkpatrick (1959) - Level 1 measures learner engagement and satisfaction"
+
+  level_2:
+    name: "Learning"
+    focus: "Knowledge and skill acquisition"
+    timing: "During or immediately after training"
+    methods:
+      - "Pre/post knowledge tests"
+      - "Skill demonstrations"
+      - "Simulations"
+      - "Scenario-based assessments"
+    measurement_approaches:
+      knowledge_gain: "Pre-test vs post-test score difference"
+      skill_proficiency: "Observable behavior against rubric criteria"
+      retrospective_pre_post:
+        description: "Single-administration retrospective method — administered after training only"
+        before_question: "Rate your knowledge of (or skill in) the course topic BEFORE the course."
+        after_question: "Rate your knowledge of (or skill in) the course topic NOW AFTER the course."
+        scale: "5-point: Not at all / Slightly / Moderately / Very / Extremely knowledgeable"
+        research_basis: "Pratt, McGuigan & Katzev (2000); AEA365 (2017) — validated for single-administration contexts"
+    research_basis: "Kirkpatrick (1959) - Level 2 measures actual learning transfer"
+
+  level_3:
+    name: "Behavior"
+    focus: "Workplace behavior change"
+    timing:
+      min_months: 3
+      max_months: 6
+      note: "3-6 months post-training for observable behavior change"
+    methods:
+      - "Manager observation checklists"
+      - "360-degree feedback surveys"
+      - "Performance review data"
+      - "On-the-job assessments"
+      - "Mystery shopper evaluations"
+    barriers_to_transfer:
+      checklist:
+        - "I need additional training in the subject matter"
+        - "I will not have the resources I need"
+        - "I will not be provided opportunities to use what I learned"
+        - "I will not have the time to use what I learned"
+        - "My supervisor will not support me in using what I learned"
+        - "My colleagues will not support me in using what I learned"
+        - "The course content is not relevant to my current work"
+        - "Other (please specify)"
+      delivery: "Multi-select checklist administered at postcourse evaluation as leading indicator of L3 risk"
+      research_basis: "Blume, Ford, Baldwin & Huang (2010) meta-analysis; Ford et al. (1992); Tonhauser & Buker (2016)"
+    structured_interview_protocol:
+      learner_questions:
+        - "What actions have you taken since the training?"
+        - "What results have you observed?"
+        - "What barriers have you encountered?"
+      manager_questions:
+        - "Have you observed [specific behavior] increase since training?"
+      timing_example: "3 months post-training survey or manager feedback form"
+      research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+    mini_360_pattern:
+      description: "Narrow-focus 360 assessing specific trained behaviors — compared pre/post on 5-point scale"
+      example_behavior: "Ensures all team members are heard"
+      example_change: "3.2 → 4.0 on 5-point scale at 60 days post-training"
+      research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+    research_basis: "Kirkpatrick (1959) - Level 3 requires time for behavior change to manifest"
+
+  level_4:
+    name: "Results"
+    focus: "Business impact and quantifiable outcomes"
+    timing:
+      min_months: 6
+      max_months: 12
+    metrics:
+      - "Productivity improvements"
+      - "Cost savings"
+      - "Quality improvements"
+      - "Revenue impact"
+      - "Customer satisfaction scores"
+      - "Employee retention rates"
+    control_group_design:
+      description: "Train half of population; compare to untrained group. If trained group improves and untrained does not, builds near-causal link for ROI."
+      research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+    chain_of_evidence_pattern:
+      description: "Structured narrative linking L2 through L4 for executive reporting"
+      template: "X% passed the competency test → Y% of managers report improved job performance at 3 months → Business metric Z improved by N% while control group did not improve"
+      research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+    pass_threshold_validation:
+      finding: "Learners scoring above 80% on technical certification had 20% fewer job errors than those below 80%"
+      implication: "80% pass threshold is empirically linked to business quality outcomes, not arbitrary convention"
+      research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+    research_basis: "Kirkpatrick (1959) - Level 4 connects training to business outcomes"
+
+  level_5:
+    name: "ROI"
+    focus: "Financial return on investment"
+    source: "Phillips extension"
+    formula: "(Benefits - Costs) / Costs * 100"
+    timing_months: 12
+    cost_components:
+      - "Development costs"
+      - "Delivery costs (facilitator, platform, materials)"
+      - "Participant time away from work"
+      - "Administrative overhead"
+    benefit_components:
+      - "Revenue increase attributable to training"
+      - "Cost reduction from improved performance"
+      - "Quality improvement savings"
+      - "Reduced turnover costs"
+    research_basis: "Phillips (1997) - ROI Methodology extends Kirkpatrick with financial accountability"
+
+# ==============================================================================
+# ASSESSMENT TIMING PATTERNS
+# ==============================================================================
+
+timing_patterns:
+  diagnostic:
+    timing: "Before training begins"
+    stakes: "Low"
+    purpose: "Identify starting knowledge level and gaps"
+    pass_threshold_percent: 50
+    action_if_below: "Assign prerequisite primer module"
+    adaptive_routing: "Learners below threshold routed to primer module; high performers may skip basic modules (test-out)"
+    research_basis: "Pre-assessment enables adaptive pathways and baseline measurement"
+
+  formative:
+    timing: "During each module/lesson"
+    stakes: "Low"
+    purpose: "Continuous feedback for improvement"
+    frequency: "Every 5-10 minutes of content"
+    question_types:
+      - "Knowledge checks"
+      - "Reflection prompts"
+      - "Poll questions"
+      - "Drag-and-drop activities"
+    exit_ticket:
+      description: "Brief end-of-session informal check covering questions discussed in class; not scored"
+      purpose: "Quick formative signal without grading overhead"
+    research_basis: "Formative assessment improves learning through immediate feedback loops"
+
+  summative:
+    timing: "End of course or module"
+    stakes: "High"
+    purpose: "Certification, validation, credentialing"
+    pass_threshold_percent: 80
+    retake_policy: "Allow after additional practice or coaching"
+    research_basis: "Summative assessment validates competency achievement"
+
+  booster:
+    timing_intervals:
+      - days: 30
+      - days: 60
+      - days: 90
+    purpose: "Combat forgetting curve, identify need for support"
+    format: "Brief refresher quizzes (5-10 questions)"
+    research_basis: "Ebbinghaus forgetting curve - spaced booster assessments improve long-term retention"
+
+# ==============================================================================
+# ASSESSMENT TYPES TAXONOMY
+# ==============================================================================
+
+assessment_types:
+  criterion_referenced:
+    description: "Performance measured against a fixed standard (e.g., 80% pass threshold)"
+    use_case: "Standard corporate training certification; does not grade on a curve"
+    note: "Criterion-referenced is the default for corporate L&D; norm-referencing is reserved for competitive programs"
+    research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+  norm_referenced:
+    description: "Performance ranked relative to peer group rather than absolute standard"
+    use_case: "Competitive selection programs, high-potential identification"
+    caution: "Avoid for standard training completion — creates unhealthy competition"
+    research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+  ipsative:
+    description: "Performance measured against the learner's own prior performance — coaching report compares attempts over time"
+    use_case: "Growth mindset cultures; motivates both low and high performers without peer ranking"
+    implementation: "Multiple attempts with scoring reports showing delta from previous attempt"
+    research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+  reflective:
+    description: "Short essays, learning journals, group debriefs assessing synthesis and metacognitive insight"
+    scoring: "Not graded for score; graded for depth of insight and quality of synthesis"
+    use_case: "Constructivist and experiential programs; leadership development"
+    research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+  self_assessment:
+    description: "Confidence rating scales (1–5 'I can do X'), checklists, or journals administered at start and end of training"
+    scoring: "Not graded; used as diagnostic data on self-awareness and overconfidence"
+    diagnostic_value: "Overconfidence pre-training is itself a data point requiring targeted intervention"
+    caution: "Do not use as primary evidence of competency — see question_design anti_patterns"
+    research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+
+# ==============================================================================
+# THEORETICAL FOUNDATIONS
+# ==============================================================================
+
+theoretical_foundations:
+  description: "Learning theories with specific implications for assessment design and validity"
+  andragogy:
+    theorist: "Knowles"
+    core_principles:
+      - "Adults are self-directed"
+      - "Adults bring rich prior experience"
+      - "Adults are goal- and relevance-oriented"
+      - "Adults are problem-centered"
+    assessment_implications:
+      - "Allow learner choice of topic or project format where possible"
+      - "Use open-ended questions that draw on learner's own experience"
+      - "Be transparent about why assessments exist and how results are used"
+      - "Involve learners in self-assessment and goal-setting"
+    research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+  constructivism:
+    core_principles:
+      - "Knowledge is constructed through experience and reflection"
+      - "Learning is contextual and social"
+    assessment_implications:
+      - "Prefer open-ended responses, portfolios, and reflections over pure MCQ"
+      - "Incorporate self-assessment and peer dialogue"
+      - "Assess in context of actual use (authentic assessment)"
+      - "Include reflective post-assessment prompts on the learning process"
+    research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+  behaviorism:
+    theorist: "Skinner"
+    core_principles:
+      - "Observable behaviors and reinforcement drive learning"
+    assessment_implications:
+      - "Drill-and-practice with immediate corrective feedback"
+      - "Binary step-by-step task checklists for procedural skills"
+      - "Mastery learning: 100% on safety checklist required before certification"
+      - "Points and immediate rewards in gamified assessment"
+    research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+  experiential_learning:
+    theorist: "Kolb"
+    cycle: "Concrete Experience → Reflective Observation → Abstract Conceptualization → Active Experimentation"
+    assessment_implications:
+      - "Assess via experience first, then reflection on it"
+      - "Require process logs or learning journals alongside final deliverable"
+      - "Include debrief discussion that assesses abstracted lessons after simulation"
+      - "Action learning project assessment covers both outcome and team learning narrative"
+    research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+  cognitive_load_theory:
+    theorist: "Sweller"
+    components: "Intrinsic / Extraneous / Germane load"
+    assessment_implications:
+      - "Avoid trick questions and double-barreled items (increase extraneous load)"
+      - "Segment large assessments (5 × 20Q rather than 1 × 100Q)"
+      - "Provide worked example before assessed items to manage intrinsic load"
+      - "Streamline assessment UI — remove unnecessary interface complexity"
+      - "Impose time limits only when speed is genuinely part of the competency"
+    research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+
+# ==============================================================================
+# BLOOM'S TAXONOMY ASSESSMENT ALIGNMENT
+# ==============================================================================
+
+blooms_taxonomy_assessment_alignment:
+  description: "Maps Bloom's Taxonomy cognitive levels to appropriate assessment formats for valid measurement"
+  principle: "Higher-order objectives require complex assessment formats; lower-order objectives may use simpler formats"
+  design_rule: "Maintain a clear line of sight: business goal → learning objective → assessment item"
+  level_format_map:
+    remember_understand:
+      bloom_level: "Remember / Understand"
+      assessment_formats:
+        - "Multiple-choice"
+        - "True/false"
+        - "Matching"
+        - "Fill-in-the-blank quizzes"
+    apply:
+      bloom_level: "Apply"
+      assessment_formats:
+        - "Scenario-based questions"
+        - "Role-plays"
+        - "Case studies"
+    analyze:
+      bloom_level: "Analyze"
+      assessment_formats:
+        - "Complex case analyses"
+        - "Troubleshooting tasks"
+    evaluate:
+      bloom_level: "Evaluate"
+      assessment_formats:
+        - "Project critiques"
+        - "Panel reviews"
+        - "Business simulations"
+    create:
+      bloom_level: "Create"
+      assessment_formats:
+        - "Capstone projects"
+        - "Portfolios"
+        - "Action learning projects"
+        - "Design tasks"
+  backward_design:
+    model: "Understanding by Design (Wiggins & McTighe)"
+    steps:
+      - "Define desired results (learning objectives and business goals)"
+      - "Determine acceptable assessment evidence before designing instruction"
+      - "Plan instruction to prepare learners for the defined assessments"
+    recommendation: "Include an 'Assessment Plan' section in all training program proposals"
+  research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+
+# ==============================================================================
+# MODALITY-SPECIFIC ASSESSMENT
+# ==============================================================================
+
+modality_specs:
+  e_learning:
+    auto_scored: true
+    question_bank: "Large pool for unique sets per learner"
+    timing: "Can be timed or untimed"
+    proctoring: "Required for high-stakes certification"
+    research_basis: "E-learning enables scalable, automated assessment with item banking"
+
+  ilt_classroom:
+    observer_bias_mitigation: "Clear rubrics with behavioral anchors required"
+    inter_rater_reliability: "Two evaluators recommended for high-stakes assessment"
+    methods:
+      - "Live demonstrations"
+      - "Group exercises"
+      - "Role-play observation"
+      - "Verbal questioning"
+    exit_ticket: "Brief end-of-class informal knowledge check; not scored; questions drawn from class content"
+    research_basis: "Classroom assessment requires structured observation protocols"
+
+  vilt_virtual:
+    engagement_tools:
+      - "Real-time polls (Zoom polls)"
+      - "Chat-based quizzes"
+      - "Breakout room exercises"
+      - "Whiteboard collaboration"
+      - "Gamified quiz competitions (Kahoot)"
+    follow_up_timing: "Immediately after session"
+    post_session_quiz: "Emailed scenario quiz completed individually after the live session"
+    research_basis: "Virtual assessment leverages platform features for engagement"
+
+  mobile_microlearning:
+    questions_per_session:
+      min: 1
+      max: 2
+    duration_max_minutes: 2
+    frequency: "Daily or weekly"
+    design_requirements:
+      - "Touch-optimized interface (tappable, no hover)"
+      - "Offline capability with sync on reconnect"
+      - "Push notification delivery for scheduled boosters"
+    spaced_repetition:
+      mechanism: "Automated booster scheduling based on forgetting curve"
+      tracking: "Knowledge retention tracking per learner per concept"
+      axonify_model: "Daily push quiz adapts to each employee's current knowledge state; score streaks earn badges"
+    research_basis: "Mobile assessment must be brief and touch-friendly; spaced repetition mitigates Ebbinghaus forgetting"
+
+  simulation_vr:
+    validity: "High predictive validity for behavioral skills"
+    scoring_methods:
+      - "Automatic software tracking (time, accuracy, decisions, step sequence)"
+      - "Human assessor review via recording"
+    biometric_integration:
+      - "Gaze tracking for attention and decision focus"
+      - "Reaction time measurement for procedural proficiency"
+    domain_applications:
+      - "Safety procedure simulations"
+      - "Equipment handling assessments"
+      - "High-stakes interpersonal skill scenarios"
+      - "Hiring and promotion decision support (Walmart VR model)"
+    outcome_benchmarks:
+      walmart_vr:
+        assessment_score_improvement_percent: 12.5
+        satisfaction_improvement_percent: 30
+        headsets_deployed: 17000
+        note: "VR also used in hiring and promotion decisions as unbiased simulation-based measure"
+        research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+    research_basis: "Simulation provides authentic assessment in safe environments; biometric data provides objective performance signals"
+
+  blended_learning:
+    principle: "Online quizzes assess Bloom's lower levels (recall); in-person or synchronous assessments target application and analysis"
+    flipped_assessment:
+      description: "Online quiz before class serves as diagnostic; instructor reviews problem areas live with learners"
+    on_the_job_tools:
+      - "Mobile checklist apps for manager field observation"
+      - "Post-training QA audit via error rate or defect count data"
+      - "Post-training call monitoring for remote customer service roles"
+    research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+
+# ==============================================================================
+# PERFORMANCE-BASED ASSESSMENT
+# ==============================================================================
+
+performance_based_assessment:
+  description: "Assessment formats in which learners demonstrate competency by completing realistic tasks or producing work products"
+  principle: "If a learning objective is 'Demonstrate skill X,' plan a performance assessment — not just a quiz"
+  formats:
+    work_sample_project:
+      description: "Learner creates a work product resembling a real deliverable (plan, presentation, design, code); assessed via rubric by panel"
+      example: "PM capstone — submit draft project plan covering scope, timeline, risk, and stakeholder comms"
+      resubmission_protocol: "Learners scoring below expectations revise and resubmit after mentor feedback — not simply failed"
+      research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+    action_learning_project:
+      description: "Teams tackle real business challenges over multiple months; present findings to executive panel"
+      example: "AT&T strategic initiatives — evaluated and sometimes implemented as real business solutions"
+      dual_value: "Assessment simultaneously generates business value"
+      research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+    portfolio_assessment:
+      description: "Collection of work products (applications, designs, case studies) reviewed against criteria"
+      credentialing_integration: "Credly digital badge requires portfolio submission reviewed by peer or mentor before issuance; IBM Data Science Badge requires capstone project evaluation"
+      research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+    video_submission:
+      description: "Learner records themselves performing a skill (e.g., delivering a pitch); evaluated by instructor or AI tools"
+      scalability: "Scales well; AI tools (Quantified.ai) can analyze clarity, filler words, enthusiasm"
+      research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+    mock_call_observation:
+      description: "Trainee performs with a simulated customer or scenario; session recorded; rubric applied post-hoc"
+      example: "Call center trainee takes mock call with actor; criteria include greeting, tone, listening, resolution, policy compliance"
+      mixed_scoring: "Some criteria binary (identity verification yes/no), others scaled (empathy 1-5)"
+      research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+    flight_simulator_physical:
+      description: "Assessor signs off on performance in physical or VR simulator using dual-scoring approach"
+      scoring: "Automatic software tracking of correct steps + human assessor review"
+      research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+  research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+
+# ==============================================================================
+# ADAPTIVE ASSESSMENT
+# ==============================================================================
+
+adaptive_assessment:
+  description: "Assessment in which question sequence or difficulty adjusts in real time based on learner performance"
+  benefits:
+    - "More precise measurement of ability — homes in on competency level faster"
+    - "More efficient — avoids boring easy questions and frustrating hard ones"
+    - "Higher engagement through appropriately-matched challenge"
+  types:
+    linear_adaptive:
+      description: "Difficulty and question selection adjusts based on prior answers; analogous to GMAT/GRE adaptive design"
+      corporate_application: "Post-training certification or diagnostic pre-test"
+    micro_adaptivity_branching:
+      description: "Within a single scenario, path branches based on learner choices (choose-your-own-adventure)"
+      scoring: "Assesses how learner navigates the path, not just the final answer"
+    confidence_weighted:
+      description: "Learners rate confidence in their answer; system differentiates genuine uncertainty from dangerous false confidence"
+      barclays_case:
+        mechanism: "Extra points for confident-correct; penalties for confident-wrong"
+        finding: "Identified employees with dangerous false confidence as highest-priority remediation targets"
+      research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+    diagnostic_routing:
+      description: "Pre-course quiz scores route learners to different module paths"
+      rule: "Below 50% → primer module required; high performers may test out of basic modules"
+  platforms:
+    - name: "Area9 Rhapsode"
+    - name: "Realizeit"
+    - name: "Smart Sparrow (now Pearson)"
+    - name: "Axonify"
+      note: "Frontline daily micro-quizzes adapting to each employee's current knowledge state"
+    - name: "Qstream"
+      note: "Spaced learning with real-time dashboard of who knows what and which topics are not sticking"
+  design_requirements:
+    - "Large item pool with clear difficulty mapping"
+    - "Rule-based adaptivity available now; AI-driven adaptivity will predict needs from answers, confidence, and potentially biometrics"
+  research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+
+# ==============================================================================
+# RUBRIC DESIGN SPECIFICATIONS
+# ==============================================================================
+
+rubric_design:
+  scale_types:
+    developmental:
+      levels: ["novice", "basic", "proficient", "expert"]
+      level_count: 4
+      research_basis: "4-point developmental scale avoids neutral midpoint bias"
+    numeric:
+      min: 1
+      max: 5
+      descriptors_required: true
+      research_basis: "5-point scale common but requires clear behavioral anchors"
+    binary:
+      description: "Did/did not scoring for procedural criteria (e.g., identity verification yes/no)"
+      use_case: "Safety checklists, compliance steps, identity verification"
+    mixed_binary_scaled:
+      description: "Single rubric combining binary items (for procedural compliance) and scaled items (for quality of judgment)"
+      example: "Mock call rubric — identity verification (binary yes/no) + empathy demonstrated (1-5 scaled)"
+      research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+
+  rubric_sub_types:
+    analytic_rubric:
+      description: "Detailed matrix with separate scores per criterion; provides diagnostic feedback per dimension"
+    behavioral_observational:
+      description: "Observable behaviors listed for manager or peer observation in field settings"
+      example: "Inclusive Meeting Behaviors rubric — 'Invites input from quiet members'; 'Acknowledges diverse perspectives positively'"
+      research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+    scoring_guide:
+      description: "Simplified checklist with point values per step; used for task-based or procedural assessments"
+      distinction: "Less granular than rubric matrices; appropriate when criteria are binary or point-accumulation-based"
+      research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+
+  criteria_requirements:
+    - "Observable and measurable behaviors"
+    - "Clear, jargon-free language"
+    - "Tied directly to learning objectives"
+    - "Distinct level descriptions (no overlap between levels)"
+  criteria_research_basis: "Effective rubrics require specific, observable criteria - Brookhart (2013)"
+
+  reliability:
+    calibration_session:
+      requirement: "Required when multiple assessors score the same work"
+      protocol: "Practice by scoring a sample piece of work; discuss discrepancies; align on edge cases before deployment"
+    advance_sharing:
+      requirement: "Share rubric with learners before assessment"
+      pedagogical_value: "Learners can self-check practice against rubric criteria — improves both learning and assessment performance"
+    peer_certification:
+      description: "Peers (e.g., sales reps) use a standard rubric to judge whether a colleague passes a role-play"
+      benefit: "Builds shared standards culture; scales facilitator bandwidth"
+      research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+    inter_rater_agreement_target_percent: 80
+    research_basis: "Assessor calibration sessions improve inter-rater reliability"
+
+# ==============================================================================
+# VALIDITY TYPES
+# ==============================================================================
+
+validity_types:
+  description: "Psychometric validity types relevant to corporate learning assessment design and quality assurance"
+  content_validity:
+    description: "Assessment items fully represent the domain being taught"
+    design_rule: "Every question or task must trace back to a learning objective"
+    check: "Blueprint mapping — each item tagged to an objective; coverage verified before launch"
+    research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+  predictive_validity:
+    description: "Assessment scores predict on-the-job performance (criterion validity)"
+    evidence: "Learners scoring above 80% on technical certification had 20% fewer job errors"
+    simulation_note: "Well-designed simulations have high predictive validity — performance in simulation correlates with real-world performance"
+    research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+  face_validity:
+    description: "Assessment appears relevant and job-related to learners"
+    connection: "Closely linked to andragogy — adult learners engage more when they see relevance"
+    design_approach: "Authentic assessments improve face validity by situating measurement in realistic context"
+    research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+  internal_consistency:
+    description: "Items within a test measure the same underlying construct consistently"
+    measurement: "Compute Cronbach's alpha or equivalent statistic when sufficient items exist"
+    item_level:
+      p_value:
+        description: "Proportion of learners answering an item correctly"
+        healthy_range: "30-70% correct typical; spread across assessment preferred"
+        flag_high: "p > 0.90 — item too easy or trivial; consider removing or raising difficulty"
+        flag_low: "p < 0.20 — item too hard or poorly written; review and revise"
+        mass_failure_flag: "Questions missed by 90%+ of learners — flag immediately for removal or rewrite"
+      discrimination_index:
+        description: "Point-biserial correlation (RIR) — item answered correctly more often by high performers"
+        requirement: "Positive discrimination required; poor discrimination indicates ambiguous or trivial item"
+        flag: "Negative or near-zero discrimination — flag for removal or rewrite"
+    research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+  research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+
+# ==============================================================================
+# QUESTION DESIGN PRINCIPLES
+# ==============================================================================
+
+question_design:
+  scale_types:
+    five_point_unipolar:
+      description: "5-point fully labelled scale where all anchor points are named (not just endpoints)"
+      example_anchors: "Not at all / Slightly / Moderately / Very / Extremely"
+      use_case: "Relevance, knowledge self-rating, intent-to-apply constructs"
+      source: "CDC Recommended Training Effectiveness Questions (2019)"
+    three_point_balance:
+      description: "3-point balance scale for instructional design quality (not agreement/frequency)"
+      example_anchors: "Too much lecture / Right amount of both / Too much interactive learning"
+      use_case: "Instructional balance and pacing perception"
+
+  anti_patterns:
+    trainer_centric_questions:
+      description: "Questions rating the instructor's personality or likability"
+      example: "How good was the instructor?"
+      problem: "Zero correlation between student evaluations of instructors and actual learning (Thalheimer 2018)"
+      fix: "Ask about content relevance and instructional design quality, not the person"
+    self_efficacy_questions:
+      description: "Questions asking learners to rate their own confidence or competence"
+      example: "How confident are you in applying these skills?"
+      problem: "Incompetent learners systematically over-rate their own competence (Kruger & Dunning 1999); produces unreliable data"
+      fix: "Use scenario-based or performance assessment instead of confidence self-report"
+
+# ==============================================================================
+# FEEDBACK DESIGN
+# ==============================================================================
+
+feedback_design:
+  description: "Principles for assessment feedback that drives learning improvement — not just score reporting"
+  hattie_timperley_model:
+    three_feedback_questions:
+      feed_up: "Where am I going? — the goal and standard"
+      feed_back: "How am I doing? — current performance vs. goal"
+      feed_forward: "Where to next? — specific actionable improvement advice"
+    four_feedback_levels:
+      task_level: "Was the answer correct or adequate?"
+      process_level: "How did they arrive at it? (e.g., 'you skipped an important step')"
+      self_regulation_level: "Encourage self-monitoring (e.g., 'I noticed you caught and corrected errors — continue monitoring yourself')"
+      self_level:
+        description: "Purely personal praise or criticism — least effective feedback type"
+        avoid: "'You're a natural' or 'you're bad at this'"
+    research_basis: "Hattie & Timperley (2007); Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+  timing_guidance:
+    immediate_feedback:
+      best_for: "Simple tasks, e-learning quizzes, knowledge recall items"
+      design: "Automated; must explain why an answer is wrong — not just display a score percentage"
+    delayed_feedback:
+      best_for: "Complex tasks — allows learner self-reflection before external input"
+      design: "For case study assignments: have learner self-reflect first; instructor provides feedback in review session"
+    formative_automated_feedback:
+      requirement: "Must explain why an answer is wrong and direct learner to remediation"
+      anti_pattern: "Showing '60%' with no explanation — demotivating and leaves learner unable to improve"
+  post_assessment_self_review:
+    description: "After a simulation, learner self-rates using the rubric before assessor provides rating; discrepancies discussed"
+    benefit: "Turns assessment into a two-way developmental conversation, not a unilateral judgment"
+    research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+  red_flag_patterns:
+    - "Collecting scores only for upward reporting with no feedback loop to learners"
+    - "Purely numeric scores without explanation of what to improve"
+    - "Delayed feedback longer than 24-48 hours for formative or low-stakes items"
+  research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices; Hattie & Timperley (2007)"
+
+# ==============================================================================
+# 360-DEGREE FEEDBACK
+# ==============================================================================
+
+feedback_360:
+  competency_count:
+    ideal:
+      min: 4
+      max: 6
+    maximum: 8
+    research_basis: "More than 8 competencies causes survey fatigue and reduces feedback quality"
+  rater_sources:
+    - "Self-assessment"
+    - "Peers"
+    - "Manager/supervisor"
+    - "Direct reports"
+  survey_fatigue_mitigation:
+    - "Limit to key competencies"
+    - "Use behaviorally anchored items"
+    - "Keep total items under 40"
+  research_basis: "Multi-source feedback provides comprehensive view of behavioral impact"
+
+# ==============================================================================
+# ASSESSMENT INTEGRITY
+# ==============================================================================
+
+assessment_integrity:
+  description: "Security and fairness controls for high-stakes and certification assessment"
+  controls:
+    question_randomization: "Randomize item order and answer option order per learner to mitigate cheating"
+    item_banking: "Draw unique question sets from large pool — prevents memorization of fixed test"
+    time_limits: "Set per-question or per-assessment time bounds appropriate to item complexity"
+    browser_lockdown: "Secure browser tooling required for high-stakes certification"
+    remote_proctoring: "Third-party proctoring platform integration for remote certification"
+    honor_codes: "Lighter-weight integrity control for low/medium-stakes assessments; explicit commitment to academic honesty"
+    anomaly_detection:
+      - "Rapid completion time (e.g., 30-minute test completed in 5 minutes with 95% score)"
+      - "Identical or near-identical answer patterns across multiple users"
+      - "Improbably high or uniform pass rate across a department"
+  integrity_design_principle: "Design assessments that truly measure competence and the need for cheating diminishes — open-book practical exercises may be more meaningful than closed-book tests that incentivize answer-sharing"
+  case_study: "PwC integrity failure — 1,200 employees shared answers to online compliance tests; remediated via larger item banks and proctoring"
+  proctoring_vendors:
+    - "Honorlock"
+    - "Proctorio"
+    - "ProctorU"
+    - "Pearson VUE"
+  enterprise_certification_tools:
+    - name: "Questionmark"
+      note: "Enterprise question banks, proctoring, and detailed analytics at scale"
+  privacy_requirement: "Communicate clearly to employees what will be monitored before deploying proctoring tools"
+  high_stakes_requirements:
+    - "Secure testing environment with verified identity"
+    - "Audit trail for all assessment events"
+    - "Compliance documentation for regulatory contexts"
+    - "Two-evaluator agreement for performance-based high-stakes items"
+
+# ==============================================================================
+# ACCESSIBILITY IN ASSESSMENT
+# ==============================================================================
+
+accessibility_in_assessment:
+  description: "Inclusive design principles ensuring all learners have equal opportunity to demonstrate competency"
+  screen_reader_compatibility:
+    requirement: "Alt text for all images in e-learning assessments"
+    standard: "WCAG 2.2 AA compliance for e-assessment delivery"
+  accommodation_provisions:
+    - "Extra time for learners with documented disabilities"
+    - "Quiet testing environment alternatives for learners with sensory sensitivities"
+    - "Equivalent alternative format when oral assessment disadvantages certain learners"
+  plain_language_requirement:
+    rationale: "Simplify wording to measure knowledge, not language decoding ability"
+    applies_to: "Global audiences and non-native English speakers"
+    rule: "Avoid idioms, slang, and region-specific references in assessment items"
+  cultural_bias_audit:
+    checklist:
+      - "Do case studies feature people of varied genders, ethnicities, and ages in non-stereotypical roles?"
+      - "Does this evaluation method rely on humor or context only familiar to certain cultures?"
+      - "Is wording free of idioms and slang that could confuse non-native speakers?"
+      - "Are role-play scenarios comfortable across cultural communication styles?"
+    mitigation: "Pilot with a small diverse group or cross-cultural team reviewers before deployment"
+  alternative_format_equivalence:
+    principle: "Alternative formats must assess the same competency criteria — not merely appear equivalent"
+    example: "If oral presentation is assessed, offer video or written submission for learners with language barriers; apply the same rubric"
+  time_limits:
+    rule: "Impose strict time limits only when speed is genuinely part of the competency being assessed"
+    cognitive_load_note: "Non-native speakers have additional processing load; time limits without speed relevance inflate false negatives"
+  hybrid_equity:
+    requirement: "Remote learners must have equivalent assessment experience to in-person learners"
+    implementation: "Use online quiz tools for all participants to equalize access"
+  research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+
+# ==============================================================================
+# PSYCHOLOGICAL SAFETY IN ASSESSMENT
+# ==============================================================================
+
+psychological_safety:
+  description: "Design principles that reduce test anxiety and promote growth mindset"
+  test_anxiety_mitigation:
+    - "Provide practice exam before high-stakes assessment"
+    - "Set clear expectations: explain scoring criteria upfront"
+    - "Use supportive, non-threatening language in instructions"
+    - "Unlimited retakes for formative/low-stakes assessments"
+  growth_mindset_framing:
+    - "Position assessments as learning opportunities, not evaluations of worth"
+    - "Celebrate progress and improvement, not just pass/fail outcomes"
+    - "Design mistake-friendly environments where errors trigger explanation, not penalty"
+  validity_rationale: "Test anxiety inflates false negatives — learners fail not from lack of knowledge but from anxiety; mitigating anxiety improves assessment validity"
+
+# ==============================================================================
+# CERTIFICATION AND CREDENTIALING
+# ==============================================================================
+
+certification_and_credentialing:
+  description: "Frameworks for issuing, validating, and managing formal skill credentials in corporate contexts"
+  mastery_learning_model:
+    description: "Require 100% on safety checklist or certification standard; if not achieved, immediate remediation and re-test until mastery demonstrated"
+    theoretical_basis: "Behaviorism/mastery learning — zero tolerance for partial competence in safety-critical skills"
+    research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+  digital_badges:
+    platforms:
+      - name: "Credly"
+        note: "Portfolio-submission-gated badge issuance; peer or mentor review required before badge is granted"
+      - name: "IBM Internal Badge System"
+        note: "350+ badges for various skills; each requires completion of a learning path plus passing an assessment"
+    capstone_model:
+      description: "Completing a learning path culminates in a capstone project evaluated by mentor or peer panel; passing issues the credential"
+      example: "IBM Data Science Badge — capstone project evaluation required"
+    research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+  secure_tool_stack:
+    components:
+      - "Question banks with versioning"
+      - "Secure browser (lockdown during test)"
+      - "Remote proctoring with identity verification"
+      - "Timed delivery with randomized question selection"
+  regulatory_acceptance:
+    note: "Many regulators now accept online-proctored exams with proper anti-cheating controls; hybrid work context has normalized this"
+  skills_based_talent_management:
+    description: "Assessment-validated skill credentials feed directly into talent decisions"
+    patterns:
+      - "Internal job postings state required assessment-validated skill levels"
+      - "System checks who holds required certification via badge record"
+      - "Some companies link certification to compensation (bonuses, promotion eligibility)"
+    platforms:
+      - "Degreed — skills matrix populated by assessment and performance data"
+      - "LinkedIn Learning — skill validation integrated with professional profile"
+  hiring_and_promotion:
+    description: "VR simulation assessments used in hiring/promotion as unbiased simulation-based measure alongside interviews"
+    example: "Walmart VR assessment for store management hiring and promotion decisions"
+    tools:
+      - "DDI Manager Ready"
+      - "Capsim"
+      - "Advantexe"
+    research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+  research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+
+# ==============================================================================
+# BIAS REDUCTION
+# ==============================================================================
+
+bias_reduction:
+  description: "Design and audit practices to ensure assessments measure true competency rather than extraneous factors"
+  equivalence_standard: "Bias-free assessment results reflect genuine ability and learning — not English fluency, cultural norms, or format preference"
+  bias_audit:
+    questions:
+      - "Do case studies feature people of varied genders, ethnicities, and ages in non-stereotypical roles?"
+      - "Does this evaluation method rely on humor or context only familiar to certain cultures?"
+      - "Is wording clear for non-native speakers, free of idioms and slang?"
+      - "Does the assessment format disadvantage introverts or specific cultural communication styles?"
+    process: "Pilot with small diverse group or cross-cultural team reviewers before deployment"
+  language_bias:
+    controls:
+      - "Avoid idioms, region-specific references, and slang"
+      - "Use plain language to measure knowledge, not language ability"
+      - "Offer assessment in learner's native language where feasible"
+  format_bias:
+    role_play_mitigation: "Create supportive facilitator atmosphere or provide alternative format assessing the same criteria"
+    oral_presentation_alternative: "Offer written or video submission for learners for whom oral format creates barriers; apply same rubric"
+  ai_scoring_bias:
+    risk: "Automated grading algorithms may score certain language styles or dialects lower"
+    mitigation:
+      - "Audit AI grading algorithms for systematic bias before deployment"
+      - "Maintain human override mechanism for AI-scored items"
+      - "Be transparent with learners about AI evaluation criteria"
+  global_localization:
+    recommendation: "Validate assessments across multiple regions; localize scenarios for cultural relevance"
+    one_size_caution: "One-size global tests may not perform equivalently everywhere — cultural context affects performance beyond competency"
+  research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+
+# ==============================================================================
+# ANALYTICS AND REPORTING
+# ==============================================================================
+
+analytics_and_reporting:
+  description: "Assessment data analysis methods for program evaluation, item quality assurance, and organizational learning intelligence"
+  item_analysis:
+    p_value:
+      description: "Proportion of learners answering an item correctly"
+      healthy_range: "30-70% typical; spread preferred across full assessment"
+      flag_rules:
+        too_easy: "p > 0.90 — item likely trivial or telegraphed in training; review for adequacy"
+        too_hard: "p < 0.20 — item may be poorly written or out of scope; review and revise"
+        mass_failure: "Questions missed by 90%+ of learners — flag immediately for removal or rewrite"
+    discrimination_index:
+      description: "Point-biserial correlation (RIR) — positive if high performers answer correctly more often than low performers"
+      interpretation: "Positive = item differentiates well; negative = item is flawed or a trick question"
+    objective_tagging:
+      description: "Tag each item to a learning objective or topic; aggregate scores by tag to identify content needing redesign"
+      example: "Module 2: 85% avg; Module 3: 60% avg → Module 3 content requires revision"
+  score_breakdown:
+    principle: "Report sub-scores by competency area, not only overall pass/fail, to enable targeted coaching"
+    example: "Sales training: separate scores for product knowledge, probing skills, and closing technique"
+  learning_gain_reporting:
+    format: "Report pre/post delta as primary L2 evidence: 'Participants improved from 50% to 85% (35-point gain)'"
+    use_in_roi: "Learning gain data feeds into chain-of-evidence narrative for L4/L5 reporting"
+  anomaly_detection:
+    description: "Flag integrity and quality issues via statistical patterns"
+    triggers:
+      - "Test completed significantly faster than expected (e.g., 30-min test done in 5 min with 95% score)"
+      - "Identical or near-identical answer patterns across multiple users"
+      - "Improbably high or uniform pass rate across a department"
+  analytics_types:
+    learning_analytics: "Broad — engagement, completion, content usage, social metrics, dropout prediction"
+    assessment_analytics: "Subset — test item performance, scoring trends, competency gaps"
+    best_practice: "Triangulate both analytics types for complete learning intelligence picture"
+  continuous_dashboard:
+    description: "Ongoing micro-assessment data presented in real-time dashboard showing who knows what and which topics are not sticking"
+    model: "Qstream — managers can intervene without waiting for formal re-test cycle"
+    research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+  skills_matrix_integration:
+    description: "Assessment and performance data populate organizational skills matrix enabling skills-based talent management"
+    model: "Degreed — assessment results trigger automatic personalized learning content recommendations"
+    research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+  ab_testing:
+    description: "Give same assessment to two cohorts with different training methods; compare results to identify superior approach"
+    use_case: "Comparing instructional design variants; validating new delivery modalities"
+  research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+
+# ==============================================================================
+# EMERGING ASSESSMENT TRENDS
+# ==============================================================================
+
+emerging_assessment_trends:
+  description: "Technology-driven and pedagogical innovations reshaping corporate learning assessment"
+  ai_question_generation:
+    description: "NLP models read training content and propose quiz items — human review required before use"
+    benefit: "Speeds item creation significantly; reduces blank-page burden for instructional designers"
+    research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+  ai_automated_grading:
+    description: "NLP-based automated scoring of open-ended responses: essays, short answers, audio transcriptions of role-plays"
+    named_tools:
+      - name: "Centrical"
+        note: "Simulates customer interactions; gives performance score and actionable feedback"
+      - name: "Quantified.ai"
+        note: "Analyzes practice pitches for clarity, filler words, and enthusiasm"
+    ethical_considerations:
+      - "Bias risk — algorithm may score certain language styles or dialects lower"
+      - "Data privacy — third-party AI handling of assessment data"
+      - "Transparency — learners must know if AI is evaluating them and how"
+    research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+  ai_chatbot_role_plays:
+    description: "AI role-plays a customer or employee; learner practices and receives AI-generated feedback or transcript review"
+    benefit: "Repeatable, private, safe-practice environment with embedded real-time assessment"
+    research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+  intelligent_tutoring_systems:
+    description: "AI assesses and tutors simultaneously — intervenes with hints or easier items when learner struggles, then ramps difficulty back up"
+    effect: "Blurs boundary between assessment and instruction — continuous adaptive learning loop"
+    research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+  confidence_weighted_scoring:
+    description: "Learners indicate confidence in each answer; scoring differentiates genuine uncertainty from dangerous false confidence"
+    mechanism: "Points for confident-correct; penalties for confident-wrong"
+    case_study: "Barclays — identified employees with dangerous false confidence as highest-priority remediation targets"
+    research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+  continuous_micro_assessment:
+    description: "Ongoing competency profile built from small, frequent assessments rather than periodic exams"
+    metaphor: "'Fitness tracker for skills' — continuous micro-quizzes accumulate into a living competency dashboard"
+    workflow_delivery: "Slack bot or similar tool pushes question-of-the-day into the learner's normal work environment"
+    research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+  escape_room_assessment:
+    description: "Virtual or physical digital escape rooms track learner choices and progress to assess problem-solving and teamwork"
+    example: "Consulting firm digital escape room for new hire problem-solving and teamwork evaluation"
+    research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+  ar_on_the_job:
+    description: "AR app guides worker through a task, verifies each step via image recognition or sensor data, and assesses competence during actual work"
+    distinguishing_feature: "Assessment is embedded in real work — not a separate event"
+    research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+  collaborative_simulation:
+    description: "Multiplayer business simulations where team output is evaluated alongside individual contributions"
+    scoring: "Individual and team scores assigned; promotes accountability and shared standards"
+    research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+  post_assessment_learning_plan:
+    description: "System immediately generates personalized content playlist or tutorial list based on missed assessment items"
+    principle: "Assessment is the trigger for the next learning cycle — not the endpoint"
+    research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+  research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+
+# ==============================================================================
+# QUALITY METRICS
+# ==============================================================================
+
+quality_metrics:
+  completion_rate:
+    minimum_percent: 80
+    research_basis: "Industry standard for minimum acceptable assessment completion"
+  user_satisfaction:
+    minimum_rating: 4.0
+    scale_max: 5.0
+    research_basis: "Kirkpatrick Level 1 satisfaction threshold"
+  pass_rate:
+    typical_threshold_percent: 80
+    competency_based: "Criterion-referenced (absolute standard) vs norm-referenced (relative ranking)"
+    pass_threshold_validation: "Learners above 80% on technical certification had 20% fewer job errors — threshold is empirically linked to L4 quality outcomes"
+    research_basis: "80% pass threshold standard for competency-based assessment; Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+  learning_gain:
+    benchmark_delta: 35
+    benchmark_description: "Pre-test 50% → post-test 85% = 35-point gain cited as evidence of substantial learning"
+    use: "Primary L2 evidence in chain-of-evidence ROI narrative"
+    research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+  behavioral_change_benchmark:
+    description: "5-point scale increase from 3.2 → 4.0 on a specific trained behavior at 60 days post-training cited as evidence of positive L3 change"
+    measurement_tool: "360-degree mini-survey focused on narrow set of trained behaviors"
+    research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+  vr_outcome_benchmarks:
+    walmart_assessment_improvement_percent: 12.5
+    walmart_satisfaction_improvement_percent: 30
+    note: "VR reduced training time by 96% while maintaining improved assessment performance vs. traditional methods"
+    research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+  integrity_risk_indicator:
+    flag: "Improbably high or uniform pass rate across a department triggers review for answer-sharing"
+    research_basis: "Corporate Learning Assessment - Strategies, Modalities, and Best Practices"
+  item_analysis:
+    difficulty_range: "Not all too easy or too hard (30-70% correct typical)"
+    p_value: "Item difficulty index — proportion of learners answering correctly"
+    p_value_flag_high: "p > 0.90 — item too easy; review for adequacy"
+    p_value_flag_low: "p < 0.20 — item too hard or poorly written; review and revise"
+    discrimination_index: "Point-biserial correlation (RIR) — high performers answer correctly more often than low performers"
+    longitudinal_tracking: "Monitor item performance over multiple administrations to detect drift or compromised items"
+    mass_failure_flag: "Questions missed by 90%+ of learners — flag immediately for removal or rewrite"
+    research_basis: "Classical test theory item analysis for assessment quality assurance"

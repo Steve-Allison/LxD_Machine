@@ -1,0 +1,57 @@
+_meta:
+  id: data_reqs_visual
+  description: "Shared data requirements for visual analysis defining required/optional spatial and style inputs with fallback rules."
+  domain: ai
+  domain_type: meta
+  purpose: reference
+  version: "1.3.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Crafting Powerful Opening Plays.md"
+    - "Corpus/Research/Research - Comprehensive Learning Design Framework.md"
+    - "Corpus/Research/Research - Slide Deck Design Playbook Research.md"
+    - "Corpus/Research/Visual Narrative Flow Pass.md"
+    - "Corpus/Research/The Unseen Structure: A Technical Deep-Dive into Narrative, Visualization, and Accessibility.md"
+
+
+# Standard Data Requirements
+spatial:
+  required:
+    - "Bounding boxes (x,y,w,h)"
+    - "Canvas dimensions"
+    - "Element types"
+  optional:
+    - "Z-index / Layer order"
+  fallback:
+    rule: "If spatial data missing, assume flat layout and low confidence"
+
+visual_style:
+  required:
+    - "Font properties (family, size, weight)"
+    - "Color values (hex/rgb)"
+    - "Stroke/Fill properties"
+  optional:
+    - "CSS/Style class names"
+  fallback:
+    rule: "If style data missing, rely on visual heuristics only"
+
+# Narrative-visual alignment requirements
+# Source: Visual Narrative Flow Pass.md; The Unseen Structure
+narrative_visual_alignment:
+  description: "Additional data requirements for narrative-visual coherence analysis (CLIP/SigLIP integration)"
+  required:
+    - "Rendered slide image or equivalent visual representation"
+    - "Slide sequence position (for arc-position visual check)"
+  optional:
+    - "SOAR stage classification of corresponding text (for visual-narrative alignment scoring)"
+    - "Image semantic descriptors or alt text (for semiotic arrangement analysis)"
+    - "Visual element type labels (photo/icon/diagram/chart — for authenticity analysis)"
+  fallback:
+    rule: "If SOAR stage absent, classify visual independently. Report visual-narrative alignment as 'unknown' if text not provided."
+  semiotic_requirements:
+    description: "Data needed for Kress and van Leeuwen semiotic arrangement analysis"
+    required:
+      - "Element bounding boxes (x,y,w,h) for Given/New and Ideal/Real zone classification"
+      - "Element type (text/image/chart) for semiotic category assignment"
+    optional:
+      - "Image subject description (for metaphor category detection)"

@@ -1,0 +1,149 @@
+_meta:
+  id: narrative_taxonomy
+  purpose: taxonomy
+  version: "1.3.0"
+  last_updated: "2026-03-01"
+  description: "Standard definitions for Stage 1 slide labelling — story functions, emotional tones, and summarisation."
+  domain: narrative
+  domain_type: workflow
+  corpus_sources:
+    - "Corpus/Research/Crafting Powerful Opening Plays.md"
+    - "Corpus/Research/Learner Outcomes - Instructions v4.md"
+    - "Corpus/Research/Research - Comprehensive Audience Analysis.md"
+    - "Corpus/Research/Research - Canonical Presentation Methodology Research.md"
+    - "Corpus/Research/The Universal Narrative Methodology: A Framework for Crafting and Improving Stories.md"
+
+
+  relationships:
+    - target: entities/narrative_entities.yaml
+      type: depends_on
+      description: "Narrative entity types for NER extraction"
+
+classification_dimensions:
+  - name: story_function
+    description: "Narrative role of a content segment within the overall story arc"
+    values:
+      - setup
+      - problem
+      - insight
+      - tension
+      - evidence
+      - solution
+      - result
+      - CTA
+      - opportunity
+      - action
+      - validated_result
+  - name: emotional_tone
+    description: "Affective register of the narrative segment"
+    values:
+      - neutral
+      - urgent
+      - optimistic
+      - concerned
+      - celebratory
+      - inspirational
+      - kairos
+  - name: soar_stage
+    description: "SOAR narrative framework stage alignment"
+    values:
+      - situation
+      - opportunity
+      - action
+      - result
+
+story_functions:
+  setup: "Establishes context, introduces situation, sets the scene, or provides agenda."
+  problem: "Identifies pain points, challenges, obstacles, conflicts, or market shifts."
+  insight: "Reveals key understanding, 'aha' moment, discovery, or root cause."
+  tension: "Builds stakes, urgency, consequences of inaction, or competitive threat."
+  evidence: "Provides proof, data, testimonials, case studies, or validation."
+  solution: "Presents the answer, approach, methodology, product, or capability."
+  result: "Shows outcomes, benefits, transformation, ROI, or future state."
+  CTA: "Call to action, next steps, what audience should do, or contact info."
+
+  # ---------------------------------------------------------------------------
+  # SOAR-Specific Story Functions — Added v1.1.0
+  # Sources: Research - Canonical Presentation Methodology Research.md;
+  #          The Universal Narrative Methodology.md
+  # ---------------------------------------------------------------------------
+  opportunity: "Reframes a problem as a positive opportunity or unrealised value gap — SOAR Opportunity stage. Distinct from 'problem': opportunity is forward-looking and value-anchored, not just pain description."
+  action: "Explains the specific mechanism by which the solution operates — SOAR Action stage. Distinct from 'solution': action describes *how*, not just *what*."
+  validated_result: "Shows independently verified, quantified outcomes — highest evidence quality. Distinct from 'result': validated_result requires named customer, specific metric, and auditable source."
+
+# ==============================================================================
+# EMOTIONAL TONES
+# ==============================================================================
+
+emotional_tones:
+  neutral: "Factual, informational, objective, balanced (e.g., Agenda, Methodology)."
+  urgent: "Time-sensitive, pressing, immediate action needed, 'burning platform'."
+  optimistic: "Positive, hopeful, forward-looking, opportunity-focused."
+  concerned: "Worried, highlighting risks, cautionary, 'problem-aware'."
+  celebratory: "Triumphant, successful, achievement-focused, validation."
+  inspirational: "Motivating, visionary, aspirational, 'art of the possible'."
+  # Added v1.1.0: kairos-driven urgency tone (distinct from general urgency)
+  kairos: "Urgency framing grounded in a specific time-sensitive external trigger — regulatory deadline, market shift, competitor move. More specific than 'urgent': kairos identifies WHY now, not just that action is needed."
+
+# ==============================================================================
+# SOAR MAPPING
+# Sources: Research - Canonical Presentation Methodology Research.md
+# ==============================================================================
+
+soar_mapping:
+  description: "Mapping of story_functions and emotional_tones to SOAR narrative stages"
+
+  situation:
+    primary_story_functions: ["setup"]
+    secondary_story_functions: ["insight"]
+    primary_emotional_tones: ["neutral", "concerned"]
+    note: "Situation establishes shared context — should not be an opportunity or CTA slide"
+
+  opportunity:
+    primary_story_functions: ["opportunity", "tension", "problem"]
+    secondary_story_functions: ["insight"]
+    primary_emotional_tones: ["concerned", "urgent", "kairos"]
+    note: "Opportunity stage is where stakes are set — tension and urgency are expected here"
+
+  action:
+    primary_story_functions: ["action", "solution"]
+    secondary_story_functions: ["evidence"]
+    primary_emotional_tones: ["optimistic", "neutral"]
+    note: "Action stage should be specific and mechanism-focused — not aspirational"
+
+  result:
+    primary_story_functions: ["validated_result", "result", "evidence"]
+    secondary_story_functions: ["CTA"]
+    primary_emotional_tones: ["celebratory", "optimistic", "inspirational"]
+    note: "Result stage requires quantified proof — generic 'result' slides without data reduce credibility"
+
+# ==============================================================================
+# FEW-SHOT EXAMPLES (Calibration)
+# ==============================================================================
+
+few_shot_examples:
+  bad_summary:
+    description: "Slide showing Q4 revenue data."
+    scene_summary: "This slide shows a bar chart of Q4 revenue numbers and some bullet points about growth."
+    critique: "Too vague. Doesn't capture the *insight*."
+
+  good_summary:
+    description: "Slide showing Q4 revenue data."
+    scene_summary: "Horizontal bar chart shows Q4 revenue reached $1.2M (up 15%), driven primarily by the new Premium subscription tier."
+    critique: "Captures the data *and* the causal driver."
+
+  bad_tone:
+    description: "Slide listing severe security vulnerabilities."
+    emotional_tone: "neutral"
+    critique: "Misses the implied risk."
+
+  good_tone:
+    description: "Slide listing severe security vulnerabilities."
+    emotional_tone: "concerned"
+    critique: "Correctly identifies the negative/risk sentiment."
+
+  soar_function_example:
+    description: "Slide showing cost of delayed digital transformation."
+    story_function: "opportunity"
+    emotional_tone: "kairos"
+    critique: "Opportunity + kairos is the correct pairing for loss-aversion urgency framing in SOAR Opportunity stage."

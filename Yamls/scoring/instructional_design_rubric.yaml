@@ -1,0 +1,1128 @@
+_meta:
+  id: instructional_design_rubric
+  title: "Instructional Design Rubric"
+  description: "Scoring rubric for instructional design quality covering objective alignment, activity-objective mapping, assessment validity, scaffold progression, and learner engagement strategies"
+  domain: pedagogical
+  domain_type: workflow
+  purpose: scoring
+  version: "1.2.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Comprehensive Learning Design Framework.md"
+    - "Corpus/Research/Research - Merrills Instructional Design Theories Applied.md"
+    - "Corpus/Research/Activities - Research + Instructions v4.md"
+    - "Corpus/Research/Research - Writing Learning Objectives.md"
+    - "Corpus/Research/Best Practices for Structuring Corporate Learning Content.md"
+    - "Corpus/Research/Gold Standard Structure for Any Corporate-Learning Asset v3.md"
+  academic_sources:
+    - "Bloom et al. (1956) - Taxonomy of Educational Objectives (revised Anderson & Krathwohl 2001)"
+    - "Merrill (2002) - First Principles of Instruction"
+    - "Merrill (1983) - Component Display Theory"
+    - "Gagne (1965) - Conditions of Learning / Nine Events of Instruction"
+    - "Wiggins & McTighe (2005) - Understanding by Design (backward design)"
+    - "Kirkpatrick (1959) - Four Levels of Evaluation"
+    - "Biggs (1996) - Constructive Alignment"
+    - "Mager (1962) - Preparing Instructional Objectives"
+    - "Sweller (1988) - Cognitive Load Theory"
+    - "Thompson (2002) - FPI corporate validation study (York University corpus)"
+    - "Vygotsky (1978) - Mind in Society: Zone of Proximal Development"
+    - "Mayer (2009) - Multimedia Learning: Personalisation Principle and Coherence Principle"
+  relationships:
+    - target: ../entities/pedagogical_frameworks_entities.yaml
+      type: depends_on
+      description: "Entity types for pedagogical marker extraction"
+    - target: ../methodology/pedagogical_patterns.yaml
+      type: derived_from
+      description: "Pedagogical design patterns informing rubric criteria"
+    - target: cognitive_load_rubric.yaml
+      type: related_to
+      description: "Cognitive load principles applied to instructional design"
+    - target: narrative_quality_rubric.yaml
+      type: related_to
+      description: "Narrative quality in instructional content"
+
+# ==============================================================================
+# RUBRIC WEIGHTS
+# Source: Constructive alignment (Biggs 1996) places objective-activity-assessment
+# coherence at the centre of quality instructional design; engagement and
+# scaffolding are weighted as enabling conditions rather than primary outcomes.
+# ==============================================================================
+
+rubric_weights:
+  objective_alignment: 0.25    # Bloom's level match, measurability, clarity
+  activity_mapping: 0.20       # Constructive alignment of activities to objectives
+  assessment_validity: 0.20    # Assessment type, Kirkpatrick level, F/S balance
+  scaffold_progression: 0.20   # Simple-to-complex, prerequisites, Merrill's FPI
+  learner_engagement: 0.15     # Active learning ratio, interaction variety
+
+# ==============================================================================
+# QUALITY DIMENSIONS — 5-point score levels per dimension
+# Score 1 = critical failure; Score 3 = meets minimum; Score 5 = exemplary
+# Source: Mager (1962) three-part objective framework; Anderson & Krathwohl
+# (2001) revised Bloom's taxonomy; Biggs (1996) constructive alignment
+# ==============================================================================
+
+dimensions:
+
+  # ----------------------------------------------------------------------------
+  # DIMENSION 1: OBJECTIVE ALIGNMENT
+  # Does each objective use measurable verbs, target the appropriate Bloom's
+  # level for the intended performance, and pass Mager's three-part test
+  # (performance, conditions, criteria)?
+  # ----------------------------------------------------------------------------
+  objective_alignment:
+    name: "Objective Alignment"
+    description: >
+      Evaluates whether learning objectives are observable, measurable, and set
+      at the correct Bloom's taxonomy level for the intended job performance.
+      Applies Mager's ABCD framework (Audience, Behavior, Conditions, Degree)
+      and distinguishes terminal from enabling objectives.
+    research_basis:
+      - "Research - Writing Learning Objectives.md — Mager three-part framework; terminal vs enabling hierarchy"
+      - "Activities - Research + Instructions v4.md — Bloom level tagging requirement"
+    score_levels:
+      1:
+        label: "Critical Failure"
+        criteria:
+          - "Objectives are absent, implied only, or describe activities rather than outcomes"
+          - "Verbs are unmeasurable (understand, know, appreciate, be aware of)"
+          - "No Bloom's level can be assigned; content appears as information dump"
+          - "Objectives mix unrelated skills into compound statements joined by 'and'"
+      2:
+        label: "Below Standard"
+        criteria:
+          - "Objectives present but use weak verbs (describe, discuss) for procedural tasks"
+          - "Bloom's level is systematically lower than the job performance requires"
+          - "Conditions or success criteria missing from most objectives"
+          - "Terminal and enabling objectives are not distinguished"
+      3:
+        label: "Meets Minimum"
+        criteria:
+          - "Objectives use action verbs aligned to an identifiable Bloom's level"
+          - "At least one condition and one criterion present per objective"
+          - "Bloom's level roughly matches the complexity of the intended task"
+          - "Terminal objectives exist; enabling objectives implied but not formalised"
+      4:
+        label: "Proficient"
+        criteria:
+          - "All objectives observable, measurable, and pass Mager's three-part test"
+          - "Bloom's level explicitly matched to CDT content type (Fact/Concept/Procedure/Principle)"
+          - "Terminal (3-5 per module) and enabling objectives (3-5 per terminal) clearly differentiated"
+          - "Objectives written in learner-centric language ('You will be able to...')"
+      5:
+        label: "Exemplary"
+        criteria:
+          - "Every objective includes audience, behaviour, conditions, and measurable degree (ABCD)"
+          - "Bloom's level matches both the CDT performance cell and the LTEM transfer level required"
+          - "Objectives are hierarchically mapped: course → module → lesson with numbered references"
+          - "Cognitive load theory applied: lesson objectives limited to 1-2 to respect working memory"
+          - "Objectives directly anchor to business KPIs per Kirkpatrick Level 3/4 alignment"
+
+  # ----------------------------------------------------------------------------
+  # DIMENSION 2: ACTIVITY MAPPING (Constructive Alignment)
+  # Do activities constructively align with objectives and assessments?
+  # Source: Biggs (1996) constructive alignment; Activities Research v4 — theory tags
+  # ----------------------------------------------------------------------------
+  activity_mapping:
+    name: "Activity-Objective Mapping (Constructive Alignment)"
+    description: >
+      Evaluates whether activities engage the cognitive process demanded by the
+      objective's Bloom's verb. A 'remember' objective maps to recall activities;
+      an 'evaluate' objective demands critique and judgment tasks. Activities
+      that fall below the objective's Bloom's level constitute the primary
+      constructive misalignment failure.
+    research_basis:
+      - "Activities - Research + Instructions v4.md — Bloom-level and Gagne-event tagging per activity"
+      - "Research - Merrills Instructional Design Theories Applied.md — CDT mismatch failure pattern"
+    score_levels:
+      1:
+        label: "Critical Failure"
+        criteria:
+          - "Activities are entirely passive (read/watch only); no learner action elicited"
+          - "Activity cognitive level is two or more Bloom's levels below the stated objective"
+          - "No connection between activity type and the CDT content classification"
+          - "Activities absent from the design entirely (content delivery only)"
+      2:
+        label: "Below Standard"
+        criteria:
+          - "Most activities are one Bloom's level below the objective (e.g., recall quiz for apply objective)"
+          - "Activities address the topic but not the specific performance demanded"
+          - "No Gagne event assigned or evident (e.g., feedback absent after practice)"
+          - "Passive consumption ratio exceeds 70% of content time"
+      3:
+        label: "Meets Minimum"
+        criteria:
+          - "Activities broadly match the Bloom's level of the objective"
+          - "At least one practice opportunity per major objective"
+          - "Feedback present following practice activities"
+          - "Activity variety includes at least two interaction types"
+      4:
+        label: "Proficient"
+        criteria:
+          - "Each activity tagged to an explicit Bloom's level and Gagne event"
+          - "CDT content type (Fact/Concept/Procedure/Principle) drives the activity prescription"
+          - "Concept-level objectives use examples AND non-examples (CDT requirement)"
+          - "Procedure-level objectives use step-by-step demonstrations followed by guided simulation"
+          - "Active learning ratio exceeds 40% of content time"
+      5:
+        label: "Exemplary"
+        criteria:
+          - "Full constructive alignment: every objective has a paired activity and a paired assessment"
+          - "Activity design references SOLO level progression (uni-structural → extended abstract)"
+          - "3Cs scenario design (Context/Challenge/Consequence) applied to higher-order activities"
+          - "Alexander's dialogic principles applied to collaborative or synchronous activities"
+          - "Active learning ratio exceeds 60% with documented interaction variety (≥3 types)"
+          - "Activity sequence mirrors Gagne's Nine Events of Instruction explicitly"
+
+  # ----------------------------------------------------------------------------
+  # DIMENSION 3: ASSESSMENT VALIDITY
+  # Are assessment types matched to objectives, and is Kirkpatrick coverage
+  # appropriate? Does the design balance formative and summative?
+  # Source: Kirkpatrick (1959); Writing Learning Objectives — linking objectives to outcomes
+  # ----------------------------------------------------------------------------
+  assessment_validity:
+    name: "Assessment Validity"
+    description: >
+      Evaluates whether the assessment instruments can validly measure what
+      the objective demands, whether formative and summative checkpoints are
+      balanced, and whether the design creates a pathway to Kirkpatrick
+      Level 3 (behaviour transfer) rather than stopping at Level 2 (learning).
+    research_basis:
+      - "Research - Writing Learning Objectives.md — Kirkpatrick four levels; objectives vs outcomes distinction"
+      - "Research - Comprehensive Learning Design Framework.md — assessment strategy by hierarchy level"
+    score_levels:
+      1:
+        label: "Critical Failure"
+        criteria:
+          - "No assessment present; content delivery only"
+          - "Assessment is a post-event satisfaction survey only (Kirkpatrick L1)"
+          - "Multiple-choice recall quiz used to validate procedure or principle objectives"
+          - "Assessment disconnected from objectives (measures different content)"
+      2:
+        label: "Below Standard"
+        criteria:
+          - "Single summative assessment at end with no formative checkpoints"
+          - "All assessment at Kirkpatrick Level 1 or 2 only; no transfer indicators"
+          - "Assessment type systematically mismatched to Bloom's level of objective"
+          - "Passing threshold absent or arbitrary (no criterion-referenced standard)"
+      3:
+        label: "Meets Minimum"
+        criteria:
+          - "Formative knowledge checks embedded at topic level (2-3 per module)"
+          - "Summative assessment present at module level"
+          - "Assessment type matches at least the broad Bloom's category (recall vs application)"
+          - "Pass threshold defined (typically 80% mastery)"
+      4:
+        label: "Proficient"
+        criteria:
+          - "Formative checks every 3-5 minutes of content (per learning design specifications)"
+          - "Assessment types matched to CDT cell: recall quiz for Fact-Remember; scenario for Concept-Use; simulation for Procedure-Use"
+          - "Kirkpatrick L2 (learning) assessment present; L3 (behaviour) transfer indicator designed"
+          - "Feedback is immediate, constructive, and explanatory (not just correct/incorrect)"
+          - "Criterion-referenced pass standard tied to job performance requirement"
+      5:
+        label: "Exemplary"
+        criteria:
+          - "Full Kirkpatrick staircase: L1 satisfaction → L2 knowledge/skill → L3 behaviour → L4 results indicators"
+          - "Authentic assessment used for higher-order objectives (portfolio, simulation, branching scenario)"
+          - "Pre-assessment (diagnostic) present to activate prior knowledge and personalise path"
+          - "Formative assessment includes confidence ratings and elaborative interrogation prompts"
+          - "Post-training transfer measurement mechanism designed (30/60/90-day follow-up, manager observation)"
+          - "Assessment generates learning analytics enabling predictive identification of at-risk learners"
+          - "All formative assessments provide explanatory feedback — rationale for why correct and why incorrect — not binary correct/incorrect only"
+          - "Failed summative attempts trigger targeted remediation pathway (specific review material or alternative practice) rather than generic re-attempt loop"
+          - "Post-summative debrief provided: optimal solution or expert approach explained after every summative assessment, converting it into a further learning event"
+
+  # ----------------------------------------------------------------------------
+  # DIMENSION 4: SCAFFOLD PROGRESSION
+  # Does design sequence from simple to complex, manage prerequisites, and
+  # apply Merrill's First Principles (Activation → Demonstration → Application
+  # → Integration) with problem-centred anchoring?
+  # Source: Merrill (2002) FPI; Research - Merrills Instructional Design Theories Applied
+  # ----------------------------------------------------------------------------
+  scaffold_progression:
+    name: "Scaffold Progression"
+    description: >
+      Evaluates whether the instructional sequence builds competence incrementally
+      from simple to complex whole tasks (Merrill's Pebble-in-the-Pond), explicitly
+      manages prerequisite knowledge, and applies the FPI cycle. Integration
+      (Principle 5) is the most commonly omitted principle in corporate L&D and
+      is weighted heavily.
+    research_basis:
+      - "Research - Merrills Instructional Design Theories Applied.md — FPI five-phase cycle; Pebble-in-the-Pond; Problem Progression"
+      - "Research - Comprehensive Learning Design Framework.md — simple-to-complex sequencing; prerequisite management"
+    score_levels:
+      1:
+        label: "Critical Failure"
+        criteria:
+          - "Content sequenced by topic convenience, not by learner prerequisite dependency"
+          - "No activation of prior knowledge before new content"
+          - "No demonstration phase; content is information-push only (the 'information dump')"
+          - "No application opportunity; training ends at exposition"
+          - "Integration phase entirely absent; module ends with a quiz or 'Congratulations' screen"
+          - "Scaffolding level is uniform throughout — either perpetual guidance impeding expert learners, or no guidance leaving novices unsupported at every stage"
+      2:
+        label: "Below Standard"
+        criteria:
+          - "Sequence is logical but not scaffolded (complex content before foundational concepts)"
+          - "Activation attempted (e.g., reflection prompt) but disconnected from subsequent content"
+          - "Demonstration present but is monolithic (single long lecture video)"
+          - "Application present but is a multiple-choice quiz mismatched to procedure/principle objectives"
+          - "Integration activity exists but is optional or untracked"
+      3:
+        label: "Meets Minimum"
+        criteria:
+          - "Prerequisite topics sequenced before dependent topics"
+          - "Activation phase present and linked to the learning objective"
+          - "Demonstration phase uses at least one worked example or expert model"
+          - "Application phase includes a practice opportunity with feedback"
+          - "Some form of integration activity at module end (reflection or action plan)"
+      4:
+        label: "Proficient"
+        criteria:
+          - "Problem-centred anchor (whole authentic task) visible from the start of the module"
+          - "Problem progression implemented: simple → medium → complex versions of the task"
+          - "Activation uses pre-training assessment or reflective question tied to the anchor problem"
+          - "Demonstration is CDT-prescribed: examples + non-examples for concepts; step-by-step for procedures"
+          - "Application is contextualised: branching scenario or sandbox simulation, not an isolated quiz"
+          - "Integration activity is mandatory, documented, and supported (action plan template, job aid)"
+      5:
+        label: "Exemplary"
+        criteria:
+          - "Entire module anchored to one authentic, real-world whole task (Merrill's 'Pebble')"
+          - "FPI cycle explicitly mapped: Activation → Demo → Apply cycles repeated per problem progression step"
+          - "Cognitive Apprenticeship model applied: modelling → coaching → fading of support"
+          - "Integration includes peer teach-back, manager debrief, or on-the-job performance support"
+          - "Spaced repetition planned: review touchpoints at 1, 7, and 30 days post-training"
+          - "Design transitions to performance support tool for post-training reinforcement"
+          - "Pre-training cards reduce cognitive load by pre-teaching vocabulary and schema"
+          - "Scaffolding fades explicitly across three stages — guided walk-through → hinted practice → independent problem-solving — with optional 'Need a recap?' support remaining available"
+          - "Progression targets the learner's Zone of Proximal Development (ZPD) at each stage — challenge is incremental and attainable with support (Vygotsky 1978)"
+
+  # ----------------------------------------------------------------------------
+  # DIMENSION 5: LEARNER ENGAGEMENT
+  # Is active learning ratio adequate? Is interaction variety sufficient?
+  # Are retrieval practice and elaborative interrogation present?
+  # Source: Comprehensive Learning Design Framework; Activities Research v4
+  # ----------------------------------------------------------------------------
+  learner_engagement:
+    name: "Learner Engagement"
+    description: >
+      Evaluates the ratio of active to passive learning, the variety of
+      interaction types, the presence of retrieval practice mechanisms, and
+      the application of Self-Determination Theory (autonomy, competence,
+      relatedness) as motivational scaffolding. Interaction frequency
+      benchmark: every 3-5 minutes of content.
+    research_basis:
+      - "Research - Comprehensive Learning Design Framework.md — active learning every 3-5 min; interaction frequency; engagement patterns"
+      - "Activities - Research + Instructions v4.md — Self-Determination Theory; SAMR model; dialogic principles"
+    score_levels:
+      1:
+        label: "Critical Failure"
+        criteria:
+          - "Passive consumption only: no learner interaction at any point"
+          - "Single modality throughout (text-only or video-only)"
+          - "No retrieval practice; no elaborative interrogation"
+          - "No mechanism for learner autonomy or pacing control"
+      2:
+        label: "Below Standard"
+        criteria:
+          - "Interaction present but only at end of module (single summative quiz)"
+          - "Interaction frequency: less than once per 10 minutes"
+          - "Single interaction type used throughout (e.g., all multiple-choice)"
+          - "No social or dialogic component; purely individual consumption"
+      3:
+        label: "Meets Minimum"
+        criteria:
+          - "Interaction frequency: at least once every 5-7 minutes"
+          - "At least two interaction types across the module"
+          - "Retrieval practice present (knowledge checks, recall prompts)"
+          - "Some learner control over pacing (e.g., bookmark, self-paced navigation)"
+      4:
+        label: "Proficient"
+        criteria:
+          - "Interaction frequency: every 3-5 minutes (per design specification)"
+          - "At least three interaction types: recall, application scenario, reflection"
+          - "Retrieval practice embedded with spaced distribution across module"
+          - "Elaborative interrogation prompts present ('Why does this work this way?')"
+          - "Autonomy support: learner can access content in multiple orders where appropriate"
+          - "Gamification elements appropriate to level (progress bars, quick-win feedback)"
+      5:
+        label: "Exemplary"
+        criteria:
+          - "Interaction frequency: every 3 minutes or less with documented variety"
+          - "Five or more interaction types: recall, simulation, peer dialogue, scenario, reflection"
+          - "Self-Determination Theory applied: autonomy (pacing/path choice), competence (scaffolded challenge), relatedness (social learning)"
+          - "Alexander's dialogic principles embedded in collaborative activities (collective, reciprocal, cumulative)"
+          - "Dual-coding applied: each concept delivered via both verbal and visual channel"
+          - "Hook card or attention-capture mechanism within first 30 seconds"
+          - "Transfer cards present to bridge learning to workplace application with action planning"
+          - "Reflection prompts require learners to connect concepts to their own job context — application framing explicit ('How would you use this in your [role/next conversation]?') not generic recall"
+          - "Content employs conversational, direct-address tone (Mayer's Personalisation Principle): 'you'/'we' language, natural speech patterns, anticipates learner questions in-text"
+
+# ==============================================================================
+# BLOOM'S TAXONOMY — Verb lists, CDT content-type mapping, and activity pairings
+# Source: Anderson & Krathwohl (2001); Merrill CDT Performance-Content Matrix;
+# Activities Research v4 tool table
+# ==============================================================================
+
+blooms_taxonomy:
+  description: >
+    Six-level revised taxonomy. Each level maps to CDT performance levels,
+    prescribes acceptable verb sets, and specifies appropriate activity and
+    assessment types. Using a verb from a lower level to assess a higher-level
+    objective is the most common constructive misalignment failure.
+  levels:
+    remember:
+      bloom_level: 1
+      cdt_performance: "Remember"
+      verbs:
+        - define
+        - list
+        - recall
+        - state
+        - recognise
+        - identify
+        - name
+        - match
+        - label
+      appropriate_activities:
+        - "Flashcard recall (Quizizz, Mentimeter)"
+        - "Drag-and-drop matching"
+        - "Fill-in-the-blank"
+        - "Mnemonics and repetition"
+      appropriate_assessments:
+        - "Binary correct/incorrect quiz"
+        - "Multiple-choice recall"
+        - "Label the diagram"
+      cdt_prescription: "Show definition (Expository Generality); ask for recall (Inquisitory Generality)"
+    understand:
+      bloom_level: 2
+      cdt_performance: "Remember / Use (Concept)"
+      verbs:
+        - explain
+        - summarise
+        - paraphrase
+        - classify
+        - compare
+        - describe
+        - interpret
+        - illustrate
+      appropriate_activities:
+        - "Concept mapping (Miro, H5P)"
+        - "Paraphrase the definition in your own words"
+        - "Sort examples into categories"
+      appropriate_assessments:
+        - "Short written explanation"
+        - "Classification exercise"
+        - "Multiple-choice with rationale"
+      cdt_prescription: "Show definition + multiple examples; ask learner to classify novel instance"
+    apply:
+      bloom_level: 3
+      cdt_performance: "Use (Procedure)"
+      verbs:
+        - apply
+        - demonstrate
+        - execute
+        - implement
+        - use
+        - carry out
+        - solve
+        - operate
+      appropriate_activities:
+        - "Guided click-along simulation (sandbox)"
+        - "Worked example follow-along"
+        - "Case study application (Articulate Rise)"
+        - "Role-play practice"
+      appropriate_assessments:
+        - "Procedure execution in simulation"
+        - "Scenario with branching consequence"
+        - "Performance checklist"
+      cdt_prescription: "Step-by-step demonstration video; guided sandbox practice with corrective feedback"
+    analyse:
+      bloom_level: 4
+      cdt_performance: "Use (Principle)"
+      verbs:
+        - analyse
+        - differentiate
+        - distinguish
+        - examine
+        - break down
+        - compare
+        - contrast
+        - deconstruct
+      appropriate_activities:
+        - "Peer dialogue — paired think-aloud with challenger-clarifier roles (Zoom, Miro)"
+        - "Branching scenario with diagnostic choices (Twine, Articulate Rise)"
+        - "Case study breakdown with causal reasoning"
+      appropriate_assessments:
+        - "Annotated case analysis"
+        - "Comparative matrix completion"
+        - "Peer review with rubric"
+      cdt_prescription: "Present principle/rule; show consequences of correct vs incorrect application"
+    evaluate:
+      bloom_level: 5
+      cdt_performance: "Find (Principle)"
+      verbs:
+        - evaluate
+        - judge
+        - critique
+        - justify
+        - appraise
+        - defend
+        - prioritise
+        - recommend
+      appropriate_activities:
+        - "GitHub PR peer review"
+        - "Structured debate (Zoom)"
+        - "Expert panel critique"
+        - "Peer review using evaluative rubric"
+      appropriate_assessments:
+        - "Evaluated recommendation with justification"
+        - "Critique essay with criteria"
+        - "Verbal defence of design decision"
+      cdt_prescription: "Present novel problem; require judgment with explicit rationale; feedback on reasoning process not just answer"
+    create:
+      bloom_level: 6
+      cdt_performance: "Find (Principle / Novel Procedure)"
+      verbs:
+        - design
+        - construct
+        - develop
+        - produce
+        - formulate
+        - generate
+        - invent
+        - plan
+      appropriate_activities:
+        - "Build a prototype (Replit, Figma)"
+        - "Design a solution deck (Pitch.com)"
+        - "Develop a job aid or guide"
+        - "Create an instructional plan"
+      appropriate_assessments:
+        - "Authentic product or artefact review"
+        - "Portfolio submission"
+        - "Presentation with question and answer"
+      cdt_prescription: "Present open design challenge; learner invents new procedure or principle; expert reviews diagnostic reasoning process"
+
+# ==============================================================================
+# MERRILL'S FIRST PRINCIPLES — Criteria and red flags per principle
+# Source: Merrill (2002); Research - Merrills Instructional Design Theories Applied
+# ==============================================================================
+
+merrills_first_principles:
+  description: >
+    FPI is a non-linear cycle, not a checklist. The Problem-Centered principle
+    is the central anchor; Activation, Demonstration, Application, and
+    Integration orbit it. Skipping Integration is the most commercially
+    damaging error in corporate L&D (Thompson 2002 corporate validation study).
+  principles:
+    problem_centered:
+      label: "Problem-Centered (Anchor)"
+      description: "All instruction anchored to an authentic whole task the learner will be able to perform"
+      excellence_criteria:
+        - "Whole authentic task (the 'Pebble') presented at module start"
+        - "Problem progression: simple → medium → complex versions"
+        - "Learner understands why content is relevant before receiving it"
+        - "Case studies, simulations, or real workplace scenarios used"
+      failure_signals:
+        - "Module opens with a definition or policy statement"
+        - "Content is organised by topic convenience, not by task performance"
+        - "Learner never sees the whole task they are building toward"
+    activation:
+      label: "Activation"
+      description: "New knowledge connected to the learner's existing knowledge and experience"
+      excellence_criteria:
+        - "Pre-training assessment or reflective question before content delivery"
+        - "Analogies that connect new concept to familiar experience"
+        - "Prior experience explicitly elicited (group discussion, reflective prompt)"
+        - "Schema activation reduces germane load for subsequent demonstration"
+      failure_signals:
+        - "Content begins with new information without reference to prior knowledge"
+        - "Pre-assessment skipped because 'we don't have time'"
+    demonstration:
+      label: "Demonstration"
+      description: "New knowledge shown in context, not merely described — CDT prescribes the specific demonstration type"
+      excellence_criteria:
+        - "For Concept-Use: definition + multiple examples + non-examples"
+        - "For Procedure-Use: step-by-step demonstration video or worked example"
+        - "For Principle-Use: rule statement + application example + consequence shown"
+        - "Expert modelling includes the 'why' behind each step, not just the 'what'"
+      failure_signals:
+        - "Demonstration is a text-based definition without examples"
+        - "Monolithic 45-minute lecture video without segmentation"
+        - "Demonstration not consistent with the anchor task context"
+    application:
+      label: "Application"
+      description: "Learner applies new knowledge to solve a problem, with diminishing scaffolding and immediate feedback"
+      excellence_criteria:
+        - "Contextualised practice: branching scenario, sandbox simulation, role-play"
+        - "Immediate, constructive, explanatory feedback on every practice attempt"
+        - "Scaffolding fades across application activities (guided → independent)"
+        - "Practice tasks are variations of the anchor problem, not isolated exercises"
+      failure_signals:
+        - "Multiple-choice quiz used as the sole application for a procedure objective"
+        - "Feedback is binary (correct/incorrect) without explanation"
+        - "Practice tasks are disconnected from the anchor problem context"
+    integration:
+      label: "Integration (Most Commonly Omitted)"
+      description: "Learning transferred from the learning environment to the real world — the only phase that produces long-term ROI"
+      excellence_criteria:
+        - "Reflection activity: 'How will you use this in your work this week?'"
+        - "Action plan template completed before module close"
+        - "Peer teach-back activity (strongest reinforcement of own understanding)"
+        - "Post-training job aid provided for moment-of-need performance support"
+        - "Manager debrief or 30-day application check designed"
+      failure_signals:
+        - "Module ends with 'Congratulations! You have completed this training.'"
+        - "No post-training touchpoint or reinforcement mechanism"
+        - "Integration activity is optional and untracked"
+
+# ==============================================================================
+# GAGNE'S NINE EVENTS OF INSTRUCTION
+# Source: Gagne (1965); Activities Research v4 — GagneEvent metadata field
+# ==============================================================================
+
+gagnes_nine_events:
+  description: >
+    Nine sequential instructional events that support the conditions needed
+    for learning. Maps closely to Merrill's FPI but is objective-general,
+    making it applicable to recall objectives where FPI is less appropriate.
+    Activity designs in this corpus should tag the primary Gagne event.
+  events:
+    event_1:
+      name: "Gain Attention"
+      purpose: "Capture and focus learner attention before instruction begins"
+      design_tactics:
+        - "Hook card with provocative question, surprising statistic, or short video"
+        - "Scenario-based opening challenge"
+        - "Relevant news item or industry case"
+      fpi_mapping: "Activation (entry point)"
+    event_2:
+      name: "Inform Learners of Objectives"
+      purpose: "Tell learners what they will be able to do and why it matters"
+      design_tactics:
+        - "State objective in learner-centric language ('By the end, you will be able to...')"
+        - "Show the anchor problem/task they are working toward (FPI Problem-Centered)"
+        - "Connect to Kirkpatrick L3 business performance"
+      fpi_mapping: "Problem-Centered anchor"
+    event_3:
+      name: "Stimulate Recall of Prior Learning"
+      purpose: "Activate existing knowledge as scaffolding for new content"
+      design_tactics:
+        - "Pre-training knowledge check (non-graded)"
+        - "Reflective question: 'Describe a time you...' "
+        - "Analogy connecting new concept to familiar domain"
+      fpi_mapping: "Activation"
+    event_4:
+      name: "Present the Content"
+      purpose: "Deliver the new knowledge using the CDT-prescribed primary presentation forms"
+      design_tactics:
+        - "Concept: definition (Rule) + examples + non-examples"
+        - "Procedure: step-by-step demonstration video"
+        - "Principle: cause-and-effect explanation with application examples"
+      fpi_mapping: "Demonstration"
+    event_5:
+      name: "Provide Learning Guidance"
+      purpose: "Scaffold the learner's encoding of new knowledge"
+      design_tactics:
+        - "Worked examples with expert commentary on the 'why'"
+        - "Mnemonics, concept maps, and visual organisers"
+        - "Analogies and elaborative interrogation prompts"
+      fpi_mapping: "Demonstration (support layer)"
+    event_6:
+      name: "Elicit Performance (Practice)"
+      purpose: "Require active application of the new knowledge"
+      design_tactics:
+        - "Branching scenario with realistic choices"
+        - "Sandbox simulation for procedure objectives"
+        - "Peer dialogue with reciprocal challenger-clarifier roles"
+      fpi_mapping: "Application"
+    event_7:
+      name: "Provide Feedback"
+      purpose: "Give immediate, constructive, explanatory feedback on practice performance"
+      design_tactics:
+        - "Scenario consequences: show the outcome of the learner's choice"
+        - "Corrective pop-up explaining the correct approach and why"
+        - "Facilitator feedback in live/virtual settings"
+      fpi_mapping: "Application (feedback layer)"
+    event_8:
+      name: "Assess Performance"
+      purpose: "Measure whether the objective has been achieved at the required standard"
+      design_tactics:
+        - "Criterion-referenced assessment matched to CDT cell and Bloom's level"
+        - "Authentic task performance for higher-order objectives"
+        - "Summative scenario, portfolio, or simulation"
+      fpi_mapping: "Application (summative)"
+    event_9:
+      name: "Enhance Retention and Transfer"
+      purpose: "Ensure skills transfer to the job and are retained over time"
+      design_tactics:
+        - "Action plan and commitment device"
+        - "Spaced repetition schedule: 1, 7, 30-day review"
+        - "Job aid for performance support at point of need"
+        - "Peer teach-back activity"
+      fpi_mapping: "Integration"
+
+# ==============================================================================
+# CONSTRUCTIVE ALIGNMENT (Biggs 1996)
+# Source: Activities Research v4; Writing Learning Objectives
+# ==============================================================================
+
+constructive_alignment:
+  description: >
+    Biggs' model requires that Intended Learning Outcomes (ILOs), Teaching and
+    Learning Activities (TLAs), and Assessment Tasks (ATs) all target the
+    same cognitive process. Misalignment between any two of these three
+    elements invalidates the design.
+  alignment_test:
+    step_1: "State the Bloom's level verb in the objective (e.g., 'evaluate')"
+    step_2: "Confirm the primary activity requires the same cognitive process (e.g., critique task)"
+    step_3: "Confirm the assessment demands the same performance (e.g., written evaluation with criteria)"
+    pass_criterion: "All three components target the same cognitive level"
+    fail_criterion: "Any component is two or more Bloom's levels below the objective verb"
+  common_misalignments:
+    - scenario: "Objective: 'Analyse a customer complaint scenario'; Assessment: Multiple-choice recall quiz"
+      error: "Assessment is four Bloom's levels below the objective"
+      fix: "Replace with annotated case analysis or branching scenario assessment"
+    - scenario: "Objective: 'Apply the 5-step process'; Activity: Read the process description"
+      error: "Activity is Bloom's Level 1-2; objective is Level 3"
+      fix: "Add guided simulation or click-along practice"
+    - scenario: "Objective: 'Evaluate three vendor proposals'; Activity: Watch a comparison video"
+      error: "Activity is passive consumption at Bloom's Level 1"
+      fix: "Replace with structured peer review of sample proposals using evaluative rubric"
+
+# ==============================================================================
+# BACKWARD DESIGN (Wiggins & McTighe 2005)
+# Source: Research - Writing Learning Objectives — outcome measurement focus
+# ==============================================================================
+
+backward_design:
+  description: >
+    Backward design (Understanding by Design) reverses the traditional sequence.
+    Designers start with the end state (Kirkpatrick L3 behaviour), then design
+    the evidence of learning, then plan the learning activities. This prevents
+    the common failure of designing content first and bolting on an assessment.
+  stages:
+    stage_1_desired_results:
+      question: "What job performance must the learner be able to demonstrate after training?"
+      outputs:
+        - "Terminal learning objectives (3-5 per module) tied to business KPIs"
+        - "Kirkpatrick L3 behaviour: observable, on-the-job performance standard"
+        - "Kirkpatrick L4 result: business metric the behaviour should influence"
+    stage_2_acceptable_evidence:
+      question: "What would count as proof that the learner can perform the job task?"
+      outputs:
+        - "Assessment instrument matched to the Bloom's level and CDT cell"
+        - "Authentic evidence: simulation, portfolio, checklist observation, peer review"
+        - "Formative checkpoints: minimum 3-5 per module"
+    stage_3_learning_plan:
+      question: "What sequence of activities will build the required competence?"
+      outputs:
+        - "FPI cycle: Activation → Demonstration → Application → Integration"
+        - "Gagne event sequence mapped to activities"
+        - "Scaffold from simple to complex whole task (problem progression)"
+  quality_indicator: >
+    If the assessment was designed after the content, the design is likely
+    activity-focused rather than outcome-focused. Backward design is validated
+    when Stage 1 objectives can be traced directly to Stage 2 assessments
+    without modification.
+
+# ==============================================================================
+# ACTIVITY EFFECTIVENESS — Research-backed activity types by retention and
+# engagement. Source: Research - Comprehensive Learning Design Framework;
+# Activities Research v4; Merrill Application principle
+# ==============================================================================
+
+activity_effectiveness:
+  description: >
+    Activity types ranked by research-evidenced learning transfer effectiveness.
+    Passive activities (reading, watching) consistently produce lower retention
+    than active, application-based activities. The 3-5 minute engagement
+    threshold is the corporate L&D standard for interaction frequency.
+  rankings:
+    tier_1_highest_transfer:
+      label: "Active Application (Bloom's 3-6)"
+      activities:
+        - name: "Simulation / sandbox practice"
+          retention_note: "Highest retention for procedure objectives; safe-to-fail environment"
+          bloom_range: "Apply (3)"
+          gagne_event: "6 — Elicit Performance"
+        - name: "Branching scenario (3Cs: Context/Challenge/Consequence)"
+          retention_note: "High transfer for principle and concept objectives; consequences visible"
+          bloom_range: "Apply to Evaluate (3-5)"
+          gagne_event: "6, 7"
+        - name: "Peer teach-back"
+          retention_note: "Teaching is the strongest consolidation mechanism; forces retrieval and articulation"
+          bloom_range: "Evaluate to Create (5-6)"
+          gagne_event: "9 — Enhance Retention"
+        - name: "Authentic design task"
+          retention_note: "Produces durable schema when anchored to real problem context"
+          bloom_range: "Create (6)"
+          gagne_event: "6, 8"
+        - name: "Capstone scenario assessment"
+          retention_note: "Integrative scenario requiring simultaneous application of multiple skills; functions as both summative assessment and learning event; learners often voluntarily retry, creating inherent spaced retrieval (Gold Standard Structure v3 §3.5)"
+          bloom_range: "Apply to Create (3-6)"
+          gagne_event: "6, 8"
+        - name: "Role-play with video debrief"
+          retention_note: "Highest-transfer format for interpersonal and communication skills; video recording reviewed in structured debrief provides external observer perspective unavailable during live practice (Gold Standard Structure v3 §3.5)"
+          bloom_range: "Apply to Evaluate (3-5)"
+          gagne_event: "6, 7"
+    tier_2_moderate_transfer:
+      label: "Active Recall and Discussion (Bloom's 1-4)"
+      activities:
+        - name: "Retrieval practice (spaced quizzing)"
+          retention_note: "50% better retention than re-reading; distributed over 1, 7, 30 days"
+          bloom_range: "Remember to Understand (1-2)"
+          gagne_event: "3, 8"
+        - name: "Elaborative interrogation (why/how questioning)"
+          retention_note: "Builds causal understanding; improves recall of factual content"
+          bloom_range: "Understand to Analyse (2-4)"
+          gagne_event: "5"
+        - name: "Peer dialogue (reciprocal think-aloud)"
+          retention_note: "Alexander's dialogic principles; Bloom's Analyse level engagement"
+          bloom_range: "Analyse (4)"
+          gagne_event: "6"
+        - name: "Case study analysis"
+          retention_note: "High contextual relevance; Bloom's Analyse; transfer depends on case fidelity"
+          bloom_range: "Analyse to Evaluate (4-5)"
+          gagne_event: "6, 7"
+        - name: "Think-pair-share"
+          retention_note: "Structured peer dialogue: individual think time → pair discussion → full-group share-out; knowledge co-constructed through Vygotskian social interaction (Gold Standard Structure v3 §3.3)"
+          bloom_range: "Understand to Analyse (2-4)"
+          gagne_event: "6"
+        - name: "Poll / drag-and-drop retrieval"
+          retention_note: "Medium-to-large effect on factual, conceptual, and problem-solving scores in corporate training (Taylor & Francis 2024; APS Journals; PMC); drives active retrieval rather than passive recognition"
+          bloom_range: "Remember to Apply (1-3)"
+          gagne_event: "5, 6"
+    tier_3_lowest_transfer:
+      label: "Passive Consumption (Bloom's 1-2)"
+      activities:
+        - name: "Reading text content"
+          retention_note: "Low standalone retention; effective as demonstration support only"
+          bloom_range: "Remember to Understand (1-2)"
+          gagne_event: "4"
+        - name: "Watching lecture video"
+          retention_note: "Lowest transfer when used alone; must be paired with application"
+          bloom_range: "Remember to Understand (1-2)"
+          gagne_event: "4, 5"
+        - name: "Listening to audio narration"
+          retention_note: "Dual-coding benefit when paired with visuals; passive alone"
+          bloom_range: "Remember (1)"
+          gagne_event: "4"
+  engagement_frequency_standard:
+    interval_minutes: 3
+    interval_max_minutes: 5
+    research_basis: "Research - Comprehensive Learning Design Framework: active learning every 3-5 minutes"
+
+# ==============================================================================
+# ASSESSMENT FRAMEWORK
+# Source: Kirkpatrick (1959); Writing Learning Objectives
+# ==============================================================================
+
+assessment_framework:
+  description: >
+    Assessment design follows from the backward design stage (Stage 2: evidence).
+    Formative assessment checks progress during instruction; summative validates
+    whether the terminal objective has been met. Kirkpatrick levels indicate
+    where in the causal chain the measurement occurs.
+  formative_vs_summative:
+    formative:
+      purpose: "Monitor learning progress; guide instruction; provide corrective feedback"
+      frequency: "Every 3-5 minutes of content; 2-3 checkpoints per topic"
+      characteristics:
+        - "Low stakes; not recorded in final grade"
+        - "Immediate, explanatory feedback"
+        - "Diagnostic: reveals misconceptions before summative"
+      types:
+        - "Knowledge check (recall question)"
+        - "Confidence rating"
+        - "Pair-share reflection prompt"
+        - "Embedded scenario with feedback"
+    summative:
+      purpose: "Measure achievement of terminal objective at module completion"
+      frequency: "Once per module; one per major topic cluster"
+      characteristics:
+        - "Criterion-referenced: pass threshold tied to job performance standard"
+        - "Assessment type matched to Bloom's level and CDT cell"
+        - "Results recorded and feed into learning analytics"
+      types:
+        - "Scenario-based assessment for Bloom's 3-5"
+        - "Simulation performance check for procedure objectives"
+        - "Portfolio or authentic product for Bloom's 5-6"
+        - "Knowledge test only for Bloom's 1-2 (recall objectives)"
+  kirkpatrick_levels:
+    level_1_reaction:
+      label: "Reaction"
+      measures: "Participant satisfaction and perceived relevance"
+      instrument: "Post-training satisfaction survey"
+      limitation: "Does not correlate with learning or behaviour change"
+    level_2_learning:
+      label: "Learning"
+      measures: "Knowledge, skill, attitude change achieved during training"
+      instrument: "Pre/post knowledge test; simulation performance; scenario assessment"
+      design_requirement: "Assessment must match Bloom's level and CDT cell of objective"
+    level_3_behaviour:
+      label: "Behaviour"
+      measures: "On-the-job application of trained skills after 30-90 days"
+      instrument: "Manager observation checklist; 360-degree feedback; self-report"
+      design_requirement: "Integration activity and post-training touchpoint must be planned"
+    level_4_results:
+      label: "Results"
+      measures: "Business impact: revenue, quality, safety, efficiency"
+      instrument: "KPI tracking; ROI analysis; performance dashboard"
+      design_requirement: "Terminal objectives must be traced to business metric at design stage"
+  authentic_assessment_criteria:
+    - "Task mirrors a real job performance (not an artificial classroom exercise)"
+    - "Context is realistic: same constraints, ambiguity, and resources as the job"
+    - "Evaluation is criterion-referenced against job performance standard"
+    - "Learner receives feedback that supports improvement, not just a score"
+
+# ==============================================================================
+# ANTI-PATTERNS
+# Source: Merrill (misapplication section); Writing Learning Objectives; Activities Research v4
+# ==============================================================================
+
+anti_patterns:
+  objective_activity_mismatch:
+    label: "Objective-Activity Mismatch"
+    description: "Activity cognitive level is two or more Bloom's levels below the objective verb"
+    example: "Objective: 'Evaluate three strategies'; Activity: 'Watch a comparison video'"
+    consequence: "Learner cannot achieve the stated objective regardless of effort"
+    fix: "Run Biggs' constructive alignment test; replace activity with one matching the objective's Bloom's level"
+
+  bloom_ceiling_low:
+    label: "Bloom's Ceiling Too Low"
+    description: "All objectives cluster at Remember/Understand regardless of job performance complexity"
+    example: "Compliance module ends at 'recall the policy' when the job requires 'apply the policy to novel cases'"
+    consequence: "Training produces knowledge but not performance capability"
+    fix: "Map job task complexity using CDT Find/Use to identify the required Bloom's ceiling"
+
+  passive_only:
+    label: "Passive Consumption Design"
+    description: "Entire module consists of read/watch activities; no learner action elicited"
+    example: "12-minute video followed by a 5-question multiple-choice quiz; no practice"
+    consequence: "Low retention; no transfer to job performance; Kirkpatrick L2 not achieved"
+    fix: "Insert application activities every 3-5 minutes; add at minimum one contextualised scenario"
+
+  assessment_afterthought:
+    label: "Assessment as Afterthought"
+    description: "Assessment designed after content, not derived from the objective; forward-designed rather than backward-designed"
+    example: "Module built on existing PowerPoints; quiz questions created from slide bullet points, not objectives"
+    consequence: "Assessment measures familiarity with training content, not job performance capability"
+    fix: "Apply backward design: state objective → design evidence → then create activities"
+
+  integration_skipped:
+    label: "Integration Phase Omitted (The Forgotten Principle)"
+    description: "Module ends with a quiz or congratulations screen; no on-the-job transfer mechanism designed"
+    example: "FPI Principles 1-4 implemented; module ends with summative quiz; no action plan, job aid, or debrief"
+    consequence: "Learning remains in the LMS; no behaviour change; Kirkpatrick L3 never achieved"
+    fix: "Design mandatory integration activity: action plan, peer teach-back, or manager debrief"
+
+  information_dump_demonstration:
+    label: "Information Dump Masquerading as Demonstration"
+    description: "A 45-minute lecture video or 50-slide page-turner equated with Merrill's Demonstration phase"
+    example: "FPI 'Demonstration' implemented as a monolithic video without segmentation or examples/non-examples"
+    consequence: "Cognitive overload; passive reception; fails CDT prescription for demonstration format"
+    fix: "Segment to 3-7 minutes; use CDT-prescribed forms: definition + examples + non-examples (not narrated slides)"
+
+  compound_objectives:
+    label: "Compound Objectives"
+    description: "Single objective contains multiple distinct skills joined by 'and'"
+    example: "'Learners will identify the policy AND apply it to a case AND evaluate the outcome'"
+    consequence: "Cannot assess, scaffold, or map activities to each distinct performance"
+    fix: "Split at every 'and'; create separate terminal or enabling objectives per performance"
+
+  objective_vague_verbs:
+    label: "Unmeasurable Verb Usage"
+    description: "Objectives use verbs that cannot be observed or assessed (understand, know, appreciate)"
+    example: "'Learners will understand the importance of data privacy regulations'"
+    consequence: "Cannot design a valid assessment; cannot confirm learning occurred"
+    fix: "Replace with observable Bloom's verb at the required level: 'identify', 'apply', 'evaluate'"
+
+  single_assessment_type:
+    label: "Single Assessment Type Throughout"
+    description: "All assessment uses multiple-choice recall regardless of objective Bloom's level"
+    example: "Procedure, concept, and principle objectives all assessed with identical MCQ format"
+    consequence: "Invalid measurement for higher-order objectives; masks whether transfer capability exists"
+    fix: "Match assessment format to CDT cell and Bloom's level; use simulation for procedures, scenario for principles"
+
+  prerequisite_gap:
+    label: "Prerequisite Gap"
+    description: "Complex content introduced before foundational prerequisites are established"
+    example: "Branching scenario on 'escalating a customer complaint' before defining what constitutes an escalation"
+    consequence: "Cognitive overload; high extraneous load from schema gaps; demotivation"
+    fix: "Map prerequisite dependencies; sequence simpler enabling objectives before complex application"
+
+  no_advance_organiser:
+    label: "Missing Advance Organiser"
+    description: "Module begins with content delivery without a prior overview, objectives statement, or roadmap; learners lack schema priming which reduces transfer"
+    example: "Module 1 opens directly with 'Today we will cover the five steps of the process' without a hook, visual roadmap, or prior-knowledge activation"
+    consequence: "Working memory overwhelmed as learners simultaneously process new jargon and new concepts; transfer questions significantly harder without pre-activated schema"
+    fix: "Open every module with Hook → Roadmap → Pre-training sequence before first core instructional segment"
+    source: "Best Practices for Structuring Corporate Learning Content §Stage 1-3; Gold Standard Structure v3 §1.3"
+
+  seductive_details_overload:
+    label: "Seductive Details Overload"
+    description: "Inclusion of interesting-but-irrelevant material — decorative images, tangential stories, off-topic examples — that adds extraneous cognitive load without serving the learning objective"
+    example: "Compliance module includes an entertaining animated character story that is engaging but unrelated to the policy content"
+    consequence: "Meta-analysis: approximately −0.30 effect size on retention and transfer from irrelevant decorative content (Mayer 2009 Coherence Principle meta-analysis)"
+    fix: "Apply Mayer's Coherence Principle: remove any element whose purpose cannot be traced directly to a stated learning objective"
+    source: "Gold Standard Structure for Any Corporate-Learning Asset v3 §1.5 Coherence and Cognitive Overload"
+
+  binary_feedback_only:
+    label: "Binary Feedback Without Rationale"
+    description: "Formative assessments provide only correct/incorrect confirmation with no explanatory rationale — the learning opportunity embedded in the check is wasted"
+    example: "'Incorrect — the correct answer is B.' No explanation of why B is correct or why the learner's choice was wrong"
+    consequence: "Misconceptions remain unresolved; learners memorise the correct answer without understanding; retrieval practice value is eliminated"
+    fix: "Every formative item must include catalytic feedback: explain why the correct answer is correct AND why the incorrect choice was wrong"
+    source: "Best Practices for Structuring Corporate Learning Content §Stage 5; Gold Standard Structure v3 §1.8"
+
+  no_spaced_reinforcement:
+    label: "No Post-Module Spaced Reinforcement"
+    description: "Training ends at module completion with no follow-up micro-quizzes, nudges, or spaced repetition schedule beyond the initial module sequence"
+    example: "Course completed on Tuesday; no reinforcement touchpoints scheduled; learner receives a completion certificate and nothing further"
+    consequence: "Systematic reviews show significant retention loss without post-module spaced retrieval in workplace populations (PMC; APS Journals)"
+    fix: "Schedule spaced retrieval micro-quizzes or nudges at 2–3 days and 7 days post-module; use manager follow-up or notification prompts"
+    source: "Best Practices for Structuring Corporate Learning Content §Spacing & Reinforcement; PMC systematic review"
+
+  uniform_scaffolding:
+    label: "Uniform Scaffolding (No Fading)"
+    description: "Support level remains constant throughout a course regardless of learner progression — fails to fade scaffolding as competence grows, impeding expert learners while under-serving novices early on"
+    example: "Every exercise in a 10-module course provides the same level of worked-example hints and retry options regardless of which module the learner is on"
+    consequence: "Expert learners impeded by unnecessary guidance; novices never progressively released to independent practice; Cognitive Apprenticeship fading principle violated"
+    fix: "Implement three-stage scaffold fading: guided walk-through → hinted practice → independent problem-solving; retain optional 'Need a recap?' link for safety"
+    source: "Gold Standard Structure for Any Corporate-Learning Asset v3 §1.2 Scaffolding & Progression Logic"
+
+# ==============================================================================
+# CHECKS — Validation rules
+# ==============================================================================
+
+checks:
+  objective_measurability_check:
+    rule: "Every objective must contain an observable action verb; vague verbs (understand, know, appreciate) are automatic failures"
+    bloom_level_required: true
+    mager_test: "Performance + Conditions + Criteria all present"
+
+  constructive_alignment_check:
+    rule: "Bloom's level of activity must be within one level of the objective verb; two or more levels below = misalignment failure"
+    applies_to: "Every objective-activity pair"
+    cdt_classification_required: true
+
+  assessment_match_check:
+    rule: "Assessment type must match CDT cell and Bloom's level; MCQ recall is invalid for Bloom's 3-6 objectives"
+    kirkpatrick_minimum: "Level 2 evidence required; Level 3 indicator designed"
+
+  fpi_cycle_check:
+    rule: "All five FPI principles must be present and evidenced; Integration is mandatory, not optional"
+    integration_required: true
+    problem_centered_anchor: "Visible within first 5% of module content"
+
+  engagement_frequency_check:
+    rule: "Minimum one learner interaction per 5 minutes of content; target is 3-minute intervals"
+    min_interaction_types: 2
+    active_learning_ratio_min: 0.40
+
+  gagne_coverage_check:
+    rule: "Events 1, 3, 4, 6, 7, 9 must be evidenced in the design; Event 9 is highest-risk omission"
+    mandatory_events: [1, 3, 4, 6, 7, 9]
+
+  objective_quantity_check:
+    rule: "Course level: 3-5 objectives max; Module level: 2-3 objectives max; Lesson level: 1-2 objectives max"
+    research_basis: "Cognitive load theory: working memory processes 5-9 chunks; lesson scope respects 15-30 min attention"
+
+  bloom_distribution_check:
+    rule: "Module-level design must include at least one objective at Bloom's Level 3 or above for skill-based content"
+    exception: "Compliance/recall content may stay at Bloom's 1-2 if job performance is purely recall"
+
+  advance_organiser_check:
+    rule: "Module must begin with Hook → Roadmap sequence before first content segment; advance organiser (glossary, concept map, or overview video) required for modules introducing technical or novel terminology"
+    advance_organiser_types: ["overview video (30-90s)", "course roadmap screen", "key terms glossary", "concept map primer"]
+    source: "Best Practices for Structuring Corporate Learning Content §Stages 1-3; Gold Standard Structure v3 §1.3"
+
+  formative_feedback_quality_check:
+    rule: "All formative knowledge-check items must provide explanatory feedback — rationale for correct AND incorrect responses; binary correct/incorrect-only feedback fails this check"
+    applies_to: "Every embedded knowledge check and practice item"
+    source: "Gold Standard Structure for Any Corporate-Learning Asset v3 §1.8; Best Practices for Structuring Corporate Learning Content §Stage 5"
+
+  scaffolding_fading_check:
+    rule: "Scaffold level must decrease across module stages; later segments must provide less guidance than earlier segments; uniform scaffolding throughout is a design failure"
+    fading_evidence: "Explicit: from guided walk-through in early modules to independent practice in later modules; optional recap link acceptable"
+    source: "Gold Standard Structure for Any Corporate-Learning Asset v3 §1.2 and §2 Evolving Use of Scaffolding"
+
+# ==============================================================================
+# THRESHOLDS
+# ==============================================================================
+
+thresholds:
+  min_active_learning_ratio: 0.40           # 40% of content time in active interaction
+  target_active_learning_ratio: 0.60        # 60% is the exemplary benchmark
+  max_engagement_interval_minutes: 5        # No more than 5 minutes between interactions
+  target_engagement_interval_minutes: 3     # Target: interaction every 3 minutes
+  min_formative_checks_per_module: 3        # Minimum formative assessments per module
+  target_formative_checks_per_module: 5     # Target per design specification
+  min_interaction_types: 2                  # At least 2 distinct interaction types
+  target_interaction_types: 3              # Proficient standard
+  exemplary_interaction_types: 5           # Exemplary standard
+  max_objectives_per_lesson: 2             # Cognitive load ceiling for lesson
+  max_objectives_per_module: 3             # Module cognitive load ceiling
+  max_objectives_per_course: 5             # Course strategic scope
+  bloom_min_level_skill_content: 3         # Apply level minimum for skill objectives
+  kirkpatrick_min_level: 2                 # Learning evidence required for all programmes
+  kirkpatrick_target_level: 3             # Behaviour evidence designed for all programmes
+  min_fpi_principles_present: 4           # Minimum 4 of 5 FPI principles; Integration non-negotiable
+  pass_threshold_percent: 80              # Standard mastery threshold (criterion-referenced)
+  module_duration_max_minutes: 45         # Maximum module duration before splitting
+  topic_duration_max_minutes: 15          # Maximum topic duration
+  card_duration_max_seconds: 90           # Maximum atomic card duration
+  spaced_review_days: [1, 7, 30]         # Spaced repetition schedule
+  max_continuous_lecture_ilt_minutes: 15  # ILT: no more than 10-15 min without learner interaction
+  max_video_segment_minutes: 7            # Video content: under 5-7 min per segment for engagement
+  microlearning_unit_max_minutes: 5       # Microlearning unit maximum (3-5 min target)
+  microlearning_unit_min_minutes: 3       # Microlearning unit minimum viable duration
+
+# ==============================================================================
+# PENALTIES
+# ==============================================================================
+
+penalties:
+  integration_omitted: 0.15              # FPI Principle 5 entirely absent — highest impact failure
+  passive_only_design: 0.12              # No learner interaction at any point in module
+  objective_activity_mismatch: 0.10      # Activity 2+ Bloom's levels below objective
+  vague_objectives: 0.10                 # Unmeasurable verbs (understand, know, appreciate)
+  assessment_afterthought: 0.08          # Assessment not derived from objectives (forward-designed)
+  bloom_ceiling_all_remember: 0.08       # All objectives at Remember/Understand for skill-based content
+  demonstration_info_dump: 0.08          # Monolithic lecture replacing CDT-prescribed demonstration
+  single_assessment_type: 0.07          # All assessment MCQ regardless of Bloom's level
+  no_problem_centered_anchor: 0.07       # Module opens with definition/topic, not authentic whole task
+  compound_objectives: 0.05             # Objectives joined by 'and' covering multiple distinct skills
+  prerequisite_gap: 0.05                # Complex content before foundational prerequisites
+  engagement_gap: 0.05                  # More than 10 minutes between learner interactions
+  no_feedback_on_practice: 0.05         # Practice activity present but feedback absent
+  kirkpatrick_l1_only: 0.05            # Assessment limited to satisfaction survey only
+  seductive_details_present: 0.08      # Irrelevant decorative content with no instructional purpose (−0.30 effect size meta-analysis)
+  no_advance_organiser: 0.08           # Module begins without overview, objectives statement, or roadmap
+  no_spaced_reinforcement: 0.07        # No post-module reinforcement schedule; significant retention loss evidence
+  binary_feedback_formative: 0.06      # Formative assessments return only correct/incorrect without explanatory rationale
+
+# ==============================================================================
+# BONUSES
+# ==============================================================================
+
+bonuses:
+  full_fpi_cycle_with_integration: 0.03   # All five FPI principles present and traceable
+  backward_design_evidenced: 0.03         # Objective → Evidence → Activity sequence verifiable
+  authentic_assessment: 0.02             # Assessment uses real-world task performance
+  kirkpatrick_l3_designed: 0.02          # Post-training behaviour transfer measurement in place
+  cdt_matrix_applied: 0.02              # CDT cell classification drives demonstration and application design
+  spaced_repetition_planned: 0.02        # 1/7/30-day review schedule embedded in design
+  problem_progression_implemented: 0.02  # Simple → complex whole task progression visible
+  solo_taxonomy_progression: 0.02        # SOLO levels (uni-structural → extended abstract) mapped across activities
+  peer_teach_back_activity: 0.01         # Peer teach-back or public demonstration activity present
+  job_aid_designed: 0.01                # Post-training performance support artefact delivered
+  dialogic_principles_applied: 0.01     # Alexander's dialogic principles evidenced in collaborative activity
+  hook_within_30_seconds: 0.01          # Module opens with attention-capture mechanism in first 30 seconds
+  advance_organiser_provided: 0.02      # Pre-training phase (glossary, concept map, or primer) before complex content with expert skip option
+  mastery_retry_pathway: 0.02           # Failed summative attempts trigger targeted remediation, not generic re-attempt
+  post_assessment_debrief_provided: 0.02 # Summative debrief walks through optimal solution with rationale, converting assessment into learning event
+  scaffolding_fade_explicit: 0.02       # Scaffolding systematically fades across module stages with optional recap available

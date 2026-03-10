@@ -1,0 +1,1313 @@
+_meta:
+  id: personas_reference
+  title: Personas
+  description: Buyer persona definitions across Executive, Senior Leadership, and
+    Practitioner tiers with pain points, KPIs, preferred/banned terms, value messages,
+    and stage-specific SOAR weight overrides (15-persona standard incl. CXO and CRO)
+  domain: sales
+  domain_type: cross_cutting
+  purpose: reference
+  version: "2.4.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Crafting Powerful Opening Plays.md"
+    - "Corpus/Research/Research - Comprehensive Audience Analysis.md"
+    - "Corpus/Research/SOAR - A Universal Storytelling Framework for Learning Professionals.md"
+    - "Corpus/Research/Research - Using SOAR Storytelling most effectively.md"
+    - "Corpus/Research/Research - Canonical Presentation Methodology Research.md"
+
+
+  relationships:
+    - target: entities/audience_entities.yaml
+      type: depends_on
+      description: "Buyer personas inform audience detection; sales personas draw on audience entity patterns"
+personas:
+- persona_id: cmo
+  label: Chief Marketing Officer
+  tier: executive
+  role: CMO
+  reports_to: CEO
+  team_size: 50-500
+  industry: General
+  context: 'Responsible for overall marketing strategy, brand, and revenue attribution.
+
+    Under pressure to prove marketing ROI and connect spend to pipeline.
+
+    Balancing brand building with demand generation in tight budget environment.
+
+    '
+  pains:
+  - Inability to prove marketing's revenue contribution
+  - Fragmented customer data across channels
+  - Content production bottlenecks slowing time-to-market
+  - Inconsistent brand experience across touchpoints
+  - Pressure to do more with flat or reduced budgets
+  - Difficulty attributing pipeline to marketing activities
+  - Keeping pace with AI disruption in marketing
+  kpis:
+  - Marketing-sourced pipeline
+  - Marketing-influenced revenue
+  - Customer acquisition cost (CAC)
+  - Brand awareness and sentiment
+  - Marketing ROI / ROMI
+  - Customer lifetime value (CLTV)
+  - Speed to market for campaigns
+  goals:
+  - Unified view of customer across all channels
+  - Personalisation at scale without 1:1 manual effort
+  - Prove marketing's contribution to revenue
+  - Accelerate content velocity 10x
+  - Reduce agency dependency
+  objections:
+  - We've invested heavily in our current stack
+  - Integration with existing systems is always painful
+  - My team doesn't have capacity for another platform migration
+  - How is this different from what we already have?
+  tone_hints:
+  - strategic
+  - outcome-focused
+  - visionary but practical
+  - ROI-conscious
+  - customer-centric
+  preferred_terms:
+  - revenue impact
+  - customer experience
+  - personalisation at scale
+  - unified customer view
+  - time to value
+  - marketing ROI
+  - brand consistency
+  banned_terms:
+  - best-in-class
+  - synergy
+  - paradigm shift
+  - revolutionary
+  - silver bullet
+  - seamless
+  value_messages:
+  - Connect every marketing dollar to revenue outcomes
+  - Deliver personalised experiences across every touchpoint
+  - Accelerate content production without adding headcount
+  - Unify customer data for real-time activation
+  stage_overrides:
+    1:
+      weights:
+        S: 0.35
+        O: 0.45
+        A: 0.1
+        R: 0.1
+      focus: Industry trends and strategic vision
+    3:
+      weights:
+        S: 0.15
+        O: 0.35
+        A: 0.3
+        R: 0.2
+      must_include_messages:
+      - revenue impact
+      - customer experience
+    5:
+      weights:
+        S: 0.1
+        O: 0.2
+        A: 0.4
+        R: 0.3
+      focus: Concrete ROI and implementation timeline
+- persona_id: cfo
+  label: Chief Financial Officer
+  tier: executive
+  role: CFO
+  reports_to: CEO
+  team_size: 20-100
+  industry: General
+  context: 'Focused on financial performance, cost optimisation, and risk management.
+
+    Evaluates technology investments through TCO, payback, and ROI lens.
+
+    Increasingly involved in digital transformation business cases.
+
+    '
+  pains:
+  - Unpredictable technology costs and scope creep
+  - Difficulty quantifying ROI on marketing technology
+  - Lack of visibility into spend efficiency
+  - Vendor sprawl increasing complexity and cost
+  - Compliance and audit burden
+  - Multi-year commitments with uncertain value
+  kpis:
+  - Operating margin
+  - Technology spend as % of revenue
+  - Payback period on investments
+  - Total cost of ownership (TCO)
+  - Revenue per employee
+  - Working capital efficiency
+  goals:
+  - Predictable, transparent pricing
+  - Consolidated vendor relationships
+  - Clear payback within 12-18 months
+  - Reduced operational complexity
+  - Risk mitigation and compliance
+  objections:
+  - The upfront investment is too high
+  - We need to see hard ROI numbers, not projections
+  - Why can't we build this ourselves for less?
+  - What's the exit cost if this doesn't work?
+  tone_hints:
+  - data-driven
+  - risk-aware
+  - outcome-focused
+  - pragmatic
+  - efficiency-minded
+  preferred_terms:
+  - ROI
+  - TCO
+  - payback period
+  - cost reduction
+  - operational efficiency
+  - risk mitigation
+  - compliance
+  - predictable costs
+  banned_terms:
+  - nice to have
+  - strategic investment
+  - priceless
+  - unlimited potential
+  - transformation
+  value_messages:
+  - Reduce marketing technology TCO by 30% through consolidation
+  - 12-month payback through operational efficiency gains
+  - Predictable subscription pricing with no hidden costs
+  - Reduce compliance risk with built-in governance
+  stage_overrides:
+    3:
+      weights:
+        S: 0.1
+        O: 0.25
+        A: 0.35
+        R: 0.3
+      must_include_messages:
+      - TCO
+      - payback
+      - ROI
+    5:
+      weights:
+        S: 0.05
+        O: 0.15
+        A: 0.4
+        R: 0.4
+      focus: Business case with concrete numbers
+- persona_id: cro
+  label: Chief Revenue Officer
+  tier: executive
+  role: CRO
+  reports_to: CEO
+  team_size: 100-2000
+  industry: General
+  context: 'Owns revenue growth across the full customer lifecycle (new business, expansion, renewals) and alignment across Sales, Marketing, and Customer Success.
+
+    Focused on pipeline health, conversion, forecast accuracy, and scaling repeatable selling motions.
+
+    Accountable for seller productivity and driving consistent execution across regions and segments.'
+  pains:
+  - Inconsistent pipeline creation and progression across teams/regions
+  - Low confidence in forecast due to poor data hygiene and stage discipline
+  - Siloed marketing-to-sales handoffs reducing conversion
+  - Long, unpredictable sales cycles and high no-decision rates
+  - Difficulty scaling best practices and coaching across the org
+  - Tool sprawl and process friction increasing non-selling time
+  kpis:
+  - Pipeline coverage and velocity
+  - Stage conversion rates (SS2→SS3→SS5→Close)
+  - Win rate / no-decision rate
+  - Average sales cycle length
+  - Forecast accuracy (CQ and CQ+1)
+  - Net new ARR / bookings and expansion
+  - Seller productivity (time in selling vs admin)
+  goals:
+  - Build predictable pipeline creation and progression engine
+  - Improve forecast confidence through stage rigor and next-step discipline
+  - Tighten marketing-sales alignment to increase conversion
+  - Reduce sales cycle time while increasing deal size and win rates
+  - Scale repeatable plays and coaching to lift the whole field
+  objections:
+  - This sounds like more process and admin burden for sellers
+  - We already have tools—adoption is the problem
+  - Change management will slow us down this quarter
+  - Show me how this improves win rate and forecast accuracy quickly
+  tone_hints:
+  - metric-driven
+  - operational
+  - direct
+  - accountable
+  - field-oriented
+  preferred_terms:
+  - pipeline velocity
+  - conversion
+  - forecast accuracy
+  - seller productivity
+  - repeatable motions
+  - time to value
+  banned_terms:
+  - eventually
+  - maybe
+  - nice to have
+  - silver bullet
+  - seamless
+  value_messages:
+  - Increase pipeline velocity and win rates with a repeatable, customer-value motion
+  - Improve forecast confidence by aligning stages, exit criteria, and next steps
+  - Reduce non-selling time through streamlined workflows and better tooling
+  stage_overrides:
+    1:
+      weights:
+        S: 0.3
+        O: 0.4
+        A: 0.15
+        R: 0.15
+      focus: Business priorities, growth opportunity, and why change now
+    3:
+      weights:
+        S: 0.1
+        O: 0.3
+        A: 0.35
+        R: 0.25
+      must_include_messages:
+      - pipeline velocity
+      - conversion
+      - forecast accuracy
+    5:
+      weights:
+        S: 0.05
+        O: 0.2
+        A: 0.35
+        R: 0.4
+      focus: Execution plan, resources, and measurable impact on funnel metrics
+- persona_id: cio
+  label: Chief Information Officer
+  tier: executive
+  role: CIO
+  reports_to: CEO
+  team_size: 100-1000
+  industry: General
+  context: 'Responsible for enterprise technology strategy and IT operations.
+
+    Balancing innovation demands with security, stability, and cost control.
+
+    Under pressure to enable business agility while managing technical debt.
+
+    '
+  pains:
+  - Shadow IT and ungoverned SaaS proliferation
+  - Integration complexity across legacy and modern systems
+  - Security and data governance concerns
+  - Skill gaps in emerging technologies (AI, cloud)
+  - Pressure to reduce costs while enabling innovation
+  - Technical debt slowing down delivery
+  - Vendor lock-in limiting flexibility
+  kpis:
+  - System uptime and reliability
+  - Time to deploy new capabilities
+  - IT spend as % of revenue
+  - Security incident frequency
+  - Application portfolio rationalisation
+  - Cloud migration progress
+  goals:
+  - Unified, governed technology ecosystem
+  - Reduce integration complexity
+  - Enable business agility without sacrificing security
+  - Consolidate vendors and reduce sprawl
+  - Future-proof architecture
+  objections:
+  - How does this integrate with our existing systems?
+  - What's the security and compliance posture?
+  - We're already in the middle of a cloud migration
+  - My team is stretched thin on implementation capacity
+  - What happens to our existing investments?
+  tone_hints:
+  - technical but business-aware
+  - risk-conscious
+  - architecture-focused
+  - pragmatic
+  - security-minded
+  preferred_terms:
+  - integration
+  - API-first
+  - governance
+  - security
+  - scalability
+  - time to value
+  - composable architecture
+  - extensibility
+  banned_terms:
+  - plug and play
+  - no IT required
+  - self-service
+  - hacky
+  - workaround
+  value_messages:
+  - Native integrations with your existing enterprise stack
+  - Enterprise-grade security with SOC 2, ISO 27001 compliance
+  - Composable architecture that grows with your needs
+  - Reduce integration complexity by 60%
+  stage_overrides:
+    3:
+      weights:
+        S: 0.15
+        O: 0.25
+        A: 0.4
+        R: 0.2
+      must_include_messages:
+      - integration
+      - security
+      - governance
+    4:
+      weights:
+        S: 0.1
+        O: 0.2
+        A: 0.45
+        R: 0.25
+      focus: Technical architecture and integration details
+- persona_id: cxo
+  label: Chief Experience Officer
+  tier: executive
+  role: CXO
+  reports_to: CEO
+  team_size: 50-500
+  industry: General
+  context: 'Owns end-to-end customer experience strategy across channels and touchpoints.
+
+    Accountable for improving customer satisfaction, loyalty, and lifetime value by aligning data, journeys, content, and operations.
+
+    Balances experience consistency, privacy/trust, and speed-to-market while coordinating cross-functional teams.'
+  pains:
+  - Fragmented experiences across channels, brands, or regions
+  - Siloed teams and systems preventing coordinated journeys
+  - Inability to operationalize personalization with trust and governance
+  - Difficulty measuring experience impact on revenue and retention
+  - High effort to scale consistent experiences and content
+  - Privacy, consent, and compliance constraints limiting activation
+  kpis:
+  - Customer satisfaction (CSAT) / NPS
+  - Customer retention / churn
+  - Customer lifetime value (CLTV)
+  - Conversion and engagement across journeys
+  - Time-to-market for experience changes
+  - Experience consistency / compliance rate
+  goals:
+  - Deliver consistent, connected customer journeys across channels
+  - Increase loyalty and lifetime value through relevant engagement
+  - Scale personalization with governance and privacy controls
+  - Reduce friction across acquisition-to-renewal experiences
+  - Create measurable linkage between experience and growth outcomes
+  objections:
+  - We have too many competing CX priorities right now
+  - Our data and teams are too fragmented to execute this
+  - We need stronger proof that this improves retention and revenue
+  - Governance and privacy requirements will slow implementation
+  tone_hints:
+  - customer-obsessed
+  - outcome-focused
+  - cross-functional
+  - pragmatic
+  - trust-and-governance minded
+  preferred_terms:
+  - customer journey
+  - customer outcomes
+  - experience orchestration
+  - loyalty
+  - trust and governance
+  - time to value
+  - connected experiences
+  banned_terms:
+  - seamless
+  - silver bullet
+  - one-size-fits-all
+  - magic
+  value_messages:
+  - Connect data, content, and journeys to deliver coordinated experiences end-to-end
+  - Scale personalization safely with enterprise governance and privacy controls
+  - Improve retention and lifetime value by optimizing journeys with real-time insights
+  stage_overrides:
+    1:
+      weights:
+        S: 0.3
+        O: 0.4
+        A: 0.15
+        R: 0.15
+      focus: Customer themes and experience vision
+    3:
+      weights:
+        S: 0.15
+        O: 0.3
+        A: 0.35
+        R: 0.2
+      must_include_messages:
+      - customer outcomes
+      - customer journey
+    5:
+      weights:
+        S: 0.1
+        O: 0.2
+        A: 0.4
+        R: 0.3
+      focus: Operational plan, governance, and measurable impact
+- persona_id: cco
+  label: Chief Creative Officer
+  tier: executive
+  role: CCO
+  reports_to: CEO / CMO
+  team_size: 20-200
+  industry: General
+  context: 'Responsible for brand vision, creative strategy, and design excellence.
+
+    Balancing creative quality with speed and scale demands.
+
+    Navigating AI''s impact on creative work and team roles.
+
+    '
+  pains:
+  - Pressure to produce more content with same resources
+  - Brand consistency eroding across channels and markets
+  - Creative bottlenecks slowing campaign launches
+  - AI threatening creative roles and quality
+  - Disconnection between creative and marketing ops
+  - Asset chaos - can't find or reuse existing work
+  kpis:
+  - Creative output volume and velocity
+  - Brand consistency scores
+  - Asset reuse rate
+  - Time from brief to delivery
+  - Creative team satisfaction
+  - Campaign performance metrics
+  goals:
+  - Amplify creative capacity without sacrificing quality
+  - Maintain brand integrity at scale
+  - Free designers from repetitive tasks
+  - Streamlined creative workflows
+  - AI as creative partner, not replacement
+  objections:
+  - AI can't replace human creativity
+  - Will this make my team redundant?
+  - Brand quality will suffer with automation
+  - Our creative process is too nuanced for templates
+  tone_hints:
+  - creative-empathetic
+  - quality-focused
+  - inspiration-driven
+  - team-protective
+  - brand-obsessed
+  preferred_terms:
+  - creative empowerment
+  - brand integrity
+  - design excellence
+  - creative velocity
+  - asset governance
+  - creative collaboration
+  banned_terms:
+  - automate creativity
+  - replace designers
+  - good enough
+  - cookie-cutter
+  - template-driven
+  value_messages:
+  - Empower your team to focus on high-value creative work
+  - Protect brand integrity with built-in guardrails
+  - 10x content output without 10x headcount
+  - AI as creative copilot, not replacement
+  stage_overrides:
+    2:
+      weights:
+        S: 0.3
+        O: 0.4
+        A: 0.2
+        R: 0.1
+      focus: Vision for creative transformation
+    3:
+      weights:
+        S: 0.2
+        O: 0.35
+        A: 0.3
+        R: 0.15
+      must_include_messages:
+      - creative empowerment
+      - brand integrity
+- persona_id: vp_marketing
+  label: VP of Marketing
+  tier: senior_leadership
+  role: VP Marketing
+  reports_to: CMO
+  team_size: 20-100
+  industry: General
+  context: 'Owns marketing execution, campaigns, and team performance.
+
+    Directly accountable for pipeline contribution and campaign ROI.
+
+    Bridging strategy from CMO with execution from teams.
+
+    '
+  pains:
+  - Campaign execution taking too long
+  - Difficulty proving campaign attribution
+  - Team stretched across too many tools
+  - Inconsistent performance across channels
+  - Content requests exceeding production capacity
+  - Real-time optimisation not possible with current data
+  kpis:
+  - Marketing qualified leads (MQLs)
+  - Pipeline contribution
+  - Campaign ROI
+  - Conversion rates by channel
+  - Cost per lead/acquisition
+  - Campaign velocity
+  goals:
+  - Accelerate campaign execution
+  - Improve attribution and measurement
+  - Consolidate tools and reduce complexity
+  - Enable real-time campaign optimisation
+  - Scale personalisation across segments
+  objections:
+  - We're already using [competitor] for this
+  - My team can't handle another tool migration
+  - Will this actually improve our numbers?
+  - How long until we see results?
+  tone_hints:
+  - execution-focused
+  - metrics-driven
+  - practical
+  - results-oriented
+  - team-conscious
+  preferred_terms:
+  - pipeline impact
+  - campaign performance
+  - conversion optimisation
+  - real-time activation
+  - attribution
+  - efficiency
+  banned_terms:
+  - eventually
+  - theoretically
+  - potential
+  - might
+  value_messages:
+  - Launch campaigns 50% faster with streamlined workflows
+  - Real-time optimisation across all channels
+  - Clear attribution from first touch to closed deal
+  - Consolidate 5+ tools into one platform
+  stage_overrides:
+    3:
+      weights:
+        S: 0.15
+        O: 0.3
+        A: 0.35
+        R: 0.2
+      focus: Concrete campaign improvements and metrics
+    5:
+      weights:
+        S: 0.1
+        O: 0.2
+        A: 0.4
+        R: 0.3
+      must_include_messages:
+      - pipeline impact
+      - campaign velocity
+- persona_id: director_marketing_ops
+  label: Director of Marketing Operations
+  tier: senior_leadership
+  role: Director Marketing Ops
+  reports_to: VP Marketing / CMO
+  team_size: 5-30
+  industry: General
+  context: 'Owns marketing technology stack, data, and operational processes.
+
+    Technical evaluator and implementation owner for new platforms.
+
+    Responsible for data quality, integrations, and operational efficiency.
+
+    '
+  pains:
+  - Data silos preventing unified customer view
+  - Integration maintenance consuming too much time
+  - Manual processes that should be automated
+  - Poor data quality affecting campaign targeting
+  - Reporting across systems is painful
+  - Vendor sprawl and tool overlap
+  kpis:
+  - Data quality scores
+  - Process automation rate
+  - Integration health and uptime
+  - Time to deploy new campaigns
+  - Marketing tech stack efficiency
+  - Cost per tool / per user
+  goals:
+  - Unified customer data platform
+  - Automated operational workflows
+  - Reduced integration complexity
+  - Self-service for marketing team
+  - Real-time data availability
+  objections:
+  - The integration will take 6+ months
+  - We've been burned by vendors before
+  - My team will need extensive training
+  - What's the data migration path?
+  - How do we handle historical data?
+  tone_hints:
+  - technical
+  - detail-oriented
+  - process-focused
+  - skeptical but open
+  - efficiency-driven
+  preferred_terms:
+  - API
+  - integration
+  - automation
+  - data model
+  - workflow
+  - real-time sync
+  - governance
+  - data quality
+  banned_terms:
+  - magic
+  - easy
+  - plug and play
+  - zero effort
+  - IT-free
+  value_messages:
+  - Pre-built integrations with 200+ marketing tools
+  - Unified data model with automated quality checks
+  - 90% reduction in manual data work
+  - Real-time data sync across all channels
+  stage_overrides:
+    4:
+      weights:
+        S: 0.1
+        O: 0.2
+        A: 0.5
+        R: 0.2
+      focus: Technical architecture and integration details
+      must_include_messages:
+      - API
+      - integration
+      - data model
+    5:
+      weights:
+        S: 0.05
+        O: 0.15
+        A: 0.55
+        R: 0.25
+      focus: Implementation plan and migration path
+- persona_id: director_ecommerce
+  label: Director of E-Commerce
+  tier: senior_leadership
+  role: Director E-Commerce
+  reports_to: VP Digital / CMO / COO
+  team_size: 10-50
+  industry: Retail
+  context: 'Owns digital commerce revenue, conversion, and customer experience.
+
+    Balancing growth targets with operational efficiency.
+
+    Navigating omnichannel complexity and rising customer expectations.
+
+    '
+  pains:
+  - Cart abandonment rates too high
+  - Personalisation limited to basic segments
+  - Inventory visibility across channels
+  - Mobile experience lagging desktop
+  - Competitive pressure on price and experience
+  - Seasonal traffic spikes overwhelming systems
+  kpis:
+  - Online revenue and growth
+  - Conversion rate
+  - Average order value (AOV)
+  - Cart abandonment rate
+  - Customer lifetime value
+  - Site performance and uptime
+  goals:
+  - Increase conversion through personalisation
+  - Unified omnichannel experience
+  - Real-time inventory visibility
+  - Reduce cart abandonment
+  - Scale for peak traffic
+  tone_hints:
+  - revenue-focused
+  - customer-obsessed
+  - data-driven
+  - performance-oriented
+  - agile
+  preferred_terms:
+  - conversion
+  - personalisation
+  - omnichannel
+  - customer journey
+  - AOV
+  - cart recovery
+  - real-time
+  banned_terms:
+  - offline-first
+  - batch processing
+  - one-size-fits-all
+  value_messages:
+  - Increase conversion by 25% with real-time personalisation
+  - Unified customer view across online and offline
+  - Reduce cart abandonment with AI-powered recovery
+  - Scale seamlessly during peak traffic
+  stage_overrides:
+    3:
+      weights:
+        S: 0.15
+        O: 0.3
+        A: 0.35
+        R: 0.2
+      must_include_messages:
+      - conversion
+      - personalisation
+      - AOV
+- persona_id: director_content_strategy
+  label: Director of Content Strategy
+  tier: senior_leadership
+  role: Director Content Strategy
+  reports_to: VP Marketing / CCO
+  team_size: 5-25
+  industry: General
+  context: 'Owns content strategy, production workflows, and content performance.
+
+    Managing increasing content demands across more channels.
+
+    Balancing quality, velocity, and governance.
+
+    '
+  pains:
+  - Content requests far exceed production capacity
+  - No visibility into content performance
+  - Asset chaos - duplicate and outdated content
+  - Localisation bottlenecks for global markets
+  - Approval workflows slowing everything down
+  - Inconsistent brand voice across channels
+  kpis:
+  - Content output volume
+  - Content engagement metrics
+  - Asset reuse rate
+  - Time from brief to publish
+  - Localisation coverage
+  - Brand compliance rate
+  goals:
+  - 10x content velocity without 10x cost
+  - Measurable content performance
+  - Streamlined approval workflows
+  - Scalable localisation
+  - Consistent brand voice
+  tone_hints:
+  - strategic
+  - quality-conscious
+  - efficiency-focused
+  - creative-supportive
+  - metrics-aware
+  preferred_terms:
+  - content velocity
+  - content governance
+  - brand consistency
+  - content performance
+  - asset management
+  - workflow automation
+  - localisation
+  banned_terms:
+  - content factory
+  - mass produce
+  - good enough
+  - quick and dirty
+  value_messages:
+  - 10x content output with AI-assisted creation
+  - Single source of truth for all brand assets
+  - Automated workflows cut approval time by 50%
+  - Built-in brand guardrails ensure consistency
+  stage_overrides:
+    3:
+      weights:
+        S: 0.2
+        O: 0.35
+        A: 0.3
+        R: 0.15
+      must_include_messages:
+      - content velocity
+      - brand consistency
+- persona_id: director_analytics
+  label: Director of Data & Analytics
+  tier: senior_leadership
+  role: Director Analytics
+  reports_to: VP Marketing / CIO / CDO
+  team_size: 5-30
+  industry: General
+  context: 'Owns marketing analytics, customer insights, and data strategy.
+
+    Bridging data engineering with business intelligence needs.
+
+    Under pressure to democratise insights and enable self-service.
+
+    '
+  pains:
+  - Data scattered across dozens of systems
+  - Reporting takes too long - insights are stale
+  - Business users can't self-serve
+  - Attribution models don't reflect reality
+  - Privacy regulations complicating data collection
+  - Data quality issues undermining trust
+  kpis:
+  - Time to insight
+  - Data quality scores
+  - Self-service adoption rate
+  - Attribution accuracy
+  - Report automation rate
+  - Data privacy compliance
+  goals:
+  - Unified customer analytics
+  - Real-time insights
+  - Self-service for business users
+  - Accurate cross-channel attribution
+  - Privacy-compliant data collection
+  tone_hints:
+  - data-driven
+  - technical
+  - accuracy-focused
+  - privacy-conscious
+  - insight-oriented
+  preferred_terms:
+  - unified analytics
+  - customer 360
+  - real-time
+  - attribution
+  - data governance
+  - self-service
+  - privacy-first
+  banned_terms:
+  - black box
+  - trust me
+  - approximate
+  - directional
+  value_messages:
+  - Unified customer analytics across all touchpoints
+  - Real-time insights, not next-day reports
+  - AI-powered attribution across the full journey
+  - Privacy-first data collection and activation
+  stage_overrides:
+    3:
+      weights:
+        S: 0.15
+        O: 0.25
+        A: 0.4
+        R: 0.2
+      must_include_messages:
+      - unified analytics
+      - real-time
+      - attribution
+    4:
+      weights:
+        S: 0.1
+        O: 0.2
+        A: 0.45
+        R: 0.25
+      focus: Technical data architecture and integration
+- persona_id: marketing_manager
+  label: Marketing Manager
+  tier: practitioner
+  role: Marketing Manager
+  reports_to: Director / VP Marketing
+  team_size: 0-5
+  industry: General
+  context: 'Executes campaigns and manages day-to-day marketing activities.
+
+    Primary user of marketing automation and campaign tools.
+
+    Measured on campaign execution and performance metrics.
+
+    '
+  pains:
+  - Too many tools to learn and switch between
+  - Manual tasks eating into strategic work
+  - Waiting on IT or agencies for simple changes
+  - Can't get data I need without help
+  - Approvals take forever
+  - No time for testing and optimisation
+  kpis:
+  - Campaigns launched per month
+  - Email open and click rates
+  - Lead generation
+  - Campaign ROI
+  - A/B test win rate
+  goals:
+  - Launch campaigns faster
+  - Self-service without IT help
+  - More time for strategy, less for execution
+  - Better visibility into performance
+  - Easy testing and optimisation
+  tone_hints:
+  - practical
+  - efficiency-focused
+  - time-conscious
+  - results-oriented
+  - user-friendly
+  preferred_terms:
+  - easy to use
+  - drag and drop
+  - self-service
+  - automated
+  - real-time
+  - templates
+  banned_terms:
+  - requires development
+  - IT ticket
+  - custom implementation
+  - professional services required
+  value_messages:
+  - Launch campaigns in minutes, not weeks
+  - No code required - self-service for marketers
+  - Built-in templates for common use cases
+  - Real-time performance visibility
+  stage_overrides:
+    5:
+      weights:
+        S: 0.1
+        O: 0.25
+        A: 0.45
+        R: 0.2
+      focus: Ease of use and day-to-day workflow
+- persona_id: creative_designer
+  label: Creative Designer
+  tier: practitioner
+  role: Designer
+  reports_to: Creative Director / CCO
+  team_size: 0-3
+  industry: General
+  context: 'Creates visual content, designs, and brand materials.
+
+    Under pressure to produce more with tighter deadlines.
+
+    Concerned about AI impact on creative roles.
+
+    '
+  pains:
+  - Endless requests for variations and resizes
+  - Brand guidelines not followed by others
+  - Repetitive tasks limiting creative work
+  - Can't find existing assets
+  - Feedback loops take too long
+  - Worried about AI replacing my job
+  kpis:
+  - Design output volume
+  - Revision cycles
+  - Brand compliance
+  - Time per deliverable
+  - Stakeholder satisfaction
+  goals:
+  - More time for creative work
+  - Automated repetitive tasks
+  - Easy asset discovery and reuse
+  - Faster feedback and approval
+  - AI as a tool, not a threat
+  tone_hints:
+  - creative-empathetic
+  - tool-focused
+  - quality-conscious
+  - efficiency-appreciative
+  preferred_terms:
+  - creative tools
+  - templates
+  - brand guidelines
+  - asset library
+  - collaboration
+  - AI-assisted
+  banned_terms:
+  - replace designers
+  - automate creativity
+  - AI-generated art
+  - design by committee
+  value_messages:
+  - Automate resizing and variations so you can focus on design
+  - AI handles the repetitive work, you own the creative vision
+  - Find any asset in seconds with intelligent search
+  - Built-in brand guardrails everyone can follow
+  stage_overrides:
+    5:
+      weights:
+        S: 0.1
+        O: 0.3
+        A: 0.45
+        R: 0.15
+      focus: Day-to-day creative workflow
+- persona_id: data_engineer
+  label: Data Engineer
+  tier: practitioner
+  role: Data Engineer
+  reports_to: Director Analytics / Engineering
+  team_size: 0-5
+  industry: General
+  context: 'Builds and maintains data pipelines and integrations.
+
+    Technical evaluator for data platform capabilities.
+
+    Concerned about data quality, scalability, and maintainability.
+
+    '
+  pains:
+  - Constant integration maintenance
+  - Data quality issues from source systems
+  - Schema changes breaking pipelines
+  - Scaling for growing data volumes
+  - Real-time requirements vs batch reality
+  - Documentation is always outdated
+  kpis:
+  - Pipeline uptime
+  - Data freshness
+  - Integration reliability
+  - Time to onboard new sources
+  - Data quality scores
+  goals:
+  - Reliable, low-maintenance integrations
+  - Real-time data where it matters
+  - Self-healing pipelines
+  - Easy schema evolution
+  - Clear documentation and observability
+  tone_hints:
+  - technical
+  - detail-oriented
+  - reliability-focused
+  - skeptical
+  - quality-driven
+  preferred_terms:
+  - API
+  - streaming
+  - schema
+  - data model
+  - reliability
+  - observability
+  - documentation
+  banned_terms:
+  - no-code
+  - magic
+  - zero maintenance
+  - works out of the box
+  value_messages:
+  - Pre-built connectors to 200+ sources
+  - Real-time streaming with exactly-once delivery
+  - Automatic schema detection and evolution
+  - Full observability with built-in monitoring
+  stage_overrides:
+    4:
+      weights:
+        S: 0.05
+        O: 0.15
+        A: 0.6
+        R: 0.2
+      focus: Technical architecture deep dive
+      must_include_messages:
+      - API
+      - schema
+      - reliability
+- persona_id: it_director
+  label: IT Director
+  tier: senior_leadership
+  role: IT Director
+  reports_to: CIO / CTO
+  team_size: 20-100
+  industry: General
+  context: 'Manages IT operations, infrastructure, and application portfolio.
+
+    Evaluates security, integration, and operational requirements.
+
+    Balancing innovation requests with stability and security.
+
+    '
+  pains:
+  - Integration complexity across application portfolio
+  - Security and compliance requirements
+  - Shadow IT and ungoverned applications
+  - Resource constraints for new projects
+  - Technical debt in legacy systems
+  - Vendor management overhead
+  kpis:
+  - System uptime
+  - Security incident rate
+  - Integration reliability
+  - Time to deploy new applications
+  - IT cost efficiency
+  goals:
+  - Secure, governed application landscape
+  - Reduced integration complexity
+  - Self-service for business with guardrails
+  - Consolidated vendor relationships
+  - Future-proof architecture
+  tone_hints:
+  - pragmatic
+  - risk-aware
+  - security-conscious
+  - efficiency-focused
+  - evidence-driven
+  preferred_terms:
+  - integration
+  - security
+  - governance
+  - compliance
+  - API
+  - SSO
+  - time to value
+  banned_terms:
+  - hacky
+  - quick fix
+  - workaround
+  - IT-free
+  - no IT required
+  value_messages:
+  - Enterprise-grade security with SOC 2 Type II
+  - Pre-built integrations reduce implementation time
+  - Governance controls for business self-service
+  - Single vendor for marketing technology consolidation
+  stage_overrides:
+    3:
+      weights:
+        S: 0.05
+        O: 0.25
+        A: 0.45
+        R: 0.25
+      must_include_messages:
+      - security
+      - integration
+      - governance
+    4:
+      weights:
+        S: 0.05
+        O: 0.2
+        A: 0.5
+        R: 0.25
+      focus: Technical evaluation and integration architecture
+role_aliases:
+  Chief Marketing Officer: cmo
+  Head of Marketing: cmo
+  SVP Marketing: cmo
+  Chief Financial Officer: cfo
+  Head of Finance: cfo
+  Chief Information Officer: cio
+  Head of IT: cio
+  Chief Creative Officer: cco
+  Head of Creative: cco
+  VP Marketing: vp_marketing
+  Vice President Marketing: vp_marketing
+  Head of Demand Gen: vp_marketing
+  Marketing Ops Director: director_marketing_ops
+  Director MarTech: director_marketing_ops
+  E-Commerce Director: director_ecommerce
+  Head of Digital Commerce: director_ecommerce
+  Content Strategy Director: director_content_strategy
+  Head of Content: director_content_strategy
+  Analytics Director: director_analytics
+  Head of BI: director_analytics
+  Marketing Manager: marketing_manager
+  Campaign Manager: marketing_manager
+  Designer: creative_designer
+  Graphic Designer: creative_designer
+  Visual Designer: creative_designer
+  Data Engineer: data_engineer
+  ETL Developer: data_engineer
+  IT Director: it_director
+  Head of IT Operations: it_director
+  Chief Experience Officer: cxo
+  CXO: cxo
+  Head of Experience: cxo
+  Customer Experience Officer: cxo
+  Chief Technology Officer: cio
+  CTO: cio
+  Marketing Operations Manager: director_marketing_ops
+  MarTech Lead: director_marketing_ops
+  VP of Marketing Operations: director_marketing_ops
+  Creative Ops Leader: director_content_strategy
+  Head of Creative Operations: director_content_strategy
+  VP Creative Ops: director_content_strategy
+  VP of Creative Ops: director_content_strategy
+  Chief Design Officer: cco
+  CDO (Design): cco
+  Chief Revenue Officer: cro
+  CRO: cro
+  Head of Revenue: cro
+  VP of Sales: cro
+  Sales Leader: cro
+default_by_tier:
+  executive: cmo
+  senior_leadership: vp_marketing
+  practitioner: marketing_manager
+
+# ==============================================================================
+# CHAMPION ARCHETYPE GUIDANCE
+# Identifying and empowering internal champions per persona tier
+# Source: Research - Using SOAR Storytelling most effectively.md
+# ==============================================================================
+
+champion_archetype_guidance:
+  purpose: "Guidance on identifying and empowering internal customer champions to drive deals"
+  source: "Research - Using SOAR Storytelling most effectively.md; Research - Comprehensive Audience Analysis.md"
+
+  champion_profile:
+    definition: "An internal advocate who believes in the solution and is willing to mobilize internal support"
+    soar_role: "ACTION stage — the champion is the vehicle through which the solution story becomes real"
+    identification_signals:
+      - "Asks specific 'how would this work for us' questions (not just 'tell me more')"
+      - "Volunteers to arrange additional stakeholder meetings"
+      - "Uses Adobe terminology in their own communications"
+      - "Shares internal challenges beyond what was asked"
+    by_persona:
+      cmo: "Champion when they own the business case and have CEO mandate for transformation"
+      vp_marketing: "Most common champion tier — operational authority plus executive access"
+      director_marketing_ops: "Technical champion — validates integration and workflow fit"
+      marketing_manager: "End-user champion — validates day-to-day usability"
+
+  champion_narrative_strategy:
+    arming_the_champion:
+      - "Provide a one-slide business case summary in their language (not Adobe language)"
+      - "Supply peer proof from similar companies or roles they respect"
+      - "Give them an objection-handling script for their specific economic buyer concerns"
+      - "Align on the ask — what they need to say to their boss to get the next meeting"
+    soar_message_for_champion:
+      situation: "Confirm the champion version of the status quo is accurate"
+      opportunity: "Help champion articulate the cost of inaction to their economic buyer"
+      action: "Frame Adobe role as enabling the champion vision (champion as hero, Adobe as guide)"
+      result: "Provide a proof point the champion can personally verify or identify with"
+
+# ==============================================================================
+# NARRATIVE DEPLOYMENT BY PERSONA TIER
+# SOAR emphasis and opening hook strategy per persona tier
+# Source: Research - Canonical Presentation Methodology Research.md
+# ==============================================================================
+
+narrative_deployment:
+  purpose: "SOAR deployment strategy tuned per persona tier for narrative generation"
+  source: "Research - Canonical Presentation Methodology Research.md; Crafting Powerful Opening Plays.md"
+
+  by_tier:
+    executive:
+      soar_entry_point: "O stage — skip establishing Situation; assume awareness, lead with urgency"
+      opening_hook: "Provocative statistic or peer benchmark (your competitors are already doing X)"
+      time_to_value: "< 3 slides to first value claim"
+      proof_preference: "CEO or board-level outcomes; peer comparison; named customer logos"
+      narrative_length: "Short and sharp; no more than 10-12 slides for a standalone exec deck"
+      banned_patterns:
+        - "feature lists"
+        - "technical architecture diagrams first"
+        - "re-establishing known context"
+
+    senior_leadership:
+      soar_entry_point: "S to O transition — validate the current state briefly, escalate to opportunity"
+      opening_hook: "Day-in-the-life problem scenario or cost-of-inaction framing"
+      time_to_value: "< 5 slides to first value claim"
+      proof_preference: "Functional metrics (CAC, pipeline velocity, content velocity); peer proof"
+      narrative_length: "Medium; 15-20 slides is appropriate"
+      banned_patterns:
+        - "vision without specificity"
+        - "generic industry stats not tied to their function"
+
+    practitioner:
+      soar_entry_point: "S stage — fully establish current pain; practitioners need to feel heard before they trust"
+      opening_hook: "Specific, relatable workflow pain moment (Have you ever spent 3 hours looking for an approved asset?)"
+      time_to_value: "Can tolerate longer setup; quality of A stage matters most"
+      proof_preference: "Workflow demos; peer practitioner testimonials; time-saved metrics"
+      narrative_length: "Can be longer with deep dives; 20-30 slides acceptable with interaction"
+      banned_patterns:
+        - "abstract strategy language"
+        - "ROI claims without operational specifics"

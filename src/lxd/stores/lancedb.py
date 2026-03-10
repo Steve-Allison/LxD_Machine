@@ -1,0 +1,138 @@
+from __future__ import annotations
+
+from contextlib import suppress
+from pathlib import Path
+from typing import Any
+
+import pyarrow as pa
+
+from lxd.stores.models import ChunkRecord, VectorSearchRecord
+
+_TABLE_NAME = "chunk_vectors"
+
+
+def connect_lancedb(path: Path) -> Any:
+    import lancedb
+
+    path.mkdir(parents=True, exist_ok=True)
+    return lancedb.connect(str(path))
+
+
+def open_chunk_table(database: Any, *, vector_size: int) -> Any:
+    try:
+        return database.open_table(_TABLE_NAME)
+    except FileNotFoundError:
+        return database.create_table(
+            _TABLE_NAME,
+            schema=_chunk_table_schema(vector_size),
+            mode="create",
+        )
+
+
+def reset_chunk_table(database: Any, *, vector_size: int) -> Any:
+    with suppress(Exception):
+        database.drop_table(_TABLE_NAME)
+    return database.create_table(
+        _TABLE_NAME,
+        schema=_chunk_table_schema(vector_size),
+        mode="create",
+    )
+
+
+def replace_source_chunks(
+    table: Any, source_rel_path: str, chunk_records: list[ChunkRecord]
+) -> None:
+    delete_source(table, source_rel_path)
+    if chunk_records:
+        table.add([_chunk_record_to_row(record) for record in chunk_records])
+
+
+def delete_source(table: Any, source_rel_path: str) -> None:
+    table.delete(f"source_rel_path = '{_escape_string_literal(source_rel_path)}'")
+
+
+def search_chunks(
+    table: Any,
+    *,
+    query_vector: list[float],
+    domain: str | None,
+    limit: int,
+) -> list[VectorSearchRecord]:
+    query = table.search(query_vector, vector_column_name="vector").metric("cosine")
+    if domain is not None:
+        query = query.where(f"source_domain = '{_escape_string_literal(domain)}'")
+    rows = query.limit(limit).to_list()
+    records: list[VectorSearchRecord] = []
+    for row in rows:
+        score_value = row.get("_distance")
+        if not isinstance(score_value, (int, float)):
+            continue
+        records.append(
+            VectorSearchRecord(
+                chunk_id=str(row["chunk_id"]),
+                document_id=str(row["document_id"]),
+                source_rel_path=str(row["source_rel_path"]),
+                source_path=str(row["source_path"]),
+                source_filename=str(row["source_filename"]),
+                source_type=str(row["source_type"]),
+                source_domain=str(row["source_domain"]),
+                source_hash=str(row["source_hash"]),
+                citation_label=str(row["citation_label"]),
+                chunk_index=int(row["chunk_index"]),
+                chunk_occurrence=int(row["chunk_occurrence"]),
+                token_count=int(row["token_count"]),
+                text=str(row["text"]),
+                score_hint=str(row["score_hint"]),
+                metadata_json=str(row["metadata_json"]),
+                score=float(score_value),
+            )
+        )
+    return records
+
+
+def _chunk_table_schema(vector_size: int) -> pa.Schema:
+    return pa.schema(
+        [
+            pa.field("chunk_id", pa.string()),
+            pa.field("document_id", pa.string()),
+            pa.field("vector", pa.list_(pa.float32(), vector_size)),
+            pa.field("source_path", pa.string()),
+            pa.field("source_rel_path", pa.string()),
+            pa.field("source_filename", pa.string()),
+            pa.field("source_type", pa.string()),
+            pa.field("source_domain", pa.string()),
+            pa.field("source_hash", pa.string()),
+            pa.field("citation_label", pa.string()),
+            pa.field("chunk_index", pa.int32()),
+            pa.field("chunk_occurrence", pa.int32()),
+            pa.field("token_count", pa.int32()),
+            pa.field("text", pa.string()),
+            pa.field("score_hint", pa.string()),
+            pa.field("metadata_json", pa.string()),
+        ]
+    )
+
+
+def _chunk_record_to_row(record: ChunkRecord) -> dict[str, object]:
+    return {
+        "chunk_id": record.chunk_id,
+        "document_id": record.document_id,
+        "vector": [float(value) for value in record.vector],
+        "source_path": record.source_path,
+        "source_rel_path": record.source_rel_path,
+        "source_filename": record.source_filename,
+        "source_type": record.source_type,
+        "source_domain": record.source_domain,
+        "source_hash": record.source_hash,
+        "citation_label": record.citation_label,
+        "chunk_index": record.chunk_index,
+        "chunk_occurrence": record.chunk_occurrence,
+        "token_count": record.token_count,
+        "text": record.text,
+        "score_hint": record.score_hint,
+        "metadata_json": record.metadata_json,
+    }
+
+
+def _escape_string_literal(value: str) -> str:
+    return value.replace("'", "''")

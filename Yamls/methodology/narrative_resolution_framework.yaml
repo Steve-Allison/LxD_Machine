@@ -1,0 +1,513 @@
+# ==============================================================================
+# Narrative Resolution & Inheritance Model
+# Configuration for maintaining coherence and relevance across the sales hierarchy.
+# ==============================================================================
+
+_meta:
+  id: narrative_resolution_framework
+  title: "Narrative Resolution"
+  description: "Rules for top-down resolution (relevance) and bottom-up inheritance (coherence)."
+  domain: narrative
+  domain_type: workflow
+  purpose: methodology
+  version: "1.3.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Using SOAR Storytelling most effectively.md"
+    - "Corpus/Research/Research - Researching Narrative and Discourse Analysis.md"
+
+  relationships:
+    - target: methodology/opening_hooks_framework.yaml
+      type: depends_on
+      description: "Bookend narrative structure: opening hooks and resolution closings are paired"
+# ==============================================================================
+# PART 1: NARRATIVE RESOLUTION (TOP-DOWN)
+# Determines the appropriate narrative depth based on the sales stage.
+# ==============================================================================
+
+resolution_model:
+  description: "Maps sales stages to the appropriate hierarchy level and narrative focus."
+  customization_required: true  # Audience, industry, and buying-stage specifics must be applied at each level
+
+  stages:
+    early_stage:
+      name: "Strategic Discovery / Vision"
+      hierarchy_level: "L1 (Portfolio Play)"
+      narrative_focus: "The Big Picture. Industry trends, strategic challenges, and high-level vision."
+      primary_audience: "C-Suite, VP-level"
+      narrative_arc_stage: "problem_identification"  # Orient audience to landscape before positioning
+      litvista_axis: "impulse"  # Impulse axis — initiates momentum, establishes need direction
+      stakeholder_framing: "strategic"  # Frame opportunity in terms of business-level transformation
+      guardrail_notes:
+        - "Avoid product-level claims at this stage — vision and challenge framing only"
+        - "Opportunity must connect to industry macro-trends, not individual pain points"
+
+    mid_stage:
+      name: "Detailed Discovery / Solutioning"
+      hierarchy_level: ["L2 (Strategic Play)", "L3 (Product Play)"]
+      narrative_focus: "The Solution. Use cases, solution overviews, and technical capabilities."
+      primary_audience: "Business Owners, Technical Evaluators"
+      narrative_arc_stage: "solution_presentation"  # Bridge from problem-space to capability-space
+      litvista_axis: "resonance"  # Resonance axis — deepens engagement, builds solution credibility
+      stakeholder_framing: "operational"  # Frame opportunity in terms of workflow efficiency and risk reduction
+      guardrail_notes:
+        - "Must bridge from L1 strategic challenge to specific use-case resolution"
+        - "Technical claims must be anchored to business outcomes"
+
+    late_stage:
+      name: "Validation / Closing"
+      hierarchy_level: "L4 (Persona/Vertical Play)"
+      narrative_focus: "Personalized Value. Specific needs, pains, ROI, and success criteria for decision makers."
+      primary_audience: "Specific Stakeholders, Procurement"
+      narrative_arc_stage: "commitment"  # Validate decision and drive concrete next step
+      litvista_axis: "pause"  # Pause axis — consolidates narrative, creates deliberate space for decision
+      stakeholder_framing: "personalized"  # Frame in terms of individual role-specific outcomes
+      human_element_required: true  # Must include a relatable human proof point (testimonial, case study protagonist)
+      call_to_action_required: true  # Every late-stage piece must close with a concrete, low-friction next step
+      stakeholder_sub_types:
+        cfo: "ROI, risk reduction, total cost of ownership, payback period"
+        cto: "Architecture fit, integration complexity, security posture, scalability"
+        coo: "Operational efficiency, workflow disruption, implementation timeline, change management"
+      guardrail_notes:
+        - "Customer must be positioned as hero; vendor as enabler"
+        - "Every claim must be supported by a verifiable proof point (case study, metric, reference)"
+
+# ==============================================================================
+# PART 2: NARRATIVE INHERITANCE (BOTTOM-UP)
+# Rules for ensuring child documents align with their parents.
+# ==============================================================================
+
+inheritance_rules:
+  description: "Constraints to ensure lower-level narratives are consistent with higher-level strategy."
+
+  key_message_alignment:
+    rule: "Child messages must be specific instances of Parent messages."
+    theoretical_basis: "RST Nucleus/Satellite hierarchy — parent content functions as Nucleus (essential claim); child elaborations function as Satellites (non-essential support). Satellites must never contradict or reframe the Nucleus."
+    validation_method: "semantic_similarity"
+    alignment_model: "probabilistic"  # Binary threshold replaced with confidence band to reduce false positives
+    threshold: 0.75  # Legacy hard threshold retained for backward compatibility
+    confidence_band:
+      soft_warning: "0.65–0.75"  # Flag for human review; likely drift but may be intentional reframing
+      hard_flag: "< 0.65"  # Automatic rejection; child message has diverged from parent nucleus
+    failure_action: "flag_warning"
+    audience_perspective_preserved:
+      rule: "Child message framing must reflect the primary_audience of its resolution_model stage."
+      validation: "Check that persona language, business context, and value framing match the designated stage audience"
+      failure_action: "flag_warning"
+    narrative_loop_closure:
+      rule: "The Result element of any narrative arc must explicitly address the Situation challenge stated at the opening."
+      validation: "Semantic match between Situation challenge statement and Result benefit statement"
+      failure_action: "flag_warning"
+      source: "Research - Using SOAR Storytelling most effectively.md"
+
+  soar_element_consistency:
+    description: "SOAR (Situation / Opportunity / Action / Result) is the structural backbone of sales narrative. Each element has a defined purpose and child-to-parent consistency rules."
+
+    situation:
+      purpose: "Ground the audience in a shared reality — establish WHO is affected, WHEN/WHERE this occurs, and the baseline state before the opportunity."
+      rule: "Child Situation must be a subset or specific instance of Parent Situation."
+      required_components:
+        - "WHO: The affected role or persona (e.g., 'Sales Operations teams in mid-market SaaS companies')"
+        - "WHEN/WHERE: The context or trigger (e.g., 'during Q4 pipeline reviews')"
+        - "Baseline state: What the world looks like without the solution"
+      validation_rule: "Must not assume audience familiarity — all context must be stated explicitly"
+      source: "Research - Using SOAR Storytelling most effectively.md"
+
+    opportunity:
+      purpose: "Identify the gap, tension, or unmet need that creates urgency. Opportunity = Situation × Stakes."
+      rule: "Child Opportunity must be a detailed version of Parent Opportunity."
+      tension_present: "required"  # A valid Opportunity must articulate a real cost or consequence of inaction
+      stake_framing:
+        rule: "Stakes must be framed in terms meaningful to the primary_audience of the current resolution stage"
+        early_stage: "Business transformation risk / competitive displacement"
+        mid_stage: "Operational inefficiency / technical debt"
+        late_stage: "Role-specific consequence / personal accountability metric"
+      source: "Research - Using SOAR Storytelling most effectively.md"
+
+    action:
+      purpose: "Describe what was done (or should be done) to capture the Opportunity. Action = the vendor's role as enabler."
+      rule: "Child Action (Product/Feature) must map to Parent Action (Strategy)."
+      ties_back_to_opportunity: "required"  # Action must directly address the tension stated in Opportunity
+      hero_framing_check:
+        rule: "Customer is the hero of the action; vendor is the tool or guide. Never position vendor as the actor."
+        anti_pattern: "hero_framing — 'We implemented X' vs correct '[Client] achieved X using Y'"
+      source: "Research - Using SOAR Storytelling most effectively.md"
+
+    result:
+      purpose: "Demonstrate the outcome achieved and close the narrative loop opened by Situation."
+      rule: "Child Result must contribute to Parent Result metrics."
+      distinction:
+        outcome: "The measurable change that occurred (e.g., '40% reduction in onboarding time')"
+        benefit: "The business value of that change (e.g., 'enabling Sales to reach quota 6 weeks faster')"
+      quantified_result: "preferred"  # Results with specific metrics are significantly more credible and memorable
+      loop_closure_check:
+        rule: "Result benefit statement must explicitly address the challenge raised in the Situation element"
+        validation: "Semantic match between Situation challenge and Result benefit"
+        failure_action: "flag_warning"
+      source: "Research - Using SOAR Storytelling most effectively.md"
+
+  guardrail_enforcement:
+    must_include_messages:
+      rule: "Child must include mandatory key messages defined by Parent."
+    preferred_terms:
+      rule: "Child must prioritize preferred terminology."
+    banned_terms:
+      rule: "Child must NOT use banned terms defined in Parent or Global Config."
+    stakeholder_role_framing:
+      description: "Opportunity framing must be adapted to the primary stakeholder role at each resolution stage."
+      mappings:
+        c_suite_early_stage: "Strategic transformation, competitive positioning, market leadership"
+        mid_stage_evaluators: "Operational efficiency, integration feasibility, risk management"
+        late_stage_decision_makers: "Role-specific ROI, personal accountability, implementation confidence"
+      validation: "Cross-check opportunity language against the resolution_model stage's stakeholder_framing value"
+      source: "Research - Using SOAR Storytelling most effectively.md"
+
+  attachment_chain_model:
+    description: "RST-derived rule governing how narrative hierarchy must be traversed. No element may skip levels — all resolution must be sequential through the chain."
+    chain: "L4 → L3 → L2 → L1"
+    rule: "Each level may only claim inheritance from its immediate parent. An L4 narrative may not assert alignment with L1 without validated L3 and L2 intermediate nodes."
+    violation_name: "level_skip"
+    violation_consequence: "flag_warning — skip-level inheritance masks messaging drift that accumulates across levels"
+    anti_pattern:
+      name: "explicit_connective_loss"
+      description: "When transition language (therefore, because, as a result) is removed between narrative levels for brevity, the rhetorical relationship becomes implicit and unvalidatable."
+      detection: "Check for presence of discourse connectives at level boundaries"
+    source: "Research - Researching Narrative and Discourse Analysis.md"
+
+# ==============================================================================
+# PART 3: GRAPH-BASED COHERENCE (CROSS-DOCUMENT)
+# Rules for validating consistency across the entire narrative graph.
+# ==============================================================================
+
+graph_validation:
+  description: "Logic for traversing the Knowledge Graph to ensure holistic consistency."
+
+  concept_validation:
+    description: "Check if concepts in child are connected to concepts in L1 Parent."
+    method: "path_traversal"
+    max_hops: 3
+
+  claim_corroboration:
+    description: "Verify claims (metrics, results) against other instances in the graph."
+    method: "cross_reference"
+    action: "Find supporting proof points (Case Studies)."
+    relation_requirement:
+      basis: "RST — claims must be supported by a nuclearly-related evidence node (case study, metric, study citation)"
+      relation_types: ["evidence", "justify", "support", "enablement"]
+      validation: "Each factual claim (metric, capability assertion, outcome statement) must have ≥1 linked corroborating node"
+      failure_action: "flag_for_evidence_sourcing"
+      source: "Research - Researching Narrative and Discourse Analysis.md"
+
+  inconsistency_detection:
+    description: "Identify contradictory claims or banned terms across sibling nodes."
+    method: "conflict_scan"
+    scope: "sibling_nodes"
+    completeness_scan:
+      description: "Verify that every SOAR element is present in each narrative unit. Incomplete SOAR structures undermine audience comprehension."
+      required_elements: ["situation", "opportunity", "action", "result"]
+      failure_action: "flag_missing_element"
+      source: "Research - Using SOAR Storytelling most effectively.md"
+    flow_validation:
+      description: "Verify that narrative transitions between SOAR elements are logically connected."
+      checks:
+        - "Situation → Opportunity: gap or tension must be traceable to the stated situation"
+        - "Opportunity → Action: action must directly address the stated opportunity tension"
+        - "Action → Result: result must be a direct outcome of the stated action"
+        - "Result → Situation: result benefit must close the loop opened by the situation"
+      failure_action: "flag_broken_transition"
+      source: "Research - Using SOAR Storytelling most effectively.md"
+
+  coherence_dimensions:
+    description: "Three orthogonal dimensions of narrative coherence to validate across the graph. Weakness in any single dimension degrades audience comprehension."
+    topicality:
+      description: "All content elements address the same core topic thread at their resolution level"
+      validation: "Topic model similarity between sibling nodes > 0.60"
+    structural_coherence:
+      description: "Narrative elements appear in the expected sequence and hierarchy (RST-compliant ordering)"
+      validation: "Structure matches resolution_model stage pattern and attachment_chain_model sequence"
+    coreference:
+      description: "Entities, terms, and metrics are referred to consistently across all documents in the graph"
+      validation: "Named entity alignment — same entity must use consistent terminology across all documents"
+    source: "Research - Researching Narrative and Discourse Analysis.md"
+
+  discourse_trajectory_model:
+    description: "HSMM (Hidden Semi-Markov Model) approach — tracks latent narrative state across the document graph. Captures structural shifts invisible to keyword matching."
+    model_type: "hidden_semi_markov"
+    key_insight: "Surface metrics miss structural coherence failures. Structural marker presence reduces Latent PPL from 9.52 to 6.72 (Deng et al., EMNLP 2022) — a 27% improvement."
+    metric: "Latent PPL (Perplexity of latent topic sequence)"
+    target_score: "≤ 7.0"
+    warning_score: "7.0–9.0"
+    flag_score: "> 9.0"
+    application: "Use for automated QA of narrative document sets where manual review at scale is not feasible"
+    source: "Research - Researching Narrative and Discourse Analysis.md"
+
+  node_atomicity_standard:
+    description: "Each narrative node should represent one Minimal Structural Unit (MSU) of meaning — one claim, one proof point, or one transition."
+    standard: "MSU — one assertion or relation per node"
+    anti_pattern: "Compound nodes (e.g., a slide containing three independent claims) appear coherent in graph traversal but may contain internally contradictory sub-claims"
+    validation: "Flag any node with more than 2 independent truth-evaluable assertions"
+    source: "Research - Researching Narrative and Discourse Analysis.md"
+
+# ==============================================================================
+# BENEFITS OF GRAPH-BASED COHERENCE
+# ==============================================================================
+
+graph_coherence_benefits:
+  description: "Advantages of graph-based validation over simple parent-child checks."
+
+  holistic_consistency:
+    description: "Ensures every piece of content is aligned with core strategic messaging"
+    scope: "Even content without direct hierarchical relationship"
+    examples: ["Sales deck", "Marketing one-pager", "Product datasheet"]
+    theoretical_basis:
+      dimensions: 4
+      source: "RST Global View — four dimensions: topicality (unified topic thread), structural coherence (RST-compliant sequencing), coreference (entity consistency), and narrative arc completion (Situation-to-Result loop closure)"
+      implication: "Graph validation must check all four dimensions simultaneously; a document passing three of four may still fail audience comprehension"
+
+  dynamic_discovery:
+    description: "Enables discovery of relevant content and proof points across organization"
+    benefit: "Find semantically linked content that may not be known to exist"
+    use_case: "Building a custom pitch using case studies from different product lines"
+    rhetorical_relation_edges:
+      description: "Graph edges carry RST relation type labels (evidence, justify, background, enablement) enabling targeted retrieval by rhetorical function, not just topic"
+      example: "Query: 'Find all nodes with evidence relation to L1 Opportunity claim' → returns relevant case studies regardless of product line"
+      source: "Research - Researching Narrative and Discourse Analysis.md"
+
+  scalable_governance:
+    description: "Makes it easier to manage and enforce narrative governance at scale"
+    mechanism: "Change to core concept or banned term immediately flags connected elements"
+    benefit: "Single source of truth for messaging consistency"
+
+  empirical_support:
+    memorability:
+      stat: "22x more memorable than facts alone"
+      basis: "Narratives with complete structure (situation→complication→resolution) vs. unstructured fact lists"
+      source: "Jennifer Aaker, Stanford Graduate School of Business; cited in Research - Using SOAR Storytelling most effectively.md"
+    b2b_engagement:
+      stat: "54% of B2B buyers engage more with story-led case studies vs. feature-led formats"
+      source: "Sopro B2B Sales Research; cited in Research - Using SOAR Storytelling most effectively.md"
+    retention_boost:
+      stat: "Statistical narrative framing improves data retention by 22%"
+      source: "VideoScribe Blog; cited in Research - Using SOAR Storytelling most effectively.md"
+    implication: "Narrative coherence is not a stylistic preference — it is a measurable driver of sales engagement and message recall"
+
+# ==============================================================================
+# EXAMPLE WORKFLOW: PUTTING IT ALL TOGETHER
+# ==============================================================================
+
+example_workflow:
+  description: "Concrete example of Resolution and Inheritance working together."
+
+  scenario: "Generating a presentation for 'Detailed Discovery' sales stage"
+
+  step_1_resolution:
+    action: "Determine appropriate hierarchy levels based on sales stage"
+    input: "Sales Stage: Detailed Discovery"
+    output: "Hierarchy Levels: L2 (Sales Play) + L3 (Product Play)"
+    rationale: "Mid-stage requires solution specifics, not just vision"
+
+  step_2_content_selection:
+    action: "Select relevant content from determined hierarchy levels"
+    content_types:
+      - "Use cases from L2"
+      - "Solution overviews from L2"
+      - "Technical details from L3"
+      - "Feature capabilities from L3"
+
+  step_3_inheritance_validation:
+    action: "Validate selected content against parent L1 (Strategic) play"
+    checks:
+      - question: "Does selected content reinforce L1 key messages?"
+        validation_type: "semantic_similarity"
+      - question: "Is the Opportunity a logical extension of L1 Opportunity?"
+        validation_type: "soar_consistency"
+      - question: "Does content adhere to L1 guardrails?"
+        validation_type: "guardrail_enforcement"
+    nucleus_preservation_check:
+      description: "Verify the core L1 key message (Nucleus) is preserved in L2/L3 content — elaborations (Satellites) must not reframe or contradict the parent nucleus."
+      method: "semantic_similarity against L1 key_message"
+      failure_action: "flag_nucleus_violation"
+      source: "Research - Researching Narrative and Discourse Analysis.md"
+    satellite_coherence_check:
+      description: "Verify that L2/L3 elaborations (Satellites) are internally consistent and do not introduce conflicting sub-claims."
+      method: "cross_reference between L2 and L3 nodes sharing a common L1 parent"
+      failure_action: "flag_satellite_conflict"
+      source: "Research - Researching Narrative and Discourse Analysis.md"
+
+  step_4_outcome:
+    if_validation_passes: "Assemble final presentation"
+    if_validation_fails: "Flag inconsistencies for human review"
+    guarantee: "Final narrative is both relevant (right detail level) and coherent (aligned with strategy)"
+
+# ==============================================================================
+# NARRATIVE ANCHOR CLASSIFICATION (LitVISTA)
+# ==============================================================================
+
+narrative_anchor_classification:
+  description: "LitVISTA topology for classifying narrative anchor points across the resolution hierarchy. Each axis represents a distinct dimension of narrative momentum and audience engagement."
+  framework: "LitVISTA (Literature-Validated Immersive Storytelling Topology Analysis)"
+  source: "Research - Researching Narrative and Discourse Analysis.md"
+
+  axes:
+    impulse:
+      label: "X-axis — Narrative Momentum"
+      description: "Initiates forward movement in the narrative. Creates urgency, establishes the problem space, and generates audience motivation to continue."
+      resolution_stage: "early_stage"
+      hierarchy_level: "L1"
+      narrative_function: "Problem identification — why this matters now"
+      design_principle: "High impulse content leads with consequence, not context"
+      anti_pattern: "axis_confusion — applying Pause-axis consolidation language at the Impulse stage kills urgency before it builds"
+
+    resonance:
+      label: "Y-axis — Audience Engagement Depth"
+      description: "Deepens audience connection through relevance, specificity, and demonstrated understanding of their context."
+      resolution_stage: "mid_stage"
+      hierarchy_level: ["L2", "L3"]
+      narrative_function: "Solution credibility — how this specifically applies to their situation"
+      design_principle: "High resonance content mirrors audience language and validates their specific pain"
+      anti_pattern: "axis_confusion — applying Impulse-axis urgency language at mid-stage disrupts the evaluation mindset"
+
+    pause:
+      label: "Z-axis — Deliberate Space for Decision"
+      description: "Creates psychological space for the audience to consolidate, commit, and act. Slows the narrative to allow for reflection and decision-making."
+      resolution_stage: "late_stage"
+      hierarchy_level: "L4"
+      narrative_function: "Commitment — creating the conditions for a confident yes"
+      design_principle: "High pause content removes cognitive friction — specificity, proof, and a clear low-risk next step"
+      anti_pattern: "axis_confusion — applying Resonance-axis exploration at late-stage reopens already-closed objections"
+
+  validation_rule: "Each narrative unit must be classified on its primary axis before validation rules are applied. Axis_confusion is the most common single cause of multi-level narrative incoherence."
+
+# ==============================================================================
+# RST RELATION TYPES
+# ==============================================================================
+
+rst_relation_types:
+  description: "Core RST (Rhetorical Structure Theory) relation types used in narrative graph edge labelling."
+  framework: "RST — Mann & Thompson (1988)"
+  source: "Research - Researching Narrative and Discourse Analysis.md"
+
+  nucleus_satellite_relations:
+    evidence:
+      description: "Satellite provides factual support for the Nucleus claim"
+      use_in_graph: "Case study → Opportunity claim; metric → capability assertion"
+    justify:
+      description: "Satellite provides rationale for the Nucleus assertion"
+      use_in_graph: "Business context → recommended action"
+    background:
+      description: "Satellite provides prerequisite context for the Nucleus"
+      use_in_graph: "Market trend → strategic challenge (Situation element)"
+    enablement:
+      description: "Satellite describes what makes the Nucleus possible or accessible"
+      use_in_graph: "Technical feature → business outcome (Action → Result link)"
+    elaboration:
+      description: "Satellite adds detail or specification to the Nucleus without introducing new claims"
+      use_in_graph: "Sub-feature detail → parent capability claim"
+    concession:
+      description: "Satellite acknowledges a counter-claim while maintaining the Nucleus position"
+      use_in_graph: "Objection → reframed benefit (useful in late-stage validation content)"
+
+  multinuclear_relations:
+    sequence:
+      description: "Multiple nuclei in temporal or logical order — none is subordinate"
+      use_in_graph: "Step-by-step process narrative; implementation phases"
+    contrast:
+      description: "Two nuclei compared — neither is subordinate, both are essential"
+      use_in_graph: "Before/after comparisons; competitive differentiation"
+    joint:
+      description: "Multiple nuclei combined with equal rhetorical weight"
+      use_in_graph: "Multiple co-equal benefits of a solution"
+
+# ==============================================================================
+# COHERENCE METRICS
+# ==============================================================================
+
+coherence_metrics:
+  description: "Quantitative metrics for assessing narrative coherence. Supplements qualitative RST analysis with computational validation."
+  source: "Research - Researching Narrative and Discourse Analysis.md"
+
+  latent_ppl:
+    full_name: "Latent Perplexity (Latent PPL)"
+    description: "Measures the predictability of the latent topic sequence across a narrative. Lower PPL = more coherent structural progression."
+    benchmark:
+      with_structural_markers: 6.72
+      without_structural_markers: 9.52
+      improvement: "27% reduction in perplexity when explicit discourse connectives are preserved"
+      citation: "Deng et al., EMNLP 2022"
+    interpretation:
+      below_7: "High coherence — structural progression is predictable and well-formed"
+      between_7_and_9: "Moderate coherence — review for missing transitions or topic drift"
+      above_9: "Low coherence — likely structural issues; full RST analysis recommended"
+    practical_implication: "Surface similarity scores (cosine, TF-IDF) will NOT detect this class of structural failure. Latent PPL requires a topic model or discourse parser."
+
+  semantic_similarity_threshold:
+    metric: "Cosine similarity (embedding-based)"
+    primary_use: "key_message_alignment validation (inheritance_rules)"
+    confidence_band:
+      high_confidence: "> 0.75"
+      soft_warning: "0.65–0.75"
+      hard_flag: "< 0.65"
+    limitation: "Catches surface-level message drift but misses structural incoherence. Always pair with discourse_trajectory_model for full coverage."
+
+# ==============================================================================
+# ANTI-PATTERNS
+# ==============================================================================
+
+anti_patterns:
+  description: "Common narrative construction failures that undermine coherence, credibility, or audience engagement."
+
+  hero_framing:
+    description: "Vendor positions itself as the agent of change rather than the customer."
+    example_wrong: "'We implemented our platform across 3 regions, reducing downtime by 40%'"
+    example_correct: "'[Client] reduced downtime by 40% across 3 regions using [Platform]'"
+    impact: "Undermines credibility — audiences dismiss vendor-as-hero narratives as self-promotional"
+    detection: "Flag first-person vendor language in Action elements"
+    validation_check: "soar_element_consistency.action.hero_framing_check"
+    source: "Research - Using SOAR Storytelling most effectively.md"
+
+  axis_confusion:
+    description: "Applying the rhetorical mode of one LitVISTA axis to a resolution stage that requires a different axis."
+    examples:
+      - "Pause-axis consolidation language in early-stage Impulse content — kills urgency before it builds"
+      - "Impulse-axis urgency language in late-stage Pause content — reopens closed objections"
+      - "Resonance-axis exploratory language in late-stage — creates ambiguity where the buyer needs certainty"
+    impact: "Disrupts the audience's cognitive and emotional state relative to their buying stage"
+    detection: "Cross-check content register against narrative_anchor_classification axis for the resolution stage"
+    validation_check: "narrative_anchor_classification.validation_rule"
+    source: "Research - Researching Narrative and Discourse Analysis.md"
+
+  incomplete_soar:
+    description: "A narrative unit is missing one or more SOAR elements."
+    most_common_omissions: ["opportunity (leaving audience without a stated tension)", "result (leaving narrative loop open)"]
+    impact: "Reduces memorability and fails the loop_closure_check"
+    detection: "graph_validation.inconsistency_detection.completeness_scan"
+    source: "Research - Using SOAR Storytelling most effectively.md"
+
+  broken_narrative_transition:
+    description: "A logical gap exists between adjacent SOAR elements — the progression feels arbitrary."
+    examples:
+      - "Situation describes a market challenge; Opportunity jumps to competitor comparison with no causal link"
+      - "Action describes technical implementation; Result claims a business metric with no causal bridge"
+    impact: "Audience cannot follow the logic chain; credibility collapses at the break point"
+    detection: "graph_validation.inconsistency_detection.flow_validation"
+    source: "Research - Using SOAR Storytelling most effectively.md"
+
+  level_skip_inheritance:
+    description: "An L4 narrative claims alignment with L1 strategic messaging without validated L3 and L2 intermediate nodes."
+    impact: "Hides accumulated messaging drift — a 5% drift at each level becomes a 20%+ drift by L4"
+    detection: "inheritance_rules.attachment_chain_model violation check"
+    source: "Research - Researching Narrative and Discourse Analysis.md"
+
+  explicit_connective_loss:
+    description: "Discourse connectives (therefore, because, as a result) are removed between narrative levels for brevity, making rhetorical relationships implicit and unvalidatable."
+    impact: "Latent PPL score increases significantly; structural coherence cannot be validated algorithmically"
+    detection: "Absence of transition language at level boundaries"
+    remediation: "Restore explicit connective language or add bridging sentences at level transitions"
+    source: "Research - Researching Narrative and Discourse Analysis.md"
+
+  data_without_vision:
+    description: "Narrative leads with data/metrics before establishing the strategic context and human stakes."
+    impact: "Audience cannot interpret the significance of data without narrative framing; engagement drops"
+    remediation: "Always establish Situation and Opportunity before presenting quantified results"
+    detection: "Flag narrative units where Result/metric appears before Situation/Opportunity elements"
+    source: "Research - Using SOAR Storytelling most effectively.md"

@@ -1,0 +1,1572 @@
+_meta:
+  id: narrative_entities
+  title: Narrative Entities
+  description: Entity types and patterns for NLP-based narrative content detection including rhetorical structures, argument
+    components, and discourse elements
+  domain: narrative
+  domain_type: cross_cutting
+  purpose: entity
+  version: 3.42.1
+  last_updated: '2026-03-09'
+  corpus_sources:
+  - Corpus/Research/Crafting Powerful Opening Plays.md
+  - Corpus/Research/RESEARCH-BASED_ENHANCEMENTS FOR VOICE.md
+  - Corpus/Research/Research - Elite Speaker Linguistic Analysis Taxonomy.md
+  - 'Corpus/Research/The Architecture of Persuasion: A Deep Synthesis of Visual Communication and Narrative Storytelling.md'
+  - Corpus/Research/SOAR Narrative Mapping by Sales Stage.md
+  - 'Corpus/Research/Structural Paradigms in Natural Language Processing: A Comprehensive Analysis of Narrative Orchestration,
+    Discourse Integration, and Latent Evaluation.md'
+  - Corpus/Research/Research - Using SOAR Storytelling most effectively.md
+  - Corpus/Research/UNIFIED_NARRATIVE_METHODOLOGY_v2.md
+  - Corpus/Research/Research - Comprehensive Audience Analysis.md
+  - Corpus/Research/Research - Comprehensive Learning Design Framework.md
+  - Corpus/Research/Research - Visual Communication and Storytelling.md
+  - Corpus/Research/Research - Researching Narrative and Discourse Analysis.md
+  - Corpus/Research/Research - Merrills Instructional Design Theories Applied.md
+  - Corpus/Research/Research - Presentation Delivery_ Ethos and Physicality.md
+  - Corpus/Research/Research - Case Study Excellence.md
+  - Corpus/Research/Research - Personal Branding Framework for Early.md
+  - Corpus/Research/Research - Using Monroes Motivated Sequence.md
+  - Corpus/Research/Research - Advanced Computational Discourse Analysis_ Operationalizing Rhetorical Structure Theory with
+    LLM.md
+  - Corpus/Research/Research - The Anatomy of Presence.md
+  - Corpus/Research/Research - Scenario-Based Training_ A Comprehensive Guide.md
+  - Corpus/Research/Research - Roleplay & Scenarios for Learning.md
+  - Corpus/Research/Storytelling_for_Different_Business_Personas.md
+  - Corpus/Research/Research - Learner Persona Research and Development.md
+  - Corpus/Research/Research - Visual Analysis of Slide Decks.md
+  - Corpus/Research/Research - Best Practices for Writing Effective Corporate Learning Content.md
+  - Corpus/Research/Research - visualisation_techniques_corporate_learning.md
+  - Corpus/Research/slide_design_research_monograph_part_2.md
+  - Corpus/Research/slide_design_research_monograph_part_3.md
+  - Corpus/Research/a-guide-to-good-reasoning-cultivating-intellectual-virtues-16112.md
+  - Corpus/Research/Research - World-Class_Public_Speaking_Research.md
+  - Corpus/Research/Research - Public_Speaking_research.md
+  - Corpus/Research/Gold Standard Structure for Any Corporate-Learning Asset v3.md
+  - Corpus/Research/research_-_mastering_presentation_nerves.md
+  - Corpus/Research/Research - Complete Guide to AI-powered Microlearning.md
+  - Corpus/Research/module-integration-strategy.md
+  - Corpus/Research/Research - Slide Deck Design Playbook Research.md
+  - Corpus/Research/research_-_canonical_presentation_methodology_research.md
+  - Corpus/Research/research_-_the_architecture_of_influence__a_comprehensive_multim.md
+  - Corpus/Research/Methodology - How do we move from this research to a sequenced A.I. Enhanced Course Pipeline_.md
+  - Corpus/Research/Research - Best Video Script Prompts.md
+  relationships: null
+entity_types:
+  claim:
+    description: Assertions, propositions, or conclusions that require support
+    canonical_id: claim
+    entity_kind: argument_component
+    family: toulmin_structure
+    gliner_label: CLAIM
+    gliner_description: Assertion proposition thesis conclusion statement requiring evidence support proof validation
+    examples:
+    - Our solution reduces costs by 40%
+    - AI will transform customer experience
+    - Market leaders are adopting this approach
+    - This strategy delivers measurable ROI
+    - Digital transformation is essential for growth
+    - Speed of execution is now the primary competitive differentiator
+    - The window for first-mover advantage is narrowing
+    anti_examples:
+    - insurance claim
+    - claim form
+    - baggage claim
+    confidence_threshold: 0.65
+    match_policy_ref: argument_component
+    aliases:
+    - assertion
+    - proposition
+    - thesis
+    - conclusion
+    indicators:
+    - will
+    - should
+    - must
+    - is essential
+    - is critical
+    - delivers
+    - enables
+    - transforms
+    - accelerates
+    patterns:
+    - \w+ will \w+
+    - \w+ delivers \w+
+    - is essential for
+    - is critical to
+    color: '#3498db'
+    relates_to:
+    - target: evidence
+      relation: supported_by
+      weight: required
+      description: Claims require evidential support — a claim without evidence is an unsubstantiated assertion
+    - target: warrant
+      relation: supported_by
+      weight: expected
+      description: Warrants provide the logical reasoning that connects evidence to this claim
+    - target: qualifier
+      relation: limits
+      weight: expected
+      description: Qualifiers constrain claim strength by defining scope, conditions, or boundaries
+    - target: rebuttal
+      relation: rebuts
+      weight: optional
+      description: Rebuttals challenge or contradict this claim in argumentative contexts
+    - target: value_proposition
+      relation: specialises
+      weight: expected
+      description: A value proposition is a commercially-framed specialisation of a claim
+    - target: data_statistic
+      relation: supported_by
+      weight: expected
+      description: Data statistics provide quantitative backing for claims
+      target_file: evidence_types_entities
+    - target: logos_appeal
+      relation: supports
+      weight: expected
+      description: Claims are the core unit of logos-based persuasion; the assertion that
+        requires evidential support per UNM v2 rhetorical balance analysis
+      target_file: rhetorical_devices_entities
+    - target: scqa_marker
+      relation: supported_by
+      weight: optional
+      description: SCQA framework structures weak-logic narratives; the Answer component
+        of SCQA delivers the central claim per UNM v2 prescriptive methodology
+      target_file: rhetorical_devices_entities
+    - target: situation_marker
+      relation: supported_by
+      weight: expected
+      description: SOAR Situation stage provides context that grounds claims; a good situation
+        statement orients listeners before claims are made per SOAR Storytelling research
+      target_file: sales_entities
+    - target: visual_demonstration
+      relation: supported_by
+      weight: expected
+      description: "Claims are substantiated through visual demonstrations that bypass deliberative logic and appeal to the emotional brain first per Visual Communication and Storytelling"
+      target_file: evidence_types_entities
+    - target: chart_type
+      relation: supported_by
+      weight: expected
+      description: "Claims are supported by chart types that provide visual evidence — bar charts, line graphs, and scatter plots make quantitative claims tangible and verifiable per Visualisation Techniques research"
+      target_file: visual_elements_entities
+    - target: call_to_action
+      relation: enables
+      weight: expected
+      description: "SOAR workflow positions validated claims as the logical foundation that enables a specific audience call to action"
+    - target: content_structure_marker
+      relation: supported_by
+      weight: expected
+      description: "Claims structured by BLUF principle requiring governing assertion in first paragraph per Minto Pyramid"
+      target_file: content_architecture_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - evidence
+      - solution
+      strength: primary
+    - taxonomy: rhetorical_devices_taxonomy
+      dimension: aristotelian_appeal
+      values:
+      - logos
+      strength: secondary
+  evidence:
+    description: Data, facts, examples, or citations supporting claims
+    canonical_id: evidence
+    entity_kind: argument_component
+    family: toulmin_structure
+    gliner_label: EVIDENCE
+    gliner_description: Data statistics facts research citation proof support testimonial case study metric percentage
+    examples:
+    - According to Gartner, 75% of enterprises...
+    - Customer X achieved 30% cost reduction
+    - Q4 2023 results show 15% growth
+    - Independent audit verified zero vulnerabilities
+    - Over 500 Fortune 500 companies use...
+    anti_examples:
+    - evidence locker
+    - crime scene evidence
+    confidence_threshold: 0.7
+    validators:
+    - type: regex
+      ref: percentage
+    - type: regex
+      ref: money_usd
+    match_policy_ref: argument_component
+    aliases:
+    - support
+    - proof
+    - data_point
+    - citation
+    indicators:
+    - according to
+    - research shows
+    - data indicates
+    - studies show
+    - results demonstrate
+    - achieved
+    - verified
+    - reported
+    - '%'
+    - Fortune 500
+    patterns:
+    - according to \w+
+    - \d+% \w+
+    - \w+ achieved \d+
+    - research shows
+    - studies indicate
+    color: '#2ecc71'
+    relates_to:
+    - target: claim
+      relation: supports
+      weight: required
+      description: Evidence provides substantiation that makes claims credible
+    - target: warrant
+      relation: enables
+      weight: expected
+      description: Evidence provides the factual basis that warrants can reason from
+    - target: data_statistic
+      relation: contains
+      weight: expected
+      description: Evidence subsumes specific evidence types like data statistics
+      target_file: evidence_types_entities
+    - target: customer_story
+      relation: contains
+      weight: expected
+      description: Evidence subsumes experiential evidence types like customer stories
+      target_file: evidence_types_entities
+    - target: evidence_quality_dimension
+      relation: supports
+      weight: required
+      description: Evidence quality directly determines the evidence_quality_dimension score. The selection, presentation,
+        and relevance of evidence (data, testimonials, case studies) are measurable factors in narrative strength.
+      target_file: scoring_entities
+    - target: logos_appeal
+      relation: supports
+      weight: expected
+      description: Evidence is the factual foundation of logical persuasion; logos equals
+        claim plus evidence in rhetorical balance analysis per UNM v2
+      target_file: rhetorical_devices_entities
+    - target: result_marker
+      relation: supports
+      weight: expected
+      description: SOAR Results stage uses quantified metrics as evidence; specific data
+        or examples are far more convincing than generalisations per SOAR research
+      target_file: sales_entities
+    - target: research_citation
+      relation: contains
+      weight: expected
+      description: Evidence taxonomy includes research citations as a subcategory for
+        reinforcing claims per UNM TACAM evidence type classification
+      target_file: evidence_types_entities
+    - target: before_after_comparison
+      relation: contains
+      weight: expected
+      description: SOAR framework recommends before-and-after comparisons as evidence
+        in Results stage to visually drive home the transformation per SOAR research
+      target_file: evidence_types_entities
+    - target: chart_type
+      relation: supported_by
+      weight: expected
+      description: "Evidence presentation supported by appropriate chart type selection per Cognitive Fit Theory"
+      target_file: visual_elements_entities
+    - target: mayer_generative_principle
+      relation: enables
+      weight: optional
+      description: "Generative activities require learners to produce evidence of understanding per Applying Mayer's Principles Practical Checklist"
+      target_file: cognitive_load_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - evidence
+      strength: primary
+  warrant:
+    description: Logical bridges connecting evidence to claims
+    canonical_id: warrant
+    entity_kind: argument_component
+    family: toulmin_structure
+    gliner_label: WARRANT
+    gliner_description: Reasoning justification logical bridge because therefore thus hence it follows connection
+    examples:
+    - Because efficiency drives profitability...
+    - Since market leaders set standards...
+    - Given that customers demand speed...
+    - As digital natives expect seamless experiences...
+    anti_examples:
+    - search warrant
+    - arrest warrant
+    - warranty
+    confidence_threshold: 0.6
+    match_policy_ref: argument_component
+    aliases:
+    - reasoning
+    - justification
+    - logical_bridge
+    indicators:
+    - because
+    - since
+    - given that
+    - as
+    - therefore
+    - thus
+    - hence
+    - it follows that
+    patterns:
+    - because \w+
+    - since \w+
+    - given that \w+
+    - therefore
+    color: '#9b59b6'
+    relates_to:
+    - target: claim
+      relation: bridges
+      weight: required
+      description: Warrants provide the logical bridge connecting evidence to claims — explains WHY the evidence justifies
+        the assertion
+    - target: evidence
+      relation: bridges
+      weight: required
+      description: Warrants reason FROM evidence TO claims — without both endpoints the bridge is meaningless
+    - target: cause_marker
+      relation: supported_by
+      weight: expected
+      description: RST discourse analysis maps causal markers (therefore, thus, because)
+        as linguistic surface markers for warrants per UNM v2 discourse analysis
+      target_file: discourse_entities
+    - target: value_proposition
+      relation: bridges
+      weight: expected
+      description: SOAR Approach section requires warrants explaining WHY the solution
+        addresses the challenge; framing approach as solution tied back to Opportunity per SOAR research
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - insight
+      strength: primary
+  qualifier:
+    description: Hedging or limiting language indicating certainty level
+    canonical_id: qualifier
+    entity_kind: argument_component
+    family: toulmin_structure
+    gliner_label: QUALIFIER
+    gliner_description: Hedge limitation condition uncertainty modifier typically generally usually probably might could
+    examples:
+    - In most cases...
+    - Typically...
+    - Under certain conditions...
+    - For enterprise customers...
+    - Generally speaking...
+    confidence_threshold: 0.75
+    match_policy_ref: argument_component
+    aliases:
+    - hedge
+    - limitation
+    - condition
+    indicators:
+    - typically
+    - generally
+    - usually
+    - often
+    - in most cases
+    - under certain
+    - may
+    - might
+    - could
+    - probably
+    patterns:
+    - in most \w+
+    - under certain \w+
+    - for \w+ customers
+    color: '#f39c12'
+    relates_to:
+    - target: claim
+      relation: limits
+      weight: expected
+      description: Qualifiers define the scope, conditions, or boundaries under which claims hold true
+    - target: hedging_marker
+      relation: specialises
+      weight: expected
+      description: Qualifiers are degree-of-certainty markers in Toulmin argumentation;
+        hedging markers are the discourse-level surface form per UNM v2 Toulmin Model
+      target_file: discourse_entities
+    - target: rebuttal
+      relation: enables
+      weight: expected
+      description: Qualifiers and rebuttals are complementary constraint mechanisms on
+        claim strength in Toulmin argumentation per UNM v2
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - setup
+      strength: secondary
+  rebuttal:
+    description: Acknowledgment of counterarguments or limitations
+    canonical_id: rebuttal
+    entity_kind: argument_component
+    family: toulmin_structure
+    gliner_label: REBUTTAL
+    gliner_description: Counterargument objection concession limitation however although despite critics oppose challenge
+    examples:
+    - While competitors claim...
+    - Although some argue...
+    - Despite concerns about...
+    - Critics may point to...
+    - One might object that...
+    confidence_threshold: 0.65
+    match_policy_ref: argument_component
+    aliases:
+    - counterargument
+    - objection
+    - limitation
+    - concession
+    indicators:
+    - while
+    - although
+    - despite
+    - however
+    - critics
+    - opponents
+    - some argue
+    - one might
+    - on the other hand
+    patterns:
+    - while \w+ claim
+    - although some \w+
+    - despite \w+
+    - however
+    color: '#e74c3c'
+    relates_to:
+    - target: claim
+      relation: rebuts
+      weight: required
+      description: Rebuttals directly challenge or contradict claims with counter-evidence or opposing positions
+    - target: evidence
+      relation: supported_by
+      weight: expected
+      description: Strong rebuttals require their own evidential backing to be credible
+    - target: qualifier
+      relation: bridges
+      weight: required
+      description: Rebuttals and qualifiers work together in Toulmin argumentation. Qualifiers moderate claims by acknowledging
+        exceptions; rebuttals address counterarguments. Together they create nuanced, credible argumentation.
+    - target: contrast_marker
+      relation: supported_by
+      weight: expected
+      description: RST adversative markers (however, nevertheless, but) signal rebuttal
+        language at discourse level per UNM v2 RST analysis
+      target_file: discourse_entities
+    - target: ethos_appeal
+      relation: enables
+      weight: expected
+      description: Addressing counter-arguments via rebuttals builds speaker credibility
+        (ethos) in rhetorical balance per UNM v2 prescriptive analysis
+      target_file: rhetorical_devices_entities
+    - target: narrative_tension
+      relation: enables
+      weight: optional
+      description: Acknowledging challenges and missteps adds credibility and creates
+        narrative tension; audiences appreciate honest assessment per SOAR research
+    - target: audience_objection
+      relation: resolves
+      weight: expected
+      description: "Rebuttals directly resolve persona-specific objections by generating tailored counter-arguments and proof points per Storytelling for Different Business Personas"
+      target_file: audience_entities
+    - target: evidence
+      relation: rebuts
+      weight: expected
+      description: "Rebuttals challenge evidence by questioning observation reliability, authority credibility, or showing premises are probably false per a-guide-to-good-reasoning"
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: emotional_tone
+      values:
+      - concerned
+      strength: secondary
+  narrative_hook:
+    description: Attention-grabbing openings that engage the audience
+    canonical_id: narrative_hook
+    entity_kind: narrative_element
+    family: storytelling_structure
+    gliner_label: NARRATIVE_HOOK
+    gliner_description: Attention grabber opener hook imagine what if picture consider compelling question provocative
+    examples:
+    - Imagine a world where...
+    - What if you could...
+    - Picture this scenario...
+    - Have you ever wondered...
+    - The biggest challenge facing enterprises today...
+    confidence_threshold: 0.7
+    match_policy_ref: defaults
+    aliases:
+    - hook
+    - opener
+    - attention_grabber
+    indicators:
+    - imagine
+    - what if
+    - picture
+    - have you ever
+    - the biggest
+    - the most important
+    - consider this
+    patterns:
+    - imagine \w+
+    - what if you \w+
+    - picture \w+
+    - have you ever \w+
+    color: '#1abc9c'
+    relates_to:
+    - target: narrative_tension
+      relation: triggers
+      weight: expected
+      description: Hooks create initial interest that sets up the expectation of tension or a problem
+    - target: call_to_action
+      relation: precedes
+      weight: expected
+      description: Hooks open narratives that culminate in calls to action
+    - target: question_hook
+      relation: contains
+      weight: expected
+      description: Narrative hooks subsume specific hook types like question hooks
+      target_file: opening_hooks_entities
+    - target: claim
+      relation: triggers
+      weight: required
+      description: A narrative hook activates the audience's attention and curiosity, which then leads to the presentation
+        of the core claim. The hook creates cognitive engagement necessary for the audience to receive the claim.
+    - target: engagement_dimension
+      relation: enables
+      weight: required
+      description: Narrative hooks establish the cognitive and emotional entry point for audiences. They determine whether
+        audiences engage with the rest of the content. Strong hooks enable high engagement dimension scores by capturing attention
+        before cognitive evaluation begins.
+      target_file: scoring_entities
+    - target: pain_point
+      relation: triggers
+      weight: expected
+      description: SOAR Situation stage hooks audiences by connecting to their pain points;
+        a concise recognisable situation triggers engagement per SOAR research
+    - target: pathos_appeal
+      relation: enables
+      weight: expected
+      description: Hooks inject emotional engagement at narrative entry point; dry narratives
+        result from low Pathos without effective hooks per UNM v2
+      target_file: rhetorical_devices_entities
+    - target: story_hook
+      relation: contains
+      weight: expected
+      description: Story-based openings are a subcategory of narrative hooks using anecdote
+        and personal narrative for authenticity per UNM v2 and SOAR research
+      target_file: opening_hooks_entities
+    - target: statistic_hook
+      relation: contains
+      weight: optional
+      description: Data-driven hooks leverage statistical surprise or urgency as attention-grabbing
+        openings within the broader narrative hook category per UNM v2
+      target_file: opening_hooks_entities
+    - target: visual_narrative_element
+      relation: supported_by
+      weight: expected
+      description: "Narrative hooks are visually supported through hierarchy that directs viewer attention to the hook first per Visual Communication and Storytelling"
+      target_file: visual_elements_entities
+    - target: motivation_element
+      relation: triggers
+      weight: expected
+      description: "FPI's Problem-Centered anchor and Show-Task corollary function as narrative hooks that create learner engagement from the start per Merrill"
+      target_file: pedagogical_frameworks_entities
+    - target: nonverbal_cue
+      relation: supported_by
+      weight: expected
+      description: "Narrative hooks gain impact through delivery — raised eyebrows, leaning forward, dramatic pause before the hook all physically amplify the hook's attention-grabbing effect per Ethos and Physicality research"
+      target_file: performance_entities
+    - target: monroe_sequence_marker
+      relation: supports
+      weight: required
+      description: "Narrative hooks are the primary mechanism for MMS's Attention stage — provocative questions, surprising facts, anecdotes, or vivid scenarios that spark curiosity per Monroe's Motivated Sequence research"
+      target_file: rhetorical_devices_entities
+    - target: scenario_activity
+      relation: supports
+      weight: expected
+      description: "SBT uses the 4 Cs narrative design (Characters, Context, Challenge, Consequences) where relatable characters and realistic settings hook learners into emotional investment per SBT guide"
+      target_file: activity_types_entities
+    - target: structural_slide
+      relation: supported_by
+      weight: expected
+      description: "Narrative hooks are supported by structural slides which provide the visual scaffolding (agenda, section dividers) that contextualise the hook within the broader presentation arc per slide design research monograph part 3"
+      target_file: slide_types_entities
+    - target: engagement_cue
+      relation: enables
+      weight: expected
+      description: "Opening with an anecdote or scenario directly grabs attention and creates engagement — narrative hooks enable engagement cues per Public Speaking research"
+      target_file: delivery_entities
+    - target: pedagogical_sequence_marker
+      relation: precedes
+      weight: expected
+      description: "Narrative hooks precede the core pedagogical sequence — in the gold-standard structure, the opening hook captures attention before the roadmap, core content, practice, and assessment stages begin (Gold Standard Structure)"
+      target_file: content_architecture_entities
+    - target: authority_opener
+      relation: supports
+      weight: expected
+      description: "Narrative hooks support authority openers — strong opening techniques provide the attention-grabbing framework within which a confident declarative statement achieves maximum impact (Mastering Presentation Nerves)"
+      target_file: performance_entities
+    - target: microlearning_format
+      relation: supports
+      weight: expected
+      description: "Narrative hooks support microlearning formats — short-form content relies on immediate attention capture, making hooks critical for micro-module engagement per AI Microlearning Guide"
+      target_file: content_format_entities
+    - target: audience_pain_point
+      relation: triggers
+      weight: expected
+      description: "Narrative hooks trigger recognition of audience pain points to establish relevance — connecting to what keeps the audience up at night creates immediate engagement per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    - target: learner_characteristic
+      relation: supported_by
+      weight: expected
+      description: "Audience Simulator step requires narrative hooks to be grounded in audience Point A analysis across KNOW/BELIEVE/FEEL/DO quadrants"
+      target_file: pedagogical_frameworks_entities
+    - target: transition_marker
+      relation: enables
+      weight: expected
+      description: "Strong opening hooks set up the narrative thread that transition markers carry between sections (Best Video Script Prompts)"
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - setup
+      strength: primary
+    - taxonomy: narrative_taxonomy
+      dimension: emotional_tone
+      values:
+      - urgent
+      - inspirational
+      strength: secondary
+  call_to_action:
+    description: Direct requests for audience action or next steps
+    canonical_id: call_to_action
+    entity_kind: narrative_element
+    family: storytelling_structure
+    gliner_label: CALL_TO_ACTION
+    gliner_description: CTA action request next step contact schedule download register sign up get started demo
+    examples:
+    - Contact us today to learn more
+    - Schedule a demo
+    - Download the whitepaper
+    - Let's discuss how...
+    - Take the first step by...
+    confidence_threshold: 0.8
+    match_policy_ref: defaults
+    aliases:
+    - cta
+    - next_step
+    - action_request
+    indicators:
+    - contact
+    - schedule
+    - download
+    - register
+    - sign up
+    - let's
+    - take the
+    - start your
+    - get started
+    patterns:
+    - contact \w+ today
+    - schedule a \w+
+    - download the \w+
+    - let's discuss
+    color: '#e67e22'
+    relates_to:
+    - target: resolution_signal
+      relation: precedes
+      weight: expected
+      description: Resolution signals lead into calls to action — the payoff sets up the ask
+    - target: value_proposition
+      relation: supported_by
+      weight: expected
+      description: CTAs need value propositions to justify the requested action
+    - target: outcome_statement
+      relation: supported_by
+      weight: expected
+      description: CTAs are strengthened by concrete outcome statements
+    - target: result_marker
+      relation: supported_by
+      weight: expected
+      description: SOAR Results stage naturally culminates in a CTA; recommends ending
+        with a clear takeaway or call-to-action after presenting results per SOAR research
+      target_file: sales_entities
+    - target: monroe_sequence_marker
+      relation: supported_by
+      weight: optional
+      description: CTAs map to the Action step in Monroe's Motivated Sequence providing
+        persuasive closure after need, satisfaction, and visualisation per UNM v2
+      target_file: rhetorical_devices_entities
+    - target: action_marker
+      relation: specialises
+      weight: optional
+      description: CTAs specialise the SOAR Action/Approach stage where the audience is
+        directed to act on the presented solution per UNM v2 SOAR mapping
+      target_file: sales_entities
+    - target: audience_motivator
+      relation: supported_by
+      weight: expected
+      description: "Calls to action are supported by audience motivators framing the ask in the audience's own terms per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    - target: urgency_signal
+      relation: supported_by
+      weight: optional
+      description: "Calls to action are supported by urgency signals as personalised CTAs convert 42% more visitors into leads per Comprehensive Audience Analysis"
+      target_file: sales_entities
+    - target: emphasis_marker
+      relation: supported_by
+      weight: expected
+      description: "Calls to action require vocal emphasis (volume increase, deliberate pacing, pitch change) to signal their importance and drive audience response per Ethos and Physicality research"
+      target_file: performance_entities
+    - target: pathos_appeal
+      relation: supported_by
+      weight: expected
+      description: "Calls to action are supported by pathos appeal; emotional connection (warmth, Duchenne smile) drives audience willingness to act on the directive per Anatomy of Presence research"
+      target_file: rhetorical_devices_entities
+    - target: engagement_cue
+      relation: enables
+      weight: expected
+      description: "Calls to action enable engagement cues — clear directive language paired with benefit framing creates actionable audience engagement moments per Best Practices for Writing"
+      target_file: delivery_entities
+    - target: visual_element
+      relation: supported_by
+      weight: expected
+      description: "Calls to action are supported by visual elements — prominent buttons, directional cues, and high-contrast visual treatments make CTAs visually distinct and actionable per Visualisation Techniques research"
+      target_file: visual_elements_entities
+    - target: functional_slide
+      relation: supported_by
+      weight: expected
+      description: "Calls to action are supported by functional slides which provide the interactive mechanisms (QR codes, forms, links) that enable audience response per slide design research monograph part 2"
+      target_file: slide_types_entities
+    - target: positive_buying_signal
+      relation: triggers
+      weight: optional
+      description: "Call to action can trigger buying signals when audience responds positively — it operationalises the sales narrative resolution per UNIFIED_NARRATIVE_METHODOLOGY_v2"
+      target_file: sales_entities
+    - target: microlearning_format
+      relation: supported_by
+      weight: expected
+      description: "Calls to action are supported by microlearning formats — concise bite-sized modules create natural CTA insertion points where learners apply knowledge immediately per AI Microlearning Guide"
+      target_file: content_format_entities
+    - target: audience_objection
+      relation: resolves
+      weight: expected
+      description: "Effective CTAs resolve anticipated audience objections by addressing concerns directly — personalised CTAs that preemptively counter hesitations convert 202% better than generic ones per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    - target: power_verb
+      relation: supported_by
+      weight: expected
+      description: "The Agency Protocol prescribes replacing stative verbs with dynamic action verbs to increase perceived competence, directly strengthening calls to action (Architecture of Influence, Section 1.2)"
+      target_file: performance_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - CTA
+      strength: primary
+  transition_marker:
+    description: Discourse connectives signaling topic or section shifts
+    canonical_id: transition_marker
+    entity_kind: discourse_element
+    family: discourse_structure
+    gliner_label: TRANSITION_MARKER
+    gliner_description: Discourse connective transition moving on now next furthermore in addition turning to finally
+    examples:
+    - Moving on to...
+    - Now let's look at...
+    - Turning to the next topic...
+    - Building on this...
+    - With that foundation...
+    confidence_threshold: 0.75
+    match_policy_ref: defaults
+    aliases:
+    - discourse_marker
+    - connective
+    - transition
+    indicators:
+    - moving on
+    - now let's
+    - turning to
+    - building on
+    - with that
+    - next
+    - furthermore
+    - in addition
+    - finally
+    patterns:
+    - moving on to \w+
+    - now let's \w+
+    - turning to \w+
+    color: '#8e44ad'
+    relates_to:
+    - target: topic_shift_marker
+      relation: specialises
+      weight: expected
+      description: Narrative transition markers are a specialised form of discourse topic shifts
+      target_file: discourse_entities
+    - target: stage_transition_signal
+      relation: supports
+      weight: expected
+      description: Transition markers in the narrative signal shifts between sales stages. They indicate when the conversation
+        or positioning should move to the next phase.
+      target_file: sales_entities
+    - target: session_structure_marker
+      relation: supports
+      weight: required
+      description: Transition markers (But, However, Therefore, First, Next, Finally) structure presentations into digestible
+        sections. They reduce listener anxiety by providing a mental roadmap and signaling topic shifts.
+      target_file: delivery_entities
+    - target: content_structure_marker
+      relation: supports
+      weight: expected
+      description: Transition markers restore coherent content structure by signalling
+        discourse section boundaries per UNM v2 discourse repair prescription
+      target_file: content_architecture_entities
+    - target: cause_marker
+      relation: bridges
+      weight: expected
+      description: Causal markers (therefore, thus, because) serve as logical transition
+        markers connecting argument sections per UNM v2 RST discourse analysis
+      target_file: discourse_entities
+    - target: narrative_hook
+      relation: precedes
+      weight: optional
+      description: Strip design requires clear transitions between elements maintaining narrative flow — transitions precede
+        the next hook or attention-grabbing element in the sequence (Comprehensive Learning Design Framework)
+    - target: working_memory_marker
+      relation: supports
+      weight: expected
+      description: "Transition markers support working memory by segmenting speech into digestible chapters providing structural signposting that reduces cognitive load per Elite Speaker Linguistic Analysis"
+      target_file: cognitive_load_entities
+    - target: narrative_tension
+      relation: resolves
+      weight: optional
+      description: "RSTformer shows discourse transitions signal shifts between rhetorical states functioning to resolve or redirect narrative tension in document flow per Researching Narrative and Discourse Analysis"
+    - target: contrast_marker
+      relation: specialises
+      weight: optional
+      description: Transition markers include contrastive connectives like however and but that signal contrast or concession
+        relations between discourse segments per Advanced Computational Discourse Analysis research
+      target_file: discourse_entities
+    - target: engagement_cue
+      relation: enables
+      weight: expected
+      description: "Verbal signposting transitions guide audience attention and mirror the Signaling Principle, acting as verbal engagement cues per Slide Deck Design Playbook"
+      target_file: delivery_entities
+    - target: visual_narrative_element
+      relation: bridges
+      weight: expected
+      description: "Verbal transition markers bridge visual narrative elements by providing hooks that link visual concepts between slides, creating inter-slide cohesion per Visual Analysis of Slide Decks"
+      target_file: visual_elements_entities
+    - target: structural_slide
+      relation: supported_by
+      weight: expected
+      description: "Transition markers are supported by structural slides which provide the visual counterpart to verbal transitions — section dividers and agenda slides reinforce topic shifts per slide design research monograph part 3"
+      target_file: slide_types_entities
+    - target: pause_marker
+      relation: supported_by
+      weight: expected
+      description: "Transition markers are reinforced by pause markers — power pauses of 2 seconds after transition phrases like 'Therefore' signal structural shifts per World-Class Public Speaking Research"
+      target_file: performance_entities
+    - target: claim
+      relation: bridges
+      weight: expected
+      description: "Horizontal Flow requires that reading only Action Titles creates a coherent executive summary; transition markers bridge claims to maintain narrative coherence across slides (Canonical Presentation Methodology)"
+    - target: lexical_bundle
+      relation: specialises
+      weight: expected
+      description: "Discourse organizer bundles ('What this means is...', 'Here is the key...') function as transition markers in elite speech, replacing academic hedging bundles (Architecture of Influence, Section 1.3)"
+      target_file: performance_entities
+    - target: pedagogical_sequence_marker
+      relation: supports
+      weight: expected
+      description: "Dot-Dash storyline enforces MECE logical flow between slides requiring transition markers for sequenced coherence"
+      target_file: content_architecture_entities
+    - target: STAGE_TRANSITION_SIGNAL
+      relation: bridges
+      weight: expected
+      description: "Transition markers bridge SOAR phase shifts signaling audience to shift cognitive frames"
+      target_file: sales_entities
+  value_proposition:
+    description: Statements of unique benefit or competitive advantage
+    canonical_id: value_proposition
+    entity_kind: sales_element
+    family: persuasion_structure
+    gliner_label: VALUE_PROPOSITION
+    gliner_description: Unique benefit differentiator USP competitive advantage only platform industry leading trusted proven
+    examples:
+    - The only platform that...
+    - Uniquely positioned to...
+    - Unlike competitors...
+    - The industry-leading solution for...
+    - Trusted by Fortune 500 companies...
+    confidence_threshold: 0.7
+    match_policy_ref: defaults
+    aliases:
+    - usp
+    - differentiator
+    - benefit_statement
+    indicators:
+    - the only
+    - uniquely
+    - unlike
+    - industry-leading
+    - best-in-class
+    - trusted by
+    - proven
+    - unmatched
+    patterns:
+    - the only \w+ that
+    - uniquely \w+
+    - unlike \w+
+    - trusted by \w+
+    color: '#16a085'
+    relates_to:
+    - target: claim
+      relation: specialises
+      weight: expected
+      description: A value proposition is a commercially-framed claim about benefit or differentiation
+    - target: pain_point
+      relation: resolves
+      weight: required
+      description: Value propositions directly address identified pain points with promised outcomes
+    - target: outcome_statement
+      relation: supported_by
+      weight: expected
+      description: Value propositions require concrete outcome statements as proof
+    - target: resolution_signal
+      relation: supports
+      weight: required
+      description: Value propositions signal narrative resolution by articulating how the product/solution resolves identified
+        pain points. They close narrative tension established by pain points and create satisfaction.
+    - target: customer_hero
+      relation: enables
+      weight: expected
+      description: Customer is positioned as hero; value proposition articulates the mentor's
+        gift to the hero in StoryBrand/SOAR narrative per UNM v2 and SOAR research
+      target_file: character_archetypes_entities
+    - target: action_marker
+      relation: specialises
+      weight: expected
+      description: SOAR Approach stage is where value propositions are articulated; value
+        proposition specialises the SOAR Action marker as unique benefit per SOAR research
+      target_file: sales_entities
+    - target: ethos_appeal
+      relation: supports
+      weight: expected
+      description: Credibility claims in value propositions are a primary driver of ethos
+        per UNM v2 rhetorical balance analysis
+      target_file: rhetorical_devices_entities
+    - target: audience_pain_point
+      relation: resolves
+      weight: expected
+      description: SOAR research emphasises value propositions must resolve audience-specific
+        pain; what motivates them and what issues you can solve per SOAR research
+      target_file: audience_entities
+    - target: call_to_action
+      relation: precedes
+      weight: expected
+      description: "Value propositions precede calls to action in the audience-centric framework moving from tailored value through evidence to CTA per Comprehensive Audience Analysis"
+    - target: personal_anecdote
+      relation: supported_by
+      weight: expected
+      description: "Personal brand value propositions are supported by personal anecdotes — practitioners recount scenarios where they solved critical problems under pressure to demonstrate capability per Personal Branding Framework"
+      target_file: evidence_types_entities
+    - target: monroe_sequence_marker
+      relation: supported_by
+      weight: expected
+      description: "MMS's Visualization stage articulates the value proposition by having learners mentally picture the concrete benefits and positive outcomes of adopting the solution per Monroe's Motivated Sequence research"
+      target_file: rhetorical_devices_entities
+    - target: evidence
+      relation: supported_by
+      weight: expected
+      description: "Value propositions require evidential support to be persuasive — vague promises won't persuade; specific data or examples combined with story move audiences both emotionally and rationally per SOAR Storytelling research"
+    - target: audience_motivator
+      relation: supported_by
+      weight: expected
+      description: "Value propositions for L&D must align with persona motivators: learn this to close this deal for Sales, AI for Project Management efficiency for Millennials per Learner Persona Research"
+      target_file: audience_entities
+    - target: audience_kpi
+      relation: supported_by
+      weight: expected
+      description: "Value propositions are validated by persona-specific KPIs: revenue impact for Sales Directors, time savings for Millennials, career mobility for Gen Z per Learner Persona Research"
+      target_file: audience_entities
+    - target: data_proof_slide
+      relation: supported_by
+      weight: expected
+      description: "Value propositions are supported by data proof slides which provide the statistical evidence and business impact metrics that substantiate benefit claims per slide design research monograph part 2"
+      target_file: slide_types_entities
+    - target: result_marker
+      relation: supported_by
+      weight: expected
+      description: "Value propositions are substantiated by result markers showing measurable outcomes that prove the proposition's worth per SOAR Narrative Mapping by Sales Stage"
+      target_file: sales_entities
+    - target: situation_marker
+      relation: supported_by
+      weight: optional
+      description: "Value proposition is contextualised by the SOAR Situation marker — L2 Strategic Plays translate portfolio vision into precise value outcomes within a situation context per UNIFIED_NARRATIVE_METHODOLOGY_v2"
+      target_file: sales_entities
+    - target: power_verb
+      relation: supported_by
+      weight: expected
+      description: "Verb-Agency Link research shows perceived leadership competence correlates with high-dynamism verbs; value propositions gain authority through action verbs like 'spearheaded', 'maximized' (Architecture of Influence, Section 1.2)"
+      target_file: performance_entities
+    - target: RESULT_MARKER
+      relation: supports
+      weight: expected
+      description: "Value proposition solidified in Results phase through statistics and before/after comparisons"
+      target_file: sales_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - solution
+      - action
+      strength: primary
+    - taxonomy: narrative_taxonomy
+      dimension: soar_stage
+      values:
+      - action
+      strength: primary
+    parent_entity: claim
+  pain_point:
+    description: Customer challenges, problems, or frustrations
+    canonical_id: pain_point
+    entity_kind: sales_element
+    family: persuasion_structure
+    gliner_label: PAIN_POINT
+    gliner_description: Customer challenge problem frustration obstacle struggling facing losing manual legacy bottleneck
+    examples:
+    - Struggling with disconnected data...
+    - Facing increasing compliance pressure...
+    - Losing customers to faster competitors...
+    - Manual processes consuming valuable time...
+    - Legacy systems creating bottlenecks...
+    anti_examples:
+    - pain medication
+    - point guard
+    confidence_threshold: 0.65
+    match_policy_ref: defaults
+    aliases:
+    - challenge
+    - problem
+    - frustration
+    - obstacle
+    indicators:
+    - struggling
+    - facing
+    - losing
+    - manual
+    - legacy
+    - bottleneck
+    - challenge
+    - problem
+    - pain
+    - frustration
+    patterns:
+    - struggling with \w+
+    - facing \w+ pressure
+    - losing \w+ to
+    - \w+ creating bottlenecks
+    color: '#c0392b'
+    relates_to:
+    - target: value_proposition
+      relation: triggers
+      weight: required
+      description: Pain points create the need that value propositions address
+    - target: narrative_tension
+      relation: enables
+      weight: required
+      description: Pain points establish narrative tension by highlighting gaps between current state and desired state. The
+        identification of problems creates the cognitive tension that subsequent solutions resolve.
+    - target: audience_pain_point
+      relation: supported_by
+      weight: expected
+      description: Pain points are strengthened by audience-specific pain data
+      target_file: audience_entities
+    - target: situation_marker
+      relation: supports
+      weight: required
+      description: SOAR Situation stage is built on pain points; consider the pain points
+        or circumstances your audience is familiar with when setting the stage per SOAR research
+      target_file: sales_entities
+    - target: opportunity_marker
+      relation: triggers
+      weight: required
+      description: Pain points in the Situation trigger the SOAR Opportunity stage; the gap
+        between current state and desired state is driven by identified pains per SOAR research
+      target_file: sales_entities
+    - target: pathos_appeal
+      relation: enables
+      weight: expected
+      description: PAS agitation prescription amplifies pain points viscerally using emotive
+        language to increase pathos and emotional engagement per UNM v2
+      target_file: rhetorical_devices_entities
+    - target: outcome_statement
+      relation: precedes
+      weight: expected
+      description: Pain points precede outcome statements in narrative structure — the problem must be established before the
+        resolution can be meaningful per Crafting Powerful Opening Plays
+    - target: audience_objection
+      relation: triggers
+      weight: expected
+      description: "Pain points trigger audience objections when unaddressed as challenges and objections are linked concerns per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    - target: resolution_signal
+      relation: precedes
+      weight: required
+      description: "Case study structure follows problem-solution-outcome where quantified pain points precede resolution through solution architecture and measurable results per Case Study Excellence"
+    - target: monroe_sequence_marker
+      relation: supports
+      weight: required
+      description: "Pain points drive MMS's Need stage — they create cognitive dissonance by highlighting the gap between current state and desired state, motivating learners to seek the solution per Monroe's Motivated Sequence research"
+      target_file: rhetorical_devices_entities
+    - target: scenario_activity
+      relation: supports
+      weight: expected
+      description: "Pain points support scenario activities by providing the realistic problem context that grounds scenario narratives in authentic workplace challenges per roleplay research"
+      target_file: activity_types_entities
+    - target: narrative_hook
+      relation: enables
+      weight: expected
+      description: "Pain points enable narrative hooks — presenting a relatable challenge or frustration creates immediate audience identification and attention capture per Best Practices for Writing"
+    - target: before_after_comparison
+      relation: enables
+      weight: expected
+      description: "Pain points in the 'before' state directly enable before/after comparison slides that demonstrate transformation value per Slide Deck Design Playbook"
+      target_file: evidence_types_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - problem
+      strength: primary
+    - taxonomy: narrative_taxonomy
+      dimension: soar_stage
+      values:
+      - situation
+      strength: primary
+  outcome_statement:
+    description: Quantified results or measurable benefits
+    canonical_id: outcome_statement
+    entity_kind: sales_element
+    family: persuasion_structure
+    gliner_label: OUTCOME_STATEMENT
+    gliner_description: Result benefit ROI metric reduced increased achieved improved saved generated percentage dollar
+    examples:
+    - Reduced processing time by 60%
+    - Increased revenue by $2M annually
+    - Achieved 99.9% uptime
+    - Improved customer satisfaction by 25 points
+    - Eliminated 40 hours of manual work weekly
+    confidence_threshold: 0.75
+    validators:
+    - type: regex
+      ref: percentage
+    - type: regex
+      ref: money_usd
+    - type: parser
+      ref: numeric_with_unit
+    match_policy_ref: metric
+    aliases:
+    - result
+    - benefit
+    - roi_statement
+    - metric
+    indicators:
+    - reduced
+    - increased
+    - achieved
+    - improved
+    - eliminated
+    - saved
+    - generated
+    - '%'
+    - $
+    - hours
+    - days
+    patterns:
+    - reduced \w+ by \d+
+    - increased \w+ by \d+
+    - achieved \d+%
+    - saved \$?\d+
+    color: '#27ae60'
+    relates_to:
+    - target: value_proposition
+      relation: supports
+      weight: expected
+      description: Outcome statements provide concrete proof that value propositions deliver
+    - target: result_marker
+      relation: specialises
+      weight: optional
+      description: Outcome statements can specialise SOAR result markers in sales contexts
+      target_file: sales_entities
+    - target: resolution_signal
+      relation: supports
+      weight: required
+      description: SOAR Result stage positions outcome statements as the quantified proof
+        that validates narrative resolution signals per UNM v2
+    - target: call_to_action
+      relation: enables
+      weight: expected
+      description: SOAR outcome statements enable CTAs by providing proof that justifies
+        the ask; results lead to a forward-looking call-to-action per SOAR research
+    - target: data_statistic
+      relation: contains
+      weight: expected
+      description: SOAR Results emphasise quantitative data within outcome statements;
+        concrete metrics act as proof of transformation per SOAR research
+      target_file: evidence_types_entities
+    - target: pain_point
+      relation: resolves
+      weight: required
+      description: SOAR Results must close the loop; outcome statements address the situation
+        and challenge originally set up, resolving the original pain per SOAR research
+    - target: audience_kpi
+      relation: supported_by
+      weight: expected
+      description: "Outcome statements are supported by audience KPIs grounding outcomes in measurable terms per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    - target: monroe_sequence_marker
+      relation: supported_by
+      weight: expected
+      description: "MMS's Visualization stage functions as an outcome statement, projecting the audience into a future where the solution is in place and benefits are realised per Monroe's Motivated Sequence research"
+      target_file: rhetorical_devices_entities
+    - target: evidence
+      relation: supported_by
+      weight: expected
+      description: "Outcome statements need evidential backing — numbers and KPIs solidify the story's impact; real-world metrics demonstrate credibility per SOAR Storytelling research"
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - result
+      - validated_result
+      strength: primary
+    - taxonomy: narrative_taxonomy
+      dimension: soar_stage
+      values:
+      - result
+      strength: primary
+  narrative_tension:
+    description: Signals of narrative tension — the complication or crisis that creates dramatic urgency in the story arc;
+      maps to SOAR Opportunity stage and Minto SCQA complication
+    canonical_id: narrative_tension
+    entity_kind: narrative_element
+    family: storytelling_structure
+    gliner_label: NARRATIVE_TENSION
+    gliner_description: Narrative tension crisis urgency complication gap between expectation and reality the problem is growing
+      worse time is running out at risk
+    examples:
+    - The gap between expectation and reality was growing.
+    - Every month we delayed, the situation deteriorated.
+    - The status quo was no longer sustainable.
+    - The pressure was building from all sides.
+    - They were running out of time.
+    - The competitive threat was accelerating.
+    - What had worked before was no longer enough.
+    - The cost of doing nothing was compounding quarterly.
+    - The window for action was closing.
+    - A crisis was forming in plain sight.
+    confidence_threshold: 0.67
+    match_policy_ref: defaults
+    aliases:
+    - complication
+    - crisis_signal
+    - urgency_marker
+    - tension_marker
+    indicators:
+    - the gap was growing
+    - no longer sustainable
+    - running out of time
+    - deteriorating
+    - building pressure
+    - window was closing
+    - cost of doing nothing
+    - what had worked before
+    patterns:
+    - no longer (sustainable|sufficient|working|viable)
+    - running out of \w+
+    - the (gap|pressure|threat) was (growing|building|accelerating)
+    - cost of (doing nothing|inaction|delay)
+    - window (was|is) closing
+    - what (had|worked) before \w+
+    color: '#c0392b'
+    soar_stage_mapping: OPPORTUNITY — narrative tension signals the urgency and stakes that make the opportunity stage actionable
+    note: Per SOAR Narrative Mapping — effective Opportunity stages use tension language to elevate from information (describing
+      the gap) to urgency (making inaction feel costly). Tension without stakes = low-impact Opportunity.
+    relates_to:
+    - target: resolution_signal
+      relation: triggers
+      weight: required
+      description: Tension creates the psychological need for resolution — unresolved tension leaves audiences unsatisfied
+    - target: pain_point
+      relation: supports
+      weight: expected
+      description: Tension amplifies pain points by making them emotionally felt
+    - target: opportunity_marker
+      relation: supports
+      weight: required
+      description: SOAR Opportunity stage IS narrative tension; tension is the mechanism
+        that makes the opportunity stage actionable per SOAR research
+      target_file: sales_entities
+    - target: pathos_appeal
+      relation: enables
+      weight: expected
+      description: Tension triggers emotional engagement through pathos-driven curiosity
+        and concern; tension can drastically increase audience engagement per SOAR research
+      target_file: rhetorical_devices_entities
+    - target: value_proposition
+      relation: triggers
+      weight: expected
+      description: SOAR tension in Opportunity sets up the need for a value proposition
+        in Approach; audiences engage when they hear about a problem because it builds suspense
+    - target: narrative_hook
+      relation: supported_by
+      weight: expected
+      description: "LitVISTA framework shows narrative tension is established by hooks that initiate the forward momentum (Impulse axis) of the story per Researching Narrative and Discourse Analysis"
+    - target: pause_marker
+      relation: supported_by
+      weight: expected
+      description: "Strategic pauses amplify narrative tension by creating anticipatory silence before key reveals — the pause forces the audience to lean in per Ethos and Physicality research"
+      target_file: performance_entities
+    - target: monroe_sequence_marker
+      relation: supported_by
+      weight: expected
+      description: "MMS creates a deliberate emotional arc of tension: Need introduces distress/concern, Satisfaction provides relief, Visualization heightens positive emotion per Monroe's Motivated Sequence research"
+      target_file: rhetorical_devices_entities
+    - target: scenario_activity
+      relation: supported_by
+      weight: expected
+      description: "Scenario challenges force critical thinking at decision points, and injects (complications during TTX) heighten narrative tension to test adaptability per SBT guide"
+      target_file: activity_types_entities
+    - target: visual_narrative_element
+      relation: supported_by
+      weight: expected
+      description: "Narrative tension is visually reinforced through contrast (dissonant colours, angular lines, asymmetry) in visual narrative elements per Visualisation Techniques research"
+      target_file: visual_elements_entities
+    - target: situation_marker
+      relation: supported_by
+      weight: expected
+      description: "Narrative tension is grounded in the situation context that establishes the stakes and conflict per SOAR Narrative Mapping by Sales Stage"
+      target_file: sales_entities
+    - target: emphasis_marker
+      relation: supported_by
+      weight: expected
+      description: "Narrative tension is acoustically signaled through emphasis markers — pitch and intensity variation builds tension through escalating contours per World-Class Public Speaking Research"
+      target_file: performance_entities
+    - target: motivation_element
+      relation: enables
+      weight: expected
+      description: "Narrative tension enables motivation — the emotional journey maps challenge patterns (effort, struggle, breakthrough) that sustain engagement through difficulty per module-integration-strategy"
+      target_file: pedagogical_frameworks_entities
+    - target: OPPORTUNITY_MARKER
+      relation: supports
+      weight: expected
+      description: "Narrative tension is core mechanism of Obstacle phase highlighting gap between current and desired state"
+      target_file: sales_entities
+    - target: CONTRAST_MARKER
+      relation: supported_by
+      weight: expected
+      description: "Contrast markers underpin narrative tension juxtaposing what is against what could be"
+      target_file: discourse_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - tension
+      - problem
+      strength: primary
+    - taxonomy: narrative_taxonomy
+      dimension: emotional_tone
+      values:
+      - urgent
+      - concerned
+      strength: primary
+  resolution_signal:
+    description: Signals that the narrative arc has moved from tension to resolution — the turning point that shows how the
+      problem was solved or the outcome achieved
+    canonical_id: resolution_signal
+    entity_kind: narrative_element
+    family: storytelling_structure
+    gliner_label: RESOLUTION_SIGNAL
+    gliner_description: Resolution signal turning point solved breakthrough changed everything the answer the solution that
+      made the difference here is how we fixed it
+    examples:
+    - That was the turning point.
+    - Here is how we solved it.
+    - The breakthrough came when...
+    - Everything changed the moment they...
+    - The answer was simpler than expected.
+    - This is how they turned it around.
+    - The solution that made the difference.
+    - From that point forward, the trajectory changed.
+    - The single decision that unlocked the outcome.
+    - That was when the results began to compound.
+    confidence_threshold: 0.68
+    match_policy_ref: defaults
+    aliases:
+    - turning_point
+    - breakthrough_signal
+    - resolution_marker
+    indicators:
+    - turning point
+    - breakthrough
+    - solved it
+    - everything changed
+    - from that point
+    - the answer was
+    - how we fixed it
+    - made the difference
+    patterns:
+    - (that was|this was|here was) the (turning point|breakthrough|moment)
+    - everything changed (when|after|the moment)
+    - from (that point|this moment) (forward|on|onwards)
+    - here is how (we|they) (solved|fixed|addressed|turned)
+    - the (answer|solution|decision) that \w+
+    color: '#27ae60'
+    soar_stage_mapping: RESULT — resolution signals close the narrative arc; the hero's transformation is made visible through
+      the resolution language
+    note: Per Architecture of Persuasion — resolution without a prior tension marker reduces narrative impact; resolution
+      is most powerful when audience has been held in uncertainty through the tension phase
+    relates_to:
+    - target: narrative_tension
+      relation: resolves
+      weight: required
+      description: Resolution signals provide the payoff to tension — the answer to the problem
+    - target: call_to_action
+      relation: precedes
+      weight: expected
+      description: Resolution signals lead naturally into calls to action
+    - target: outcome_statement
+      relation: supported_by
+      weight: required
+      description: SOAR Result stage requires quantified outcomes as proof that validates
+        narrative resolution; numbers and KPIs solidify the story's impact per SOAR research
+    - target: result_marker
+      relation: supports
+      weight: required
+      description: SOAR Results stage delivers resolution; every great story needs a
+        satisfying conclusion in the Results stage per SOAR research
+      target_file: sales_entities
+    - target: value_proposition
+      relation: supported_by
+      weight: expected
+      description: SOAR/StoryBrand frameworks position value propositions as the mechanism
+        that enables narrative resolution by delivering promised outcomes per UNM v2
+    - target: pain_point
+      relation: resolves
+      weight: expected
+      description: "MMS's Satisfaction stage resolves the pain point raised in the Need stage by presenting concrete solutions that address the identified problem per Monroe's Motivated Sequence research"
+    - target: soar_narrative_quality_marker
+      relation: supports
+      weight: expected
+      description: Resolution completeness determines narrative quality; an unresolved
+        story feels uneasy and scores poorly on SOAR narrative quality per SOAR research
+      target_file: sales_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - result
+      - solution
+      strength: primary
+    - taxonomy: narrative_taxonomy
+      dimension: emotional_tone
+      values:
+      - celebratory
+      - optimistic
+      strength: primary
+gliner_config:
+  model: gliner-large-v2
+  batch_size: 32
+  use_hybrid_extraction: true
+  llm_fallback_for_types:
+  - claim
+  - warrant
+  - value_proposition
+  - narrative_tension
+  context_window: 75
+  default_confidence_threshold: 0.7
+  entity_groups:
+    toulmin_components:
+    - CLAIM
+    - EVIDENCE
+    - WARRANT
+    - QUALIFIER
+    - REBUTTAL
+    narrative_elements:
+    - NARRATIVE_HOOK
+    - CALL_TO_ACTION
+    - TRANSITION_MARKER
+    - NARRATIVE_TENSION
+    - RESOLUTION_SIGNAL
+    sales_elements:
+    - VALUE_PROPOSITION
+    - PAIN_POINT
+    - OUTCOME_STATEMENT
+domain_keywords:
+  primary:
+  - story
+  - narrative
+  - argument
+  - claim
+  - evidence
+  - support
+  - therefore
+  - because
+  - conclude
+  - demonstrates
+  - proves
+  - shows
+  - indicates
+  - value proposition
+  - call to action
+  - hook
+  - transition
+  - tension
+  - resolution
+  secondary:
+  - rhetoric
+  - persuasion
+  - discourse
+  - proposition
+  - thesis
+  - warrant
+  - backing
+  - qualifier
+  - rebuttal
+  - toulmin
+  - rst
+  - coherence
+  - cohesion
+  - flow
+  - structure
+  - turning point
+  - breakthrough
+  - complication
+  - urgency
+  - SOAR
+quality_indicators:
+  argument_structure:
+    claim_only: CLAIM without EVIDENCE — unsupported assertion; -5 points argument quality
+    supported: CLAIM + EVIDENCE — minimum acceptable argument structure
+    well_argued: CLAIM + EVIDENCE + WARRANT — full Toulmin structure; +5 points
+    expert_backed: CLAIM + EVIDENCE + WARRANT + attributed REBUTTAL — highest argument quality; +8 points
+  narrative_arc_completeness:
+    description: Checks for tension-resolution pairing in narrative content
+    incomplete: NARRATIVE_TENSION detected without RESOLUTION_SIGNAL — unresolved arc; tension without payoff
+    complete: NARRATIVE_TENSION followed by RESOLUTION_SIGNAL — complete narrative arc; +5 points
+    hook_absent: No NARRATIVE_HOOK detected in opening — flat start; -5 points
+    cta_absent: No CALL_TO_ACTION detected in closing — no direction for audience; -3 points
+  soar_narrative_indicators:
+    description: Narrative entity signals that map to SOAR stage health
+    situation_signal: PAIN_POINT detected — establishes Situation context
+    opportunity_signal: NARRATIVE_TENSION detected — validates Opportunity urgency
+    action_signal: VALUE_PROPOSITION detected — validates Action relevance
+    result_signal: OUTCOME_STATEMENT + RESOLUTION_SIGNAL — validates Result credibility

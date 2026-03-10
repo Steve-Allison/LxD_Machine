@@ -1,0 +1,457 @@
+# ==============================================================================
+# Microlearning Specifications
+# Research-validated thresholds for microlearning content design and delivery
+# ==============================================================================
+
+_meta:
+  id: microlearning_framework
+  title: "Microlearning Specifications"
+  description: "Duration thresholds, content specifications, retention metrics, and technical requirements for effective microlearning design based on cognitive science and implementation data."
+  domain: pedagogical
+  domain_type: workflow
+  purpose: methodology
+  version: "1.3.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Complete Guide to AI-powered Microlearning.md"
+    - "Corpus/Research/Best Practices for Structuring Corporate Learning Content.md"
+  relationships:
+# ==============================================================================
+# DURATION THRESHOLDS
+# ==============================================================================
+
+duration:
+  optimal_range:
+    min_minutes: 2
+    max_minutes: 5
+    research_basis: "Cognitive science research on digital attention spans and information retention"
+  extended_range:
+    min_minutes: 5
+    max_minutes: 10
+    condition: "Single complex objective where chunking into sequence is not practical"
+    research_basis: "Harbinger Group / LMSPortals: 5-10 min well-designed microlearning significantly boosts retention vs passive lecture"
+  video_attention_span:
+    max_seconds: 120
+    research_basis: "Short-form video engagement data - attention drops sharply after 2 minutes"
+  digital_attention_average:
+    seconds: 47
+    previous_seconds: 150
+    previous_year: 2004
+    research_basis: "Gloria Mark - average digital attention span decreased from 2.5 minutes (2004) to 47 seconds (archived from 2.5 min in 2004)"
+
+# ==============================================================================
+# CONTENT SPECIFICATIONS
+# ==============================================================================
+
+content_specs:
+  text_content:
+    min_words: 75
+    max_words: 150
+    research_basis: "Extreme concision without sacrificing clarity - microlearning text length guidelines"
+  video_script:
+    min_seconds: 30
+    max_seconds: 90
+    research_basis: "Content chunking optimal duration for video-based microlearning"
+  chunk_sizing:
+    min_tokens: 256
+    max_tokens: 512
+    overlap_percent:
+      min: 15
+      max: 20
+    research_basis: "Optimal semantic coherence in modern embedding models with recursive chunking"
+  single_objective_rule:
+    description: "Each microlearning unit should target exactly one learning objective"
+    research_basis: "Cognitive Load Theory - single-goal instruction reduces extraneous load (confirmed: LMSPortals checklist; Harbinger Group)"
+
+  blooms_taxonomy_alignment:
+    description: "Each module targets one cognitive level from Bloom's taxonomy, building toward comprehensive mastery across a learning path"
+    levels_in_scope: ["remembering", "understanding", "applying", "analyzing", "evaluating", "creating"]
+    sequencing_note: "Lower-order levels (remembering, understanding) first; higher-order (applying through creating) in later units"
+    source: "Research - Complete Guide to AI-powered Microlearning.md"
+
+  segment_structure:
+    description: "Internal pattern for each micro-segment within a module"
+    pattern: "problem_first → explanation → example"
+    anti_pattern: "Never lead with abstract concept — always anchor to a real problem first"
+    source: "Best Practices for Structuring Corporate Learning Content.md, Gold-Standard Structure Stage 4"
+
+  retrieval_check_frequency:
+    description: "Frequency of embedded knowledge checks during content delivery"
+    interval_minutes: "Every 5-7 minutes of content"
+    items_per_check: "1-3 items per knowledge check"
+    feedback_requirement: "Catalytic (explanatory) feedback required — not just correct/incorrect"
+    source: "Best Practices for Structuring Corporate Learning Content.md, Stage 5"
+
+  pre_training_segment:
+    description: "Key terms or tools orientation before complexity is introduced"
+    format_options: ["pop-up glossary", "90-second tools tour video"]
+    condition: "Required for compliance or technical content; expert learners may skip"
+    source: "Best Practices for Structuring Corporate Learning Content.md, Stage 3"
+
+  recap_duration:
+    seconds: 60
+    purpose: "End-of-segment summary reinforcing key takeaways"
+    transfer_prompt: "Include one application question: 'How will you use this today?'"
+    source: "Best Practices for Structuring Corporate Learning Content.md, Stage 6"
+
+  quality_indicators:
+    immediate_job_applicability: required
+    contextual_relevance: required
+    emotional_engagement_via_storytelling: recommended
+    clear_call_to_action: required
+    source: "Research - Complete Guide to AI-powered Microlearning.md"
+
+  anti_patterns:
+    voice_plus_identical_text: "Never pair voice-over with identical on-screen paragraph text (Mayer Redundancy Principle violation)"
+    content_overwhelm: "Do not deliver all content at once — scaffold complexity progressively across units"
+    passive_lecture: "Passive consumption without retrieval checks produces rapid forgetting (Ebbinghaus)"
+    one_week_blast: "Avoid compressing all learning into a single burst session — space units across days"
+    source: "Best Practices for Structuring Corporate Learning Content.md, multiple stages"
+
+# ==============================================================================
+# PERFORMANCE METRICS
+# ==============================================================================
+
+performance:
+  completion_rates:
+    microlearning_percent: 82
+    traditional_elearning_percent: 20
+    research_basis: "Studies consistently show microlearning achieving 82% completion vs 20% industry average for traditional e-learning"
+  forgetting_curve:
+    loss_at_24h_percent: 70
+    research_basis: "Ebbinghaus (1885) - within 24 hours, 70% of newly learned information is forgotten without reinforcement"
+  retention_improvement:
+    min_percent: 25
+    max_percent: 80
+    research_basis: "Spaced repetition and just-in-time delivery improve retention 25-80% vs traditional methods"
+  working_memory_constraint:
+    capacity_items: "7 ± 2"
+    research_basis: "Miller's Law (1956) — cognitive science basis for chunking limits in microlearning unit sizing"
+
+  cognitive_load_types:
+    intrinsic: "Inherent difficulty of the material — unavoidable; managed by sequencing simpler content first"
+    extraneous: "Unnecessary cognitive effort caused by poor design — must be minimised (segment structure, coherence, signaling)"
+    germane: "Productive effort devoted to forming schemas — must be maximised through retrieval practice and application"
+    source: "Research - Complete Guide to AI-powered Microlearning.md"
+
+  cognitive_overload_reduction:
+    adaptive_sequencing_percent: 20
+    mechanism: "Branching and adaptive paths that personalise sequence based on learner performance"
+    research_basis: "Adaptive sequencing can reduce cognitive overload by 20%"
+
+  performance_improvement:
+    average_percent: 17
+    research_basis: "Average performance improvement across microlearning implementations"
+
+  social_connection_effect:
+    performance_uplift_percent: 22
+    context: "Peer cohort connection during onboarding boosts performance by approximately 22%"
+    source: "WorkRamp, cited in Best Practices for Structuring Corporate Learning Content.md"
+
+  engagement_increase:
+    percent: 130
+    research_basis: "Employee engagement increase when microlearning replaces traditional formats"
+
+  retention_measurement_intervals:
+    description: "Recommended post-training retention measurement points"
+    intervals_days: [30, 60, 90]
+    source: "Research - Complete Guide to AI-powered Microlearning.md, Measuring Effectiveness"
+
+  sequencing_impact:
+    linear: "Optimal for procedural training where step order is critical"
+    branching_or_adaptive: "Personalises path based on learner performance and error patterns"
+    scaffolding: "Builds complexity progressively — each module provides foundation for the next"
+    source: "Research - Complete Guide to AI-powered Microlearning.md"
+
+# ==============================================================================
+# ROI BENCHMARKS
+# ==============================================================================
+
+roi:
+  ibm_case_study:
+    roi_percent: 2284
+    cost_before_per_employee: 400
+    cost_after_per_employee: 135
+    annual_savings_millions: 350
+    research_basis: "IBM microlearning implementation ROI data"
+  knowledge_retention_improvement:
+    min_percent: 18
+    max_percent: 80
+    research_basis: "Range of knowledge retention improvements across implementations"
+  content_creation_efficiency:
+    hours_before_per_module: 10
+    hours_after_per_module: 2
+    attribution: "Time savings attributable specifically to AI-assisted content creation workflows"
+    research_basis: "Content creation time savings with microlearning approach"
+
+  success_metrics_beyond_completion:
+    knowledge_retention: "Measure at 30, 60, and 90 days post-training — completion rate is a leading indicator only"
+    behavior_change_indicators: "Required — track observable on-the-job application (Kirkpatrick Level 3)"
+    business_impact_measurements: "Required — link to KPIs that motivated the training (Kirkpatrick Level 4)"
+    ab_testing: "Optimise content length, visual design, narrative style, and delivery frequency through A/B testing"
+    source: "Research - Complete Guide to AI-powered Microlearning.md, Measuring Effectiveness"
+
+# ==============================================================================
+# TECHNICAL REQUIREMENTS
+# ==============================================================================
+
+technical:
+  loading_time:
+    max_seconds: 3
+    research_basis: "Mobile user experience - abandonment increases significantly beyond 3 seconds"
+  touch_target:
+    min_pixels: 44
+    research_basis: "WCAG 2.5.5 - minimum target size for touch interfaces"
+  uptime:
+    min_percent: 99.9
+    research_basis: "Enterprise SLA requirements for learning platforms"
+  accessibility:
+    wcag_version: "WCAG 2.2 Level AA"
+    contrast_ratio_min: 4.5
+    keyboard_navigation: required
+    screen_reader_compatibility: required
+    text_resize_percent: 200
+    adjustable_timing_limits: required
+    captions_and_alt_text: "All video content requires captions; all images require alt text"
+    research_basis: "WCAG 2.2 Level AA (1.4.3) contrast and (1.4.4) text resize requirements"
+
+  mobile_design:
+    priority: "Mobile-first — most microlearning consumption occurs on mobile devices"
+    responsive_layouts: required
+    tappable_navigation: required
+    text_legibility_at_mobile_scale: required
+    video_duration_fit: "Keep within optimal_range to support mobile consumption contexts"
+    orientation_support: "Both portrait and landscape"
+    data_usage: "Minimise for accessibility across diverse connectivity conditions"
+    source: "Best Practices for Structuring Corporate Learning Content.md; Research - Complete Guide to AI-powered Microlearning.md"
+
+  navigation_requirements:
+    visible_progress_indicators: required
+    menu_button: required
+    pause_rewind_controls: required
+    learner_control_rationale: "Learner control over pacing reduces extraneous cognitive load and supports self-regulation"
+    source: "Best Practices for Structuring Corporate Learning Content.md, Additional Universal Modifiers"
+
+  offline_support:
+    content_caching: required
+    progressive_loading: "Essential content loads first before enrichment media"
+    sync_on_reconnect: required
+    bandwidth_optimised: "Aggressive compression for slow or intermittent connections"
+    source: "Research - Complete Guide to AI-powered Microlearning.md"
+
+  lms_integration_standards:
+    scorm: required
+    xapi: required
+    sso: required
+    real_time_progress_sync: required
+
+  analytics_requirements:
+    engagement_rates: tracked
+    completion_percentages: tracked
+    knowledge_retention_over_time: tracked
+    performance_improvement_indicators: tracked
+    reporting_intervals: "Aligned with success_metrics_beyond_completion (30/60/90 days)"
+
+  privacy_compliance:
+    gdpr: required
+    ccpa: required
+    coppa: "Required for platforms serving under-13 users — parental consent mechanism mandatory"
+    data_minimisation: "Privacy by design — collect only what is necessary for learning analytics"
+    consent_management: granular
+    data_portability: required
+    source: "Research - Complete Guide to AI-powered Microlearning.md, Ethical Design"
+
+  quality_metrics:
+    completion_rate_target_percent: 80
+    user_satisfaction_min: 4.0
+    satisfaction_scale_max: 5.0
+
+# ==============================================================================
+# SPACED REPETITION GUIDELINES
+# ==============================================================================
+
+spaced_repetition:
+  description: "Optimal spacing intervals for microlearning reinforcement"
+  intervals:
+    first_review: "1 day"
+    second_review: "3 days"
+    third_review: "7 days"
+    fourth_review: "14 days"
+    fifth_review: "30 days"
+  research_basis: "Ebbinghaus spacing effect - expanding intervals optimize long-term retention"
+  adaptive_adjustment: "Increase interval for mastered items, decrease for missed items"
+  formats_suited: ["flashcards", "micro-quizzes", "LMS push notifications", "email nudges"]
+  nudge_schedule:
+    post_module_review_1: "2-3 days after module completion"
+    post_module_review_2: "1 week after module completion"
+    research_basis: "Systematic reviews show spaced retrieval significantly lifts assessment scores in workplace populations (PMC)"
+    source: "Best Practices for Structuring Corporate Learning Content.md, Spacing and Reinforcement"
+  just_in_time_delivery:
+    description: "Microlearning units delivered at the point-of-need immediately before task execution"
+    examples: ["short how-to videos before performing a procedure", "one-page job aids at the workstation"]
+    relationship_to_spaced_repetition: "JIT and spaced repetition are complementary delivery strategies — JIT addresses immediate need, spaced repetition builds long-term retention"
+
+# ==============================================================================
+# VR/AR EFFECTIVENESS MULTIPLIERS
+# ==============================================================================
+
+immersive_learning:
+  vr_training:
+    speed_multiplier: 4.0
+    confidence_increase_percent: 275
+    retention_improvement_percent: 75
+    research_basis: "PwC VR training study - 4x faster, 275% more confident, 75% better retention vs traditional"
+    use_case_fit: ["technical_training", "medical_procedures", "complex_equipment_operation", "high_risk_scenarios"]
+  ar_training:
+    description: "Augmented reality overlays instructions and contextual information onto real-world environments"
+    key_benefit: "Enables point-of-need performance support without removing learner from work context"
+    use_case_fit: ["maintenance procedures", "assembly guidance", "on-site inspection", "customer service prompts"]
+    source: "Research - Complete Guide to AI-powered Microlearning.md"
+  cost_effectiveness:
+    breakeven_learner_count: 375
+    note: "VR becomes cost-effective at scale (>375 learners per course)"
+  implementation_considerations:
+    setup_time: "Evaluate VR/AR setup time against learning duration — must not exceed learning value"
+    device_compatibility: "Verify hardware compatibility across target learner device profiles before commissioning"
+
+# ==============================================================================
+# MODULE STRUCTURE
+# Seven-stage gold-standard micro-module skeleton (evidence-backed)
+# ==============================================================================
+
+module_structure:
+  description: "Ordered sequence of seven stages forming a complete, research-validated micro-module."
+  source: "Best Practices for Structuring Corporate Learning Content.md, Gold-Standard Structure"
+  canonical_example: "A 12-minute gold-standard micro-module opens with a 45-second explainer video, flashes a two-step roadmap, defines two key acronyms, delivers three short narrated animations separated by single-question polls, ends with a 30-second recap, and closes with a three-item scenario quiz that unlocks the next module."
+
+  stages:
+    1_hook_intro:
+      duration: "30-90 seconds"
+      format: "Video or animated slide"
+      function: "Advance organiser — establishes context and activates prior knowledge"
+
+    2_roadmap:
+      format: "Single-screen course or process map"
+      function: "Sets learning journey expectations; re-displayed after each chunk to maintain orientation"
+
+    3_pre_training:
+      format: ["pop-up glossary", "90-second tools tour video"]
+      function: "Key terms and tool orientation before complexity is introduced"
+      expert_skip: true
+
+    4_segmented_core:
+      duration_per_segment: "≤5 minutes"
+      internal_pattern: "problem → explanation → example"
+      anti_pattern: "Never voice-over with identical on-screen text (Mayer Redundancy)"
+
+    5_inline_retrieval:
+      items_per_check: "1-3"
+      frequency: "Every 5-7 minutes of content"
+      feedback: "Catalytic (explanatory) — not just correct/incorrect"
+
+    6_summary_reflection:
+      duration: "60 seconds"
+      components: ["recap of key takeaways", "transfer prompt: 'How will you use this today?'"]
+      job_aid: "Downloadable one-pager recommended"
+
+    7_assessment_next_step:
+      format: "Criterion-referenced test or branching scenario"
+      gate_function: "Unlocks next module in sequence upon passing"
+      alignment: "Must directly assess the single learning objective of this unit"
+
+# ==============================================================================
+# CONTENT FORMATS
+# Approved microlearning format types with selection guidance
+# ==============================================================================
+
+content_formats:
+  source: "Best Practices for Structuring Corporate Learning Content.md; Research - Complete Guide to AI-powered Microlearning.md"
+  formats:
+    short_video:
+      duration: "30-120 seconds"
+      use_when: "Demonstrating a process, showing a physical skill, or humanising a concept with a presenter"
+    podcast_audio:
+      use_when: "Reinforcing concepts for learners in hands-free contexts (commuting, exercise)"
+      requirement: "Transcript must accompany all audio content (accessibility)"
+    infographic:
+      use_when: "Summarising a framework, showing a comparison, or displaying data"
+      format_note: "Must be mobile-legible at standard screen width"
+    interactive_quiz:
+      use_when: "Retrieval practice, pre-assessment, or branching scenario"
+    drag_and_drop:
+      use_when: "Sequencing, categorisation, and matching tasks"
+    branching_scenario:
+      use_when: "Decision-making practice and consequence exploration"
+    gamified_elements:
+      types: ["points", "badges", "leaderboards", "progress bars"]
+      design_constraint: "Balance engagement with learning objectives — goal is enhanced learning, not entertainment"
+
+# ==============================================================================
+# GAMIFICATION
+# ==============================================================================
+
+gamification:
+  description: "Game mechanics applied to learning to enhance motivation, engagement, and completion."
+  source: "Research - Complete Guide to AI-powered Microlearning.md"
+  mechanics:
+    point_systems: "Awarded for task completion and correct answers"
+    achievement_badges: "Milestone recognition for completing units, paths, or streaks"
+    leaderboards: "Social comparison — use with care; can demotivate lower performers"
+    progress_tracking_visualizations: "Required — learners need visible progress toward completion"
+  design_constraint: "Gamification must enhance learning, not replace it. Mechanics should reinforce behaviour change, not just content consumption."
+  risk: "Leaderboards can reduce intrinsic motivation for lower-performing learners — consider team-based alternatives"
+
+# ==============================================================================
+# INCLUSIVE DESIGN
+# Neurodiversity and multi-generational accommodation
+# ==============================================================================
+
+inclusive_design:
+  source: "Research - Complete Guide to AI-powered Microlearning.md, Accommodating Special Learning Needs"
+
+  neurodiversity_accommodation:
+    adhd_support:
+      - "Clear structure with consistent navigation throughout all units"
+      - "Minimal distracting visual elements — every element must serve a purpose"
+      - "Visual progress indicators to maintain orientation"
+      - "Flexible pacing with pause and resume controls"
+    autism_spectrum_support:
+      - "Predictable patterns across all modules in a path"
+      - "Explicit instructions with no ambiguous language"
+      - "Adjustable sensory settings (volume, motion, colour intensity)"
+      - "Optional social interaction elements — never mandatory"
+
+  multi_generational_design:
+    older_learners:
+      - "Larger text options and high-contrast mode"
+      - "Simplified navigation with fewer nested menus"
+      - "Extended time limits for timed activities"
+      - "Familiar real-world metaphors over gaming conventions"
+    younger_learners:
+      - "Interactive elements and visual dynamism"
+      - "Social features (cohort visibility, peer comparison)"
+      - "Immediate, specific feedback on every interaction"
+      - "Short bursts aligned with attention patterns"
+
+# ==============================================================================
+# AI CONTENT AUTOMATION
+# ==============================================================================
+
+ai_content_automation:
+  description: "AI-assisted workflows for scaling microlearning content production."
+  source: "Research - Complete Guide to AI-powered Microlearning.md, Leveraging AI"
+  nlp_chunking:
+    semantic_coherence: "Optimised chunking at sentence-topic boundaries"
+    chunk_size_tokens: "256-512 (consistent with content_specs.chunk_sizing)"
+    overlap_percent: "15-20%"
+    cross_reference: "content_specs.chunk_sizing"
+  adaptive_difficulty:
+    mechanism: "ML analysis of error patterns, time-on-task, and performance data"
+    benchmark: "Duolingo Birdbrain AI as reference implementation"
+    outcome: "Personalised difficulty curve per learner"
+  automated_assessment_generation:
+    types: ["multiple choice", "scenario-based", "adaptive branching sequences"]
+  quality_control:
+    automated_plagiarism_detection: required
+    bias_mitigation: required
+    statistical_question_validation: required

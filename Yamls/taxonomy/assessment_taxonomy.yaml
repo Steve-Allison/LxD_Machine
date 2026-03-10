@@ -1,0 +1,248 @@
+_meta:
+  id: assessment_taxonomy
+  title: "Assessment Taxonomy"
+  description: "Classification of learning assessment types by evaluation purpose, Kirkpatrick level, item format, cognitive demand, and feedback mechanism"
+  domain: pedagogical
+  domain_type: workflow
+  purpose: taxonomy
+  version: "1.2.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Corporate Learning Assessment- Strategies, Modalities, and Best Practices.md"
+    - "Corpus/Research/Research - Assessment_Design_Module_Enhancement_Notes.md"
+    - "Corpus/Research/Activities - Research + Instructions v4.md"
+    - "Corpus/Research/recommended-training-effectiveness-questions-for-postcourse-eval.md"
+  academic_sources:
+    - "Kirkpatrick & Kirkpatrick (2006) - Evaluating Training Programs"
+    - "Bloom et al. (1956) - Taxonomy of Educational Objectives"
+  relationships:
+    - target: entities/assessment_entities.yaml
+      type: depends_on
+      description: "Entity types for assessment NER extraction"
+    - target: scoring/assessment_scoring_frameworks.yaml
+      type: depends_on
+      description: "Scoring rubrics applied to assessment outputs"
+# ==============================================================================
+# EVALUATION PURPOSE
+# ==============================================================================
+
+evaluation_purpose:
+  diagnostic:
+    label: "Diagnostic"
+    description: "Pre-learning assessment to establish baseline knowledge and identify gaps"
+    timing: before_instruction
+    kirkpatrick_level: null
+    examples:
+      - "pre-course skills audit"
+      - "readiness assessment"
+      - "prior knowledge survey"
+
+  formative:
+    label: "Formative"
+    description: "During-learning assessment to monitor progress and adjust instruction"
+    timing: during_instruction
+    kirkpatrick_level: 2
+    examples:
+      - "knowledge check"
+      - "practice quiz"
+      - "exit ticket"
+      - "reflection prompt"
+
+  summative:
+    label: "Summative"
+    description: "End-of-learning assessment to evaluate overall achievement against objectives"
+    timing: after_instruction
+    kirkpatrick_level: 2
+    examples:
+      - "final exam"
+      - "capstone project"
+      - "certification test"
+      - "portfolio review"
+
+  transfer:
+    label: "Transfer"
+    description: "Post-learning assessment to measure on-the-job application of skills"
+    timing: post_instruction
+    kirkpatrick_level: 3
+    examples:
+      - "manager observation checklist"
+      - "30/60/90-day review"
+      - "performance improvement tracking"
+
+  impact:
+    label: "Impact"
+    description: "Organisational-level assessment to measure business outcomes and ROI"
+    timing: post_instruction
+    kirkpatrick_level: 4
+    examples:
+      - "ROI calculation"
+      - "KPI improvement report"
+      - "business outcome correlation"
+
+# ==============================================================================
+# KIRKPATRICK LEVELS
+# ==============================================================================
+
+kirkpatrick_levels:
+  level_1_reaction:
+    label: "Level 1 — Reaction"
+    description: "Measures learner satisfaction, engagement, and perceived relevance"
+    data_sources:
+      - "satisfaction surveys"
+      - "NPS scores"
+      - "engagement analytics"
+      - "post-session feedback forms"
+    typical_instruments:
+      - "Likert scale survey"
+      - "open-ended reflection"
+      - "emoji reaction"
+
+  level_2_learning:
+    label: "Level 2 — Learning"
+    description: "Measures knowledge acquisition, skill development, and attitude change"
+    data_sources:
+      - "pre/post tests"
+      - "skill demonstrations"
+      - "scenario assessments"
+    typical_instruments:
+      - "multiple choice quiz"
+      - "branching scenario"
+      - "rubric-scored project"
+
+  level_3_behaviour:
+    label: "Level 3 — Behaviour"
+    description: "Measures on-the-job application and behavioural change"
+    data_sources:
+      - "manager observations"
+      - "performance reviews"
+      - "self-report surveys"
+      - "peer feedback"
+    typical_instruments:
+      - "observation checklist"
+      - "360-degree feedback"
+      - "coaching log"
+
+  level_4_results:
+    label: "Level 4 — Results"
+    description: "Measures organisational impact, productivity gains, and business ROI"
+    data_sources:
+      - "business KPIs"
+      - "revenue data"
+      - "quality metrics"
+      - "employee retention rates"
+    typical_instruments:
+      - "ROI analysis"
+      - "balanced scorecard"
+      - "cost-benefit analysis"
+
+# ==============================================================================
+# ITEM FORMAT TYPES
+# ==============================================================================
+
+item_formats:
+  selected_response:
+    label: "Selected Response"
+    description: "Learner selects from predetermined options"
+    cognitive_ceiling: understand
+    types:
+      - multiple_choice
+      - true_false
+      - matching
+      - ordering
+      - hotspot
+
+  constructed_response:
+    label: "Constructed Response"
+    description: "Learner generates an original answer"
+    cognitive_ceiling: create
+    types:
+      - short_answer
+      - essay
+      - code_submission
+      - diagram_creation
+
+  performance_based:
+    label: "Performance-Based"
+    description: "Learner demonstrates skill through authentic task execution"
+    cognitive_ceiling: create
+    types:
+      - scenario_simulation
+      - roleplay_assessment
+      - product_build
+      - live_demonstration
+      - portfolio_submission
+
+  observational:
+    label: "Observational"
+    description: "Assessor observes and rates learner behaviour in context"
+    cognitive_ceiling: evaluate
+    types:
+      - coaching_observation
+      - peer_review
+      - manager_rating
+      - video_review
+
+# ==============================================================================
+# CLASSIFICATION DIMENSIONS
+# ==============================================================================
+
+classification_dimensions:
+  evaluation_purpose:
+    name: "Evaluation Purpose"
+    description: "When and why the assessment is administered"
+    values:
+      - diagnostic
+      - formative
+      - summative
+      - transfer
+      - impact
+
+  kirkpatrick_level:
+    name: "Kirkpatrick Level"
+    description: "Which level of the Kirkpatrick model the assessment targets"
+    values:
+      - reaction
+      - learning
+      - behaviour
+      - results
+
+  item_format:
+    name: "Item Format"
+    description: "How the learner interacts with the assessment"
+    values:
+      - selected_response
+      - constructed_response
+      - performance_based
+      - observational
+
+  cognitive_demand:
+    name: "Cognitive Demand"
+    description: "Bloom's level required to succeed at the assessment"
+    values:
+      - remember
+      - understand
+      - apply
+      - analyze
+      - evaluate
+      - create
+
+  feedback_mechanism:
+    name: "Feedback Mechanism"
+    description: "How results are communicated back to the learner"
+    values:
+      - automated_immediate
+      - automated_delayed
+      - instructor_written
+      - instructor_verbal
+      - peer_review
+      - self_reflection
+      - rubric_based
+
+  authenticity:
+    name: "Authenticity"
+    description: "How closely the assessment mirrors real-world performance"
+    values:
+      - abstract
+      - contextualised
+      - simulated
+      - authentic

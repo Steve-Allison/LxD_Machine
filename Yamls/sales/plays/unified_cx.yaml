@@ -1,0 +1,139 @@
+_meta:
+  id: unified_cx
+  title: Unified CX
+  description: Unified Customer Experience portfolio play (L1) with strategic sales plays for Agentic Brand Activation, Customer Acquisition, Customer-centric Engagement, and Omnichannel Content Activation
+  domain: sales
+  domain_type: cross_cutting
+  purpose: reference
+  version: "2.4.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Crafting Powerful Opening Plays.md"
+    - "Corpus/Research/Research - Comprehensive Audience Analysis.md"
+    - "Corpus/Research/learner_personas_for_business.md"
+    - "Corpus/Research/Research - Using SOAR Storytelling most effectively.md"
+    - "Corpus/Research/Research - Canonical Presentation Methodology Research.md"
+
+
+  relationships:
+    - target: sales/play_catalog_reference.yaml
+      type: depends_on
+      description: "Play instance references the play catalog for classification context"
+sales_play:
+  tier: L1
+  id: L1_UCX_AI_WORLD
+  name: Unified Customer Experience for the AI World
+  description: Unify and harmonize customer data, insights, orchestration, planning, content management and native omnichannel
+    delivery to optimize experiences from discovery to loyalty.
+  transformational_vision: Power every moment with AI-optimized experiences using unified content, data and journeys.
+  target_customers:
+    segment: B2C enterprise brands (primary), publishers/agencies where applicable
+    account_characteristics:
+    - Fragmented tools and ROI pressure
+    - Need for real-time personalization across channels
+    - Desire to reimagine customer engagement end-to-end
+  target_personas:
+  - persona: CMO / Marketing Leaders
+  - persona: CIO / IT & Data Leaders
+  - persona: CXO (where applicable)
+  cross_cloud_overlays:
+    DMe:
+      overlap_type: indirect (enterprise framework); UCX strategic play app bundles are DX-led
+      notes: End-User Productivity and Knowledge Based Productivity appear as separate portfolio plays in the enterprise framework.
+  related_portfolio_plays:
+  - id: L1_END_USER_PRODUCTIVITY
+    name: End-User Productivity
+    notes: Separate portfolio play in FY26 enterprise framework (DMe-led).
+  - id: L1_KNOWLEDGE_BASED_PRODUCTIVITY
+    name: Knowledge Based Productivity
+    notes: Separate portfolio play in FY26 enterprise framework (DMe-led).
+  strategic_sales_plays:
+  - tier: L2
+    id: L2_UCX_AGENTIC_BRAND_ACTIVATION
+    name: Agentic Brand Activation
+    value_proposition: Deliver adaptive, AI-ready experiences that optimize continuously and keep the brand discoverable across
+      human and machine touchpoints.
+    applications_included:
+    - Brand Concierge
+    - AEM Sites
+    - AEM Sites Optimizer
+    - LLM Optimizer
+  - tier: L2
+    id: L2_UCX_CUSTOMER_ACQUISITION
+    name: Customer Acquisition
+    value_proposition: Improve acquisition performance by planning audience targeting and investment strategy, driving conversion,
+      and harnessing unified measurement to optimize decisions.
+    applications_included:
+    - Real-Time CDP
+    - Real-Time CDP Collaboration
+    - Mix Modeler
+  - tier: L2
+    id: L2_UCX_CUSTOMER_CENTRIC_ENGAGEMENT
+    name: Customer-centric Engagement
+    value_proposition: Move beyond fragmented, channel-first marketing to customer-first engagement using unified data, insights,
+      orchestration and native omnichannel delivery.
+    applications_included:
+    - Customer Journey Analytics
+    - Journey Optimizer
+    - Journey Optimizer Experimentation Accelerator
+    - Real-Time CDP
+  - tier: L2
+    id: L2_UCX_OMNICHANNEL_CONTENT_ACTIVATION
+    name: Omnichannel Content Activation
+    value_proposition: Connect content, journeys and data to deliver connected, consistent, relevant experiences across channels,
+      optimizing and personalizing at scale.
+    applications_included:
+    - AEM Sites
+    - AEM Assets
+    - Journey Optimizer
+    - AJO Experimentation Accelerator
+    - Content Analytics
+  canonical_aliases:
+    portfolio_play:
+    - Unified Customer Experience
+    - Unified Customer Experience for the AI World
+    - UCX
+
+soar_narrative_blueprint:
+  purpose: "Canonical SOAR arc and opening strategy for Unified Customer Experience play"
+  source: "Research - Using SOAR Storytelling most effectively.md"
+  arc_shape: man_in_hole
+
+  stages:
+    situation:
+      opening_frame: "Customers now interact across 7+ channels expecting seamless, personalized experiences — while most brands still manage those channels in silos"
+      data_anchor: "Forrester: 71% of consumers expect personalized interactions but only 26% of brands deliver them consistently"
+      status_quo_pain: "Fragmented data, disconnected journeys, and channel-specific tools prevent real-time personalization and create inconsistent brand experiences that drive churn"
+
+    opportunity:
+      villain_frame: "Channel-first marketing architecture that treats each touchpoint independently — preventing the unified view required for customer-first experiences"
+      pain_vocabulary:
+        - data_silos
+        - identity_fragmentation
+        - channel_inconsistency
+        - poor_conversion
+        - high_cac
+        - customer_churn
+        - personalization_gap
+      loss_aversion_frame: "Brands with unified customer data and real-time orchestration are converting 40% higher and retaining customers at 2x the rate of fragmented competitors"
+      kairos_trigger: "Real-time AI agents and unified identity resolution now make truly personalized omnichannel experiences achievable at enterprise scale — without 1:1 manual effort"
+
+    action:
+      value_frame: "Adobe Unified CX platform connects Real-Time CDP (unified data) + Journey Optimizer (orchestration) + AEM (content) so every customer interaction is data-informed, brand-consistent, and continuously optimized by AI"
+      differentiation_language: "Only Adobe unifies the data, orchestration, and content layers in a single integrated platform — eliminating the integration tax of point solutions"
+      champion_story: "CMO or VP of CX as champion; they own the customer experience outcome and are accountable for conversion and retention KPIs"
+
+    result:
+      proof_pattern: "Before/after: [Customer] increased conversion by X% and reduced CAC by Y% within 12 months of deploying unified Real-Time CDP + Journey Optimizer"
+      validated_outcome_types:
+        - conversion_rate_improvement
+        - customer_acquisition_cost_reduction
+        - churn_reduction
+        - customer_lifetime_value_increase
+        - personalization_coverage_increase
+
+  audience_calibration:
+    cmo: "Lead with revenue impact and personalization at scale; O to R frame"
+    cio: "Lead with unified data architecture and security; A to R frame"
+    vp_marketing: "Lead with campaign performance and channel efficiency; S to O frame"
+    director_ecommerce: "Lead with conversion and AOV improvement; O to R frame"

@@ -1,0 +1,1207 @@
+_meta:
+  id: opening_hook_rubric
+  title: "Opening Hook Rubric"
+  description: "Scoring rubric for presentation and content opening effectiveness covering hook type, relevance alignment, emotional engagement, curiosity gap creation, and transition quality"
+  domain: narrative
+  domain_type: workflow
+  purpose: scoring
+  version: "1.1.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Crafting Powerful Opening Plays.md"
+    - "Corpus/Research/Research - Using Monroes Motivated Sequence.md"
+    - "Corpus/Research/Research - Using SOAR Storytelling most effectively.md"
+    - "Corpus/Research/Research - Analyzing Story for Business Communication.md"
+  academic_sources:
+    - "Loewenstein (1994) - Information Gap Theory of Curiosity"
+    - "Cialdini (2001) - Principles of Influence"
+    - "Glanzer & Cunitz (1966) - Primacy Effect"
+    - "Monroe (1935) - Motivated Sequence attention step"
+    - "Green & Brock (2000) - Narrative Transportation"
+    - "von Restorff (1933) - Isolation Effect"
+    - "Frank et al. (2022) - Surprise and Memory Encoding"
+    - "Festinger (1957) - Cognitive Dissonance"
+    - "Reagan et al. (2016) - The emotional arcs of stories are dominated by six basic shapes (arXiv:1606.07772)"
+    - "Miller (2017) - Building a StoryBrand: SB7 customer-as-hero framework"
+    - "Aristotle - Rhetoric: Ethos, Pathos, Logos persuasive appeals"
+  relationships:
+    - target: ../methodology/opening_hooks_framework.yaml
+      type: derived_from
+      description: "Hook type taxonomy and psychological principles"
+    - target: ../entities/opening_hooks_entities.yaml
+      type: depends_on
+      description: "Entity types for hook pattern extraction"
+    - target: narrative_quality_rubric.yaml
+      type: related_to
+      description: "Narrative quality includes opening effectiveness"
+    - target: rhetorical_effectiveness_rubric.yaml
+      type: related_to
+      description: "Rhetorical devices used in openings"
+
+# ==============================================================================
+# RUBRIC WEIGHTS
+# ==============================================================================
+
+rubric_weights:
+  hook_type_effectiveness: 0.25   # Appropriateness and execution of hook type chosen
+  relevance_alignment: 0.25       # Connection to core message and audience context
+  emotional_engagement: 0.20      # Emotional trigger activation and audience investment
+  curiosity_gap: 0.15             # Knowledge gap creation driving continued attention
+  transition_quality: 0.15        # Bridge smoothness from hook to main content/thesis
+
+# ==============================================================================
+# SCORING DIMENSIONS
+# ==============================================================================
+
+dimensions:
+
+  hook_type_effectiveness:
+    name: "Hook Type Effectiveness"
+    description: "Appropriateness and execution quality of the chosen hook type (statistic, story, question, quote, provocation, analogy, etc.) given the content, audience, and medium"
+    weight: 0.25
+    research_basis: "Primacy effect (Glanzer & Cunitz, 1966): first information enjoys outsized mnemonic power. Von Restorff (1933): distinctive openings are remembered more accurately. Crafting Powerful Opening Plays.md."
+    score_levels:
+      1:
+        label: "Absent or Damaging"
+        description: "No identifiable hook technique present, or the opening actively undermines attention. Generic opener (agenda-first, apology, pleasantries) or hook disconnected from content."
+        indicators:
+          - "Opens with agenda slide, table of contents, or 'Today I will cover...'"
+          - "Begins with gratitude/apology: 'Thank you for having me' or 'I'm not an expert but...'"
+          - "No memorable first statement; listener has no reason to pay attention"
+          - "Hook type and content are unrelated — disconnected hook"
+      2:
+        label: "Weak"
+        description: "A hook type is present but executed poorly — vague, clichéd, or mismatched to audience. Low attention pull."
+        indicators:
+          - "Cliché quote (dictionary definition, overused motivational quote)"
+          - "Generic statistic without source, surprise factor, or relevance"
+          - "Question posed but too broad or low-stakes to generate interest"
+          - "Story opening with no tension, named character, or concrete detail"
+      3:
+        label: "Adequate"
+        description: "Hook type is appropriate and mostly executed well. Some audience attention is captured but impact is moderate — lacks sharpness or distinctiveness."
+        indicators:
+          - "Relevant statistic used but obvious or expected rather than counter-intuitive"
+          - "Story opening with character and situation but weak tension"
+          - "Question is pertinent but not provocative enough to create urgency"
+          - "Hook is functional but forgettable — would not distinguish this opening in a crowded context"
+      4:
+        label: "Strong"
+        description: "Hook type is well-chosen and cleanly executed. Clear attention capture; audience would likely continue listening. May lack one element of excellence."
+        indicators:
+          - "Surprising, concrete, and relevant statistic with immediate implication"
+          - "Story with identifiable protagonist, specific details, and real tension"
+          - "Provocative question that is high-stakes and plausible for this audience"
+          - "Analogy that illuminates the core idea through a vivid unexpected domain"
+          - "BLUF statement with measurable claim that immediately signals value"
+      5:
+        label: "Exceptional"
+        description: "Hook type is the optimal choice for context and audience; executed with precision and distinctiveness. Audience cannot help but engage. Von Restorff effect achieved — this opener stands out."
+        indicators:
+          - "Counter-intuitive statistic, sourced, contextualized, and linked to audience implication"
+          - "Mini-story with named protagonist, sensory detail, present tense, and a genuine cliffhanger"
+          - "Question that creates an open loop the audience feels compelled to close"
+          - "Extreme analogy that reframes the audience's understanding of the problem"
+          - "Controlled vulnerability opening that combines authenticity with authority"
+          - "Hook type matches the medium (live vs. video vs. written) and is optimized for it"
+          - "Protagonist is appropriately cast as the audience or customer (the Hero), with the speaker positioned as the Mentor/Guide — the presenter is never the hero of their own story (Miller 2017 StoryBrand SB7)"
+
+  relevance_alignment:
+    name: "Relevance Alignment"
+    description: "The degree to which the hook connects directly to the core message and the specific audience context. Answers: 'Why should I care about this, right now?'"
+    weight: 0.25
+    research_basis: "WIIFM principle from Monroe's Motivated Sequence — adults are goal-oriented and ask 'What's in it for me?' immediately. SOAR situation-setting: audience must think 'Yes, that is my context.' Crafting Powerful Opening Plays.md: 'Show immediate relevance to the audience's problem or goal.'"
+    score_levels:
+      1:
+        label: "No Relevance"
+        description: "The hook has no discernible connection to the core message or to the audience's known context or pain points."
+        indicators:
+          - "Opening story or statistic from an unrelated domain with no bridging explanation"
+          - "Hook serves the speaker's comfort rather than audience needs"
+          - "Audience could not infer the topic from the opening alone"
+      2:
+        label: "Weak Relevance"
+        description: "Loose or implied connection between hook and message. Audience must work to see the link. No audience-specific framing."
+        indicators:
+          - "Generic business hook applied without modification to this specific audience"
+          - "Relevance is only visible in retrospect, after the main content"
+          - "Correct industry but wrong persona lens (e.g., financial framing for a creative audience)"
+      3:
+        label: "Adequate Relevance"
+        description: "Hook is relevant to the general topic but not calibrated to the specific audience persona, role, or stage in the buyer journey."
+        indicators:
+          - "On-topic hook but uses the wrong metric register for the audience"
+          - "Pain point named but not validated as a top-three priority for this persona"
+          - "Relevance is clear but not urgent — no time-sensitivity signal"
+      4:
+        label: "Strong Relevance"
+        description: "Hook directly reflects the audience's known pain points or aspirations using their vocabulary. Core message connection is immediately evident."
+        indicators:
+          - "Hook uses persona-specific language (ROI/revenue for marketing leader; TCO/security for IT leader)"
+          - "Opening situation mirrors the audience's current context"
+          - "Core message direction visible within the first two sentences"
+          - "Audience would recognize their own world in the hook without prompting"
+      5:
+        label: "Exemplary Relevance"
+        description: "Hook demonstrates deep audience intelligence: right pain, right language, right urgency trigger, right timing. Audience feels the speaker 'gets them' before the end of the first sentence."
+        indicators:
+          - "Persona-specific pain named with precision and quantified cost"
+          - "Hook exploits a timely urgency trigger (regulatory deadline, market event, internal cycle)"
+          - "Language is drawn from the audience's own vocabulary without jargon mismatches"
+          - "SOAR-style situation-setting: specific, relevant details that function as alignment test, not data dump"
+          - "Audience thinks: 'That is exactly my situation — I need to hear what comes next'"
+
+  emotional_engagement:
+    name: "Emotional Engagement"
+    description: "The opening's ability to trigger a meaningful emotional response and create audience investment beyond intellectual interest"
+    weight: 0.20
+    research_basis: "Emotional arousal (Cahill et al., 1995): amygdala activation enhances memory consolidation. Narrative transportation (Green & Brock, 2000): absorbed audiences lower critical defenses. SOAR research: oxytocin released by emotional content makes listeners more receptive. Crafting Powerful Opening Plays.md: 'Emotion is a neurological spotlight.'"
+    score_levels:
+      1:
+        label: "No Emotional Signal"
+        description: "Opening is entirely dry or clinical. No emotional trigger activated. Audience has no affective reason to invest."
+        indicators:
+          - "Pure data or methodology with no human framing"
+          - "Abstract language with no concrete or sensory elements"
+          - "Monotone informational delivery — no stakes communicated"
+          - "'Slide 1 of 47: Market Overview' pattern"
+      2:
+        label: "Minimal Engagement"
+        description: "A faint emotional signal is present but weak — audience is not moved. May acknowledge a problem without making it feel real or urgent."
+        indicators:
+          - "Problem named but not felt — no vivid illustration"
+          - "Emotion word used but not earned through story or context"
+          - "Stakes hinted at but not articulated"
+      3:
+        label: "Moderate Engagement"
+        description: "Audience experiences mild emotional engagement — interest is sparked but not deep investment. One emotional beat is present."
+        indicators:
+          - "Relevant problem illustrated with one concrete example"
+          - "A mild sense of urgency or curiosity is created"
+          - "Story opening has relatable character but limited emotional depth"
+          - "Single emotional register present (concern, curiosity, or surprise — not layered)"
+      4:
+        label: "Strong Engagement"
+        description: "Audience is emotionally drawn in — clear emotional response triggered. Investment in hearing more is evident. Appropriate emotional type for context."
+        indicators:
+          - "Story with character, tension, and stakes that audience can feel"
+          - "Surprising statistic paired with human implication that generates concern or awe"
+          - "Question that creates a felt knowledge gap — the itch of curiosity"
+          - "Emotional response type matches content: urgency, hope, curiosity, or appropriate concern"
+          - "Narrative transportation initiated — audience begins to inhabit the story"
+      5:
+        label: "Exceptional Engagement"
+        description: "Audience is fully invested emotionally from the first moment. Multiple emotional registers activated in sequence (e.g., concern → hope). Emotional energy is channeled constructively toward the message."
+        indicators:
+          - "Mini-story achieves narrative transportation within 2–4 sentences"
+          - "Layered emotional arc: a challenge or risk emotion followed by a resolution or possibility emotion"
+          - "Controlled vulnerability creates trust and identification simultaneously"
+          - "Emotional priming correctly matched to persona: concern for IT leader, urgency for ops persona, hope for creative leader"
+          - "Emotion is ethical and proportionate — powerful without triggering amygdala hijack or anxiety that overrides message"
+          - "Audience would retell the opening as 'the moment I realized I needed to pay attention'"
+          - "Opening contains emotional contrast: a 'fall' (tension, disruption, problem) before a 'rise' (possibility, solution, opportunity) — emotional arc complexity amplifies dopamine and oxytocin response (Reagan et al. 2016)"
+
+  curiosity_gap:
+    name: "Curiosity Gap"
+    description: "The opening's success at creating a felt knowledge gap — a cognitive open loop that motivates the audience to keep listening to reach resolution"
+    weight: 0.15
+    research_basis: "Loewenstein (1994) Information Gap Theory: awareness of missing piece creates tension that feels like an itch to scratch, activating dopamine reward circuits. Crafting Powerful Opening Plays.md: 'Pose a provocative question or riddle... intentionally not giving the full answer.' Monroe's Motivated Sequence Need step: audience must feel 'I see the problem and I want a solution.'"
+    score_levels:
+      1:
+        label: "No Gap"
+        description: "Opening is fully resolved — no question is raised, no mystery created, no tension left open. Audience has no forward-looking motivation."
+        indicators:
+          - "Complete statement with no implication of something to be revealed"
+          - "Agenda-first structure explains everything that will come — no discovery tension"
+          - "Hook statement is self-contained and prompts no follow-up question"
+      2:
+        label: "Weak Gap"
+        description: "A faint open loop exists but is easy to dismiss or ignore. Curiosity is not meaningfully activated."
+        indicators:
+          - "Question is too broad or abstract to feel answerable or urgent"
+          - "Tease is so vague it generates confusion rather than curiosity"
+          - "Open loop raised but immediately answered in the same sentence"
+      3:
+        label: "Moderate Gap"
+        description: "A real knowledge gap is created. Audience has a reason to continue listening but the gap is not sharply defined."
+        indicators:
+          - "Question is posed and left open but stakes are unclear"
+          - "Surprising statistic creates interest but the 'so what' isn't developed into a full gap"
+          - "Mystery raised but audience can predict the resolution easily"
+      4:
+        label: "Strong Gap"
+        description: "Clear, felt curiosity gap established. Audience experiences the pull of an unresolved question or tension. They would notice if the answer was withheld."
+        indicators:
+          - "Provocative question stated and left genuinely open — answer is not obvious"
+          - "Surprising claim or paradox stated that demands explanation"
+          - "Tease of a result ('one small change increased performance by 40%') without immediate reveal"
+          - "Three-Act Cold Open: hook and intrigue established, payoff deliberately withheld"
+          - "Monroe attention step executed: audience is intrigued and primed for Need"
+      5:
+        label: "Exceptional Gap"
+        description: "The curiosity gap dominates the audience's mental state. They are actively anticipating resolution — the dopamine-driven itch is real. Gap is sharp, specific, and the stakes of resolution are clear."
+        indicators:
+          - "Open loop is irresistible: specific, high-stakes, plausible — not gimmicky"
+          - "Gap is designed so that the resolution directly delivers the core message"
+          - "Audience can articulate exactly what question they want answered"
+          - "Incomplete pattern or numerical hook ('Three things every leader knows but never acts on')"
+          - "Resolution is promised within the content rather than immediately — maintaining tension through the structure"
+          - "Gap pays off cleanly later: the 'aha!' moment reinforces message retention (Loewenstein resolution principle)"
+
+  transition_quality:
+    name: "Transition Quality"
+    description: "The smoothness and effectiveness of the bridge from hook to main content or thesis — ensuring momentum is not lost and the hook's emotional energy flows into the core message"
+    weight: 0.15
+    research_basis: "SOAR story flow requires cause-and-effect linkage between sections. Narrative quality rubric transition_standards: transitions must feel causally necessitated. Crafting Powerful Opening Plays.md: 'The hook should be a springboard, not a stray firework.' Monroe's Motivated Sequence: attention step must flow naturally into need step."
+    score_levels:
+      1:
+        label: "No Transition"
+        description: "Hook and main content are disconnected — audience experiences a jarring break. The hook's energy is wasted."
+        indicators:
+          - "Opening story or statistic has no explicit bridge to the topic"
+          - "Abrupt shift from hook to agenda slide without connecting statement"
+          - "Audience left wondering: 'What was that about and what does it have to do with this?'"
+      2:
+        label: "Weak Transition"
+        description: "A transition exists but is mechanical or unclear. The connection between hook and message is stated but not felt."
+        indicators:
+          - "Transition phrase is generic: 'And that's what today is about'"
+          - "Hook lesson is not explicitly extracted — audience must do the connecting work"
+          - "Transition introduces new framing that doesn't build on the hook's energy"
+      3:
+        label: "Adequate Transition"
+        description: "Transition links hook to content clearly. Message direction is established. May lack elegance or forward momentum."
+        indicators:
+          - "Hook lesson explicitly stated: 'I share that because...'"
+          - "Main thesis introduced with clear relation to the opening"
+          - "Emotional energy from hook is partially maintained but partially dissipated"
+      4:
+        label: "Strong Transition"
+        description: "Transition flows naturally from hook, extracting the lesson and pivoting to the message without breaking the audience's engagement. Momentum maintained."
+        indicators:
+          - "Hook's emotional energy is channeled directly into the main argument"
+          - "Transition uses a pivot phrase that feels earned: 'That's exactly why we're here today'"
+          - "The hook's curiosity gap is explicitly linked to what the content will resolve"
+          - "Monroe's Attention-to-Need pivot executed: hook creates the felt need for the content"
+      5:
+        label: "Seamless Transition"
+        description: "Transition is invisible — the hook and main content feel like a single unified opening. Audience experiences no seam. The hook was the content beginning."
+        indicators:
+          - "Hook is structurally embedded in the message framework (e.g., BLUF hook IS the thesis)"
+          - "Story hook's resolution IS the main message's first claim"
+          - "Three-Act Cold Open pay-off introduces the core thesis naturally as the reveal"
+          - "SOAR situation-setting flows directly into opportunity framing without repetition"
+          - "Audience does not notice the transition — they are already in the main content before they realize the hook has ended"
+
+# ==============================================================================
+# HOOK TYPES — TAXONOMY WITH EFFECTIVENESS CRITERIA
+# ==============================================================================
+
+hook_types:
+  description: "Complete taxonomy of opening hook types with effectiveness criteria, strength ratings, and audience fit guidance. Derived from opening_hooks_framework.yaml and Crafting Powerful Opening Plays.md."
+
+  statistic_hook:
+    label: "Surprising Statistic"
+    strength: high
+    psychological_mechanism: "Von Restorff isolation effect and emotional arousal — counter-intuitive numbers interrupt default processing and trigger urgency"
+    effectiveness_criteria:
+      strong:
+        - "Counter-intuitive or unexpected — challenges assumptions"
+        - "Personally relevant to this specific audience"
+        - "From a credible, named source"
+        - "Recent and current"
+        - "Paired with an implication or rhetorical question that makes the 'so what' explicit"
+        - "Contextualized with comparison or human-scale framing"
+      weak:
+        - "Vague ('millions of...') rather than specific ('every 39 seconds')"
+        - "Expected or obvious — confirms what audience already believes"
+        - "Unverifiable or sourceless"
+        - "Stated without implication — audience knows the number but not why it matters"
+    template: "Every [timeframe], [quantifiable shocking outcome] happens. [Implication for audience]."
+    best_for: ["executive audiences", "technical audiences", "data-driven contexts", "sales presentations"]
+
+  story_hook:
+    label: "Mini-Story Opener"
+    strength: high
+    psychological_mechanism: "Narrative transportation (Green & Brock, 2000) — story absorption reduces critical resistance and opens audiences to persuasion. Oxytocin release builds trust."
+    effectiveness_criteria:
+      strong:
+        - "Named or identifiable protagonist the audience can identify with"
+        - "Specific, sensory-rich situation details (not generic)"
+        - "Clear tension or conflict introduced within two sentences"
+        - "Present tense used for immediacy"
+        - "Cliffhanger or open loop — does not resolve within the hook itself"
+        - "Authentic or representative — not fabricated or exaggerated"
+      strong:
+        - "Hook establishes both the character's external Want (surface goal) AND internal Need (deeper emotional truth — fear of falling behind, desire for recognition, ambition)"
+      weak:
+        - "Protagonist is unnamed or too abstract for identification"
+        - "Story resolves before audience can feel tension"
+        - "No sensory or concrete detail — audience cannot visualize"
+        - "First-person story with no audience-relevance bridge"
+        - "Presenter or brand is positioned as the hero — audience has no role in the story"
+    character_positioning:
+      audience_as_hero: "The most effective protagonist in a business story hook is the customer or audience member — not the presenter or brand. The presenter's proper role is the Mentor/Guide who equips the Hero for their quest."
+      brand_as_mentor: "Position the brand/speaker as the guide who helps the audience overcome their challenge — not as the hero who solved the challenge on their behalf. The brand is Obi-Wan Kenobi, not Luke Skywalker."
+      failure_mode: "A hook that positions the presenter or company as the hero casts the audience as passive observers; they disengage because the story has no role for them."
+      source: "Research - Analyzing Story for Business Communication §3.1 StoryBrand SB7 (Miller 2017)"
+    protagonist_arc_types:
+      positive_change: "Protagonist confronts a challenge, overcomes it, ends in a better state. Use when the audience needs to believe transformation is possible and attainable."
+      negative_change: "Protagonist fails to overcome the challenge and ends worse. Use for cautionary-tale hooks showing the cost of inaction — establishes stakes through loss."
+      flat_arc: "Protagonist already knows the solution and uses it to change the world around them. Use when positioning the speaker as the steady, authoritative guide with proven expertise."
+      source: "Research - Analyzing Story for Business Communication §1.2 The Taxonomy of Change"
+    duration_optimal: "15–45 seconds"
+    template: "[Name/role] was [dramatic situation] when [something unexpected occurred]. [Pause / open loop]."
+    best_for: ["mixed audiences", "emotional persuasion contexts", "brand storytelling", "product launches"]
+
+  question_hook:
+    label: "Provocative Question"
+    strength: high
+    psychological_mechanism: "Curiosity gap theory (Loewenstein, 1994) — unresolved question activates dopamine reward circuits that sustain attention until resolution"
+    effectiveness_criteria:
+      strong:
+        - "High-stakes and plausible for the audience's actual context"
+        - "Not easily answered — creates a genuine open loop"
+        - "Starts with 'What if...?' or 'Have you ever...?' to invite personal identification"
+        - "Followed by a pause (live) or a pivot to narrative rather than immediate answer"
+        - "Audience would mentally answer or be unable to answer — either creates engagement"
+      weak:
+        - "Too broad or philosophical to generate urgency"
+        - "Self-answering: audience already knows the answer"
+        - "Immediately answered by the speaker, collapsing the gap"
+        - "Low-stakes: audience does not care about the answer"
+    question_types:
+      rhetorical: "No answer expected — makes audience think and reflect"
+      statistical: "Reveals surprising data through question form"
+      hypothetical: "Invites imaginative identification with a scenario"
+      personal: "Directly implicates audience in the situation"
+    template: "What would you do if [high-stakes scenario relevant to this audience]?"
+    best_for: ["persuasive presentations", "training contexts", "executive briefings", "awareness campaigns"]
+
+  quote_hook:
+    label: "Authority Quote"
+    strength: medium
+    psychological_mechanism: "Social proof and authority (Cialdini, 2001) — credible attribution raises trust and signals that smart people consider this important"
+    effectiveness_criteria:
+      strong:
+        - "Source is recognized and respected by this specific audience"
+        - "Quote is genuinely surprising, counterintuitive, or provocative — not clichéd"
+        - "Speaker has an original reaction or commentary to add beyond the quote itself"
+        - "Directly relevant to the topic — not loosely applicable"
+      weak:
+        - "Overused inspirational quotes (Einstein, Churchill attributed incorrectly)"
+        - "Source is unknown to or unrespected by this audience"
+        - "Quote is bland or generic — audience has heard it before"
+        - "Quote stands alone without speaker's interpretation or connection to message"
+    best_for: ["academic contexts", "when authority is a key credibility lever", "thought leadership content"]
+
+  provocation_hook:
+    label: "Bold Claim / Provocation"
+    strength: high
+    psychological_mechanism: "Cognitive dissonance (Festinger, 1957) — a claim that contradicts existing beliefs creates discomfort that motivates engagement to restore balance"
+    effectiveness_criteria:
+      strong:
+        - "Directly contradicts a widespread assumption held by this audience"
+        - "Immediately followed by evidence or substantiation signal"
+        - "Stakes of the claim are high — audience cannot afford to dismiss it"
+        - "Speaker has genuine authority or evidence to back the bold claim"
+      weak:
+        - "Hyperbolic superlative with no evidence ('the most revolutionary ever')"
+        - "Provocation is hostile or alienating rather than intriguing"
+        - "Claim is not followed up — creates dissonance without resolution"
+        - "Audience does not hold the assumption being challenged"
+    indicators: ["is dead", "is wrong", "everything you know about X is wrong", "the truth about", "most people believe X — they're mistaken"]
+    best_for: ["thought leadership", "industry conferences", "disruption narratives", "myth-busting content"]
+
+  analogy_hook:
+    label: "Extreme Analogy"
+    strength: high
+    psychological_mechanism: "Von Restorff effect — a cross-domain comparison interrupts pattern and creates distinctive encoding. Also reduces cognitive load by mapping unfamiliar to familiar."
+    effectiveness_criteria:
+      strong:
+        - "Drawn from a domain that surprises or delights the audience"
+        - "Illuminates the core idea — the comparison earns its place"
+        - "Vivid and visually specific ('like a fighter pilot landing on an aircraft carrier in a storm')"
+        - "Tested on an uninitiated listener who confirms they understand the point"
+      weak:
+        - "Analogy is confusing rather than clarifying"
+        - "Cross-domain comparison is too loose — audience must work to see the link"
+        - "Shock value only — analogy does not add conceptual insight"
+    template: "[Problem/idea] is like [vivid cross-domain comparison]. Here's why that matters."
+    best_for: ["technical explanations", "complex concepts", "cross-functional audiences", "memorable keynotes"]
+
+  visual_hook:
+    label: "Visual Surprise"
+    strength: medium_to_high
+    psychological_mechanism: "Contrast and incongruity (Frank et al., 2022) — surprising visual stimuli spark immediate visual cortex–hippocampus communication, prioritizing storage"
+    effectiveness_criteria:
+      strong:
+        - "Image or visual is unexpected and immediately connected to the message"
+        - "Requires zero words to create initial impact — then words add meaning"
+        - "Audience cannot look away — visual has inherent tension or intrigue"
+        - "Visual and spoken hook are designed together, not added as an afterthought"
+      weak:
+        - "Generic stock photography with no surprise or specificity"
+        - "Slide crammed with text that competes with the spoken hook"
+        - "Visual is unrelated to core message and never explicitly connected"
+    best_for: ["live stage presentations", "video openings", "highly visual industries (design, media, retail)"]
+
+  silence_hook:
+    label: "Deliberate Pause / Silence"
+    strength: medium
+    psychological_mechanism: "Pattern interruption — silence violates the expected flow of a presentation, triggering the audience's orienting response. Creates anticipation through temporal gap."
+    effectiveness_criteria:
+      strong:
+        - "Pause is deliberate and confident — not hesitation"
+        - "Minimum 3–5 seconds held before speaking"
+        - "First words after silence carry significant weight"
+        - "Used sparingly — maximum one deliberate silence per opening"
+      weak:
+        - "Pause results from uncertainty rather than choice — audience senses nervousness"
+        - "Silence too brief — not long enough to create pattern interruption"
+        - "First words after silence are mundane — anticlimactic"
+    best_for: ["live keynotes", "high-stakes presentations", "moments requiring gravitas", "after a startling visual"]
+
+  controlled_vulnerability_hook:
+    label: "Controlled Vulnerability"
+    strength: medium_to_high
+    psychological_mechanism: "Social identification and trust — authentic confession creates human connection. Curiosity about what the speaker learned sustains attention."
+    effectiveness_criteria:
+      strong:
+        - "Confession is genuine and specific — not performative humility"
+        - "The vulnerability has a lesson or pivot: 'Here's what I learned'"
+        - "Admission connects directly to the session topic"
+        - "Maintains credibility: the story shows growth, not incompetence"
+      weak:
+        - "False modesty framing: 'I don't have anything too exciting today'"
+        - "Vulnerability with no resolution — leaves audience with lowered confidence in speaker"
+        - "Confession is irrelevant to the topic"
+    indicators: ["I'll admit", "I was wrong about", "I have a confession", "I still remember when I failed"]
+    best_for: ["leadership contexts", "learning sessions", "culture-building presentations", "trust-building sales situations"]
+
+  bluf_hook:
+    label: "BLUF — Bottom Line Up Front"
+    strength: high
+    psychological_mechanism: "Primacy effect (Glanzer & Cunitz, 1966) — front-loading the most important point maximizes mnemonic encoding. Respects executive attention economy."
+    effectiveness_criteria:
+      strong:
+        - "First sentence contains the conclusion, recommendation, or most important outcome"
+        - "Claim is measurable and specific: '[X%] improvement in [timeframe]'"
+        - "Value proposition is immediately clear — audience does not have to wait"
+        - "Remainder of opening provides evidence or context, not the main point"
+      weak:
+        - "Bottom line is buried after context or background"
+        - "BLUF statement is vague: 'We have exciting news to share today'"
+        - "Multiple competing bottom lines — only one can be up front"
+    patterns:
+      - "We can [measurable outcome] within [timeframe]. Here is how."
+      - "Bottom line: [core insight]. Three reasons explain it."
+      - "My recommendation is [X]. Let me show you the evidence."
+    best_for: ["executive audiences", "C-suite briefings", "time-constrained contexts", "written reports and emails"]
+
+  scqa_hook:
+    label: "SCQA — Situation, Complication, Question, Answer"
+    strength: high
+    psychological_mechanism: "Consensus-building before the key insight — starting with a situation the audience already accepts as true builds immediate Ethos and Logos, making them receptive to the Answer. Reduces resistance to the core claim by grounding it in agreed reality."
+    effectiveness_criteria:
+      strong:
+        - "Situation is genuinely agreed-upon by this audience — not contested or assumed"
+        - "Complication is specific, credible, and disrupts the agreed situation"
+        - "Question is left implicit — audience feels it rather than hearing it stated"
+        - "Answer is sharp and delivered before the 90-second mark"
+        - "Flow is logical and inevitable: S → C → Q → A feels like reasoning, not sales"
+      weak:
+        - "Situation is debatable — erodes Ethos immediately"
+        - "Complication is vague ('challenges persist') without specificity"
+        - "Answer is delayed beyond the opening — structure collapses into preamble"
+        - "Question is explicitly stated, breaking the logical elegance of the pattern"
+    template: "We are [agreed situation]. But [specific complication]. So the question becomes [implicit question]. The answer is [big idea / recommendation]."
+    best_for: ["consultant-style presentations", "strategy decks", "data-led audiences", "situations where credibility must be established before the key insight"]
+    source: "Research - Analyzing Story for Business Communication §3.2 Framework 3"
+
+  world_shift_hook:
+    label: "World Shift / Undeniable Change"
+    strength: high
+    psychological_mechanism: "Combines external authority (undeniable evidence) with loss aversion — the world has already changed, making inaction a losing position. Activates urgency without manipulation: the stakes are real and external, not manufactured by the speaker."
+    effectiveness_criteria:
+      strong:
+        - "Change named is genuinely undeniable — audience cannot argue with the evidence"
+        - "Winners and losers framing established within 60 seconds — stakes are concrete"
+        - "Audience's own position in the shift is implicit — they recognize which side they are on"
+        - "Promised Land teased before 90 seconds — positive resolution is visible"
+        - "Speaker is positioned as the guide to the winning side, not the hero of the shift"
+      weak:
+        - "Change is debatable or contested — erodes credibility before the pitch begins"
+        - "Winners/losers framing is abstract — no industry-specific or persona-relevant evidence"
+        - "Hook stays in the 'losers' zone — no path to winning or hope signal"
+        - "Feels like fear-mongering rather than honest stakes-setting"
+    template: "Something fundamental has changed in [industry/world]: [specific evidence]. Those who [action] will [win outcome]. Those who don't will [lose outcome]. Here is what that means for you."
+    best_for: ["sales presentations", "strategy decks", "change management contexts", "executive audiences requiring urgency before a recommendation"]
+    source: "Research - Analyzing Story for Business Communication §3.2 Raskin's Sales Narrative Step 1"
+
+# ==============================================================================
+# PSYCHOLOGICAL PRINCIPLES — SCORING REFERENCE
+# ==============================================================================
+
+psychological_principles:
+  description: "Core cognitive science principles that underlie hook effectiveness scoring. Each principle maps to specific score-level descriptors in the dimensions above."
+
+  primacy_effect:
+    definition: "First information receives disproportionate attention and memory encoding"
+    source: "Glanzer & Cunitz (1966)"
+    scoring_implication: "Openings that squander the first 15 seconds on pleasantries, agenda, or preamble fail this principle and score 1–2 on hook_type_effectiveness"
+    positive_signal: "Core message or most compelling claim appears in first sentence"
+    negative_signal: "Substance appears after slide 2 or sentence 3"
+
+  von_restorff_effect:
+    definition: "Distinctive, unexpected elements are remembered more accurately than uniform items"
+    source: "von Restorff (1933); Hunt (2013)"
+    scoring_implication: "Hooks that break expected patterns (unusual format, contrarian claim, extreme analogy) earn higher scores on hook_type_effectiveness"
+    positive_signal: "Opening format differs from what audience would predict"
+    negative_signal: "Opening follows the default pattern for this context (generic welcome, agenda, background)"
+
+  curiosity_gap_theory:
+    definition: "Awareness of a knowledge gap creates cognitive tension that motivates information-seeking"
+    source: "Loewenstein (1994)"
+    scoring_implication: "Directly drives the curiosity_gap dimension score. Unresolved open loops that are specific and high-stakes score 4–5."
+    resolution_requirement: "The gap must be resolved in the content — an unresolved gap creates frustration, not engagement. Failure to resolve penalizes overall content quality."
+    positive_signal: "Audience can articulate exactly what question they want answered"
+    negative_signal: "Opening is fully resolved — nothing left to discover"
+
+  narrative_transportation:
+    definition: "Story absorption reduces critical resistance and increases persuasive receptivity"
+    source: "Green & Brock (2000); van Laer et al. (2014)"
+    scoring_implication: "Story hooks scoring 4–5 on hook_type_effectiveness must achieve transportation indicators: named protagonist, sensory detail, present tense, tension"
+    identification_requirement: "Protagonist must mirror audience context for identification to amplify transportation effect"
+    neurochemical_basis: "Narrative transport releases dopamine (anticipation/curiosity circuits) and oxytocin (trust/bonding), dramatically improving recall compared to isolated facts or a PowerPoint list. Stories engage language, emotional, and memory brain centers simultaneously — a fact list engages language only."
+    multi_modal_engagement: "Three brain regions activate simultaneously under narrative transportation: language processing, emotional centers, and memory consolidation pathways. This cross-regional activation creates the retention advantage over non-narrative information delivery."
+    source_enriched: "Training Industry (2024); Science L.E.A.F; Research - Analyzing Story for Business Communication §3.3"
+    positive_signal: "Audience inhabits the scenario — would notice if story was interrupted"
+    negative_signal: "Story is told about 'a company' with no human actor — abstract and un-transportable"
+
+  emotional_arousal:
+    definition: "Moderate emotional arousal focuses attention and enhances memory consolidation"
+    source: "Cahill et al. (1995); Goleman on amygdala activation"
+    scoring_implication: "Drives the emotional_engagement dimension. Ethical, proportionate emotional triggers score higher than either no emotion or manipulative/excessive fear."
+    caution: "Extreme arousal (amygdala hijack level) narrows thinking and overrides message. Score 4 maximum for openings that use fear without constructive channeling."
+    persona_priming:
+      marketing_leader: "Primary emotion: concern about ROI proof; secondary: hope for competitive advantage"
+      creative_leader: "Primary emotion: frustration at creative constraints; secondary: hope for empowerment"
+      ops_persona: "Primary emotion: urgency from system complexity; secondary: relief through consolidation"
+      it_leader: "Primary emotion: concern about security/scalability risk; secondary: confidence through clarity"
+
+  social_proof_and_authority:
+    definition: "People follow the lead of credible peers and experts, especially under uncertainty"
+    source: "Cialdini (2001)"
+    scoring_implication: "Authority or peer-based opening claims boost relevance_alignment scores when correctly matched to audience's respected sources"
+    positive_signal: "Reference to source recognized and respected by this specific audience"
+    negative_signal: "Generic authority claim with no name, number, or specificity"
+
+  aristotelian_rhetorical_balance:
+    definition: "Effective openings must balance three persuasive appeals: Ethos (credibility/trust signal), Pathos (emotional resonance), and Logos (logical or evidential premise). A monolithic reliance on one appeal is a scoreable failure."
+    source: "Aristotle - Rhetoric; LSU Rhetorical Triangle; Research - Analyzing Story for Business Communication §2.2"
+    scoring_implication: "Drives multiple dimensions. Hooks with all three appeals present score 4–5. Monolithic hooks (all-Logos or all-Pathos) score 1–2."
+    failure_modes:
+      all_logos: "Pure data or methodology with no emotional frame or credibility signal — 'dry and unmemorable'; audience understands but does not care."
+      all_pathos: "Emotional appeal with no logical grounding or authority signal — 'perceived as emotionally manipulative'; audience feels worked rather than persuaded."
+      missing_ethos: "No trust signal — audience has no reason to accept the speaker's premise; every subsequent claim faces higher skepticism."
+    positive_signal: "Opening contains at least two of three appeals; Ethos signal establishes shared values or expertise, Pathos signal evokes a relevant emotion, Logos signal anchors in a credible fact or premise"
+    negative_signal: "Opening is entirely data-only or entirely emotional with no grounding in fact or credibility"
+
+  emotional_arc_complexity:
+    definition: "Audiences prefer emotionally complex arcs over simple sustained positive arcs. The most resonant hooks introduce a 'fall' (tension, problem, disruption) before offering a 'rise' (possibility, resolution, opportunity) — making the positive outcome emotionally earned and meaningful."
+    source: "Reagan et al. (2016) - arXiv:1606.07772 — computational analysis of 1,327 stories: most successful arc shapes were 'Icarus' (Rise-Fall), 'Oedipus' (Fall-Rise-Fall), and 'Man in a Hole' (Fall-Rise)"
+    scoring_implication: "Hooks with emotional contrast (problem before possibility) score higher on emotional_engagement than hooks that begin and remain in a positive register. Purely positive or purely negative openings score 1–2 on emotional complexity."
+    positive_signal: "Opening establishes an emotional low point or tension before pivoting to possibility — the resolution feels earned"
+    negative_signal: "Opening begins and remains entirely positive — no tension, no contrast, no earned resolution; or begins and remains entirely negative with no hope signal"
+
+# ==============================================================================
+# AUDIENCE CONTEXT MATCHING
+# ==============================================================================
+
+audience_context_matching:
+  description: "Which hook types and emotional registers work best for which B2B audience personas. Mismatches between hook approach and audience persona are scored as penalties."
+  source: "Crafting Powerful Opening Plays.md; opening_hooks_framework.yaml persona guidance sections"
+
+  executive_c_suite:
+    preferred_hook_types: ["bluf_hook", "statistic_hook", "provocation_hook"]
+    emotional_register: "Urgency and opportunity — executives want to understand stakes and options, not be entertained"
+    metric_vocabulary: ["ROI", "revenue", "market share", "competitive advantage", "risk"]
+    avoid: ["lengthy story hooks without business connection", "silence_hook (perceived as disorganization)", "question hooks that are too abstract"]
+    wiifm_frame: "What is the risk or opportunity, and what do I need to decide?"
+
+  technical_audiences:
+    preferred_hook_types: ["statistic_hook", "provocation_hook", "analogy_hook"]
+    emotional_register: "Curiosity and intellectual challenge — technical audiences engage when a claim is counter-intuitive or a problem is genuinely interesting"
+    metric_vocabulary: ["TCO", "latency", "SLA", "security incidents", "integration coverage"]
+    avoid: ["story_hook without technical grounding", "quote_hook with non-technical authority"]
+    wiifm_frame: "What is the technical problem and does this speaker actually understand it?"
+
+  creative_audiences:
+    preferred_hook_types: ["visual_hook", "story_hook", "analogy_hook", "controlled_vulnerability_hook"]
+    emotional_register: "Aspiration and authenticity — creatives respond to genuine vision and human truth, not corporate metrics"
+    metric_vocabulary: ["brand quality", "creative vision", "time to market", "rework", "content demand"]
+    avoid: ["bluf_hook with heavy financial metrics", "statistic_hook with operational data unrelated to creative work"]
+    wiifm_frame: "Does this speaker understand creative work and will this protect or enable my vision?"
+
+  mixed_audiences:
+    preferred_hook_types: ["story_hook", "question_hook", "statistic_hook"]
+    emotional_register: "Broad appeal — use a human protagonist that multiple persona types can identify with, then branch to persona-specific implications"
+    strategy: "Open with a universal human situation (time pressure, uncertainty, professional stakes) then explicitly acknowledge multiple stakeholder perspectives"
+    avoid: ["persona-specific language that excludes part of the room", "hooks that presuppose shared technical knowledge"]
+    wiifm_frame: "Is this relevant to me specifically, even in a mixed group?"
+
+  sales_audiences:
+    preferred_hook_types: ["world_shift_hook", "story_hook", "statistic_hook", "provocation_hook"]
+    emotional_register: "Urgency + aspiration — must activate both loss aversion (cost of inaction) and opportunity (the Promised Land). The 'fall' before the 'rise' is essential."
+    metric_vocabulary: ["revenue impact", "market share", "pipeline", "competitive displacement", "ROI", "time to value"]
+    avoid: ["data dumps without stakes framing", "hooks that position the presenter or product as the hero", "purely informational openings with no conflict"]
+    wiifm_frame: "Your world has already changed — here is the path to winning."
+    source: "Research - Analyzing Story for Business Communication §3.2 Raskin Sales Narrative and StoryBrand SB7"
+
+# ==============================================================================
+# OPENING STRUCTURES — FRAMEWORK MAPPING
+# ==============================================================================
+
+opening_structures:
+  description: "Recognized multi-beat opening frameworks that structure how hook types are combined. Each has a distinct pattern and optimal use case."
+
+  monroes_attention_step:
+    framework: "Monroe's Motivated Sequence — Stage 1"
+    source: "Monroe (1935); Research - Using Monroes Motivated Sequence.md"
+    pattern: "Attention capture → signal of relevance to learner's need"
+    hook_types_used: ["question_hook", "statistic_hook", "story_hook"]
+    execution_criteria:
+      - "Hook targets the learner's current pain point or knowledge gap"
+      - "Immediately signals 'What's in it for me?' — adults are goal-oriented"
+      - "Transition into Need step feels natural: attention creates the felt need"
+    score_boost: "Openings that successfully execute Monroe attention step score +0.5 on curiosity_gap and transition_quality"
+
+  soar_situation_opening:
+    framework: "SOAR Storytelling Framework — Situation Element"
+    source: "Research - Using SOAR Storytelling most effectively.md"
+    pattern: "Specific situational context → audience recognition ('Yes, that's my world') → tension setup"
+    hook_types_used: ["story_hook", "statistic_hook", "question_hook"]
+    execution_criteria:
+      - "Includes specific relevant details — not generic background"
+      - "Audience confirms: 'That is my context'"
+      - "Every detail has a purpose — avoids data dump"
+      - "Leads naturally into Opportunity framing without repetition"
+    excellence_marker: "Opening situation and main content Opportunity share the same protagonist or industry context"
+
+  pass_problem_agitation:
+    framework: "PASS — Problem, Agitation, Solution, Success"
+    source: "Crafting Powerful Opening Plays.md"
+    pattern: "State problem → amplify stakes/urgency → solution signal"
+    hook_types_used: ["statistic_hook", "story_hook", "question_hook"]
+    execution_criteria:
+      - "Problem is the audience's problem — not the speaker's or the company's"
+      - "Agitation is specific: quantified cost or concrete consequences, not generic severity"
+      - "Solution is signaled but not fully revealed — maintains forward tension"
+    score_boost: "PASS agitation step scored on emotional_engagement — quantified and vivid agitation scores 4–5"
+
+  three_act_cold_open:
+    framework: "3-Act Cold Open (Hook, Intrigue, Pay-off)"
+    source: "Crafting Powerful Opening Plays.md"
+    pattern: "Dramatic scene → suspenseful complexity → reveal that connects to thesis"
+    hook_types_used: ["story_hook", "visual_hook", "silence_hook"]
+    execution_criteria:
+      - "Act 1: immediate scene — no preamble"
+      - "Act 2: withholds cause or resolution — audience wonders 'where is this going?'"
+      - "Act 3: pay-off reveals connection to main message — satisfying but opens a door"
+    score_boost: "Successful pay-off earns maximum score on transition_quality — hook and content become unified"
+
+  bluf_executive_open:
+    framework: "BLUF — Bottom Line Up Front"
+    source: "Crafting Powerful Opening Plays.md; military communication tradition"
+    pattern: "Core conclusion/recommendation → supporting rationale"
+    hook_types_used: ["bluf_hook"]
+    execution_criteria:
+      - "First sentence contains measurable, specific claim"
+      - "Audience knows what decision or direction is being recommended before slide 2"
+      - "Evidence and reasoning follow — never precede — the bottom line"
+    persona_fit: "Optimal for C-suite and executive audiences who prize efficiency and clarity over narrative arc"
+
+  raskin_sales_narrative:
+    framework: "Andy Raskin's 5-Step Sales Narrative"
+    source: "Research - Analyzing Story for Business Communication §3.2; Andy Raskin 'The Greatest Sales Deck I've Ever Seen' (Medium)"
+    pattern: "Big world change → Winners and losers stakes → Promised Land → Obstacles on the old road → Your capability as the path forward"
+    opening_beat: "Step 1 — Name a Big, Relevant Change in the World: start not with the product but with an undeniable external shift that creates urgency without manipulation"
+    hook_types_used: ["world_shift_hook", "statistic_hook"]
+    execution_criteria:
+      - "Change is genuinely undeniable — not a vendor-created narrative"
+      - "Winners/losers stakes established within 60 seconds — audience can see their own position"
+      - "Promised Land (the positive outcome) teased before 90 seconds"
+      - "Speaker is positioned as the guide to the winning side"
+    persona_fit: "Optimal for sales presentations, pitch decks, and strategic proposals to executive audiences"
+    score_boost: "Openings using this structure score high on world_shift_hook effectiveness when urgency is grounded in external evidence rather than product claims"
+
+# ==============================================================================
+# TIMING AND DURATION STANDARDS
+# ==============================================================================
+
+timing_standards:
+  description: "Benchmarks for hook duration and time-to-engagement by medium and context"
+  source: "Crafting Powerful Opening Plays.md; SOAR and Monroe research"
+
+  live_presentation:
+    optimal_hook_duration_seconds: 15
+    maximum_hook_duration_seconds: 60
+    time_to_first_value_signal_seconds: 30
+    rationale: "First 30 seconds establish credibility and connection. Beyond 60 seconds without a core message signal, audience attention begins to drift."
+    failure_threshold: "Hook extends beyond 90 seconds without clear message signal — score penalty applied"
+
+  video_content:
+    optimal_hook_duration_seconds: 10
+    maximum_hook_duration_seconds: 30
+    time_to_engagement_signal_seconds: 5
+    rationale: "Video viewers can click away. First 5 seconds must signal value; first 10 must establish hook. Longer hooks require exceptionally compelling story or visual."
+    failure_threshold: "No hook signal in first 10 seconds — score penalty applied"
+
+  written_content:
+    optimal_hook_word_count: 50
+    maximum_hook_word_count: 100
+    time_to_first_curiosity_signal_words: 25
+    rationale: "Written hooks must land within the first paragraph. Reading scan patterns mean that beyond 100 words, readers often skip to headings."
+    failure_threshold: "Main thesis not visible in first 100 words — score penalty applied"
+
+  hook_word_count_by_type:
+    statistic_hook: "10–20 words including implication"
+    story_hook: "30–60 words for mini-story; longer permitted if transportation is achieved"
+    question_hook: "5–15 words for the question itself"
+    bluf_hook: "15–25 words for the core bottom-line claim"
+    analogy_hook: "20–40 words for the analogy and its connection"
+
+# ==============================================================================
+# HOOK COMBINATIONS — STACKING TECHNIQUES
+# ==============================================================================
+
+hook_combinations:
+  description: "Multi-layer hook patterns that combine two or more hook types for compound effect. Correctly stacked combinations score maximum points on emotional_engagement and curiosity_gap."
+  source: "Crafting Powerful Opening Plays.md — 'Startle, Story, Solution' and combined frameworks"
+
+  statistic_plus_question:
+    description: "Lead with a counter-intuitive statistic, immediately follow with a high-stakes question that uses the statistic as its premise"
+    example: "'Every 39 seconds a company falls victim to cyberattack. If that attack happened to your organization right now — would you know within the hour?'"
+    effect: "Statistic triggers urgency and emotional arousal; question creates a personal open loop"
+    score_profile: "hook_type_effectiveness: 5; curiosity_gap: 5; emotional_engagement: 4"
+
+  story_plus_statistic:
+    description: "Open with a brief personal or customer story that ends at a critical moment, then use a statistic to reveal this is not an isolated case"
+    example: "'Jane, your VP of Marketing, stared at the board's question — and had no answer. [pause] She's not alone: 73% of marketing leaders cannot directly tie spend to revenue.'"
+    effect: "Story creates identification and emotional investment; statistic universalizes the stakes"
+    score_profile: "emotional_engagement: 5; relevance_alignment: 5; hook_type_effectiveness: 4–5"
+
+  provocation_plus_story:
+    description: "Open with a bold contradictory claim, then use a brief story as the evidence that proves it"
+    example: "'The best marketing teams do less, not more. Last year, one team cut their content output by 40% and doubled their pipeline.'"
+    effect: "Provocation triggers cognitive dissonance; story provides resolution that makes the claim credible"
+    score_profile: "hook_type_effectiveness: 5; curiosity_gap: 4; emotional_engagement: 4"
+
+  question_plus_bluf:
+    description: "Open with a provocative question, answer it directly with the BLUF bottom line rather than leaving the gap fully open"
+    example: "'What would it take to cut your content production time by half? We know — and we can show it in three steps.'"
+    effect: "Question creates instant engagement; BLUF immediately satisfies busy executives while setting up the detailed case"
+    score_profile: "relevance_alignment: 5; transition_quality: 5; curiosity_gap: 3 (partially resolved)"
+
+  startle_story_solution:
+    description: "Three-beat sequence: jarring fact → narrative humanization → resolution signal. The 'Startle, Story, Solution' pattern from Crafting Powerful Opening Plays.md"
+    example: "'93% of company networks have already been breached. [Startle] Meet Acme Corp: last year their CEO opened an email... within 48 hours, hackers had access to everything. [Story] Our AI intercepted exactly that attack pattern and alerted the team in seven minutes. [Solution signal]'"
+    effect: "Startle captures attention and creates urgency; story humanizes and generates empathy; solution signal channels energy into message"
+    score_profile: "hook_type_effectiveness: 5; emotional_engagement: 5; curiosity_gap: 4; transition_quality: 5"
+
+# ==============================================================================
+# ANTI-PATTERNS
+# ==============================================================================
+
+anti_patterns:
+  description: "Common weak opening patterns that depress dimension scores. Each anti-pattern has a detection heuristic, score impact, and remediation approach."
+  source: "Crafting Powerful Opening Plays.md anti-patterns; opening_hooks_framework.yaml anti_patterns section"
+
+  agenda_slide_first:
+    label: "Agenda Before Hook"
+    description: "Opening with a table of contents or agenda slide before any attention-capturing hook. Signals speaker structure rather than audience value."
+    detection: "First sentence pattern: 'Today I will cover...' / 'Here's what we'll discuss...' / 'My agenda for today...'"
+    score_impact:
+      hook_type_effectiveness: -2
+      curiosity_gap: -2
+    remediation: "Move agenda to after the hook. If orientation is critical, compress to one sentence after the core hook."
+
+  apology_opener:
+    label: "Opening Apology or False Modesty"
+    description: "Beginning with an apology or self-deprecation that undermines credibility before the audience has any reason to doubt the speaker."
+    detection: "'I'm not an expert, but...' / 'I know this is a lot...' / 'Forgive the technical slides...' / 'This is just a quick update'"
+    score_impact:
+      hook_type_effectiveness: -2
+      emotional_engagement: -1
+    remediation: "Delete entirely. Project confidence from the first word. Acknowledge any limitation after establishing credibility."
+
+  throat_clearing:
+    label: "Throat-Clearing Preamble"
+    description: "Unnecessary pleasantries, gratitude expressions, or organizational housekeeping before substance. Wastes primacy effect."
+    detection: "'Thank you for having me...' / 'I'm really excited to be here...' / 'Before I begin...' / 'Good morning everyone'"
+    score_impact:
+      hook_type_effectiveness: -1
+      relevance_alignment: -1
+    remediation: "Delete. Gratitude can appear at the end or be compressed to a single brief phrase after the hook."
+
+  weak_opener:
+    label: "Low-Impact Generic Hook"
+    description: "A hook type is attempted but with insufficient specificity, surprise factor, or audience relevance to generate engagement."
+    detection: "Expected statistics / bland questions / cliché quotes / background without tension"
+    score_impact:
+      hook_type_effectiveness: -1
+      emotional_engagement: -1
+    remediation: "Test hook against litmus questions: (1) Can audience repeat gist in 30 seconds? (2) Would a colleague say 'Tell me more'? Sharpen specificity and stakes."
+
+  irrelevant_hook:
+    label: "Disconnected Hook"
+    description: "Hook is attention-grabbing but has no explicit connection to the main content or audience context. Entertainment without purpose."
+    detection: "Entertaining opening with no bridging explanation to the topic; audience left wondering 'What was that about?'"
+    score_impact:
+      relevance_alignment: -2
+      transition_quality: -2
+    remediation: "Add explicit bridging: 'I share that because...' or extract the lesson that connects to the main message."
+
+  cliche_opening:
+    label: "Cliché or Overused Pattern"
+    description: "Opening with an overused quote, motivational phrase, or pattern the audience has seen many times. Triggers eye-roll rather than engagement."
+    detection: "Dictionary definition start / widely misattributed quote / 'In today's rapidly changing world...'"
+    score_impact:
+      hook_type_effectiveness: -1
+      emotional_engagement: -1
+    remediation: "Find a fresh angle. If using a quote, add original commentary or use a surprising source. Avoid any hook the audience could finish before you do."
+
+  lengthy_bio:
+    label: "Prolonged Self-Introduction"
+    description: "Spending the opening minutes establishing speaker credentials rather than delivering value. Credentials can be built through content, not about-me slides."
+    detection: "Extended personal background, job history, or academic credentials before any content"
+    score_impact:
+      hook_type_effectiveness: -2
+      relevance_alignment: -1
+    remediation: "Reduce to one sentence of context-relevant credential and pivot immediately to hook. Let the quality of content establish authority."
+
+  no_emotional_connection:
+    label: "Emotionally Flat Opening"
+    description: "Technically informative opener with no human element, no stakes communicated, and no emotional trigger. Audience understands but does not care."
+    detection: "Pure data / abstract methodology / organizational results without human framing"
+    score_impact:
+      emotional_engagement: -2
+      curiosity_gap: -1
+    remediation: "Frame data in terms of human stakes: who is affected and what does it mean for them. Even one human-scale comparison transforms a dry statistic."
+
+  overhyping:
+    label: "Unsubstantiated Grand Claim"
+    description: "Opening with superlatives or extreme claims that raise skepticism because they outrun available evidence."
+    detection: "'The most revolutionary...' / 'This will completely change your life...' / 'Game-changing, paradigm-shifting innovation'"
+    score_impact:
+      hook_type_effectiveness: -1
+      relevance_alignment: -1
+    remediation: "Replace superlatives with specific evidence: 'reduced processing time by 80%' is more persuasive than 'dramatically faster.' Let the data be bold."
+
+  persona_mismatch:
+    label: "Audience Persona Mismatch"
+    description: "Using the wrong metric register, emotional trigger, or vocabulary for the actual audience persona in the room."
+    detection: "TCO/security arguments to a CMO / brand equity framing to a CIO / content velocity metrics to a financial audience"
+    score_impact:
+      relevance_alignment: -2
+      emotional_engagement: -1
+    remediation: "Map audience persona before drafting hook. Confirm: Is this the language this person uses daily? Would this pain point be in their top three priorities?"
+
+  history_lesson:
+    label: "Excessive Historical Background"
+    description: "Opening with chronological company or industry history before establishing relevance to the audience's current situation."
+    detection: "'Let me take you back to...' / 'Since we founded the company in...' / 'Historically, we have always...'"
+    score_impact:
+      hook_type_effectiveness: -1
+      curiosity_gap: -1
+    remediation: "Start with current relevance. Add historical context only if it creates a contrast that strengthens the hook: 'In 2019 this problem cost $X million. Today it costs $3X.'"
+
+  brand_as_hero:
+    label: "Presenter or Brand Cast as Hero"
+    description: "The presenter, company, or product is positioned as the hero of the opening story, with the audience cast as a passive observer who watches rather than participates."
+    detection: "Story opens with 'We built...' / 'Our company solved...' / 'I discovered...' without the audience member or customer as the central protagonist"
+    score_impact:
+      relevance_alignment: -2
+      emotional_engagement: -1
+    remediation: "Recast the protagonist as the audience member or customer facing the challenge. Reposition the presenter/brand as the Mentor/Guide who equips the Hero — not the hero who solved the problem on their behalf."
+    source: "Research - Analyzing Story for Business Communication §3.1 StoryBrand SB7 §4.3 Diagnosis 2"
+
+  emotionally_flat_opening:
+    label: "Emotionally Flat Opening — No Contrast"
+    description: "Opening maintains a single emotional register throughout — either entirely positive (aspirational with no tension) or entirely neutral (informational with no emotion). No emotional movement or contrast is present."
+    detection: "Pure positive framing with no tension / pure data with no human stakes / no transition from problem to possibility"
+    score_impact:
+      emotional_engagement: -2
+      curiosity_gap: -1
+    remediation: "Introduce emotional contrast: establish a 'fall' (tension, risk, problem) before the 'rise' (possibility, solution, hope). A pure positive opening feels flat because the resolution is unearned. A problem without a hopeful pivot feels nihilistic."
+    evidence: "Computational analysis of 1,327 stories found the most successful arc shapes include a 'fall' component — pure 'Rags to Riches' arcs are among the least resonant (Reagan et al. 2016)"
+    source: "Research - Analyzing Story for Business Communication §1.3"
+
+  rhetorical_imbalance:
+    label: "Rhetorical Appeal Imbalance"
+    description: "Opening hook relies on only one of Aristotle's three persuasive appeals (Ethos/Pathos/Logos), creating an imbalanced rhetorical profile that undermines persuasive effectiveness."
+    detection:
+      all_logos: "Pure data, statistics, or methodology with no emotional frame or credibility signal — 'dry and unmemorable'"
+      all_pathos: "Emotional appeal with no logical grounding or credibility signal — 'perceived as emotionally manipulative'"
+      missing_ethos: "No trust signal — audience has no reason to accept the speaker's premise before the data is presented"
+    score_impact:
+      emotional_engagement: -1
+      relevance_alignment: -1
+    remediation: "Add the missing appeal(s): if all-Logos, add one human-stakes framing or emotional consequence; if all-Pathos, anchor with one specific, sourced fact; if missing Ethos, establish shared values or peer proof before making the core claim."
+    source: "Research - Analyzing Story for Business Communication §2.2 Aristotelian Rhetoric"
+
+# ==============================================================================
+# VALIDATION CHECKS
+# ==============================================================================
+
+checks:
+  description: "Rule-based validation checks applied before dimension scoring. Failed checks trigger penalty before rubric dimensions are evaluated."
+
+  has_identifiable_hook:
+    description: "Opening must contain at least one classifiable hook type from the taxonomy"
+    test: "One of: question, statistic, story, quote, provocation, analogy, BLUF, visual, silence, controlled_vulnerability"
+    failure_action: "Score hook_type_effectiveness as 1; apply weak_opener penalty"
+
+  hook_duration_compliant:
+    description: "Hook must not exceed duration threshold for the medium"
+    thresholds:
+      live_presentation_max_seconds: 60
+      video_max_seconds: 30
+      written_max_words: 100
+    failure_action: "Apply hook_too_long penalty"
+
+  so_what_visible_before_threshold:
+    description: "The 'so what' — why this matters to the audience — must appear before the threshold point"
+    thresholds:
+      live_presentation_seconds: 30
+      video_seconds: 15
+      written_words: 50
+    failure_action: "Apply buried_lead penalty"
+
+  transition_present:
+    description: "An explicit or structural bridge from hook to main content must be detectable"
+    test: "Transition phrase, meta-comment, or structural flow connects hook to thesis or first main point"
+    failure_action: "Score transition_quality as 1"
+
+  no_apology_or_preamble:
+    description: "Opening must not begin with apology, extended thanks, or false modesty"
+    detection_patterns:
+      - "^(thank you|thanks|i'm grateful|good morning|hello everyone)"
+      - "^(i know|i'm not an expert|forgive)"
+      - "^(before i begin|before we start|just quickly)"
+    failure_action: "Apply apology_opener penalty; score hook_type_effectiveness reduced by 1"
+
+  audience_relevance_signal:
+    description: "Hook must contain at least one element explicitly tied to the known audience context, role, or pain"
+    test: "Persona-specific language, metric, or pain point detectable"
+    failure_action: "Score relevance_alignment maximum 2; apply irrelevant_hook penalty if also disconnected"
+
+# ==============================================================================
+# THRESHOLDS
+# ==============================================================================
+
+thresholds:
+  description: "Numeric limits that define pass/fail or quality boundaries"
+
+  hook_duration:
+    live_presentation:
+      minimum_seconds: 5
+      optimal_seconds: 15
+      good_seconds: 30
+      caution_seconds: 45
+      maximum_seconds: 60
+      failure_seconds: 90
+    video:
+      minimum_seconds: 3
+      optimal_seconds: 10
+      good_seconds: 15
+      caution_seconds: 20
+      maximum_seconds: 30
+      failure_seconds: 45
+    written:
+      optimal_words: 50
+      good_words: 75
+      maximum_words: 100
+      failure_words: 150
+
+  time_to_engagement:
+    live_value_signal_seconds: 30
+    video_value_signal_seconds: 5
+    written_value_signal_words: 25
+
+  story_hook_elements:
+    minimum_required: 2  # of: named protagonist, sensory detail, present tense, tension, cliffhanger
+    full_transportation_threshold: 4
+
+  statistic_hook_criteria:
+    minimum_satisfied: 3  # of: counter-intuitive, source-cited, specific-quantity, audience-relevant, implication-stated
+
+  curiosity_gap_open_loop:
+    minimum_sentences_to_resolution: 3  # gap must remain open for at least 3 sentences/slides
+
+  anti_patterns_maximum:
+    before_penalty_cap: 2   # more than 2 anti-patterns triggers score floor at 2.0 regardless of other factors
+    major_penalty_cap: 1    # single disconnected_hook or agenda_slide_first caps overall score at 3.0
+
+  emotional_trigger_count:
+    minimum_for_score_4: 1   # at least one emotional trigger present
+    minimum_for_score_5: 2   # layered emotional arc: at least two emotional registers
+
+# ==============================================================================
+# PENALTIES
+# ==============================================================================
+
+penalties:
+  description: "Score deductions applied for specific identified failures. Penalties are additive; maximum total penalty is capped at 0.40 to prevent floor effects masking genuine strengths."
+
+  agenda_slide_first:
+    deduction: 0.15
+    applies_to: ["hook_type_effectiveness", "curiosity_gap"]
+    trigger: "First content element is a table of contents, agenda, or topic list"
+    rationale: "Destroys primacy effect and eliminates curiosity gap before content begins"
+
+  apology_opener:
+    deduction: 0.10
+    applies_to: ["hook_type_effectiveness", "emotional_engagement"]
+    trigger: "Opening contains apology, self-deprecation, or false modesty phrase"
+    rationale: "Undermines authority before it is established; inverts emotional priming from engagement to skepticism"
+
+  disconnected_hook:
+    deduction: 0.12
+    applies_to: ["relevance_alignment", "transition_quality"]
+    trigger: "Hook has no explicit or structural connection to main content"
+    rationale: "Attention captured and immediately wasted; audience trust reduced by apparent disorganization"
+
+  hook_too_long:
+    deduction: 0.08
+    applies_to: ["hook_type_effectiveness"]
+    trigger: "Hook duration exceeds medium failure threshold (90s live, 45s video, 150 words written)"
+    rationale: "Audience attention drifts; extended hook signals poor preparation or unclear message"
+
+  no_emotional_connection:
+    deduction: 0.10
+    applies_to: ["emotional_engagement"]
+    trigger: "Opening contains no human element, no emotional trigger, and no stakes communicated"
+    rationale: "Without emotional investment, cognitive load of the main content is unaided — retention diminished"
+
+  persona_mismatch:
+    deduction: 0.12
+    applies_to: ["relevance_alignment", "emotional_engagement"]
+    trigger: "Hook uses metric register, vocabulary, or pain frame mismatched to identified audience persona"
+    rationale: "Wrong-language opener signals speaker does not understand the audience — immediate trust reduction"
+
+  unresolved_curiosity_gap:
+    deduction: 0.08
+    applies_to: ["curiosity_gap"]
+    trigger: "Curiosity gap is created in opening but not resolved in the body of the content"
+    rationale: "Unresolved gaps frustrate rather than engage; violates Loewenstein resolution principle"
+
+  throat_clearing:
+    deduction: 0.05
+    applies_to: ["hook_type_effectiveness", "relevance_alignment"]
+    trigger: "Opening begins with pleasantries, gratitude expressions, or housekeeping before substance"
+    rationale: "Wastes primacy window; signals audience that speaker is warming up rather than delivering value"
+
+  cliche_opening:
+    deduction: 0.06
+    applies_to: ["hook_type_effectiveness"]
+    trigger: "Opening uses an overused pattern, misattributed quote, or clichéd phrase"
+    rationale: "Clichés trigger the opposite of Von Restorff effect — blending in rather than standing out; may trigger active disengagement"
+
+  overhyping:
+    deduction: 0.07
+    applies_to: ["relevance_alignment", "hook_type_effectiveness"]
+    trigger: "Opening contains unsubstantiated superlatives or grand claims without immediate evidence"
+    rationale: "Inflated opening claims raise the audience's skepticism filter, making subsequent evidence harder to land"
+
+  buried_lead:
+    deduction: 0.08
+    applies_to: ["relevance_alignment", "curiosity_gap"]
+    trigger: "Core message or main value proposition does not appear before the medium's so-what threshold"
+    rationale: "Violates primacy effect; audience may disengage before reaching the reason they should listen"
+
+  no_transition:
+    deduction: 0.10
+    applies_to: ["transition_quality"]
+    trigger: "No identifiable bridge from hook to main content — abrupt section break"
+    rationale: "Emotional and attention energy built by hook is dissipated; audience must re-engage from zero"
+
+  lengthy_bio:
+    deduction: 0.08
+    applies_to: ["hook_type_effectiveness", "relevance_alignment"]
+    trigger: "Speaker spends more than 30 seconds (live) or 50 words (written) on personal credentials before hook"
+    rationale: "Credentials established through content quality, not self-declaration; extended bio is audience-irrelevant"
+
+  history_lesson:
+    deduction: 0.05
+    applies_to: ["curiosity_gap", "relevance_alignment"]
+    trigger: "Opening contains more than two sentences of historical background before current relevance is established"
+    rationale: "Historical framing without present-day stakes connection signals speaker is inside-out rather than audience-centric"
+
+# ==============================================================================
+# BONUSES
+# ==============================================================================
+
+bonuses:
+  description: "Score additions for exceptional opening craft that exceeds baseline requirements. Bonuses are additive; maximum total bonus is capped at 0.15."
+
+  von_restorff_achieved:
+    addition: 0.03
+    applies_to: ["hook_type_effectiveness"]
+    trigger: "Opening uses a format or framing distinctly different from what this audience would predict in this context"
+    rationale: "Pattern interruption significantly increases recall; this opening will be remembered when others are not"
+
+  narrative_transportation_achieved:
+    addition: 0.03
+    applies_to: ["emotional_engagement"]
+    trigger: "Story hook contains all four transportation elements: named protagonist, sensory detail, present tense, and unresolved tension"
+    rationale: "Full transportation indicators predict persuasive influence and recall benefits (van Laer et al., 2014)"
+
+  optimal_hook_combination:
+    addition: 0.02
+    applies_to: ["hook_type_effectiveness", "emotional_engagement"]
+    trigger: "Two or more hook types are successfully stacked (e.g., statistic + question, story + statistic, startle + story + solution)"
+    rationale: "Compound hooks engage multiple psychological mechanisms simultaneously, reinforcing each other's effects"
+
+  perfect_persona_alignment:
+    addition: 0.03
+    applies_to: ["relevance_alignment"]
+    trigger: "Hook uses precise persona vocabulary, addresses top-tier pain point, and exploits an urgency trigger specific to this audience's current context"
+    rationale: "Demonstrates audience intelligence; highest driver of immediate trust and engagement"
+
+  monroe_attention_excellence:
+    addition: 0.02
+    applies_to: ["curiosity_gap", "transition_quality"]
+    trigger: "Opening successfully executes Monroe's Attention step and flows naturally into the Need step with a felt knowledge or skill gap"
+    rationale: "Monroe sequence alignment means the psychological journey from attention to motivation is intact — maximizes learning and persuasion outcomes"
+
+  soar_situation_excellence:
+    addition: 0.02
+    applies_to: ["relevance_alignment", "transition_quality"]
+    trigger: "SOAR situation-setting is specific, selective, and audience-confirmable; flows directly into Opportunity without repetition"
+    rationale: "SOAR story flow research demonstrates that missing or weak situation elements cause downstream narrative collapse"
+
+  sharp_curiosity_gap:
+    addition: 0.02
+    applies_to: ["curiosity_gap"]
+    trigger: "Open loop is irresistible: specific, high-stakes, audience-relevant, and structurally maintained across multiple slides or paragraphs before resolution"
+    rationale: "Extended, well-maintained curiosity gaps produce the strongest sustained attention and highest message retention"
+
+  seamless_transition:
+    addition: 0.02
+    applies_to: ["transition_quality"]
+    trigger: "Hook and main content are unified — no detectable seam; hook IS the opening of the main content"
+    rationale: "Invisible transitions indicate the speaker has engineered the opening at the structural level, not merely appended a hook to existing content"
+
+  controlled_vulnerability_mastery:
+    addition: 0.01
+    applies_to: ["emotional_engagement"]
+    trigger: "Controlled vulnerability hook is genuine, specific, and pivots cleanly to a lesson that advances the speaker's authority"
+    rationale: "Vulnerability combined with competence is the highest-trust combination; rare in corporate contexts and therefore highly distinctive"
+
+  litmus_test_passed:
+    addition: 0.01
+    applies_to: ["hook_type_effectiveness"]
+    trigger: "Opening passes all three PoP litmus tests: (1) gist repeatable in 30 seconds, (2) 'so what' answered before sentence/slide 2, (3) prompts 'tell me more'"
+    rationale: "The three-question litmus test from Crafting Powerful Opening Plays.md functions as a proxy for strong hook execution across all dimensions"

@@ -1,0 +1,760 @@
+_meta:
+  id: slide_types_entities
+  purpose: entity
+  version: 1.21.0
+  last_updated: '2026-03-09'
+  description: GLiNER entity definitions for detecting slide type references in instructional briefs, storyboards, and content
+    planning text — aligned to the 28-type slide taxonomy.
+  domain: visual
+  domain_type: cross_cutting
+  corpus_sources:
+  - Corpus/Research/Research - Visual Analysis of Slide Decks.md
+  - Corpus/Research/Research - Canonical Presentation Methodology Research.md
+  - Corpus/Research/Research - Visual Communication and Storytelling.md
+  - Corpus/Research/Research - visualisation_techniques_corporate_learning.md
+  - Corpus/Research/slide_design_research_monograph.md
+  - Corpus/Research/slide_design_research_monograph_part_2.md
+  - Corpus/Research/slide_design_research_monograph_part_4.md
+  - Corpus/Research/Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md
+  - Corpus/Research/Research - Narrative Visualization, Sketchnoting, Accessibility.md
+  - Corpus/Research/Visual Best Practices for Corporate Learning Videos.md
+  - Corpus/Research/Research - Storyboard Best Practices.md
+  - Corpus/Research/research_-_slide_deck_design_playbook_research.md
+  - Corpus/Research/Research - Slide Deck Design Playbook Research.md
+  relationships:
+  - target: taxonomy/slide_types_taxonomy.yaml
+    type: depends_on
+    description: Canonical 28-type slide taxonomy with SigLIP prompts and text signals
+gliner_config:
+  model: urchade/gliner_multi_pii-v1
+  batch_size: 8
+  context_window: 512
+  domain_keywords:
+    primary:
+    - slide
+    - deck
+    - presentation
+    - layout
+    - diagram
+    - chart
+    - cover
+    - agenda
+    secondary:
+    - hub and spoke
+    - process flow
+    - timeline
+    - comparison
+    - testimonial
+    - framework
+    - pillars
+    - dashboard
+entity_types:
+  structural_slide:
+    description: References to structural diagram slides including architecture stacks, hub-spoke, cycles, process flows,
+      hierarchies, and timelines
+    canonical_id: structural_slide
+    entity_kind: slide_type
+    family: structural
+    gliner_label: STRUCTURAL_SLIDE
+    gliner_description: Structural slide architecture stack hub spoke cycle process flow hierarchy tree timeline roadmap diagram
+      layers
+    examples:
+    - add an architecture stack slide
+    - create a hub-and-spoke diagram
+    - include a process flow showing the workflow
+    - we need a timeline slide for the roadmap
+    - insert a cycle diagram for the iterative process
+    - add an org chart hierarchy
+    - create a current state / future state flowchart
+    - add a market map diagram showing the competitive landscape
+    anti_examples:
+    - the structure of the argument
+    - process improvement project
+    - timeline of events
+    confidence_threshold: 0.7
+    aliases:
+    - diagram slide
+    - flow slide
+    - structural diagram
+    indicators:
+    - architecture stack
+    - hub and spoke
+    - hub-and-spoke
+    - cycle diagram
+    - process flow
+    - workflow diagram
+    - hierarchy
+    - org chart
+    - timeline slide
+    - roadmap slide
+    - tree diagram
+    - layered architecture
+    - flowchart
+    - flow chart
+    - market map
+    - current state slide
+    - future state slide
+    - current state diagram
+    - future state diagram
+    patterns:
+    - (architecture|technology|platform) (stack|layers?) (slide|diagram)
+    - (hub[- ]and[- ]spoke|hub[- ]spoke|radial) (slide|diagram|layout)
+    - (cycle|circular|loop|iterative) (slide|diagram|process)
+    - (process|workflow|pipeline) (flow|slide|diagram)
+    - (hierarchy|org chart|tree) (slide|diagram|structure)
+    - (timeline|roadmap|milestone) (slide|diagram|view)
+    - (flowchart|flow chart) (slide|diagram|page)
+    - (current[- ]state|future[- ]state) (slide|diagram|view)
+    - (market map|strategic map) (slide|diagram)
+    color: '#2c3e50'
+    maps_to_taxonomy_types:
+    - architecture_stack
+    - hub_spoke
+    - cycle_process
+    - process_flow
+    - hierarchy_tree
+    - timeline_roadmap
+    relates_to:
+    - target: session_structure_marker
+      relation: supports
+      weight: required
+      description: Structural slides (agenda slides, section dividers, roadmap slides) serve as scaffolding that reduces listener
+        anxiety. They provide the session structure markers that signal what to expect and when major transitions occur.
+      target_file: delivery_entities
+    - target: content_structure_marker
+      relation: enables
+      weight: expected
+      description: "Section divider slides use Repetition principle to build navigation structure per Slide Deck Design Playbook"
+      target_file: content_architecture_entities
+    - target: layout_pattern
+      relation: contains
+      weight: required
+      description: "Structural slides contain specific layout patterns that define their visual organisation per slide design research monograph"
+      target_file: visual_elements_entities
+    - target: video_edit_transition
+      relation: bridges
+      weight: expected
+      description: "Structural slides bridge with video edit transitions — title cards and chapter headings appear at transition points between video segments as visual signposts per Visual Best Practices for Corporate Learning Videos"
+      target_file: media_entities
+    - target: progressive_disclosure_marker
+      relation: supports
+      weight: expected
+      description: "Structural slides support progressive disclosure by segmenting content into labelled chapters that signal topic shifts and provide mental rest points per Visual Best Practices for Corporate Learning Videos"
+      target_file: cognitive_load_entities
+    - target: scqa_marker
+      relation: supported_by
+      weight: optional
+      description: "Structural diagram slides benefit from SCQA framing to establish why the architecture matters — Situation/Complication provides context before the structural Answer per slide deck design playbook"
+      target_file: rhetorical_devices_entities
+    - target: SITUATION_MARKER
+      relation: supports
+      weight: expected
+      description: "Structural slides with Bento Grid serve SOAR Situation phase for contextual grounding"
+      target_file: sales_entities
+    taxonomy_mapping:
+    - taxonomy: slide_types_taxonomy
+      dimension: slide_category
+      values:
+      - structural
+      strength: primary
+  data_proof_slide:
+    description: References to data-driven and proof slides including statistics, ROI, comparisons, charts, testimonials,
+      and competitive landscapes
+    canonical_id: data_proof_slide
+    entity_kind: slide_type
+    family: data_proof
+    gliner_label: DATA_PROOF_SLIDE
+    gliner_description: Data proof slide statistics metrics ROI business impact comparison chart graph customer testimonial
+      case study competitive landscape
+    examples:
+    - add a stats slide with the key metrics
+    - include an ROI slide showing business impact
+    - create a before-and-after comparison slide
+    - we need a chart slide for the data
+    - add a customer testimonial slide
+    - insert a competitive landscape quadrant
+    - add a problem slide showing the market gap
+    - create a TAM/SAM/SOM market sizing slide
+    - include a solution slide after the problem
+    - include an evidence slide to support the recommendation
+    anti_examples:
+    - the data shows
+    - compare the two approaches
+    - customer feedback email
+    - the problem with our strategy
+    - the solution to the inefficiency
+    confidence_threshold: 0.7
+    aliases:
+    - metrics slide
+    - data slide
+    - proof point slide
+    indicators:
+    - stats slide
+    - metrics slide
+    - ROI slide
+    - business impact slide
+    - comparison slide
+    - before and after
+    - chart slide
+    - graph slide
+    - data visualisation
+    - testimonial slide
+    - case study slide
+    - customer proof
+    - competitive landscape
+    - quadrant
+    - logo slide
+    - problem slide
+    - solution slide
+    - market sizing slide
+    - TAM SAM SOM
+    - bubble chart slide
+    - revenue slide
+    - evidence slide
+    - proof slide
+    - supporting data slide
+    patterns:
+    - (stats|metrics|KPI|numbers?) (slide|page)
+    - (ROI|business impact|value|benefit) (slide|page)
+    - (comparison|before[- ]and[- ]after|vs) (slide|page)
+    - (chart|graph|data|trend|forecast) (slide|page|visualisation)
+    - (customer|client|testimonial|case study|proof) (slide|page)
+    - (competitive|market|landscape|quadrant) (slide|page|map)
+    - (problem|pain point|challenge) (slide|page)
+    - (solution|resolution|answer) (slide|page)
+    - (TAM|SAM|SOM|market size|market sizing) (slide|page|chart|diagram)
+    - (revenue|growth|traction) (slide|page|chart)
+    - (evidence|proof point|supporting data|validation) (slide|page)
+    color: '#27ae60'
+    maps_to_taxonomy_types:
+    - stats_metrics
+    - business_impact
+    - comparison
+    - chart_data
+    - customer_proof
+    - competitive_landscape
+    relates_to:
+    - target: evidence
+      relation: supports
+      weight: required
+      description: Data/proof slides provide evidence via charts, statistics, or research to substantiate claims
+      target_file: narrative_entities
+    - target: chart_type
+      relation: contains
+      weight: required
+      description: Data proof slides contain chart types as the primary mechanism for visual data representation and storytelling
+        per Visual Communication and Storytelling
+      target_file: visual_elements_entities
+    - target: data_statistic
+      relation: contains
+      weight: required
+      description: Data proof slides contain data statistics transformed into compelling visual narratives for decision-making
+        per Visual Communication and Storytelling
+      target_file: evidence_types_entities
+    - target: executive_audience
+      relation: supports
+      weight: expected
+      description: "Data proof slides directly support executive audience needs by providing evidence-based decision-making material with ROI metrics and business impact data per slide design research monograph part 2"
+      target_file: audience_entities
+    - target: cognitive_debt_marker
+      relation: triggers
+      weight: expected
+      description: "Data proof slides with excessive data series, chartjunk, or missing action titles trigger cognitive debt by overwhelming the audience with unstructured quantitative information per slide design research monograph part 4"
+      target_file: visual_elements_entities
+    - target: video_shot_type
+      relation: supported_by
+      weight: expected
+      description: "Data proof slides are supported by specific video shot types — green screen compositing shows charts and graphs behind the presenter who can gesture toward data points per Visual Best Practices for Corporate Learning Videos"
+      target_file: media_entities
+    - target: layout_pattern
+      relation: supported_by
+      weight: expected
+      description: "Data proof slides require layout patterns that leave appropriate space for data visualisation while maintaining presenter visibility per Visual Best Practices for Corporate Learning Videos"
+      target_file: visual_elements_entities
+    - target: quality_indicator
+      relation: supported_by
+      weight: expected
+      description: "Data proof slide quality is measured by Tufte's Data-Ink Ratio — removal of gridlines, 3D effects, and chart junk maximizes data communication (Cognitive Interface, §4.1)"
+      target_file: visual_elements_entities
+    - target: claim
+      relation: supports
+      weight: required
+      description: "Data proof slides serve as the Dashes that prove the Dot (action title claim) — each chart or statistic must explicitly substantiate the slide's headline assertion per slide deck design playbook"
+      target_file: narrative_entities
+    - target: RESULT_MARKER
+      relation: supports
+      weight: expected
+      description: "Data proof slides with Hero Card serve Results phase validating approach with focal statistics"
+      target_file: sales_entities
+    - target: design_principle
+      relation: supported_by
+      weight: expected
+      description: "Multimedia principle requires data slides pair visual charts with verbal explanation for dual coding per Applying Mayer's Principles Practical Checklist"
+      target_file: visual_elements_entities
+    taxonomy_mapping:
+    - taxonomy: slide_types_taxonomy
+      dimension: slide_category
+      values:
+      - data_proof
+      strength: primary
+  content_slide:
+    description: References to content-rich slides including card grids, bullet points, framework pillars, feature maps, glossaries,
+      two-column layouts, and tables
+    canonical_id: content_slide
+    entity_kind: slide_type
+    family: content
+    gliner_label: CONTENT_SLIDE
+    gliner_description: Content slide cards grid bullet points framework pillars feature map glossary two-column table matrix
+      reference
+    examples:
+    - add a content cards grid showing the services
+    - create a bullet point summary slide
+    - include a three-pillar framework slide
+    - we need a feature map slide
+    - add a glossary reference slide
+    - create a two-column detail slide
+    - insert a comparison table
+    - add a summary slide after the data section
+    - we need a key takeaway slide at the end
+    - create a recommendation slide with the BLUF answer
+    - add an SCQA framework slide for the opening argument
+    anti_examples:
+    - the content of the presentation
+    - bullet-proof strategy
+    - reference document
+    - summarize the meeting
+    - the key message is that...
+    confidence_threshold: 0.7
+    aliases:
+    - text slide
+    - information slide
+    - detail slide
+    indicators:
+    - content cards
+    - card grid
+    - bullet points
+    - text slide
+    - framework slide
+    - pillars slide
+    - feature map
+    - feature slide
+    - glossary slide
+    - reference slide
+    - two-column
+    - two column
+    - table slide
+    - matrix slide
+    - key takeaway slide
+    - key message slide
+    - summary slide
+    - action title slide
+    - recommendation slide
+    - SCQA slide
+    - BLUF slide
+    - bottom line up front slide
+    - storyline slide
+    patterns:
+    - (content|service|solution|use case) (cards?|grid|tiles?) (slide|page)
+    - (bullet|text|summary|key points?|highlights?) (slide|page)
+    - (framework|pillar|principle|foundation) (slide|page)
+    - (feature|capability|release) (map|slide|page)
+    - (glossary|reference|definition|terminology) (slide|page)
+    - (two[- ]column|split|side[- ]by[- ]side) (slide|page|layout)
+    - (table|matrix|pricing|specification) (slide|page)
+    - (key (takeaway|message|point)|summary|synthesis) (slide|page)
+    - (recommendation|SCQA|BLUF|bottom line up front) (slide|page)
+    - (situation|complication|question|answer) (slide|page|frame)
+    color: '#3498db'
+    maps_to_taxonomy_types:
+    - content_cards
+    - text_points
+    - framework_pillars
+    - feature_map
+    - glossary_reference
+    - two_column_detail
+    - table_matrix
+    relates_to:
+    - target: clarity_dimension
+      relation: supports
+      weight: required
+      description: Content slides must prioritize clarity through minimalist design, clear hierarchy, and focused messaging.
+        The primary purpose of content slides is semantic clarity; excessive visual decoration reduces clarity scores.
+      target_file: scoring_entities
+    - target: typography_element
+      relation: contains
+      weight: expected
+      description: "Content slides contain typography elements (headlines, body text, captions, bullet points) as their primary information carriers per Visualisation Techniques research"
+      target_file: visual_elements_entities
+    - target: content_structure_marker
+      relation: supported_by
+      weight: expected
+      description: "Content slides depend on content structure markers for proper pedagogical sequencing per slide design research monograph"
+      target_file: content_architecture_entities
+    - target: mayer_extraneous_principle
+      relation: supported_by
+      weight: expected
+      description: "Content slides with excessive text, decorative graphics, or redundant on-screen narration text violate Mayer's coherence and redundancy principles — content must be stripped to essential instructional elements per Applying Mayer's Principles Practical Checklist"
+      target_file: cognitive_load_entities
+    - target: video_shot_type
+      relation: supported_by
+      weight: expected
+      description: "Content slides are supported by video shot types — side-by-side lecture framing places the presenter alongside keyed-in slide content per Visual Best Practices for Corporate Learning Videos"
+      target_file: media_entities
+    - target: storyboard_element
+      relation: supported_by
+      weight: optional
+      description: "Storyboard frames with visual panels, on-screen text, and annotations serve as blueprints for content slide design per Research - Storyboard Best Practices"
+      target_file: media_entities
+    - target: ACTION_MARKER
+      relation: supports
+      weight: expected
+      description: "Content slides with process flow layouts serve Approach phase demonstrating logical progression"
+      target_file: sales_entities
+    taxonomy_mapping:
+    - taxonomy: slide_types_taxonomy
+      dimension: slide_category
+      values:
+      - content
+      strength: primary
+  product_slide:
+    description: References to product demonstration slides including screenshots, UI walkthroughs, and live demo captures
+    canonical_id: product_slide
+    entity_kind: slide_type
+    family: product
+    gliner_label: PRODUCT_SLIDE
+    gliner_description: Product slide screenshot demo UI interface walkthrough software application screen capture
+    examples:
+    - add a screenshot slide showing the dashboard
+    - include a product demo walkthrough
+    - create a UI screenshot slide
+    - we need a software interface slide
+    anti_examples:
+    - demo the product live
+    - take a screenshot
+    confidence_threshold: 0.75
+    aliases:
+    - demo slide
+    - screenshot slide
+    - UI slide
+    indicators:
+    - screenshot slide
+    - demo slide
+    - product slide
+    - UI slide
+    - interface slide
+    - walkthrough slide
+    - software slide
+    - app screenshot
+    patterns:
+    - (screenshot|screen capture|UI|interface) (slide|page)
+    - (product|software|app|demo) (slide|page|walkthrough)
+    - (walkthrough|demo) (slide|page|screen)
+    color: '#e67e22'
+    maps_to_taxonomy_types:
+    - screenshot_demo
+    relates_to:
+    - target: technical_audience
+      relation: supports
+      weight: expected
+      description: "Product slides support technical audience needs by providing detailed UI walkthroughs, architecture diagrams, and implementation specifics per slide design research monograph part 2"
+      target_file: audience_entities
+    taxonomy_mapping:
+    - taxonomy: slide_types_taxonomy
+      dimension: slide_category
+      values:
+      - product
+      strength: primary
+  narrative_slide:
+    description: References to narrative and framing slides including title covers, brand vision, photo-led, agenda, and presenter/team
+      introductions
+    canonical_id: narrative_slide
+    entity_kind: slide_type
+    family: narrative
+    gliner_label: NARRATIVE_SLIDE
+    gliner_description: Narrative slide title cover brand vision mission photo-led agenda table of contents presenter team
+      speaker bio introduction
+    examples:
+    - add a title slide for the opening
+    - create a brand vision slide
+    - include a photo-led slide with the hero image
+    - we need an agenda slide
+    - add a team introduction slide
+    - insert a cover slide
+    - add a hook slide for the opening
+    - create a 'what could be' vision slide
+    - we need a keynote-style opening slide with a bold visual and minimal text
+    - create a vision statement slide for the change management deck
+    anti_examples:
+    - the narrative arc
+    - cover the topic
+    - team meeting agenda
+    - hook the audience with data
+    - slidument
+    - read-ahead document
+    confidence_threshold: 0.7
+    aliases:
+    - opening slide
+    - intro slide
+    - team slide
+    indicators:
+    - title slide
+    - cover slide
+    - brand slide
+    - vision slide
+    - mission slide
+    - photo slide
+    - photo-led
+    - hero image slide
+    - agenda slide
+    - table of contents
+    - team slide
+    - presenter slide
+    - speaker slide
+    - bio slide
+    - hook slide
+    - call to adventure slide
+    - what could be slide
+    - keynote slide
+    - keynote cover
+    - change management slide
+    - vision statement slide
+    - hyperlinked agenda
+    - interactive agenda
+    - navigation slide
+    patterns:
+    - (title|cover|opening|intro|introduction) (slide|page)
+    - (brand|vision|mission|purpose|tagline) (slide|page)
+    - (photo[- ]led|hero image|full[- ]bleed) (slide|page)
+    - (agenda|table of contents|outline|topics?) (slide|page)
+    - (team|presenter|speaker|panelist|bio) (slide|page)
+    - (hook|opening hook|attention[- ]grabber) (slide|page)
+    - (call to adventure|inciting incident) (slide|page)
+    - (what is|what could be|future state vision) (slide|page)
+    - (keynote|vision statement|change management) (slide|page|cover)
+    - (hyperlinked|interactive|navigation) (agenda|contents) (slide|page)
+    color: '#9b59b6'
+    maps_to_taxonomy_types:
+    - title_cover
+    - brand_vision
+    - photo_led
+    - agenda
+    - presenter_team
+    relates_to:
+    - target: claim
+      relation: contains
+      weight: required
+      description: Narrative slides structure arguments using claims that advance the main message
+      target_file: narrative_entities
+    - target: narrative_hook
+      relation: contains
+      weight: expected
+      description: Visual hierarchy in narrative slides directs viewer's eye first to the hook element before context and CTA
+        per Visual Communication and Storytelling
+      target_file: narrative_entities
+    - target: visual_narrative_element
+      relation: contains
+      weight: required
+      description: Narrative slides contain visual narrative elements that synchronize plot visual and emotional arcs per Visual
+        Communication and Storytelling
+      target_file: visual_elements_entities
+    - target: scqa_marker
+      relation: supported_by
+      weight: expected
+      description: "Narrative slides are structured by the SCQA framework which provides the story wrapper (Situation-Complication-Question-Answer) that transforms data into compelling narrative arcs per Canonical Presentation Methodology"
+      target_file: rhetorical_devices_entities
+    - target: customer_story
+      relation: contains
+      weight: expected
+      description: "Narrative slides present case studies and customer stories with metric + quote + timeline structure per Slide Deck Design Playbook"
+      target_file: evidence_types_entities
+    - target: narrative_tension
+      relation: enables
+      weight: expected
+      description: "Narrative slides enable narrative tension through SCR complication structure — the visual arc oscillates between 'what is' and 'what could be' per Visual Analysis of Slide Decks"
+      target_file: narrative_entities
+    - target: value_proposition
+      relation: contains
+      weight: expected
+      description: "Narrative slides contain value propositions as core messaging elements — the customer success story slide type combines metric, quote, and timeline to convey value per slide deck design playbook"
+      target_file: narrative_entities
+    - target: call_to_action
+      relation: contains
+      weight: expected
+      description: "Narrative slides in the Apple keynote model culminate with a call to action after emotional priming, problem framing, and demonstration per Slide Deck Design Playbook"
+      target_file: narrative_entities
+    - target: OPPORTUNITY_MARKER
+      relation: supports
+      weight: expected
+      description: "Narrative slides with metaphorical imagery serve Obstacle phase highlighting the gap"
+      target_file: sales_entities
+    taxonomy_mapping:
+    - taxonomy: slide_types_taxonomy
+      dimension: slide_category
+      values:
+      - narrative
+      strength: primary
+  functional_slide:
+    description: References to functional utility slides including section dividers, Q&A slides, thank-you slides, and resource/CTA
+      cards
+    canonical_id: functional_slide
+    entity_kind: slide_type
+    family: functional
+    gliner_label: FUNCTIONAL_SLIDE
+    gliner_description: Functional slide section break divider Q&A thank you resource CTA call to action contact next steps
+    examples:
+    - add a section divider slide
+    - insert a Q&A slide
+    - include a thank-you slide
+    - we need a resources slide with links
+    - add a CTA slide with next steps
+    - create a section break between topics
+    - insert a breather slide to give the audience a moment to process
+    anti_examples:
+    - break for lunch
+    - next steps in the process
+    - thank the customer
+    - the leave-behind document
+    - slidument format
+    - boardroom read-ahead packet
+    confidence_threshold: 0.75
+    aliases:
+    - divider slide
+    - transition slide
+    - closing slide
+    indicators:
+    - section break
+    - section divider
+    - divider slide
+    - Q&A slide
+    - thank you slide
+    - thank-you slide
+    - resources slide
+    - CTA slide
+    - call to action slide
+    - contact slide
+    - next steps slide
+    - breather slide
+    - status report slide
+    - summary visual
+    - reset slide
+    patterns:
+    - (section|topic) (break|divider|transition) (slide|page)
+    - (Q&A|Q and A|questions?|discussion) (slide|page)
+    - (thank[- ]you|closing|wrap[- ]up) (slide|page)
+    - (resource|CTA|call to action|contact|next steps?) (slide|page|card)
+    - (breather|reset|pacing|interlude) (slide|page)
+    color: '#95a5a6'
+    maps_to_taxonomy_types:
+    - section_break
+    - resource_card
+    taxonomy_mapping:
+    - taxonomy: slide_types_taxonomy
+      dimension: slide_category
+      values:
+      - functional
+      strength: primary
+  complex_slide:
+    description: References to complex multi-zone and dashboard-style slides combining multiple content types
+    canonical_id: complex_slide
+    entity_kind: slide_type
+    family: complex
+    gliner_label: COMPLEX_SLIDE
+    gliner_description: Complex slide dashboard multi-zone executive summary at a glance snapshot control tower status overview
+    examples:
+    - add a dashboard slide with all KPIs
+    - create a multi-zone executive summary
+    - we need an at-a-glance status slide
+    - insert a snapshot dashboard
+    - add a control tower overview slide
+    - create a dense executive summary slidument for the appendix
+    anti_examples:
+    - complex topic
+    - the dashboard application
+    - status update email
+    - the presentation was dense
+    confidence_threshold: 0.75
+    aliases:
+    - dashboard slide
+    - overview slide
+    - summary dashboard
+    indicators:
+    - dashboard slide
+    - multi-zone
+    - at a glance
+    - at-a-glance
+    - snapshot slide
+    - control tower
+    - executive summary slide
+    - status overview
+    - slidument
+    - dense slide
+    - information-rich slide
+    - hero slide
+    patterns:
+    - (dashboard|multi[- ]zone|executive summary) (slide|page|view)
+    - (at[- ]a[- ]glance|snapshot|status) (slide|page|overview)
+    - (control tower|KPI summary|performance overview) (slide|page)
+    - (slidument|dense slide|information[- ]rich) (slide|page|layout)
+    color: '#e74c3c'
+    maps_to_taxonomy_types:
+    - multi_zone
+    taxonomy_mapping:
+    - taxonomy: slide_types_taxonomy
+      dimension: slide_category
+      values:
+      - complex
+      strength: primary
+    relates_to:
+    - target: accessibility_feature
+      relation: supported_by
+      weight: expected
+      description: "Complex slides containing interactive visualizations (simulations, network explorers) require accessibility features including dual-structure patterns, ARIA live regions, and keyboard focus management per Narrative Visualization research"
+      target_file: visual_elements_entities
+quality_indicators:
+  positive:
+  - slide type matches content intent
+  - appropriate structural complexity for the message
+  - correct prompt group routing
+  - clear slide type reference in brief
+  - appropriate pacing rhythm with lean and dense slides alternating
+  - slide type matches the narrative function (lean vs. dense)
+  negative:
+  - slide type mismatch with content
+  - overly complex layout for simple message
+  - ambiguous slide type reference
+  - missing slide type specification in storyboard
+  - label title slide with no assertion
+  - uniformly dense deck with no breather slides
+domain_keywords:
+  primary:
+  - slide
+  - deck
+  - presentation
+  - layout
+  - diagram
+  - chart
+  - cover
+  - agenda
+  secondary:
+  - hub and spoke
+  - process flow
+  - timeline
+  - comparison
+  - testimonial
+  - framework
+  - pillars
+  - dashboard
+  - structural
+  - data proof
+  - narrative slide
+  - section break
+  - flowchart
+  - market size
+  - TAM SAM SOM
+  - problem-solution
+  - hook
+  - slidument
+  - action title
+  - SCR
+  - SCQA
+  - BLUF

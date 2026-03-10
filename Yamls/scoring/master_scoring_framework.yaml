@@ -1,0 +1,451 @@
+# ==============================================================================
+# Scoring & Aggregation Configuration
+# Maps specialized lenses to weighting categories for Master Story Score
+# ==============================================================================
+
+_meta:
+  id: master_scoring_framework
+  title: Scoring Configuration
+  description: Lens category mapping, aggregation rules, and scoring configurations for Master Story Score including narrative, argument, discourse, latent coherence, and text descriptive assessment.
+  domain: pedagogical
+  domain_type: workflow
+  purpose: scoring
+  version: "1.4.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Researching Narrative and Discourse Analysis.md"
+    - "Corpus/Research/Structural Paradigms in Natural Language Processing: A Comprehensive Analysis of Narrative Orchestration, Discourse Integration, and Latent Evaluation.md"
+    - "Corpus/Research/Theoretical Frameworks Integration Analysis.md"
+
+  relationships:
+    - target: scoring/synthesis_weights.yaml
+      type: depends_on
+      description: "Master framework depends on synthesis weights for composite score calculation"
+dimensions:
+  - name: narrative_quality
+    description: "SOAR narrative arc balance, rhetorical device application, and narrative archetype alignment"
+    score_levels:
+      - score: 0
+        label: absent
+        description: "No discernible narrative arc or SOAR structure"
+      - score: 1
+        label: partial
+        description: "Partial narrative arc; SOAR elements present but unbalanced"
+      - score: 2
+        label: structured
+        description: "Clear SOAR narrative with appropriate rhetorical balance"
+      - score: 3
+        label: exemplary
+        description: "Masterful SOAR narrative with archetype alignment and LitVISTA axis balance"
+  - name: argument_quality
+    description: "Toulmin argumentation completeness, claim-evidence linking, and rhetorical coherence"
+    score_levels:
+      - score: 0
+        label: absent
+        description: "Claims without evidence; no Toulmin structure evident"
+      - score: 1
+        label: weak
+        description: "Some evidence links present but Toulmin components incomplete"
+      - score: 2
+        label: structured
+        description: "Complete Toulmin structure with adequate evidence-claim links"
+      - score: 3
+        label: exemplary
+        description: "Full Toulmin argumentation with strong evidence, backing, and rebuttals"
+  - name: discourse_coherence
+    description: "RST relation quality, discourse marker usage, and latent structural coherence"
+    score_levels:
+      - score: 0
+        label: incoherent
+        description: "Disconnected segments; no discourse relations evident"
+      - score: 1
+        label: partial
+        description: "Some discourse structure but topic drift or coreference gaps"
+      - score: 2
+        label: coherent
+        description: "Clear discourse relations; minimal coreference or topicality gaps"
+      - score: 3
+        label: exemplary
+        description: "Optimal discourse structure with strong cohesion across all segments"
+  - name: text_descriptives
+    description: "Readability complexity thresholds, sentence diversity, and connective density"
+    score_levels:
+      - score: 0
+        label: non_compliant
+        description: "Text complexity outside acceptable thresholds; poor sentence variation"
+      - score: 1
+        label: borderline
+        description: "Some text metrics within range; connective density low"
+      - score: 2
+        label: compliant
+        description: "Text descriptives within expected thresholds; adequate connective use"
+      - score: 3
+        label: exemplary
+        description: "Optimal readability with rich connective density and sentence diversity"
+  - name: aggregation_confidence
+    description: "Confidence and completeness of lens-level scoring and Master Story Score aggregation"
+    score_levels:
+      - score: 0
+        label: insufficient
+        description: "Required lenses missing or below minimum confidence threshold"
+      - score: 1
+        label: partial
+        description: "Most required lenses present but some below confidence threshold"
+      - score: 2
+        label: adequate
+        description: "All required lenses above confidence threshold; aggregation reliable"
+      - score: 3
+        label: high_confidence
+        description: "All lenses above threshold with fail-fast checks passed; MSS fully valid"
+
+# Mapping from lens name to master category (visual, editorial, pedagogical)
+lens_categories:
+  narrative: editorial
+  domain: editorial
+  audience: editorial
+  discourse: editorial
+  argument: editorial
+  text_descriptives: editorial
+  synthesis: editorial
+  latent_coherence: editorial  # LitVISTA / Model Criticism global structural coherence
+  visual: visual
+  multimodal: visual
+  pedagogical: pedagogical
+
+# Validation Rules
+aggregation_rules:
+  required_lenses:
+    - narrative
+    - visual
+    - pedagogical
+    - domain
+    - audience
+    - discourse
+    - argument
+    - multimodal
+    - text_descriptives
+    - synthesis
+  fail_fast: true # Analysis fails if any required lens fails
+  minimum_confidence_threshold: 0.5
+  confidence_model_note: "Confidence should be treated as a probability distribution over relation classifications, not a binary pass/fail. Discourse structure is inherently ambiguous — scoring systems should preserve confidence weights over relation types rather than hard-classifying to the single best parse (RSTformer §3.3.2)."
+  lens_impact_estimates:
+    vista_topology: "+35% narrative depth analysis vs. SOAR-only assessment"
+    rst_latent_validation: "+40% discourse coherence detection"
+    simplification_metrics: "+25% readability insights"
+    research_basis: "Theoretical Frameworks Integration Analysis"
+
+# ==============================================================================
+# Narrative Lens Scoring Configuration
+# Weights and component scores for narrative quality assessment
+# ==============================================================================
+
+narrative_scoring:
+  description: "Scoring weights for narrative structure, rhetoric, and character positioning."
+
+  # Primary score weights (must sum to 1.0)
+  primary_weights:
+    soar_completeness: 0.40  # SOAR framework coverage (Situation, Obstacle, Approach, Result)
+    rhetorical_balance: 0.30  # Balance of rhetorical devices and appeals
+    archetype_quality: 0.30  # Quality of character positioning (Hero/Guide/Villain)
+
+  # Archetype score components (base + bonuses)
+  archetype_score_components:
+    base_score: 50  # Starting score for archetype analysis
+    guide_signals_present: 20  # Bonus if guide/mentor signals detected (brand as helper)
+    hero_signals_present: 15  # Bonus if hero signals detected (audience-centric)
+    villain_signals_present: 15  # Bonus if villain/antagonist signals detected (clear problem)
+
+  # Rhetorical balance bonus rules
+  rhetorical_balance_bonus:
+    unique_types_threshold: 3  # Minimum unique rhetoric types to qualify for bonus
+    bonus_points: 10  # Points added when threshold is met
+
+  # LitVISTA Narrative Axis Dimensions
+  # Source: LitVISTA (arXiv:2601.06445); Theoretical Frameworks Integration Analysis
+  vista_axis_components:
+    description: "Three orthogonal narrative dimensions from LitVISTA; scoring uses Anchor F1 (detection) and Dependency F1 (structural linking)"
+    impulse:
+      definition: "Plot-advancing anchors that transition narrative state (E_tau → E_tau+1)"
+      ideal_percent: 50
+      scoring_metric: "Anchor F1 for Impulse detection; Dependency F1 for causal linking quality"
+      lllm_bias_note: "Frontier LLMs are biased toward Impulse generation — over-detection is the primary failure mode"
+    resonance:
+      definition: "Descriptive/atmospheric anchors expanding laterally without advancing time (E_tau → E_tau+delta)"
+      ideal_percent: 30
+      constraint: "Must attach directly to Impulse anchors (topological constraint); orphaned Resonance = structural defect"
+      scoring_metric: "Dependency F1 for Resonance → Impulse attachment accuracy"
+    pause:
+      definition: "Anchors inducing temporal suspension (E_tau → E_tau) for introspection, emotion, and internal processing"
+      ideal_percent: 20
+      attachment_model: "Recursive: Pause → Resonance → Impulse stack; stack depth = proxy for cognitive complexity"
+      scoring_metric: "Pause stack depth (maximum recursive attachment depth per narrative unit)"
+    research_basis: "LitVISTA (arXiv:2601.06445); Structural Paradigms in NLP"
+
+  # Axis Balance Rules (Pacing Quality)
+  axis_balance_rules:
+    description: "Imbalance in VISTA axis distribution indicates pacing defects — scored as penalties"
+    rushed:
+      trigger: "consecutive_impulse_anchors > 5 without Resonance or Pause"
+      interpretation: "Pure chronicle/summary — insufficient descriptive texture or emotional depth"
+    shallow:
+      trigger: "pause_anchor_percent < 10"
+      interpretation: "Narrative lacks introspective or emotional depth"
+    balanced_range:
+      impulse_percent: { min: 40, max: 60 }
+      resonance_percent: { min: 20, max: 40 }
+      pause_percent: { min: 10, max: 30 }
+    research_basis: "LitVISTA (arXiv:2601.06445); Theoretical Frameworks Integration Analysis"
+
+  # Narrative Topology Archetypes
+  narrative_topology:
+    description: "Categorical taxonomy of narrative pacing profiles based on VISTA axis distribution"
+    sprint:
+      profile: "High Impulse, low Pause"
+      use_case: "Action-oriented, rapid-paced content; acceptable for instructional procedures"
+    odyssey:
+      profile: "Balanced X-Y-Z distribution (~50/30/20)"
+      use_case: "Classic narrative structure; optimal for learning stories and case studies"
+    meditation:
+      profile: "High Pause; low Impulse"
+      use_case: "Thought leadership, reflective content; risk of reader disengagement if Impulse too low"
+    manifesto:
+      profile: "High Impulse + Pause, low Resonance"
+      use_case: "Urgent call-to-action; appropriate for executive decision content"
+    pacing_deficiency_flag: "longest_impulse_sequence > 5 is a narrative quality flag regardless of archetype"
+    research_basis: "Theoretical Frameworks Integration Analysis; LitVISTA (arXiv:2601.06445)"
+
+# ==============================================================================
+# Argument Lens Scoring Configuration
+# Weights and component scores for Toulmin argument structure analysis
+# ==============================================================================
+
+argument_scoring:
+  description: "Scoring weights for Toulmin argument structure, claim-evidence linking, and stance analysis."
+
+  # Primary score weights (must sum to 1.0)
+  primary_weights:
+    claim_evidence_linking: 0.40  # Quality of claim-evidence connections (semantic similarity)
+    toulmin_completeness: 0.60  # Completeness of Toulmin structure (claim, evidence, warrant, backing, qualifier, rebuttal)
+
+  # Stance balance scoring rules (penalty scores for imbalanced stance distribution)
+  stance_balance_scores:
+    very_one_sided: 20.0  # Score when >80% in one category (severe imbalance)
+    somewhat_one_sided: 50.0  # Score when >60% in one category (moderate imbalance)
+    balanced: 100.0  # Score when <=60% max in any category (good balance)
+
+  # RST Relation → Toulmin Component Mapping
+  # Source: RSTformer (ACL 2023 / arXiv:2305.16784); Structural Paradigms in NLP
+  rst_relation_weights:
+    description: "Maps RST discourse relation types to Toulmin argument components — nucleus units carry more rhetorical weight than satellite units"
+    cause:
+      toulmin_component: "warrant"
+      nuclearity: "nucleus"
+      interpretation: "Causal link providing the reasoning that makes evidence support the claim"
+    elaboration:
+      toulmin_component: "evidence"
+      nuclearity: "satellite"
+      interpretation: "Evidence development — expands on the target proposition with supporting detail"
+    contrast:
+      toulmin_component: "rebuttal"
+      nuclearity: "satellite"
+      interpretation: "Adversarial structure — the opposing position that qualifies the main claim"
+    condition:
+      toulmin_component: "qualifier"
+      nuclearity: "satellite"
+      interpretation: "Contextual condition that limits the scope of the claim"
+    background:
+      toulmin_component: "backing"
+      nuclearity: "satellite"
+      interpretation: "Foundational context providing legitimacy for the warrant"
+    concession:
+      toulmin_component: "rebuttal"
+      nuclearity: "satellite"
+      interpretation: "Counter-argument acknowledgment — strengthens the main claim by anticipating objections"
+    nucleus_primacy: "Nucleus units cannot be removed without losing discourse coherence; Satellite units are supporting and can be pruned"
+    research_basis: "RSTformer (ACL 2023 / arXiv:2305.16784); Structural Paradigms in NLP"
+
+# ==============================================================================
+# Validation.2 Argument Quality Scoring Configuration
+# Component weights for composite argument quality score (0-100)
+# ==============================================================================
+
+validation_2_argument_quality:
+  description: "Scoring weights for Validation.2 argument quality assessment using Toulmin completeness, evidence strength, rhetorical balance, and graph connectivity."
+
+  # Component weights for overall quality score (must sum to 1.0)
+  component_weights:
+    toulmin_completeness: 0.40  # % claims with evidence + warrant (Toulmin model)
+    evidence_strength: 0.30  # Evidence per claim ratio (target: 2+ per claim)
+    rhetorical_balance: 0.20  # Aristotle's Triangle balance (ethos/pathos/logos evenness)
+    graph_connectivity: 0.10  # % connected claims in argument graph (TACAM connectivity)
+
+  # Graph Connectivity Definition
+  graph_connectivity_spec:
+    description: "A claim is considered 'connected' when it has at least one explicitly relation-typed RST edge to another proposition — bare assertions without typed edges are not connected"
+    connectivity_criterion: "Explicit RST relation type on all inter-proposition edges (from Discourse-Aware Simplification match-split-link algorithm)"
+    coreference_integrity:
+      description: "Entity-level consistency as a sub-component of graph connectivity — distinct from claim-to-claim linkage"
+      unresolved_entities: "Array of entities mentioned but never defined (e.g., 'the solution' without prior introduction)"
+      pronoun_ambiguity_count: "Integer count of ambiguous pronoun references without clear antecedent"
+      note: "A document can have high claim connectivity but poor entity tracking — these are orthogonal"
+    research_basis: "Discourse-Aware Text Simplification (arXiv:2308.00425); Model Criticism (EMNLP 2022 / arXiv:2210.08444); Structural Paradigms in NLP"
+
+  # Quality assessment thresholds (0-100 scale)
+  quality_thresholds:
+    excellent: 80  # 80-100: excellent argument quality
+    good: 60  # 60-80: good argument quality
+    fair: 40  # 40-60: fair argument quality
+    poor: 0  # 0-40: poor argument quality
+
+# ==============================================================================
+# Discourse Relation Scoring Configuration
+# RST-based discourse structure quality at the section/slide level
+# ==============================================================================
+
+discourse_scoring:
+  description: "Scoring configuration for discourse relation quality at the section/slide level — how segments relate to each other. Distinct from argument_scoring (which operates at claim/evidence level) and narrative_scoring (which operates at story arc level)."
+
+  relation_types:
+    elaboration: "Target expands on Source — evidence development"
+    contrast: "Target opposes Source — adversarial balance"
+    cause: "Source causes Target — causal warrant"
+    condition: "Source sets condition for Target — qualifying context"
+    evidence: "Target supports Source — backing for claim"
+    background: "Target provides context for Source — foundational framing"
+    concession: "Target acknowledges counter-argument — rebuttal structure"
+
+  relation_confidence_scoring:
+    description: "Each discourse relation carries a confidence score (0–1); scoring preserves the probability distribution rather than hard-classifying to a single relation type"
+    minimum_relation_confidence: 0.6
+    ambiguity_flag: "confidence < 0.6 for top-1 relation type — preserve distribution; do not assign single label"
+
+  discourse_quality_metrics:
+    topic_drift_score:
+      description: "Latent coherence metric (0–1 scale); lower = more coherent topic flow across sections"
+      threshold_coherent: 0.4
+      threshold_drifting: 0.7
+    nucleus_coverage:
+      description: "% of slides or sections classified as Nucleus (cannot be removed without losing coherence)"
+      minimum_percent: 40
+      note: "Decks with <40% nucleus slides are excessively padded with satellite content"
+    implicit_coherence_gaps:
+      description: "Count of adjacent sections with no explicit discourse relation link — requires inference by reader"
+      threshold: 2
+      note: "More than 2 implicit coherence gaps = structural risk requiring rewrite"
+
+  research_basis: "RSTformer (ACL 2023 / arXiv:2305.16784); Structural Paradigms in NLP; Theoretical Frameworks Integration Analysis"
+
+# ==============================================================================
+# Latent Evaluation Metrics
+# Global structural coherence beyond local surface scores
+# ==============================================================================
+
+latent_evaluation_metrics:
+  description: "Latent-space evaluation detecting global structural failure that surface-level scoring misses — based on Model Criticism for Long-Form Text Generation (EMNLP 2022 / arXiv:2210.08444)"
+
+  latent_ppl:
+    description: "Latent Perplexity (Latent PPL) — measures structural coherence at document level using 800-state Hidden Semi-Markov Model (HSMM) trained on human corpora"
+    formula: "Latent PPL(x) = exp( (1/m) * Latent_NLL(x) )"
+    empirical_benchmarks:
+      arXiv_on_topic:
+        latent_ppl: 6.72
+        word_ppl: 13.94
+        condition: "LLM given paper title — correct topical structure"
+      arXiv_off_topic:
+        latent_ppl: 9.52
+        word_ppl: 14.13
+        condition: "LLM without title — structural breakdown detected"
+      latent_ppl_sensitivity: "41.7% increase in Latent PPL when topical structure breaks down vs. 1.4% increase in word PPL — latent metric is 30x more sensitive to structural failure"
+    threshold_coherent: 7.5
+    threshold_drifting: 9.0
+
+  three_failure_modes:
+    description: "Three orthogonal structural failure dimensions — a document can score well on one and poorly on another"
+    structural_coherence:
+      description: "Does the text progress through expected discourse stages in logical order?"
+      transformer_performance: "Poor — Transformers fail on long-term sequential discourse dynamics"
+      expected_state_sequence: "Intro → Problem → Solution → Proof → CTA"
+      structural_cohesion_enum: ["strong", "weak", "missing"]
+      note: "Missing = introduction or conclusion that does not link structurally to body content"
+    coreference:
+      description: "Do entities remain consistent and resolvable across the full document?"
+      transformer_performance: "Poor — pronouns and abstract references frequently become ambiguous across paragraphs"
+      metrics:
+        unresolved_entities: "Array of entity references without prior introduction"
+        pronoun_ambiguity_count: "Integer count of pronouns without clear antecedent"
+    topicality:
+      description: "Does the text stay on the declared topic?"
+      transformer_performance: "Adequate — word-level PPL captures topical drift adequately"
+      note: "Topicality can be high while structural coherence and coreference are both failing — surface fluency is not document quality"
+
+  research_basis: "Model Criticism for Long-Form Text Generation (EMNLP 2022 / arXiv:2210.08444); Structural Paradigms in NLP"
+
+# ==============================================================================
+# Narrative Coherence Scoring
+# HSMM-based global narrative flow quality
+# ==============================================================================
+
+narrative_coherence_scoring:
+  description: "Scoring configuration for macro-level narrative flow and discourse state sequence — distinct from narrative_scoring (which measures story elements) and discourse_scoring (which measures section relations)"
+
+  expected_state_sequence:
+    - "Intro"
+    - "Problem"
+    - "Solution"
+    - "Proof"
+    - "CTA"
+  state_violation_penalty: "Slide whose discourse state does not follow the expected sequence from its predecessor — triggers scoring penalty"
+
+  metrics:
+    topic_drift_score:
+      scale: "0–1 (lower = more coherent)"
+      threshold_coherent: 0.4
+      threshold_drifting: 0.7
+    structural_cohesion:
+      enum: ["strong", "weak", "missing"]
+      definition:
+        strong: "Introduction links to body; body links to conclusion; all major transitions explicit"
+        weak: "At least one major transition implicit or weakly signaled"
+        missing: "Introduction or conclusion structurally disconnected from body"
+    coreference_integrity:
+      unresolved_entities: "Entities mentioned without prior introduction"
+      pronoun_ambiguity_count: "Pronouns without clear antecedent"
+
+  research_basis: "Model Criticism for Long-Form Text Generation (EMNLP 2022 / arXiv:2210.08444); Theoretical Frameworks Integration Analysis"
+
+# ==============================================================================
+# Text Descriptives Scoring Configuration
+# Readability complexity and proposition quality metrics
+# ==============================================================================
+
+text_descriptives_scoring:
+  description: "Scoring configuration for the text_descriptives lens — readability complexity, sentence structure, and discourse linkage quality. Based on Discourse-Aware Simplification framework (arXiv:2308.00425)."
+
+  complexity_thresholds:
+    avg_propositions_per_sentence:
+      high_complexity_flag: 3
+      note: "avg_propositions_per_sentence > 3 indicates high sentence complexity requiring simplification"
+    sentence_type_taxonomy:
+      - "simple_sentence"
+      - "compound_sentence"
+      - "complex_sentence"
+      - "compound_complex_sentence"
+      - "nominalisation"
+    connective_type_taxonomy:
+      - "additive"
+      - "adversative"
+      - "causal"
+      - "temporal"
+      - "exemplification"
+
+  coherence_gap_metric:
+    implicit_coherence_gaps:
+      description: "Count of sentences or slides lacking a clear rhetorical link to the prior sentence or section"
+      threshold: 2
+      note: "More than 2 implicit coherence gaps = structural risk; reader must infer connections the author should provide"
+
+  proposition_quality:
+    description: "A well-formed proposition is self-contained (passes minimality check) and has an explicit relation-typed edge to adjacent propositions"
+    unlabeled_edge_penalty: "Implicit connective between propositions reduces scoring confidence for that pair"
+
+  research_basis: "Discourse-Aware Text Simplification (arXiv:2308.00425); Structural Paradigms in NLP; Theoretical Frameworks Integration Analysis"

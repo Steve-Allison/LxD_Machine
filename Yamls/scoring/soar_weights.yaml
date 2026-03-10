@@ -1,0 +1,778 @@
+# ==============================================================================
+# SOAR Weighting by Content Level
+# Externalizes the SOAR stage emphasis recommendations from Stage 1.5 PDL
+# ==============================================================================
+
+_meta:
+  id: soar_weights
+  title: "SOAR Weighting"
+  description: "SOAR (Situation-Opportunity-Approach-Results) stage emphasis by content level (L1-L4)"
+  domain: narrative
+  domain_type: cross_cutting
+  purpose: scoring
+  version: "1.3.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Using SOAR Storytelling most effectively.md"
+    - "Corpus/Research/SOAR Narrative Mapping by Sales Stage.md"
+
+dimensions:
+  - name: content_level_weighting
+    description: "SOAR stage emphasis appropriateness for content level (L1 Strategic through L4 Contextual)"
+    score_levels:
+      - score: 0
+        label: misaligned
+        description: "SOAR weights do not match the declared content level (e.g., L1 with heavy Approach)"
+      - score: 1
+        label: partial
+        description: "Weights directionally correct but ratios outside recommended ranges"
+      - score: 2
+        label: aligned
+        description: "Weights within recommended ranges for the content level"
+      - score: 3
+        label: optimised
+        description: "Weights precisely calibrated for content level with buyer psychology alignment"
+  - name: soar_element_balance
+    description: "Internal balance of Situation, Opportunity, Approach, and Results narrative elements"
+    score_levels:
+      - score: 0
+        label: unbalanced
+        description: "One or more SOAR elements absent or dominant beyond acceptable range"
+      - score: 1
+        label: partial
+        description: "All elements present but weighting tolerance violations detected"
+      - score: 2
+        label: balanced
+        description: "All SOAR elements within weight sum tolerance; narrative arc complete"
+      - score: 3
+        label: exemplary
+        description: "Optimal SOAR balance with language patterns and emotional arc fully expressed"
+  - name: sales_stage_alignment
+    description: "Alignment of SOAR emphasis to buyer's current sales stage and progression signals"
+    score_levels:
+      - score: 0
+        label: misaligned
+        description: "SOAR emphasis contradicts buyer psychology for the sales stage"
+      - score: 1
+        label: approximate
+        description: "Broadly correct stage group but not stage-specific"
+      - score: 2
+        label: aligned
+        description: "SOAR weights match recommended sales stage mapping"
+      - score: 3
+        label: exemplary
+        description: "Stage-perfect alignment with transition trigger signals present"
+  - name: persona_alignment
+    description: "SOAR emphasis suitability for the target persona at the current stage group"
+    score_levels:
+      - score: 0
+        label: misaligned
+        description: "Persona emphasis contradicts recommended overlay for stage group"
+      - score: 1
+        label: generic
+        description: "No persona differentiation applied to SOAR weighting"
+      - score: 2
+        label: aligned
+        description: "Persona overlay applied for the correct stage group"
+      - score: 3
+        label: exemplary
+        description: "Persona-specific SOAR calibration with stage progression quality indicators"
+
+# ==============================================================================
+# L1: STRATEGIC / PORTFOLIO LEVEL
+# ==============================================================================
+
+l1_strategic:
+  situation_weight: 0.35
+  opportunity_weight: 0.30
+  approach_weight: 0.15
+  results_weight: 0.20
+  rationale: "Strategic level emphasizes vision and market context. Heavy focus on WHY change is needed and the opportunity size. Approach and results are directional, not detailed."
+  buyer_psychology: "C-Suite buyers are in sense-making mode — they need to understand the magnitude of the problem before evaluating solutions. Premature solution detail triggers skepticism. Strategic-level audiences use Situation + Opportunity to validate relevance, then quickly scan Approach/Results for credibility signals only."
+  audience: "C-Suite, Board, Strategic Decision Makers"
+  typical_deck_length: "10-15 slides"
+  key_focus:
+    - "Transformational vision and market forces"
+    - "Business impact and strategic opportunity"
+    - "Executive-level proof points"
+    - "High-level roadmap (not implementation details)"
+
+# ==============================================================================
+# L2: PROGRAM / SOLUTION LEVEL
+# ==============================================================================
+
+l2_program:
+  situation_weight: 0.25
+  opportunity_weight: 0.25
+  approach_weight: 0.25
+  results_weight: 0.25
+  rationale: "Program level balances all stages evenly. Audience needs context but also wants to understand the solution and expected outcomes."
+  buyer_psychology: "VP/Director-level buyers have delegated context-gathering but own the business case. They require balanced SOAR because they must translate upward (Opportunity) and downward (Approach) simultaneously. Results are used to validate ROI assumptions for budget proposals."
+  audience: "VPs, Directors, Program Managers"
+  typical_deck_length: "20-30 slides"
+  key_focus:
+    - "Business problem with enough detail"
+    - "Solution overview with key capabilities"
+    - "Implementation approach at program level"
+    - "ROI and success metrics"
+
+# ==============================================================================
+# L3: TACTICAL / APPLICATION LEVEL
+# ==============================================================================
+
+l3_tactical:
+  situation_weight: 0.15
+  opportunity_weight: 0.15
+  approach_weight: 0.40
+  results_weight: 0.30
+  rationale: "Tactical level emphasizes HOW and WHAT. Audience already understands the business context; they need implementation details and proof of results."
+  buyer_psychology: "Practitioner buyers evaluate technical feasibility and adoption risk. They skip context because they already understand the problem intimately. Heavy Approach content lets them validate fit against their architecture, workflows, and constraints. Results provide peer proof that the approach works in real environments."
+  audience: "Managers, Practitioners, Technical Leads"
+  typical_deck_length: "30-50 slides"
+  key_focus:
+    - "Technical architecture and implementation"
+    - "Feature-level capabilities"
+    - "Integration patterns and workflows"
+    - "Case studies with specific metrics"
+
+# ==============================================================================
+# L4: CONTEXTUAL / ADAPTATION LEVEL
+# ==============================================================================
+
+l4_contextual:
+  situation_weight: 0.20
+  opportunity_weight: 0.25
+  approach_weight: 0.25
+  results_weight: 0.30
+  rationale: "Contextual level adapts based on the underlying level (L1-L3) and adds industry/persona/regulatory specificity. Weights adjust based on context type."
+  buyer_psychology: "Contextual buyers respond most strongly to specificity — industry-specific challenges, role-specific outcomes. The Opportunity weight is elevated because industry/regulatory context changes the opportunity calculus. Results dominate because context-specific proof points eliminate 'our situation is different' objections."
+  audience: "Varies by context (Industry, Persona, Regulatory)"
+  typical_deck_length: "Varies"
+  key_focus:
+    - "Industry-specific challenges and opportunities"
+    - "Persona-specific value propositions"
+    - "Regulatory and compliance considerations"
+    - "Contextual proof points and references"
+
+  # Context type adjustments (optional guidance)
+  context_adjustments:
+    industry:
+      description: "Industry-specific adaptations"
+      situation_boost: 0.05
+      results_boost: 0.05
+    persona:
+      description: "Role-specific adaptations"
+      opportunity_boost: 0.05
+      approach_boost: 0.05
+    regulatory:
+      description: "Compliance-focused adaptations"
+      situation_boost: 0.10
+      approach_boost: 0.10
+
+# ==============================================================================
+# SOAR ELEMENT NARRATIVE ARC
+# Conceptual purpose and function of each SOAR element
+# ==============================================================================
+
+soar_element_narrative_arc:
+  description: "Each SOAR element serves a distinct narrative function. Understanding these functions prevents element confusion and weight miscalibration."
+  research_basis: "Research - Using SOAR Storytelling most effectively.md"
+
+  situation:
+    narrative_function: "Establish shared reality and credibility"
+    emotional_goal: "Recognition — the buyer nods and thinks 'you understand my world'"
+    timing: "Opening; must land within first 20% of presentation"
+    failure_mode: "Situation becomes a history lesson; audience disengages before Opportunity"
+    quality_test: "Does the buyer feel 'seen' without feeling lectured?"
+
+  opportunity:
+    narrative_function: "Create productive tension between current and future state"
+    emotional_goal: "Urgency — the buyer feels the cost of inaction is real and proximate"
+    timing: "Immediately follows Situation; should represent the narrative peak of early content"
+    failure_mode: "Opportunity is purely aspirational with no downside risk — creates no urgency"
+    quality_test: "Would a CFO approve budget based on this Opportunity statement alone?"
+
+  approach:
+    narrative_function: "Resolve tension with a credible path forward"
+    emotional_goal: "Confidence — the buyer believes the proposed path is uniquely capable"
+    timing: "After Opportunity is established; never lead with Approach"
+    failure_mode: "Approach is a feature dump disconnected from the tension established in Opportunity"
+    quality_test: "Does each Approach element directly address a specific Opportunity pain point?"
+
+  results:
+    narrative_function: "Prove the claim with evidence matched to the buyer's context"
+    emotional_goal: "Trust — the buyer believes results are achievable in their context"
+    timing: "Closes the loop; should feel like proof, not sales pitch"
+    failure_mode: "Generic statistics without buyer-context alignment; or a single outlier case study"
+    quality_test: "Is each Result tied to a specific Approach capability shown earlier?"
+
+# ==============================================================================
+# SOAR LANGUAGE PATTERNS
+# Vocabulary and phrasing standards for each SOAR element by stage group
+# ==============================================================================
+
+soar_language_patterns:
+  description: "Language patterns that signal strong SOAR construction at each level"
+  research_basis: "Research - Using SOAR Storytelling most effectively.md"
+
+  situation:
+    strong_indicators:
+      - "Industry-specific data points (market size, growth rates, disruption vectors)"
+      - "Customer's own language and terminology reflected back"
+      - "Present-tense framing: 'Today, organizations like yours face...'"
+      - "Third-party validation: 'According to [research firm]...'"
+    weak_indicators:
+      - "Generic problem statements applicable to any company"
+      - "Company history or legacy overview"
+      - "Past-tense historical narrative without present relevance"
+    tension_vocabulary:
+      - "escalating"
+      - "accelerating"
+      - "compounding"
+      - "unsustainable"
+      - "risk exposure"
+      - "competitive disadvantage"
+      - "capability gap"
+      - "falling behind"
+
+  opportunity:
+    strong_indicators:
+      - "Quantified cost of inaction: '$X per year in inefficiency'"
+      - "Time-bound urgency: 'Organizations that move first gain...'"
+      - "Contrast structure: 'While leaders are achieving X, most teams still struggle with Y'"
+      - "Future-state specificity: 'The organizations that solve this will...'"
+    weak_indicators:
+      - "Purely positive aspiration without downside ('imagine a world where...')"
+      - "Vague market opportunity statements"
+      - "Solution-forward language (jumping to Approach)"
+    tension_vocabulary:
+      - "gap"
+      - "exposure"
+      - "risk"
+      - "cost of delay"
+      - "market window"
+      - "competitive pressure"
+      - "inflection point"
+      - "tipping point"
+      - "strategic imperative"
+
+  approach:
+    strong_indicators:
+      - "Explicit connection back to Opportunity pain: 'To solve [O pain], we...'"
+      - "Differentiation is explicit and tied to outcomes, not features"
+      - "Stages or phases that show structured progress, not one-step magic"
+      - "Customer-role-specific language (CMO sees capability X, CTO sees security Y)"
+    weak_indicators:
+      - "Feature list without business context"
+      - "Technical specifications before establishing business value"
+      - "Approach in Stages 1-2 mentioning specific product names or SKUs"
+    confidence_vocabulary:
+      - "enables"
+      - "accelerates"
+      - "ensures"
+      - "eliminates"
+      - "transforms"
+      - "scales"
+      - "proven"
+      - "purpose-built"
+      - "enterprise-grade"
+      - "integrated"
+      - "automated"
+
+  results:
+    stage_group_vocabulary:
+      early_stages_1_3:
+        type: "Illustrative / Third-party"
+        examples: ["Industry benchmark", "Analyst finding", "'Companies like yours typically see...'"]
+        avoid: "First-person confirmed claims; 'our customers achieved...' without anonymized permission"
+      mid_stages_4_5:
+        type: "Verifiable case studies"
+        examples: ["Named customer + metric", "Testimonial quote", "ROI calculation"]
+        avoid: "Purely directional statements without specifics"
+      late_stages_6_plus:
+        type: "Confirmed past-tense proof"
+        examples: ["'[Named customer] achieved X in Y timeframe'", "Signed business outcomes"]
+        avoid: "Illustrative or 'typical' framing — must be confirmed, specific, past-tense"
+    universal_strong_patterns:
+      - "Result + Mechanism + Timeframe: '[Customer] reduced [metric] by [%] using [capability] in [timeframe]'"
+      - "Comparison framing: 'Before: X. After: Y.'"
+      - "Peer-company validation: '[Company in buyer's industry] achieved...'"
+
+# ==============================================================================
+# VALIDATION RULES
+# ==============================================================================
+
+validation_rules:
+  description: "Rules for validating SOAR weighting against content"
+
+  weight_sum_tolerance: 0.05
+  minimum_weight: 0.10
+  maximum_weight: 0.50
+
+  level_mismatch_signals:
+    l1_with_heavy_approach: "Strategic deck with >30% approach weight may be too tactical"
+    l3_with_heavy_situation: "Tactical deck with >30% situation weight may be too strategic"
+    missing_results: "Any deck with <10% results weight lacks proof points"
+
+  # New rules from SOAR Narrative Mapping research
+  no_element_fully_absent:
+    rule: "No SOAR element should have 0.00 weight in any stage"
+    minimum_floor: 0.10
+    rationale: "Even dominant-stage content needs the other three elements for coherence. A deck with zero Results has no proof; zero Situation has no empathy."
+    violation_label: "element_absent"
+
+  results_specificity_by_stage_group:
+    rule: "Results specificity level must match the stage group"
+    stage_groups:
+      early_stages_1_3:
+        required_type: "illustrative"
+        allowed: ["industry benchmarks", "analyst data", "anonymous case studies", "what-if scenarios"]
+        forbidden: ["confirmed past-tense first-person claims without permission"]
+      late_stages_6_10:
+        required_type: "confirmed"
+        required_tense: "past-tense"
+        required_specificity: "named customer or heavily detailed anonymization"
+    violation_label: "results_specificity_mismatch"
+
+  approach_feature_restriction_early:
+    rule: "Approach content in Stages 1-2 must not reference specific product features or SKUs"
+    allowed_in_early_stages: ["solution categories", "capability types", "conceptual architectures"]
+    forbidden_in_early_stages: ["product names", "SKU codes", "feature checklists", "pricing"]
+    rationale: "Early-stage buyers form trust on vision; product details trigger procurement mode prematurely"
+    violation_label: "premature_product_detail"
+
+  opportunity_tension_required:
+    rule: "Every Opportunity section must contain explicit tension language — cost of inaction, competitive risk, or quantified capability gap"
+    test: "Remove the Opportunity content; does the buyer still feel urgency? If yes, Opportunity is too weak."
+    required_elements:
+      - "downside risk OR cost of inaction OR competitive pressure"
+      - "urgency signal (timeframe, market window, or escalating trend)"
+    violation_label: "opportunity_no_tension"
+
+  hierarchy_level_weight_alignment:
+    rule: "Hierarchy level designation (L1/L2/L3/L4) must match the observed weight distribution"
+    alignment_checks:
+      l1_check: "L1 decks: Situation + Opportunity >= 0.60 combined"
+      l3_check: "L3 decks: Approach + Results >= 0.65 combined"
+      l4_check: "L4 decks: Results >= 0.30 (context-specific proof dominates)"
+    violation_label: "hierarchy_weight_misalignment"
+
+  stage_transition_is_behavioral:
+    rule: "Stage transitions should be triggered by buyer behavior signals, not calendar dates"
+    trigger_principle: "A deck should not advance to the next stage content until the buyer has signaled readiness through observable behavior"
+    violation_label: "calendar_driven_stage_jump"
+    see_also: "stage_transition_triggers section"
+
+# ==============================================================================
+# STAGE TRANSITION TRIGGERS
+# Observable buyer signals that indicate readiness to advance
+# ==============================================================================
+
+stage_transition_triggers:
+  description: "Buyer behavior signals that indicate the current stage is complete and the next stage content is appropriate"
+  research_basis: "SOAR Narrative Mapping by Sales Stage.md"
+  principle: "Stage transitions are earned by buyer behavior, not seller calendar — advancing content before the buyer is ready forces mismatched SOAR weighting and undermines trust."
+
+  stage_1_to_2:
+    trigger: "Buyer responds to outreach with expressed interest"
+    signals:
+      - "Email reply requesting more information"
+      - "Attendance at webinar or event"
+      - "Request for a meeting or demo"
+    premature_advance_risk: "Jumping to Stage 2 content with an unresponsive prospect wastes vision-level content on an unengaged buyer"
+
+  stage_2_to_3:
+    trigger: "Buyer agrees to a structured discovery session"
+    signals:
+      - "Discovery meeting scheduled with key stakeholder"
+      - "Buyer shares internal pain points or business context"
+      - "Multiple stakeholders engage (not just one contact)"
+
+  stage_3_to_4:
+    trigger: "Buyer expands circle of internal involvement"
+    signals:
+      - "New stakeholders (IT, Legal, Finance) brought into conversation"
+      - "RFI or RFP process initiated"
+      - "Buyer requests technical deep dive"
+
+  stage_4_to_5:
+    trigger: "Buyer requests formal proposal or statement of work"
+    signals:
+      - "Verbal or written request for SOW or pricing"
+      - "Procurement team engaged"
+      - "Internal business case development begins"
+
+  stage_5_to_6:
+    trigger: "Buyer confirms intent to commit"
+    signals:
+      - "Legal review initiated"
+      - "Final pricing and terms negotiation begins"
+      - "Buyer provides go/no-go timeline"
+
+  stage_6_to_7:
+    trigger: "Contract signed"
+    signals:
+      - "Signed agreement received"
+      - "Kickoff meeting scheduled"
+      - "Implementation team introduced"
+
+  stage_7_to_8:
+    trigger: "Product launched and initial users onboarded"
+    signals:
+      - "Go-live completed"
+      - "First wave of users trained"
+      - "30-day health check data available"
+
+  stage_8_to_9:
+    trigger: "90-day milestone achieved; initial value confirmed"
+    signals:
+      - "KPI data showing initial success"
+      - "Adoption rate reaching target threshold"
+      - "Customer references early usage internally"
+
+  stage_9_to_10:
+    trigger: "Renewal window opens (30-90 days before contract expiry)"
+    signals:
+      - "Annual review conversation scheduled"
+      - "Expansion interest expressed by buyer"
+      - "Budget planning cycle engaged"
+
+# ==============================================================================
+# SOAR WEIGHTING BY SALES STAGE
+# 10-stage sales cycle with specific SOAR emphasis
+# ==============================================================================
+
+sales_stage_mapping:
+  description: "Detailed SOAR weighting and guidance for each stage of the sales process."
+
+  stage_1_prospect_outreach:
+    name: "Prospect Outreach"
+    hierarchy_level: "L1 (Strategic)"
+    weights:
+      situation: 0.40
+      opportunity: 0.40
+      approach: 0.10
+      results: 0.10
+    rationale: "High-level, visionary narrative to capture attention"
+    buyer_psychology: "Buyer is in pre-awareness mode — their attention is scarce and skepticism is high. The 80% weight on Situation+Opportunity is required to earn 30 seconds of focused attention. Any product detail triggers 'this is a sales pitch' dismissal."
+    soar_granularity:
+      situation: "High-level industry trends, common business challenges, thought-provoking questions"
+      opportunity: "Visionary statement about better future state - no product details"
+      approach: "Conceptual overview of types of actions possible - not specific solution"
+      results: "Illustrative industry benchmarks, statistics, 'what if' scenarios to create intrigue"
+    core_personas: ["Marketing Leaders (CMO, VP)", "Creative Leaders (CCO, Creative Director)"]
+    narrative_arc_stage: "Problem Identification"
+    success_pattern: "Buyer moves from unaware to curious; agrees to a discovery conversation"
+
+  stage_2_opportunity_evaluation:
+    name: "Opportunity Evaluation"
+    hierarchy_level: "L1 (Strategic)"
+    weights:
+      situation: 0.30
+      opportunity: 0.40
+      approach: 0.20
+      results: 0.10
+    rationale: "Continue with big picture to build compelling vision"
+    buyer_psychology: "Buyer is validating whether the opportunity is real and worth their time. Opportunity dominance (40%) ensures the cost of inaction narrative is fully established before solution discussion. Approach at 20% introduces solution credibility without over-specifying."
+    soar_granularity:
+      situation: "Customer's specific business context, challenges, goals from initial discovery"
+      opportunity: "More tailored vision of future state with customer-relevant benefits"
+      approach: "High-level overview of proposed solution and key components"
+      results: "Relevant customer stories and examples from similar companies"
+    core_personas: ["Marketing Leaders", "Creative Leaders", "Marketing Operations"]
+    narrative_arc_stage: "Vision Building"
+    success_pattern: "Buyer articulates the vision back in their own words; invites broader stakeholder involvement"
+
+  stage_3_detailed_discovery:
+    name: "Detailed Discovery and Vision"
+    hierarchy_level: "L2 (Sales Play)"
+    weights:
+      situation: 0.20
+      opportunity: 0.40
+      approach: 0.30
+      results: 0.10
+    rationale: "Move to use cases and solution overviews - make it concrete"
+    buyer_psychology: "Buyer is stress-testing the opportunity against their specific constraints. Opportunity remains high (40%) because the buyer must own the ROI narrative internally. Approach rises (30%) to provide enough specificity for technical and operational stakeholders."
+    soar_granularity:
+      situation: "Deep, shared understanding of current state, processes, pain points"
+      opportunity: "Quantifiable vision with specific metrics and KPIs customer agrees with"
+      approach: "Detailed walkthrough of solution addressing customer's specific needs"
+      results: "Verifiable customer testimonials and proof points relevant to use case"
+    core_personas: ["Marketing Operations", "Creative Operations", "IT Leaders"]
+    narrative_arc_stage: "Validation"
+    success_pattern: "Buyer and seller co-create the success criteria; buyer starts internal business case"
+
+  stage_4_circle_of_influence:
+    name: "Circle of Influence & Qualification"
+    hierarchy_level: "L2 (Sales Play)"
+    weights:
+      situation: 0.10
+      opportunity: 0.30
+      approach: 0.40
+      results: 0.20
+    rationale: "Reinforce value proposition with proven plays for different stakeholders"
+    buyer_psychology: "Multiple stakeholders with different priorities enter the process. Approach dominates (40%) because technical, security, and operational stakeholders need implementation depth. Results rise (20%) as peer proof becomes critical for risk mitigation across stakeholder types."
+    soar_granularity:
+      situation: "Validated summary of business challenges tailored to different stakeholders"
+      opportunity: "Shared vision that key decision-makers have bought into"
+      approach: "Technical deep dive - architecture, security, implementation plan"
+      results: "Detailed case studies with specific data and ROI calculations"
+    core_personas: ["C-Level Marketing (CMO)", "C-Level Tech (CIO, CTO)", "Senior Marketing Leaders"]
+    narrative_arc_stage: "Stakeholder Alignment"
+    success_pattern: "All key stakeholders aligned; champion has internal approval to proceed to proposal"
+
+  stage_5_solution_definition:
+    name: "Solution Definition & Validation"
+    hierarchy_level: "L3 (Product)"
+    weights:
+      situation: 0.10
+      opportunity: 0.20
+      approach: 0.50
+      results: 0.20
+    rationale: "Deep dive into technical details and capabilities"
+    buyer_psychology: "Buyer is in evaluation mode — they are comparing options and validating technical fit. Approach dominates (50%) because every capability must earn its place by connecting to a stated requirement. Opportunity (20%) keeps the commercial logic alive while technical evaluation proceeds."
+    soar_granularity:
+      situation: "Final reconfirmed understanding of challenges and cost of inaction"
+      opportunity: "Urgent and compelling reason to act now, tied to business objectives"
+      approach: "Final agreed solution including statement of work and timeline"
+      results: "Guaranteed statement of business outcomes and clear path to value"
+    core_personas: ["Senior Marketing Leaders", "IT Leaders", "Practitioners"]
+    narrative_arc_stage: "Technical Validation"
+    success_pattern: "Buyer confirms technical fit; procurement and legal engagement begins"
+
+  stage_6_customer_commit:
+    name: "Customer Commit"
+    hierarchy_level: "L4 (Persona)"
+    weights:
+      situation: 0.10
+      opportunity: 0.10
+      approach: 0.30
+      results: 0.50
+    rationale: "Highly personalized value proposition and ROI for decision-makers"
+    buyer_psychology: "Decision-maker is managing personal risk of the commitment. Results at 50% provides the evidence base that de-risks the decision. Approach at 30% confirms the implementation is credible and low-risk. Situation/Opportunity are summary-only — the buyer already owns these."
+    soar_granularity:
+      situation: "Summary of journey so far and final problem being solved"
+      opportunity: "Reminder of value and positive business impact of decision"
+      approach: "Final steps to get started and onboarding expectations"
+      results: "Focus on immediate, short-term wins customer can expect"
+    core_personas: ["C-Level Marketing (CMO)", "C-Level Tech (CIO, CTO)"]
+    narrative_arc_stage: "Decision and Commitment"
+    success_pattern: "Contract signed; buyer expresses personal confidence in the decision"
+
+  stage_7_execute_to_close:
+    name: "Execute to Close"
+    hierarchy_level: "L4 (Persona)"
+    weights:
+      situation: 0.10
+      opportunity: 0.10
+      approach: 0.40
+      results: 0.40
+    rationale: "Focus on specific outcomes and benefits for individuals involved"
+    buyer_psychology: "Implementation team is focused on execution risk and success criteria. Approach (40%) + Results (40%) create the 'how to succeed' narrative — the buyer needs confidence that the implementation methodology is proven and outcomes are achievable within their timeline."
+    soar_granularity:
+      situation: "Focus on customer's readiness to implement"
+      opportunity: "The opportunity to ensure smooth and successful launch"
+      approach: "Execution of implementation plan and onboarding process"
+      results: "Successful launch and initial value being delivered"
+    core_personas: ["C-Level Marketing", "C-Level Tech", "Legal"]
+    narrative_arc_stage: "Implementation"
+    success_pattern: "Go-live achieved on schedule; initial value confirmed by practitioner team"
+
+  stage_8_launch_health:
+    name: "Launch Health"
+    hierarchy_level: "L4 (Persona)"
+    weights:
+      situation: 0.10
+      opportunity: 0.20
+      approach: 0.20
+      results: 0.50
+    rationale: "Persona-focused narrative to ensure adoption and success"
+    buyer_psychology: "Buyer is assessing whether the investment is delivering as promised. Results dominance (50%) creates the success narrative using actual data — this is where the business case is validated or at risk. Opportunity (20%) surfaces expansion paths now that initial value is proven."
+    soar_granularity:
+      situation: "Customer's experience with solution in first 30-90 days"
+      opportunity: "Opportunity to optimize use and drive deeper adoption"
+      approach: "Proactive support, training, and best practice sharing"
+      results: "KPIs showing initial success and value of solution"
+    core_personas: ["Practitioners", "Marketing Operations"]
+    narrative_arc_stage: "Adoption and Value Realization"
+    success_pattern: "Buyer has quantifiable evidence of value; internal advocates emerge; expansion conversation opens"
+
+  stage_9_run_and_operate:
+    name: "Run & Operate"
+    hierarchy_level: "L4 (Persona)"
+    weights:
+      situation: 0.10
+      opportunity: 0.30
+      approach: 0.10
+      results: 0.50
+    rationale: "Focus on long-term value and success for individuals and teams"
+    buyer_psychology: "Buyer is evaluating whether the relationship continues to grow in value. Results at 50% anchors the ongoing narrative in proven ROI. Opportunity re-emerges (30%) to present expansion use cases — the buyer is now sophisticated enough to evaluate opportunity at a higher level."
+    soar_granularity:
+      situation: "Customer's ongoing use of solution and new challenges emerging"
+      opportunity: "Opportunity to expand use to new teams or use cases"
+      approach: "Ongoing support, business reviews, introduction of new features"
+      results: "Long-term business value, ROI, achievement of strategic goals"
+    core_personas: ["Practitioners", "Marketing Operations"]
+    narrative_arc_stage: "Optimization and Growth"
+    success_pattern: "Buyer is a referenceable customer; expansion conversation initiated by buyer"
+
+  stage_10_renewal_and_expand:
+    name: "Renewal & Expand"
+    hierarchy_level: "L2 (Sales Play)"
+    weights:
+      situation: 0.10
+      opportunity: 0.40
+      approach: 0.10
+      results: 0.40
+    rationale: "Return to Sales Play level to introduce new use cases and expansion opportunities"
+    buyer_psychology: "Renewal decisions are evaluated against alternative investments, not just incumbent performance. Results at 40% anchors the renewal in proven ROI; Opportunity at 40% makes the expansion case compelling. Situation/Approach minimized because the relationship is established — the buyer doesn't need context-setting."
+    soar_granularity:
+      situation: "Upcoming renewal and review of value delivered to date"
+      opportunity: "Opportunity to expand relationship and deliver even more value"
+      approach: "Proposal for renewal and new expansion opportunities"
+      results: "Summary of total value delivered and expected ROI from expansion"
+    core_personas: ["C-Level Marketing", "C-Level Tech", "Senior Marketing Leaders"]
+    narrative_arc_stage: "Renewal and Expansion"
+    success_pattern: "Multi-year renewal signed; expansion scope agreed; buyer promoted to strategic account"
+
+# ==============================================================================
+# STAGE PROGRESSION PATTERNS
+# How SOAR emphasis shifts through the sales cycle
+# ==============================================================================
+
+stage_progression_patterns:
+  description: "Observable patterns in how SOAR emphasis changes across stages"
+
+  situation_pattern:
+    trend: "Decreasing"
+    explanation: "High in early stages (context setting), diminishes as customer already understands context"
+    exception: "Slight increase in Renewal to re-establish baseline value"
+
+  opportunity_pattern:
+    trend: "Variable"
+    explanation: "High early (vision building), dips mid-cycle, rises again in expansion"
+    peak_stages: ["Prospect Outreach", "Opportunity Evaluation", "Renewal & Expand"]
+
+  approach_pattern:
+    trend: "Peaks in middle"
+    explanation: "Minimal early (too detailed), peaks during solution definition, decreases post-close"
+    peak_stages: ["Solution Definition", "Circle of Influence"]
+
+  results_pattern:
+    trend: "Increasing"
+    explanation: "Minimal early (speculative), increases as proof needed, dominates post-close"
+    peak_stages: ["Customer Commit", "Launch Health", "Run & Operate"]
+
+# ==============================================================================
+# PERSONA OVERLAY BY STAGE GROUP
+# Persona emphasis shifts as the sales cycle progresses
+# ==============================================================================
+
+persona_overlay_by_stage_group:
+  description: "As SOAR weights shift across stages, different personas become primary. Content framing should adapt to the dominant persona at each stage group."
+  research_basis: "SOAR Narrative Mapping by Sales Stage.md"
+
+  early_stages_1_3:
+    dominant_personas: ["CMO / VP Marketing", "CCO / Creative Director"]
+    soar_framing_priorities:
+      - "Market positioning and competitive landscape (Situation)"
+      - "Brand and creative vision (Opportunity)"
+      - "Transformational capability overview (Approach)"
+    language_register: "Aspirational, visionary, market-aware"
+    avoid: "Technical specifications, implementation timelines, pricing"
+
+  mid_stages_4_5:
+    dominant_personas: ["CIO / CTO", "Marketing Operations VP", "Creative Operations Director"]
+    soar_framing_priorities:
+      - "Technical architecture and integration (Approach)"
+      - "ROI model and payback period (Results)"
+      - "Risk mitigation and change management (Approach)"
+    language_register: "Pragmatic, evidence-based, structured"
+    avoid: "High-level vision statements already established; generic claims without data"
+
+  commit_stage_6:
+    dominant_personas: ["CMO", "CIO", "CFO (budget sign-off)"]
+    soar_framing_priorities:
+      - "Investment risk mitigation (Results)"
+      - "Personal accountability framing (Results)"
+      - "Implementation confidence (Approach)"
+    language_register: "Confident, low-risk, outcome-certain"
+    avoid: "Reopening problems already agreed upon; introducing new objections"
+
+  post_close_stages_7_10:
+    dominant_personas: ["Practitioners", "Marketing Operations", "Training leads"]
+    soar_framing_priorities:
+      - "Adoption metrics and usage success (Results)"
+      - "Expansion opportunity framing (Opportunity)"
+      - "Best practice sharing (Approach)"
+    language_register: "Operational, metric-driven, peer-validating"
+    avoid: "Vision-level language irrelevant to practitioners; executive-level ROI frames"
+
+# ==============================================================================
+# SUCCESS PATTERNS BY STAGE GROUP
+# What a successful SOAR narrative achieves at each stage cluster
+# ==============================================================================
+
+success_patterns_by_stage_group:
+  description: "Measurable outcomes that indicate a stage-appropriate SOAR narrative has succeeded"
+  research_basis: "SOAR Narrative Mapping by Sales Stage.md"
+
+  early_stages_1_3:
+    narrative_goal: "Visionary — establish relevance and earn engagement"
+    success_indicators:
+      - "Buyer agrees to next meeting / discovery session"
+      - "Buyer shares internal context voluntarily (a trust signal)"
+      - "Buyer articulates the opportunity in their own language"
+    red_flags:
+      - "Buyer asks 'so what does your product do?' before Stage 3 (skipped vision)"
+      - "Buyer wants to jump to pricing immediately (needs to rebuild vision)"
+    soar_quality_bar:
+      situation: "Buyer feels understood — resonance, not lecture"
+      opportunity: "Buyer feels urgency — not just interest"
+      approach: "Buyer sees conceptual fit — no product detail needed"
+      results: "Buyer is intrigued — illustrative proof generates curiosity"
+
+  mid_stages_4_5:
+    narrative_goal: "Transitional — translate vision into technical credibility"
+    success_indicators:
+      - "All key stakeholders engaged and questions answered"
+      - "Champion has internal approval to proceed to proposal"
+      - "Buyer begins internal business case construction"
+    red_flags:
+      - "Technical team raises integration objections without seller response"
+      - "Business case stalls because ROI is not quantified"
+    soar_quality_bar:
+      situation: "Shared understanding — no new surprises from buyer"
+      opportunity: "ROI quantified — buyer owns the business case number"
+      approach: "Technical depth — architecture, security, timeline confirmed"
+      results: "Verifiable proof — named case studies with relevant metrics"
+
+  late_stages_6_7:
+    narrative_goal: "Transactional — de-risk the commitment and execute"
+    success_indicators:
+      - "Contract signed with agreed implementation scope"
+      - "Internal team enrolled in implementation process"
+      - "Go-live milestone achieved on schedule"
+    red_flags:
+      - "Decision delayed due to unresolved risk (Situation or Results gap)"
+      - "Implementation delays due to unclear approach (Approach gap)"
+    soar_quality_bar:
+      situation: "Summary only — no new context-setting"
+      opportunity: "Reminder only — buyer already owns this"
+      approach: "Execution clarity — every step specified with owner and date"
+      results: "Confirmed past-tense — buyer can see the path to their own success story"
+
+  post_close_stages_8_10:
+    narrative_goal: "Operational — prove value and expand the relationship"
+    success_indicators:
+      - "KPIs show initial value within 30-90 days"
+      - "Buyer becomes internal advocate and potential reference"
+      - "Expansion conversation initiated by buyer (not seller)"
+    red_flags:
+      - "Adoption below target at 90-day mark (Approach gap post-close)"
+      - "No expansion interest because ROI is not visible (Results measurement gap)"
+    soar_quality_bar:
+      situation: "Operational reality — current experience, not historical pitch"
+      opportunity: "Expansion framing — new use cases presented as next logical step"
+      approach: "Best practice sharing — proactive, not reactive"
+      results: "Actual KPIs — real data replaces all previous projections"

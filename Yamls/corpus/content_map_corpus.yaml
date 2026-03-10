@@ -1,0 +1,645 @@
+# Content Map Builder - Knowledge Corpus
+# Version: 1.2
+# Last Updated: 2025-12-18
+#
+# This YAML contains methodologies and templates extracted from ALL 17 learning
+# design modules for the Content Map Builder PDL workflow.
+#
+# Sections:
+# 0. Content Mining (Module 08) - Extract structure from source materials
+# 1. Course Architecture (Module 01)
+# 2. Learning Structure (Module 02)
+# 3. Timing Intelligence (Module 03a/b)
+# 4. Learning Outcomes (Module 04)
+# 5. Activity Design (Module 05, 07)
+# 6. Assessment Design (Module 06)
+# 7. Content Map Generation (Module 09, 10)
+# 8. Conditional Modules (11-17) - includes:
+#    - Adult Learning (11)
+#    - VILT/ILT (12)
+#    - Debrief Protocol (13)
+#    - Dialogic Learning (14)
+#    - Roleplay Design (15)
+#    - Scenario Learning (16)
+#    - Social Learning (17)
+# 9. Quality Validation
+# =============================================================================
+
+# =============================================================================
+# SECTION 0: CONTENT MINING (Module 08)
+# =============================================================================
+content_mining:
+  expert_identity: |
+    You are a Content Mining Specialist with expertise in semantic analysis and
+    information architecture. You extract meaningful course structures from
+    unstructured documents with 94% accuracy using Kintsch's semantic analysis
+    theory and Rosenfeld-Morville information architecture principles.
+
+  purpose: |
+    Content Mining transforms raw source materials (documents, presentations,
+    SME notes, existing training) into structured content that feeds the
+    Content Map. It answers: "What content will be taught?"
+
+  semantic_analysis_framework:
+    description: "Extract meaningful structure from source materials"
+    key_principle: "Semantic relationships matter more than document formatting"
+    process:
+      - step: "Analyze semantic content"
+        action: "Identify conceptual relationships using meaning extraction"
+      - step: "Cluster related concepts"
+        action: "Group content by semantic similarity, not just headings"
+      - step: "Build hierarchies"
+        action: "Create logical structure based on dependencies"
+      - step: "Map prerequisites"
+        action: "Identify what must be learned before what"
+      - step: "Validate flow"
+        action: "Ensure progression supports cognitive load management"
+
+  learning_flow_detection:
+    description: "Identify prerequisite dependencies and cognitive progression"
+    accuracy: "91%"
+    rules:
+      prerequisite_dependency: "MUST identify what knowledge comes before"
+      complexity_progression: "MUST follow simple-to-complex patterns"
+      conceptual_coherence: "MUST maintain logical relationship flows"
+    key_insight: "Prerequisite mapping prevents 70% of learning comprehension issues"
+
+  content_clustering:
+    description: "Group related concepts to reveal learning pathways"
+    approach:
+      - "Extract candidate topics from source materials"
+      - "Cluster by semantic relationship, not document structure"
+      - "Remove duplicates and flag contradictions"
+      - "Identify gaps where content is missing"
+    output: "Topic clusters with relationships and dependencies"
+
+  source_mapping:
+    description: "Trace extracted content back to original sources"
+    purpose: "Enable verification and evidence-based design"
+    template: |
+      | Topic | Source | Location | Confidence |
+      |-------|--------|----------|------------|
+      | [Topic] | [Document] | [Page/Section] | High/Medium/Low |
+
+  quality_assessment:
+    semantic_richness: "Content depth and concept density"
+    pedagogical_patterns: "Instructional design quality in source"
+    structure_clarity: "How well-organized the original material is"
+    mining_potential: "Value for course development"
+
+  output_structure:
+    hierarchical_skeleton:
+      - "Course overview with inferred objectives"
+      - "Module structure with topic clusters"
+      - "Learning flow with prerequisites"
+      - "Content quality assessment"
+    integration_with_ggoo: |
+      Content Mining output combines with GGOO input:
+      - GGOO provides: Gaps, Goals, Objectives, Outcomes (the "why")
+      - Mining provides: Topics, Structure, Prerequisites (the "what")
+      - Together they feed Course Architecture design
+
+# =============================================================================
+# SECTION 1: COURSE ARCHITECTURE
+# =============================================================================
+course_architecture:
+  expert_identity: |
+    You are a Learning Architect with expertise in curriculum development and
+    instructional systems design. You implement 5-Phase Learning Cycle Theory
+    (Kolb, 1984), ISD Principles (Dick & Carey, 2015), and Cognitive Load Theory
+    (Sweller, 1988). You achieve 96% structure quality and 98% logical sequence
+    validation through systematic learning progression design.
+
+  five_phase_learning_cycle:
+    purpose: "Structure transformational learning experiences for maximum effectiveness"
+    phases:
+      - phase: "Foundation"
+        percentage: "10-15%"
+        purpose: "Establish readiness, context, and motivation"
+        mandatory_elements: ["Introduction module", "Context setting", "Prerequisite validation"]
+
+      - phase: "Development"
+        percentage: "30-40%"
+        purpose: "Build foundational knowledge and core competencies"
+        module_types: ["Core concept", "Advanced concept"]
+
+      - phase: "Integration"
+        percentage: "25-30%"
+        purpose: "Apply knowledge through practice and real-world scenarios"
+        module_types: ["Application challenge", "Problem-solving"]
+
+      - phase: "Consolidation"
+        percentage: "10-15%"
+        purpose: "Solidify learning and prepare for transfer"
+        module_types: ["Synthesis", "Review", "Transfer planning"]
+
+      - phase: "Assessment"
+        percentage: "10-15%"
+        purpose: "Validate competency and provide certification"
+        module_types: ["Summative assessment", "Final validation"]
+
+  module_archetypes:
+    core_concept:
+      when_to_use: "Knowledge/Comprehension levels (Bloom's)"
+      purpose: "Establish foundational understanding"
+      cognitive_load: "Medium"
+
+    application:
+      when_to_use: "Application/Analysis levels"
+      purpose: "Bridge theory to practice"
+      cognitive_load: "High"
+
+    integration_challenge:
+      when_to_use: "Synthesis/Evaluation levels"
+      purpose: "Combine multiple concepts for comprehensive competency"
+      cognitive_load: "Very High"
+
+  module_count_guidance:
+    rule: "Determine module count based on course duration"
+    guidelines:
+      - duration: "2-4 hours"
+        modules: "3-4"
+      - duration: "4-8 hours"
+        modules: "4-6"
+      - duration: "1-2 days"
+        modules: "5-7"
+      - duration: "3+ days"
+        modules: "6-8"
+
+# =============================================================================
+# SECTION 2: LEARNING STRUCTURE
+# =============================================================================
+learning_structure:
+  expert_identity: |
+    You are a Curriculum Designer implementing Cognitive Load Theory,
+    Scaffolding Theory, and Zone of Proximal Development. You achieve
+    92% optimal structure creation and 88% cognitive load distribution.
+
+  learning_strip_framework:
+    description: "Break complex topics into cognitively manageable learning units"
+    strip_types:
+      - type: "Hook"
+        purpose: "Engagement and motivation"
+        duration: "5-10 minutes"
+
+      - type: "Pre-train"
+        purpose: "Foundation building"
+        duration: "10-15 minutes"
+
+      - type: "Teach"
+        purpose: "Knowledge transfer"
+        duration: "15-20 minutes"
+
+      - type: "Practice"
+        purpose: "Application focus"
+        duration: "15-25 minutes"
+
+      - type: "Test"
+        purpose: "Assessment point"
+        duration: "10-15 minutes"
+
+  scaffolding_levels:
+    high:
+      when: "Early in learning sequence"
+      characteristics:
+        - "Detailed explanations and examples"
+        - "Guided practice with immediate feedback"
+        - "Error prevention built in"
+        - "Multiple practice opportunities with coaching"
+
+    medium:
+      when: "Mid-sequence with some mastery"
+      characteristics:
+        - "Structured practice with periodic feedback"
+        - "Some independent work with guidance available"
+        - "Gradual increase in learner responsibility"
+
+    low:
+      when: "Advanced/mastery level"
+      characteristics:
+        - "Independent application"
+        - "Minimal guidance or coaching"
+        - "Self-assessment emphasis"
+        - "Authentic performance demonstration"
+
+  cognitive_load_rules:
+    max_chunks: "7 plus or minus 2 items per segment"
+    max_duration: "20 minutes before cognitive reset needed"
+    complexity_progression: "Simple to complex, foundation before application"
+
+# =============================================================================
+# SECTION 3: TIMING INTELLIGENCE
+# =============================================================================
+timing_intelligence:
+  expert_identity: |
+    You are an Instructional Timing Specialist applying cognitive science
+    research on attention spans, ultradian rhythms, and cognitive load
+    distribution. You achieve 92% accuracy in timing estimates.
+
+  session_timing_rules:
+    attention_span: "45-60 minutes before break required"
+    interaction_frequency: "Activity every 15-20 minutes"
+    relevance_connection: "Link to learner experience within first 10 minutes"
+
+  segment_formulas:
+    content_delivery:
+      lecture: "10-15 minutes maximum"
+      demonstration: "15-20 minutes with practice"
+
+    interactive:
+      individual_activity: "10-15 minutes"
+      pair_activity: "15-20 minutes"
+      group_activity: "20-30 minutes"
+
+    breaks:
+      short_break: "5-10 minutes every 45 minutes"
+      long_break: "15-20 minutes every 90 minutes"
+
+  modality_adjustments:
+    vilt:
+      attention_reduction: "25% compared to ILT"
+      interaction_increase: "40% more than ILT baseline"
+      segment_duration: "Reduce by 20%"
+      break_frequency: "Increase by 25%"
+
+    ilt:
+      peer_learning_increase: "75% more than virtual"
+      group_activity_duration: "Can extend 25%"
+
+    elearning:
+      segment_max: "15 minutes per module"
+      interactivity_requirement: "Minimum 1 interaction per 3 minutes"
+
+# =============================================================================
+# SECTION 4: LEARNING OBJECTIVES
+# =============================================================================
+learning_objectives:
+  smart_framework:
+    components:
+      specific: "Clear, unambiguous action and outcome"
+      measurable: "Quantifiable or observable criteria"
+      achievable: "Realistic given time and resources"
+      relevant: "Aligned to job performance need"
+      time_bound: "Completion timeframe specified"
+
+  ladder_up_validation:
+    description: "Each module objective must explicitly support a course objective"
+    template: |
+      "[Module Objective ID] supports [Course Objective ID] by providing
+      [specific skill/knowledge] which is a prerequisite for [higher-level capability]"
+
+  blooms_verb_mapping:
+    remember: ["define", "list", "identify", "name", "recall"]
+    understand: ["describe", "explain", "summarize", "interpret", "classify"]
+    apply: ["demonstrate", "use", "implement", "execute", "solve"]
+    analyse: ["differentiate", "compare", "contrast", "examine", "analyse"]
+    evaluate: ["assess", "critique", "judge", "justify", "recommend"]
+    create: ["design", "develop", "construct", "produce", "formulate"]
+
+# =============================================================================
+# SECTION 5: ACTIVITY DESIGN
+# =============================================================================
+activity_design:
+  expert_identity: |
+    You are a Senior Learning Experience Designer with 15+ years designing
+    engaging activities achieving 87% completion rates and 73% knowledge
+    retention through evidence-based approaches.
+
+  activity_types:
+    individual:
+      - type: "Reflection exercise"
+        duration: "5-10 minutes"
+        cognitive_level: ["Remember", "Understand"]
+
+      - type: "Case analysis"
+        duration: "15-20 minutes"
+        cognitive_level: ["Analyse", "Evaluate"]
+
+    pair:
+      - type: "Think-pair-share"
+        duration: "10-15 minutes"
+        cognitive_level: ["Understand", "Apply"]
+
+      - type: "Peer teaching"
+        duration: "15-20 minutes"
+        cognitive_level: ["Apply", "Create"]
+
+    group:
+      - type: "Scenario-based exercise"
+        duration: "20-30 minutes"
+        cognitive_level: ["Apply", "Analyse"]
+
+      - type: "Role-play simulation"
+        duration: "25-45 minutes"
+        cognitive_level: ["Apply", "Evaluate"]
+
+      - type: "Problem-solving challenge"
+        duration: "30-45 minutes"
+        cognitive_level: ["Analyse", "Create"]
+
+  design_rationale_template: |
+    "[Activity type] was chosen for [Objective ID] because it:
+    - Matches the [Bloom's level] cognitive level required
+    - Enables [specific observable behaviour]
+    - Provides [type of practice/feedback]
+    - Supports transfer through [authentic context element]"
+
+  modality_adaptations:
+    vilt:
+      - "Use breakout rooms for small group activities"
+      - "Leverage polling for quick engagement checks"
+      - "Use annotation for collaborative exercises"
+      - "Increase frequency of activities by 40%"
+
+    ilt:
+      - "Use physical movement and room rotations"
+      - "Leverage flip charts and tactile materials"
+      - "Enable spontaneous peer discussions"
+
+    elearning:
+      - "Use branching scenarios for decision practice"
+      - "Include drag-and-drop interactions"
+      - "Provide immediate feedback on all interactions"
+
+# =============================================================================
+# SECTION 6: ASSESSMENT DESIGN
+# =============================================================================
+assessment_design:
+  expert_identity: |
+    You are an Assessment Design Specialist implementing Evidence-Centered
+    Design achieving 92% content validity. You develop rubrics with 0.89
+    inter-rater reliability and diagnostic assessments with 87% accuracy.
+
+  assessment_types:
+    diagnostic:
+      purpose: "Identify prior knowledge and skill gaps"
+      timing: "Pre-course or module start"
+      format: ["Pre-test", "Self-assessment", "Readiness quiz"]
+
+    formative:
+      purpose: "Monitor progress and provide feedback"
+      timing: "During instruction"
+      format: ["Knowledge check", "Practice exercise", "Peer feedback"]
+      frequency: "Every 20-30 minutes of instruction"
+
+    summative:
+      purpose: "Evaluate achievement of objectives"
+      timing: "End of module or course"
+      format: ["Final assessment", "Performance task", "Project"]
+
+  cognitive_alignment_matrix:
+    remember_understand:
+      methods: ["Multiple choice", "Matching", "True/false"]
+      discrimination_target: ">0.30"
+
+    apply_analyse:
+      methods: ["Short answer", "Case analysis", "Problem-solving"]
+      rubric_dimensions: "3-5"
+
+    evaluate_create:
+      methods: ["Performance task", "Project", "Portfolio"]
+      authentic_context: "Required"
+
+  assessment_strategy_template:
+    columns: ["Type", "Method", "Objectives Covered", "Timing", "Weight"]
+
+# =============================================================================
+# SECTION 7: CONTENT MAP GENERATION
+# =============================================================================
+content_map_generation:
+  seven_column_format:
+    columns:
+      - name: "Module"
+        description: "Module title and number"
+
+      - name: "Duration"
+        description: "Time allocation with breakdown"
+
+      - name: "Key Topics"
+        description: "Main content areas covered"
+
+      - name: "Learning Objectives"
+        description: "SMART objectives for the module"
+
+      - name: "Activities/Assessments"
+        description: "Learning activities and assessment methods"
+
+      - name: "Learning Outcomes"
+        description: "Expected performance after completion"
+
+      - name: "Instructional Alignment"
+        description: "Connection to course objectives and gaps"
+
+  appendices:
+    alignment_validation_matrix:
+      purpose: "Trace course objectives to modules and assessments"
+      columns: ["Course Objective", "Supporting Modules", "Assessment Method", "Validation"]
+
+    materials_resources_list:
+      purpose: "Consolidate all required materials and technology"
+      categories: ["Facilitator Materials", "Participant Materials", "Technology Requirements"]
+
+# =============================================================================
+# SECTION 8: CONDITIONAL MODULES
+# =============================================================================
+conditional_modules:
+  adult_learning:
+    trigger: "Audience is adult professionals"
+    principles:
+      - "Self-direction: Allow choice in learning paths"
+      - "Experience: Connect to prior knowledge"
+      - "Relevance: Make immediate job connection"
+      - "Problem-centred: Use realistic challenges"
+    application: "Increase experience-based activities, reduce lecture"
+
+  vilt_ilt:
+    trigger: "delivery_modality in ['VILT', 'ILT']"
+    session_architecture:
+      kolb_cycle: ["Concrete Experience", "Reflective Observation", "Abstract Conceptualization", "Active Experimentation"]
+      engagement_frequency: "Activity every 20 minutes maximum"
+      break_pattern: "15 minutes every 90 minutes"
+
+    vilt_specific:
+      interaction_increase: "40% above baseline"
+      technology_tools: ["Polls", "Breakout rooms", "Chat", "Annotation", "Whiteboard"]
+      attention_management: "Camera on expectations, shorter segments"
+
+    ilt_specific:
+      physical_elements: ["Room movement", "Table rotations", "Flip charts", "Physical materials"]
+      group_dynamics: "Leverage 75% more peer learning opportunity"
+
+  roleplay_design:
+    trigger: "Activity type requires role-play or simulation"
+    structure:
+      briefing: "5-10 minutes - context, roles, objectives"
+      execution: "15-30 minutes - role-play activity"
+      debrief: "10-15 minutes - reflection and learning extraction"
+    role_types: ["Observer", "Participant", "Facilitator feedback provider"]
+
+  scenario_learning:
+    trigger: "Content requires decision-making practice"
+    design_elements:
+      - "Realistic context with authentic constraints"
+      - "Multiple decision points with consequences"
+      - "Progressive complexity through scenario"
+      - "Feedback at decision points"
+    complexity_levels: ["Linear", "Branching", "Open-ended"]
+
+  social_learning:
+    trigger: "Objectives require collaboration or peer interaction"
+    strategies:
+      - "Peer teaching and explanation"
+      - "Collaborative problem-solving"
+      - "Group project work"
+      - "Discussion and debate"
+    group_size_guidance:
+      pair: "Knowledge sharing, peer feedback"
+      small_group: "3-5 for problem-solving"
+      large_group: "6-8 for diverse perspectives"
+
+  debrief_protocol:
+    trigger: "Activity includes simulation, roleplay, or experiential exercise"
+    pearls_framework:
+      description: "PEARLS (Reactions→Description→Analysis→Application) achieving 94% effectiveness"
+      phases:
+        - phase: "Reactions"
+          percentage: "10-15%"
+          purpose: "Process emotions and establish psychological safety"
+          prompts:
+            - "What was that like for you?"
+            - "What surprised you most?"
+            - "What's your immediate reaction?"
+        - phase: "Description"
+          percentage: "20-25%"
+          purpose: "Build shared understanding of events"
+          prompts:
+            - "Help us understand - what happened first?"
+            - "What were the key moments?"
+        - phase: "Analysis"
+          percentage: "35-40%"
+          purpose: "Extract learning insights and understand causes"
+          tools:
+            - "Plus/Delta framework"
+            - "Gap analysis"
+            - "Advocacy-inquiry"
+        - phase: "Application"
+          percentage: "20-25%"
+          purpose: "Create specific behavior change commitments"
+          template: "I will [behavior] in [situation] by [date]"
+    video_review:
+      three_pass_method:
+        - "Pass 1: General impressions without stopping"
+        - "Pass 2: Skill-specific analysis with pause points"
+        - "Pass 3: Pattern recognition across interactions"
+
+  dialogic_learning:
+    trigger: "Activity requires discussion, collaborative thinking, or peer dialogue"
+    alexanders_five_principles:
+      collective: "Everyone contributes - use round-robin, think-pair-share"
+      reciprocal: "Genuine exchange - active listening, building on ideas"
+      supportive: "Safe environment - tentative language, mistake celebration"
+      cumulative: "Building understanding - idea threading, synthesis pauses"
+      purposeful: "Learning-focused - objective visibility, progress checks"
+    socratic_questioning:
+      phases:
+        - phase: "Clarification"
+          purpose: "Establish shared vocabulary"
+          example: "What do you mean by...?"
+        - phase: "Assumptions"
+          purpose: "Surface hidden beliefs"
+          example: "What assumptions are we making?"
+        - phase: "Evidence"
+          purpose: "Require empirical support"
+          example: "What evidence supports that?"
+        - phase: "Perspectives"
+          purpose: "Introduce alternatives"
+          example: "What would someone who disagrees say?"
+        - phase: "Implications"
+          purpose: "Explore consequences"
+          example: "What follows from that?"
+        - phase: "Metacognition"
+          purpose: "Reflect on thinking"
+          example: "Why do you think I asked that?"
+    participation_equity:
+      small_group: "5-8: Round-robin with think time (100% participation)"
+      medium_group: "9-15: Think-pair-share with structured reporting (95% inclusion)"
+      large_group: "16+: Fishbowl or carousel protocols (91% voice representation)"
+
+# =============================================================================
+# SECTION 9: QUALITY VALIDATION
+# =============================================================================
+quality_validation:
+  step_1_architecture:
+    required_elements:
+      - "All 5 phases represented with appropriate balance"
+      - "Module count appropriate for duration"
+      - "All learning gaps mapped to modules"
+      - "All course objectives covered"
+    validation_questions:
+      - "Does the architecture follow 5-phase learning cycle?"
+      - "Is module count appropriate for course duration?"
+      - "Are all objectives and gaps traced to specific modules?"
+
+  step_2_objectives:
+    required_elements:
+      - "SMART objectives for each module"
+      - "Ladder-up validation for each objective"
+      - "Gap thread maintained"
+    validation_questions:
+      - "Does each module have 2-3 SMART objectives?"
+      - "Is ladder-up validation explicit for each objective?"
+      - "Are gaps addressed through appropriate objectives?"
+
+  step_3_activities:
+    required_elements:
+      - "Activity for each module objective"
+      - "Design rationale for each activity"
+      - "Modality adaptations specified"
+      - "Assessment strategy complete"
+    validation_questions:
+      - "Does each objective have an aligned activity?"
+      - "Is design rationale evidence-based?"
+      - "Are modality-specific adaptations included?"
+
+  step_4_assembly:
+    required_elements:
+      - "7-column Content Map table complete"
+      - "Alignment validation matrix"
+      - "Materials and resources list"
+      - "Total timing validated"
+    validation_questions:
+      - "Are all modules represented in final table?"
+      - "Does total timing match course duration?"
+      - "Is traceability complete from gaps to outcomes?"
+
+  grounding_rules:
+    principle: "Use only data provided in input - never invent figures"
+    applications:
+      - "Quote exact duration from input"
+      - "Reference exact course objectives provided"
+      - "Use specified delivery modality for adaptations"
+      - "If data missing, state 'Not specified - recommend obtaining from stakeholder'"
+
+# =============================================================================
+# SECTION 10: OUTPUT TEMPLATES
+# =============================================================================
+output_templates:
+  content_map_header: |
+    # ${course_title} - Content Map
+
+    **Generated by**: Content Map Builder PDL v1.0
+    **Date**: ${generation_date}
+    **Course Duration**: ${context.course_duration}
+    **Delivery Modality**: ${context.delivery_modality}
+    **Target Audience**: ${context.audience_profile}
+
+  seven_column_table_header: |
+    | Module | Duration | Key Topics | Learning Objectives | Activities/Assessments | Learning Outcomes | Instructional Alignment |
+    |--------|----------|------------|---------------------|----------------------|-------------------|------------------------|
+
+  validation_status: |
+    **Quality Metrics**
+    - Architecture Completeness: ${architecture_completeness}%
+    - Objective Alignment: ${objective_alignment}%
+    - Activity Coverage: ${activity_coverage}%
+    - Assessment Integration: ${assessment_integration}%

@@ -1,0 +1,432 @@
+_meta:
+  id: travel_hospitality_reference
+  title: "Travel & Hospitality Vertical"
+  description: "Travel & Hospitality industry configuration including sub-verticals (airlines, hotels, cruise, OTA, destinations), terminology, guest journey stages, value propositions, and competitive landscape."
+  domain: sales
+  domain_type: cross_cutting
+  purpose: reference
+  version: "1.3.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Comprehensive Audience Analysis.md"
+    - "Corpus/Research/Research - Discussion-based Learning.md"
+    - "Corpus/Research/Research - ILT & VILT Best Practice.md"
+    - "Corpus/Research/Research - Canonical Presentation Methodology Research.md"
+    - "Corpus/Research/The Universal Narrative Methodology: A Framework for Crafting and Improving Stories.md"
+
+
+vertical:
+  id: travel_hospitality
+  name: "Travel & Hospitality"
+  aliases:
+    - T&H
+    - Travel
+    - Hospitality
+    - Airlines
+    - Hotels
+
+# ==============================================================================
+# Sub-Verticals
+# ==============================================================================
+
+sub_verticals:
+  airlines:
+    name: "Airlines"
+    description: "Commercial aviation carriers"
+    key_players:
+      - Delta Air Lines
+      - United Airlines
+      - American Airlines
+      - Southwest Airlines
+      - JetBlue
+    focus_areas:
+      - Ancillary revenue optimisation
+      - Loyalty program engagement
+      - Disruption management
+      - Premium experience
+
+  hotels:
+    name: "Hotels & Resorts"
+    description: "Lodging and hospitality brands"
+    key_players:
+      - Marriott International
+      - Hilton
+      - Hyatt
+      - IHG
+      - Wyndham
+    focus_areas:
+      - Direct booking growth
+      - Guest experience personalisation
+      - Loyalty program value
+      - Revenue management
+
+  cruise:
+    name: "Cruise Lines"
+    description: "Cruise vacation operators"
+    key_players:
+      - Carnival Corporation
+      - Royal Caribbean Group
+      - Norwegian Cruise Line
+      - MSC Cruises
+    focus_areas:
+      - Booking journey optimisation
+      - Onboard experience personalisation
+      - Future cruise credits
+      - Multi-generational marketing
+
+  ota:
+    name: "Online Travel Agencies"
+    description: "Travel booking platforms"
+    key_players:
+      - Booking Holdings (Booking.com, Priceline)
+      - Expedia Group
+      - Tripadvisor
+      - Airbnb
+    focus_areas:
+      - Conversion optimisation
+      - Supplier relationships
+      - Loyalty and repeat bookings
+      - Mobile experience
+
+  destinations:
+    name: "Destinations & Attractions"
+    description: "Tourism boards and attractions"
+    key_players:
+      - Visit California
+      - NYC Tourism
+      - Disney Parks
+      - Universal
+    focus_areas:
+      - Destination marketing
+      - Visitor experience
+      - Seasonal demand management
+      - International marketing
+
+# ==============================================================================
+# Industry Pain Points
+# ==============================================================================
+
+pain_points:
+  strategic:
+    - id: direct_booking_pressure
+      description: "OTA competition for direct bookings"
+      severity: critical
+      affected_personas: [cmo, director_ecommerce, cro]
+      related_products: [RTCDP, Target, AJO]
+      industry_context: "OTA commissions 15-25%"
+
+    - id: loyalty_differentiation
+      description: "Loyalty program value erosion"
+      severity: high
+      affected_personas: [cmo, vp_marketing]
+      related_products: [RTCDP, AJO, Analytics]
+
+    - id: experience_expectations
+      description: "Traveler expectations outpacing delivery"
+      severity: high
+      affected_personas: [cmo, coo]
+      related_products: [AJO, RTCDP, AEM]
+
+  operational:
+    - id: disruption_communication
+      description: "Managing guest communication during disruptions"
+      severity: critical
+      affected_personas: [cmo, coo, it_director]
+      related_products: [AJO, RTCDP]
+      examples: ["Flight cancellations", "Weather events", "System outages"]
+
+    - id: seasonality
+      description: "Extreme demand fluctuations"
+      severity: high
+      affected_personas: [cmo, cfo, cro]
+      related_products: [Analytics, Target, AJO]
+
+    - id: content_localisation
+      description: "Global content in many languages and currencies"
+      severity: high
+      affected_personas: [director_content_strategy, cmo]
+      related_products: [AEM, GenStudio, Workfront]
+
+  technical:
+    - id: pnr_data_silos
+      description: "Booking data fragmented across systems"
+      severity: high
+      affected_personas: [director_marketing_ops, cio]
+      related_products: [RTCDP, AEP]
+
+    - id: real_time_personalisation
+      description: "Need for real-time offers and upgrades"
+      severity: high
+      affected_personas: [director_ecommerce, it_director]
+      related_products: [RTCDP, Target, AJO]
+
+    - id: legacy_reservation_systems
+      description: "Old GDS and PMS integration challenges"
+      severity: high
+      affected_personas: [cio, it_director]
+      related_products: [AEP, RTCDP]
+      common_systems: ["Amadeus", "Sabre", "Oracle Hospitality", "Opera"]
+
+# ==============================================================================
+# Industry Terminology
+# ==============================================================================
+
+terminology:
+  airline_terms:
+    PNR:
+      full_name: "Passenger Name Record"
+      context: "Booking record identifier"
+    RASM:
+      full_name: "Revenue per Available Seat Mile"
+      context: "Key airline profitability metric"
+    ancillary:
+      description: "Non-ticket revenue (bags, seats, etc.)"
+    load_factor:
+      description: "Percentage of seats filled"
+    yield:
+      description: "Average fare per mile"
+    GDS:
+      full_name: "Global Distribution System"
+      context: "Travel booking network (Amadeus, Sabre)"
+
+  hotel_terms:
+    RevPAR:
+      full_name: "Revenue per Available Room"
+      context: "Key hotel profitability metric"
+    ADR:
+      full_name: "Average Daily Rate"
+      context: "Average room price"
+    occupancy:
+      description: "Percentage of rooms occupied"
+    PMS:
+      full_name: "Property Management System"
+      context: "Hotel operations system"
+    CRS:
+      full_name: "Central Reservation System"
+      context: "Booking management system"
+    OTA:
+      full_name: "Online Travel Agency"
+      context: "Third-party booking platforms"
+
+  loyalty_terms:
+    tier_status:
+      description: "Loyalty program level (Gold, Platinum, etc.)"
+    lifetime_value:
+      description: "Total expected revenue from loyal guest"
+    earn_rate:
+      description: "Points/miles earned per dollar"
+    redemption:
+      description: "Using points for rewards"
+    elite:
+      description: "Top-tier loyalty members"
+
+  guest_journey_stages:
+    - Dreaming / Inspiration
+    - Planning / Research
+    - Booking
+    - Pre-Trip / Anticipation
+    - Travel / Transit
+    - On-Property / In-Destination
+    - Post-Trip / Sharing
+    - Re-engagement
+
+# ==============================================================================
+# Value Propositions
+# ==============================================================================
+
+value_propositions:
+  airlines:
+    primary:
+      - headline: "Maximise ancillary revenue per passenger"
+        proof_point: "$15 increase in ancillary revenue per booking"
+      - headline: "Win the direct booking battle"
+        proof_point: "20% shift from OTA to direct"
+      - headline: "Turn disruptions into loyalty moments"
+        proof_point: "50% improvement in disruption NPS"
+    differentiators:
+      - "Real-time offer optimisation"
+      - "Cross-channel journey orchestration"
+      - "Disruption communication at scale"
+
+  hotels:
+    primary:
+      - headline: "Drive direct bookings, reduce OTA dependency"
+        proof_point: "25% increase in direct booking share"
+      - headline: "Personalised guest experience at scale"
+        proof_point: "30% improvement in guest satisfaction"
+      - headline: "Loyalty program that drives incremental stays"
+        proof_point: "15% increase in member nights"
+    differentiators:
+      - "Cross-property guest recognition"
+      - "Real-time upgrade and offer optimisation"
+      - "Pre-arrival to post-stay journey"
+
+  cruise:
+    primary:
+      - headline: "Booking journey optimisation"
+        proof_point: "20% improvement in booking conversion"
+      - headline: "Onboard personalisation"
+        proof_point: "25% increase in onboard revenue"
+      - headline: "Future cruise credit activation"
+        proof_point: "40% redemption rate improvement"
+    differentiators:
+      - "Long booking window engagement"
+      - "Multi-generational household marketing"
+      - "Onboard experience personalisation"
+
+# ==============================================================================
+# Competitive Landscape
+# ==============================================================================
+
+competitive_landscape:
+  key_competitors:
+    - name: Salesforce
+      positioning: "CRM-centric travel solution"
+      strengths:
+        - Service Cloud for guest service
+        - Loyalty management
+        - Large ecosystem
+      weaknesses:
+        - Weak content management
+        - Limited real-time capability
+        - Complex pricing
+      adobe_advantage: "Real-time personalisation and content velocity"
+
+    - name: Amadeus
+      positioning: "Travel technology provider"
+      strengths:
+        - Deep GDS integration
+        - Travel-specific functionality
+        - Industry expertise
+      weaknesses:
+        - Legacy technology
+        - Limited marketing capability
+        - Complex implementation
+      adobe_advantage: "Modern marketing + experience platform"
+
+    - name: Travelport + Epsilon
+      positioning: "Data and distribution"
+      strengths:
+        - Travel data expertise
+        - Distribution network
+        - Agency relationships
+      weaknesses:
+        - B2B focus
+        - Limited consumer marketing
+        - Services dependency
+      adobe_advantage: "Consumer experience platform"
+
+# ==============================================================================
+# Success Stories
+# ==============================================================================
+
+success_stories:
+  - customer: "Major US Airline"
+    use_case: "Ancillary revenue optimisation"
+    results:
+      - "$15 increase in ancillary revenue per booking"
+      - "20% improvement in seat upgrade conversion"
+      - "Real-time offers across 100M+ passengers"
+    products: [RTCDP, Target, AJO]
+    quotable: true
+
+  - customer: "Global Hotel Brand"
+    use_case: "Direct booking and guest personalisation"
+    results:
+      - "25% increase in direct booking share"
+      - "30% improvement in guest satisfaction scores"
+      - "Cross-property guest recognition"
+    products: [RTCDP, AJO, AEM]
+    quotable: true
+
+  - customer: "Cruise Line"
+    use_case: "Booking journey and onboard engagement"
+    results:
+      - "20% improvement in booking conversion"
+      - "25% increase in onboard spending"
+      - "Long-window engagement automation"
+    products: [AJO, RTCDP, Analytics]
+    quotable: true
+
+# ==============================================================================
+# Messaging Guidelines
+# ==============================================================================
+
+messaging:
+  tone:
+    - "Guest-centric"
+    - "Experience-focused"
+    - "Aspirational"
+    - "Service-oriented"
+    - "Real-time and responsive"
+
+  preferred_terms:
+    - "guest (hotels, cruise)"
+    - "traveler / passenger (airlines)"
+    - "experience"
+    - "journey"
+    - "personalisation"
+    - "real-time"
+    - "direct booking"
+
+  avoid_terms:
+    - "customer (prefer guest/traveler)"
+    - "user"
+    - 'targeting (prefer "engaging" or "reaching")'
+    - 'upselling (prefer "upgrading" or "enhancing")'
+
+  key_themes:
+    - Direct booking growth
+    - Guest experience excellence
+    - Loyalty program value
+    - Operational efficiency
+    - Real-time engagement
+    - Disruption management
+
+# ==============================================================================
+# SOAR NARRATIVE GUIDANCE — TRAVEL & HOSPITALITY
+# Sources: Research - Canonical Presentation Methodology Research.md;
+#          The Universal Narrative Methodology.md
+# ==============================================================================
+
+soar_narrative_guidance:
+  description: "SOAR stage framing tailored to Travel & Hospitality audience expectations and guest journey context"
+
+  situation:
+    typical_opening_frames:
+      - "Travel is recovering strongly — but so are customer expectations. Travellers who experienced digital-first service during the pandemic now demand seamless, personalised experiences from pre-booking through post-stay."
+      - "OTAs have captured a disproportionate share of the booking relationship. Hotels and airlines are fighting to reclaim direct booking — and the weapon is personalisation."
+      - "Loyalty programmes are under threat. Points-based differentiation is commoditised. The next battleground is experiential personalisation."
+    data_anchors:
+      - "Direct booking conversion is 2.5x higher when personalised vs. generic landing pages (Phocuswire 2024)"
+      - "Travellers who receive personalised communications are 1.7x more likely to book directly vs. via OTA"
+
+  opportunity:
+    villain_frame: "OTA disintermediation (loss of customer relationship and booking data) and fragmented guest data across PMS, CRM, and loyalty systems (preventing personalisation)"
+    pain_vocabulary:
+      - "Guest data siloed across PMS, CRM, loyalty, and email platforms — no unified guest profile"
+      - "OTAs capturing first-party booking data while hotels deliver the experience blind"
+      - "Post-stay re-engagement campaigns limited to generic email sequences"
+      - "Personalisation attempts blocked by consent and data residency complexity across global markets"
+    loss_aversion_frame: "Every 1% shift from OTA to direct booking is worth approximately $X per 1,000 rooms in recovered margin. The cost of continued OTA dependency is measurable and growing."
+
+  action:
+    adobe_value_frame: "Adobe's Real-Time CDP for Travel & Hospitality unifies PMS, loyalty, and web behaviour data into a single guest profile — enabling personalised journey orchestration from inspiration to post-stay advocacy"
+    differentiation_language:
+      - "Real-time guest profile activation: the moment a loyalty member opens the app, their complete preference history informs every next-best-offer"
+      - "Adobe's Journey Optimizer enables automated, personalised win-back campaigns triggered by booking-gap signals — replacing generic batch re-engagement"
+    champion_story: "The champion in T&H is typically the Chief Experience Officer, VP Loyalty, or VP Digital Acquisition — equip with a direct booking recovery narrative and a loyalty LTV story"
+
+  result:
+    proof_pattern: "Before: [Hotel Group] had 4 separate data systems and 2 email platforms. After: Unified guest profiles enabled personalised pre-arrival journey — ancillary revenue per stay increased 19%, direct booking share +8 points."
+    validated_outcome_types:
+      - "Direct booking share increase (OTA vs. direct shift)"
+      - "Ancillary revenue per guest improvement"
+      - "Loyalty programme engagement and redemption rate"
+      - "Guest satisfaction score (NPS, CSAT) improvement"
+      - "Email unsubscribe rate reduction (relevance signal)"
+
+  audience_calibration:
+    economic_buyer: "CFO / CEO — frame in RevPAR impact, direct booking margin recovery, loyalty LTV; avoid any platform naming"
+    technical_buyer: "CTO / Head of Digital Architecture — frame around PMS integration patterns, real-time event streaming, identity resolution across touchpoints"
+    champion: "VP Digital / VP Loyalty / CDO — frame around guest experience quality, competitive differentiation, team empowerment"

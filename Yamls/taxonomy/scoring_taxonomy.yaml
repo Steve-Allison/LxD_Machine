@@ -1,0 +1,378 @@
+_meta:
+  id: scoring_taxonomy
+  purpose: taxonomy
+  version: "1.3.0"
+  last_updated: "2026-03-01"
+  description: "Classification of scoring and evaluation constructs by quality domain, score tier, rubric type, assessment scope, and evaluative function."
+  domain: pedagogical
+  domain_type: cross_cutting
+  corpus_sources:
+    - "Corpus/Research/Research - Corporate Learning Assessment- Strategies, Modalities, and Best Practices.md"
+    - "Corpus/Research/Applying_Learning_Theory_Practical_Checklist.md"
+    - "Corpus/Research/Research - Comprehensive Learning Design Framework.md"
+  academic_sources:
+    - "Mayer (2009) - Multimedia Learning"
+    - "Bloom (1956) - Taxonomy of Educational Objectives"
+    - "Toulmin (2003) - The Uses of Argument"
+    - "Brookhart (2013) - How to Create and Use Rubrics"
+    - "Sadler (1989) - Formative Assessment and the Design of Instructional Systems"
+    - "Kirkpatrick (1959/1994) - Four Levels of Training Evaluation"
+    - "Hattie & Timperley (2007) - The Power of Feedback (Review of Educational Research)"
+    - "Sweller (1988/1994) - Cognitive Load Theory"
+  relationships:
+    - target: entities/scoring_entities.yaml
+      type: depends_on
+      description: "Scoring entity types for NER extraction of quality dimensions and evaluative language"
+    - target: scoring/scoring_weights.yaml
+      type: depends_on
+      description: "Dimension weighting configuration for composite scores"
+# ==============================================================================
+# QUALITY DOMAINS
+# ==============================================================================
+
+quality_domains:
+  communication_quality:
+    label: "Communication Quality"
+    description: "Dimensions relating to how effectively content conveys its message"
+    dimensions:
+      - clarity
+      - structure
+      - engagement
+      - personalisation_tone
+    assessment_focus: "Is the message clear, well-organised, compelling, and appropriately personalised?"
+
+  argument_quality:
+    label: "Argument Quality"
+    description: "Dimensions relating to the strength and credibility of claims and evidence"
+    dimensions:
+      - evidence_quality
+      - logical_coherence
+      - source_credibility
+    assessment_focus: "Are claims well-supported with credible, relevant evidence?"
+
+  design_quality:
+    label: "Design Quality"
+    description: "Dimensions relating to visual presentation, aesthetic effectiveness, and cognitive readability of the visual design"
+    dimensions:
+      - visual_hierarchy
+      - typography
+      - colour_contrast
+      - imagery
+      - layout
+      - signalling_and_visual_hierarchy
+      - modality_balance
+      - content_segmentation
+    assessment_focus: "Is the visual design professional, clear, purposeful, and structured to support cognitive processing?"
+
+  learning_quality:
+    label: "Learning Quality"
+    description: "Dimensions relating to cognitive load management, instructional effectiveness, multimedia principles, and knowledge transfer"
+    dimensions:
+      - cognitive_load
+      - bloom_alignment
+      - scaffold_progression
+      - interactivity
+      - cognitive_load_management
+      - multimedia_integration
+      - generative_engagement
+      - prior_knowledge_activation
+      - temporal_and_spatial_contiguity
+      - cognitive_chunking
+      - spaced_repetition_integration
+      - active_learning_frequency
+      - transfer_facilitation
+    assessment_focus: "Does the content facilitate effective learning, respect working memory constraints, and promote transfer to real-world application?"
+    empirical_benchmarks:
+      spaced_repetition: "Spaced practice produces ~50% better long-term retention vs massed practice (practitioner benchmark)"
+      active_learning: "Incorporating active elements every 3-5 minutes maintains engagement and reduces cognitive fatigue"
+      transfer_facilitation: "60%+ workplace application rate within 30 days is an industry benchmark for effective transfer design"
+
+  inclusion_quality:
+    label: "Inclusion Quality"
+    description: "Dimensions relating to accessibility, diversity, universal design, and cultural appropriateness"
+    dimensions:
+      - wcag_compliance
+      - plain_language
+      - cultural_sensitivity
+      - representation
+      - accessibility_compliance
+      - universal_design_for_learning
+      - localisation_and_cultural_neutrality
+    assessment_focus: "Is the content accessible, inclusive, and culturally appropriate for diverse audiences?"
+
+  validity_integrity_quality:
+    label: "Validity and Integrity Quality"
+    description: "Dimensions relating to whether assessments and scoring instruments actually measure what they claim to measure, and whether scores are free from systematic bias or construct-irrelevant variance"
+    dimensions:
+      - construct_validity
+      - content_validity
+      - criterion_validity
+      - assessor_calibration
+      - bias_review
+    assessment_focus: "Does the assessment measure the intended construct accurately and fairly, and are assessors applying criteria consistently?"
+    empirical_benchmarks:
+      assessor_calibration: "Hattie & Timperley (2007) note that high-quality feedback has effect sizes of 0.73-0.79 on student performance — achievable only when scoring criteria are well-calibrated and consistently applied"
+
+# ==============================================================================
+# SCORE TIERS
+# ==============================================================================
+
+score_tiers:
+  exemplary:
+    label: "Exemplary"
+    description: "Exceeds expectations — models best practice"
+    numeric_range: [90, 100]
+    qualifier_language: ["outstanding", "exceptional", "world-class", "exemplary", "best-in-class", "mastery-level", "benchmark-setting"]
+    feedback_tone: "Celebrate strengths and suggest stretch goals"
+    kpi_anchors:
+      completion_rate: "90-95%"
+      knowledge_retention_90_days: "> 70%"
+      business_impact: "15-25% performance improvement (practitioner benchmark)"
+      learner_satisfaction: "NPS ≥ 70 or equivalent"
+
+  proficient:
+    label: "Proficient"
+    description: "Meets expectations — solid and effective"
+    numeric_range: [70, 89]
+    qualifier_language: ["strong", "effective", "clear", "solid", "well-executed", "competent", "meets standard"]
+    feedback_tone: "Affirm competence and identify specific enhancement opportunities"
+    kpi_anchors:
+      completion_rate: "80-89%"
+      response_accuracy_first_attempt: "80%+"
+      mastery_rate: "80%+ proficiency"
+      knowledge_retention_90_days: "60-70%"
+
+  developing:
+    label: "Developing"
+    description: "Approaching expectations — shows promise but needs refinement"
+    numeric_range: [50, 69]
+    qualifier_language: ["adequate", "developing", "approaching", "partially effective", "emerging", "formative", "in progress"]
+    feedback_tone: "Acknowledge progress and provide targeted improvement guidance"
+
+  needs_improvement:
+    label: "Needs Improvement"
+    description: "Below expectations — fundamental issues to address"
+    numeric_range: [0, 49]
+    qualifier_language: ["poor", "weak", "insufficient", "lacks", "confusing", "ineffective", "not yet meeting standard"]
+    feedback_tone: "Identify specific gaps with concrete remediation steps"
+
+# ==============================================================================
+# RUBRIC TYPES
+# ==============================================================================
+
+rubric_types:
+  analytic:
+    label: "Analytic Rubric"
+    description: "Scores each dimension separately with distinct criteria per level"
+    strengths: ["Detailed diagnostic feedback", "Dimension-level transparency"]
+    weaknesses: ["Time-intensive to apply", "Can feel fragmented"]
+    best_for: ["Formative assessment", "Multi-dimensional content review", "Coaching feedback"]
+
+  holistic:
+    label: "Holistic Rubric"
+    description: "Assigns a single overall score based on general impression across all dimensions"
+    strengths: ["Fast to apply", "Good for overall quality judgement"]
+    weaknesses: ["Low diagnostic value", "Masks dimension-level variation"]
+    best_for: ["Summative evaluation", "Quick triage", "Portfolio review"]
+
+  single_point:
+    label: "Single-Point Rubric"
+    description: "Defines only the proficient level — feedback notes deviations above or below"
+    strengths: ["Encourages qualitative feedback", "Less prescriptive"]
+    weaknesses: ["Requires skilled assessors", "Inconsistent without training"]
+    best_for: ["Peer review", "Creative work", "Self-assessment"]
+
+  weighted:
+    label: "Weighted Rubric"
+    description: "Analytic rubric with different importance weights per dimension"
+    strengths: ["Reflects strategic priorities", "Flexible scoring emphasis"]
+    weaknesses: ["Weight selection can be subjective", "More complex to calibrate"]
+    best_for: ["Stakeholder-aligned scoring", "Context-specific evaluation"]
+
+  confidence_weighted:
+    label: "Confidence-Weighted Rubric"
+    description: "Adjusts the score for each response by the learner's expressed confidence level; high confidence + correct answer = full score; high confidence + wrong answer = penalised; low confidence + correct = partial credit. Incentivises epistemic accuracy over guessing."
+    strengths: ["Measures metacognitive calibration alongside knowledge", "Discourages overconfident guessing", "Produces richer learner profiles"]
+    weaknesses: ["Adds cognitive overhead for learners", "Scoring complexity increases", "May disadvantage learners from low-confidence cultures"]
+    best_for: ["High-stakes professional assessments", "Compliance training where certainty matters", "Leadership development programmes"]
+    empirical: "Barclays deployed confidence-weighted assessment in leadership programmes; found stronger correlation with on-the-job performance than standard MCQ scoring (cited in Corporate Learning Assessment research)"
+
+# ==============================================================================
+# ASSESSMENT SCOPE
+# ==============================================================================
+
+assessment_scope:
+  interaction_level:
+    label: "Interaction Level"
+    description: "Assessment of a single atomic interaction or question; immediate response validation at the card or item level"
+    granularity: "atomic"
+    typical_dimensions: ["response_accuracy", "dwell_time", "completion", "confidence_rating"]
+
+  slide_level:
+    label: "Slide Level"
+    description: "Assessment of a single slide or content unit"
+    granularity: "individual"
+    typical_dimensions: ["visual_quality", "clarity", "cognitive_load"]
+
+  microlearning_level:
+    label: "Microlearning Level"
+    description: "Assessment of a short microlearning sequence or strip; embedded quick checks and micro-feedback loops spanning 3-7 minutes of content"
+    granularity: "micro_sequence"
+    typical_dimensions: ["completion", "progress_monitoring", "embedded_check_accuracy", "engagement"]
+
+  section_level:
+    label: "Section Level"
+    description: "Assessment of a group of slides or content section"
+    granularity: "section"
+    typical_dimensions: ["structure", "narrative_flow", "evidence_quality", "scenario_based_application", "peer_review", "self_reflection"]
+
+  deck_level:
+    label: "Deck Level"
+    description: "Assessment of an entire presentation or content asset"
+    granularity: "holistic"
+    typical_dimensions: ["engagement", "argument_quality", "accessibility", "performance_simulation", "360_degree_feedback", "portfolio_based_assessment"]
+
+  portfolio_level:
+    label: "Portfolio Level"
+    description: "Assessment across multiple content assets"
+    granularity: "aggregate"
+    typical_dimensions: ["consistency", "brand_alignment", "quality_trend", "portfolio_based_assessment"]
+
+  workplace_level:
+    label: "Workplace Level"
+    description: "Assessment of performance transfer to the actual job context; measures behaviour change and business impact (Kirkpatrick L3-L4)"
+    granularity: "behavioural_transfer"
+    typical_dimensions: ["behaviour_change", "manager_observation", "performance_metric_shift", "business_impact_kpi"]
+    empirical: "Walmart VR training assessment at workplace level showed 12.5% improvement in performance accuracy vs. non-VR cohorts (cited in Corporate Learning Assessment research)"
+
+  modality_level:
+    label: "Modality Level"
+    description: "Assessment comparing learning effectiveness across delivery modalities (e.g., video vs. eLearning vs. live session) to inform content format decisions"
+    granularity: "cross_modal_comparative"
+    typical_dimensions: ["completion_rate_by_modality", "knowledge_gain_by_modality", "engagement_by_modality", "cost_per_outcome"]
+
+# ==============================================================================
+# EVALUATIVE FUNCTIONS
+# ==============================================================================
+
+evaluative_functions:
+  diagnostic:
+    label: "Diagnostic"
+    description: "Identifies specific strengths and weaknesses for improvement; also functions as pre-assessment to surface prerequisite knowledge gaps before learning begins"
+    output: "Dimension-level scores with targeted feedback; prerequisite gap profile; learner readiness rating"
+    audience: "Content creators, instructional designers, and learners before a learning sequence"
+    empirical: "Pre-training assessment that informs scaffolding is associated with 20% improvement in learning outcomes (practitioner benchmark, Comprehensive Learning Design Framework)"
+
+  summative:
+    label: "Summative"
+    description: "Provides a final quality judgement for a completed asset"
+    output: "Overall score or rating with summary commentary"
+    audience: "Stakeholders, reviewers, quality assurance"
+
+  benchmarking:
+    label: "Benchmarking"
+    description: "Compares quality against standards, peers, or historical performance"
+    output: "Comparative scores and percentile positioning"
+    audience: "Leadership, programme managers"
+
+  formative:
+    label: "Formative"
+    description: "Provides in-progress feedback to guide iterative improvement during the creation or learning process; aligned with embedded quick checks, micro-feedback loops, and progress monitoring throughout content sequences"
+    output: "Specific actionable suggestions per dimension; micro-feedback loop data; in-sequence progress indicators"
+    audience: "Authors during creation process; learners during a content sequence"
+
+  ipsative:
+    label: "Ipsative"
+    description: "Evaluates performance against the learner's or creator's own previous results rather than against a fixed external standard or peer group; focuses on personal growth trajectory"
+    output: "Change-over-time scores; improvement delta; personal growth narrative"
+    audience: "Individual learners in ongoing development programmes; coaches tracking long-term behaviour change"
+    strengths: ["Motivating for low-baseline learners who would otherwise always score at the bottom", "Captures growth that norm-referenced approaches miss"]
+    weaknesses: ["Cannot demonstrate absolute standard attainment", "Susceptible to baseline gaming if learners under-perform deliberately on first attempt"]
+    best_for: ["Leadership development", "Long-form coaching programmes", "Sales performance tracking over tenure"]
+
+  transfer_evaluation:
+    label: "Transfer Evaluation"
+    description: "Assesses the application of learning to workplace contexts after the formal learning event; measures Kirkpatrick L3 (behaviour) and L4 (results). Distinct from formative and summative in that it occurs post-learning in the performance context."
+    output: "Workplace application rate; action plan completion; manager-reported behaviour change; business impact KPI delta"
+    audience: "L&D managers, line managers, HR business partners"
+    timing: "30, 60, and 90 days post-learning event"
+    benchmark: "Industry standard application rate: 60%+ within 30 days (Comprehensive Learning Design Framework)"
+
+# ==============================================================================
+# CLASSIFICATION DIMENSIONS
+# ==============================================================================
+
+classification_dimensions:
+  quality_domain:
+    name: "Quality Domain"
+    description: "The broad area of quality the dimension belongs to"
+    values:
+      - communication_quality
+      - argument_quality
+      - design_quality
+      - learning_quality
+      - inclusion_quality
+      - validity_integrity_quality
+
+  score_tier:
+    name: "Score Tier"
+    description: "The performance level assigned to evaluated content"
+    values:
+      - exemplary
+      - proficient
+      - developing
+      - needs_improvement
+
+  rubric_type:
+    name: "Rubric Type"
+    description: "The structural approach used for scoring"
+    values:
+      - analytic
+      - holistic
+      - single_point
+      - weighted
+      - confidence_weighted
+
+  assessment_scope:
+    name: "Assessment Scope"
+    description: "The granularity level at which content is evaluated"
+    values:
+      - interaction_level
+      - slide_level
+      - microlearning_level
+      - section_level
+      - deck_level
+      - portfolio_level
+      - workplace_level
+      - modality_level
+
+  evaluative_function:
+    name: "Evaluative Function"
+    description: "The purpose and audience of the evaluation"
+    values:
+      - diagnostic
+      - summative
+      - benchmarking
+      - formative
+      - ipsative
+      - transfer_evaluation
+
+  cognitive_level:
+    name: "Cognitive Level (Bloom's)"
+    description: "The cognitive complexity tier of the learning objective or assessment item, aligned to Bloom's Revised Taxonomy (Anderson & Krathwohl 2001)"
+    values:
+      - remember
+      - understand
+      - apply
+      - analyse
+      - evaluate
+      - create
+
+  kirkpatrick_level:
+    name: "Kirkpatrick Evaluation Level"
+    description: "The level of the Kirkpatrick Four-Level Training Evaluation Model at which the assessment operates"
+    values:
+      - L1_reaction
+      - L2_learning
+      - L3_behaviour
+      - L4_results

@@ -1,0 +1,498 @@
+_meta:
+  id: analyzer_orchestration_config
+  title: "Analyzer Orchestration"
+  description: "Orchestration config for 24 visual analyzers: execution phases, weights, severity thresholds, and enable/disable settings."
+  domain: ai
+  domain_type: cross_cutting
+  purpose: reference
+  version: "1.3.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Best Practices for Writing Effective Corporate Learning Content.md"
+    - "Corpus/Research/Crafting Powerful Opening Plays.md"
+    - "Corpus/Research/Research - Corporate Learning Assessment- Strategies, Modalities, and Best Practices.md"
+    - "Corpus/Research/Research - Canonical Presentation Methodology Research.md"
+    - "Corpus/Research/Visual Narrative Flow Pass.md"
+
+
+  relationships:
+    - target: ai_config/analyzer_catalog.yaml
+      type: depends_on
+      description: "Orchestration depends on catalog; orchestration config references analyzer definitions"
+visual_analysis:
+  # Enable/disable the entire visual analysis component
+  enabled: true
+
+  # Default behavior for unspecified analyzers
+  default_enabled: true
+
+  scoring_anchors:
+    description: "Generic analyzer scoring bands (0-100)"
+    bands:
+      excellent: "90-100 (clear alignment, no major violations)"
+      good: "70-89 (minor issues)"
+      mixed: "50-69 (several issues)"
+      poor: "0-49 (major comprehension impact)"
+
+  data_requirements:
+    required:
+      - "Rendered slide image or slide DOM"
+      - "Text content per element"
+      - "Element bounding boxes (x,y,w,h)"
+      - "Font sizes and weights"
+      - "Foreground/background colors"
+    optional:
+      - "Gridlines or layout guides"
+      - "Chart data series metadata"
+  fallback:
+    rule: "If required data is missing, set confidence low and avoid strong claims"
+
+  # Health score calculation weights by phase
+  # These weights determine how each phase contributes to the overall health score
+  phase_weights:
+    validation: 0.30      # Foundational quality (cognitive load, accessibility, Mayer, Merrill)
+    design: 0.35          # Visual design principles (CRAP, Tufte, typography, hierarchy)
+    storytelling: 0.35    # Narrative coherence (SOAR, arcs, alignment, disclosure)
+
+  # Severity thresholds for issue flagging
+  severity_thresholds:
+    critical: 0.3    # Score below this triggers critical issues
+    high: 0.5        # Score below this triggers high severity
+    medium: 0.7      # Score below this triggers medium severity
+    low: 0.85        # Score below this triggers low severity
+    # Scores >= 0.85 are considered passing (info level only)
+
+  # Execution phases define the order analyzers run
+  # Each phase completes before the next begins (dependencies respected)
+  phases:
+    - name: validation
+      order: 1
+      description: "Foundational quality checks for cognitive load and accessibility"
+      analyzers:
+        - cognitive_load
+        - accessibility
+        - mayer_principles
+        - merrill_principles
+        - semiotic_grammar
+        - focus_clarity
+        - dual_coding
+
+    - name: design
+      order: 2
+      description: "Visual design principles evaluation"
+      analyzers:
+        - crap
+        - tufte
+        - typography
+        - visual_hierarchy
+        - image_authenticity
+        - visual_voice
+        - deck_cohesion
+
+    - name: storytelling
+      order: 3
+      description: "Narrative and visual storytelling coherence"
+      analyzers:
+        - visual_soar
+        - emotional_arc
+        - arc_alignment
+        - climax_payoff
+        - visual_text_alignment
+        - visual_metaphor
+        - transition
+        - progressive_disclosure
+        - narrative_structure
+        - pacing_rhythm
+
+  # Individual analyzer configurations
+  analyzers:
+    # =========================================================================
+    # PHASE 1: VALIDATION ANALYZERS
+    # =========================================================================
+
+    cognitive_load:
+      enabled: true
+      phase: validation
+      scope: slide          # Analyzes each slide individually
+      weight: 0.25          # Weight within phase
+      prompt_file: "poml/visual/cognitive_load.poml"
+      description: "Measures cognitive demands using Miller's Law (7+/-2) and split-attention effect"
+      thresholds:
+        max_elements: 9     # More than this triggers overload warning
+        max_text_blocks: 5  # Text regions before overwhelming
+        chart_complexity_limit: 3  # Data series in a single chart
+
+    accessibility:
+      enabled: true
+      phase: validation
+      scope: slide
+      weight: 0.25
+      prompt_file: "poml/visual/accessibility.poml"
+      description: "Checks WCAG compliance for color contrast, text size, and readability"
+      thresholds:
+        min_contrast_ratio: 4.5    # WCAG AA standard
+        min_font_size: 18          # Points for body text (Note: 18pt is absolute minimum for close reading; 40pt+ recommended for live presentations)
+        min_heading_size: 24       # Points for headings
+
+    mayer_principles:
+      enabled: true
+      phase: validation
+      scope: slide
+      weight: 0.25
+      prompt_file: "poml/visual/mayer_principles.poml"
+      description: "Evaluates multimedia learning principles (coherence, signaling, redundancy, etc.)"
+      principles_evaluated:
+        - coherence        # Remove extraneous material
+        - signaling        # Highlight essential material
+        - redundancy       # Avoid redundant on-screen text
+        - spatial_contiguity  # Place related elements near each other
+        - temporal_contiguity # Present related elements simultaneously
+
+    merrill_principles:
+      enabled: true
+      phase: validation
+      scope: deck           # Evaluates across all slides
+      weight: 0.15
+      prompt_file: "poml/visual/merrill_principles.poml"
+      description: "Applies First Principles of Instruction (problem-centered, activation, demonstration, application, integration)"
+      principles_evaluated:
+        - problem_centered   # Learning involves real-world problems
+        - activation         # Activate prior knowledge
+        - demonstration      # Show rather than tell
+        - application        # Practice opportunities
+        - integration        # Transfer to real-world context
+
+    semiotic_grammar:
+      enabled: true
+      phase: validation
+      scope: slide
+      weight: 0.15
+      prompt_file: "poml/visual/semiotic_grammar.poml"
+      description: "Analyzes visual grammar using Kress & van Leeuwen's metafunctions"
+      metafunctions:
+        representational: "What is depicted and how relationships are constructed"
+        interactive: "How the image addresses the viewer"
+        compositional: "How information is arranged (Given-New, Ideal-Real)"
+
+    focus_clarity:
+      enabled: true
+      phase: validation
+      scope: slide
+      weight: 0.15
+      prompt_file: "poml/visual/focus_clarity.poml"
+      description: "Evaluates slide focus using KWICK 5-second test methodology"
+      kwick_dimensions:
+        key_point: "Can the main message be identified in 5 seconds?"
+        words_visuals: "Do words suggest appropriate visual metaphors?"
+        in_context: "Is complexity appropriate for audience?"
+        crystal_clear: "Are charts and data immediately understandable?"
+        keep_focus: "Do visual cues draw eye to most important element?"
+
+    dual_coding:
+      enabled: true
+      phase: validation
+      scope: slide
+      weight: 0.15
+      prompt_file: "poml/visual/dual_coding.poml"
+      description: "Analyzes visual-verbal synergy using Paivio's Dual Coding Theory"
+      coding_types:
+        structural: "Visual represents conceptual structure"
+        analogical: "Visual provides analogy/metaphor"
+        representative: "Visual shows real instance"
+        decorative: "Aesthetic only, no meaning reinforcement"
+      detects:
+        - seductive_details  # Distracting decorative elements
+        - channel_synergy    # Visual-verbal working together
+
+    # =========================================================================
+    # PHASE 2: DESIGN ANALYZERS
+    # =========================================================================
+
+    crap:
+      enabled: true
+      phase: design
+      scope: slide
+      weight: 0.25
+      prompt_file: "poml/visual/crap.poml"
+      description: "Evaluates CRAP design principles (Contrast, Repetition, Alignment, Proximity)"
+      principles:
+        contrast: "Different elements should be obviously different"
+        repetition: "Repeat visual elements throughout design"
+        alignment: "Every element should have visual connection to another"
+        proximity: "Related items should be grouped together"
+
+    tufte:
+      enabled: true
+      phase: design
+      scope: slide
+      weight: 0.25
+      prompt_file: "poml/visual/tufte.poml"
+      description: "Applies Tufte's data visualization principles (data-ink ratio, chartjunk, lie factor)"
+      metrics:
+        data_ink_ratio: "Maximize data-to-ink ratio"
+        chartjunk_detection: "Identify decorative but non-informative elements"
+        lie_factor: "Check for misleading visual representations"
+
+    typography:
+      enabled: true
+      phase: design
+      scope: slide
+      weight: 0.25
+      prompt_file: "poml/visual/typography.poml"
+      description: "Analyzes font choices, hierarchy, and readability"
+      checks:
+        - font_pairing_harmony
+        - heading_body_hierarchy
+        - line_length_optimal   # 45-75 characters
+        - line_spacing_ratio    # 1.4-1.6x font size
+        - font_count_limit      # Max 2 fonts
+
+    visual_hierarchy:
+      enabled: true
+      phase: design
+      scope: slide
+      weight: 0.15
+      prompt_file: "poml/visual/visual_hierarchy.poml"
+      description: "Evaluates visual weight distribution and eye-flow patterns"
+      patterns:
+        z_pattern: "Left-to-right, top-to-bottom reading flow"
+        f_pattern: "Headline-focused scanning pattern"
+        gutenberg: "Primary/terminal optical areas"
+
+    image_authenticity:
+      enabled: true
+      phase: design
+      scope: slide
+      weight: 0.15
+      prompt_file: "poml/visual/image_authenticity.poml"
+      description: "Detects stock photography and evaluates image authenticity impact"
+      stock_indicators:
+        - generic_poses      # Staged handshakes, forced smiles
+        - diverse_casting    # Artificially balanced demographics
+        - perfect_lighting   # Studio quality in "candid" shots
+        - common_tropes      # Handshake, lightbulb, puzzle pieces
+      authenticity_signals:
+        - real_products      # Actual product photos
+        - team_photos        # Real team in workspace
+        - customer_evidence  # Real logos, testimonials
+        - specific_context   # Recognizable locations
+
+    visual_voice:
+      enabled: true
+      phase: design
+      scope: slide
+      weight: 0.15
+      prompt_file: "poml/visual/visual_voice.poml"
+      description: "Evaluates visual voice and detects semiotic conflicts"
+      voice_spectrums:
+        authority: "Authoritative/Expert vs Approachable/Friendly"
+        innovation: "Innovative/Cutting-edge vs Traditional/Established"
+        energy: "Dynamic/Urgent vs Calm/Measured"
+        formality: "Corporate/Formal vs Casual/Relaxed"
+      conflict_types:
+        - value_conflict     # "We're agile" + rigid diagram
+        - tone_conflict      # "Urgent action" + calm palette
+        - brand_conflict     # "Premium" + low-res imagery
+
+    deck_cohesion:
+      enabled: true
+      phase: design
+      scope: both            # Slide-level DNA + deck-level Frankendeck detection
+      weight: 0.15
+      prompt_file: "poml/visual/deck_cohesion.poml"
+      description: "Detects Frankendeck symptoms and evaluates visual cohesion"
+      frankendeck_indicators:
+        - font_mixing        # Incompatible typefaces
+        - icon_clash         # Mixing flat, 3D, line icons
+        - color_inconsistency # Palette variations without purpose
+        - image_mismatch     # Photos mixed with clipart
+        - layout_chaos       # Inconsistent margins/grids
+        - template_fragments # Remnants of different templates
+      glance_test:
+        - professional_impression
+        - brand_recognizable
+        - quality_perception
+        - style_clarity
+
+    # =========================================================================
+    # PHASE 3: STORYTELLING ANALYZERS
+    # =========================================================================
+
+    visual_soar:
+      enabled: true
+      phase: storytelling
+      scope: slide
+      weight: 0.125
+      prompt_file: "poml/visual/visual_soar.poml"
+      description: "Detects SOAR framework alignment in visual elements"
+      beats:
+        situation: "Context-setting visuals (neutral tones, status quo)"
+        opportunity: "Problem/gap visuals (warning tones, tension)"
+        action: "Solution visuals (constructive tones, process)"
+        result: "Outcome visuals (celebration tones, success)"
+
+    emotional_arc:
+      enabled: true
+      phase: storytelling
+      scope: deck            # Analyzes slide sequence
+      weight: 0.125
+      prompt_file: "poml/visual/emotional_arc.poml"
+      description: "Identifies Vonnegut story shapes in presentation emotional flow"
+      arc_types:
+        man_in_hole: "Fall then rise - common business narrative"
+        rags_to_riches: "Steady rise - growth story"
+        icarus: "Rise then fall - cautionary tale"
+        cinderella: "Rise, fall, rise - transformation story"
+        oedipus: "Fall, rise, fall - complex challenge"
+
+    arc_alignment:
+      enabled: true
+      phase: storytelling
+      scope: deck
+      weight: 0.125
+      prompt_file: "poml/visual/arc_alignment.poml"
+      description: "Compares visual emotional arc to textual narrative arc"
+      alignment_checks:
+        - beat_synchronization
+        - tone_consistency
+        - pacing_alignment
+      dependencies:
+        - emotional_arc      # Requires visual arc data
+        # - narrative_dna    # Would require text arc (from stage6)
+
+    climax_payoff:
+      enabled: true
+      phase: storytelling
+      scope: deck
+      weight: 0.125
+      prompt_file: "poml/visual/climax_payoff.poml"
+      description: "Analyzes climax positioning and payoff resolution"
+      checks:
+        - climax_detection      # Peak moment identification
+        - buildup_quality       # Tension building effectiveness
+        - payoff_completeness   # Resolution satisfaction
+        - premature_reveals     # Spoiled endings
+
+    visual_text_alignment:
+      enabled: true
+      phase: storytelling
+      scope: slide
+      weight: 0.125
+      prompt_file: "poml/visual/visual_text_alignment.poml"
+      description: "Measures coherence between visual elements and text content"
+      alignment_types:
+        supportive: "Visual reinforces text message"
+        neutral: "Generic/decorative imagery"
+        contradictory: "Visual conflicts with text"
+
+    visual_metaphor:
+      enabled: true
+      phase: storytelling
+      scope: slide
+      weight: 0.125
+      prompt_file: "poml/visual/visual_metaphor.poml"
+      description: "Identifies and evaluates visual metaphors for effectiveness"
+      metaphor_categories:
+        - journey       # Roads, paths, stairs
+        - growth        # Trees, seeds, arrows
+        - connection    # Networks, handshakes, puzzles
+        - strength      # Shields, anchors, foundations
+        - innovation    # Light bulbs, rockets, gears
+
+    transition:
+      enabled: true
+      phase: storytelling
+      scope: deck            # Analyzes consecutive slide pairs
+      weight: 0.125
+      prompt_file: "poml/visual/transition.poml"
+      description: "Evaluates visual continuity between consecutive slides"
+      continuity_factors:
+        - color_consistency
+        - layout_consistency
+        - typography_consistency
+        - narrative_flow
+
+    progressive_disclosure:
+      enabled: true
+      phase: storytelling
+      scope: deck
+      weight: 0.10
+      prompt_file: "poml/visual/progressive_disclosure.poml"
+      description: "Analyzes information revelation pacing and complexity curve"
+      patterns:
+        good_progression: "Complexity builds appropriately"
+        information_dump: "Too much at once"
+        premature_complexity: "Advanced before basics"
+        missing_scaffolding: "Jumps in difficulty"
+
+    narrative_structure:
+      enabled: true
+      phase: storytelling
+      scope: both            # Slide headlines + deck-level SCR arc
+      weight: 0.10
+      prompt_file: "poml/visual/narrative_structure.poml"
+      description: "Analyzes narrative structure using SCR, Sparkline, and Action Titles"
+      headline_analysis:
+        action_title: "Makes an assertion (preferred)"
+        label_title: "Merely describes topic (weak)"
+        question_title: "Poses a question (engaging but lacks assertion)"
+      scr_framework:
+        situation: "Establishes stable, agreed-upon context"
+        complication: "Introduces disruption, problem, or tension"
+        resolution: "Proposes solution to specific complication"
+        support: "Provides evidence for above"
+      sparkline:
+        what_is: "Describes current state, status quo"
+        what_could_be: "Envisions future state, possibility"
+        call_to_adventure: "Inciting moment that creates tension"
+        new_bliss: "Transformed state after resolution"
+
+    pacing_rhythm:
+      enabled: true
+      phase: storytelling
+      scope: both            # Slide density + deck-level pacing patterns
+      weight: 0.10
+      prompt_file: "poml/visual/pacing_rhythm.poml"
+      description: "Analyzes information density and visual pacing rhythm"
+      density_categories:
+        lean: "<10 seconds - One concept, minimal text"
+        moderate: "10-30 seconds - 2-3 points, balanced"
+        dense: "30-60 seconds - Multiple data points"
+        slidument: ">60 seconds - Document disguised as slide"
+      rhythm_roles:
+        breather: "Simple visual after complex content"
+        summary: "Consolidates previous dense slides"
+        transition: "Bridges between sections"
+        core_content: "Standard information delivery"
+        deep_dive: "Intentionally dense for analysis"
+      thresholds:
+        max_consecutive_dense: 3  # Slides before breather needed
+        min_breather_ratio: 0.1   # At least 10% breathers for dense decks
+
+  # Multi-image analysis settings (for deck-level analyzers)
+  multi_image:
+    # Sliding window approach for large decks
+    window_size: 5          # Number of slides to analyze together
+    overlap: 2              # Slides shared between windows
+    # Maximum slides before sampling kicks in
+    max_slides_full_analysis: 20
+    # Sampling strategy for large decks
+    sampling_strategy: "representative"  # representative, uniform, endpoints
+
+  # Caching configuration
+  caching:
+    enabled: true
+    ttl_hours: 24           # Cache results for 24 hours
+    cache_key_includes:
+      - image_hash
+      - prompt_hash
+      - model_version
+
+  # Output configuration
+  output:
+    # Include raw analyzer responses in output
+    include_raw_responses: false
+    # Minimum confidence to include recommendation
+    min_confidence_for_recommendation: 0.7
+    # Maximum recommendations per analyzer
+    max_recommendations_per_analyzer: 3

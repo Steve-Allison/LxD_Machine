@@ -1,0 +1,696 @@
+# ==============================================================================
+# Accessibility Rubric
+# WCAG 2.2 AA standards for inclusive presentation design
+# ==============================================================================
+
+_meta:
+  id: accessibility_rubric
+  title: Accessibility Rubric
+  description: Accessibility standards for presentations (WCAG 2.2 Level AA) and cognitive accessibility criteria derived from UX design research
+  domain: pedagogical
+  domain_type: workflow
+  purpose: scoring
+  version: "1.4.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - The Cognitive Interface - Operationalizing UxD for Documents and Reports.md"
+  academic_sources:
+    - "visual_design_rubric.yaml"
+    - "presentation_quality_rubric.yaml"
+
+dimensions:
+  - name: wcag_level_compliance
+    description: "Compliance with WCAG 2.2 conformance levels (A, AA, AAA) for presentation accessibility"
+    score_levels:
+      - score: 0
+        label: non_compliant
+        description: "Fails WCAG Level A requirements — fundamental accessibility barriers present"
+      - score: 1
+        label: partial
+        description: "Meets Level A but fails Level AA — minimum compliance only"
+      - score: 2
+        label: compliant
+        description: "Meets Level AA — industry-standard accessibility for professional presentations"
+      - score: 3
+        label: exemplary
+        description: "Meets Level AAA — gold standard inclusive design"
+  - name: color_contrast
+    description: "Color contrast ratios for text and non-text elements per WCAG 2.2 success criteria"
+    score_levels:
+      - score: 0
+        label: failing
+        description: "Contrast ratios below 3:1 for large text or 4.5:1 for normal text"
+      - score: 1
+        label: borderline
+        description: "Meets minimum ratios but inconsistently across slide elements"
+      - score: 2
+        label: passing
+        description: "All text and non-text elements meet WCAG AA contrast requirements"
+      - score: 3
+        label: optimal
+        description: "Exceeds AA requirements; contrast supports low-vision and colour-blind users"
+  - name: violation_severity
+    description: "Severity classification of detected accessibility violations"
+    score_levels:
+      - score: 0
+        label: critical
+        description: "Critical violations that block access for users with disabilities"
+      - score: 1
+        label: serious
+        description: "Serious violations that significantly impair usability"
+      - score: 2
+        label: moderate
+        description: "Moderate violations that create friction but do not block access"
+      - score: 3
+        label: minor_or_none
+        description: "Minor or no violations — best practice adherence throughout"
+
+wcag_levels:
+  A:
+    description: "Minimum accessibility (basic compliance)"
+    use_case: "Rarely sufficient for professional presentations"
+
+  AA:
+    description: "Industry standard (required for most organizations)"
+    use_case: "Target for all presentations"
+    compliance: "This rubric targets AA level"
+
+  AAA:
+    description: "Enhanced accessibility (gold standard)"
+    use_case: "Optional, recommended for inclusive design leaders"
+
+# ==============================================================================
+# COLOR CONTRAST (WCAG 1.4.3, 1.4.6, 1.4.11)
+# ==============================================================================
+
+color_contrast:
+  description: "Sufficient contrast between text and background"
+
+  text_contrast:
+    small_text:
+      definition: "Text <24pt (or <19pt bold)"
+      aa_minimum: 4.5  # contrast ratio
+      aaa_enhanced: 7.0
+      measurement: "Relative luminance ratio (L1 + 0.05) / (L2 + 0.05)"
+
+    large_text:
+      definition: "Text ≥24pt (or ≥19pt bold)"
+      aa_minimum: 3.0
+      aaa_enhanced: 4.5
+
+    calculation_tools:
+      - "WebAIM Contrast Checker (webaim.org/resources/contrastchecker/)"
+      - "Stark plugin for Figma/Sketch"
+      - "Color Contrast Analyzer (TPGi)"
+
+  common_combinations:
+    passing_aa:
+      - { foreground: "#000000", background: "#FFFFFF", ratio: 21.0 }  # Black on white
+      - { foreground: "#FFFFFF", background: "#000000", ratio: 21.0 }  # White on black
+      - { foreground: "#FFFFFF", background: "#0066CC", ratio: 5.3 }   # White on blue
+      - { foreground: "#333333", background: "#FFFFFF", ratio: 12.6 }  # Dark gray on white
+      - { foreground: "#FFFFFF", background: "#2D5C8E", ratio: 4.7 }   # White on medium blue
+
+    failing_aa:
+      - { foreground: "#777777", background: "#FFFFFF", ratio: 4.2 }   # Gray on white (too light)
+      - { foreground: "#FFFF00", background: "#FFFFFF", ratio: 1.1 }   # Yellow on white
+      - { foreground: "#FF6600", background: "#FF0000", ratio: 1.2 }   # Orange on red
+
+  non_text_contrast:
+    ui_components:
+      description: "Graphical objects, chart elements, icons"
+      aa_minimum: 3.0  # WCAG 1.4.11
+      applies_to:
+        - chart_bars: "Chart segments must have 3:1 contrast with background"
+        - icons: "Icons must have 3:1 contrast"
+        - graph_lines: "Line chart lines ≥3:1 ratio"
+
+  violations:
+    low_contrast_text: "Ratio <4.5:1 for small text"
+    low_contrast_large: "Ratio <3:1 for large text (≥24pt)"
+    low_contrast_ui: "Chart elements <3:1 ratio"
+
+  exemptions:
+    decorative_text: "Logos, purely decorative text (not conveying information)"
+    incidental_text: "Text in photos of real-world scenes"
+
+# ==============================================================================
+# COLOR USAGE (WCAG 1.4.1)
+# ==============================================================================
+
+color_usage:
+  description: "Never use color alone to convey information"
+
+  principle:
+    requirement: "Color must be supplemented with another visual indicator"
+    reason: "Color blind users (8% of men, 0.5% of women) cannot distinguish certain colors"
+
+  applications:
+    charts:
+      bad: "Red bar = loss, Green bar = profit (color only)"
+      good: "Red bar with ↓ icon = loss, Green bar with ↑ icon = profit"
+
+    status_indicators:
+      bad: "Green text = complete, Red text = incomplete"
+      good: "Green text + ✓ checkmark = complete, Red text + ✗ icon = incomplete"
+
+    links:
+      bad: "Hyperlinks shown in blue color only"
+      good: "Hyperlinks underlined + blue color"
+
+    emphasis:
+      bad: "Critical information highlighted in red"
+      good: "Critical information bold + red + icon"
+
+  colorblind_safe_palettes:
+    recommended:
+      - "ColorBrewer palettes (colorbrewer2.org)"
+      - "Okabe-Ito colorblind-safe palette"
+      - "Viridis, Plasma, Cividis (perceptually uniform)"
+
+    avoid:
+      - "Red-green combinations (deuteranopia/protanopia)"
+      - "Blue-yellow combinations (tritanopia)"
+
+  testing_tools:
+    - "Color Oracle (colorblindness simulator)"
+    - "Coblis (color blindness simulator)"
+    - "Stark (colorblind simulation + contrast checker)"
+
+# ==============================================================================
+# TEXT READABILITY (WCAG 1.4.4, 1.4.8, 1.4.12)
+# ==============================================================================
+
+text_readability:
+  description: "Text must be resizable, readable, and within cognitive processing bounds"
+
+  font_size:
+    minimum: 18  # points (absolute minimum for presentations)
+    recommended: 20  # points
+    large_rooms: 32  # points (200+ people)
+    rationale: "WCAG allows zoom up to 200%, but presentations need large base size"
+
+  font_selection:
+    sans_serif_preferred: "Arial, Helvetica, Calibri, Open Sans (better screen readability)"
+    avoid_decorative: "Cursive, script, decorative fonts (hard to read)"
+    avoid_all_caps: "ALL CAPS TEXT HARDER TO READ (use title case)"
+
+  line_spacing:
+    minimum: 1.2  # × font size
+    recommended: 1.5
+    rationale: "WCAG 1.4.8 (AAA): Line spacing ≥1.5 recommended for readability"
+
+  line_length:
+    optimal_range_chars: "50-75 characters per line (CPL)"
+    sweet_spot_chars: 66
+    max_chars: 70  # existing threshold — within optimal range
+    lower_bound_chars: 35  # lines under 35 chars cause staccato rhythm preventing working memory buffering
+    upper_bound_failure_chars: 80  # lines exceeding 80-90 chars cause return-sweep failure (eye lands on wrong line)
+    rationale: "Optimal reading: 50-70 characters per line; physiological basis: high-acuity foveal region covers ~3-6 letters per fixation; exceeding upper bound spikes extraneous cognitive load (Cognitive Interface)"
+    application: "Use multi-column layouts if needed"
+
+  text_alignment:
+    recommended: "Left-aligned (easier to scan)"
+    avoid: "Justified (creates uneven spacing, harder for dyslexic readers)"
+    center_ok: "Centered headlines (not body text)"
+
+  paragraph_length:
+    max_lines: 5  # lines per paragraph before breaking
+    wall_of_text_threshold: 10  # paragraphs of 10+ lines eliminate scanning anchors
+    rationale: "Long paragraphs cause F-Pattern scanning failure where readers skip mid-paragraph content (Cognitive Interface)"
+
+  violations:
+    text_too_small: "<18pt (unreadable)"
+    decorative_font_body: "Script/cursive for paragraphs"
+    all_caps_abuse: "Entire slide in ALL CAPS"
+    justified_text: "Justified paragraphs (uneven spacing)"
+    line_too_wide: "Lines >80-90 characters (return-sweep failure)"
+    wall_of_text: "Paragraphs >10 lines without heading breaks"
+
+# ==============================================================================
+# ALTERNATIVE TEXT (WCAG 1.1.1)
+# ==============================================================================
+
+alternative_text:
+  description: "All images must have descriptive alt text for screen readers"
+
+  requirements:
+    informative_images:
+      requirement: "Alt text describes content and function"
+      example_image: "Bar chart showing 60% increase in Q4 sales"
+      bad_alt: "Chart"
+      good_alt: "Bar chart showing Q4 sales increased 60% year-over-year, driven by West region"
+
+    decorative_images:
+      requirement: "Alt text = empty string (alt='')"
+      rationale: "Screen reader skips purely decorative elements"
+      example: "Background texture, design flourish"
+
+    complex_images:
+      requirement: "Alt text + long description"
+      example: "Complex diagram may need alt text + text equivalent on separate slide or speaker notes"
+
+    text_in_images:
+      avoid: "Do not embed text in images (inaccessible to screen readers)"
+      fix: "Use text overlays, not burned-in text"
+
+  chart_accessibility:
+    data_table_equivalent:
+      requirement: "Provide data table in speaker notes or appendix"
+      rationale: "Screen readers cannot interpret chart visuals"
+      example: "Chart on slide 12 → Data table in appendix slide 30"
+
+    descriptive_title:
+      requirement: "Chart title conveys key insight (Action Caption, not Topic Title)"
+      bad: "Q4 Sales Results (Topic Title — passive label forcing reader to analyze chart)"
+      good: "West region drove 60% of Q4 sales growth (Action Caption — states conclusion; chart is verification)"
+      source: "Cognitive Interface, Section 4.3"
+
+    chart_type_selection:
+      principle: "Cognitive Fit — chart type must match the cognitive task"
+      table: "Extract specific values (symbolic lookup task)"
+      bar_chart: "Compare magnitudes between categories"
+      line_chart: "Identify trends and rates of change"
+      stacked_bar: "Understand part-to-whole composition"
+      avoid_pie_chart: "Brain cannot accurately compare areas — higher cognitive cost than bar chart for the same comparison task"
+      source: "Cognitive Fit Theory; Cognitive Interface, Section 4.2"
+
+    data_ink_ratio:
+      requirement: "Remove all non-data ink: gridlines, background colors, 3D effects, decorative borders"
+      rationale: "Chart junk competes for attention and consumes processing resources — cognitive accessibility failure for cognitively diverse users"
+      source: "Tufte's Data-Ink Ratio; Cognitive Interface, Section 4.1"
+
+# ==============================================================================
+# STRUCTURE & NAVIGATION (WCAG 1.3.1, 2.4.6)
+# ==============================================================================
+
+structure_navigation:
+  description: "Logical slide structure and reading order"
+
+  slide_titles:
+    requirement: "Every slide must have unique, descriptive title"
+    rationale: "Screen readers use titles for navigation"
+    bad: "Slide 5, Slide 6, Slide 7"
+    good: "Unique descriptive titles for each slide"
+
+  reading_order:
+    requirement: "Content read in logical order by screen reader"
+    testing: "Use screen reader to verify read order matches visual order"
+    fix: "Adjust element layer order in slide master"
+
+  heading_structure:
+    slide_title: "Heading Level 1"
+    subheadings: "Heading Level 2"
+    avoid: "Skipping levels (H1 → H3, no H2)"
+    max_heading_depth: 3  # if a 4th level is needed, the structure is too deep
+    heading_density: "Insert H2/H3 subheadings every 200-300 words in body text"
+    heading_spacing: "Space above heading must be 2x the space below it (Law of Proximity); equal spacing above and below is an anti-pattern that creates structural ambiguity (Cognitive Interface)"
+
+  list_structure:
+    bullet_lists: "Use actual list formatting (not manual bullets)"
+    numbered_lists: "Use numbered list formatting"
+    rationale: "Screen readers announce list structure and item count"
+
+# ==============================================================================
+# MULTIMEDIA (WCAG 1.2.1, 1.2.2, 1.2.3)
+# ==============================================================================
+
+multimedia_accessibility:
+  description: "Captions and transcripts for audio/video"
+
+  video:
+    captions:
+      requirement: "Closed captions for all speech and relevant sounds"
+      format: "WebVTT, SRT, or platform-native captions"
+      content: "Dialogue + [sound effects] + [music cues]"
+
+    audio_description:
+      requirement: "Describe visual content not apparent from audio alone"
+      example: "[Speaker displays chart showing 60% growth]"
+
+    transcripts:
+      requirement: "Full text transcript available"
+      location: "Speaker notes, handout, or linked document"
+
+  audio_only:
+    transcript_required: "Text transcript of all audio content"
+
+  auto_play:
+    avoid: "Do not auto-play audio/video (WCAG 1.4.2)"
+    rationale: "Interferes with screen readers"
+
+# ==============================================================================
+# KEYBOARD NAVIGATION (WCAG 2.1.1, 2.1.2)
+# ==============================================================================
+
+keyboard_navigation:
+  description: "All functionality accessible via keyboard (no mouse required)"
+
+  requirements:
+    all_interactive_elements:
+      requirement: "Buttons, links, form fields accessible via Tab/Enter"
+      testing: "Navigate presentation using only keyboard"
+
+    no_keyboard_trap:
+      requirement: "Users can Tab out of any element"
+      violation: "Modal dialog with no keyboard exit"
+
+    focus_visible:
+      requirement: "Keyboard focus indicator visible (WCAG 2.4.7)"
+      example: "Focused button has border or highlight"
+
+  presentation_platforms:
+    powerpoint: "Use Tab to navigate, Enter to activate"
+    gamma: "Keyboard navigation built-in"
+    web_based: "Ensure clickable elements are <button> or <a> tags"
+
+# ==============================================================================
+# ANIMATIONS & MOTION (WCAG 2.3.1, 2.2.2)
+# ==============================================================================
+
+animations_motion:
+  description: "Avoid seizure-inducing flashes and allow motion control"
+
+  flashing_content:
+    prohibition: "No flashing ≥3 times per second"
+    threshold: "No flashing content"
+    rationale: "Prevents photosensitive seizures"
+
+  animation_duration:
+    max_auto_animation: 5  # seconds
+    requirement: "Animations >5 seconds must be pauseable"
+
+  motion_control:
+    requirement: "Ability to pause, stop, or hide moving content"
+    applies_to: "Auto-advancing slides, animated GIFs, video backgrounds"
+
+  parallax_scrolling:
+    caution: "Can trigger motion sickness"
+    fix: "Provide option to disable motion"
+
+  violations:
+    rapid_flashing: "Strobe effects, rapid color changes"
+    unpauseable_animation: "Auto-playing video with no controls"
+
+# ==============================================================================
+# LANGUAGE & READABILITY (WCAG 3.1.1, 3.1.2)
+# ==============================================================================
+
+language_readability:
+  description: "Clear language and language identification"
+
+  language_attribute:
+    requirement: "Specify presentation language (lang='en', lang='es')"
+    rationale: "Screen readers use correct pronunciation"
+
+  plain_language:
+    readability_target: "Flesch-Kincaid Grade 8-10 for general business audience"
+    technical_audience: "Flesch-Kincaid Grade 12 for technical or academic content"
+    tools:
+      - "Hemingway Editor"
+      - "Readable.com"
+      - "Flesch-Kincaid calculator (built into Word/Docs)"
+    guidelines:
+      - "Short sentences (<20 words average)"
+      - "Common words (avoid jargon)"
+      - "Active voice ('we recommend' not 'it is recommended')"
+    mechanism: "Improve score by shortening sentences (words per sentence) and simplifying connective vocabulary (syllables per word); do NOT simplify established technical terms"
+
+  abbreviations:
+    requirement: "Spell out first use, then abbreviate"
+    example: "Customer Relationship Management (CRM)"
+
+  pronunciation:
+    requirement: "Provide pronunciation for ambiguous terms"
+    example: "Live (rhymes with 'give') data vs. Live (rhymes with 'hive') presentation"
+
+# ==============================================================================
+# PLATFORM-SPECIFIC GUIDANCE
+# ==============================================================================
+
+platform_accessibility:
+  powerpoint:
+    features:
+      - "Accessibility Checker built-in (Review → Check Accessibility)"
+      - "Alt text editor for images"
+      - "Reading order pane"
+      - "Slide titles required"
+    actions:
+      - "Run Accessibility Checker before finalizing"
+      - "Add alt text to all images/charts"
+      - "Use built-in layouts (not custom text boxes)"
+
+  google_slides:
+    features:
+      - "Screen reader support"
+      - "Automatic captions (Google Meet integration)"
+    actions:
+      - "Title every slide"
+      - "Use built-in text formatting (not images of text)"
+
+  gamma:
+    features:
+      - "Responsive design (mobile-accessible)"
+      - "Keyboard navigation"
+    actions:
+      - "Check contrast ratios"
+      - "Provide alt text for images"
+
+  pdf_export:
+    requirements:
+      - "Tagged PDF (structure preserved)"
+      - "Bookmarks for navigation"
+      - "Alt text embedded"
+    tools: "Adobe Acrobat Accessibility Checker"
+
+# ==============================================================================
+# COGNITIVE ACCESSIBILITY
+# ==============================================================================
+
+cognitive_accessibility:
+  description: "Cognitive load and information architecture accessibility — complements WCAG perceptual/technical standards"
+  source: "Cognitive Interface — Operationalizing UxD for Documents and Reports"
+
+  cognitive_load_framework:
+    intrinsic_load:
+      definition: "Cognitive load inherent to content complexity — cannot be eliminated, only managed"
+      management: "Information Mapping — break complex content into labelled, single-concept blocks"
+    extraneous_load:
+      definition: "Load generated by poor design decisions — the primary cognitive accessibility failure mode"
+      examples: "Dense paragraphs, mismatched chart types, redundant content, chart junk"
+    germane_load:
+      definition: "Productive mental effort directed at understanding — the target state"
+      goal: "Minimize extraneous load so all available working memory applies to germane load"
+
+  working_memory_limit:
+    capacity: "7 ± 2 novel elements (Miller's Law); modern research suggests fewer for complex cognitive tasks"
+    implication: "Slides with >7 distinct elements, bullet points, or data points approach cognitive overload"
+    source: "Miller (1956); Sweller Cognitive Load Theory"
+
+  redundancy_effect:
+    definition: "Presenting the same information in multiple simultaneous forms inhibits comprehension by forcing cross-referencing that consumes working memory"
+    example: "A text paragraph that restates the adjacent table's data points"
+    accessibility_impact: "Active barrier for users with cognitive fatigue, ADHD, or processing differences"
+    fix: "Replace redundant text with an action caption that draws the insight from the table"
+
+  information_mapping:
+    principle: "Each information block must answer exactly one question and carry a clear heading label"
+    source: "Robert Horn's Information Mapping standard"
+    accessibility_impact: "Directly supports users with cognitive disabilities, dyslexia, and ADHD by eliminating ambiguous multi-purpose content blocks"
+
+  scan_pattern_implications:
+    f_pattern:
+      description: "Failure state — occurs on text-heavy content without visual anchors"
+      consequence: "Users miss right-side and mid-paragraph content; information is effectively invisible"
+      trigger: "Walls of text, no subheadings, no bolded topic sentences"
+    layer_cake_pattern:
+      description: "Target state — users fixate on headings and subheadings, skim body until relevant section found"
+      enablers: "Subheadings every 200-300 words, bold topic sentences, short paragraphs"
+    implication: "Slide design without strong visual anchors creates de facto inaccessibility for users with attention differences"
+
+# ==============================================================================
+# DATA VISUALIZATION ACCESSIBILITY
+# ==============================================================================
+
+data_visualization_accessibility:
+  description: "Cognitive accessibility rules for charts, graphs, and tables"
+  source: "Cognitive Interface — Operationalizing UxD for Documents and Reports"
+
+  action_captions:
+    requirement: "Chart titles must state the key insight (Action Caption), not describe what the chart shows (Topic Title)"
+    topic_title_example: "Figure 1: Revenue by Region 2023 — forces reader to analyze chart to deduce meaning"
+    action_caption_example: "Figure 1: West region revenue dropped 15% due to supply chain failure — chart serves as verification evidence"
+    accessibility_impact: "Topic Titles are functionally inaccessible for users with cognitive disabilities, processing differences, or time constraints"
+
+  cognitive_fit:
+    principle: "Chart type must match the cognitive task (Cognitive Fit Theory)"
+    task_chart_mapping:
+      lookup_specific_value: "Table"
+      compare_magnitudes: "Bar chart"
+      identify_trends: "Line chart"
+      show_composition: "Stacked bar chart or treemap"
+    avoid:
+      pie_chart: "Brain cannot accurately compare areas — higher cognitive cost than bar chart for the same comparison task"
+
+  data_ink_ratio:
+    requirement: "Remove all non-data ink"
+    chart_junk_examples:
+      - "Background grid colors"
+      - "3D effects on bars or pies"
+      - "Decorative borders"
+      - "Excessive gridlines"
+    rationale: "Chart junk competes for attention and consumes processing capacity — cognitive accessibility barrier"
+    source: "Tufte's Data-Ink Ratio"
+
+  false_precision:
+    violation: "Excessive decimal places in metrics (e.g., '$1,234,567.89', '12.453%')"
+    cognitive_impact: "High extraneous load processing irrelevant digits"
+    fix: "Round to significant figures ('$1.2M', '12.5%')"
+
+# ==============================================================================
+# NAMED ANTI-PATTERNS
+# ==============================================================================
+
+anti_patterns:
+  wall_of_text:
+    description: "Paragraphs 10+ lines, line width >80-90 chars, minimal headings, no bolding"
+    cognitive_impact: "Eliminates scanning anchors, causes F-Pattern failure, high perceived reading effort"
+    thresholds: "Paragraphs >10 lines OR line width >90 chars = Wall of Text violation"
+    fix: "Break into labelled sections; add subheadings every 200-300 words; bold topic sentences"
+
+  god_table:
+    description: "Massive data table (20+ columns, 50+ rows) presented at small font to fit the slide"
+    cognitive_impact: "Intrinsic overload — pattern and insight cannot be discerned"
+    fix: "Show summary table in body; move full dataset to appendix or linked file"
+
+  slidement:
+    description: "A slide deck with dense text, designed to be both a projected presentation and a readable document"
+    cognitive_impact: "Fails at both tasks — too small to read on screen; too disjointed to read as a report"
+    fix: "Decouple presentation slides (low text, high visual) from leave-behind documents (high text, high detail)"
+
+  false_precision:
+    description: "Excessive decimal places in metrics, table values, or percentages"
+    cognitive_impact: "Unnecessary extraneous load; also erodes trust by suggesting spurious accuracy"
+    fix: "Round to appropriate significant figures"
+
+  redundant_content:
+    description: "Text paragraph restates the data already shown in an adjacent table or chart"
+    cognitive_impact: "Forces cross-referencing that consumes working memory — active barrier for cognitively diverse users"
+    fix: "Replace with an Action Caption drawing the key insight; let the visual carry the data"
+
+  topic_title_chart:
+    description: "Chart title labels the subject rather than stating the insight ('Sales by Region' vs 'West grew fastest')"
+    cognitive_impact: "Transfers the analytical task to the reader; cognitively inaccessible for diverse users"
+    fix: "Rewrite all chart titles as Action Captions (insight-first)"
+
+# ==============================================================================
+# QUALITY CHECKS
+# ==============================================================================
+
+checks:
+  contrast_check:
+    small_text_min: 4.5
+    large_text_min: 3.0
+    ui_elements_min: 3.0
+
+  color_usage_check:
+    no_color_only_meaning: true
+    colorblind_safe_palette: true
+
+  alt_text_check:
+    all_images_have_alt: true
+    decorative_images_empty_alt: true
+
+  text_readability_check:
+    min_font_size: 18
+    line_spacing_min: 1.2
+    max_line_width_chars: 80
+    max_paragraph_lines: 10
+
+  structure_check:
+    all_slides_titled: true
+    unique_titles: true
+    logical_reading_order: true
+    heading_depth_max: 3
+
+  keyboard_nav_check:
+    all_interactive_accessible: true
+    no_keyboard_trap: true
+
+  cognitive_check:
+    no_wall_of_text: true
+    chart_titles_are_action_captions: true
+    no_chart_junk: true
+    no_redundant_content: true
+    no_slidement_hybrid: true
+
+  heuristic_evaluation:
+    visibility_of_status: "Does the deck tell the reader where they are? (slide numbers, active section headers)"
+    match_real_world: "Is language natural? No jargon or corporatese"
+    consistency: "All equivalent headings visually identical; all charts use the same color palette"
+    aesthetic_minimalism: "Is every element necessary? (Data-Ink ratio applied)"
+    error_prevention: "Acronyms defined on first use; charts labeled to prevent misinterpretation"
+    flexibility_efficiency: "Can the content be skimmed? Bold topic sentences used?"
+    source: "Nielsen's Usability Heuristics adapted for documents (Cognitive Interface)"
+
+  plain_language_compliance:
+    relevant: "Reader receives only what they need — no redundant or off-topic content"
+    findable: "Reader can locate information via navigation and heading hierarchy"
+    understandable: "Plain language and clear visuals throughout"
+    usable: "Reader can act on the information — action captions, clear instructions"
+    standard: "ISO 24495-1:2023 — Plain Language"
+
+# ==============================================================================
+# THRESHOLDS
+# ==============================================================================
+
+thresholds:
+  min_contrast_small_text: 4.5
+  min_contrast_large_text: 3.0
+  min_contrast_ui: 3.0
+  min_font_size: 18
+  min_line_spacing: 1.2
+  max_flash_per_second: 3
+  optimal_line_length_chars: "50-75 CPL"
+  line_length_sweet_spot_chars: 66
+  line_length_upper_failure_chars: 80
+  max_paragraph_lines: 10
+  heading_density_words: "200-300 words between subheadings"
+  max_heading_depth: 3
+  readability_grade_general: "8-10 (Flesch-Kincaid)"
+  readability_grade_technical: "12 (Flesch-Kincaid)"
+
+# ==============================================================================
+# PENALTIES
+# ==============================================================================
+
+penalties:
+  contrast_violation: 0.15            # Text <4.5:1 or UI <3:1
+  color_only_meaning: 0.10            # Color used alone (no icon/pattern)
+  missing_alt_text: 0.08              # Images without alt text
+  text_too_small: 0.08                # <18pt font size
+  untitled_slides: 0.06               # Slides without unique titles
+  text_in_images: 0.07                # Inaccessible embedded text
+  flashing_content: 0.20              # Seizure risk (critical violation)
+  no_keyboard_access: 0.12            # Interactive elements unreachable via keyboard
+  wall_of_text: 0.08                  # Paragraphs >10 lines or lines >80-90 chars
+  topic_title_charts: 0.05            # Chart titles describe subject, not insight (Action Caption violation)
+  chart_junk_present: 0.04            # Gridlines, 3D effects, background colors on charts
+  redundant_content: 0.05             # Text paragraph restates adjacent table/chart data
+  slidement_hybrid: 0.08              # Dense-text deck designed for dual use as document
+
+# ==============================================================================
+# BONUSES
+# ==============================================================================
+
+bonuses:
+  wcag_aaa_contrast: 0.03             # Exceeds AA (7:1 small, 4.5:1 large)
+  comprehensive_alt_text: 0.02        # Descriptive alt text for all images
+  colorblind_tested: 0.02             # Tested with colorblind simulator
+  screen_reader_tested: 0.03          # Verified with NVDA/JAWS/VoiceOver
+  transcript_provided: 0.02           # Full transcript for video/audio
+  plain_language: 0.02                # 8th grade reading level or below (Flesch-Kincaid verified)
+  action_captions_all_charts: 0.02    # All chart titles state insight rather than topic
+  cognitive_fit_chart_types: 0.02     # Chart types matched to cognitive task (lookup/trend/compare)
+  iso_plain_language_compliant: 0.02  # ISO 24495-1:2023 (Relevant/Findable/Understandable/Usable) verified
+  progressive_disclosure: 0.02        # Content layered so skimmers and deep readers are both served

@@ -1,0 +1,816 @@
+_meta:
+  id: opening_hooks_entities
+  purpose: entity
+  version: 2.13.0
+  last_updated: '2026-03-09'
+  description: NuExtract entity definitions for opening hook pattern detection.
+  domain: narrative
+  domain_type: cross_cutting
+  parent_config: opening_hooks.yaml
+  corpus_sources:
+  - Corpus/Research/Crafting Powerful Opening Plays.md
+  - 'Corpus/Research/The World-Class Presentation Playbook: A Cognitive-Based System for Design, Structure, and Delivery.md'
+  - 'Corpus/Research/The Architecture of Persuasion: A Deep Synthesis of Visual Communication and Narrative Storytelling.md'
+  - 'Corpus/Research/The Canonical Presentation Lifecycle: A Strategic Methodology for High-Stakes Communication.md'
+  - Corpus/Research/Research - Researching Narrative and Discourse Analysis.md
+  - Corpus/Research/Research - Canonical Presentation Methodology Research.md
+  - Corpus/Research/Research - Case Study Excellence.md
+  - Corpus/Research/Research - Personal Branding Framework for Early.md
+  - Corpus/Research/Research - Using Monroes Motivated Sequence.md
+  - Corpus/Research/Research - Analyzing Story for Business Communication.md
+  - Corpus/Research/SOAR Narrative Mapping by Sales Stage.md
+  - Corpus/Research/Research - Public_Speaking_research.md
+  - Corpus/Research/research_-_slide_deck_design_playbook_research.md
+  - Corpus/Research/module-integration-strategy.md
+  - Corpus/Research/Research - Slide Deck Design Playbook Research.md
+  - Corpus/Research/course-creation-flow.md
+  - Corpus/Research/research_-_elite_speaker_linguistic_analysis_taxonomy.md
+  - Corpus/Research/Research - Best Video Script Prompts.md
+entity_types:
+  question_hook:
+    label: QUESTION_HOOK
+    entity_kind: rhetorical_device
+    family: opening_hooks
+    field_description: Opening question like what if why do how can have you imagine provocative question rhetorical question
+      curiosity gap
+    description: Opens with a question to engage curiosity (curiosity gap principle)
+    examples:
+    - What if everything you knew about X was wrong?
+    - Why do 80% of digital transformations fail?
+    - Have you ever wondered how...
+    - How can we reduce costs by 40%?
+    - When was the last time you...
+    - Imagine if your team could...
+    - What would you do with an extra hour every day?
+    - What's really holding your team back?
+    confidence_threshold: 0.7
+    indicators:
+    - question mark at end of sentence
+    - starts with question words (what, why, how, when, where, who)
+    - starts with 'have you', 'do you', 'did you', 'can you'
+    - starts with 'imagine if'
+    psychological_principle: Curiosity gap (Loewenstein 1994) - unresolved questions trigger dopamine
+    hook_strength: high
+    subtypes:
+    - 'rhetorical: No answer expected; makes audience think'
+    - 'direct: Invites immediate mental response'
+    - 'provocative: Challenges assumptions'
+    - 'hypothetical: ''imagine if'', ''what if'''
+    relates_to:
+    - target: narrative_hook
+      relation: specialises
+      weight: required
+      description: Question Hook is a specific type of narrative hook
+      target_file: narrative_entities
+    - target: statistic_hook
+      relation: contrasts_with
+      weight: optional
+      description: Alternative opening strategies — different hook approaches
+    - target: story_hook
+      relation: contrasts_with
+      weight: optional
+      description: Alternative opening strategies — different hook approaches
+    - target: narrative_tension
+      relation: triggers
+      weight: required
+      description: A question hook creates narrative tension by posing an unanswered question that the audience must resolve.
+        This tension drives engagement and attention.
+      target_file: narrative_entities
+    - target: narrative_tension
+      relation: enables
+      weight: required
+      description: Opening hooks of all types (question, story, contrast, statistic) enable narrative tension by creating
+        cognitive gaps, curiosity, or surprise that must be resolved.
+      target_file: narrative_entities
+    - target: rhetorical_question
+      relation: specialises
+      weight: expected
+      description: Question hooks are a specialised opening-position use of rhetorical questions, leveraging curiosity gaps to
+        engage audience attention per Crafting Powerful Opening Plays
+      target_file: rhetorical_devices_entities
+    - target: rhetorical_question
+      relation: specialises
+      weight: expected
+      description: "Model Criticism poses evaluative questions showing question hooks specialize rhetorical questions as openers per Researching Narrative and Discourse Analysis"
+      target_file: discourse_entities
+    - target: engagement_marker
+      relation: triggers
+      weight: expected
+      description: "Question hooks trigger engagement markers — introspective questions like 'What three words would you use to describe me professionally?' drive personal brand feedback loops and audience participation per Personal Branding Framework"
+      target_file: stance_markers_entities
+    - target: monroe_sequence_marker
+      relation: supports
+      weight: expected
+      description: "Provocative or rhetorical questions are explicitly recommended as Attention-stage hooks in MMS to spark curiosity per Monroe's Motivated Sequence research"
+      target_file: rhetorical_devices_entities
+    - target: engagement_cue
+      relation: triggers
+      weight: expected
+      description: "A question hook activates audience attention and engagement per Gagne's Event 1 (Gain Attention) in Slide Deck Design Playbook"
+      target_file: delivery_entities
+    - target: situation_marker
+      relation: supports
+      weight: expected
+      description: "Question hooks support situation markers by probing the audience's current state and challenges per SOAR Narrative Mapping by Sales Stage"
+      target_file: sales_entities
+    - target: germane_load_marker
+      relation: triggers
+      weight: expected
+      description: "Question hooks trigger germane load — curiosity gap openings activate schema-building cognitive effort per module-integration-strategy"
+      target_file: cognitive_load_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - setup
+      strength: primary
+  statistic_hook:
+    label: STATISTIC_HOOK
+    entity_kind: rhetorical_device
+    family: opening_hooks
+    field_description: Opening statistic like percentage metric number research shows according to surprising data compelling
+      stat numerical fact
+    description: Leads with surprising statistic or data point (von Restorff effect)
+    examples:
+    - 73% of employees would leave for better work-life balance
+    - Every 39 seconds, a company falls victim to cyberattack
+    - Research shows that 80% of projects fail
+    - According to Gartner, $15M lost annually to bad data
+    - In 2025, AI will transform 40% of jobs
+    - $3.5 trillion wasted on digital transformation
+    - Only 12% of change initiatives fully succeed
+    confidence_threshold: 0.75
+    indicators:
+    - contains percentage (\d+%)
+    - contains large number with units (\$\d+[MB], \d+ seconds)
+    - starts with 'research shows', 'studies find', 'according to'
+    - time-based frequency ('every X seconds/minutes')
+    psychological_principle: von Restorff effect (1933) - distinctive elements are remembered better
+    hook_strength: high
+    quality_criteria:
+      effective:
+      - Counter-intuitive or unexpected
+      - Personally relevant to audience
+      - From credible source
+      - Recent/current
+      ineffective:
+      - Vague or rounded ('millions of...')
+      - Expected/obvious
+      - Unverifiable
+    relates_to:
+    - target: narrative_hook
+      relation: specialises
+      weight: required
+      description: Statistic Hook is a specific type of narrative hook
+      target_file: narrative_entities
+    - target: question_hook
+      relation: contrasts_with
+      weight: optional
+      description: Alternative opening strategies — different hook approaches
+    - target: story_hook
+      relation: contrasts_with
+      weight: optional
+      description: Alternative opening strategies — different hook approaches
+    - target: logos_appeal
+      relation: supports
+      weight: required
+      description: A statistic hook supports logos appeals by providing numerical evidence and logical reasoning. Statistics
+        establish the rational, data-driven foundation of an argument.
+      target_file: rhetorical_devices_entities
+    - target: data_statistic
+      relation: contains
+      weight: expected
+      description: Statistic hooks contain data statistics as their core structural element, with the surprising number serving
+        as the attention anchor per Crafting Powerful Opening Plays
+      target_file: evidence_types_entities
+    - target: narrative_tension
+      relation: triggers
+      weight: expected
+      description: Statistic hooks trigger narrative tension through the von Restorff effect — a surprising number creates cognitive
+        disruption that demands resolution per Crafting Powerful Opening Plays
+      target_file: narrative_entities
+    - target: pathos_appeal
+      relation: enables
+      weight: optional
+      description: Statistic hooks can enable pathos appeals when the data reveals human impact, transforming abstract numbers
+        into emotional engagement per Crafting Powerful Opening Plays
+      target_file: rhetorical_devices_entities
+    - target: monroe_sequence_marker
+      relation: supports
+      weight: expected
+      description: "Startling statistics serve as Attention-stage hooks in MMS, jolting learners into realising a topic's importance per Monroe's Motivated Sequence research"
+      target_file: rhetorical_devices_entities
+    - target: engagement_cue
+      relation: triggers
+      weight: expected
+      description: "Opening statistic hooks trigger immediate audience engagement by alerting and focusing attention per Gagne's Event 1 (Slide Deck Design Playbook)"
+      target_file: delivery_entities
+    - target: evidence
+      relation: supported_by
+      weight: expected
+      description: "Statistic hooks supported by evidence data points making opening credible (Best Video Script Prompts)"
+      target_file: narrative_entities
+    - target: RESULT_MARKER
+      relation: supports
+      weight: optional
+      description: "Statistic hooks align with Results phase Big Number archetype for immediate credibility"
+      target_file: sales_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - setup
+      strength: primary
+  story_hook:
+    label: STORY_HOOK
+    entity_kind: rhetorical_device
+    family: opening_hooks
+    field_description: Opening narrative like imagine picture this let me tell last week there was specific story anecdote
+      character situation
+    description: Begins with brief, vivid anecdote (narrative transportation)
+    examples:
+    - Imagine you're sitting in a meeting, watching...
+    - 'Picture this: 3 AM, hospital IT system goes dark...'
+    - Let me tell you about Sarah, a marketing director...
+    - Last March, a Fortune 500 company discovered...
+    - There was a moment when everything changed...
+    - I remember the day when...
+    - Six months ago, a team in Singapore faced an impossible deadline.
+    confidence_threshold: 0.7
+    indicators:
+    - starts with 'imagine', 'picture this', 'let me tell you'
+    - contains 'last (week|month|year)', 'there was'
+    - specific names and places (proper nouns)
+    - present tense for immediacy
+    - sensory language (saw, heard, felt)
+    psychological_principle: Narrative transportation (Green & Brock 2000) - story absorption reduces resistance
+    hook_strength: high
+    elements:
+      essential:
+      - Specific character (named or identifiable)
+      - Concrete situation (sensory details)
+      - Tension or problem
+      - Relatable context
+      enhance:
+      - Dialogue snippet
+      - Emotion word
+      - Unexpected detail
+    relates_to:
+    - target: narrative_hook
+      relation: specialises
+      weight: required
+      description: Story Hook is a specific type of narrative hook
+      target_file: narrative_entities
+    - target: question_hook
+      relation: contrasts_with
+      weight: optional
+      description: Alternative opening strategies — different hook approaches
+    - target: statistic_hook
+      relation: contrasts_with
+      weight: optional
+      description: Alternative opening strategies — different hook approaches
+    - target: pathos_appeal
+      relation: enables
+      weight: expected
+      description: A story hook (particularly personal narratives or anecdotes) enables pathos appeals by creating emotional
+        engagement through narrative. Stories activate emotional responses that pure logic cannot.
+      target_file: rhetorical_devices_entities
+    - target: personal_anecdote
+      relation: contains
+      weight: expected
+      description: Story hooks contain personal anecdotes as source material, with first-person narratives providing specific
+        character and situation elements per Crafting Powerful Opening Plays
+      target_file: evidence_types_entities
+    - target: customer_story
+      relation: contains
+      weight: expected
+      description: Story hooks contain customer stories as source material, with third-party case narratives providing relatable
+        character and challenge elements per Crafting Powerful Opening Plays
+      target_file: evidence_types_entities
+    - target: narrative_tension
+      relation: triggers
+      weight: expected
+      description: Story hooks trigger narrative tension through narrative transportation, as the audience absorbs the character's
+        situation and anticipates resolution per Crafting Powerful Opening Plays
+      target_file: narrative_entities
+    - target: monroe_sequence_marker
+      relation: supports
+      weight: expected
+      description: "Short stories or relatable scenarios are primary Attention-stage hooks in MMS, immediately connecting with adult learners through shared experience per Monroe's Motivated Sequence research"
+      target_file: rhetorical_devices_entities
+    - target: confidence_technique
+      relation: supported_by
+      weight: optional
+      description: "Opening with a story you know well gives the speaker a confident start — story hooks are directly supported by confidence technique per Public Speaking research"
+      target_file: delivery_entities
+    - target: germane_load_marker
+      relation: enables
+      weight: expected
+      description: "Story hooks enable germane cognitive processing by activating schema construction through narrative transportation — audiences build mental models from story structures per slide deck design playbook"
+      target_file: cognitive_load_entities
+    - target: engagement_cue
+      relation: triggers
+      weight: expected
+      description: "Story hooks with human narrative or vulnerability moments trigger deep engagement through emotional priming per Slide Deck Design Playbook TED model"
+      target_file: delivery_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - setup
+      strength: primary
+  contrast_hook:
+    label: CONTRAST_HOOK
+    entity_kind: rhetorical_device
+    family: opening_hooks
+    field_description: Contrast hook unexpected gap between expectation and reality we expected X but found Y the conventional
+      wisdom says but actually
+    description: Opens by revealing a gap between expected and actual — uses surprise to provoke attention
+    examples:
+    - We expected growth. Instead, we found a cliff edge.
+    - The conventional wisdom says spend more. Our data says the opposite.
+    - Most companies think this is complex. It's actually simple.
+    - What we planned was X. What happened was Y.
+    - Everyone assumed adoption would be low. It was through the roof.
+    - We thought it would take months. It took three days.
+    confidence_threshold: 0.7
+    indicators:
+    - '''we expected X but found Y'''
+    - '''conventional wisdom says... but'''
+    - '''instead'', ''but actually'', ''the opposite'''
+    - contrast markers (however, yet, but, instead)
+    psychological_principle: Contrast principle (Cialdini 2001) — anchoring to expectation amplifies surprise
+    hook_strength: high
+    quality_criteria:
+      effective:
+      - Clear expectation stated before the contrast
+      - Contrast is genuinely surprising
+      - Directly relevant to audience's experience
+      ineffective:
+      - Artificial contrast with no real tension
+      - Expectation too vague to anchor
+    relates_to:
+    - target: narrative_hook
+      relation: specialises
+      weight: required
+      description: Contrast Hook is a specific type of narrative hook
+      target_file: narrative_entities
+    - target: question_hook
+      relation: contrasts_with
+      weight: optional
+      description: Alternative opening strategies — different hook approaches
+    - target: statistic_hook
+      relation: contrasts_with
+      weight: optional
+      description: Alternative opening strategies — different hook approaches
+    - target: antithesis
+      relation: supports
+      weight: expected
+      description: A contrast hook employs the rhetorical device of antithesis, juxtaposing opposing ideas or states to highlight
+        a strategic point or create cognitive impact.
+      target_file: rhetorical_devices_entities
+    - target: narrative_tension
+      relation: triggers
+      weight: expected
+      description: Contrast hooks trigger narrative tension by revealing a gap between expectation and reality, creating cognitive
+        dissonance that demands explanation per Crafting Powerful Opening Plays
+      target_file: narrative_entities
+    - target: antithesis
+      relation: specialises
+      weight: expected
+      description: "LitVISTA paradox framing shows contrast hooks specialize antithesis as an opening rhetorical device per Researching Narrative and Discourse Analysis"
+      target_file: rhetorical_devices_entities
+    - target: before_after_comparison
+      relation: enables
+      weight: expected
+      description: "Contrast hooks enable before-after comparisons by establishing the gap between pre-implementation challenges and post-implementation outcomes per Case Study Excellence"
+      target_file: evidence_types_entities
+    - target: monroe_sequence_marker
+      relation: supports
+      weight: optional
+      description: "MMS's Visualization stage uses positive vs. negative contrast — depicting the improved future versus the cost of not changing — which mirrors the contrast hook pattern per Monroe's Motivated Sequence research"
+      target_file: rhetorical_devices_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - setup
+      strength: primary
+  problem_statement_hook:
+    label: PROBLEM_HOOK
+    entity_kind: rhetorical_device
+    family: opening_hooks
+    field_description: Problem statement hook opens with the core challenge the problem is organisations are struggling businesses
+      face the critical issue
+    description: Opens by naming the core problem the audience faces — immediate relevance without setup
+    examples:
+    - 'The problem is simple: too much data, not enough insight.'
+    - Organisations are struggling to deliver content at scale.
+    - The critical challenge facing your team right now is...
+    - Every business in this room is dealing with the same friction.
+    - The bottleneck isn't budget — it's speed of execution.
+    - 'Here is the core issue: your customer data is fragmented.'
+    confidence_threshold: 0.7
+    indicators:
+    - '''the problem is'', ''the challenge is'', ''the issue is'''
+    - '''organisations are struggling'', ''businesses face'''
+    - '''the bottleneck'', ''the friction'', ''the gap'''
+    - '''your team is dealing with'', ''every company faces'''
+    psychological_principle: Problem-first framing (Minto 1996) — audience engagement spikes when own problem is named
+    hook_strength: high
+    quality_criteria:
+      effective:
+      - Problem is specific, not generic
+      - Names the audience's actual situation
+      - Creates tension that demands resolution
+      ineffective:
+      - Generic business problem anyone faces
+      - Problem stated then immediately solved (kills tension)
+    relates_to:
+    - target: narrative_hook
+      relation: specialises
+      weight: required
+      description: Problem Statement Hook is a specific type of narrative hook
+      target_file: narrative_entities
+    - target: question_hook
+      relation: contrasts_with
+      weight: optional
+      description: Alternative opening strategies — different hook approaches
+    - target: statistic_hook
+      relation: contrasts_with
+      weight: optional
+      description: Alternative opening strategies — different hook approaches
+    - target: pain_point
+      relation: triggers
+      weight: required
+      description: A problem statement hook immediately activates awareness of a pain point. By naming the problem first,
+        the hook creates cognitive recognition of the audience's challenge.
+      target_file: narrative_entities
+    - target: narrative_tension
+      relation: triggers
+      weight: expected
+      description: Problem statement hooks trigger narrative tension by naming the audience's core challenge, creating recognition
+        and urgency that demands resolution per Crafting Powerful Opening Plays
+      target_file: narrative_entities
+    - target: pain_point
+      relation: contains
+      weight: expected
+      description: "LitVISTA structural crisis framing shows problem statement hooks contain pain points as their core rhetorical payload per Researching Narrative and Discourse Analysis"
+      target_file: narrative_entities
+    - target: urgency_signal
+      relation: enables
+      weight: expected
+      description: Problem statement hooks enable urgency signals by establishing the stakes and cost of inaction, framing the
+        problem as demanding immediate attention per Crafting Powerful Opening Plays
+      target_file: sales_entities
+    - target: monroe_sequence_marker
+      relation: supports
+      weight: expected
+      description: "The Need stage of MMS functions as an extended problem statement, establishing the learning gap or challenge that the lesson will address per Monroe's Motivated Sequence research"
+      target_file: rhetorical_devices_entities
+    - target: audience_pain_point
+      relation: supported_by
+      weight: expected
+      description: "Problem statement hooks are supported by audience-specific pain points that make the problem personally relevant per Analyzing Story for Business Communication"
+      target_file: audience_entities
+    - target: scqa_marker
+      relation: supported_by
+      weight: expected
+      description: "Problem statement hooks are supported by SCQA markers whose Complication component establishes the problem context per Analyzing Story for Business Communication"
+      target_file: rhetorical_devices_entities
+    - target: situation_marker
+      relation: supports
+      weight: expected
+      description: "Problem statement hooks support situation markers by establishing the pain point context that defines the current state per SOAR Narrative Mapping by Sales Stage"
+      target_file: sales_entities
+    - target: OPPORTUNITY_MARKER
+      relation: supports
+      weight: expected
+      description: "Problem hooks align with SOAR Obstacle phase introducing conflict and urgency from the opening"
+      target_file: sales_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - setup
+      strength: primary
+  bluf_hook:
+    label: BLUF_HOOK
+    entity_kind: rhetorical_device
+    family: opening_hooks
+    field_description: BLUF bottom line up front executive opener leads with recommendation conclusion action required the
+      single most important message
+    description: Bottom Line Up Front — leads immediately with the key conclusion or recommendation (executive default)
+    examples:
+    - 'Here is the recommendation: deploy by Q3.'
+    - The bottom line is we need to act now.
+    - 'My ask today: approve the budget.'
+    - Before anything else — we have a window of 90 days.
+    - The single most important thing you need to know is...
+    - The decision we need from this room today is...
+    - 'We need one thing from you: sign-off on the roadmap.'
+    confidence_threshold: 0.72
+    indicators:
+    - '''here is the recommendation'', ''the bottom line'''
+    - '''my ask'', ''our ask'', ''the decision we need'''
+    - '''the single most important'', ''one thing'''
+    - '''before anything else'', ''straight to it'''
+    psychological_principle: Primacy effect (Murdock 1962) + executive communication norms — decision-makers want conclusions
+      first
+    hook_strength: high
+    executive_context: BLUF is the required format for executive audiences; conclusion must appear in slides 1-5
+    quality_criteria:
+      effective:
+      - Decision or recommendation is specific and actionable
+      - Stakes are named (timeline, risk, opportunity)
+      - Single clear ask — not a list
+      ineffective:
+      - BLUF is vague ('we need to do something')
+      - Multiple competing asks
+    relates_to:
+    - target: narrative_hook
+      relation: specialises
+      weight: required
+      description: Bluf Hook is a specific type of narrative hook
+      target_file: narrative_entities
+    - target: question_hook
+      relation: contrasts_with
+      weight: optional
+      description: Alternative opening strategies — different hook approaches
+    - target: statistic_hook
+      relation: contrasts_with
+      weight: optional
+      description: Alternative opening strategies — different hook approaches
+    - target: scqa_marker
+      relation: supports
+      weight: expected
+      description: BLUF (Bottom Line Up Front) hook aligns with SCQA structure by placing the Answer (key message) at the
+        beginning, reversing traditional Situation-Complication-Question-Answer sequence for executive communication.
+      target_file: rhetorical_devices_entities
+    - target: value_proposition
+      relation: contains
+      weight: expected
+      description: BLUF hooks contain the core value proposition as their opening statement, presenting the key recommendation
+        or conclusion before supporting detail per Crafting Powerful Opening Plays
+      target_file: narrative_entities
+    - target: outcome_statement
+      relation: contains
+      weight: expected
+      description: BLUF hooks contain outcome statements as their structural core, placing the desired result or recommendation
+        at the front of the presentation per Crafting Powerful Opening Plays
+      target_file: narrative_entities
+    - target: call_to_action
+      relation: precedes
+      weight: expected
+      description: BLUF hooks precede the detailed call to action by establishing what decision is needed, setting up the specific
+        action request that follows per Crafting Powerful Opening Plays
+      target_file: narrative_entities
+    - target: claim
+      relation: contains
+      weight: required
+      description: "BLUF hooks contain the core claim (thesis/recommendation) placed upfront via the Pyramid Principle — the Answer in SCQA is the explicit claim per Canonical Presentation Methodology"
+      target_file: narrative_entities
+    - target: claim
+      relation: contains
+      weight: required
+      description: "The Pyramid Principle places the Answer (BLUF) immediately after the SCQA setup, so the BLUF hook contains the core claim/recommendation upfront to respect executive time (Canonical Presentation Methodology)"
+      target_file: narrative_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - setup
+      strength: primary
+  quote_hook:
+    label: QUOTE_HOOK
+    entity_kind: rhetorical_device
+    family: opening_hooks
+    field_description: Opening quotation attribution named authority famous quote customer quote industry leader said as someone
+      once said
+    description: Opens with a compelling, attributed quotation that frames the central message
+    examples:
+    - As Warren Buffett said, 'Risk comes from not knowing what you're doing.'
+    - 'One of our customers told us: ''This changed everything.'''
+    - 'In the words of Peter Drucker: ''Culture eats strategy for breakfast.'''
+    - 'The CEO of [Company X] put it perfectly last month:'
+    - '''The only way to do great work is to love what you do.'' — Steve Jobs'
+    - 'A VP of Marketing in our study said something that stopped us:'
+    confidence_threshold: 0.72
+    indicators:
+    - opening quotation marks followed by attribution
+    - '''as [name] said'', ''in the words of'''
+    - '''one of our customers'', ''a client told us'''
+    - dash or em-dash attribution ('— [Author]')
+    psychological_principle: Social proof and authority transfer (Cialdini 2001)
+    hook_strength: medium-high
+    quality_criteria:
+      effective:
+      - Quote is unexpected or counter-intuitive
+      - Attribution adds credibility (expert, customer, authority)
+      - Quote connects directly to the session topic
+      ineffective:
+      - Overused generic quote ('Journey of a thousand miles...')
+      - No clear link between quote and presentation content
+    relates_to:
+    - target: narrative_hook
+      relation: specialises
+      weight: required
+      description: Quote Hook is a specific type of narrative hook
+      target_file: narrative_entities
+    - target: question_hook
+      relation: contrasts_with
+      weight: optional
+      description: Alternative opening strategies — different hook approaches
+    - target: statistic_hook
+      relation: contrasts_with
+      weight: optional
+      description: Alternative opening strategies — different hook approaches
+    - target: ethos_appeal
+      relation: supports
+      weight: expected
+      description: A quote hook (especially from recognized authorities) supports ethos appeals by borrowing credibility from
+        an established source.
+      target_file: rhetorical_devices_entities
+    - target: expert_testimony
+      relation: contains
+      weight: expected
+      description: Quote hooks contain expert testimony as their core element, leveraging attributed quotations from authorities
+        to establish credibility and frame the message per Crafting Powerful Opening Plays
+      target_file: evidence_types_entities
+    - target: monroe_sequence_marker
+      relation: supports
+      weight: optional
+      description: "Quotes from respected figures are recommended as Attention-stage hooks in MMS and in the Visualization stage to amplify aspirational vision per Monroe's Motivated Sequence research"
+      target_file: rhetorical_devices_entities
+    taxonomy_mapping:
+    - taxonomy: narrative_taxonomy
+      dimension: story_function
+      values:
+      - setup
+      strength: primary
+hook_quality_indicators:
+  high_quality_signals:
+  - Specific numbers (not vague quantifiers)
+  - Named entities (people, companies, places)
+  - Sensory language (visual, auditory, tactile)
+  - Active voice (not passive)
+  - Question format (engages curiosity)
+  - Present tense (creates immediacy)
+  - Audience-specific relevance (names their situation)
+  - Stakes are explicit (cost of inaction)
+  low_quality_signals:
+  - We/I-focused (not audience-focused)
+  - Passive voice (reduces energy)
+  - Vague quantifiers (many, some, various)
+  - Filler words (just, actually, basically)
+  - Generic statements (no specificity)
+  - No tension or stakes
+anti_patterns:
+  weak_generic_opener:
+    label: WEAK_OPENER
+    field_description: Weak opening like thank you for good morning i am here to let me introduce agenda today low-impact
+      generic
+    examples:
+    - Thank you for being here
+    - Good morning everyone
+    - I'm here to talk about
+    - Today I will cover
+    - Let me introduce myself
+    - My name is
+    - Before I begin
+    - Let me start by saying
+    - I'd like to present to you
+    - In today's session we'll look at
+    confidence_threshold: 0.75
+    hook_strength: low
+    remediation: Replace with question, statistic, story, contrast, problem statement, or BLUF hook
+    relates_to:
+    - target: performance_tier
+      relation: limits
+      weight: expected
+      description: "Weak generic openers limit performance tier — Novice speakers use self-conscious openings while elite speakers open with calculated rhetorical hooks (elite_speaker_taxonomy)"
+      target_file: performance_entities
+  agenda_first:
+    label: AGENDA_FIRST
+    field_description: Agenda shown first before any hook our agenda today first we will then we will cover these topics outline
+    examples:
+    - Our agenda today is...
+    - First, we will cover...
+    - Here's what we'll discuss
+    - Today's topics are...
+    - 'In this session: overview, then details, then Q&A'
+    confidence_threshold: 0.7
+    hook_strength: low
+    remediation: Move agenda slide to position 2-3 after an engaging hook has been established
+    relates_to:
+    - target: planning_artefact_marker
+      relation: supported_by
+      weight: expected
+      description: "Agenda-first openers are supported by planning artefacts — wireframes provide one-page visual overviews of resource structure including main screens, navigation flow, and content organisation per course-creation-flow"
+      target_file: content_architecture_entities
+    - target: content_structure_marker
+      relation: supports
+      weight: expected
+      description: "The Dot-Dash storylining method creates an agenda-like structure of Action Titles (Dots) that serve as the presentation's navigational scaffold (Canonical Presentation Methodology)"
+      target_file: content_architecture_entities
+integration:
+  narrativelens_usage: "NarrativeLens extracts hook type entities from first slide content:\n\n1. Extract first 100 words\
+    \ or first 3 sentences\n2. Detect QUESTION_HOOK, STATISTIC_HOOK, STORY_HOOK, CONTRAST_HOOK,\n   PROBLEM_HOOK, BLUF_HOOK,\
+    \ QUOTE_HOOK, WEAK_OPENER, AGENDA_FIRST\n3. Store primary hook type with metadata\n4. Use in narrative lens scoring (hook\
+    \ presence +15 points)\n5. Pass to Stage 4 critique for detailed hook quality analysis\n"
+  stage_4_critique_usage: "Stage 4 (Critique Generator) performs comprehensive hook quality scoring:\n\n1. Load opening_hooks.yaml\
+    \ (reference layer, 548 lines of scoring)\n2. Score across 5 dimensions:\n   - Attention capture (30% weight)\n   - Relevance\
+    \ signal (25% weight)\n   - Memorability (20% weight)\n   - Flow to content (15% weight)\n   - Brevity (10% weight)\n\
+    3. Detect anti-patterns (throat clearing, agenda first, apology)\n4. Generate hook remediation recommendations\n5. Map\
+    \ to psychological principles (primacy effect, curiosity gap, narrative transportation)\n6. Check BLUF compliance for\
+    \ executive audience profiles\n"
+  example_extraction: "First slide text: \"What if I told you that 73% of projects fail due to\none simple mistake? Last year,\
+    \ a Fortune 500 company learned this the hard way.\"\n\nEntities extracted:\n- QUESTION_HOOK: \"What if I told you\"\n\
+    \  - Strength: high\n  - Psychological principle: curiosity gap\n\n- STATISTIC_HOOK: \"73% of projects fail\"\n  - Strength:\
+    \ high\n  - Quality: counter-intuitive, specific percentage\n\n- STORY_HOOK: \"Last year, a Fortune 500 company\"\n  -\
+    \ Strength: high\n  - Elements: specific time, specific character type\n\nOverall hook assessment: EXCELLENT (multiple\
+    \ high-strength hooks)\n"
+  scoring_impact: 'Hook presence in narrative lens scoring:
+
+    - High-strength hook detected: +15 points
+
+    - Multiple hooks (hybrid): +5 bonus points
+
+    - BLUF_HOOK for executive profile: +8 bonus points
+
+    - Weak/generic opener (WEAK_OPENER): -10 points
+
+    - AGENDA_FIRST detected before hook: -8 points
+
+    - No discernible hook: 0 adjustment
+
+    '
+reference_layer:
+  opening_hooks_yaml: 'The full opening_hooks.yaml file (548 lines) is NOT used for NuExtract extraction.
+
+    Most of it provides reference layer content for Stage 4 critique:
+
+
+    - psychological_principles (100 lines): Primacy effect, curiosity gap, emotional arousal
+
+    - frameworks (250 lines): BLUF, PASS, contrast opener, SCQA, etc.
+
+    - scoring (80 lines): 5-dimension rubric with score bands
+
+    - anti_patterns (70 lines): Throat clearing, agenda first, apology, etc.
+
+    - remediation (48 lines): Weak-to-strong transformation strategies
+
+
+    These are scoring frameworks and remediation strategies, not extractable entities.
+
+    '
+gliner_config:
+  model: gliner-large-v2
+  batch_size: 32
+  default_confidence_threshold: 0.7
+  context_window: 128
+  use_hybrid_extraction: true
+  entity_groups:
+    hook_types:
+    - QUESTION_HOOK
+    - STATISTIC_HOOK
+    - STORY_HOOK
+    - BOLD_CLAIM_HOOK
+    - PROBLEM_HOOK
+    - CONTRAST_HOOK
+domain_keywords:
+  primary:
+  - opening
+  - hook
+  - attention
+  - engagement
+  - curiosity
+  - story
+  - question
+  - statistic
+  - data
+  - bold claim
+  secondary:
+  - rhetorical question
+  - curiosity gap
+  - von Restorff effect
+  - primacy effect
+  - pattern interrupt
+  - cold open
+  - anecdote
+  - surprising fact
+  - contrarian
+  - provocative
+  - what if
+quality_indicators:
+  hook_presence:
+    absent: No opening hook entity detected in first slide — flat, uninspiring opening; -5 points narrative quality
+    weak: Hook entity present but low-strength type — partial engagement; +2 points
+    strong: High-strength hook detected (QUESTION_HOOK, STATISTIC_HOOK, STORY_HOOK) — strong opening; +5 points
+  hook_alignment:
+    misaligned: Hook type misaligned to audience — e.g., statistic hook for emotional audience; reduces resonance
+    aligned: Hook type appropriate for detected audience persona — maximum engagement potential
+  hook_diversity:
+    single_type: Only one hook type used across all presentations — consider varying approach
+    varied: Multiple hook types detected — rich and unpredictable opening repertoire

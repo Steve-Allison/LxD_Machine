@@ -1,0 +1,414 @@
+_meta:
+  id: rhetorical_devices_taxonomy
+  title: "Rhetorical Devices Taxonomy"
+  description: "Classification of rhetorical and persuasive language devices by communicative function — repetition, balance, amplification, comparison, engagement, structural organisation, and Aristotelian appeals"
+  domain: narrative
+  domain_type: classification
+  purpose: taxonomy
+  version: "1.4.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Canonical Presentation Methodology Research.md"
+    - "Corpus/Research/PDL Architecture: Narrative & Discourse Analysis Series.md"
+  academic_sources:
+    - "Aristotle - Rhetoric"
+    - "Corbett & Connors (1998) - Classical Rhetoric for the Modern Student"
+    - "Fahnestock (1999) - Rhetorical Figures in Science"
+    - "Leith (2011) - You Talkin' to Me?"
+
+  relationships:
+    - target: entities/rhetorical_devices_entities.yaml
+      type: depends_on
+      description: "Rhetorical device entity types for NER extraction"
+classification_dimensions:
+  - name: device_family
+    description: "Rhetorical device family grouping by functional mechanism"
+    values:
+      - repetition
+      - balance
+      - amplification
+      - comparison
+      - engagement
+      - structural
+      - aristotelian_appeals
+  - name: power_level
+    description: "Persuasive impact rating of the rhetorical device when applied correctly"
+    values:
+      - very_high
+      - high
+      - medium
+      - low
+  - name: aristotelian_appeal
+    description: "Primary Aristotelian appeal mode (logos/ethos/pathos) of the device, if applicable"
+    values:
+      - logos
+      - ethos
+      - pathos
+  - name: structural_framework
+    description: "Meta-level rhetorical framework for overall message architecture"
+    values:
+      - scqa
+      - kairos
+      - monroe_sequence
+
+# ==============================================================================
+# DEVICE FAMILIES
+# ==============================================================================
+
+families:
+
+  # --------------------------------------------------------------------------
+  # REPETITION DEVICES
+  # Devices that create emphasis through structural repetition
+  # --------------------------------------------------------------------------
+  repetition:
+    label: "Repetition Devices"
+    function: "Create rhythm, emphasis, and memorability through structural repetition"
+    effect_on_audience: "Reinforces key ideas; increases retention and emotional impact"
+
+    devices:
+      anaphora:
+        label: "Anaphora"
+        definition: "Repetition of the same word or phrase at the start of successive clauses"
+        example: "We will build. We will scale. We will win."
+        usage_contexts: [speeches, call_to_action, rallying_points]
+        power_level: high
+        overuse_risk: medium
+
+      epistrophe:
+        label: "Epistrophe"
+        definition: "Repetition of the same word or phrase at the end of successive clauses"
+        example: "Every customer matters. Every deal matters. Every person matters."
+        usage_contexts: [emphasis, emotional_close]
+        power_level: high
+        overuse_risk: medium
+
+      symploce:
+        label: "Symploce"
+        definition: "Combination of anaphora and epistrophe — same start and end across clauses"
+        example: "We came together. We worked together. We succeeded together."
+        usage_contexts: [climactic_moments, team_narrative]
+        power_level: very_high
+        overuse_risk: high
+
+      tricolon:
+        label: "Tricolon (Rule of Three)"
+        definition: "Three parallel words, phrases, or clauses of equal weight"
+        example: "Speed, quality, and cost. Simple, scalable, secure."
+        usage_contexts: [key_messages, product_attributes, values]
+        power_level: high
+        overuse_risk: low
+
+      anadiplosis:
+        label: "Anadiplosis"
+        definition: "The last word of one clause becomes the first word of the next"
+        example: "Performance drives results. Results drive recognition."
+        usage_contexts: [logical_chaining, cause_and_effect]
+        power_level: medium
+        overuse_risk: low
+
+  # --------------------------------------------------------------------------
+  # BALANCE DEVICES
+  # Devices that use structural balance or contrast
+  # --------------------------------------------------------------------------
+  balance:
+    label: "Balance and Contrast Devices"
+    function: "Create clarity and impact through parallel or opposing structures"
+    effect_on_audience: "Creates satisfying symmetry; highlights contrast"
+
+    devices:
+      antithesis:
+        label: "Antithesis"
+        definition: "Juxtaposition of contrasting ideas in parallel grammatical structure"
+        example: "Not a cost, but an investment. Not a risk, but an opportunity."
+        usage_contexts: [reframing, objection_handling, values]
+        power_level: high
+        overuse_risk: low
+
+      chiasmus:
+        label: "Chiasmus"
+        definition: "Two phrases where the second reverses the grammatical structure of the first"
+        example: "Ask not what your company can do for you — ask what you can do for your company."
+        usage_contexts: [memorable_statements, keynote_moments]
+        power_level: very_high
+        overuse_risk: medium
+
+      isocolon:
+        label: "Isocolon"
+        definition: "A series of clauses of parallel length and grammatical structure"
+        example: "Fast to deploy. Easy to manage. Designed to scale."
+        usage_contexts: [product_messaging, bullet_alternatives, taglines]
+        power_level: medium
+        overuse_risk: low
+
+      parallelism:
+        label: "Parallelism"
+        definition: "Use of matching grammatical structures to express related ideas"
+        example: "We listen to customers, learn from data, and lead with insight."
+        usage_contexts: [frameworks, process_descriptions, values]
+        power_level: medium
+        overuse_risk: low
+
+  # --------------------------------------------------------------------------
+  # AMPLIFICATION DEVICES
+  # Devices that heighten or intensify meaning
+  # --------------------------------------------------------------------------
+  amplification:
+    label: "Amplification Devices"
+    function: "Heighten intensity, urgency, or emotional weight of a message"
+    effect_on_audience: "Creates drama, urgency, and emotional elevation"
+
+    devices:
+      hyperbole:
+        label: "Hyperbole"
+        definition: "Deliberate exaggeration used for emphasis or dramatic effect"
+        example: "This is the biggest opportunity in a decade."
+        usage_contexts: [urgency_creation, emphasis, vision_casting]
+        power_level: medium
+        overuse_risk: high
+
+      climax:
+        label: "Climax"
+        definition: "Series of phrases or clauses arranged in ascending order of importance"
+        example: "First we saw it. Then we understood it. Now we act on it."
+        usage_contexts: [build_up, calls_to_action, narrative_arc]
+        power_level: high
+        overuse_risk: low
+
+      litotes:
+        label: "Litotes"
+        definition: "Understatement by negating the opposite — for ironic or humble effect"
+        example: "This is not a small opportunity."
+        usage_contexts: [understatement, credibility, irony]
+        power_level: low
+        overuse_risk: low
+
+  # --------------------------------------------------------------------------
+  # COMPARISON DEVICES
+  # Devices that explain or argue through comparison
+  # --------------------------------------------------------------------------
+  comparison:
+    label: "Comparison Devices"
+    function: "Aid understanding and argument through comparison, contrast, or illustration"
+    effect_on_audience: "Increases comprehension; makes abstract concrete"
+
+    devices:
+      metaphor:
+        label: "Metaphor"
+        definition: "Implicit comparison asserting one thing is another"
+        example: "Data is the new oil. Our platform is the engine of transformation."
+        usage_contexts: [concept_explanation, vision, branding]
+        power_level: high
+        overuse_risk: medium
+
+      simile:
+        label: "Simile"
+        definition: "Explicit comparison using 'like' or 'as'"
+        example: "Think of it like a GPS for your sales team."
+        usage_contexts: [concept_explanation, analogies, onboarding]
+        power_level: medium
+        overuse_risk: low
+
+      analogy:
+        label: "Extended Analogy"
+        definition: "A sustained comparison developed across multiple sentences"
+        example: "Running a business without data is like flying without instruments..."
+        usage_contexts: [complex_explanation, reframing]
+        power_level: high
+        overuse_risk: medium
+
+      antimetabole:
+        label: "Antimetabole"
+        definition: "Words repeated in reverse order, often creating a new meaning"
+        example: "We don't sell technology; technology sells us."
+        usage_contexts: [memorable_statements, repositioning]
+        power_level: very_high
+        overuse_risk: medium
+
+  # --------------------------------------------------------------------------
+  # ENGAGEMENT DEVICES
+  # Devices that draw the audience in and create connection
+  # --------------------------------------------------------------------------
+  engagement:
+    label: "Engagement Devices"
+    function: "Create audience participation, identification, or curiosity"
+    effect_on_audience: "Draws audience in; increases attention and investment"
+
+    devices:
+      rhetorical_question:
+        label: "Rhetorical Question"
+        definition: "A question posed for persuasive or stylistic effect, not expecting an answer"
+        example: "What if we could cut your onboarding time in half?"
+        usage_contexts: [openings, transitions, emphasis]
+        power_level: high
+        overuse_risk: medium
+
+      inclusive_we:
+        label: "Inclusive We"
+        definition: "Use of 'we', 'our', 'us' to create shared identity between speaker and audience"
+        example: "We are at a turning point. This is our moment."
+        usage_contexts: [team_narrative, alignment, vision]
+        power_level: medium
+        overuse_risk: medium
+
+      apostrophe:
+        label: "Apostrophe"
+        definition: "Direct address to an absent person, abstract idea, or the audience itself"
+        example: "To every customer who has waited for this — the wait is over."
+        usage_contexts: [emotional_moments, climax, closing]
+        power_level: high
+        overuse_risk: high
+
+      procatalepsis:
+        label: "Procatalepsis"
+        definition: "Raising and immediately answering your own objection"
+        example: "You might be thinking: 'but what about cost?' Here's the answer."
+        usage_contexts: [objection_handling, trust_building]
+        power_level: medium
+        overuse_risk: low
+
+  # --------------------------------------------------------------------------
+  # STRUCTURAL DEVICES
+  # Devices that organise argument and guide the audience through content
+  # --------------------------------------------------------------------------
+  structural:
+    label: "Structural Organisation Devices"
+    function: "Guide the audience through content with clear signalling and organisation"
+    effect_on_audience: "Reduces cognitive load; increases follow-through and comprehension"
+
+    devices:
+      tripartite_structure:
+        label: "Three-Part Structure"
+        definition: "Content divided into three clear sections: beginning, middle, end or problem, solution, result"
+        example: "Here's the challenge. Here's the solution. Here's the result."
+        usage_contexts: [presentations, case_studies, pitches]
+        power_level: high
+        overuse_risk: low
+
+      aposiopesis:
+        label: "Aposiopesis"
+        definition: "Deliberate trailing off or incompletion to create suspense or implication"
+        example: "And what happens to those who don't act..."
+        usage_contexts: [suspense, urgency, dark_pattern]
+        power_level: medium
+        overuse_risk: high
+
+      conduplicatio:
+        label: "Conduplicatio"
+        definition: "Repetition of a key word or phrase from a previous sentence to link ideas"
+        example: "The data is clear. Clear data means confident decisions."
+        usage_contexts: [logical_linking, summary, transitions]
+        power_level: low
+        overuse_risk: low
+
+  # --------------------------------------------------------------------------
+  # ARISTOTELIAN APPEALS
+  # The three classical modes of persuasion
+  # --------------------------------------------------------------------------
+  aristotelian_appeals:
+    label: "Aristotelian Appeals"
+    function: "Establish the rational, emotional, and credibility bases for persuasion"
+    effect_on_audience: "Builds multi-dimensional persuasion across logic, emotion, and trust"
+
+    devices:
+      logos:
+        label: "Logos (Logical Appeal)"
+        definition: "Persuasion through reason, evidence, and logical argument"
+        example: "Data shows 80% of customers achieve ROI within 6 months."
+        usage_contexts: [evidence_based_argument, business_case]
+        power_level: high
+        overuse_risk: low
+
+      ethos:
+        label: "Ethos (Appeal to Credibility)"
+        definition: "Persuasion through demonstrated expertise, character, or trustworthiness"
+        example: "With 20 years in this industry and 10,000 customers..."
+        usage_contexts: [trust_building, introductions, case_studies]
+        power_level: high
+        overuse_risk: low
+
+      pathos:
+        label: "Pathos (Emotional Appeal)"
+        definition: "Persuasion through emotional resonance, storytelling, or connection to values"
+        example: "Imagine the impact this would have on your team."
+        usage_contexts: [storytelling, openings, closings, vision]
+        power_level: very_high
+        overuse_risk: medium
+
+# ==============================================================================
+# USAGE GUIDANCE
+# ==============================================================================
+
+usage_guidance:
+  balance_rule: "Strong presentations balance logos (evidence), ethos (credibility), and pathos (emotion). Over-indexing on any one weakens the argument."
+
+  business_communication_defaults:
+    opening: [rhetorical_question, anaphora, metaphor, pathos]
+    body: [tricolon, parallelism, logos, ethos, analogy]
+    closing: [anaphora, chiasmus, call_to_action, inclusive_we, tripartite_structure]
+
+  overuse_warnings:
+    high_risk:
+      - hyperbole
+      - apostrophe
+      - symploce
+      - aposiopesis
+    note: "High-risk devices lose impact rapidly with repetition. Use sparingly."
+
+# ==============================================================================
+# POWER LEVEL LEGEND
+# ==============================================================================
+
+power_levels:
+  very_high: "Maximum impact; use at high-stakes moments only"
+  high: "Strong impact; foundation of effective rhetoric"
+  medium: "Useful support; effective in combination with other devices"
+  low: "Subtle; often structural rather than rhetorical"
+
+# ==============================================================================
+# STRUCTURAL FRAMEWORKS
+# Sources: Research - Canonical Presentation Methodology Research.md;
+#          PDL Architecture: Narrative & Discourse Analysis Series.md
+# ==============================================================================
+
+  structural_frameworks:
+    label: "Structural Frameworks"
+    function: "Organise entire presentations or arguments into persuasive macro-sequences"
+    effect_on_audience: "Guides audience through a logical journey from context to commitment"
+
+    devices:
+      scqa:
+        label: "SCQA (Minto's Pyramid)"
+        definition: "Situation → Complication → Question → Answer — Barbara Minto's top-down communication structure"
+        purpose: "Delivers the answer at the top of the pyramid before supporting evidence — BLUF principle"
+        usage_contexts: [executive_presentations, business_cases, email_communication, boardroom_pitches]
+        power_level: very_high
+        overuse_risk: low
+        scoring_note: "SCQA present in executive presentation: +5 points. Absent: -3 points."
+        soar_alignment: "SCQA maps to SOAR: Situation=Situation; Complication=Opportunity; Answer=Action; implied Result"
+
+      kairos:
+        label: "Kairos (Urgency Framing)"
+        definition: "Aristotle's concept of the right moment — urgency framing that positions action as time-sensitive, not optional"
+        purpose: "Converts understanding into commitment by making inaction costly"
+        usage_contexts: [opportunity_stage, closing_section, call_to_action]
+        power_level: high
+        overuse_risk: medium  # Overuse desensitises audience to urgency
+        scoring_note: "KAIROS in closing section: +3 points. Absent: missed urgency signal."
+        soar_alignment: "Primarily SOAR Opportunity stage and Result/CTA transition"
+
+      monroe_sequence:
+        label: "Monroe's Motivated Sequence"
+        definition: "Five-stage persuasive structure: Attention → Need → Satisfaction → Visualization → Action (Alan Monroe, 1935)"
+        purpose: "Mirrors the psychological journey from indifference to commitment — especially effective for change management and sales narratives"
+        stages:
+          attention: "Disrupts status quo and captures focus"
+          need: "Establishes the problem and its stakes"
+          satisfaction: "Presents the solution"
+          visualization: "Shows what success (or failure) looks like"
+          action: "Issues the specific call to action"
+        usage_contexts: [sales_presentations, change_management, keynote_speeches]
+        power_level: very_high
+        overuse_risk: low
+        scoring_note: "Full Monroe sequence: +8 points. Partial (3-4 stages): +4 points."
+        soar_alignment: "Attention≈Situation; Need≈Opportunity; Satisfaction+Visualization≈Action; Action≈Result+CTA"

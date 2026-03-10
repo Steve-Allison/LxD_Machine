@@ -1,0 +1,1135 @@
+_meta:
+  id: delivery_entities
+  purpose: entity
+  version: 2.32.0
+  last_updated: '2026-03-09'
+  description: GLiNER entity definitions for instructional delivery analysis including facilitation modes, ILT/VILT constructs,
+    engagement techniques, classroom management cues, and delivery modality markers.
+  domain: performance
+  domain_type: workflow
+  corpus_sources:
+  - Corpus/Research/Research - ILT & VILT Best Practice.md
+  - Corpus/Research/Research - Public_Speaking_research.md
+  - Corpus/Research/Research - Unified Performance Framework.md
+  - Corpus/Research/Research - Discussion-based Learning.md
+  - Corpus/Research/Research - Canonical Presentation Methodology Research.md
+  - Corpus/Research/research_-_mastering_presentation_nerves.md
+  - Corpus/Research/Research - Vocal Profiling for Executive Coaching.md
+  - Corpus/Research/Research - Comprehensive Learning Design Framework.md
+  - Corpus/Research/Crafting Powerful Opening Plays.md
+  - Corpus/Research/Research - Comprehensive Audience Analysis.md
+  - Corpus/Research/Research - Personal Branding Framework for Early.md
+  - Corpus/Research/Research - Elite Speaker Linguistic Analysis Taxonomy.md
+  - Corpus/Research/Research - Merrills Instructional Design Theories Applied.md
+  - Corpus/Research/Research - Presentation Delivery_ Ethos and Physicality.md
+  - Corpus/Research/Research - Using Monroes Motivated Sequence.md
+  - Corpus/Research/Research - Analyzing Story for Business Communication.md
+  - Corpus/Research/Research - The Anatomy of Presence.md
+  - Corpus/Research/Research - Scenario-Based Training_ A Comprehensive Guide.md
+  - Corpus/Research/Research - Roleplay & Scenarios for Learning.md
+  - Corpus/Research/Research - Learner Persona Research and Development.md
+  - Corpus/Research/slide_design_research_monograph.md
+  - Corpus/Research/Research - Slide Deck Design Playbook Research.md
+  - Corpus/Research/RESEARCH-BASED_ENHANCEMENTS FOR VOICE.md
+  - Corpus/Research/Learning Experience Design - Donald Clark - Combined.md
+  - Corpus/Research/theory_gagne_s_nine_events_of_instruction.md
+  - Corpus/Research/tone_of_voice_guide.md
+  - Corpus/Research/Essentials_Course_Gold_Structure_AI_Course_Playbook.md
+  - Corpus/Research/Applying_Learning_Theory_Practical_Checklist.md
+  - Corpus/Research/Research - Corporate Learning Assessment- Strategies, Modalities, and Best Practices.md
+  - Corpus/Research/Gold Standard Structure for Any Corporate-Learning Asset v3.md
+  - Corpus/Research/course_structure_hierarchy_corpus_research.md
+  - Corpus/Research/innovative-learning-and-teaching-experiments-across-the-discipli.md
+  - Corpus/Research/research_-_slide_deck_design_playbook_research.md
+  - Corpus/Research/research_-_the_architecture_of_influence__a_comprehensive_multim.md
+  - Corpus/Research/Research - Voice Quality Metric Research Parameters.md
+  - Corpus/Research/Content Map - Instructions v3.md
+  relationships:
+  - target: entities/performance_entities.yaml
+    type: depends_on
+    description: Speaker performance and vocal quality entities (complementary scope)
+  - target: methodology/pedagogical_patterns.yaml
+    type: depends_on
+    description: Instructional patterns that delivery entities reference
+  - target: reference/speaking_performance_thresholds.yaml
+    type: depends_on
+    description: Performance tier thresholds for delivery quality assessment
+gliner_config:
+  model: urchade/gliner_multi_pii-v1
+  batch_size: 8
+  context_window: 512
+  domain_keywords:
+    primary:
+    - facilitation
+    - ILT
+    - VILT
+    - instructor
+    - trainer
+    - classroom
+    - engagement
+    - delivery
+    secondary:
+    - breakout
+    - icebreaker
+    - debrief
+    - pacing
+    - energy
+    - participation
+    - moderation
+entity_types:
+  delivery_modality:
+    description: Training delivery formats and modality types
+    canonical_id: delivery_modality
+    entity_kind: delivery_format
+    family: modality
+    gliner_label: DELIVERY_MODALITY
+    gliner_description: Delivery modality ILT VILT eLearning blended hybrid self-paced instructor-led virtual classroom
+    examples:
+    - instructor-led training (ILT)
+    - virtual instructor-led training (VILT)
+    - self-paced eLearning
+    - blended learning programme
+    - hybrid classroom
+    - on-demand module
+    - cohort-based online course
+    anti_examples:
+    - delivery service
+    - virtual reality
+    confidence_threshold: 0.8
+    aliases:
+    - training format
+    - learning modality
+    - instructional format
+    indicators:
+    - ILT
+    - VILT
+    - eLearning
+    - e-learning
+    - blended
+    - hybrid
+    - self-paced
+    - instructor-led
+    - virtual classroom
+    - on-demand
+    - cohort-based
+    - synchronous
+    - asynchronous
+    patterns:
+    - (instructor[- ]led|virtual[- ]instructor[- ]led) training
+    - (ILT|VILT|eLearning|e-learning)
+    - (blended|hybrid|self[- ]paced|on[- ]demand) (learning|course|programme|training)
+    - virtual classroom
+    color: '#3498db'
+    relates_to:
+    - target: virtual_platform_feature
+      relation: bridges
+      weight: required
+      description: Delivery modality (in-person vs. virtual) requires different platform features. Virtual presentations require
+        camera placement optimization, eye-contact simulation, and attention to framing. Modality choice constrains platform
+        feature selection.
+    - target: facilitation_technique
+      relation: enables
+      weight: expected
+      description: Delivery modality enables specific facilitation techniques; ILT supports gallery walks and
+        physical activities while VILT enables chat storms and breakout room discussions
+    - target: session_structure_marker
+      relation: contains
+      weight: required
+      description: Each delivery modality imposes distinct session structure requirements; ILT uses full-day
+        structures with physical breaks while VILT requires shorter segmented sessions
+    - target: content_structure_marker
+      relation: enables
+      weight: expected
+      description: Delivery modality constrains content architecture; keynotes require sparse high-contrast
+        visuals while read-ahead formats require dense rigorous logic layouts
+      target_file: content_architecture_entities
+    - target: extraneous_load_marker
+      relation: limits
+      weight: expected
+      description: Delivery modality design manages extraneous cognitive load; live presentation demands sparse
+        visuals reducing load while VILT combats Zoom fatigue through segmented sessions
+      target_file: cognitive_load_entities
+    - target: course_format
+      relation: contains
+      weight: expected
+      description: Delivery modality contains course format decisions determining whether content is delivered
+        as ILT workshop, VILT modules over weeks, or blended self-paced combinations
+      target_file: content_format_entities
+    - target: roleplay_activity
+      relation: supports
+      weight: expected
+      description: "Delivery modality determines roleplay format — ILT enables face-to-face roleplay while VILT requires breakout rooms and adapted observation protocols per roleplay research"
+      target_file: activity_types_entities
+    - target: adult_learner
+      relation: supported_by
+      weight: expected
+      description: Delivery modality choices are grounded in andragogy; adults need relevant, self-directed,
+        experiential learning and modality must accommodate autonomy and prior experience
+      target_file: audience_entities
+    - target: layout_pattern
+      relation: enables
+      weight: expected
+      description: Delivery modality enables specific layout patterns; keynotes use large fonts and sparse
+        visuals while read-aheads use dense layouts with smaller fonts for detail
+      target_file: visual_elements_entities
+    - target: executive_audience
+      relation: supports
+      weight: expected
+      description: "Delivery modality supports executive audiences when matched to preference such as concise slide decks for executives per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    - target: technical_audience
+      relation: supports
+      weight: expected
+      description: "Delivery modality supports technical audiences with whitepapers and engineering-team meetings per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    - target: instructional_strategy
+      relation: enables
+      weight: expected
+      description: "FPI principles are validated across delivery modalities including eLearning MOOCs immersive VR VILT and blended learning per Merrill"
+      target_file: pedagogical_frameworks_entities
+    - target: nonverbal_cue
+      relation: enables
+      weight: expected
+      description: "Live delivery modalities enable the full range of nonverbal cues (gesture, posture, eye contact) while virtual and asynchronous modalities constrain them per Ethos and Physicality research"
+      target_file: performance_entities
+    - target: mixed_audience
+      relation: supports
+      weight: required
+      description: "Multi-modal delivery is essential for mixed five-generation audiences with each generation requiring fundamentally different modality access per Learner Persona Research"
+      target_file: audience_entities
+    - target: engagement_cue
+      relation: enables
+      weight: expected
+      description: "Delivery modality selection triggers engagement cues: mobile notifications for Gen Z, in-CRM pop-ups for Sales Directors, peer community alerts for Millennials per Learner Persona Research"
+    - target: slide_type
+      relation: supported_by
+      weight: expected
+      description: "The Live vs Leave-Behind delivery modality decision determines all subsequent design rules including font size, density, and layout per Slide Deck Design Playbook"
+      target_file: visual_elements_entities
+    - target: engagement_cue
+      relation: triggers
+      weight: expected
+      description: "VILT delivery modality triggers specific engagement cues every 5-10 minutes — polls, chat, reactions — while ILT uses physical movement and proximity cues per ILT&VILT Best Practice"
+    - target: virtual_platform_feature
+      relation: enables
+      weight: expected
+      description: "VILT delivery modality enables virtual platform features like breakout rooms, polls, whiteboards, and annotation tools that replicate classroom interactivity per ILT&VILT Best Practice"
+    - target: delivery_modality_marker
+      relation: supports
+      weight: expected
+      description: "ILT/VILT delivery modalities directly support delivery modality markers that classify whether content is suited for in-person, virtual, or hybrid formats per ILT&VILT Best Practice"
+      target_file: content_architecture_entities
+    - target: delivery_mode
+      relation: bridges
+      weight: expected
+      description: "Performance delivery modality bridges to pedagogical delivery mode, as all 35+ activities are explicitly organised by synchronous vs asynchronous delivery (Best-Practice Learning Activities)"
+      target_file: pedagogical_frameworks_entities
+    - target: summative_assessment
+      relation: limits
+      weight: expected
+      description: "Delivery modality constrains summative assessment options — online delivery requires proctoring solutions while face-to-face enables direct observation of performance per innovative learning experiments"
+      target_file: assessment_entities
+    - target: delivery_modality_marker
+      relation: specialises
+      weight: expected
+      description: "Live presentation vs. read-ahead Slidument are distinct delivery modalities; the Canonical Lifecycle requires the format decision before design begins (Canonical Presentation Methodology)"
+      target_file: content_architecture_entities
+    - target: pause_marker
+      relation: contains
+      weight: expected
+      description: "The YAML evaluation config defines pause_duration thresholds (strategic_pause_min_ms: 2000) as a core delivery modality metric for elite speech (Architecture of Influence, Part 2 Section 3)"
+      target_file: performance_entities
+    - target: planning_artefact_marker
+      relation: supported_by
+      weight: expected
+      description: "Delivery methods planned within Content Map's Resources and Delivery Methods column (Content Map Instructions v3)"
+      target_file: content_architecture_entities
+    - target: mayer_essential_principle
+      relation: supported_by
+      weight: expected
+      description: "Segmenting and pre-training align delivery modality pacing with essential processing limits per Applying Mayer's Principles Practical Checklist"
+      target_file: cognitive_load_entities
+    - target: progressive_disclosure_marker
+      relation: enables
+      weight: expected
+      description: "Card-based digital delivery enables progressive disclosure through nested scrollable content"
+      target_file: cognitive_load_entities
+  facilitation_technique:
+    description: Named facilitation methods and instructor techniques for live delivery
+    canonical_id: facilitation_technique
+    entity_kind: delivery_method
+    family: facilitation
+    gliner_label: FACILITATION_TECHNIQUE
+    gliner_description: Facilitation technique Socratic questioning cold call think-pair-share gallery walk parking lot check-in
+    examples:
+    - Socratic questioning
+    - cold calling
+    - think-pair-share
+    - gallery walk
+    - parking lot technique
+    - round-robin check-in
+    - fishbowl discussion
+    - jigsaw method
+    anti_examples:
+    - cold weather
+    - parking lot space
+    confidence_threshold: 0.75
+    aliases:
+    - facilitation method
+    - instructor technique
+    - engagement strategy
+    indicators:
+    - Socratic questioning
+    - cold call
+    - think-pair-share
+    - gallery walk
+    - parking lot
+    - round-robin
+    - fishbowl
+    - jigsaw
+    - snowball
+    - carousel
+    - world café
+    - dot voting
+    - affinity mapping
+    patterns:
+    - (Socratic|guided|open) questioning
+    - think[- ]pair[- ]share
+    - (gallery|learning) walk
+    - (fishbowl|jigsaw|snowball|carousel) (discussion|method|activity)
+    - (parking lot|round[- ]robin|world café)
+    color: '#2ecc71'
+    relates_to:
+    - target: engagement_cue
+      relation: enables
+      weight: expected
+      description: Facilitation techniques enable engagement cues by creating interactive contexts in which
+        participation prompts like polls, quizzes, and breakout discussions are deployed
+    - target: session_structure_marker
+      relation: bridges
+      weight: expected
+      description: Facilitation techniques bridge session structure markers by providing interactive methods
+        used within each structural segment from icebreakers to closing debriefs
+    - target: discussion_activity
+      relation: specialises
+      weight: expected
+      description: Techniques like fishbowl, Socratic questioning, and world café specialise general discussion
+        into structured facilitated interactions with observer feedback and debrief
+      target_file: activity_types_entities
+    - target: roleplay_activity
+      relation: enables
+      weight: expected
+      description: Facilitation techniques enable roleplay activities by structuring assigned roles, observer
+        feedback, and debrief cycles that make simulation-based practice effective
+      target_file: activity_types_entities
+    - target: presentation_anxiety_marker
+      relation: limits
+      weight: optional
+      description: Gradual exposure through low-stakes speaking opportunities and audience interaction desensitises
+        anxiety by distributing attention across the group reducing sole scrutiny
+    - target: call_to_action
+      relation: enables
+      weight: optional
+      description: Facilitation techniques enable behavioural calls to action by converting narrative CTAs into
+        audience behaviour through structured interaction and practice activities
+      target_file: narrative_entities
+    - target: mixed_audience
+      relation: supports
+      weight: expected
+      description: "Facilitation techniques support mixed audiences with dialogue facilitation and breakout-and-reconvene strategies per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    - target: reflection_activity
+      relation: enables
+      weight: expected
+      description: "FPI Integration phase requires facilitation techniques like post-VR debriefs teach-back scheduling and action plan guidance per Merrill"
+      target_file: activity_types_entities
+    - target: engagement_marker
+      relation: enables
+      weight: expected
+      description: "Facilitation techniques enable engagement markers through active listening, insightful questioning, and collaborative dialogue that draw audience participation per Personal Branding Framework"
+      target_file: stance_markers_entities
+    - target: pause_marker
+      relation: supported_by
+      weight: expected
+      description: "Facilitation techniques are supported by pause markers; the talk-to-listen ratio of 43:57 requires strategic silence to allow space for audience processing and participation per Vocal Profiling research"
+      target_file: performance_entities
+    - target: scenario_activity
+      relation: supports
+      weight: required
+      description: "SBT requires nuanced facilitation balancing realism with psychological safety; facilitators act as coach using verbal sign-posting and open-ended probing questions per SBT guide"
+      target_file: activity_types_entities
+    - target: germane_load_marker
+      relation: triggers
+      weight: expected
+      description: "Active audience engagement techniques convert passive receivers to active processors, creating germane load per Slide Deck Design Playbook"
+      target_file: cognitive_load_entities
+    - target: instructional_event
+      relation: supports
+      weight: expected
+      description: "Facilitation techniques directly execute Gagné's instructional events including scaffolding (Event 5), coaching questions (Event 6), and structured debriefing (Event 7) per theory_gagne_s_nine_events_of_instruction"
+      target_file: pedagogical_frameworks_entities
+    - target: script_direction
+      relation: supported_by
+      weight: expected
+      description: "Script directions provide narrative cues for facilitation ('[dry smile]', '[pause]', '[reflective tone]') guiding delivery nuance per tone_of_voice_guide"
+      target_file: writing_entities
+    - target: extraneous_load_marker
+      relation: resolves
+      weight: optional
+      description: "Facilitation techniques like verbal signalling (pause, slower speech, 'The key point is...'), guiding discovery cues, and steering discussions back on-topic resolve extraneous load in live delivery (Applying_Learning_Theory_Practical_Checklist)"
+      target_file: cognitive_load_entities
+    - target: engagement_cue
+      relation: triggers
+      weight: expected
+      description: "Facilitation techniques such as questioning, storytelling, and name-use directly trigger engagement cues from learners — facilitator energy sets the tone for group engagement per ILT&VILT Best Practice"
+    - target: vocal_quality_issue
+      relation: resolves
+      weight: optional
+      description: "Facilitation techniques like voice modulation, varied tone/volume/pace resolve vocal quality issues — use your voice as a tool to maintain interest per ILT&VILT Best Practice"
+      target_file: performance_entities
+    - target: collaborative_activity
+      relation: enables
+      weight: expected
+      description: "Facilitation techniques enable collaborative activities — think-pair-share, breakout room management, circulating to coach, and structured debrief require skilled facilitation (Gold Standard Structure)"
+      target_file: activity_types_entities
+    - target: confidence_technique
+      relation: supports
+      weight: expected
+      description: "Facilitation techniques directly support confidence techniques — creating safe environments, validating contributions, and handling wrong answers tactfully builds presenter and learner confidence per ILT&VILT Best Practice"
+    - target: nonverbal_cue
+      relation: enables
+      weight: expected
+      description: "Facilitation techniques enable effective nonverbal cues — maintaining eye contact, open body language, looking into camera for virtual eye contact, and nodding to show engagement per ILT&VILT Best Practice"
+      target_file: performance_entities
+    - target: formative_assessment
+      relation: enables
+      weight: expected
+      description: "Facilitation techniques enable formative assessment — Socratic questioning reveals misconceptions in real time, think-pair-share provides observable performance evidence, and gallery walks enable peer evaluation per Corporate Learning Assessment research"
+      target_file: assessment_entities
+    - target: rubric_component
+      relation: supported_by
+      weight: optional
+      description: "Facilitation techniques are supported by rubric components that define observable criteria for evaluating facilitated interactions — discussion quality, participation depth, and response accuracy per Corporate Learning Assessment research"
+      target_file: assessment_entities
+    - target: roleplay_activity
+      relation: supports
+      weight: expected
+      description: "Facilitation techniques support role-play activities through instructor-managed role assignments, scenario scripts, observation checklists, and structured debrief protocols (Best-Practice Learning Activities)"
+      target_file: activity_types_entities
+    - target: discussion_activity
+      relation: supports
+      weight: expected
+      description: "Facilitation techniques support discussion activities through facilitator-led question posing, moderated dialogues, and seeded weekly topics (Best-Practice Learning Activities)"
+      target_file: activity_types_entities
+    - target: progressive_disclosure_marker
+      relation: supports
+      weight: expected
+      description: "Facilitation build-and-reveal techniques support progressive disclosure of slide content by controlling information flow during live delivery per slide deck design playbook"
+      target_file: cognitive_load_entities
+    - target: mayer_generative_principle
+      relation: supported_by
+      weight: expected
+      description: "Facilitation techniques like Socratic questioning and teach-back prompt generative processing activities per Applying Mayer's Principles Practical Checklist"
+      target_file: cognitive_load_entities
+  engagement_cue:
+    description: Verbal and structural cues used to maintain learner engagement during live delivery
+    canonical_id: engagement_cue
+    entity_kind: delivery_signal
+    family: facilitation
+    gliner_label: ENGAGEMENT_CUE
+    gliner_description: Engagement cue rhetorical question show of hands poll chat waterfall raise hand emoji reaction energy
+      check
+    examples:
+    - raise your hand if
+    - type in the chat
+    - show of hands
+    - quick poll
+    - chat waterfall
+    - emoji reaction
+    - energy check
+    - who can tell me
+    anti_examples:
+    - hand sanitiser
+    - chat application
+    confidence_threshold: 0.65
+    aliases:
+    - participation prompt
+    - interaction cue
+    indicators:
+    - raise your hand
+    - type in the chat
+    - show of hands
+    - quick poll
+    - chat waterfall
+    - emoji reaction
+    - who can tell me
+    - turn to your partner
+    - everyone unmute
+    - thumbs up
+    patterns:
+    - raise (your|a) hand
+    - (type|put|drop) (in|into) the chat
+    - show of hands
+    - (quick|live) poll
+    - who (can|wants to) (tell|share|explain)
+    - turn to (your|a) (partner|neighbour)
+    color: '#e74c3c'
+    relates_to:
+    - target: virtual_platform_feature
+      relation: supported_by
+      weight: expected
+      description: Engagement cues are supported by virtual platform features including polls, chat waterfalls,
+        emoji reactions, and hand-raise mechanisms that deliver cues in VILT contexts
+    - target: presentation_anxiety_marker
+      relation: limits
+      weight: optional
+      description: Audience connection through engagement cues shifts focus outward reducing self-focused anxiety;
+        tuning into nods, smiles, and reactions replaces inward fear with dialogue
+    - target: kirkpatrick_level
+      relation: supported_by
+      weight: expected
+      description: Engagement cue effectiveness is evaluated through Kirkpatrick Level 1 (reaction/sentiment)
+        and Level 2 (learning/retention) measuring whether cues produced knowledge transfer
+      target_file: assessment_entities
+    - target: pause_marker
+      relation: precedes
+      weight: optional
+      description: Engagement cues precede intentional pauses; after posing a question or participation prompt
+        facilitators must allow longer silence for participants to unmute or type responses
+      target_file: performance_entities
+    - target: extraneous_load_marker
+      relation: limits
+      weight: optional
+      description: Frequent small engagement interactions every 5-10 minutes reset the attention clock and keep
+        learners mentally present, limiting extraneous cognitive load from monotony
+      target_file: cognitive_load_entities
+    - target: novice_learner
+      relation: supports
+      weight: optional
+      description: Chat-based and low-barrier engagement cues support novice and introverted learners who prefer
+        typing to speaking, ensuring inclusive participation in live sessions
+      target_file: audience_entities
+    - target: facilitation_technique
+      relation: supported_by
+      weight: expected
+      description: Engagement techniques for remote attention and interaction frequency every 3-5 minutes of content are supported
+        by specific facilitation techniques (Comprehensive Learning Design Framework)
+    - target: narrative_hook
+      relation: supported_by
+      weight: expected
+      description: Engagement cues are supported by narrative hooks which provide the compelling content that makes participation
+        prompts meaningful and contextually anchored per Crafting Powerful Opening Plays
+      target_file: narrative_entities
+    - target: audience_objection
+      relation: resolves
+      weight: expected
+      description: "Engagement cues resolve audience objections by surfacing them midway for respectful acknowledgement and real-time adjustment per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    - target: nonverbal_cue
+      relation: supported_by
+      weight: expected
+      description: "Engagement cues are supported by nonverbal cue reading including body language and facial expressions signalling engagement or disengagement per Comprehensive Audience Analysis"
+      target_file: performance_entities
+    - target: pause_marker
+      relation: supported_by
+      weight: expected
+      description: "Engagement cues are supported by strategic pauses which give the audience processing time to formulate responses after participation prompts per Elite Speaker Linguistic Analysis"
+      target_file: performance_entities
+    - target: inclusive_we
+      relation: supported_by
+      weight: optional
+      description: "Engagement cues are supported by inclusive we framing which creates shared ownership and makes participation prompts feel collaborative rather than directive per Elite Speaker Linguistic Analysis"
+      target_file: rhetorical_devices_entities
+    - target: engagement_dimension
+      relation: supports
+      weight: expected
+      description: "Vocal engagement cues — pitch variability >3.0 semitones SD, prosodic variation — directly support engagement scoring by keeping the listener's auditory cortex active through change detection per Unified Performance Framework"
+      target_file: scoring_entities
+    - target: rhetorical_question
+      relation: supported_by
+      weight: expected
+      description: "Engagement cues are supported by rhetorical questions which directly prompt audience mental participation per Analyzing Story for Business Communication"
+      target_file: rhetorical_devices_entities
+    - target: pathos_appeal
+      relation: supports
+      weight: expected
+      description: "Engagement cues support pathos appeal; Duchenne smiles create lower social distance and greater willingness to interact, directly serving the emotional connection that pathos requires per Anatomy of Presence research"
+      target_file: rhetorical_devices_entities
+    - target: emphasis_marker
+      relation: supported_by
+      weight: expected
+      description: "Engagement cues are supported by emphasis markers; pitch variability (>2-3 ST SD) and intensity variability are the acoustic hallmarks of charismatic, engaging speech per Vocal Profiling research"
+      target_file: performance_entities
+    - target: scenario_activity
+      relation: supported_by
+      weight: expected
+      description: "The fiction contract in SBT explicitly asks learners to engage with the scenario as if it were real, establishing emotional investment and engagement commitment per SBT guide"
+      target_file: activity_types_entities
+    - target: roleplay_activity
+      relation: supports
+      weight: expected
+      description: "Engagement cues support roleplay by establishing participation norms and emotional safety before interpersonal practice activities per roleplay research"
+      target_file: activity_types_entities
+    - target: audience_motivator
+      relation: supported_by
+      weight: expected
+      description: "Engagement cues must be calibrated to persona motivators: user-generated content for Gen Z, data-driven coaching cues for Sales Directors, credential signals for Marketers per Learner Persona Research"
+      target_file: audience_entities
+    - target: germane_load_marker
+      relation: triggers
+      weight: expected
+      description: "The 2-minute rule and verbal signposting re-engage audience attention and create active processing (germane load) per Slide Deck Design Playbook"
+      target_file: cognitive_load_entities
+    - target: animation_type
+      relation: supported_by
+      weight: optional
+      description: "Engagement cues in live delivery can be supported by purposeful animation types that direct audience attention per slide design research monograph"
+      target_file: visual_elements_entities
+    - target: instructional_event
+      relation: supports
+      weight: expected
+      description: "Engagement cues directly support Gagné's Event 1 (Gain Attention) and Event 6 (Elicit Performance) by prompting audience interaction through polls, questions, and participation activities per theory_gagne_s_nine_events_of_instruction"
+      target_file: pedagogical_frameworks_entities
+    - target: session_structure_marker
+      relation: supported_by
+      weight: expected
+      description: "Engagement cues are supported by session structure markers — strategic placement of interaction points every 10-20 minutes within the session structure maintains attention per ILT&VILT Best Practice"
+    - target: extraneous_load_marker
+      relation: resolves
+      weight: expected
+      description: "Engagement cues like varied modalities and frequent interaction resolve extraneous cognitive load by breaking monotony and resetting attention before overload occurs per ILT&VILT Best Practice"
+      target_file: cognitive_load_entities
+    - target: formative_assessment
+      relation: supports
+      weight: expected
+      description: "Engagement cues support formative assessment by providing real-time participation signals — poll responses, chat answers, and hand-raise patterns serve as informal knowledge checks per Corporate Learning Assessment research"
+      target_file: assessment_entities
+    - target: quiz_activity
+      relation: supported_by
+      weight: expected
+      description: "Engagement cues are supported by quiz activities including real-time polls, live quizzes, and embedded knowledge checks that maintain learner attention and participation (Best-Practice Learning Activities)"
+      target_file: activity_types_entities
+    - target: motivation_element
+      relation: supported_by
+      weight: expected
+      description: "Gamification elements (points, badges, leaderboards) serve as engagement cues that must balance entertainment with learning objectives per AI Microlearning Guide"
+      target_file: pedagogical_frameworks_entities
+    - target: interaction_element_marker
+      relation: supported_by
+      weight: expected
+      description: "Engagement cues during delivery are supported by interaction elements planned in content architecture; the 3-5 minute interaction frequency drives engagement cue timing per Comprehensive Learning Design Framework"
+      target_file: content_architecture_entities
+    - target: visionary_bundle
+      relation: supported_by
+      weight: expected
+      description: "Audience-centric visionary bundles ('I want to show you...', 'Let me tell you...') serve as engagement cues by directing attention and creating intimacy (Architecture of Influence, Section 1.3)"
+      target_file: rhetorical_devices_entities
+    - target: mayer_extraneous_principle
+      relation: supported_by
+      weight: expected
+      description: "Coherence-aligned engagement cues strip seductive details keeping interactions on-topic per Applying Mayer's Principles Practical Checklist"
+      target_file: cognitive_load_entities
+  session_structure_marker:
+    description: Structural elements of a live training session including openings, transitions, and closings
+    canonical_id: session_structure_marker
+    entity_kind: delivery_structure
+    family: session_management
+    gliner_label: SESSION_STRUCTURE
+    gliner_description: Session structure icebreaker warm-up agenda review break debrief recap closing action items next steps
+    examples:
+    - icebreaker activity
+    - agenda review
+    - comfort break
+    - mid-session debrief
+    - recap and review
+    - closing circle
+    - action items review
+    - next steps summary
+    anti_examples:
+    - ice cream
+    - session timeout
+    confidence_threshold: 0.7
+    aliases:
+    - session element
+    - class structure
+    indicators:
+    - icebreaker
+    - warm-up
+    - agenda
+    - break
+    - debrief
+    - recap
+    - closing
+    - action items
+    - next steps
+    - check-in
+    - check-out
+    - ground rules
+    - housekeeping
+    patterns:
+    - (icebreaker|warm[- ]up|check[- ]in|check[- ]out) (activity|exercise|round)
+    - (agenda|ground rules|housekeeping) review
+    - (comfort|bio|stretch) break
+    - (debrief|recap|closing|action items|next steps)
+    color: '#9b59b6'
+    relates_to:
+    - target: delivery_modality
+      relation: supported_by
+      weight: required
+      description: Session structure is dictated by delivery modality; ILT full-day sessions use physical
+        movement and lunch breaks while VILT must be shorter and segmented into 90-minute blocks
+    - target: presentation_anxiety_marker
+      relation: limits
+      weight: expected
+      description: Clear session structure with pre-presentation routines and venue familiarisation creates
+        predictability and control that reduces last-minute jitters and anxiety
+    - target: confidence_technique
+      relation: enables
+      weight: optional
+      description: Session structural elements like warm-up activities and agenda review create space for
+        confidence techniques such as grounding exercises and breathing before delivery
+    - target: pedagogical_sequence_marker
+      relation: enables
+      weight: expected
+      description: Session structure enables pedagogical sequencing with gate criteria preventing phase advancement;
+        Welcome-Module-Break-Review-Closing scaffolds the learning progression
+      target_file: content_architecture_entities
+    - target: formative_assessment
+      relation: contains
+      weight: expected
+      description: Session structure contains formative assessment points with knowledge checks, polls, and
+        recap quizzes embedded at transitions between structural segments
+      target_file: assessment_entities
+    - target: transition_marker
+      relation: bridges
+      weight: expected
+      description: Session structure markers bridge narrative transition markers; phase gates between SOAR stages
+        mark both structural and narrative boundaries in presentation flow
+      target_file: narrative_entities
+    - target: objective_stem
+      relation: precedes
+      weight: expected
+      description: Session opening and agenda segments precede learning objective statements; facilitators outline
+        what learners will achieve and how they will apply it on the job
+      target_file: learning_objectives_entities
+    - target: bluf_hook
+      relation: contains
+      weight: optional
+      description: Session structure contains BLUF (Bottom Line Up Front) hooks placed immediately after SCQA
+        setup to respect executive time and frame subsequent content as evidence
+      target_file: opening_hooks_entities
+    - target: soar_narrative_quality_marker
+      relation: supported_by
+      weight: expected
+      description: Session structure is governed by the SOAR framework (Situation-Opportunity-Approach-Results)
+        as the meta-structure with each phase mapping to a session stage
+      target_file: sales_entities
+    - target: mixed_audience
+      relation: supports
+      weight: expected
+      description: "Session structure supports mixed audiences with sections clearly labeled by audience segment per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    - target: monroe_sequence_marker
+      relation: supported_by
+      weight: expected
+      description: "MMS provides a complete session structure template — Attention as introduction, Need as problem framing, Satisfaction as content delivery, Visualization as reflection, Action as closing activity per Monroe's Motivated Sequence research"
+      target_file: rhetorical_devices_entities
+    - target: narrative_tension
+      relation: enables
+      weight: expected
+      description: "Session structure markers enable narrative tension by providing the structural framework (setup/confrontation/resolution) within which tension operates per Analyzing Story for Business Communication"
+      target_file: narrative_entities
+    - target: pause_marker
+      relation: contains
+      weight: expected
+      description: "Session structure markers contain pause types; TED talk analysis identifies Landing Pauses (after key points) and Transition Pauses (between sections) as structural markers that delineate session segments per Anatomy of Presence research"
+      target_file: performance_entities
+    - target: adult_learner
+      relation: supported_by
+      weight: expected
+      description: "Session structure must respect adult learner time constraints: micro-sessions for flow of work integration, compressed schedules for 4-day week structures per Learner Persona Research"
+      target_file: audience_entities
+    - target: scenario_activity
+      relation: supports
+      weight: required
+      description: "SBT delivery follows a three-phase session structure: pre-briefing (fiction contract, ground rules, scaffolding), scenario execution, and structured debriefing per SBT guide"
+      target_file: activity_types_entities
+    - target: roleplay_activity
+      relation: supports
+      weight: expected
+      description: "Session structure supports roleplay with pre-briefing (ground rules, safety), practice execution, and structured debrief phases per roleplay research"
+      target_file: activity_types_entities
+    - target: instructional_event
+      relation: supported_by
+      weight: expected
+      description: "Gagné's nine events map directly onto session structure phases: icebreakers gain attention, agenda reviews inform objectives, and closing activities enhance retention per theory_gagne_s_nine_events_of_instruction"
+      target_file: pedagogical_frameworks_entities
+    - target: pedagogical_sequence_marker
+      relation: supports
+      weight: required
+      description: "Session structure markers (module templates, agenda flows) directly support pedagogical sequencing — the Engage-Educate-Apply arc structures how learning progresses within sessions per ILT&VILT Best Practice"
+      target_file: content_architecture_entities
+    - target: content_structure_marker
+      relation: supported_by
+      weight: expected
+      description: "Session structure depends on content structure markers — modular section boundaries and heading hierarchies define the scaffolding within which session segments are organised per course structure hierarchy research"
+      target_file: content_architecture_entities
+    - target: engagement_cue
+      relation: contains
+      weight: expected
+      description: "Session structure includes planned re-engagement cues every 7-10 minutes through questions, stories, or visual resets per Slide Deck Design Playbook"
+  virtual_platform_feature:
+    description: Virtual meeting platform features used for instructional delivery
+    canonical_id: virtual_platform_feature
+    entity_kind: technology_element
+    family: virtual_delivery
+    gliner_label: VIRTUAL_PLATFORM
+    gliner_description: Virtual platform feature breakout room whiteboard screen share annotation recording waiting room lobby
+    examples:
+    - breakout rooms
+    - virtual whiteboard
+    - screen sharing
+    - annotation tools
+    - session recording
+    - waiting room
+    - hand raise feature
+    - live captioning
+    anti_examples:
+    - break room
+    - white board marker
+    confidence_threshold: 0.75
+    aliases:
+    - platform tool
+    - virtual feature
+    indicators:
+    - breakout room
+    - whiteboard
+    - screen share
+    - annotation
+    - recording
+    - waiting room
+    - hand raise
+    - live caption
+    - reactions
+    - spotlight
+    - co-host
+    - mute/unmute
+    patterns:
+    - breakout room
+    - (virtual|digital|shared) whiteboard
+    - screen shar(e|ing)
+    - (annotation|drawing) tool
+    - (session|meeting|class) recording
+    - (live|auto|closed) caption
+    color: '#f39c12'
+    relates_to:
+    - target: facilitation_technique
+      relation: enables
+      weight: expected
+      description: Virtual platform features enable facilitation techniques in online contexts; breakout rooms
+        enable small-group discussions, whiteboards enable brainstorming, annotations enable collaboration
+    - target: extraneous_load_marker
+      relation: triggers
+      weight: optional
+      description: Virtual platform features can trigger extraneous cognitive load when overused; too much
+        on-screen information and grid-of-faces fatigue create unique VILT cognitive strain
+      target_file: cognitive_load_entities
+    - target: missing_alt_indicator
+      relation: limits
+      weight: optional
+      description: Virtual platform features with closed captioning, screen reader support, and assistive
+        technology compatibility limit accessibility gaps when properly configured
+      target_file: accessibility_entities
+    - target: delivery_modality
+      relation: enables
+      weight: expected
+      description: VILT delivery mode is enabled by breakout rooms for small group work, digital whiteboards, collaboration
+        tools, and recording capability for review (Comprehensive Learning Design Framework)
+    - target: nonverbal_cue
+      relation: limits
+      weight: expected
+      description: "Virtual platforms limit nonverbal cue transmission; digital thin-slicing constrains presence to camera angle, background, lighting, and posture — eliminating haptic, olfactory, and proxemic channels per Anatomy of Presence research"
+      target_file: performance_entities
+    - target: ethos_appeal
+      relation: supports
+      weight: optional
+      description: "Virtual platform features support ethos appeal when optimised; camera angle looking up at the speaker simulates a power angle, and background/lighting function as digital attire for credibility signaling per Anatomy of Presence research"
+      target_file: rhetorical_devices_entities
+    - target: roleplay_activity
+      relation: enables
+      weight: expected
+      description: "Virtual platform features enable roleplay in VILT contexts through breakout rooms for paired practice and video for observation and feedback per roleplay research"
+      target_file: activity_types_entities
+    - target: presentation_anxiety_marker
+      relation: triggers
+      weight: optional
+      description: "Virtual platforms create catastrophic failure potential — audio dropouts, feedback loops, chaotic breakout groups — directly triggering presenter anxiety per Clark LxD"
+    - target: accessibility_feature
+      relation: enables
+      weight: expected
+      description: "Virtual platform features enable accessibility features — closed captioning, live transcripts, dial-in alternatives, and assistive technology support are platform-dependent capabilities per ILT&VILT Best Practice"
+      target_file: visual_elements_entities
+    - target: quiz_activity
+      relation: enables
+      weight: expected
+      description: "Virtual platform features enable quiz activities — built-in polling, embedded LMS quizzes, and gamified quiz platforms integrate directly with VILT sessions for real-time knowledge checks per Corporate Learning Assessment research"
+      target_file: activity_types_entities
+    - target: formative_assessment
+      relation: supports
+      weight: expected
+      description: "Virtual platform features support formative assessment through automated response collection, instant result aggregation, and learner analytics dashboards that enable real-time assessment during VILT delivery per Corporate Learning Assessment research"
+      target_file: assessment_entities
+    - target: microlearning_format
+      relation: supports
+      weight: expected
+      description: "LMS integration with SSO, content embedding, real-time progress sync, and platforms like EdApp/Axonify enable microlearning delivery features per AI Microlearning Guide"
+      target_file: content_format_entities
+  presentation_anxiety_marker:
+    description: Terms and indicators related to public speaking anxiety and nervousness management
+    canonical_id: presentation_anxiety_marker
+    entity_kind: psychological_state
+    family: presenter_wellbeing
+    gliner_label: ANXIETY_MARKER
+    gliner_description: Presentation anxiety stage fright nerves glossophobia butterflies fight-or-flight breathing technique
+      grounding
+    examples:
+    - stage fright
+    - presentation nerves
+    - glossophobia
+    - butterflies in stomach
+    - fight-or-flight response
+    - performance anxiety
+    - imposter syndrome
+    anti_examples:
+    - anxiety medication
+    - stage design
+    confidence_threshold: 0.7
+    aliases:
+    - stage fright
+    - speaking anxiety
+    - performance nerves
+    indicators:
+    - stage fright
+    - nerves
+    - glossophobia
+    - butterflies
+    - fight-or-flight
+    - performance anxiety
+    - imposter syndrome
+    - sweating
+    - trembling
+    - dry mouth
+    - blank mind
+    patterns:
+    - (stage|performance|presentation|public speaking) (fright|anxiety|nerves)
+    - (glossophobia|imposter syndrome)
+    - fight[- ]or[- ]flight
+    - (breathing|grounding|centering) (technique|exercise)
+    color: '#e67e22'
+    relates_to:
+    - target: confidence_technique
+      relation: supports
+      weight: required
+      description: Confidence techniques directly address presentation anxiety. Physical grounding, breathing exercises, and
+        positive visualization reduce anxiety markers (tremor, rushed speech, shallow breathing) and improve delivery quality.
+    - target: vocal_quality_issue
+      relation: triggers
+      weight: expected
+      description: Presentation anxiety triggers vocal quality degradation including trembling voice, shaky
+        delivery, and breathlessness through the fight-or-flight physiological response
+      target_file: performance_entities
+    - target: delivery_rate_issue
+      relation: triggers
+      weight: expected
+      description: Adrenaline from presentation anxiety makes speakers talk too fast; the stress-hormone
+        response directly triggers delivery rate issues and rushed pacing
+      target_file: performance_entities
+    - target: filler_word
+      relation: triggers
+      weight: expected
+      description: Presentation anxiety triggers filler word usage as speakers fumble, rush, and fill silence
+        with unnecessary words due to nervousness and fear of judgment
+      target_file: performance_entities
+    - target: hedge_marker
+      relation: triggers
+      weight: optional
+      description: Self-doubt and fear of judgment from presentation anxiety trigger hedging language and
+        tentative phrasing that undermines speaker authority and credibility
+      target_file: performance_entities
+    - target: nonverbal_cue
+      relation: triggers
+      weight: required
+      description: "Presentation anxiety triggers observable nonverbal leakage: self-adaptor rate >5.5/min, postural sway >3.25cm², and contractive posture (abduction <10 degrees) per Unified Performance Framework"
+      target_file: performance_entities
+    - target: engagement_cue
+      relation: limits
+      weight: optional
+      description: Anxious facilitators rush to fill silence after posing questions rather than allowing wait
+        time and may avoid interactive techniques, limiting learner participation
+    - target: virtual_platform_feature
+      relation: supported_by
+      weight: optional
+      description: Co-host and producer roles handling technical platform aspects reduce facilitator cognitive
+        burden, mitigating technology-related presentation anxiety during VILT delivery
+    - target: uptalk_indicator
+      relation: triggers
+      weight: expected
+      description: "Presentation anxiety triggers uptalk; upward inflection signals uncertainty and submission, which are direct manifestations of anxiety in vocal delivery per Anatomy of Presence research"
+      target_file: performance_entities
+    - target: audience_pain_point
+      relation: triggers
+      weight: optional
+      description: "Visible presentation anxiety creates audience pain points — nervous delivery undermines perceived credibility and makes audiences uncomfortable, reducing engagement and trust (Mastering Presentation Nerves)"
+      target_file: audience_entities
+  confidence_technique:
+    description: Methods and techniques for building presenter confidence and managing delivery anxiety
+    canonical_id: confidence_technique
+    entity_kind: delivery_method
+    family: presenter_wellbeing
+    gliner_label: CONFIDENCE_TECHNIQUE
+    gliner_description: Confidence technique power pose visualisation box breathing grounding rehearsal mental rehearsal anchoring
+    examples:
+    - power pose
+    - box breathing
+    - visualisation technique
+    - grounding exercise
+    - mental rehearsal
+    - anchoring technique
+    - progressive muscle relaxation
+    - positive self-talk
+    anti_examples:
+    - power outage
+    - box set
+    confidence_threshold: 0.7
+    aliases:
+    - anxiety management
+    - confidence builder
+    indicators:
+    - power pose
+    - box breathing
+    - visualisation
+    - grounding
+    - mental rehearsal
+    - anchoring
+    - progressive muscle relaxation
+    - positive self-talk
+    - centering
+    - diaphragmatic breathing
+    patterns:
+    - (power|confident) pose
+    - (box|diaphragmatic|deep) breathing
+    - (mental|physical|dress) rehearsal
+    - (grounding|centering|anchoring|visualisation) (exercise|technique)
+    color: '#27ae60'
+    relates_to:
+    - target: vocal_quality_issue
+      relation: resolves
+      weight: expected
+      description: Diaphragmatic breathing, progressive muscle relaxation, and pace control directly resolve
+        anxiety-driven vocal quality issues like trembling voice and breathlessness
+      target_file: performance_entities
+    - target: delivery_rate_issue
+      relation: resolves
+      weight: expected
+      description: Intentional pace slowing and strategic pause insertion as confidence techniques resolve
+        adrenaline-driven delivery rate issues and rushed speaking patterns
+      target_file: performance_entities
+    - target: nonverbal_cue
+      relation: enables
+      weight: expected
+      description: Power posing, upright posture, deliberate gestures, and eye contact as confidence techniques
+        enable effective nonverbal delivery that projects authority and engagement
+      target_file: performance_entities
+    - target: pause_marker
+      relation: enables
+      weight: expected
+      description: Confidence in pace control enables strategic pause use for emphasis and audience processing
+        rather than anxiety-driven rushing that eliminates natural pauses
+      target_file: performance_entities
+    - target: facilitation_technique
+      relation: enables
+      weight: optional
+      description: Facilitator composure and confidence underpin adaptability; mental rehearsal and grounding
+        prepare facilitators to manage difficult group dynamics effectively
+    - target: ethos_appeal
+      relation: enables
+      weight: expected
+      description: "Confidence techniques (power posing, physiological sigh, mental rehearsal) build the physical and vocal authority that directly enables ethos credibility per Ethos and Physicality research"
+      target_file: rhetorical_devices_entities
+    - target: presentation_anxiety_marker
+      relation: resolves
+      weight: expected
+      description: "Confidence techniques (grounding, breathing, visualisation) directly counteract and resolve presentation anxiety symptoms per Ethos and Physicality research"
+    - target: roleplay_activity
+      relation: supported_by
+      weight: expected
+      description: "Confidence techniques are supported by roleplay as a safe practice environment for building presenter confidence through repeated rehearsal per roleplay research"
+      target_file: activity_types_entities
+    - target: authority_opener
+      relation: enables
+      weight: optional
+      description: "Confidence techniques enable authority openers by establishing the vocal presence needed for authoritative opening statements per voice enhancements research"
+      target_file: performance_entities
+    - target: engagement_cue
+      relation: enables
+      weight: expected
+      description: "Confidence techniques enable engagement cues by shifting focus outward to audience reactions — making eye contact with individuals and reading nods and smiles rather than viewing the crowd as a monolith (Mastering Presentation Nerves)"
+    - target: virtual_platform_feature
+      relation: supported_by
+      weight: optional
+      description: "Confidence techniques include familiarising with venue logistics — testing microphones, projectors, clickers, and software in advance to reduce technical anxiety (Mastering Presentation Nerves)"
+    - target: pause_marker
+      relation: contains
+      weight: expected
+      description: "Confidence techniques include strategic pausing with higher silence ratios per voice metric research"
+      target_file: performance_entities
+    - target: boost_marker
+      relation: supports
+      weight: optional
+      description: "Vocal confidence techniques (resonant voice, balanced H1-H2) directly support boosting stance per spectral tilt research"
+      target_file: stance_markers_entities
+    - target: boost_marker
+      relation: enables
+      weight: expected
+      description: "Confidence techniques enable stance boosting through pressed phonation and controlled delivery per Voice Quality Metric Research"
+      target_file: stance_markers_entities
+quality_indicators:
+  positive:
+  - varied engagement techniques
+  - clear session structure
+  - appropriate pacing
+  - inclusive facilitation
+  - effective technology use
+  - responsive to learner needs
+  negative:
+  - lecture-only delivery
+  - no engagement prompts
+  - poor time management
+  - technology over-reliance
+  - inaccessible virtual setup
+  - no anxiety management support
+domain_keywords:
+  primary:
+  - facilitation
+  - ILT
+  - VILT
+  - instructor
+  - trainer
+  - classroom
+  - engagement
+  - delivery
+  - virtual
+  - in-person
+  - hybrid
+  secondary:
+  - icebreaker
+  - breakout
+  - polling
+  - Q and A
+  - pacing
+  - energy
+  - presence
+  - facilitation technique
+  - room dynamics
+  - check-in
+  - debrief

@@ -1,0 +1,479 @@
+_meta:
+  id: financial_services_reference
+  title: "Financial Services Vertical"
+  description: "Financial services industry configuration including sub-verticals (retail banking, wealth management, insurance, capital markets), compliance regulations, terminology, value propositions, and competitive landscape."
+  domain: sales
+  domain_type: cross_cutting
+  purpose: reference
+  version: "1.3.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Comprehensive Audience Analysis.md"
+    - "Corpus/Research/Research - Canonical Presentation Methodology Research.md"
+    - "Corpus/Research/The Universal Narrative Methodology: A Framework for Crafting and Improving Stories.md"
+
+
+vertical:
+  id: financial_services
+  name: "Financial Services"
+  aliases:
+    - FSI
+    - FinServ
+    - Banking
+    - Insurance
+    - Wealth Management
+    - Capital Markets
+
+# ==============================================================================
+# Sub-Verticals
+# ==============================================================================
+
+sub_verticals:
+  retail_banking:
+    name: "Retail Banking"
+    description: "Consumer and small business banking"
+    key_players:
+      - JPMorgan Chase
+      - Bank of America
+      - Wells Fargo
+      - Citibank
+      - US Bank
+    focus_areas:
+      - Digital banking transformation
+      - Customer acquisition and retention
+      - Branch experience modernisation
+      - Mobile-first engagement
+
+  wealth_management:
+    name: "Wealth Management & Private Banking"
+    description: "High-net-worth individual and family office services"
+    key_players:
+      - Morgan Stanley
+      - UBS
+      - Goldman Sachs
+      - Charles Schwab
+      - Fidelity
+    focus_areas:
+      - Client relationship management
+      - Personalised advice at scale
+      - Next-gen wealth transfer
+      - Digital client portals
+
+  insurance:
+    name: "Insurance"
+    description: "Life, P&C, and health insurance carriers"
+    key_players:
+      - State Farm
+      - Progressive
+      - Allstate
+      - MetLife
+      - Prudential
+    focus_areas:
+      - Claims experience modernisation
+      - Agent enablement
+      - Underwriting automation
+      - Customer retention
+
+  capital_markets:
+    name: "Capital Markets & Investment Banking"
+    description: "Trading, investment banking, asset management"
+    key_players:
+      - Goldman Sachs
+      - Morgan Stanley
+      - BlackRock
+      - Vanguard
+      - Citadel
+    focus_areas:
+      - Client onboarding
+      - Research distribution
+      - Trade communication
+      - Regulatory reporting
+
+# ==============================================================================
+# Industry Pain Points
+# ==============================================================================
+
+pain_points:
+  strategic:
+    - id: digital_transformation_lag
+      description: "Legacy systems preventing digital innovation"
+      severity: high
+      affected_personas: [cio, cmo, cto]
+      related_products: [AEM, AEP, RTCDP]
+
+    - id: customer_experience_gap
+      description: "Customer expectations outpacing service delivery"
+      severity: high
+      affected_personas: [cmo, vp_marketing]
+      related_products: [AJO, RTCDP, Target]
+
+    - id: trust_erosion
+      description: "Rebuilding customer trust post-crisis"
+      severity: medium
+      affected_personas: [cmo, cco]
+      related_products: [AEM, Analytics]
+
+  operational:
+    - id: compliance_burden
+      description: "Regulatory compliance consuming resources"
+      severity: critical
+      affected_personas: [cco, cmo, it_director]
+      related_products: [AEM, Workfront, GenStudio]
+
+    - id: content_velocity
+      description: "Slow content production for regulated communications"
+      severity: high
+      affected_personas: [director_content_strategy, cmo]
+      related_products: [GenStudio, AEM Assets, Workfront]
+
+    - id: channel_fragmentation
+      description: "Inconsistent experience across channels"
+      severity: high
+      affected_personas: [vp_marketing, director_marketing_ops]
+      related_products: [AJO, RTCDP, AEM]
+
+  technical:
+    - id: data_silos
+      description: "Customer data trapped in legacy systems"
+      severity: high
+      affected_personas: [cio, director_marketing_ops, director_analytics]
+      related_products: [RTCDP, AEP, CJA]
+
+    - id: legacy_integration
+      description: "Core banking system integration challenges"
+      severity: high
+      affected_personas: [cio, it_director]
+      related_products: [AEP, RTCDP]
+
+    - id: security_requirements
+      description: "Stringent security requirements for cloud adoption"
+      severity: critical
+      affected_personas: [cio, ciso]
+      related_products: [All - security positioning]
+
+# ==============================================================================
+# Compliance & Regulatory
+# ==============================================================================
+
+compliance:
+  regulations:
+    - id: sec_advertising
+      name: "SEC Advertising Rules"
+      description: "Investment adviser advertising regulations"
+      applies_to: [wealth_management, capital_markets]
+      content_impact:
+        - Performance claims require disclosures
+        - Testimonials have specific requirements
+        - Social media content restrictions
+      audit_requirements:
+        - Pre-approval workflows
+        - Archival for 5+ years
+        - Audit trail
+
+    - id: finra_guidelines
+      name: "FINRA Communications Rules"
+      description: "Broker-dealer communication requirements"
+      applies_to: [retail_banking, wealth_management]
+      content_impact:
+        - Retail vs institutional distinctions
+        - Suitability disclaimers
+        - Supervision requirements
+
+    - id: sox_compliance
+      name: "Sarbanes-Oxley (SOX)"
+      description: "Financial reporting and controls"
+      applies_to: [all]
+      content_impact:
+        - Access controls
+        - Change management
+        - Audit logging
+
+    - id: gdpr_ccpa
+      name: "GDPR / CCPA"
+      description: "Data privacy regulations"
+      applies_to: [all]
+      content_impact:
+        - Consent management
+        - Data subject rights
+        - Cross-border data transfer
+
+    - id: pci_dss
+      name: "PCI-DSS"
+      description: "Payment card data security"
+      applies_to: [retail_banking, insurance]
+      content_impact:
+        - Cardholder data handling
+        - Secure payment pages
+
+  required_disclosures:
+    - "Past performance is not indicative of future results"
+    - "Investments are subject to risk, including the possible loss of principal"
+    - "FDIC insured / Not FDIC insured (as applicable)"
+    - "Securities offered through [registered entity]"
+    - "Member SIPC"
+
+  approval_workflows:
+    typical_steps:
+      - Legal review
+      - Compliance review
+      - Brand review
+      - Final approval
+    average_cycle_time: "5-15 business days"
+    pain_point: "Slow time-to-market for campaigns"
+
+# ==============================================================================
+# Industry Terminology
+# ==============================================================================
+
+terminology:
+  business_terms:
+    AUM:
+      full_name: "Assets Under Management"
+      context: "Primary metric for wealth management"
+    NIM:
+      full_name: "Net Interest Margin"
+      context: "Key profitability metric for banks"
+    CLV:
+      full_name: "Customer Lifetime Value"
+      context: "Cross-sell and retention metric"
+    NPS:
+      full_name: "Net Promoter Score"
+      context: "Customer satisfaction metric"
+    KYC:
+      full_name: "Know Your Customer"
+      context: "Identity verification and onboarding"
+    AML:
+      full_name: "Anti-Money Laundering"
+      context: "Compliance and fraud prevention"
+
+  product_terms:
+    core_banking_system:
+      description: "Backend system managing accounts and transactions"
+      examples: ["Temenos", "FIS", "Fiserv", "Jack Henry"]
+    wealth_platform:
+      description: "Integrated platform for advisors"
+      examples: ["Envestnet", "Orion", "Black Diamond"]
+    policy_admin_system:
+      description: "Insurance policy management system"
+      examples: ["Guidewire", "Duck Creek", "Majesco"]
+
+  customer_journey_stages:
+    - Awareness
+    - Consideration
+    - Application
+    - Onboarding
+    - Active Usage
+    - Cross-sell / Upsell
+    - Retention
+    - Advocacy
+
+# ==============================================================================
+# Value Propositions by Sub-Vertical
+# ==============================================================================
+
+value_propositions:
+  retail_banking:
+    primary:
+      - headline: "Personalised banking at digital scale"
+        proof_point: "40% increase in digital product adoption"
+      - headline: "Reduce customer acquisition cost by 35%"
+        proof_point: "AI-powered targeting and journey orchestration"
+      - headline: "Branch-to-digital continuity"
+        proof_point: "Unified customer profile across all touchpoints"
+    differentiators:
+      - "Native integration with core banking systems"
+      - "Real-time decisioning for offers"
+      - "Compliance-first content governance"
+
+  wealth_management:
+    primary:
+      - headline: "Advisor productivity at scale"
+        proof_point: "Advisors serve 2x more clients with personalised content"
+      - headline: "Next-gen investor engagement"
+        proof_point: "85% of millennials prefer digital-first advisors"
+      - headline: "Compliant personalisation"
+        proof_point: "Pre-approved content with real-time customisation"
+    differentiators:
+      - "Client portal with AEM"
+      - "Advisor-branded content at scale"
+      - "SEC/FINRA-compliant workflows built-in"
+
+  insurance:
+    primary:
+      - headline: "Claims experience transformation"
+        proof_point: "50% reduction in claims cycle time"
+      - headline: "Agent enablement at scale"
+        proof_point: "Agents close 30% more policies with content support"
+      - headline: "Retention through engagement"
+        proof_point: "15% improvement in renewal rates"
+    differentiators:
+      - "Policyholder journey orchestration"
+      - "Claims communication automation"
+      - "Agent portal with personalised content"
+
+# ==============================================================================
+# Competitive Landscape
+# ==============================================================================
+
+competitive_landscape:
+  key_competitors:
+    - name: Salesforce
+      positioning: "CRM-centric with Marketing Cloud"
+      strengths:
+        - Strong CRM integration
+        - Financial Services Cloud
+        - Large ecosystem
+      weaknesses:
+        - Content creation gaps
+        - Complex pricing
+        - Integration overhead
+      adobe_advantage: "Unified content and data platform vs point solutions"
+
+    - name: Seismic
+      positioning: "Sales enablement focus"
+      strengths:
+        - Strong advisor enablement
+        - Content personalisation
+        - Compliance workflows
+      weaknesses:
+        - Limited customer experience scope
+        - Dependent on other stacks
+      adobe_advantage: "End-to-end content supply chain"
+
+    - name: Pega
+      positioning: "Decisioning and process automation"
+      strengths:
+        - Strong decisioning engine
+        - Process automation
+        - FSI-specific solutions
+      weaknesses:
+        - Weak content management
+        - Limited marketing capability
+      adobe_advantage: "Superior content creation and journey orchestration"
+
+  displacement_strategies:
+    from_point_solutions:
+      approach: "Consolidation value proposition"
+      key_messages:
+        - "Reduce vendor count and integration complexity"
+        - "Unified data model across marketing and experience"
+        - "Lower total cost of ownership"
+    from_legacy_platforms:
+      approach: "Modernisation value proposition"
+      key_messages:
+        - "Cloud-native, API-first architecture"
+        - "Continuous innovation without disruption"
+        - "Future-proof technology investment"
+
+# ==============================================================================
+# Success Stories & Proof Points
+# ==============================================================================
+
+success_stories:
+  - customer: "Major US Bank"
+    use_case: "Digital customer acquisition"
+    results:
+      - "35% increase in digital account openings"
+      - "50% reduction in time-to-market for campaigns"
+      - "3x improvement in cross-sell conversion"
+    products: [RTCDP, AJO, AEM]
+    quotable: true
+
+  - customer: "Global Wealth Manager"
+    use_case: "Advisor enablement and client engagement"
+    results:
+      - "2x advisor productivity"
+      - "90% reduction in compliance review time"
+      - "40% increase in client engagement"
+    products: [AEM, GenStudio, Workfront]
+    quotable: true
+
+  - customer: "Top 10 Insurance Carrier"
+    use_case: "Claims communication transformation"
+    results:
+      - "50% faster claims resolution"
+      - "NPS improved by 25 points"
+      - "30% reduction in call center volume"
+    products: [AJO, AEM, RTCDP]
+    quotable: true
+
+# ==============================================================================
+# Messaging Guidelines
+# ==============================================================================
+
+messaging:
+  tone:
+    - "Trust-focused"
+    - "Security-conscious"
+    - "Compliance-aware"
+    - "Customer-centric"
+    - "Innovation-balanced"
+
+  preferred_terms:
+    - "client (not customer for wealth)"
+    - "member (for credit unions)"
+    - "policyholder (for insurance)"
+    - "advisor (not rep or agent for wealth)"
+    - "compliant / governed"
+    - "secure / enterprise-grade"
+
+  avoid_terms:
+    - "disrupt (too aggressive for regulated industry)"
+    - 'revolutionary (prefer "evolutionary")'
+    - 'cutting-edge (prefer "proven")'
+    - "AI-generated (compliance concern)"
+    - "automated decisions (regulatory sensitivity)"
+
+  key_themes:
+    - Trust and security
+    - Regulatory compliance
+    - Customer/client experience
+    - Operational efficiency
+    - Digital transformation (evolutionary, not revolutionary)
+
+# ==============================================================================
+# SOAR NARRATIVE GUIDANCE — FINANCIAL SERVICES
+# Sources: Research - Canonical Presentation Methodology Research.md;
+#          The Universal Narrative Methodology.md
+# ==============================================================================
+
+soar_narrative_guidance:
+  description: "SOAR stage framing tailored to Financial Services audience expectations and regulatory context"
+
+  situation:
+    typical_opening_frames:
+      - "The financial services industry is navigating simultaneous pressure from digital-native challengers, evolving customer expectations, and increasing regulatory complexity."
+      - "Your customers expect Amazon-level personalisation from their bank — delivered with bank-level security and compliance."
+      - "The shift from product-led to relationship-led banking is accelerating, but most institutions lack the data infrastructure to support it."
+    data_anchors:
+      - "74% of retail banking customers would switch to a provider offering better digital experiences (Accenture 2023)"
+      - "Fintechs now hold 38% of personal lending market share in the US (McKinsey 2024)"
+
+  opportunity:
+    villain_frame: "The regulatory and technical complexity of legacy infrastructure — not a competitor product — is the primary villain in FSI narratives"
+    pain_vocabulary:
+      - "Siloed data across lines of business preventing 360-degree customer view"
+      - "Manual compliance reporting consuming analyst bandwidth"
+      - "Inability to personalise at scale due to fragmented MarTech stack"
+      - "Customer attrition driven by poor digital onboarding experience"
+    loss_aversion_frame: "Every quarter of delayed digital transformation is estimated at $X million in foregone wallet share to digital challengers"
+
+  action:
+    adobe_value_frame: "Adobe's Financial Services accelerator provides pre-built FINRA/SEC-compliant data schemas, consent management, and identity resolution designed for regulated industries"
+    differentiation_language:
+      - "Real-time customer profiles that unify data across branch, digital, call centre, and advisor touchpoints"
+      - "Adobe's Journey Optimizer with consent-first design — built for GDPR, CCPA, and sector-specific data residency"
+    champion_story: "The internal champion in FSI is typically the Chief Digital Officer or Head of Digital Experience — equip them with a compliance narrative, not just a capability narrative"
+
+  result:
+    proof_pattern: "Before: [Customer] was managing 14 data sources manually across 3 business units. After: Real-time unified profiles deployed in 4 months — campaign conversion improved 22%, compliance reporting time reduced 60%."
+    validated_outcome_types:
+      - "Customer retention improvement (measured in NPS or churn rate)"
+      - "Digital onboarding completion rate improvement"
+      - "Campaign personalisation lift (measured in conversion or revenue per customer)"
+      - "Compliance cost reduction (FTE hours or audit cost)"
+
+  audience_calibration:
+    economic_buyer: "CFO / CEO — frame in terms of revenue impact and cost reduction; use BLUF; no feature names"
+    technical_buyer: "CTO / Head of Architecture — frame in terms of data architecture, API-first, compliance certifications"
+    champion: "CDO / VP Digital — frame in terms of velocity to value, internal credibility, and career impact"

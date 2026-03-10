@@ -1,0 +1,1191 @@
+# ==============================================================================
+# DISCOURSE COHERENCE RUBRIC
+# Scoring rubric for discourse-level coherence in narrative content
+# Sources: PDL_ARCHITECTURE_NARRATIVE_DISCOURSE_SERIES.md, Research - AQE with LLMs via IBM PDL.md,
+#          Research - Argument Mining with MTL and PDL.md,
+#          Research - Researching Narrative and Discourse Analysis.md,
+#          discourse_markers_framework.yaml
+# Academic: Mann & Thompson (1988), Grosz & Sidner (1986), Halliday & Hasan (1976),
+#           Hobbs (1979), Wolf & Gibson (2005), Niklaus et al. (2023),
+#           Farzam et al. (2023), Deng et al. (2022), Liu et al. (2023)
+# ==============================================================================
+
+_meta:
+  id: discourse_coherence_rubric
+  title: "Discourse Coherence Rubric"
+  description: "Scoring rubric for discourse-level coherence covering transition quality, RST relation coverage, topic progression, information flow, and structural integrity"
+  domain: narrative
+  domain_type: cross_cutting
+  purpose: scoring
+  version: "1.1.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/PDL_ARCHITECTURE_NARRATIVE_DISCOURSE_SERIES.md"
+    - "Corpus/Research/Research - AQE with LLMs via IBM PDL.md"
+    - "Corpus/Research/Research - Argument Mining with MTL and PDL.md"
+    - "Corpus/Research/Research - Researching Narrative and Discourse Analysis.md"
+    - "Corpus/Research/Research - PDL for Discourse-Aware Text Simplification.md"
+  academic_sources:
+    - "Mann & Thompson (1988) - Rhetorical Structure Theory"
+    - "Grosz & Sidner (1986) - Attention, intentions, and the structure of discourse"
+    - "Halliday & Hasan (1976) - Cohesion in English"
+    - "Hobbs (1979) - Coherence and coreference"
+    - "Wolf & Gibson (2005) - Representing discourse coherence"
+    - "Niklaus et al. (2023) - Discourse-Aware Text Simplification"
+    - "Farzam et al. (2023) - Multi-Task Learning Improves Performance in Deep Argument Mining Models"
+    - "Deng et al. (2022) - Model Criticism for Long-Form Text Generation"
+    - "Liu et al. (2023) - Incorporating Distributions of Discourse Structure (RSTformer)"
+  relationships:
+    - target: ../entities/discourse_entities.yaml
+      type: depends_on
+      description: "Entity types for discourse marker extraction"
+    - target: ../methodology/discourse_markers_framework.yaml
+      type: derived_from
+      description: "Discourse marker taxonomy and RST framework"
+    - target: ../methodology/rst_framework.yaml
+      type: derived_from
+      description: "RST relation definitions informing coherence criteria"
+    - target: narrative_quality_rubric.yaml
+      type: related_to
+      description: "Discourse coherence supports narrative quality"
+    - target: rhetorical_effectiveness_rubric.yaml
+      type: related_to
+      description: "Rhetorical structure contributes to discourse coherence"
+
+# ==============================================================================
+# RUBRIC WEIGHTS
+# Proportional contribution of each dimension to overall coherence score
+# Grounded in: RST Discourse Treebank frequency distributions;
+#              RSTformer (Liu et al. 2023) architecture prioritising RST
+#              relation coverage; Model Criticism (Deng et al. 2022) finding
+#              Transformers struggle most with structural coherence and coreference
+# ==============================================================================
+
+rubric_weights:
+  transition_quality: 0.25    # Surface-level connective quality; highest weight because
+                               # discourse markers are the primary observable coherence signal
+  rst_coverage: 0.20          # RST relation variety and balance; reflects the full
+                               # rhetorical logic skeleton of the text (RSTformer research)
+  topic_progression: 0.20     # Topic continuity and controlled shift; Model Criticism
+                               # shows Transformers are strongest on topicality but weakest
+                               # on maintaining structural coherence across topic shifts
+  information_flow: 0.20      # Given-new contract and information density; grounded in
+                               # Halliday & Hasan (1976) cohesion theory
+  structural_integrity: 0.15  # Paragraph- and section-level hierarchical organisation;
+                               # lowest weight as it partially overlaps with RST coverage
+
+# ==============================================================================
+# SCORING DIMENSIONS
+# Each dimension uses a 1-5 scale:
+#   1 = Inadequate   (critical failures; coherence breaks down)
+#   2 = Developing   (frequent lapses; reader frequently loses thread)
+#   3 = Adequate     (functional; occasional lapses acceptable)
+#   4 = Proficient   (clear and well-organised; minor lapses only)
+#   5 = Exemplary    (expert-level; model-worthy coherence)
+# ==============================================================================
+
+dimensions:
+
+  # ----------------------------------------------------------------------------
+  # TRANSITION QUALITY
+  # Quality and variety of discourse connectives, explicit vs implicit transitions,
+  # logical flow markers. Grounded in: discourse_markers_framework.yaml;
+  # Niklaus et al. (2023) cue phrase taxonomy; RST Discourse Treebank.
+  # ----------------------------------------------------------------------------
+  transition_quality:
+    name: "Transition Quality"
+    description: >
+      Measures the quality, variety, and appropriateness of discourse connectives
+      (explicit markers such as 'however', 'therefore', 'moreover') and implicit
+      transitions (paragraph-boundary logic without surface markers). Covers
+      additive, adversative, causal, and temporal marker families. Excessive
+      reliance on a single marker type, overuse of 'but' or 'and', and abrupt
+      unmarked topic jumps all lower this score. Based on Niklaus et al. (2023)
+      cue phrase research and the discourse_markers_framework.yaml taxonomy.
+    score_levels:
+      1:
+        label: "Inadequate"
+        criteria:
+          - "Fewer than 1 transition marker per 5 sentences on average"
+          - "Markers are drawn exclusively from a single category (e.g., only additive)"
+          - "Logical gaps between sentences require the reader to infer multiple inferential steps"
+          - "Abrupt paragraph endings with no linking language to the next section"
+          - "Contradictory transitions (e.g., 'therefore' used where 'however' is required)"
+      2:
+        label: "Developing"
+        criteria:
+          - "Transitions present but dominated by a single marker (e.g., 'but' or 'and' overused)"
+          - "Mix of at most two marker families; adversative or causal family mostly absent"
+          - "Some sentences lack any bridge to the preceding or following content"
+          - "Implicit transitions occasionally succeed but frequently leave logical gaps"
+      3:
+        label: "Adequate"
+        criteria:
+          - "At least three marker families represented (additive, adversative, causal)"
+          - "Density roughly 1 explicit marker per 3–4 sentences"
+          - "Transitions are functionally correct even if inelegant"
+          - "Implicit transitions are clear enough that no inferential gap exceeds one step"
+          - "Temporal markers used in sequence-heavy sections"
+      4:
+        label: "Proficient"
+        criteria:
+          - "All four major marker families used appropriately (additive, adversative, causal, temporal)"
+          - "Transitions are varied; same marker not repeated within 3 consecutive sentences"
+          - "Implicit transitions are deliberate and semantically sufficient"
+          - "Formality of markers matches register (formal: 'nevertheless'; informal: 'but')"
+          - "Attribution markers used when sourcing claims"
+      5:
+        label: "Exemplary"
+        criteria:
+          - "Sophisticated blend of explicit and implicit transitions; no mechanical reliance on surface markers"
+          - "Marker choice enhances argument (e.g., 'nevertheless' signals persistence; 'consequently' signals inevitability)"
+          - "Concession markers (although, even though) used to pre-empt objections"
+          - "Zero contradictory or ambiguous marker usage (e.g., 'while' disambiguated appropriately)"
+          - "Transitions serve rhetorical purpose beyond mere logical connection"
+
+  # ----------------------------------------------------------------------------
+  # RST COVERAGE
+  # Coverage and balance of RST relations. Grounded in: Mann & Thompson (1988);
+  # Liu et al. (2023) RSTformer — demonstrating that discourse-relation distribution
+  # predicts summarisation quality; discourse_markers_framework.yaml frequency data.
+  # RST Discourse Treebank frequency baseline:
+  #   elaboration 25.65%, joint 23.78%, cause 13.42%, temporal 10.75%,
+  #   condition 8.34%, contrast 8.12%, background 5.14%, evaluation 4.80%
+  # ----------------------------------------------------------------------------
+  rst_coverage:
+    name: "RST Relation Coverage"
+    description: >
+      Measures how well the text deploys the full spectrum of Rhetorical Structure
+      Theory relations — both nucleus-satellite (elaboration, evidence, cause, purpose,
+      condition, concession, evaluation, background) and multinuclear (list, joint,
+      sequence, contrast). A coherent text does not rely solely on elaboration and
+      joint relations; it deploys causal, conditional, and contrastive relations to
+      build logical depth. Based on Mann & Thompson (1988) RST and the RSTformer
+      finding (Liu et al. 2023) that discourse distribution predicts text quality.
+    score_levels:
+      1:
+        label: "Inadequate"
+        criteria:
+          - "Only 1–2 relation types detected across the entire text"
+          - "Over-reliance on joint/elaboration (>80% of relations) with no causal or contrastive depth"
+          - "No nucleus-satellite asymmetry visible; all content treated as equal weight"
+          - "No evidence or background relations; claims float without support"
+      2:
+        label: "Developing"
+        criteria:
+          - "3 relation types present but imbalanced (e.g., elaboration 70%, cause 20%, one other)"
+          - "Causal relations present but chain depth rarely exceeds one step"
+          - "Contrast/concession relations absent or confined to a single instance"
+          - "Conditional relations entirely absent even where conditionals are expected"
+      3:
+        label: "Adequate"
+        criteria:
+          - "4–5 distinct RST relation types detected"
+          - "Elaboration and joint combined do not exceed 60% of all relations"
+          - "Cause and temporal relations both present and functionally correct"
+          - "At least one contrast or concession relation present"
+          - "Background relation used to contextualise at least one major claim"
+      4:
+        label: "Proficient"
+        criteria:
+          - "6+ distinct RST relation types present"
+          - "Elaboration/joint combined below 55%; cause/temporal/condition each ≥5%"
+          - "Contrast and concession relations used purposefully, not decoratively"
+          - "Evaluation relation present in at least one section (author assessment of claims)"
+          - "RST hierarchy visible: satellites correctly subordinate to nuclei"
+      5:
+        label: "Exemplary"
+        criteria:
+          - "7–8 RST relation types present in a naturally distributed pattern"
+          - "Distribution approximates RST Treebank baseline (elaboration ~25%, joint ~24%, cause ~13%)"
+          - "Multi-level RST hierarchy: satellites attach to nuclei with correct depth (e.g., elaboration of a cause)"
+          - "Purpose and condition relations used to express goal-oriented argument structure"
+          - "Evaluation relations signal authorial stance clearly and consistently"
+
+  # ----------------------------------------------------------------------------
+  # TOPIC PROGRESSION
+  # Topic continuity, controlled topic shifts, topic sentence presence, thematic
+  # progression patterns. Grounded in: Deng et al. (2022) Model Criticism finding
+  # that Transformers are relatively strong on topicality but fail on structural
+  # coherence across shifts; Danes (1974) thematic progression theory;
+  # PDL_ARCHITECTURE_NARRATIVE_DISCOURSE_SERIES.md coherence validation design.
+  # ----------------------------------------------------------------------------
+  topic_progression:
+    name: "Topic Progression"
+    description: >
+      Measures how topics are introduced, developed, and transitioned across
+      paragraphs and sections. Evaluates four progression patterns: linear
+      (T1→R1=T2→R2, where each comment becomes the next topic), constant
+      (T1→R1, T1→R2, multiple comments about one topic), derived (T→subtopics,
+      splitting a macro-topic into components), and split (T1→R1a+R1b, branching
+      commentary). Abrupt topic abandonment, missing topic sentences, and
+      unannounced thematic pivots all lower this score. Based on Model Criticism
+      latent coherence research (Deng et al. 2022) and Danes (1974) thematic
+      progression theory.
+    score_levels:
+      1:
+        label: "Inadequate"
+        criteria:
+          - "Topics shift without warning between consecutive sentences"
+          - "No detectable thematic progression pattern; content feels randomly ordered"
+          - "Topic sentences absent in the majority of paragraphs"
+          - "Previously introduced topics abandoned and never returned to"
+          - "Latent topic sequence would score high on HSMM Latent PPL (Deng et al. 2022)"
+      2:
+        label: "Developing"
+        criteria:
+          - "Topic shifts are partially signalled but inconsistently"
+          - "Only one progression pattern detectable (typically constant topic); variety absent"
+          - "Topic sentences present in fewer than half of paragraphs"
+          - "Some topic threads resume after interruption but without explicit bridging"
+      3:
+        label: "Adequate"
+        criteria:
+          - "Topic transitions are signalled in at least 70% of shift instances"
+          - "Two progression patterns evident (e.g., constant + linear)"
+          - "Topic sentences present in majority of paragraphs"
+          - "Thematic continuity maintained within each section even if cross-section links are weak"
+          - "No topic is abandoned mid-paragraph without resolution"
+      4:
+        label: "Proficient"
+        criteria:
+          - "All topic shifts explicitly announced or logically predictable from context"
+          - "At least three progression patterns used across the text"
+          - "Topic sentences in all paragraphs; each introduces or continues a clearly identifiable thread"
+          - "Derived progression used to decompose complex topics into manageable subtopics"
+          - "Macro-structure visible: reader can extract an outline without the original headings"
+      5:
+        label: "Exemplary"
+        criteria:
+          - "Topic progression is strategic: progression pattern chosen to serve rhetorical goal"
+          - "Linear progression used in causal argument chains; constant progression used for cumulative evidence"
+          - "Split progression used to address multiple audience segments or sub-arguments simultaneously"
+          - "Topics that span multiple sections are explicitly framed, resolved, and cross-referenced"
+          - "Latent topic sequence mirrors expected human-text distribution (low HSMM Latent PPL)"
+
+  # ----------------------------------------------------------------------------
+  # INFORMATION FLOW
+  # Given-new contract, information density balance, redundancy management, focus
+  # structure. Grounded in: Halliday & Hasan (1976) cohesion theory; Chafe (1976)
+  # given-new contract; Discourse-Aware Text Simplification — Niklaus et al. (2023)
+  # preserving semantic hierarchies to maintain context without density overload.
+  # ----------------------------------------------------------------------------
+  information_flow:
+    name: "Information Flow"
+    description: >
+      Measures adherence to the given-new contract (given information placed
+      sentence-initially as theme/topic, new information placed in rheme/comment
+      position at sentence end), information density (the ratio of new concepts
+      per sentence), and redundancy management (appropriate repetition for cohesion
+      vs. wasteful repetition that creates noise). Based on Halliday & Hasan (1976)
+      cohesion theory and Niklaus et al. (2023) Discourse-Aware Simplification,
+      which argues that complex sentences must decompose into linked minimal
+      propositions without losing their contextual relationships.
+    score_levels:
+      1:
+        label: "Inadequate"
+        criteria:
+          - "New information consistently placed in sentence-initial position, violating given-new contract"
+          - "Information density so high that each sentence introduces 4+ new concepts simultaneously"
+          - "No anaphoric bridging (pronouns, definite articles) to carry given information forward"
+          - "Either zero redundancy (reader cannot track entity continuity) or gross redundancy (same statement repeated verbatim)"
+          - "Coreference chains broken: pronouns lack resolvable antecedents"
+      2:
+        label: "Developing"
+        criteria:
+          - "Given-new contract followed inconsistently; new information fronted in ~30% of sentences"
+          - "Density spikes: some sentences pack 3–4 new concepts; subsequent sentences introduce none"
+          - "Anaphoric bridging present but inconsistent; some pronoun references are ambiguous"
+          - "Redundancy either absent or excessive; no calibrated use of strategic repetition"
+      3:
+        label: "Adequate"
+        criteria:
+          - "Given-new contract followed in majority (>65%) of sentences"
+          - "Information density averages 1–2 new concepts per sentence"
+          - "Definite articles and pronouns correctly signal given status in most cases"
+          - "Strategic repetition used at paragraph boundaries to reinforce key concepts"
+          - "Coreference chains are mostly resolvable with minimal inference"
+      4:
+        label: "Proficient"
+        criteria:
+          - "Given-new contract maintained consistently; deviations are deliberate (for emphasis)"
+          - "Density balanced: complex sentences decomposed into linked minimal propositions (Niklaus et al. 2023)"
+          - "Anaphoric bridging complete; all pronouns have unambiguous antecedents"
+          - "Redundancy used functionally: key terms reintroduced at section boundaries for cohesion"
+          - "Focus structure clearly distinguishes primary from secondary information within paragraphs"
+      5:
+        label: "Exemplary"
+        criteria:
+          - "Given-new contract deployed as a rhetorical tool: sentence rhythm mirrors argument momentum"
+          - "Information density precisely calibrated to audience expertise and section complexity"
+          - "Coreference chains maintained across section boundaries, not just paragraph boundaries"
+          - "Semantic hierarchy preserved when simplifying: linked propositions maintain parent-child context (Niklaus et al. 2023)"
+          - "No unnecessary redundancy; every repeated element serves a cohesive or emphatic function"
+
+  # ----------------------------------------------------------------------------
+  # STRUCTURAL INTEGRITY
+  # Paragraph-level and section-level coherence, hierarchical organisation,
+  # macro-structure. Grounded in: LitVISTA — PDL_ARCHITECTURE_NARRATIVE_DISCOURSE_SERIES.md
+  # which defines Impulse/Resonance/Pause axes of narrative structure; Grosz & Sidner
+  # (1986) discourse segmentation theory; Deng et al. (2022) HSMM structural coherence
+  # finding that Transformers fail at long-range structural coherence even when
+  # fluency is high.
+  # ----------------------------------------------------------------------------
+  structural_integrity:
+    name: "Structural Integrity"
+    description: >
+      Measures the hierarchical organisation of content at both paragraph (micro) and
+      section (macro) levels. A structurally coherent text has clear paragraph unity
+      (one main proposition per paragraph), section coherence (sub-sections serve the
+      parent section's thesis), and a discernible macro-structure that a reader could
+      reconstruct as an outline. Based on Grosz & Sidner (1986) discourse segmentation,
+      the LitVISTA VISTA Space framework (which decomposes narrative into Impulse,
+      Resonance, and Pause axes), and the HSMM structural coherence metric from
+      Model Criticism (Deng et al. 2022).
+    score_levels:
+      1:
+        label: "Inadequate"
+        criteria:
+          - "Paragraphs contain multiple unrelated propositions with no unifying topic"
+          - "Sections do not map to any identifiable macro-structure (no outline reconstructable)"
+          - "No distinction between main claims (nuclei) and supporting material (satellites)"
+          - "Section lengths wildly unbalanced: one section contains 90% of content"
+          - "Recursive nesting of ideas without resolution (Pause axes with no anchor Impulse)"
+      2:
+        label: "Developing"
+        criteria:
+          - "Some paragraphs have clear unity; others mix two or more distinct propositions"
+          - "Macro-structure partially visible but sections do not hierarchically support a central thesis"
+          - "Supporting material (Resonance/Pause) sometimes dominates over main claims (Impulse)"
+          - "Section breaks do not consistently correspond to topic or argument shifts"
+      3:
+        label: "Adequate"
+        criteria:
+          - "Majority of paragraphs contain one clearly identifiable main proposition"
+          - "Macro-structure detectable: introduction, development, and conclusion discernible"
+          - "Nucleus/satellite hierarchy present at paragraph level (claims distinguished from evidence)"
+          - "Section lengths reasonably balanced; no single section dominates without justification"
+          - "At least one level of hierarchical nesting visible (e.g., subpoints within a section)"
+      4:
+        label: "Proficient"
+        criteria:
+          - "Every paragraph has a clear topic sentence functioning as nucleus"
+          - "Macro-structure is explicit: headings or transition sentences announce section roles"
+          - "Impulse/Resonance/Pause balance visible: forward-moving propositions not buried in description"
+          - "Two-level hierarchy maintained throughout: section-level and paragraph-level structure both coherent"
+          - "No orphaned paragraphs that do not contribute to the macro-structure"
+      5:
+        label: "Exemplary"
+        criteria:
+          - "Three-level hierarchy consistently maintained: document → section → paragraph"
+          - "VISTA topology balanced: Impulse (plot-advancing claims), Resonance (elaboration/evidence), Pause (evaluation/introspection) in appropriate ratio for genre"
+          - "Structural coherence survives section removal: any section can be lifted and still reads as coherent"
+          - "Macro-structure mirrors expected genre conventions (e.g., argument → evidence → rebuttal → conclusion)"
+          - "HSMM latent state sequence would match human-text distribution (Deng et al. 2022)"
+
+# ==============================================================================
+# RST RELATIONS
+# Complete RST relation taxonomy with examples, scoring criteria, and frequency data
+# Sources: Mann & Thompson (1988); RST Discourse Treebank;
+#          discourse_markers_framework.yaml; Liu et al. (2023) RSTformer
+# ==============================================================================
+
+rst_relations:
+  description: >
+    RST relations are the rhetorical building blocks of coherent text. Each relation
+    links two or more Elementary Discourse Units (EDUs). Nucleus-satellite relations
+    have asymmetric weight (nucleus is essential; satellite is supporting). Multinuclear
+    relations join units of equal weight. Frequency data from RST Discourse Treebank.
+
+  nucleus_satellite:
+    elaboration:
+      definition: "Satellite provides specification, example, or detail about nucleus content"
+      frequency_baseline: "25.65%"
+      nucleus: "main claim or concept"
+      satellite: "supporting detail, example, or clarification"
+      scoring_criteria:
+        adequate: "Elaborations are factually relevant and proportionate to the nucleus"
+        proficient: "Elaborations use specific, vivid detail (named examples, statistics)"
+        exemplary: "Elaborations chain hierarchically (elaboration of an elaboration)"
+      example_markers: ["specifically", "for example", "namely", "that is", "in other words"]
+      over_use_threshold: 0.40  # If elaboration exceeds 40% of all relations, RST coverage score is capped at 3
+
+    evidence:
+      definition: "Satellite provides proof, data, or demonstration that supports nucleus claim"
+      frequency_baseline: "~4% (subset of elaboration in Treebank)"
+      nucleus: "claim requiring justification"
+      satellite: "research data, expert opinion, case instance"
+      evidence_types:
+        expert: "Attributed to authoritative person or institution (Guo et al. 2023 AQE taxonomy)"
+        research: "Objective data, statistical findings, formal studies"
+        case: "Specific historical instances, anecdotes, or precedents"
+        explanation: "Logical reasoning without external citation"
+      scoring_criteria:
+        adequate: "Evidence is factually relevant and correctly attributed"
+        exemplary: "Evidence type explicitly signals epistemological basis (Expert vs Research vs Case)"
+
+    cause:
+      definition: "Satellite provides reason, purpose, or enabling condition leading to nucleus result"
+      frequency_baseline: "13.42%"
+      nucleus: "result or consequence"
+      satellite: "reason, cause, or enabling condition"
+      scoring_criteria:
+        adequate: "Causal chain does not exceed one inferential step"
+        proficient: "Multi-step causal chains are clearly demarcated"
+        exemplary: "Causal chain connects to argument claim (Claim←Evidence←Cause hierarchy)"
+      example_markers: ["because", "since", "therefore", "consequently", "as a result"]
+
+    condition:
+      definition: "Satellite establishes prerequisite or constraint for nucleus content"
+      frequency_baseline: "8.34%"
+      nucleus: "main claim or action"
+      satellite: "prerequisite, constraint, or enabling assumption"
+      scoring_criteria:
+        adequate: "Conditions are clearly stated before their consequences"
+        exemplary: "Nested conditions handled without ambiguity (if A, then if B, then C)"
+      example_markers: ["if", "unless", "provided that", "assuming", "in case"]
+
+    concession:
+      definition: "Satellite acknowledges an opposing view that nucleus overrides or qualifies"
+      frequency_baseline: "~3% (subset of contrast)"
+      nucleus: "main argument or claim"
+      satellite: "acknowledged opposing point or limitation"
+      scoring_criteria:
+        adequate: "Concession is genuine, not token"
+        exemplary: "Concession pre-empts reader objection (Farzam et al. 2023 argument quality)"
+      example_markers: ["although", "even though", "while", "despite", "nonetheless"]
+
+    background:
+      definition: "Satellite provides contextual information that increases nucleus comprehensibility"
+      frequency_baseline: "5.14%"
+      nucleus: "main content requiring context"
+      satellite: "historical, situational, or prerequisite context"
+      scoring_criteria:
+        adequate: "Background is brief and does not overwhelm the nucleus"
+        exemplary: "Background is integrated so that removing it would reduce nucleus comprehension"
+      example_markers: ["before X happened", "originally", "historically", "in the past"]
+
+    evaluation:
+      definition: "Satellite provides author's assessment or judgment of nucleus content"
+      frequency_baseline: "4.80%"
+      nucleus: "fact, claim, or action being evaluated"
+      satellite: "author's normative judgment or assessment"
+      scoring_criteria:
+        adequate: "Evaluation is clearly distinguishable from the factual nucleus"
+        exemplary: "Evaluation signals authorial stance and guides reader interpretation"
+      example_markers: ["importantly", "notably", "significantly", "this is critical because"]
+
+    purpose:
+      definition: "Satellite describes the intended goal or desired outcome of nucleus action"
+      frequency_baseline: "~3%"
+      nucleus: "action or process"
+      satellite: "intended goal or purpose"
+      scoring_criteria:
+        adequate: "Purpose is stated in terms relevant to the audience"
+        exemplary: "Purpose links back to the macro-level argument claim"
+      example_markers: ["in order to", "so that", "to achieve", "with the goal of"]
+
+    attribution:
+      definition: "Satellite identifies the source or author of the information stated in the nucleus (reported speech, cited claims)"
+      frequency_baseline: "9.97%"
+      nucleus: "the attributed claim or statement"
+      satellite: "the source, speaker, or author"
+      scoring_criteria:
+        adequate: "Attribution markers are correctly assigned to sourced claims; no orphaned attributed content"
+        exemplary: "Every empirical or expert claim is explicitly attributed; attribution type (Expert/Research/Case) is distinguishable from the marker"
+      example_markers: ["according to", "reported that", "stated that", "claims that", "as noted by", "X said"]
+      false_positive_risk: >
+        Attribution can be confused with Elaboration when the satellite describes content rather than source.
+        Check: is the satellite a person/institution (Attribution) or a content expansion (Elaboration)?
+      source: "Niklaus et al. (2023) - Discourse-Aware Text Simplification; Section 2.3"
+
+    same_unit:
+      definition: "A single logical proposition is interrupted by an embedded clause; disjointed parts must be read as a unified unit"
+      frequency_baseline: "9.32%"
+      structure: "nucleus-satellite wrapping an interrupting embedded clause"
+      scoring_criteria:
+        adequate: "Embedded interruption does not obscure the main proposition's subject-verb relationship"
+        anti_pattern: "Deeply nested same-unit constructs that create ambiguity about which clause is the main proposition"
+      example_structures: ["Subject — embedded clause — predicate", "Noun phrase, appositive insert, continues main clause"]
+      scoring_implication: >
+        Texts with frequent unresolved same-unit interruptions impose high extraneous load. The reader
+        must hold the incomplete subject in working memory while processing the inserted clause.
+        Flag as a structural_integrity concern when 3+ same-unit interruptions appear in a single paragraph.
+      source: "Niklaus et al. (2023) - Discourse-Aware Text Simplification; Section 2.3"
+
+  multinuclear:
+    joint:
+      definition: "Two or more nuclei of equal weight linked without explicit hierarchy"
+      frequency_baseline: "23.78%"
+      structure: "dual or multi-nuclei (no satellite)"
+      scoring_criteria:
+        adequate: "Joined units are genuinely parallel in type and weight"
+        over_use_threshold: 0.35  # If joint exceeds 35% of all relations, structural integrity score is capped at 3
+      example_markers: ["and", "also", "furthermore", "moreover", "additionally"]
+
+    sequence:
+      definition: "Nuclei linked in ordered temporal or logical series"
+      frequency_baseline: "~6% (subset of temporal)"
+      structure: "ordered multi-nuclei"
+      scoring_criteria:
+        adequate: "Sequence markers make order unambiguous"
+        exemplary: "Sequence reflects causal or logical dependency, not just temporal order"
+      example_markers: ["first", "then", "next", "finally", "subsequently"]
+
+    contrast:
+      definition: "Two nuclei present opposing, contradictory, or surprising relationship"
+      frequency_baseline: "8.12%"
+      structure: "typically dual nuclei of equal rhetorical weight"
+      scoring_criteria:
+        adequate: "Contrast is genuine (not artificial)"
+        exemplary: "Contrast serves a rhetorical function (trade-off, misconception correction)"
+      example_markers: ["but", "however", "on the other hand", "in contrast", "whereas"]
+
+    list:
+      definition: "Series of nuclei with no explicit ordering or priority"
+      frequency_baseline: "~4%"
+      structure: "unordered multi-nuclei"
+      scoring_criteria:
+        adequate: "List items are genuinely parallel"
+        anti_pattern: "List used where sequence or hierarchy would be more appropriate"
+      example_markers: ["•", "-", ":", ":", ":"]
+
+# ==============================================================================
+# DISCOURSE MARKERS
+# Classification with effectiveness ratings and overuse thresholds
+# Sources: discourse_markers_framework.yaml; Niklaus et al. (2023)
+# ==============================================================================
+
+discourse_markers:
+  description: >
+    Discourse markers (connectives and cue phrases) are the surface-level signals
+    of underlying RST relations. Effectiveness ratings reflect how clearly each
+    marker signals its intended relation. Overuse thresholds flag mechanical
+    repetition. Ambiguous markers require contextual disambiguation.
+
+  additive:
+    description: "Markers signalling joint or elaboration relations (additive information)"
+    high_effectiveness:
+      - marker: "moreover"
+        signals: "joint / elaboration"
+        register: "formal"
+        overuse_threshold: 3  # Maximum occurrences per 1000 words before penalty applies
+      - marker: "furthermore"
+        signals: "joint / elaboration"
+        register: "formal"
+        overuse_threshold: 3
+      - marker: "additionally"
+        signals: "joint"
+        register: "formal"
+        overuse_threshold: 4
+    moderate_effectiveness:
+      - marker: "also"
+        signals: "joint"
+        register: "neutral"
+        overuse_threshold: 6
+      - marker: "in addition"
+        signals: "joint"
+        register: "formal"
+        overuse_threshold: 4
+    low_effectiveness:
+      - marker: "and"
+        signals: "joint"
+        register: "informal"
+        overuse_threshold: null  # Coordinate conjunction; overuse tracked differently
+        note: "Sentence-initial 'and' as a paragraph opener indicates low transition sophistication"
+
+  adversative:
+    description: "Markers signalling contrast or concession relations"
+    high_effectiveness:
+      - marker: "nevertheless"
+        signals: "contrast / concession"
+        register: "formal"
+        overuse_threshold: 2
+      - marker: "nonetheless"
+        signals: "contrast / concession"
+        register: "formal"
+        overuse_threshold: 2
+      - marker: "whereas"
+        signals: "contrast"
+        register: "formal"
+        overuse_threshold: 3
+      - marker: "conversely"
+        signals: "contrast"
+        register: "formal"
+        overuse_threshold: 2
+    moderate_effectiveness:
+      - marker: "however"
+        signals: "contrast"
+        register: "formal"
+        overuse_threshold: 4
+      - marker: "on the other hand"
+        signals: "contrast"
+        register: "neutral"
+        overuse_threshold: 3
+      - marker: "although"
+        signals: "concession"
+        register: "neutral"
+        overuse_threshold: 4
+    low_effectiveness:
+      - marker: "but"
+        signals: "contrast"
+        register: "informal"
+        overuse_threshold: 5
+        note: "Sentence-initial 'but' as a paragraph opener indicates low transition sophistication"
+    ambiguous:
+      - marker: "while"
+        signals_temporal: "temporal / simultaneous"
+        signals_adversative: "contrast"
+        disambiguation: "Check for opposing proposition; if absent, temporal reading applies"
+
+  causal:
+    description: "Markers signalling cause, consequence, or purpose relations"
+    high_effectiveness:
+      - marker: "consequently"
+        signals: "cause (effect side)"
+        register: "formal"
+        overuse_threshold: 3
+      - marker: "therefore"
+        signals: "cause (logical conclusion)"
+        register: "formal"
+        overuse_threshold: 4
+      - marker: "thus"
+        signals: "cause (logical conclusion)"
+        register: "formal"
+        overuse_threshold: 3
+      - marker: "given that"
+        signals: "cause (evidential)"
+        register: "formal"
+        overuse_threshold: 3
+    moderate_effectiveness:
+      - marker: "because"
+        signals: "cause (reason)"
+        register: "neutral"
+        overuse_threshold: 5
+      - marker: "as a result"
+        signals: "cause (effect)"
+        register: "neutral"
+        overuse_threshold: 4
+      - marker: "due to"
+        signals: "cause (nominalised)"
+        register: "formal"
+        overuse_threshold: 4
+    ambiguous:
+      - marker: "since"
+        signals_causal: "cause (reason)"
+        signals_temporal: "temporal (from point in time)"
+        disambiguation: "If followed by a time expression, temporal; otherwise causal"
+      - marker: "as"
+        signals_causal: "cause"
+        signals_temporal: "temporal"
+        signals_manner: "manner"
+        disambiguation: "Highly context-dependent; avoid in formal instruction"
+
+  temporal:
+    description: "Markers signalling sequence, simultaneity, or temporal relations"
+    sequence:
+      - marker: "subsequently"
+        signals: "temporal (posterior)"
+        register: "formal"
+        overuse_threshold: 3
+      - marker: "thereafter"
+        signals: "temporal (posterior)"
+        register: "formal"
+        overuse_threshold: 2
+      - marker: "then"
+        signals: "temporal (posterior)"
+        register: "neutral"
+        overuse_threshold: 6
+      - marker: "finally"
+        signals: "temporal (terminal)"
+        register: "neutral"
+        overuse_threshold: 3
+    simultaneity:
+      - marker: "meanwhile"
+        signals: "temporal (concurrent)"
+        register: "neutral"
+        overuse_threshold: 3
+      - marker: "during"
+        signals: "temporal (concurrent, nominalised)"
+        register: "formal"
+        overuse_threshold: 5
+
+# ==============================================================================
+# TOPIC PROGRESSION TYPES
+# Thematic progression patterns with detection heuristics
+# Source: Danes (1974) thematic progression theory; Deng et al. (2022)
+#         Model Criticism — HSMM latent state analysis
+# ==============================================================================
+
+topic_progression_types:
+  description: >
+    Thematic progression describes how topics (themes) and comments (rhemes)
+    chain across sentences and paragraphs. Danes (1974) identified four primary
+    patterns. Model Criticism research (Deng et al. 2022) operationalises this
+    through HSMM latent state sequences.
+
+  linear:
+    pattern: "T1→R1=T2→R2 (each comment becomes the next topic)"
+    description: "The rheme (new information) of one sentence becomes the theme (given information) of the next"
+    typical_use: "Causal argument chains, step-by-step narratives, logical derivations"
+    detection_heuristic: "End-of-sentence noun phrase reappears as subject of next sentence"
+    coherence_strength: "High — creates tight logical progression"
+    risk: "Can feel mechanical if sustained for more than 4–5 sentences without variation"
+    example: "We identified the bottleneck [R1]. The bottleneck [T2] lay in approval workflows [R2]. Those workflows [T3] required three sign-offs [R3]."
+
+  constant:
+    pattern: "T1→R1, T1→R2, T1→R3 (multiple comments about one topic)"
+    description: "A single topic is elaborated by a series of comments without replacement"
+    typical_use: "Feature enumeration, profile descriptions, multi-attribute explanations"
+    detection_heuristic: "Same subject (or pronoun reference) recurs across 3+ consecutive sentences"
+    coherence_strength: "Medium — builds detail but risks monotony without variation"
+    risk: "Becomes a list; use sequence or joint RST relations explicitly"
+    example: "Our platform integrates with Salesforce [R1]. It supports GDPR compliance [R2]. It offers 24/7 uptime [R3]."
+
+  derived:
+    pattern: "T→subtopics (macro-topic split into subordinate components)"
+    description: "A higher-level topic is announced and then decomposed into sub-topics across paragraphs or sections"
+    typical_use: "Section-level structure in long documents, argument decomposition"
+    detection_heuristic: "Introductory paragraph announces N components; subsequent paragraphs each address one component"
+    coherence_strength: "High — provides clear hierarchical navigation"
+    risk: "Sub-topics must remain visibly connected to the announced macro-topic"
+    example: "Three factors drove success: speed, quality, and cost. Speed was achieved by... Quality was maintained through... Cost was controlled via..."
+
+  split:
+    pattern: "T1→R1a+R1b (branching commentary on a single topic)"
+    description: "A single topic spawns two or more parallel comment streams"
+    typical_use: "Addressing multiple audience segments, contrasting scenarios, parallel argument branches"
+    detection_heuristic: "Two or more sentences follow a common topic with no connection to each other"
+    coherence_strength: "Medium — requires explicit parallel structure to avoid reader confusion"
+    risk: "Can appear incoherent if branching is not explicitly signalled"
+    example: "The acquisition affected both teams differently: the engineering team gained new tooling, while the sales team faced retraining requirements."
+
+# ==============================================================================
+# GIVEN-NEW CONTRACT
+# Information structure principles grounded in Halliday & Hasan (1976) and Chafe (1976)
+# ==============================================================================
+
+given_new_contract:
+  description: >
+    The given-new contract is a fundamental principle of information structure:
+    given (shared/known) information belongs in sentence-initial (theme) position;
+    new (unknown/focus) information belongs in sentence-final (rheme) position.
+    Violating this contract forces the reader to process unexpected information
+    before they have the contextual frame to understand it.
+  principle: "Given information first; new information last"
+  given_signals:
+    - "Definite article ('the') — signals referent is already known"
+    - "Pronouns ('it', 'they', 'this') — signals antecedent was established"
+    - "Demonstratives ('this approach', 'that result') — signals recent mention"
+    - "Repeated noun phrase — signals continuity of topic"
+  new_signals:
+    - "Indefinite article ('a', 'an') — signals first introduction of referent"
+    - "Existential construction ('there is a...') — signals new entity introduction"
+    - "Focus particle ('even', 'only', 'also') — marks information as contrastively new"
+  scoring_implications:
+    score_1: "Given-new order violated in majority of sentences"
+    score_3: "Given-new order maintained in majority but not all sentences"
+    score_5: "Given-new order maintained consistently; deliberate violations used only for emphasis"
+  information_density_targets:
+    target_new_concepts_per_sentence: 1.5  # Average; burst permitted in technical sections
+    max_burst: 3                            # No sentence should introduce more than 3 genuinely new concepts
+
+# ==============================================================================
+# COHERENCE VS COHESION DISTINCTION
+# Conceptual clarification for rubric application
+# Sources: Halliday & Hasan (1976); Hobbs (1979); Wolf & Gibson (2005)
+# ==============================================================================
+
+coherence_relations_vs_cohesion:
+  description: >
+    Coherence and cohesion are related but distinct properties of discourse.
+    This rubric primarily evaluates coherence (semantic/logical relations between
+    propositions) but uses cohesion (surface-level linguistic links) as a proxy
+    signal where direct coherence assessment is difficult.
+
+  coherence:
+    definition: "The underlying semantic and logical relationships between propositions that make a text interpretable as a unified whole"
+    source: "Hobbs (1979); Wolf & Gibson (2005)"
+    evaluation_method: "Assessed via RST relation detection, topic progression tracking, and logical gap analysis"
+    not_visible_at_surface: true
+    examples:
+      - "A causal relationship between two sentences even without an explicit causal marker"
+      - "A conditional relationship implicit in the rhetorical context"
+
+  cohesion:
+    definition: "Surface-level linguistic devices that signal relationships between text elements without determining coherence independently"
+    source: "Halliday & Hasan (1976)"
+    evaluation_method: "Assessed via discourse marker presence, pronoun resolution, and lexical repetition"
+    visible_at_surface: true
+    cohesion_types:
+      reference: "Pronouns and definite articles linking to prior mentions"
+      substitution: "Pro-forms replacing full noun phrases ('the former', 'the latter')"
+      ellipsis: "Omission of elements recoverable from context"
+      conjunction: "Discourse markers linking clauses and sentences"
+      lexical_cohesion: "Repetition, synonymy, antonymy, and collocation"
+
+  scoring_implication: >
+    A text can be cohesive (many markers) but not coherent (markers misapplied or
+    relations logically incoherent). Equally, a text can be coherent (logically sound)
+    but not cohesive (few surface markers). This rubric penalises both over-signalling
+    (cohesive noise) and under-signalling (implicit incoherence).
+
+# ==============================================================================
+# ARGUMENT STRUCTURE
+# Claim-premise-evidence chains grounded in argument mining research
+# Sources: Farzam et al. (2023); Guo et al. (2023) AQE; MTL Argument Mining research
+# ==============================================================================
+
+argument_structure:
+  description: >
+    Discourse coherence in argumentative texts depends on well-formed argument
+    chains. Each major claim should be supported by premises; each premise should
+    be grounded in evidence. Based on Farzam et al. (2023) Multi-Task Learning
+    argument mining research and Guo et al. (2023) Argument Quadruplet Extraction.
+
+  claim_premise_chain:
+    major_claim: "The central thesis or standpoint of the text (one per section)"
+    claim: "A sub-thesis or intermediate conclusion supporting the major claim"
+    premise: "A reason or fact used to justify a claim"
+    evidence: "Specific data, example, or citation grounding a premise"
+    relation_types:
+      support: "Premise or evidence increases the acceptability of the linked claim"
+      attack: "Premise or evidence reduces the acceptability of the linked claim (for rebuttal)"
+
+  argument_quadruplet:
+    description: "Based on Guo et al. (2023) AQE: each complete argument has four components"
+    components:
+      claim: "The disputable statement being advanced"
+      evidence: "The textual span providing justification (verbatim or paraphrase)"
+      evidence_type: "Expert | Research | Case | Explanation (epistemological classification)"
+      stance: "Support | Contest — the orientation of the claim toward the topic"
+    coherence_implication: >
+      Orphaned claims (claims without evidence) lower discourse coherence because
+      they create logical gaps. Unsupported premises also break the causal/evidential
+      RST chain. This rubric's rst_coverage and information_flow dimensions both
+      penalise orphaned claims.
+
+  quality_signals:
+    strong_argument: "Claim + Research evidence + explicit causal RST relation"
+    adequate_argument: "Claim + Explanation evidence + implicit causal relation"
+    weak_argument: "Claim only (orphaned) OR evidence without a resolvable claim"
+
+# ==============================================================================
+# COREFERENCE CHAINS
+# Referential coherence and entity continuity across paragraphs
+# Sources: Hobbs (1979); PDL_ARCHITECTURE_NARRATIVE_DISCOURSE_SERIES.md
+#          (01_coreference_resolution.pdl design); Deng et al. (2022) Model Criticism
+#          — finding Transformers perform poorly on coreference coherence
+# ==============================================================================
+
+coreference_chains:
+  description: >
+    Referential coherence tracks how entities (people, organisations, concepts,
+    products) are introduced and consistently referred to across paragraph and
+    section boundaries. Broken coreference chains force readers to perform costly
+    inferential work to reconnect pronoun to antecedent. Model Criticism (Deng et al.
+    2022) identifies coreference as the dimension where Transformers perform worst,
+    even when fluency is high. The PDL architecture (PDL_ARCHITECTURE_NARRATIVE_DISCOURSE_SERIES.md)
+    dedicates a full foundational PDL (01_coreference_resolution.pdl) to this task.
+
+  introduction_conventions:
+    first_mention: "Indefinite article or full proper noun; provide role/context on first mention"
+    second_mention: "Definite article or shortened form if unambiguous"
+    subsequent_mentions: "Pronoun or demonstrative only if antecedent is in the immediately preceding sentence"
+    cross_section_mention: "Reintroduce with partial name or role title when an entity recurs after a section break"
+
+  chain_integrity_checks:
+    pronoun_resolution: "Every 'it', 'they', 'this', 'that' must have a resolvable antecedent within 3 sentences"
+    entity_continuity: "Named entities do not change designation within a section (e.g., 'the platform' → 'the tool' → 'the system' for the same referent)"
+    bridging_inference: "Bridging references (e.g., 'the CEO' after mentioning a company) require no more than one inferential step"
+
+  scoring_implications:
+    score_1: "Pronouns frequently unresolvable; entity designations inconsistent; chains broken"
+    score_3: "Chains intact within paragraphs; cross-paragraph coreference occasionally unclear"
+    score_5: "Chains maintained across section boundaries; entity re-introduction managed explicitly"
+
+# ==============================================================================
+# ANTI-PATTERNS
+# Common discourse coherence failure modes with detection signals
+# ==============================================================================
+
+anti_patterns:
+
+  abrupt_topic_shift:
+    description: "Topic changes without any transitional language or logical bridge"
+    detection: "Sentence N and Sentence N+1 share no common entities, concepts, or RST relations"
+    severity: "high"
+    penalty_reference: "abrupt_topic_shift"
+    fix: "Insert a transitional sentence that names the new topic and explicitly connects it to the preceding content"
+
+  missing_transitions:
+    description: "Logical relationship between adjacent sentences is entirely unmarked and non-obvious"
+    detection: "Reader must supply more than one inferential step to connect consecutive sentences"
+    severity: "high"
+    penalty_reference: "missing_transitions"
+    fix: "Add an explicit discourse marker or reformulate the sentence to make the relation visible"
+
+  over_signalling:
+    description: "Excessive use of discourse markers where implicit relations are already clear"
+    detection: "Three or more discourse markers in a single sentence; marker density >1 per sentence on average"
+    severity: "medium"
+    penalty_reference: "over_signalling"
+    fix: "Remove redundant markers; trust the reader where the relation is semantically obvious"
+
+  dangling_reference:
+    description: "A pronoun or demonstrative whose antecedent cannot be resolved within context"
+    detection: "'It', 'they', 'this', 'that' with no clear referent within preceding 3 sentences"
+    severity: "high"
+    penalty_reference: "dangling_reference"
+    fix: "Replace pronoun with explicit noun phrase or restructure to place antecedent closer"
+
+  logical_gap:
+    description: "A conclusion is stated without the premises required to justify it"
+    detection: "Causal or evidential RST relation expected but satellite (evidence/reason) is absent"
+    severity: "high"
+    penalty_reference: "logical_gap"
+    fix: "Insert the missing premise or evidence; alternatively, use a concession marker to acknowledge the gap"
+
+  paragraph_island:
+    description: "A paragraph that does not connect to any adjacent paragraph or to the section macro-structure"
+    detection: "No shared entities, no transition language, and no RST relation to immediately preceding or following paragraph"
+    severity: "high"
+    penalty_reference: "paragraph_island"
+    fix: "Either integrate into an adjacent paragraph or add explicit framing to anchor it in the macro-structure"
+
+  redundant_repetition:
+    description: "The same proposition is stated verbatim or near-verbatim without adding new information"
+    detection: "Two sentences within one paragraph with semantic similarity >0.85 (cosine similarity threshold)"
+    severity: "medium"
+    penalty_reference: "redundant_repetition"
+    fix: "Delete the repetition or replace it with an elaborating satellite that adds new detail"
+
+  rst_relation_monotony:
+    description: "Entire sections or paragraphs use only elaboration and joint relations, creating flat structure"
+    detection: "Elaboration + joint > 70% of all detected RST relations in a section"
+    severity: "medium"
+    penalty_reference: "rst_relation_monotony"
+    fix: "Introduce causal, conditional, or contrastive relations to add logical depth"
+
+  broken_given_new:
+    description: "New information consistently fronted in sentence-initial position, violating given-new contract"
+    detection: "Indefinite article or first-introduced entity in subject position across 3+ consecutive sentences"
+    severity: "medium"
+    penalty_reference: "broken_given_new"
+    fix: "Restructure sentences to place established (given) referents in subject position"
+
+  density_spike:
+    description: "A single sentence introduces 4+ new concepts simultaneously, overwhelming working memory"
+    detection: "Sentence contains 4 or more noun phrases without prior mention in the discourse"
+    severity: "medium"
+    penalty_reference: "density_spike"
+    fix: "Decompose into linked minimal propositions (Niklaus et al. 2023 Discourse-Aware Simplification)"
+
+  syntactic_simplification_stripping:
+    description: "Sentences are split on syntactic boundaries without preserving or restating the rhetorical relation between them, causing the reader to infer logical connections that were explicit in the source"
+    detection: "Two adjacent sentences share a referent but carry no explicit relation marker and were formerly connected by a subordinating conjunction or relative clause"
+    example: "'The storm, which originated in the Atlantic, caused severe damage' → 'The storm caused severe damage. The storm originated in the Atlantic.' — Background/Elaboration relation stripped"
+    severity: "high"
+    risk: >
+      In complex texts (legal, medical, technical), loss of explicit logical markers leads to critical
+      misinterpretations. The RST relation that conveyed causality, conditionality, or background
+      context is not recoverable from the split sentences alone. (Niklaus et al. 2023 §2.1)
+    fix: "When splitting complex sentences, restate the relation explicitly: retain the subordinating conjunction or add an explicit discourse marker to the split sentence"
+    source: "Research - PDL for Discourse-Aware Text Simplification.md §2.1"
+
+  over_splitting:
+    description: "A proposition is decomposed into sub-units smaller than a minimal semantic unit, fragmenting meaning beyond recovery without the relational tree context"
+    detection: "Resulting sentence lacks a main verb, or the semantic content depends entirely on an adjacent proposition to be interpretable ('who escaped to Canada' as a standalone sentence)"
+    severity: "medium"
+    risk: >
+      Violates the Minimality principle of discourse structure. Downstream NER and information
+      extraction precision degrades sharply when atomic propositions are fragmented beyond their
+      minimal self-contained form. (Niklaus et al. 2023 §5.1 and §11)
+    fix: "Test each resulting proposition: does it contain a complete Subject-Verb structure with resolved pronouns? If not, merge with its parent proposition or restore the explicit relational context"
+    source: "Research - PDL for Discourse-Aware Text Simplification.md §5.1"
+
+# ==============================================================================
+# VALIDATION CHECKS
+# ==============================================================================
+
+checks:
+  rst_relation_variety:
+    description: "Ensures minimum RST relation variety across the text"
+    minimum_relation_types: 4
+    penalty_if_below: "rst_coverage score capped at 2"
+
+  transition_density:
+    description: "Checks that explicit discourse markers appear with adequate frequency"
+    target_markers_per_100_words: 2.0
+    minimum_markers_per_100_words: 0.8
+    maximum_markers_per_100_words: 5.0  # Above this, over_signalling penalty applies
+
+  topic_sentence_coverage:
+    description: "Checks that paragraphs begin with topic-introducing sentences"
+    minimum_ratio: 0.70  # At least 70% of paragraphs must have identifiable topic sentences
+
+  coreference_chain_integrity:
+    description: "Flags pronouns without resolvable antecedents"
+    max_unresolved_pronouns_per_100_words: 0.5
+
+  orphaned_claim_check:
+    description: "Flags claims that have no associated evidence or premise"
+    source: "Guo et al. (2023) AQE — orphaned claims lower argument quality"
+    flag_if_orphan_ratio_exceeds: 0.20  # More than 20% of claims are unsupported
+
+  elaboration_dominance:
+    description: "Flags texts where elaboration + joint exceeds threshold, indicating shallow RST coverage"
+    threshold: 0.65  # Elaboration + joint combined share
+
+  given_new_violation_rate:
+    description: "Tracks rate of given-new contract violations"
+    max_violation_rate: 0.30  # More than 30% of sentences violating given-new contract
+
+  marker_overuse:
+    description: "Flags individual markers that exceed overuse thresholds"
+    reference: "discourse_markers section overuse_threshold values"
+    penalty_trigger: "Any single marker exceeds its defined overuse threshold"
+
+  minimal_proposition_integrity:
+    description: "Each atomic proposition resulting from discourse decomposition must be a grammatically complete sentence with resolved coreference"
+    failure_indicator: "Fragment propositions lacking a main verb, or propositions containing unresolved relative pronouns referencing outside the proposition"
+    test: "Does each proposition contain a complete Subject-Verb structure? Are all pronouns resolvable within the proposition itself?"
+    tie_to_existing: "Directly reinforces coreference_chains scoring and dangling_reference anti-pattern; failures reduce structural_integrity dimension score"
+    source: "Niklaus et al. (2023) - Discourse-Aware Text Simplification; Research - PDL for Discourse-Aware Text Simplification.md §6.2"
+
+# ==============================================================================
+# THRESHOLDS
+# Numeric limits for scoring engine integration
+# ==============================================================================
+
+thresholds:
+  # Transition marker density
+  min_transition_density_per_100_words: 0.8
+  target_transition_density_per_100_words: 2.0
+  max_transition_density_per_100_words: 5.0
+
+  # RST coverage
+  min_rst_relation_types: 4
+  target_rst_relation_types: 6
+  max_elaboration_joint_combined_ratio: 0.65
+  max_single_relation_dominance: 0.40  # No single RST relation type should exceed 40% of all relations
+
+  # Topic progression
+  min_topic_sentence_coverage: 0.70
+  max_unannounced_topic_shifts: 2  # Per section
+
+  # Information flow
+  target_new_concepts_per_sentence: 1.5
+  max_new_concepts_per_sentence: 3
+  max_given_new_violation_rate: 0.30
+  min_coreference_resolution_rate: 0.90  # 90% of pronouns must have resolvable antecedents
+
+  # Structural integrity
+  min_paragraph_unity_ratio: 0.75  # Proportion of paragraphs with single unified topic
+  max_section_length_imbalance: 3.0  # Longest section must not exceed 3x length of shortest
+
+  # Argument structure (from Farzam et al. 2023)
+  max_orphaned_claim_ratio: 0.20  # At most 20% of claims without evidence
+  min_evidence_type_variety: 2    # At least 2 distinct evidence types (Expert, Research, Case, Explanation)
+
+  # Overall
+  min_passing_score: 2.5          # Weighted average below this triggers a failing flag
+  exemplary_score: 4.5            # Weighted average at or above this triggers an exemplary flag
+
+  # RST classification confidence (Niklaus et al. 2023)
+  min_rst_relation_confidence: 0.80  # Below this confidence, RST relation assignment is uncertain; flag for review
+
+# ==============================================================================
+# PENALTIES
+# Score deductions applied to the weighted dimension scores
+# ==============================================================================
+
+penalties:
+  abrupt_topic_shift: 0.10          # Sudden unmarked topic change; disrupts topic_progression
+  missing_transitions: 0.08         # Logical gap between sentences with no bridge marker
+  dangling_reference: 0.08          # Unresolvable pronoun or demonstrative; disrupts information_flow
+  logical_gap: 0.12                 # Conclusion without supporting premise or evidence; disrupts rst_coverage
+  paragraph_island: 0.10            # Paragraph disconnected from macro-structure; disrupts structural_integrity
+  rst_relation_monotony: 0.08       # Elaboration+joint > 65%; disrupts rst_coverage
+  redundant_repetition: 0.05        # Verbatim repetition without additive value; disrupts information_flow
+  over_signalling: 0.04             # Excessive marker density (>5 per 100 words); disrupts transition_quality
+  broken_given_new: 0.06            # Systematic given-new violation rate > 30%
+  density_spike: 0.05               # Sentence introducing 4+ new concepts simultaneously
+  orphaned_claim: 0.08              # Claim without evidence; disrupts argument structure and rst_coverage
+  marker_overuse: 0.04              # Single marker exceeds overuse threshold
+  coreference_breakdown: 0.07       # Coreference resolution rate below 90% minimum
+  single_relation_dominance: 0.06   # One RST relation type exceeds 40% of all relations
+  syntactic_simplification_stripping: 0.08  # Relation-stripping when sentences split; disrupts rst_coverage and information_flow
+  over_splitting: 0.05              # Proposition fragmented below minimal semantic unit; disrupts structural_integrity
+
+# ==============================================================================
+# BONUSES
+# Score additions rewarding exceptional coherence features
+# ==============================================================================
+
+bonuses:
+  rst_distribution_matches_baseline: 0.03   # RST frequencies approximate RST Treebank baseline
+  multi_level_coreference_chains: 0.02      # Coreference chains maintained across section boundaries
+  linear_progression_in_causal_chain: 0.02  # Linear thematic progression used for causal argument
+  derived_progression_macro_structure: 0.02  # Derived progression used for clear hierarchical decomposition
+  concession_pre_empts_objection: 0.02       # Concession RST relation used to address anticipated reader objection
+  evidence_type_variety: 0.02               # At least 3 distinct evidence types (Expert, Research, Case)
+  given_new_fully_maintained: 0.02          # Given-new violation rate below 10%
+  argument_chain_complete: 0.02             # Every major claim has complete claim-evidence-type-stance chain
+  zero_orphaned_claims: 0.01               # No orphaned claims detected across entire text
+  discourse_simplification_applied: 0.01    # Complex sentences decomposed into linked minimal propositions
+  marker_variety_four_families: 0.01        # All four marker families represented without overuse
+  structural_hsmm_alignment: 0.02           # Macro-level topic sequence approximates human-text latent distribution
+
+# ==============================================================================
+# RESEARCH BENCHMARKS
+# Quantitative findings from corpus research that anchor rubric thresholds
+# ==============================================================================
+
+research_benchmarks:
+  rst_treebank_distribution:
+    source: "RST Discourse Treebank; Niklaus et al. (2023); discourse_markers_framework.yaml"
+    finding: "Elaboration (25.65%) and joint (23.78%) together account for ~50% of relations in natural text; cause (13.42%), temporal (10.75%), condition (8.34%), contrast (8.12%), background (5.14%), evaluation (4.80%)"
+    implication: "A text with elaboration+joint exceeding 65% is statistically under-developed in rhetorical depth"
+
+  transformer_coherence_gap:
+    source: "Deng et al. (2022) - Model Criticism for Long-Form Text Generation"
+    finding: "Transformers score well on topicality but poorly on structural coherence and coreference, even when word-level perplexity is low"
+    implication: "High fluency does not imply coherence; structural and coreference dimensions require independent evaluation"
+
+  latent_perplexity_title_experiment:
+    source: "Deng et al. (2022)"
+    finding: "Word-level PPL: 13.94 (with title) vs 14.13 (without title) — nearly identical. Latent PPL: 6.72 (with title) vs 9.52 (without title) — significantly different"
+    implication: "Surface fluency metrics miss coherence failures detectable only at the latent/structural level"
+
+  rstformer_discourse_benefit:
+    source: "Liu et al. (2023) - RSTformer"
+    finding: "Integrating RST probability distributions into Transformer attention consistently improves ROUGE scores on long-document summarisation"
+    implication: "Knowing how sentences relate rhetorically is as important as knowing what they contain semantically"
+
+  mtl_shared_representation:
+    source: "Farzam et al. (2023) - Multi-Task Learning in Argument Mining"
+    finding: "Tasks including propaganda detection, evidence classification, and quality assessment inhabit a shared semantic space; MTL models outperform single-task baselines"
+    implication: "Coherence, argument quality, and rhetoric are not independent; evaluating them jointly yields more accurate assessment"
+
+  discourse_simplification_context:
+    source: "Niklaus et al. (2023) - Discourse-Aware Text Simplification"
+    finding: "Naive sentence splitting destroys coherence by removing logical connectors; semantic hierarchies with linked propositions preserve contextual relationships"
+    implication: "High information density in complex sentences should be resolved by hierarchical decomposition, not truncation"
+
+  discourse_preprocessing_ie_boost:
+    source: "Niklaus et al. (2023) - Discourse-Aware Text Simplification (§11, via Research - PDL for Discourse-Aware Text Simplification.md)"
+    finding: "Using discourse-aware sentence decomposition (DisSim) as a pre-processing step for Open Information Extraction systems increased precision by up to 346% and recall by 52% compared to unsimplified input"
+    implication: >
+      High-coherence discourse structure (well-linked propositions with explicit RST relations) is not merely
+      a readability concern — it is directly correlated with downstream NLP information extraction accuracy.
+      Incoherent texts impose measurable, quantifiable extraction penalties. Scoring coherence matters
+      for automated downstream systems as much as for human readers.
+
+  rst_attribution_frequency:
+    source: "Niklaus et al. (2023) - RST Treebank frequency analysis (§2.3)"
+    finding: "Attribution (9.97%) and Same-unit (9.32%) are the third and fourth most frequent RST relation types after Elaboration (25.65%) and Joint (23.78%), yet both are systematically under-represented in generic discourse quality evaluations"
+    implication: >
+      A rubric scoring only Elaboration, Joint, and Cause will systematically miss two high-frequency
+      RST relation types. Texts that source claims (Attribution) and manage complex nested clauses
+      (Same-unit) require these additional evaluation dimensions for accurate coherence assessment.

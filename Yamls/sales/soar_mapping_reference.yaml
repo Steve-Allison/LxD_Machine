@@ -1,0 +1,438 @@
+_meta:
+  id: soar_mapping_reference
+  title: SOAR Mapping
+  description: SOAR (Situation, Opportunity, Action, Result) classification keywords,
+    regex patterns, and sales stage weightings for narrative analysis and scoring
+  domain: sales
+  domain_type: cross_cutting
+  purpose: reference
+  version: "1.2.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Crafting Powerful Opening Plays.md"
+    - "Corpus/Research/Research - Corporate Learning Assessment- Strategies, Modalities, and Best Practices.md"
+    - "Corpus/Research/SOAR - A Universal Storytelling Framework for Learning Professionals.md"
+    - "Corpus/Research/Research - Using SOAR Storytelling most effectively.md"
+    - "Corpus/Research/The Universal Narrative Methodology: A Framework for Crafting and Improving Stories.md"
+
+
+soar_keywords:
+  S: # Situation
+    primary_keywords:
+      - "challenge"
+      - "problem"
+      - "issue"
+      - "pain point"
+      - "current state"
+      - "existing"
+      - "today"
+      - "now"
+      - "situation"
+      - "context"
+      - "background"
+      - "status quo"
+    secondary_keywords:
+      - "facing"
+      - "struggling"
+      - "difficult"
+      - "complex"
+      - "unable"
+      - "cannot"
+      - "failing"
+      - "inefficient"
+    patterns:
+      - r"we are (facing|struggling with|dealing with)"
+      - r"the (current|existing) (situation|state|challenge)"
+      - r"today's (problem|issue|challenge)"
+      - r"in the (current|present) (environment|market|landscape)"
+    weight: 1.0
+
+  O: # Opportunity / Obstacle (both positive and negative framing)
+    primary_keywords:
+      # Positive framing (Opportunity)
+      - "opportunity"
+      - "potential"
+      - "possibility"
+      - "chance"
+      - "advantage"
+      - "benefit"
+      - "value"
+      - "growth"
+      - "improvement"
+      - "transformation"
+      - "innovation"
+      - "breakthrough"
+      # Negative framing (Obstacle)
+      - "obstacle"
+      - "barrier"
+      - "hurdle"
+      - "roadblock"
+      - "impediment"
+      - "constraint"
+      - "limitation"
+      - "blocker"
+      - "bottleneck"
+    secondary_keywords:
+      # Positive orientation
+      - "could"
+      - "would"
+      - "might"
+      - "enable"
+      - "allow"
+      - "create"
+      - "generate"
+      - "achieve"
+      - "realize"
+      - "unlock"
+      # Negative orientation
+      - "blocking"
+      - "preventing"
+      - "hindering"
+      - "restricting"
+      - "limiting"
+      - "impeding"
+      - "obstructing"
+    patterns:
+      # Positive patterns (Opportunity)
+      - r"opportunity to (improve|enhance|transform|achieve)"
+      - r"potential for (growth|improvement|success)"
+      - r"we can (enable|create|generate|achieve)"
+      - r"this (allows|enables|creates|generates)"
+      # Negative patterns (Obstacle)
+      - r"obstacle (to|in|preventing|blocking)"
+      - r"barrier (to|preventing|blocking)"
+      - r"(must|need to|have to) (overcome|address|eliminate|remove)"
+      - r"(blocked|prevented|hindered) by"
+      - r"facing (obstacles|barriers|hurdles|roadblocks)"
+    weight: 1.0
+    # Orientation tracking (for classification logic)
+    positive_keywords:
+      - "opportunity"
+      - "potential"
+      - "benefit"
+      - "value"
+      - "enable"
+      - "unlock"
+      - "advantage"
+      - "breakthrough"
+    negative_keywords:
+      - "obstacle"
+      - "barrier"
+      - "hurdle"
+      - "roadblock"
+      - "blocking"
+      - "preventing"
+      - "constraint"
+      - "limitation"
+
+  A: # Action
+    primary_keywords:
+      - "solution"
+      - "approach"
+      - "strategy"
+      - "method"
+      - "process"
+      - "implementation"
+      - "action"
+      - "plan"
+      - "initiative"
+      - "program"
+      - "project"
+      - "framework"
+    secondary_keywords:
+      - "implement"
+      - "deploy"
+      - "execute"
+      - "deliver"
+      - "provide"
+      - "offer"
+      - "create"
+      - "build"
+      - "develop"
+      - "establish"
+      - "launch"
+      - "introduce"
+    patterns:
+      - r"our (solution|approach|strategy|method)"
+      - r"we (implement|deploy|execute|deliver)"
+      - r"the (solution|approach|strategy) (includes|provides|offers)"
+      - r"through (our|this) (solution|approach|strategy)"
+    weight: 1.0
+
+  R: # Result
+    primary_keywords:
+      - "result"
+      - "outcome"
+      - "benefit"
+      - "impact"
+      - "success"
+      - "achievement"
+      - "improvement"
+      - "gain"
+      - "return"
+      - "roi"
+      - "value"
+      - "performance"
+    secondary_keywords:
+      - "achieve"
+      - "deliver"
+      - "realize"
+      - "generate"
+      - "produce"
+      - "create"
+      - "enable"
+      - "increase"
+      - "improve"
+      - "enhance"
+      - "reduce"
+      - "eliminate"
+    patterns:
+      - r"results in (improved|enhanced|better|increased)"
+      - r"achieve (better|improved|enhanced|increased)"
+      - r"deliver (value|benefits|results|outcomes)"
+      - r"enable (better|improved|enhanced|increased)"
+    weight: 1.0
+
+# ==============================================================================
+# Full 10-Stage Sales Process with SOAR Weightings
+# From: Design_Notes/soar_mapping_by_sales_stage.md
+# ==============================================================================
+sales_stages:
+  # Stage 1: Prospect Outreach - High-level, visionary narrative
+  prospect_outreach:
+    id: 1
+    name: "Prospect Outreach"
+    hierarchy_level: L1  # Strategic
+    soar_weights:
+      S: 0.4  # High-level industry trends, common challenges
+      O: 0.4  # Visionary statement about better future
+      A: 0.1  # Conceptual overview only
+      R: 0.1  # Illustrative benchmarks
+    description: "High-level, visionary narrative to capture attention"
+    core_personas: ["CMO", "VP Marketing", "CCO", "Creative Director"]
+
+  # Stage 2: Opportunity Evaluation - Continue big picture
+  opportunity_evaluation:
+    id: 2
+    name: "Opportunity Evaluation"
+    hierarchy_level: L1  # Strategic
+    soar_weights:
+      S: 0.3  # Customer's specific business context
+      O: 0.4  # Tailored vision with specific benefits
+      A: 0.2  # High-level solution overview
+      R: 0.1  # Relevant customer stories
+    description: "Continue with the big picture to build a compelling vision"
+    core_personas: ["CMO", "VP Marketing", "CCO", "Marketing Operations"]
+
+  # Stage 3: Detailed Discovery and Vision - Move to use cases
+  detailed_discovery:
+    id: 3
+    name: "Detailed Discovery and Vision"
+    hierarchy_level: L2  # Sales Play
+    soar_weights:
+      S: 0.2  # Deep understanding of current state
+      O: 0.4  # Quantifiable vision with metrics
+      A: 0.3  # Detailed solution walkthrough
+      R: 0.1  # Verifiable testimonials
+    description: "Move to use cases and solution overviews to make it more concrete"
+    core_personas: ["Marketing Operations", "Creative Operations", "IT Leaders"]
+
+  # Stage 4: Circle of Influence & Qualification - Reinforce value
+  circle_of_influence:
+    id: 4
+    name: "Circle of Influence & Qualification"
+    hierarchy_level: L2  # Sales Play
+    soar_weights:
+      S: 0.1  # Validated summary of challenges
+      O: 0.3  # Shared vision bought by decision-makers
+      A: 0.4  # Technical deep dive
+      R: 0.2  # Detailed case studies with ROI
+    description: "Reinforce value proposition with proven plays for stakeholders"
+    core_personas: ["CMO", "CIO", "CTO", "VP Marketing", "Director Marketing"]
+
+  # Stage 5: Solution Definition & Validation - Deep dive technical
+  solution_definition:
+    id: 5
+    name: "Solution Definition & Validation"
+    hierarchy_level: L3  # Product
+    soar_weights:
+      S: 0.1  # Final reconfirmed understanding
+      O: 0.2  # Urgent, compelling reason to act
+      A: 0.5  # Final agreed solution with SOW
+      R: 0.2  # Guaranteed business outcomes
+    description: "Deep dive into technical details and capabilities"
+    core_personas: ["Senior Marketing Leaders", "IT Leaders", "Practitioners"]
+
+  # Stage 6: Customer Commit - Highly personalized
+  customer_commit:
+    id: 6
+    name: "Customer Commit"
+    hierarchy_level: L4  # Persona
+    soar_weights:
+      S: 0.1  # Summary of journey so far
+      O: 0.1  # Reminder of value and impact
+      A: 0.3  # Final steps to get started
+      R: 0.5  # Immediate short-term wins
+    description: "Highly personalized value proposition and ROI for decision-makers"
+    core_personas: ["CMO", "CIO", "CTO"]
+
+  # Stage 7: Execute to Close - Focus on outcomes
+  execute_to_close:
+    id: 7
+    name: "Execute to Close"
+    hierarchy_level: L4  # Persona
+    soar_weights:
+      S: 0.1  # Customer's readiness to implement
+      O: 0.1  # Opportunity for smooth launch
+      A: 0.4  # Implementation and onboarding
+      R: 0.4  # Successful launch, initial value
+    description: "Focus on specific outcomes and benefits for individuals"
+    core_personas: ["CMO", "CIO", "CTO", "Legal"]
+
+  # Stage 8: Launch Health - Ensure adoption
+  launch_health:
+    id: 8
+    name: "Launch Health"
+    hierarchy_level: L4  # Persona
+    soar_weights:
+      S: 0.1  # Customer experience in first 30-90 days
+      O: 0.2  # Opportunity to optimize and deepen adoption
+      A: 0.2  # Proactive support and training
+      R: 0.5  # KPIs showing initial success
+    description: "Continue persona-focused narrative to ensure adoption"
+    core_personas: ["Practitioners", "Marketing Operations"]
+
+  # Stage 9: Run & Operate - Long-term value
+  run_and_operate:
+    id: 9
+    name: "Run & Operate"
+    hierarchy_level: L4  # Persona
+    soar_weights:
+      S: 0.1  # Ongoing use and new challenges
+      O: 0.3  # Opportunity to expand to new teams/use cases
+      A: 0.1  # Ongoing support, business reviews
+      R: 0.5  # Long-term ROI and strategic goals
+    description: "Focus on long-term value for individuals and teams"
+    core_personas: ["Practitioners", "Marketing Operations"]
+
+  # Stage 10: Renewal & Expand - New use cases
+  renewal_and_expand:
+    id: 10
+    name: "Renewal & Expand"
+    hierarchy_level: L2  # Sales Play
+    soar_weights:
+      S: 0.1  # Upcoming renewal, value review
+      O: 0.4  # Opportunity to expand relationship
+      A: 0.1  # Proposal for renewal and expansion
+      R: 0.4  # Total value delivered and expected ROI
+    description: "Return to Sales Play level for new use cases"
+    core_personas: ["CMO", "CIO", "CTO", "VP Marketing", "Director Marketing"]
+
+# Legacy simplified stages (for backward compatibility)
+sales_stage_weights:
+  discovery:
+    S: 1.2 # Emphasize situation in discovery
+    O: 1.1
+    A: 0.8
+    R: 0.7
+  qualification:
+    S: 1.1
+    O: 1.3 # Emphasize opportunity in qualification
+    A: 0.9
+    R: 0.8
+  proposal:
+    S: 0.8
+    O: 1.1
+    A: 1.4 # Emphasize action in proposal
+    R: 1.2
+  negotiation:
+    S: 0.7
+    O: 1.0
+    A: 1.2
+    R: 1.5 # Emphasize results in negotiation
+  closing:
+    S: 0.6
+    O: 0.9
+    A: 1.1
+    R: 1.6 # Strong emphasis on results for closing
+
+# Context-specific mappings
+context_mappings:
+  executive_summary:
+    S: 0.8
+    O: 1.2
+    A: 1.1
+    R: 1.3
+  problem_statement:
+    S: 1.5
+    O: 0.5
+    A: 0.3
+    R: 0.2
+  solution_overview:
+    S: 0.3
+    O: 0.7
+    A: 1.4
+    R: 1.1
+  benefits:
+    S: 0.2
+    O: 0.8
+    A: 0.6
+    R: 1.6
+  call_to_action:
+    S: 0.4
+    O: 0.9
+    A: 1.3
+    R: 1.2
+
+# ==============================================================================
+# KEYWORD DISAMBIGUATION
+# Rules for resolving ambiguous keyword signals across SOAR stages
+# Source: Research - Using SOAR Storytelling most effectively.md
+# ==============================================================================
+
+keyword_disambiguation:
+  purpose: "Disambiguation rules when keywords match multiple SOAR stages"
+  source: "Research - Using SOAR Storytelling most effectively.md"
+
+  opportunity_vs_result:
+    issue: "'benefit', 'value', 'improvement' appear in both O and R keyword sets"
+    resolution:
+      - "If sentence contains a conditional (could, would, can): classify as O (future state)"
+      - "If sentence contains past tense or citation (achieved, delivered, saw): classify as R"
+      - "If sentence contains a metric with a baseline comparison: classify as R"
+    example_O: "This could reduce your content production time by 50%"
+    example_R: "Customer X reduced content production time by 47% in 90 days"
+
+  situation_vs_opportunity:
+    issue: "'challenge', 'problem', 'issue' appear in both S and O keyword sets"
+    resolution:
+      - "If describing status quo or current state without implying change: classify as S"
+      - "If framed as a gap to close or villain to defeat: classify as O"
+      - "If loss_aversion language present (risk of, cost of delay, missing out): classify as O"
+    example_S: "Today most teams manage content across 5-8 disconnected tools"
+    example_O: "The cost of content fragmentation is 40% wasted production time — a gap that worsens as demand grows"
+
+  action_vs_result:
+    issue: "'deliver', 'enable', 'improve' appear in both A and R keyword sets"
+    resolution:
+      - "If subject is the solution or approach: classify as A"
+      - "If subject is the customer outcome: classify as R"
+    example_A: "GenStudio enables teams to deliver 10x more content variants per campaign"
+    example_R: "Teams using GenStudio delivered 10x more content variants, reducing agency spend by 35%"
+
+soar_signal_strength:
+  purpose: "Confidence scoring when multiple SOAR signals compete in the same sentence"
+  rules:
+    - level: high
+      criteria: "Primary keyword + pattern match + orientation signal all align"
+      action: "Assign to matched stage with confidence >= 0.85"
+    - level: medium
+      criteria: "Primary keyword present but pattern or orientation ambiguous"
+      action: "Apply disambiguation rules; if unresolved classify as dominant_stage with confidence 0.60-0.84"
+    - level: low
+      criteria: "Only secondary keywords present, no pattern match"
+      action: "Classify as ambiguous; require human review flag if confidence < 0.60"
+  multi_stage_sentences:
+    policy: "A sentence spanning two stages should be classified by its primary intent"
+    bridge_detection_pattern: "Pattern: (current|today).*(but|however|yet).*(opportunity|could|potential)"
+    bridge_classification: "Classify as O (the forward-looking element is the narrative payload)"

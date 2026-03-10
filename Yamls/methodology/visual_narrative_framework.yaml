@@ -1,0 +1,110 @@
+_meta:
+  id: visual_narrative_framework
+  title: "Visual Narrative"
+  description: "Rules for Visual Design, Cognitive Load, and Multimodal Harmony."
+  domain: visual
+  domain_type: cross_cutting
+  purpose: methodology
+  version: "1.2.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md"
+    - "Corpus/Research/Crafting Powerful Opening Plays.md"
+    - "Corpus/Research/RESEARCH-BASED_ENHANCEMENTS FOR VOICE.md"
+
+
+  relationships:
+    - target: methodology/opening_hooks_framework.yaml
+      type: depends_on
+      description: "Visual storytelling overlap: visual narrative techniques apply to opening hook design"
+# ==============================================================================
+# COGNITIVE LOAD THEORY (CLT)
+# The foundation for managing audience attention and mental effort.
+# ==============================================================================
+
+cognitive_load:
+  description: "Framework for managing Intrinsic, Extraneous, and Germane load."
+
+  principles:
+    coherence:
+      rule: "Exclude all extraneous words, pictures, and sounds."
+      violation_check: "Does this element directly support the core message?"
+
+    signaling:
+      rule: "Highlight essential material."
+      technique: "Use contrast (bold, color, size) to create a focal point."
+
+    redundancy:
+      rule: "Don't read the slides. Graphics + Narration > Graphics + Narration + Text."
+      action: "Move script to speaker notes. Keep slide visual."
+
+    spatial_contiguity:
+      rule: "Keep related words and pictures together."
+      action: "Label data directly. Delete legends."
+
+    segmenting:
+      rule: "Break complex information into learner-paced chunks."
+      technique: "Progressive disclosure (builds) or multiple slides."
+
+# ==============================================================================
+# VISUAL DESIGN FRAMEWORK (CRAP)
+# The tactical rules for layout and composition.
+# ==============================================================================
+
+design_principles:
+  description: "The 4 pillars of visual layout."
+
+  contrast:
+    goal: "Create hierarchy and focus."
+    rule: "If it's not the same, make it very different."
+
+  repetition:
+    goal: "Create consistency and unity."
+    rule: "Repeat visual elements (fonts, colors, shapes) throughout."
+
+  alignment:
+    goal: "Create order and clarity."
+    rule: "Nothing should be placed arbitrarily. Use a grid."
+
+  proximity:
+    goal: "Create relationships."
+    rule: "Group related items together to form one visual unit."
+
+# ==============================================================================
+# TYPOGRAPHY & ACCESSIBILITY
+# Quantified rules for legibility.
+# ==============================================================================
+
+typography:
+  live_presentation:
+    title_font: "60pt+"
+    body_font: "40pt+"
+    rule: "Minimal text. Read from back of room."
+
+  leave_behind_deck:
+    title_font: "40pt+"
+    body_font: "20pt+"
+    rule: "Dense info allowed. Read alone."
+
+accessibility:
+  contrast_ratios:
+    normal_text: "4.5:1 (WCAG AA)"
+    large_text: "3.0:1 (18pt+)"
+    ui_components: "3.0:1"
+
+  color_usage:
+    rule: "Never use color as the only means of conveying information."
+
+# ==============================================================================
+# DATA VISUALIZATION (TUFTE)
+# Rules for clarity and truth in data.
+# ==============================================================================
+
+data_viz:
+  principles:
+    data_ink_ratio:
+      goal: "Maximize ink devoted to data. Erase chartjunk."
+    no_legends:
+      rule: "Direct labeling of lines/bars. Legends violate spatial contiguity."
+    truthfulness:
+      rule: "Show data in context. Don't truncate axes to exaggerate."

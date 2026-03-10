@@ -1,0 +1,565 @@
+# =============================================================================
+# ontology.yaml
+# Machine-readable ontology definition for the CoE Knowledge Base
+# Consumed by: KG pipelines, graphRAG, scoring engines, MCP servers, LLM context
+# Source of Truth: docs/OWL_RDF_SHACL_Implementation_Report.md
+# =============================================================================
+
+_meta:
+  id: ontology
+  purpose: reference
+  version: "1.0.0"
+  last_updated: "2026-03-07"
+  description: "Operational ontology definition — classes, properties, domains, relation types, and scope for the CoE knowledge base."
+  domain: ai
+  domain_type: meta
+  relationships:
+    - target: reference/glossary_terminology.yaml
+      type: related_to
+      description: "Glossary provides human-readable term definitions"
+  corpus_sources: []
+  academic_sources:
+    - "W3C OWL 2 (2012)"
+    - "W3C SHACL (2017)"
+    - "W3C SKOS Reference (2009)"
+    - "W3C RDF 1.1 (2014)"
+
+# =============================================================================
+# NAMESPACE
+# =============================================================================
+
+namespace:
+  prefix: coe
+  base_uri: "https://coe.example.org/ontology/"
+  id_expansion: "{base_uri}{purpose}/{id}"
+  entity_sub_node: "{base_uri}entity/{file_id}/entity/{canonical_id}"
+  taxonomy_value_node: "{base_uri}taxonomy/{file_id}/value/{dimension}/{value_id}"
+
+# =============================================================================
+# CLASS HIERARCHY
+# =============================================================================
+# Every node in the knowledge graph is an instance of one of these classes.
+# Subclass relationships use rdfs:subClassOf semantics.
+
+class_hierarchy:
+
+  KnowledgeAsset:
+    description: "Root class — any governed knowledge artefact in the system."
+    subclasses:
+
+      # --- YAML config files (Central_Configs/Yamls/) ---
+      EntityConfig:
+        description: "GLiNER entity extraction configurations. Contains entity_types with NER labels, patterns, and relationship edges."
+        folder: entities/
+        purpose: entity
+        required_body_nodes: [entity_types, gliner_config, domain_keywords, quality_indicators]
+
+      TaxonomyConfig:
+        description: "Classification systems with dimensions and values. Maps to SKOS ConceptSchemes."
+        folder: taxonomy/
+        purpose: taxonomy
+        required_body_nodes: [classification_dimensions]
+        skos_mapping:
+          file: "skos:ConceptScheme"
+          dimension: "skos:Concept (top concept)"
+          value: "skos:Concept"
+          broader: "skos:broader"
+          narrower: "skos:narrower"
+
+      MethodologyConfig:
+        description: "Frameworks, principles, standards, and design patterns."
+        folder: methodology/
+        purpose: methodology
+
+      ScoringConfig:
+        description: "Rubrics, weights, and scoring dimensions for quality evaluation."
+        folder: scoring/
+        purpose: scoring
+
+      ReferenceConfig:
+        description: "Lookup tables, thresholds, terminology, and reference data."
+        folder: reference/
+        purpose: reference
+
+      CorpusEntrySet:
+        description: "Typed claims (bp_/pr_/ap_) extracted from research with full provenance."
+        folder: corpus/
+        purpose: corpus
+        entry_types:
+          BestPractice:
+            prefix: "bp_"
+            required_fields: [evidence, context, confidence]
+          Principle:
+            prefix: "pr_"
+            optional_fields: [underpins, derived_from]
+          AntiPattern:
+            prefix: "ap_"
+            required_fields: [consequences, instead]
+
+      # --- Methodology guides (Design_Methodology/Guides/) ---
+      MethodologyGuide:
+        description: "Operational HOW-TO workflows. Step-by-step guides for creating learning materials."
+        locations:
+          - "Design_Methodology/Guides/"
+          - "Design_Methodology/SOAR_Framework_Complete/"
+        purpose: methodology
+
+      # --- Infrastructure ---
+      # ai_config/ files are ReferenceConfig instances with domain: ai.
+      # There is no separate PipelineConfig class — the purpose enum does
+      # not include 'ai_config'. These files use purpose: reference.
+
+  # Sub-node types (not files — sub-nodes within files)
+  EntityType:
+    description: "A single entity definition within an EntityConfig file. Produces a sub-node in the KG."
+    parent_class: EntityConfig
+    uri_pattern: "{file_uri}/entity/{canonical_id}"
+    attributes: [canonical_id, entity_kind, family, gliner_label, confidence_threshold, color]
+
+  TaxonomyValue:
+    description: "A single value within a taxonomy dimension. Produces a sub-node in the KG."
+    parent_class: TaxonomyConfig
+    uri_pattern: "{file_uri}/value/{dimension}/{value_id}"
+    attributes: [id, level, ordinal_position]
+
+# =============================================================================
+# DOMAINS — MECE definitions with operational boundary tests
+# =============================================================================
+# Every concept has exactly ONE home domain. Cross-domain usage is expressed
+# via relationship edges, not duplication.
+
+domains:
+
+  narrative:
+    boundary_test: "Does this define how ideas are STRUCTURED and SEQUENCED?"
+    description: "The structure and craft of stories, arguments, and persuasive discourse."
+    includes:
+      - story arcs, plot structures, narrative resolution
+      - SOAR framework (storytelling structure)
+      - rhetorical devices
+      - argumentation (Toulmin, evidence types)
+      - discourse markers, coherence, RST
+      - persuasion structures (Monroe's, elevator pitch)
+      - opening hooks and closing strategies
+      - character archetypes
+      - stance markers and epistemic modality
+    excludes:
+      - delivering a narrative (performance)
+      - visualising a narrative (visual)
+      - the words and tone used (writing)
+      - teaching narrative skills (pedagogical)
+      - sales subject matter using narrative (sales references SOAR)
+    quality_chain_role: creation
+
+  pedagogical:
+    boundary_test: "Does this define how people LEARN or how to DESIGN INSTRUCTION?"
+    description: "The science and practice of learning design."
+    includes:
+      - learning theory (Bloom, Gagne, Merrill, Mayer as learning science)
+      - Cognitive Load Theory (CLT) — canonical home
+      - instructional design methodology (ADDIE, SAM)
+      - activity design patterns
+      - learning objectives (GGOO, Bloom's)
+      - assessment design (formative, summative, competency-based)
+      - content architecture and sequencing
+      - microlearning, spaced practice
+      - delivery modes (ILT, VILT, async, blended)
+    excludes:
+      - who our learners are (audience)
+      - visual design of materials (visual)
+      - the written words (writing)
+      - how to deliver/facilitate (performance)
+    quality_chain_role: creation
+    cross_domain_notes:
+      - "CLT home is pedagogical. Visual, writing, and performance REFERENCE it via edges."
+      - "Activity design patterns live here. Content comes from whatever domain the training covers."
+
+  visual:
+    boundary_test: "Does this define how something is VISUALLY COMMUNICATED and perceived?"
+    description: "Visual communication — images, colour, layout, media, and how the brain processes them."
+    includes:
+      - psychology of colour and visual perception
+      - visual hierarchy and layout (Gestalt, grid systems)
+      - slide and deck design
+      - data visualisation (Cleveland-McGill, Tufte)
+      - infographic design
+      - video production, animation, motion
+      - typography as visual form
+      - visual accessibility (WCAG, contrast, alt text, captions)
+      - media asset standards
+    excludes:
+      - the words on the slide (writing)
+      - story structure (narrative)
+      - how to present/deliver (performance)
+      - learning design using visuals (pedagogical)
+    quality_chain_role: creation
+
+  performance:
+    boundary_test: "Does this describe how a person PERFORMS, DELIVERS, or FACILITATES?"
+    description: "The human instrument — delivery, presence, facilitation, and teaching skills."
+    includes:
+      - voice quality metrics (jitter, shimmer, HNR, F0)
+      - disfluency management
+      - body language, gesture, spatial presence, eye contact
+      - executive presence and credibility
+      - pacing, timing, rhythm
+      - questioning techniques and Socratic method
+      - scaffolding and guided discovery
+      - reading the room, classroom dynamics
+      - facilitation and moderation
+      - presentation nerves and anxiety
+    excludes:
+      - what to say (narrative, writing)
+      - what to show (visual)
+      - learning design behind the session (pedagogical)
+    quality_chain_role: delivery
+
+  writing:
+    boundary_test: "Does this define what the WORDS SAY and how they're CRAFTED?"
+    description: "The written words in any medium — editorial standards, tone, style, scripts."
+    includes:
+      - editorial standards and clarity
+      - tone of voice guidelines
+      - inclusive and culturally sensitive language
+      - copywriting and messaging
+      - script and dialogue writing
+      - readability and plain language
+      - grammar, punctuation, mechanics
+      - style guide compliance
+    excludes:
+      - story structure (narrative)
+      - how text looks on screen (visual)
+      - learning design (pedagogical)
+      - spoken delivery (performance)
+    quality_chain_role: creation
+
+  audience:
+    boundary_test: "Does this describe WHO OUR LEARNERS ARE?"
+    description: "Learner identity, context, and characteristics — who receives the training."
+    includes:
+      - learner personas and role profiles
+      - learner demographics and workforce personas
+      - learning preferences and experience levels
+      - motivational drivers and barriers
+      - organisational context
+    excludes:
+      - buyer personas — who learners sell TO (sales)
+      - industry verticals — what learners sell INTO (sales)
+      - how to design for these learners (pedagogical)
+      - how to present to them (performance)
+    quality_chain_role: design_input
+
+  sales:
+    boundary_test: "Does this describe KNOWLEDGE SALESPEOPLE NEED TO KNOW?"
+    description: "Subject matter domain — the knowledge taught in sales training."
+    includes:
+      - sales stages and pipeline progression
+      - buyer personas and decision-making roles
+      - industry verticals (financial services, healthcare, retail, media, travel)
+      - competitive landscape and market positioning
+      - sales plays and campaign strategies
+      - GTM methodology
+      - enablement content (battle cards, value propositions)
+      - deal dynamics, objection handling, buying signals
+    excludes:
+      - SOAR as a story framework (narrative)
+      - how to design sales training (pedagogical)
+      - how to deliver a pitch (performance)
+      - how to write sales copy (writing)
+    quality_chain_role: design_input
+    cross_domain_notes:
+      - "SOAR is a narrative framework. Sales REFERENCES it via depends_on edge."
+
+  ai:
+    boundary_test: "Does this configure the PIPELINE MACHINERY?"
+    description: "AI/ML pipeline configuration, NLP tooling, and infrastructure."
+    includes:
+      - analyser catalogs and measurement specs
+      - entity extraction rules and surface patterns
+      - NER/GLiNER/NuExtract config
+      - pipeline orchestration
+      - RAG and KG configuration
+      - shared infrastructure fragments
+      - schema and meta files
+    excludes:
+      - what analysers measure (the measured domain)
+      - AI for learning design (pedagogical)
+    quality_chain_role: infrastructure
+
+# =============================================================================
+# QUALITY CHAIN
+# =============================================================================
+# How domains serve the system's purpose: excellent learning experiences.
+
+quality_chain:
+  flow: |
+    DESIGN INPUTS              CREATION DOMAINS              DELIVERY
+    audience (who we train) -> pedagogical (learning design) -> performance (deliver & teach)
+    sales (subject matter)  -> narrative (story structure)
+                               visual (visual communication)
+                               writing (the written words)
+                               ai (pipeline machinery)
+  roles:
+    design_input: "Provides context and constraints for creation domains"
+    creation: "Produces the learning materials and structures"
+    delivery: "Brings materials to life in front of an audience"
+    infrastructure: "Powers the pipeline that measures and enforces quality"
+
+# =============================================================================
+# FILE-LEVEL RELATIONSHIP TYPES
+# =============================================================================
+# Edges between YAML files (declared in _meta.relationships).
+
+file_relationships:
+
+  depends_on:
+    owl_type: "owl:ObjectProperty"
+    direction: directed
+    inverse: dependency_of
+    description: "Source file requires target file to function correctly."
+    examples:
+      - "Entity file depends on taxonomy for label definitions"
+      - "Scoring file depends on framework for evaluation criteria"
+
+  related_to:
+    owl_type: "owl:SymmetricProperty"
+    direction: undirected
+    inverse: null
+    description: "Target covers complementary or overlapping content."
+    examples:
+      - "Rubrics evaluating different facets of the same artefact"
+      - "Methodology frameworks in the same pedagogical family"
+
+  derived_from:
+    owl_type: "owl:ObjectProperty"
+    direction: directed
+    inverse: source_of
+    description: "Source file was built from or consolidates content from the target."
+    examples:
+      - "Entity file derived from multiple methodology source files"
+      - "Taxonomy synthesised from several research-backed frameworks"
+
+# =============================================================================
+# ENTITY RELATIONSHIP TYPES
+# =============================================================================
+# Edges between entity sub-nodes (declared in entity_types.{id}.relates_to).
+# These are intra-graph edges at the entity level, not file level.
+
+entity_relations:
+
+  supports:
+    description: "Source provides evidence, reasoning, or backing that strengthens the target."
+    inverse: supported_by
+    indicators:
+      - "Source provides evidence, validation, or reinforcement for the target"
+      - "Removing the source weakens the target's credibility"
+
+  supported_by:
+    description: "Source depends on target for evidence or backing."
+    inverse: supports
+
+  bridges:
+    description: "Source acts as a connector providing reasoning or transition between two entities."
+    inverse: null
+    indicators:
+      - "Source contains reasoning, transition, or explanatory language"
+      - "Removing the source makes the connection feel like an unexplained leap"
+
+  limits:
+    description: "Source constrains or narrows the target's scope or applicability."
+    inverse: null
+    indicators:
+      - "Source contains hedging language: most, typically, provided that"
+      - "Target still holds within the stated boundaries"
+
+  rebuts:
+    description: "Source directly challenges, contradicts, or undermines the target."
+    inverse: null
+    indicators:
+      - "Source presents counter-evidence, counter-position, or fundamental objection"
+
+  contains:
+    description: "Source is a composite structure that includes the target as a component."
+    inverse: null
+    indicators:
+      - "Source is a named composite structure, framework, or methodology"
+      - "Listing all targets produces the full anatomy of the source"
+
+  triggers:
+    description: "Source causes or initiates the target in a process or flow."
+    inverse: null
+    indicators:
+      - "Source is an event, action, or condition that activates the target"
+
+  resolves:
+    description: "Source provides resolution or closure for the target."
+    inverse: null
+    indicators:
+      - "Source answers, completes, or satisfies the target"
+
+  precedes:
+    description: "Source comes before target in a defined sequence or workflow."
+    inverse: null
+    indicators:
+      - "Temporal, logical, or pedagogical ordering"
+
+  specialises:
+    description: "Source is a more specific variant or subtype of the target."
+    inverse: null
+    indicators:
+      - "Source inherits the target's properties and adds constraints"
+
+  enables:
+    description: "Source creates conditions that make the target possible."
+    inverse: null
+    indicators:
+      - "Without the source, the target cannot occur"
+      - "Source is a prerequisite or enabler, not evidence"
+
+  contrasts_with:
+    description: "Source and target are meaningfully different alternatives."
+    inverse: null
+    indicators:
+      - "Both are valid approaches but differ in important ways"
+
+# =============================================================================
+# ENTITY RELATIONSHIP WEIGHTS
+# =============================================================================
+
+entity_relation_weights:
+
+  required:
+    description: "Structurally essential — source cannot function without target."
+    graph_traversal: "Always traverse. Include target in retrieval context."
+
+  expected:
+    description: "Standard pairing — absence is a quality gap but not structural failure."
+    graph_traversal: "Traverse when query context overlaps with the relationship domain."
+
+  optional:
+    description: "Contextual — appears in some content structures but not others."
+    graph_traversal: "Traverse only when query specifically targets this relationship."
+
+# =============================================================================
+# CROSS-LAYER EDGE TYPES
+# =============================================================================
+# Edges that connect different layers of the knowledge system.
+
+cross_layer_edges:
+
+  sourced_from:
+    owl_type: "owl:DatatypeProperty"
+    direction: directed
+    description: "Links a knowledge asset to the research document path it was derived from."
+    domain: KnowledgeAsset
+    range: "xsd:string (path literal: Corpus/Research/{filename}.md)"
+
+  extracted_as:
+    owl_type: "owl:ObjectProperty"
+    direction: directed
+    description: "Links a corpus entry to the YAML config it was operationalised into."
+    domain: CorpusEntrySet
+    range: KnowledgeAsset
+
+  informs_guide:
+    owl_type: "owl:ObjectProperty"
+    direction: directed
+    inverse: guided_by
+    description: "Links a YAML config to a methodology guide that references it."
+    domain: KnowledgeAsset
+    range: MethodologyGuide
+
+  consumed_by:
+    owl_type: "owl:ObjectProperty"
+    direction: directed
+    inverse: consumes
+    description: "Links a config to the pipeline tool that consumes it."
+    domain: KnowledgeAsset
+    range: "Pipeline tool (story_analyser, GLiNER, scoring engine, MCP server)"
+
+# =============================================================================
+# DATATYPE PROPERTIES
+# =============================================================================
+
+datatype_properties:
+
+  has_version:
+    range: "xsd:string"
+    pattern: "^\\d+\\.\\d+\\.\\d+$"
+
+  has_last_updated:
+    range: "xsd:date"
+
+  has_description:
+    range: "xsd:string"
+
+  has_confidence_threshold:
+    range: "xsd:decimal"
+    min: 0.0
+    max: 1.0
+
+  has_effect_size:
+    range: "xsd:string"
+
+  has_gliner_label:
+    range: "xsd:string"
+    pattern: "^[A-Z_]+$"
+
+  has_color:
+    range: "xsd:string"
+    pattern: "^#[0-9a-fA-F]{6}$"
+
+# =============================================================================
+# SCOPE — what is and isn't a graph node
+# =============================================================================
+
+scope:
+
+  ontology_nodes:
+    - layer: "YAML Configs (Layer 5)"
+      location: "Central_Configs/Yamls/"
+      status: "Active — all have _meta blocks"
+    - layer: "Corpus Entries"
+      location: "Central_Configs/Yamls/corpus/"
+      status: "Active — bp_/pr_/ap_ typed claims"
+    - layer: "Methodology Guides (Layer 3)"
+      location: "Design_Methodology/Guides/ + SOAR_Framework_Complete/"
+      status: "Planned — need _meta front matter"
+
+  background_libraries:
+    - layer: "Research (Layer 1)"
+      location: "Central_Configs/Corpus/Research/"
+      count: 134
+      status: "Referenced by path string via corpus_sources, not graph nodes"
+    - layer: "Theory (Layer 2)"
+      location: "Design_Methodology/Learning_Framework/"
+      count: 28
+      status: "Referenced, not graph nodes"
+
+  out_of_scope:
+    - layer: "Prompt Modules (Layer 4)"
+      reason: "Regenerated AI artefacts, not source-of-truth knowledge"
+
+  design_principle: "Knowledge flows DOWN through layers. Research informs corpus entries, which inform configs, which inform guides. Research does not become a config directly."
+
+# =============================================================================
+# PROVENANCE CHAIN
+# =============================================================================
+
+provenance_chain:
+  flow:
+    - step: 1
+      layer: "Research (.md)"
+      action: "Human reads, extracts insight"
+    - step: 2
+      layer: "Corpus Entry (bp_/pr_/ap_)"
+      action: "Structured claim with source citation"
+      edge_in: sourced_from
+    - step: 3
+      layer: "YAML Config (_meta block)"
+      action: "Machine-executable rule, entity, or rubric"
+      edge_in: extracted_as
+    - step: 4
+      layer: "Pipeline (story_analyser, GLiNER, scoring engine)"
+      action: "Automated analysis, extraction, scoring"
+      edge_in: consumed_by

@@ -1,0 +1,216 @@
+_meta:
+  id: scoring_narrative
+  description: "Unified scoring configuration for narrative analysis including score bands, severity levels, and dimension weights."
+  domain: ai
+  domain_type: meta
+  purpose: reference
+  version: "2.3.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Best Practices for Writing Effective Corporate Learning Content.md"
+    - "Corpus/Research/Crafting Powerful Opening Plays.md"
+    - "Corpus/Research/Research - Corporate Learning Assessment- Strategies, Modalities, and Best Practices.md"
+    - "Corpus/Research/Research - Using SOAR Storytelling most effectively.md"
+    - "Corpus/Research/Research - Canonical Presentation Methodology Research.md"
+
+
+# =============================================================================
+# SCORE BANDS
+# =============================================================================
+# Standard 0-100 scale interpretation for narrative quality
+
+score_bands:
+  excellent:
+    range: [90, 100]
+    label: "Excellent"
+    description: "Clear intent, no violations, high impact"
+    color: "#22c55e"  # green
+    pass: true
+
+  good:
+    range: [70, 89]
+    label: "Good"
+    description: "Minor friction, mostly clear, functional"
+    color: "#84cc16"  # lime
+    pass: true
+
+  mixed:
+    range: [50, 69]
+    label: "Needs Work"
+    description: "Significant ambiguity, opportunities for improvement"
+    color: "#eab308"  # yellow
+    pass: false
+
+  poor:
+    range: [0, 49]
+    label: "Poor"
+    description: "Major issues requiring substantial revision"
+    color: "#ef4444"  # red
+    pass: false
+
+# =============================================================================
+# SEVERITY LEVELS
+# =============================================================================
+# How to classify issues found during analysis
+
+severity_levels:
+  critical:
+    score_impact: -20
+    label: "Critical"
+    description: "Fundamental flaw that undermines entire narrative"
+    requires_action: true
+    examples:
+      - "No clear call-to-action"
+      - "Contradictory claims"
+      - "Missing SOAR elements entirely"
+
+  high:
+    score_impact: -10
+    label: "High"
+    description: "Significant issue affecting narrative effectiveness"
+    requires_action: true
+    examples:
+      - "Weak evidence for key claims"
+      - "Unclear value proposition"
+      - "Poor logical flow"
+
+  medium:
+    score_impact: -5
+    label: "Medium"
+    description: "Notable issue that should be addressed"
+    requires_action: false
+    examples:
+      - "Hedging language weakening assertions"
+      - "Missing transitions between sections"
+      - "Unbalanced SOAR distribution"
+
+  low:
+    score_impact: -2
+    label: "Low"
+    description: "Minor issue, nice to fix but not essential"
+    requires_action: false
+    examples:
+      - "Slightly passive voice"
+      - "Minor clarity improvements possible"
+      - "Style inconsistencies"
+
+# =============================================================================
+# DIMENSION WEIGHTS
+# =============================================================================
+# How different narrative dimensions contribute to overall score
+
+dimension_weights:
+  # Core narrative structure
+  structure:
+    weight: 0.25
+    description: "Story arc, SOAR balance, logical flow"
+
+  # Argument quality
+  argumentation:
+    weight: 0.25
+    description: "Claims, evidence, warrants, rebuttals"
+
+  # Rhetorical effectiveness
+  rhetoric:
+    weight: 0.20
+    description: "Persuasion techniques, emotional appeal, credibility"
+
+  # Discourse coherence
+  coherence:
+    weight: 0.15
+    description: "Transitions, logical connections, RST relations"
+
+  # Clarity and readability
+  clarity:
+    weight: 0.15
+    description: "Sentence complexity, jargon, readability"
+
+# =============================================================================
+# THRESHOLDS
+# =============================================================================
+# Numeric thresholds used across narrative analysis
+
+thresholds:
+  # Minimum SOAR element coverage
+  soar_minimum_coverage: 0.60  # At least 60% of elements present
+
+  # Evidence-to-claim ratio
+  evidence_claim_ratio_minimum: 0.5  # At least 1 evidence per 2 claims
+
+  # Hedge word density (per 100 words)
+  hedge_density_warning: 3.0
+  hedge_density_critical: 5.0
+
+  # Sentence complexity (average words per sentence)
+  sentence_length_ideal: 18
+  sentence_length_warning: 25
+  sentence_length_critical: 35
+
+  # Vocabulary overlap for claim-evidence pairing
+  cep_vocabulary_overlap_strong: 0.20
+  cep_vocabulary_overlap_minimum: 0.10
+
+# =============================================================================
+# SOAR SCORING THRESHOLDS
+# Detailed scoring rules for SOAR arc quality and rhetorical device detection
+# Source: Research - Using SOAR Storytelling most effectively.md
+# =============================================================================
+
+soar_scoring_thresholds:
+  purpose: "Granular scoring rules for SOAR arc evaluation and rhetorical framework detection"
+  source: "Research - Using SOAR Storytelling most effectively.md; Research - Canonical Presentation Methodology Research.md"
+
+  arc_completeness:
+    all_four_stages_present:
+      score_impact: +5
+      condition: "S, O, A, R all represented with >= 5% coverage each"
+    missing_result_stage:
+      score_impact: -8
+      condition: "No Result stage detected (most damaging gap)"
+      rationale: "Result stage provides proof and closes the narrative loop; its absence leaves audiences unconvinced"
+    missing_opportunity_stage:
+      score_impact: -5
+      condition: "No Opportunity/villain framing detected"
+    missing_action_stage:
+      score_impact: -4
+      condition: "Solution not described (jumps from problem to outcomes)"
+
+  rhetorical_framework_detection:
+    scqa_present:
+      score_impact: +5
+      condition: "Minto SCQA structure detected in executive presentation"
+      detection_signals: ["Situation paragraph", "Complication/but statement", "Question or implication", "Answer/recommendation"]
+    scqa_absent_executive_deck:
+      score_impact: -3
+      condition: "Executive deck without SCQA structure"
+    kairos_present_closing:
+      score_impact: +3
+      condition: "Urgency/timing trigger detected in Opportunity or closing section"
+      detection_signals: ["now", "this year", "window is closing", "competitors are already", "the time is"]
+    monroe_full_sequence:
+      score_impact: +8
+      condition: "All 5 Monroe stages detected (Attention, Need, Satisfaction, Visualization, Action)"
+    monroe_partial_sequence:
+      score_impact: +4
+      condition: "3-4 Monroe stages detected"
+
+  action_title_scoring:
+    score_5_assertion_with_evidence:
+      condition: "Headline makes assertion + includes mechanism or timeframe"
+      example: "AI-powered content supply chains deliver 10x velocity in 90 days"
+    score_3_assertion_only:
+      condition: "Headline makes assertion without mechanism"
+      example: "GenStudio transforms content production"
+    score_1_topic_label:
+      condition: "Headline is a noun phrase describing topic only"
+      example: "Content Production Overview"
+      score_impact: -3
+      rationale: "Topic label headlines require audiences to infer the message (cognitive debt)"
+
+  loss_aversion_scoring:
+    present:
+      score_impact: +2
+      condition: "Loss framing detected in Opportunity stage (cost of inaction, what competitors gain, risk of delay)"
+    absent_in_opportunity:
+      score_impact: 0
+      note: "Loss aversion is a bonus; absence does not penalize"

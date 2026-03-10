@@ -1,0 +1,451 @@
+# ==============================================================================
+# Monroe's Motivated Sequence
+# Five-phase persuasive framework for presentations and pitches
+# ==============================================================================
+
+_meta:
+  id: monroes_motivated_sequence_framework
+  title: "Monroe's Motivated Sequence"
+  description: "Alan Monroe's five-phase persuasive framework (Attention, Need, Satisfaction, Visualization, Action) with detection patterns and validation rules."
+  domain: narrative
+  domain_type: workflow
+  purpose: methodology
+  version: "1.3.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Using Monroes Motivated Sequence.md"
+    - "Corpus/Research/Research - Canonical Presentation Methodology Research.md"
+  relationships:
+# ==============================================================================
+# PHASE DEFINITIONS
+# ==============================================================================
+
+phases:
+  attention:
+    order: 1
+    name: "Attention"
+    purpose: "Capture audience interest and establish relevance"
+    recommended_percentage: [10, 15]
+    techniques:
+      - "Startling statistic"
+      - "Rhetorical question"
+      - "Brief story or anecdote"
+      - "Vivid scenario"
+      - "Famous quotation"
+      - "Challenge a common assumption"
+      - "Frame hook around learner pain points or WIIFM ('What's in it for me?') question"
+      - "Pose a puzzle or open problem that stimulates intrinsic curiosity (dopamine/curiosity loop)"
+      - "Present data-driven insight or urgent industry statistic for analytically-minded audiences"
+      - "Inclusive humor or self-deprecating anecdote to break ice in instructor-led contexts"
+    detection_patterns:
+      - "Did you know"
+      - "Imagine if"
+      - "What if I told you"
+      - "Consider this"
+      - "Picture this"
+      - "Imagine you are..."
+      - "X% of [your group] experienced..."
+    quality_criteria:
+      - "Immediately relevant to audience"
+      - "Creates emotional or intellectual engagement"
+      - "Connects to the core problem"
+      - "Audience feels alert, intrigued, and ready to hear more by end of phase"
+      - "Hook signals that the speaker understands the learner's specific context"
+
+  need:
+    order: 2
+    name: "Need"
+    purpose: "Establish the problem, gap, or pain point — triggering cognitive dissonance that motivates solution-seeking"
+    recommended_percentage: [20, 25]
+    theoretical_basis: "Cognitive dissonance (Monroe): highlighting the gap between current state and a better state creates internal discomfort that motivates learning and action. Empirical support: Frymier & Shulman (1995) found that increasing perceived content relevance significantly enhances student motivation."
+    techniques:
+      - "Present the problem with evidence"
+      - "Use statistics to quantify impact"
+      - "Share real-world consequences"
+      - "Make it personal to the audience (career, productivity, relationships, autonomy, or workload)"
+      - "Show urgency and timeliness"
+      - "Paint the problem via day-in-the-life scenario following a composite persona who mirrors the audience"
+      - "Use learning analytics or internal survey data ('60% of the team struggled with X') to validate the need"
+      - "Acknowledge what learners already do well, then identify the gap — respects adult experience while establishing need"
+    detection_patterns:
+      - "The problem is"
+      - "Currently, we face"
+      - "The challenge"
+      - "We're losing"
+      - "The gap between"
+      - "Without action"
+    quality_criteria:
+      - "Clearly defined problem"
+      - "Evidence-supported (statistics, examples)"
+      - "Audience-relevant impact"
+      - "Creates urgency"
+      - "By end of phase, audience feels: 'I see the problem, and I want a solution'"
+      - "Need connects to audience-specific values (career, productivity, relationships, autonomy) — generic need statements reduce impact"
+
+  satisfaction:
+    order: 3
+    name: "Satisfaction"
+    purpose: "Present the solution that addresses the need"
+    recommended_percentage: [25, 30]
+    techniques:
+      - "Clear solution statement"
+      - "Step-by-step explanation"
+      - "Evidence of effectiveness"
+      - "Address objections proactively"
+      - "Demonstrate feasibility"
+      - "Explicitly tie each content segment back to the problem ('Remember our scenario? Now that we have X, imagine how that changes the outcome')"
+      - "Use worked examples showing solution process step-by-step to reduce cognitive load for novices"
+      - "Apply multimedia principles — pair visuals with narration, not large text blocks (Mayer's Modality Principle)"
+      - "Introduce content in mini problem-solution cycles for each sub-objective: present mini-problem → teach concept → practice → next problem"
+      - "Cite credible research or expert opinion to validate the solution ('According to X study, teams using this method cut delivery time by 30%')"
+    detection_patterns:
+      - "The solution is"
+      - "Here's how we"
+      - "Our approach"
+      - "This addresses"
+      - "By implementing"
+      - "The answer lies in"
+    quality_criteria:
+      - "Directly addresses the stated need"
+      - "Specific and actionable"
+      - "Supported by evidence or precedent"
+      - "Objections pre-empted"
+      - "Every concept or activity visibly connects back to the Need raised in Phase 2 — extraneous content breaks the narrative arc"
+      - "Audience concludes phase thinking: 'I see how we can solve the problem — this makes sense'"
+    anti_pattern: "Delivering all content as fact-dump without reconnecting to the problem at intervals causes learners to lose the motivational thread"
+
+  visualization:
+    order: 4
+    name: "Visualization"
+    purpose: "Paint a picture of the future with and without the solution"
+    recommended_percentage: [20, 25]
+    theoretical_basis: "Narrative transportation (Green & Brock): absorption in a vivid story reduces counter-arguing and increases persuasion. ARCS Model alignment: Visualization maps to the 'Confidence' component — boosting expectancy of success. Monroe: listeners must 'actually see themselves enjoying the advantages.'"
+    techniques:
+      - "Positive visualization (with solution)"
+      - "Negative visualization (without solution) — use judiciously; contrast sharpens resolve but risks dampening tone"
+      - "Contrast method (before vs after)"
+      - "Concrete success scenarios"
+      - "Quantified outcomes"
+      - "Guided reflection prompts: 'Think about how you will use these techniques in your next project...'"
+      - "Branching scenario or interactive simulation showing outcome based on audience choices"
+      - "Testimonial or inspirational anecdote from a peer or former participant who achieved success"
+      - "Forward-looking trend data: 'Experts predict X by 2030 — visualize yourself ahead of that curve'"
+    detection_patterns:
+      - "Imagine"
+      - "Picture a world where"
+      - "In six months"
+      - "Without this"
+      - "The result will be"
+      - "You'll see"
+    quality_criteria:
+      - "Vivid and concrete imagery"
+      - "Attainable and relevant to the learner's world — generic or unrealistic scenarios fail to produce mental investment"
+      - "Emotionally engaging"
+      - "Realistic and credible"
+      - "In educational contexts: favour positive visualization unless behavior-change urgency requires the contrast method"
+      - "By end of phase, learner feels motivated and emotionally invested — narrative transportation achieved"
+
+  action:
+    order: 5
+    name: "Action"
+    purpose: "Provide specific next steps and call to action"
+    recommended_percentage: [10, 15]
+    theoretical_basis: "BJ Fogg Behavior Model / behavioral activation: small early actions create momentum; a quick-win during the action stage increases follow-through probability. Cognitive consistency principle: once someone commits (verbally or in writing), they are more likely to follow through due to consistency motives."
+    techniques:
+      - "Specific request"
+      - "Clear next steps"
+      - "Timeline for action"
+      - "Remove barriers to action"
+      - "Reinforce urgency"
+      - "Have audience write a one-minute action plan committing to one specific behavior change"
+      - "Provide job aids, cheat-sheets, or support forums to reduce barriers to first action"
+      - "Commitment device: have audience state or write their commitment to leverage psychological consistency"
+      - "Extend action beyond the session: 'Try this with a team member this week and report back on Friday'"
+      - "Peer accountability: follow-up session where participants share results of applying learning"
+    detection_patterns:
+      - "I'm asking you to"
+      - "The next step is"
+      - "Starting today"
+      - "Let's commit to"
+      - "Here's what you can do"
+      - "Sign up"
+      - "Join us"
+    quality_criteria:
+      - "Specific and concrete"
+      - "Achievable and realistic"
+      - "Time-bound"
+      - "Connected back to the need"
+      - "Action must be immediate where possible — vague or deferred action ('do this at some point') reduces commitment probability"
+      - "Learner should leave having taken a first step or made a specific commitment"
+
+# ==============================================================================
+# VALIDATION RULES
+# ==============================================================================
+
+validation:
+  phase_completeness:
+    description: "All five phases should be present for full MMS compliance"
+    minimum_phases: 4
+    ideal_phases: 5
+    critical_missing: ["need", "satisfaction", "action"]
+
+  content_balance:
+    description: "Content distribution should roughly follow recommended percentages"
+    tolerance_percent: 10
+    warning: "Phase exceeds recommended percentage by >10 points"
+
+  transition_markers:
+    description: "Transitions between phases should be explicit"
+    examples:
+      need_to_satisfaction: ["So what can we do?", "The answer is", "Here's the good news"]
+      satisfaction_to_visualization: ["Now imagine", "Let me show you what this looks like"]
+      visualization_to_action: ["So here's what I'm asking", "Your next step"]
+
+  psychological_coverage:
+    description: "Validator check: five phases map to specific psychological mechanisms that can be audited"
+    attention: "Curiosity trigger / WIIFM signal"
+    need: "Cognitive dissonance / relevance grounding"
+    satisfaction: "Competence scaffold / solution logic"
+    visualization: "Confidence builder / narrative transportation"
+    action: "Commitment device / feasibility assurance"
+    source: "Research - Using Monroes Motivated Sequence.md"
+
+  coherence_checks:
+    description: "Narrative integrity validation checklist across the full sequence"
+    checks:
+      - "Does the problem in Need naturally lead to the solution in Satisfaction? (no logical leaps)"
+      - "Any characters or scenarios introduced in earlier phases followed through or concluded?"
+      - "Is the tone consistent? (serious→hopeful progression is valid; erratic tone breaks immersion)"
+      - "Does the audience feel like the protagonist by Visualization and Action phases?"
+      - "Does the Need phase content type match the audience's resistance type? (knowledge-gap → data/evidence; belief-based → narrative/reframing; emotional → empathy/story)"
+      - "Does the Action phrase specify a discrete observable behavior ('sign the form', 'book the meeting') rather than a cognitive goal ('understand the value', 'appreciate the need')?"
+    source: "Research - Using Monroes Motivated Sequence.md; Research - Canonical Presentation Methodology Research.md"
+
+  horizontal_flow_test:
+    description: "Read only the Action Titles of all slides across the MMS sequence. The titles alone should convey a coherent persuasive arc."
+    pass_criterion: "A reader skimming titles can identify the five-phase progression and the core argument"
+    fail_signal: "Phase boundaries are invisible from titles alone — strengthen transition markers and phase-specific action titles"
+    source: "Research - Canonical Presentation Methodology Research.md, Horizontal Flow"
+
+  success_metrics:
+    primary_metric: "Kirkpatrick Level 3 (Behavior) — the Action phase is validated only when the specified behavior is actually executed, not when audiences express positive reaction"
+    levels:
+      level_1_feel: "Post-event sentiment — reflects success of Attention and Visualization phases"
+      level_2_know: "Recall of need and proposed solution — reflects Need and Satisfaction phases"
+      level_3_do: "Behavioral adoption — the primary MMS effectiveness metric"
+      level_4_results: "Downstream business impact of the behavioral change"
+    warning: "A presentation where audiences 'liked it' but did not 'do' the action has failed at its primary purpose"
+    source: "Research - Canonical Presentation Methodology Research.md, Kirkpatrick Adaptation"
+
+# ==============================================================================
+# USE CASE SUITABILITY
+# ==============================================================================
+
+use_cases:
+  high_suitability:
+    - "Sales pitches and proposals"
+    - "Policy advocacy presentations"
+    - "Change management communications"
+    - "Fundraising asks"
+    - "Internal transformation proposals"
+    - "Adult corporate training (all domains where learners question relevance)"
+    - "Online e-learning course introductions and curriculum-level framing"
+
+  moderate_suitability:
+    - "Training introductions"
+    - "Product launches"
+    - "Team motivational speeches"
+    - "Technical skills training (cybersecurity, software, data analysis) — requires data-heavy Need and hands-on Satisfaction"
+    - "Soft skills training (communication, conflict resolution, leadership) — particularly strong fit for Visualization via role-play and testimonial"
+
+  low_suitability:
+    - "Technical deep-dives"
+    - "Status update meetings"
+    - "Data review presentations"
+    - "Crisis or agile updates (compressed context — use 'What/So What/Now What?' instead)"
+    - "Executive briefings where audience is pre-convinced and wants solution first (use SCQA/Pyramid Principle instead)"
+
+  domain_adaptations:
+    technical:
+      hook: "Urgent data/statistic or live demonstration of failure mode"
+      need: "Efficiency/accuracy loss or security risk with quantified business impact"
+      satisfaction: "Live demo + hands-on lab or interactive simulation"
+      visualization: "Before/after metrics (productivity, error rate, deployment time)"
+      action: "Workflow integration challenge or sandbox task"
+    soft_skills:
+      hook: "Emotional anecdote or recognizable interpersonal scenario"
+      need: "Personal or team pain point (conflict, communication breakdown, missed opportunity)"
+      satisfaction: "Role-play + facilitated reflection + expert model"
+      visualization: "Narrative success story or peer testimonial"
+      action: "Behavioral commitment + follow-up journaling or accountability partner"
+    source: "Research - Using Monroes Motivated Sequence.md, Adapting for Different Domains"
+
+  framework_comparisons:
+    description: "Selection criteria for MMS vs. alternative persuasive frameworks"
+    source: "Research - Canonical Presentation Methodology Research.md, Section 4.2"
+    mms_vs_scqa:
+      use_mms_when: "Audience has not yet acknowledged the problem — MMS must build conviction before presenting the solution"
+      use_scqa_when: "Audience is pre-convinced and analytically ready; solution can be stated up-front (BLUF/Pyramid Principle)"
+    mms_vs_aida:
+      use_mms_when: "Audience requires emotional commitment and future-state envisioning before the call to action"
+      use_aida_when: "Goal is immediate transactional conversion (marketing, sales impulse purchase)"
+    mms_vs_freytag:
+      use_mms_when: "Emotional energy must be directed toward a specific behavioral action"
+      use_freytag_when: "Visionary keynote or change management speech where emotional catharsis is the primary goal"
+    mms_vs_what_so_what_now_what:
+      use_mms_when: "Full five-phase temporal arc is appropriate — audience has time and attention for structured persuasion"
+      use_what_so_what_now_what_when: "Agile updates, standups, or crisis communication requiring compressed low-ceremony format"
+
+  delivery_adaptations:
+    description: "MMS phase weighting and design adjustments by delivery context"
+    source: "Research - Canonical Presentation Methodology Research.md"
+    ballroom_keynote:
+      context: "Large live audience, high emotional resonance"
+      adjustment: "Weight Attention and Visualization phases more heavily; simplify Need evidence to single headline insights"
+      visual_design: "Asymmetric layouts for positive future-state slides; higher contrast and font size"
+    boardroom_slidument:
+      context: "Async read-ahead, high data density"
+      adjustment: "Attention phase loses rhetorical impact without presenter — use compelling visual graphic or startling headline stat. Need phase must carry more logical weight through written evidence."
+      detection_note: "For async MMS, Attention hooks should appear as visual/graphic anchors rather than spoken constructions"
+    hybrid_meeting:
+      context: "Shared screen + individual laptops simultaneously"
+      adjustment: "MMS phases must be visually self-contained; phase transition slides become critical for participants re-joining or skimming"
+
+  personalization_tactics:
+    description: "MMS effectiveness scales with audience tailoring"
+    methods:
+      - "Pre-course surveys or kickoff discussions to gather learner goals and pain points"
+      - "Create 2-3 audience personas before designing each phase"
+      - "Adjust the Need phase evidence type to match audience resistance type (data for knowledge gaps, narrative for belief gaps, empathy for emotional resistance)"
+
+# ==============================================================================
+# THEORETICAL FOUNDATIONS
+# Psychological and educational theories underpinning MMS
+# ==============================================================================
+
+theoretical_foundations:
+  description: "The psychological mechanisms that make Monroe's Motivated Sequence effective."
+  source: "Research - Using Monroes Motivated Sequence.md, Section 'Why It Works'"
+
+  cognitive_dissonance:
+    theorist: "Monroe (1930s); Festinger (1957)"
+    phase_alignment: "phases.need"
+    explanation: "Highlighting the gap between current state and a better state creates internal cognitive discomfort that motivates solution-seeking. The Need phase deliberately induces this dissonance."
+
+  arcs_model:
+    theorist: "Keller (1987)"
+    phase_alignment: "All five phases"
+    mapping:
+      attention_phase: "ARCS Attention — captures interest"
+      need_phase: "ARCS Relevance — establishes personal significance"
+      satisfaction_phase: "ARCS Satisfaction — provides competence experience"
+      visualization_phase: "ARCS Confidence — builds expectancy of success"
+      action_phase: "ARCS Satisfaction extended to behavioral commitment"
+    note: "MMS and ARCS are directly parallel models; using both provides a cross-validation lens"
+
+  knowles_andragogy:
+    theorist: "Knowles (1968)"
+    explanation: "Adults are goal-oriented, relevancy-oriented, practical, and self-directed. MMS addresses all four: Need grounds relevance, Satisfaction provides practical skills, Visualization connects to goals, Action provides self-directed commitment."
+
+  narrative_transportation:
+    theorist: "Green & Brock (2000)"
+    phase_alignment: "phases.visualization"
+    explanation: "Absorption in a vivid story reduces counter-arguing and increases emotional identification. The Visualization phase leverages narrative transportation to bypass resistance and build authentic commitment."
+
+  cognitive_load_theory:
+    theorist: "Sweller (1988)"
+    phase_alignment: "phases.satisfaction"
+    explanation: "MMS's problem-solution narrative structure reduces extraneous cognitive load by providing a meaningful schema (the problem context) into which new information is embedded. Learners process content as a solution rather than as isolated facts."
+
+  expectancy_value_theory:
+    theorist: "Eccles et al. (1983)"
+    phase_alignment: "phases.need + phases.visualization"
+    explanation: "The Need phase addresses subjective task value (why this matters), while Visualization and Satisfaction raise expectancy of success (belief that one can perform the required behavior)."
+
+  self_determination_theory:
+    theorist: "Deci & Ryan (1985)"
+    phase_alignment: "phases.action"
+    explanation: "MMS can support autonomy (choice in action step), competence (skill-building in satisfaction), and relatedness (human connection in delivery and peer accountability). SDT predicts that autonomy-supportive action steps increase intrinsic motivation to follow through."
+
+  frymier_shulman_1995:
+    citation: "Frymier, A.B. & Shulman, G.M. (1995). 'What's in it for me?': Increasing content relevance to enhance students' motivation. Communication Education."
+    finding: "Increasing perceived content relevance significantly enhances student motivation. Directly backs the theoretical basis for the Need phase."
+
+# ==============================================================================
+# INTEGRATION WITH FRAMEWORKS
+# ==============================================================================
+
+integration_with_frameworks:
+  description: "How MMS connects to and complements other instructional and persuasive frameworks."
+  source: "Research - Using Monroes Motivated Sequence.md"
+
+  arcs_model:
+    type: "Parallel persuasion-motivation model"
+    relationship: "Direct one-to-one phase mapping (see theoretical_foundations.arcs_model)"
+    use: "Use ARCS as a cross-check to ensure motivational completeness at each MMS phase"
+
+  backward_design:
+    type: "Instructional design methodology"
+    relationship: "MMS is described as 'a narrative form of backward design' — start with the desired behavioral Action, then design phases working backward to Attention"
+    cross_reference: "understanding_by_design.yaml (if present)"
+
+  blooms_taxonomy:
+    type: "Cognitive objective hierarchy"
+    relationship: "Action phase objectives correspond to application and synthesis levels (Bloom's Levels 3-6); Satisfaction phase typically operates at knowledge and comprehension (Levels 1-2)"
+
+  problem_based_learning:
+    type: "Pedagogical methodology"
+    relationship: "MMS Satisfaction phase mirrors PBL by embedding new content within a problem context established in the Need phase; solution knowledge is acquired in service of solving the established problem"
+
+  scqa_pyramid_principle:
+    type: "Alternative persuasive framework (McKinsey/Minto)"
+    relationship: "MMS is preferred when conviction must be built; SCQA when audience is pre-convinced and ready for solution-first delivery"
+    cross_reference: "See use_cases.framework_comparisons for selection criteria"
+
+# ==============================================================================
+# ANTI-PATTERNS
+# ==============================================================================
+
+anti_patterns:
+  description: "Failure modes that reduce MMS persuasive effectiveness."
+  source: "Research - Using Monroes Motivated Sequence.md; Research - Canonical Presentation Methodology Research.md"
+
+  skipping_need:
+    description: "Opening directly with the solution before establishing the problem"
+    consequence: "Content lands as 'nice to know' not 'must learn' — no cognitive dissonance established, motivation is not activated"
+    signal: "Audience response: 'Interesting, but why does this affect me?'"
+
+  vague_or_deferred_action:
+    description: "Action step is aspirational or temporal ('at some point, try to...') rather than immediate and specific"
+    consequence: "Commitment probability drops sharply; momentum built through Need, Satisfaction, and Visualization dissipates"
+    fix: "Specify a discrete observable behavior with a named timeframe"
+
+  generic_visualization:
+    description: "Future-state scenario is unrealistic, abstract, or not personalized to the audience's world"
+    consequence: "Narrative transportation fails; learners cannot see themselves in the scenario and emotional investment does not form"
+    fix: "Use audience-specific data, real job titles, familiar work contexts, and attainable outcomes"
+
+  all_positive_visualization_in_behavior_change:
+    description: "Showing only positive outcomes when the primary driver should be contrast with consequences of inaction"
+    consequence: "Insufficient urgency for behavior-change contexts; contrast method may be more effective when stakes are high"
+    caveat: "Positive-only visualization is preferred for educational contexts; contrast/negative is reserved for high-urgency behavior change"
+
+  satisfaction_fact_dump:
+    description: "Delivering the Satisfaction phase as an unbroken sequence of facts or data without reconnecting to the problem"
+    consequence: "Learners lose the motivational thread and mentally disengage from the narrative arc"
+    fix: "Use mini problem-solution cycles — reconnect each content segment to the Need"
+
+  impersonal_lecturing_tone:
+    description: "Presenting in broadcast mode throughout — talking at rather than with the audience"
+    consequence: "Adult learners disengage; Andragogy principle of self-direction violated"
+    fix: "Add WIIFM framing, direct address, reflection prompts, and participatory moments"
+
+  unresolved_narrative_threads:
+    description: "Personas, scenarios, or stories introduced in earlier phases are never referenced again"
+    consequence: "Narrative coherence breaks — audience feels the structure is inconsistent and loses trust in the presenter"
+    fix: "Callback earlier scenarios explicitly during Satisfaction and Visualization"
+
+  contested_claim_opener:
+    description: "Opening Attention phase with a controversial or contested claim before rapport is established"
+    consequence: "Triggers audience defensiveness before Need can establish the problem — closes minds before persuasion begins"
+    fix: "Attention must establish engagement (curiosity, shared reality, WIIFM) not disagreement"

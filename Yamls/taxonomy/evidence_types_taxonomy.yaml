@@ -1,0 +1,390 @@
+_meta:
+  id: evidence_types_taxonomy
+  title: "Evidence Types Taxonomy"
+  description: "Classification of evidence and argumentation types by evidence category, argument scheme, source authority, strength tier, and Toulmin component"
+  domain: narrative
+  domain_type: cross_cutting
+  purpose: taxonomy
+  version: "1.3.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - AQE with LLMs via IBM PDL.md"
+    - "Corpus/Research/Research - Argument Mining with MTL and PDL.md"
+    - "Corpus/Research/Research - TACAM Argument Mining with PDL.md"
+    - "Corpus/Research/a-guide-to-good-reasoning-cultivating-intellectual-virtues-16112.md"
+    - "Corpus/Research/UNIFIED_NARRATIVE_METHODOLOGY_v2.md"
+    - "Corpus/Research/Research - Analyzing Story for Business Communication.md"
+  academic_sources:
+    - "Toulmin (2003) - The Uses of Argument"
+    - "Walton (2006) - Fundamentals of Critical Argumentation"
+    - "Hyland (2005) - Stance and Engagement"
+    - "Fromm et al. (2019) - TACAM: Tree-based argument component annotation model"
+    - "IAM 2022 - Vocabulary sharing analysis: claim-data co-occurrence (20.14% vs 8.73% random)"
+  relationships:
+    - target: entities/evidence_types_entities.yaml
+      type: depends_on
+      description: "Evidence entity types for NER extraction"
+    - target: methodology/toulmin_framework.yaml
+      type: depends_on
+      description: "Toulmin argument model definitions"
+    - target: methodology/evidence_types_framework.yaml
+      type: depends_on
+      description: "Evidence type framework and detection patterns"
+# ==============================================================================
+# EVIDENCE CATEGORIES
+# ==============================================================================
+
+evidence_categories:
+  statistical:
+    label: "Statistical / Quantitative"
+    description: "Numerical data, metrics, percentages, research findings"
+    sub_types:
+      hard_statistic:
+        description: "Specific numbers with clear source"
+        examples: ["80% of customers reported improvement", "$1.2M in savings"]
+      research_finding:
+        description: "Results cited from formal research or study"
+        examples: ["Gartner reports that...", "According to a 2025 McKinsey study"]
+      benchmark:
+        description: "Industry standard or comparative metric"
+        examples: ["above the industry average of 3.2%", "top quartile performance"]
+    persuasive_strength: high
+    verification_ease: high
+
+  testimonial:
+    label: "Testimonial / Social Proof"
+    description: "Firsthand accounts, endorsements, customer stories"
+    sub_types:
+      customer_quote:
+        description: "Direct quotation from a customer or user"
+        examples: ['"This transformed our workflow" — VP Operations, Acme Corp']
+      case_study:
+        description: "Structured narrative of a customer's experience and results"
+        examples: ["Company X increased efficiency by 40% after implementation"]
+      endorsement:
+        description: "Public recommendation from a recognised authority or brand"
+        examples: ["Recommended by Harvard Business Review", "Gartner Magic Quadrant leader"]
+    persuasive_strength: high
+    verification_ease: medium
+
+  expert:
+    label: "Expert / Authority"
+    description: "Claims backed by recognised expertise or professional credentials"
+    sub_types:
+      expert_opinion:
+        description: "Statement from a credentialled expert"
+        examples: ["Dr. Smith, who led the original research, states..."]
+      institutional_authority:
+        description: "Position held by a recognised institution"
+        examples: ["The WHO recommends...", "ISO 27001 requires..."]
+      professional_experience:
+        description: "Claim grounded in practitioner experience"
+        examples: ["In my 20 years of practice...", "Having coached 500 executives..."]
+    persuasive_strength: medium_high
+    verification_ease: medium
+
+  analogical:
+    label: "Analogical / Comparative"
+    description: "Reasoning from parallel cases, metaphors, or comparisons"
+    sub_types:
+      analogy:
+        description: "Comparison between a familiar and unfamiliar concept"
+        examples: ["Think of the immune system as a security team"]
+      precedent:
+        description: "Reference to a prior case as justification"
+        examples: ["When we faced a similar challenge in 2023..."]
+      metaphor:
+        description: "Figurative comparison to create understanding"
+        examples: ["Data is the new oil", "Building a bridge to the customer"]
+    persuasive_strength: medium
+    verification_ease: low
+
+  logical:
+    label: "Logical / Deductive"
+    description: "Reasoning from premises to conclusion through formal logic"
+    sub_types:
+      deductive:
+        description: "General principle applied to specific case"
+        examples: ["All customers need onboarding; therefore this customer needs onboarding"]
+      inductive:
+        description: "Specific observations generalised to a principle"
+        examples: ["In every pilot, adoption exceeded 80%; therefore broad rollout will succeed"]
+      causal:
+        description: "Cause-effect chain reasoning"
+        examples: ["Because training hours increased, error rates decreased"]
+    persuasive_strength: medium_high
+    verification_ease: medium
+
+  anecdotal:
+    label: "Anecdotal / Narrative"
+    description: "Personal stories or singular examples used to illustrate a point"
+    sub_types:
+      personal_story:
+        description: "First-person narrative from the speaker"
+        examples: ["When I first joined the company...", "I remember a time when..."]
+      illustrative_example:
+        description: "Third-person example used to concretise a concept"
+        examples: ["Consider a sales rep who...", "Imagine a learner struggling with..."]
+      hypothetical:
+        description: "Invented scenario to explore possibilities"
+        examples: ["What if we could reduce cycle time by half?"]
+      problem_agitation:
+        description: "Narrative that escalates the emotional or practical severity of a problem before presenting a solution; intensifies the audience's felt sense of pain to motivate change"
+        examples: ["You've tried fixing this before. Each time, it comes back worse. The team is frustrated. Customers are leaving. And nothing seems to stick — until now."]
+    persuasive_strength: medium
+    verification_ease: low
+
+  visual:
+    label: "Visual / Demonstrative"
+    description: "Evidence conveyed through visual artefacts"
+    sub_types:
+      data_visualisation:
+        description: "Charts, graphs, and dashboards showing quantitative evidence"
+        examples: ["bar chart comparing Q1 vs Q2 revenue"]
+      demonstration:
+        description: "Live or recorded showing of a product or process"
+        examples: ["live product demo", "screen recording walkthrough"]
+      photographic:
+        description: "Real photographs documenting evidence"
+        examples: ["before/after screenshots", "event photographs"]
+    persuasive_strength: high
+    verification_ease: high
+
+  rhetorical_device:
+    label: "Rhetorical Device"
+    description: "Linguistic techniques that amplify the persuasive or emotional impact of a message beyond the literal content; does not constitute evidence in the Toulmin sense but functions as a force multiplier on adjacent evidence"
+    sub_types:
+      anaphora:
+        description: "Deliberate repetition of a phrase or word at the start of successive clauses to create rhythm and emphasis"
+        examples: ["We came. We saw. We changed the game.", "Every customer. Every team. Every outcome."]
+        rhetorical_appeal: pathos
+      antithesis:
+        description: "Juxtaposition of contrasting ideas in parallel grammatical structures to sharpen distinction and memorability"
+        examples: ["Not a sprint, but a marathon.", "We're not selling software. We're selling certainty."]
+        rhetorical_appeal: logos
+      rhetorical_question:
+        description: "A question posed not to invite an answer but to make the audience affirm or confront a point"
+        examples: ["How long can you afford to wait?", "What would it mean for your team if this actually worked?"]
+        rhetorical_appeal: pathos
+    persuasive_strength: medium
+    verification_ease: not_applicable
+    caveat: "Rhetorical devices are not evidence; their presence without supporting evidence is an argument weakness, not strength"
+
+# ==============================================================================
+# TOULMIN ARGUMENT COMPONENTS
+# ==============================================================================
+
+toulmin_components:
+  claim:
+    label: "Claim"
+    description: "The central assertion being argued for"
+    role: "What the speaker wants the audience to accept"
+    detection_heuristic: "Claim and its supporting data typically share vocabulary — 20.14% lexical overlap in annotated corpora vs 8.73% for random sentence pairs (IAM 2022)"
+    locality_constraint: "Claim and data are generally co-located within a 3-sentence window; distant claim-data pairs should be flagged for verification"
+
+  data:
+    label: "Data (Grounds)"
+    description: "The evidence or facts supporting the claim"
+    role: "The foundation on which the argument rests"
+    quality_check: "Data should be independently verifiable; data cited without a traceable source downgrades the claim to Tier 3 or lower"
+
+  warrant:
+    label: "Warrant"
+    description: "The logical bridge connecting data to claim"
+    role: "The reasoning principle that makes the data relevant"
+    warrant_types:
+      logos_warrant: "Warrant based on formal logic, statistical inference, or causal mechanism"
+      pathos_warrant: "Warrant based on shared values, emotional resonance, or moral principle"
+      ethos_warrant: "Warrant based on the credibility or authority of the data source"
+    missing_warrant_risk: "When a warrant is absent, the audience must infer it; ambiguous warrants are a primary source of argument failure in business communication"
+
+  backing:
+    label: "Backing"
+    description: "Support for the warrant itself"
+    role: "Why the warrant should be trusted"
+
+  qualifier:
+    label: "Qualifier"
+    description: "The degree of certainty or conditions on the claim"
+    role: "How strongly the claim is asserted (probably, usually, in most cases)"
+
+  rebuttal:
+    label: "Rebuttal"
+    description: "Exceptions or counterarguments to the claim"
+    role: "Conditions under which the claim would not hold"
+
+# ==============================================================================
+# RHETORICAL APPEALS
+# ==============================================================================
+
+rhetorical_appeals:
+  logos:
+    label: "Logos (Logical Appeal)"
+    description: "Persuasion through reason, evidence, and logical argument"
+    markers: ["data", "statistics", "case studies", "logical deduction", "causal argument"]
+    strength: "Highest for analytical buyers; requires solid evidence quality"
+
+  pathos:
+    label: "Pathos (Emotional Appeal)"
+    description: "Persuasion through emotional connection, values, and empathy"
+    markers: ["personal stories", "problem agitation", "aspirational language", "rhetorical devices"]
+    strength: "Highest for executive and values-driven audiences; must be balanced with logos to maintain credibility"
+
+  ethos:
+    label: "Ethos (Credibility Appeal)"
+    description: "Persuasion through the speaker's authority, expertise, or trustworthiness"
+    markers: ["expert citations", "institutional endorsements", "professional credentials", "track record"]
+    strength: "Foundational; all logos and pathos arguments depend on underlying ethos to be accepted"
+
+  kairos:
+    label: "Kairos (Timeliness Appeal)"
+    description: "Persuasion through the argument's relevance to the current moment, context, or urgency"
+    markers: ["compelling event", "deadline", "market window", "competitive threat", "regulatory change"]
+    strength: "Critical in sales contexts; converts intent to action by creating temporal urgency"
+
+# ==============================================================================
+# ARGUMENT ANTI-PATTERNS
+# ==============================================================================
+
+argument_anti_patterns:
+  orphaned_claim:
+    label: "Orphaned Claim"
+    description: "A claim presented without any supporting data or warrant; the most common argument failure in business communication"
+    detection: "Claim token present with no co-located data within 3-sentence window"
+    remediation: "Identify and attach at least one Tier 2 or higher evidence item"
+
+  all_pathos_no_logos:
+    label: "All Pathos, No Logos"
+    description: "Argument relies entirely on emotional appeal without any evidential grounding; persuasive for initial engagement but fails under analytical scrutiny"
+    detection: "Evidence categories limited to anecdotal or rhetorical_device with no statistical or expert content"
+    remediation: "Add a minimum of one Tier 1 or Tier 2 evidence item to anchor the emotional narrative"
+
+  should_statements:
+    label: "Should Statements"
+    description: "Deontic claims ('we should', 'you must') presented as logical conclusions without the supporting premise chain that would justify the obligation"
+    detection: "Deontic modal ('should', 'must', 'have to') in conclusion position without an explicit logical warrant"
+    remediation: "Reconstruct the argument to show why the obligation follows from the evidence"
+
+  circular_argument:
+    label: "Circular Argument"
+    description: "The conclusion of the argument is used as a premise to support itself; no new information is introduced"
+    detection: "Claim and data tokens share identical or synonym-level predicates with no intervening evidence"
+    remediation: "Identify an external data point that provides independent support for the claim"
+
+  data_dump:
+    label: "Data Dump"
+    description: "A collection of statistics or facts presented without narrative connective tissue, warrants, or claims; overwhelming without being persuasive"
+    detection: "Three or more Tier 1 evidence items in sequence with no connecting warrant or claim language"
+    remediation: "Build a claim-data-warrant triplet for each key metric; eliminate evidence items that do not serve a specific claim"
+
+# ==============================================================================
+# EVIDENCE STRENGTH TIERS
+# ==============================================================================
+
+evidence_strength_tiers:
+  tier_1_definitive:
+    label: "Definitive"
+    description: "Verifiable, replicable, peer-reviewed or independently auditable"
+    typical_sources: ["peer-reviewed research", "audited financial data", "controlled experiments"]
+
+  tier_2_strong:
+    label: "Strong"
+    description: "Well-sourced, credible, but not independently verified"
+    typical_sources: ["industry reports", "expert testimony", "case studies with named clients"]
+
+  tier_3_moderate:
+    label: "Moderate"
+    description: "Reasonable but dependent on context or interpretation"
+    typical_sources: ["analogies", "historical precedent", "professional experience"]
+
+  tier_4_weak:
+    label: "Weak"
+    description: "Suggestive but not reliable for critical decisions"
+    typical_sources: ["anecdotes", "hypotheticals", "single examples", "unattributed claims"]
+    anti_pattern: "Data dump — accumulating multiple Tier 4 items does not compound into Tier 3 strength; quantity of weak evidence does not substitute for quality"
+
+# ==============================================================================
+# CLASSIFICATION DIMENSIONS
+# ==============================================================================
+
+classification_dimensions:
+  evidence_category:
+    name: "Evidence Category"
+    description: "The type of evidence presented"
+    values:
+      - statistical
+      - testimonial
+      - expert
+      - analogical
+      - logical
+      - anecdotal
+      - visual
+      - rhetorical_device
+
+  toulmin_component:
+    name: "Toulmin Component"
+    description: "The role the element plays in an argument structure"
+    values:
+      - claim
+      - data
+      - warrant
+      - backing
+      - qualifier
+      - rebuttal
+
+  evidence_strength:
+    name: "Evidence Strength"
+    description: "The reliability and persuasive weight of the evidence"
+    values:
+      - definitive
+      - strong
+      - moderate
+      - weak
+
+  source_authority:
+    name: "Source Authority"
+    description: "The credibility of the evidence source"
+    values:
+      - peer_reviewed
+      - institutional
+      - industry_expert
+      - practitioner
+      - unattributed
+
+  argument_direction:
+    name: "Argument Direction"
+    description: "Whether the evidence supports or challenges the claim"
+    values:
+      - supporting
+      - opposing
+      - qualifying
+      - contextualising
+
+  rhetorical_appeal:
+    name: "Rhetorical Appeal"
+    description: "The Aristotelian appeal category that the evidence or device primarily activates"
+    values:
+      - logos
+      - pathos
+      - ethos
+      - kairos
+      - mixed
+
+  narrative_function:
+    name: "Narrative Function"
+    description: "The role the evidence plays in the story arc of the argument"
+    values:
+      - situation_setting
+      - problem_framing
+      - stakes_amplification
+      - solution_proof
+      - outcome_illustration
+
+  argument_stance:
+    name: "Argument Stance"
+    description: "The relational stance of one argument component toward another in the argument graph"
+    values:
+      - support
+      - attack
+      - partial_attack
+      - undercut

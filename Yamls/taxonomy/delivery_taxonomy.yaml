@@ -1,0 +1,256 @@
+_meta:
+  id: delivery_taxonomy
+  title: "Delivery Taxonomy"
+  description: "Classification of instructional delivery approaches by modality, facilitation style, session phase, engagement level, and virtual platform capability"
+  domain: performance
+  domain_type: workflow
+  purpose: taxonomy
+  version: "1.2.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - ILT & VILT Best Practice.md"
+    - "Corpus/Research/Research - Public_Speaking_research.md"
+    - "Corpus/Research/Research - Discussion-based Learning.md"
+    - "Corpus/Research/Research - Unified Performance Framework.md"
+    - "Corpus/Research/Research - Canonical Presentation Methodology Research.md"
+    - "Corpus/Research/research_-_mastering_presentation_nerves.md"
+    - "Corpus/Research/Research - World-Class_Public_Speaking_FULL_RESEARCH.md"
+  relationships:
+    - target: entities/delivery_entities.yaml
+      type: depends_on
+      description: "Delivery entity types for NER extraction"
+    - target: entities/performance_entities.yaml
+      type: depends_on
+      description: "Speaker performance entities (complementary)"
+    - target: methodology/pedagogical_patterns.yaml
+      type: depends_on
+      description: "Instructional patterns referenced by delivery types"
+# ==============================================================================
+# DELIVERY MODALITIES
+# ==============================================================================
+
+delivery_modalities:
+  ilt:
+    label: "Instructor-Led Training (ILT)"
+    description: "Face-to-face, synchronous instruction in a physical classroom"
+    synchronicity: synchronous
+    location: in_person
+    typical_duration: "2-8 hours"
+    strengths:
+      - "high engagement through physical presence"
+      - "real-time non-verbal feedback"
+      - "hands-on activities"
+    limitations:
+      - "travel and venue costs"
+      - "scheduling constraints"
+      - "geographic reach"
+
+  vilt:
+    label: "Virtual Instructor-Led Training (VILT)"
+    description: "Synchronous instruction delivered via virtual meeting platform"
+    synchronicity: synchronous
+    location: remote
+    typical_duration: "60-180 minutes"
+    strengths:
+      - "geographic flexibility"
+      - "lower cost than ILT"
+      - "platform engagement tools"
+    limitations:
+      - "screen fatigue"
+      - "limited non-verbal cues"
+      - "technology dependencies"
+
+  elearning:
+    label: "Self-Paced eLearning"
+    description: "Asynchronous digital learning completed independently"
+    synchronicity: asynchronous
+    location: remote
+    typical_duration: "15-60 minutes per module"
+    strengths:
+      - "learner-controlled pacing"
+      - "scalable deployment"
+      - "consistent content"
+    limitations:
+      - "no live interaction"
+      - "self-motivation required"
+      - "limited peer learning"
+
+  blended:
+    label: "Blended Learning"
+    description: "Combination of synchronous and asynchronous delivery across multiple touchpoints"
+    synchronicity: mixed
+    location: mixed
+    typical_duration: "multi-week programme"
+    strengths:
+      - "balances flexibility and interaction"
+      - "reinforces learning through multiple channels"
+      - "supports spaced practice"
+    limitations:
+      - "complex logistics"
+      - "higher design effort"
+      - "requires learner self-management"
+
+  microlearning:
+    label: "Microlearning"
+    description: "Bite-sized learning nuggets delivered on-demand, typically under 10 minutes"
+    synchronicity: asynchronous
+    location: remote
+    typical_duration: "2-10 minutes"
+    strengths:
+      - "fits into workflow"
+      - "high completion rates"
+      - "supports just-in-time learning"
+    limitations:
+      - "limited depth per asset"
+      - "fragmented learning path"
+      - "not suited for complex skills"
+
+  cohort_based:
+    label: "Cohort-Based Learning"
+    description: "Structured programme with a fixed group progressing together over time"
+    synchronicity: mixed
+    location: mixed
+    typical_duration: "4-12 weeks"
+    strengths:
+      - "peer accountability"
+      - "community building"
+      - "social learning"
+    limitations:
+      - "fixed schedule"
+      - "pacing constraints"
+      - "cohort size management"
+
+# ==============================================================================
+# FACILITATION STYLES
+# ==============================================================================
+
+facilitation_styles:
+  directive:
+    label: "Directive"
+    description: "Instructor-centred delivery with structured content and clear authority"
+    teacher_talk_ratio: high
+    learner_autonomy: low
+    best_for: ["compliance training", "safety procedures", "new hire orientation"]
+
+  guided:
+    label: "Guided"
+    description: "Instructor scaffolds discovery through questions and structured activities"
+    teacher_talk_ratio: medium
+    learner_autonomy: medium
+    best_for: ["skills development", "problem-solving workshops", "scenario practice"]
+
+  facilitative:
+    label: "Facilitative"
+    description: "Instructor as moderator; learners drive discussion and discovery"
+    teacher_talk_ratio: low
+    learner_autonomy: high
+    best_for: ["leadership development", "strategy sessions", "experienced cohorts"]
+
+  coaching:
+    label: "Coaching"
+    description: "One-on-one or small group with personalised feedback and goal-setting"
+    teacher_talk_ratio: medium
+    learner_autonomy: high
+    best_for: ["executive coaching", "performance improvement", "skill refinement"]
+
+  peer_led:
+    label: "Peer-Led"
+    description: "Learners teach and learn from each other with minimal instructor involvement"
+    teacher_talk_ratio: minimal
+    learner_autonomy: very_high
+    best_for: ["communities of practice", "study groups", "knowledge sharing"]
+
+# ==============================================================================
+# SESSION PHASES
+# ==============================================================================
+
+session_phases:
+  opening:
+    label: "Opening"
+    description: "Session start: welcome, icebreaker, agenda, objectives, ground rules"
+    typical_duration_pct: 10
+    key_activities: ["icebreaker", "agenda review", "housekeeping", "learning objectives"]
+
+  activation:
+    label: "Activation"
+    description: "Prior knowledge activation and connection to new content"
+    typical_duration_pct: 10
+    key_activities: ["warm-up question", "pre-assessment", "experience sharing"]
+
+  instruction:
+    label: "Instruction"
+    description: "Core content delivery through presentation, demonstration, or guided discovery"
+    typical_duration_pct: 30
+    key_activities: ["lecture", "demonstration", "think-aloud", "guided reading"]
+
+  practice:
+    label: "Practice"
+    description: "Learner application through activities, exercises, and simulations"
+    typical_duration_pct: 30
+    key_activities: ["group activity", "scenario practice", "roleplay", "hands-on exercise"]
+
+  reflection:
+    label: "Reflection"
+    description: "Debrief, synthesis, and metacognitive processing"
+    typical_duration_pct: 10
+    key_activities: ["debrief discussion", "reflection journal", "peer feedback"]
+
+  closing:
+    label: "Closing"
+    description: "Recap, action planning, evaluation, and next steps"
+    typical_duration_pct: 10
+    key_activities: ["recap", "action items", "evaluation survey", "next steps"]
+
+# ==============================================================================
+# CLASSIFICATION DIMENSIONS
+# ==============================================================================
+
+classification_dimensions:
+  modality:
+    name: "Delivery Modality"
+    description: "The format and channel through which instruction is delivered"
+    values:
+      - ilt
+      - vilt
+      - elearning
+      - blended
+      - microlearning
+      - cohort_based
+
+  facilitation_style:
+    name: "Facilitation Style"
+    description: "The instructor's role and approach during delivery"
+    values:
+      - directive
+      - guided
+      - facilitative
+      - coaching
+      - peer_led
+
+  session_phase:
+    name: "Session Phase"
+    description: "The stage within a live session's arc"
+    values:
+      - opening
+      - activation
+      - instruction
+      - practice
+      - reflection
+      - closing
+
+  engagement_level:
+    name: "Engagement Level"
+    description: "The degree of learner participation expected"
+    values:
+      - passive_reception
+      - responsive_interaction
+      - active_construction
+      - collaborative_creation
+
+  synchronicity:
+    name: "Synchronicity"
+    description: "Whether delivery occurs in real time or at the learner's pace"
+    values:
+      - synchronous
+      - asynchronous
+      - mixed

@@ -1,0 +1,1560 @@
+_meta:
+  id: performance_entities
+  purpose: entity
+  version: 2.18.1
+  last_updated: '2026-03-09'
+  description: Entity types and patterns for NLP-based speaker performance detection including disfluency markers, vocal quality
+    indicators, rhetorical devices, and delivery cues.
+  domain: performance
+  domain_type: workflow
+  corpus_sources:
+  - Corpus/Research/Research - World-Class_Public_Speaking_Research.md
+  - Corpus/Research/Research - Elite Speaker Linguistic Analysis Taxonomy.md
+  - Corpus/Research/Research - The Architecture of Influence_ A Comprehensive Multimodal Taxonomy of Elite vs. Average Public
+    Speaking.md
+  - 'Corpus/Research/The World-Class Presentation Playbook: A Cognitive-Based System for Design, Structure, and Delivery.md'
+  - 'Corpus/Research/The Canonical Presentation Lifecycle: A Strategic Methodology for High-Stakes Communication.md'
+  - Corpus/Research/Research - Unified Performance Framework.md
+  - Corpus/Research/Research - Presentation Delivery_ Ethos and Physicality.md
+  - Corpus/Research/Research - Canonical Presentation Methodology Research.md
+  - Corpus/Research/Crafting Powerful Opening Plays.md
+  - Corpus/Research/Research - Personal Branding Framework for Early.md
+  - Corpus/Research/Research - Analyzing Story for Business Communication.md
+  - Corpus/Research/Research - The Anatomy of Presence.md
+  - Corpus/Research/Research - Vocal Profiling for Executive Coaching.md
+  - Corpus/Research/Research - Voice Coaching and Clinical Analysis.md
+  - Corpus/Research/Research - World-Class_Public_Speaking_FULL_RESEARCH.md
+  - Corpus/Research/Research - Voice Quality Metric Research Parameters.md
+  - Corpus/Research/Best-Practice Elevator Pitches.md
+  - Corpus/Research/Research_Corpus_Public_Speaking_Full.md
+  - Corpus/Research/Research - Public_Speaking_research.md
+  - Corpus/Research/Research - ILT & VILT Best Practice.md
+  - Corpus/Research/research_-_mastering_presentation_nerves.md
+  - Corpus/Research/research_-_elite_speaker_linguistic_analysis_taxonomy.md
+  - Corpus/Research/research_-_the_architecture_of_influence__a_comprehensive_multim.md
+  relationships:
+  - target: reference/speaking_performance_thresholds.yaml
+    type: depends_on
+    description: Performance tier labels and threshold values for scoring
+  - target: reference/voice_quality_thresholds.yaml
+    type: depends_on
+    description: Clinical thresholds for voice quality assessment
+gliner_config:
+  model: urchade/gliner_multi_pii-v1
+  batch_size: 8
+  context_window: 512
+  domain_keywords:
+    primary:
+    - speaker
+    - delivery
+    - voice
+    - pitch
+    - pace
+    - pause
+    - gesture
+    - presence
+    secondary:
+    - filler
+    - monotone
+    - uptalk
+    - vocal fry
+    - projection
+    - articulation
+    - cadence
+entity_types:
+  filler_word:
+    description: Verbal disfluencies that interrupt speech flow and undermine authority
+    canonical_id: filler_word
+    entity_kind: disfluency
+    family: paralinguistic
+    gliner_label: FILLER_WORD
+    gliner_description: Verbal disfluency filler word hesitation um uh like you know kind of sort of
+    examples:
+    - um
+    - uh
+    - like
+    - you know
+    - kind of
+    - sort of
+    - I mean
+    - basically
+    - actually
+    - right
+    anti_examples:
+    - I like this approach
+    - What kind of solution
+    - Sort the results
+    confidence_threshold: 0.8
+    aliases:
+    - hesitation
+    - verbal filler
+    - disfluency
+    indicators:
+    - um
+    - uh
+    - er
+    - like
+    - you know
+    - kind of
+    - sort of
+    - I mean
+    - basically
+    - actually
+    - literally
+    - right
+    - so
+    patterns:
+    - \bum\b
+    - \buh\b
+    - \ber\b
+    - you know
+    - kind of
+    - sort of
+    - I mean
+    color: '#e74c3c'
+    performance_threshold:
+      elite: < 1 per 100 words
+      proficient: 1-3 per 100 words
+      developing: 3-5 per 100 words
+      needs_coaching: '> 5 per 100 words'
+    relates_to:
+    - target: extraneous_load_marker
+      relation: triggers
+      weight: expected
+      description: Filler words add extraneous cognitive load to spoken delivery
+      target_file: cognitive_load_entities
+    - target: delivery_rate_issue
+      relation: contrasts_with
+      weight: required
+      description: Filler words (um, uh, er) are the inverse of strategic pausing. While strategic pauses create gravitas
+        and processing time, filler words signal uncertainty and planning load. Elite speakers replace filler words with silence.
+    - target: pause_marker
+      relation: contrasts_with
+      weight: required
+      description: Elite speakers replace filler words with emphatic pauses of 250-600ms; silence
+        is the antithesis of disfluency per Unified Performance Framework and Ethos research
+    - target: performance_tier
+      relation: limits
+      weight: expected
+      description: Filler word density differentiates speaker tiers; elite speakers eliminate
+        fillers while novice speakers default to disfluencies per Ethos and Physicality research
+    - target: ethos_appeal
+      relation: limits
+      weight: expected
+      description: "Filled pauses (um, uh, like) signal anxiety and lack of preparation, actively reducing speaker credibility and perceived competence per Ethos and Physicality research"
+      target_file: rhetorical_devices_entities
+    - target: presentation_anxiety_marker
+      relation: supported_by
+      weight: expected
+      description: "Filler words co-occur with hesitation pauses exceeding 1000ms in non-boundary positions, both indicating lexical retrieval failure associated with anxiety per Unified Performance Framework"
+      target_file: delivery_entities
+    - target: vocal_quality_issue
+      relation: triggers
+      weight: expected
+      description: "Excessive filler words trigger vocal quality degradation — rushed speech interspersed with um/uh undermines clarity and perceived confidence in personal brand delivery per Personal Branding Framework"
+    - target: confidence_technique
+      relation: rebuts
+      weight: expected
+      description: "Filler words directly undermine confidence techniques; the master protocol requires speaking on the exhale with downward inflection, which is incompatible with filler-laden speech per Anatomy of Presence research"
+      target_file: delivery_entities
+    - target: working_memory_marker
+      relation: limits
+      weight: required
+      description: "Filler words directly consume working memory bandwidth — listeners must process meaningless sounds competing with content comprehension, with optimal filler rate of 0-2 per minute per Research_Corpus_Public_Speaking_Full"
+      target_file: cognitive_load_entities
+  hedge_marker:
+    description: Language that weakens assertions and undermines speaker certainty
+    canonical_id: hedge_marker
+    entity_kind: disfluency
+    family: paralinguistic
+    gliner_label: HEDGE_MARKER
+    gliner_description: Hedging language weakening assertion maybe probably I think perhaps might
+    examples:
+    - maybe we could
+    - I think probably
+    - it might be possible
+    - I guess
+    - perhaps
+    - sort of like
+    - it seems like
+    anti_examples:
+    - I think therefore I am
+    - Maybe is a song title
+    confidence_threshold: 0.7
+    aliases:
+    - hedging
+    - qualifier
+    - weakener
+    indicators:
+    - maybe
+    - probably
+    - I think
+    - I guess
+    - perhaps
+    - might
+    - could be
+    - it seems
+    - sort of
+    - kind of
+    - a little bit
+    - just
+    patterns:
+    - I (think|guess|suppose)
+    - (maybe|perhaps|probably) \w+
+    - it (seems|appears) (like|that)
+    - might be
+    - could be
+    color: '#e67e22'
+    relates_to:
+    - target: certainty_marker
+      relation: contrasts_with
+      weight: required
+      description: Hedge markers ('I think', 'sort of', 'kind of', 'maybe') encode low certainty. Elite speakers avoid hedges
+        in key claims but use strategic hedges for vulnerability without undermining competence. Hedges signal low certainty
+        compared to certainty markers.
+      target_file: discourse_entities
+    - target: uptalk_indicator
+      relation: bridges
+      weight: expected
+      description: Hedging language and uptalk both encode uncertainty; uptalk is the prosodic
+        equivalent of lexical hedging and they frequently co-occur in low-authority delivery
+    - target: ethos_appeal
+      relation: limits
+      weight: expected
+      description: Excessive hedging undermines perceived ethos and executive presence; gravitas
+        requires decisiveness and certainty rather than weakened assertions
+      target_file: rhetorical_devices_entities
+    - target: authority_opener
+      relation: contrasts_with
+      weight: expected
+      description: Academic stance bundles that hedge claims contrast with elite agentic discourse organizers like I want to show you per Elite Speaker Linguistic Analysis
+    - target: negative_qualifier
+      relation: supports
+      weight: optional
+      description: "Hedge markers in vocal delivery directly support negative scoring qualification by signalling lack of commitment and reduced assertiveness per Voice Quality Metric Research"
+      target_file: scoring_entities
+  vocal_quality_issue:
+    description: Terms indicating voice quality problems requiring coaching or clinical attention
+    canonical_id: vocal_quality_issue
+    entity_kind: quality_indicator
+    family: vocal_production
+    gliner_label: VOCAL_QUALITY_ISSUE
+    gliner_description: Voice quality problem hoarse breathy strained vocal fry nasal creaky thin weak
+    examples:
+    - hoarse voice
+    - breathy quality
+    - strained delivery
+    - vocal fry
+    - nasal tone
+    - creaky voice
+    - thin voice
+    - weak projection
+    anti_examples:
+    - voice of the customer
+    - brand voice
+    - vocal supporter
+    confidence_threshold: 0.75
+    aliases:
+    - voice problem
+    - vocal pathology
+    - voice concern
+    indicators:
+    - hoarse
+    - breathy
+    - strained
+    - vocal fry
+    - nasal
+    - creaky
+    - thin
+    - weak
+    - raspy
+    - scratchy
+    - tight
+    - constricted
+    patterns:
+    - (hoarse|breathy|strained|nasal|creaky|thin|weak|raspy) (voice|quality|tone|delivery)
+    - vocal (fry|strain|fatigue|tension)
+    color: '#9b59b6'
+    relates_to:
+    - target: performance_tier
+      relation: triggers
+      weight: required
+      description: Vocal quality issues (jitter >1.04%, shimmer >3.81%, HNR <20dB) directly
+        determine performance tier placement per Unified Performance Framework diagnostic thresholds
+    - target: nonverbal_cue
+      relation: bridges
+      weight: expected
+      description: Vocal quality (breathiness, strain, vocal fry) co-occurs with physical tension
+        patterns; physiological sigh breathing addresses both vocal and postural control per Ethos research
+    - target: uptalk_indicator
+      relation: bridges
+      weight: expected
+      description: Vocal fry and uptalk both signal reduced vocal authority; they co-occur as
+        dual credibility killers per Presentation Delivery Ethos research
+    - target: presentation_anxiety_marker
+      relation: supported_by
+      weight: optional
+      description: Vocal quality degradation (pitch constriction, breathiness, volume drop)
+        is a physiological indicator of presentation anxiety per Ethos and Physicality research
+      target_file: delivery_entities
+    - target: engagement_cue
+      relation: contrasts_with
+      weight: expected
+      description: Monotone pitch and few pauses lead to low warmth while elite speakers oscillate between soft sell and hard sell voices for engagement per Elite Speaker Linguistic Analysis
+      target_file: delivery_entities
+    - target: ethos_appeal
+      relation: limits
+      weight: expected
+      description: "Vocal quality issues (cracking, breathiness, monotone) undermine perceived competence and authority, directly limiting ethos appeal per Ethos and Physicality research"
+      target_file: rhetorical_devices_entities
+    - target: clarity_dimension
+      relation: limits
+      weight: required
+      description: "Vocal quality issues directly degrade clarity scoring — low CPP/CPPS (<9dB in speech) and HNR <15dB indicate dysphonic voice that reduces intelligibility per Voice Quality Metric Research"
+      target_file: scoring_entities
+    - target: delivery_rate_issue
+      relation: triggers
+      weight: expected
+      description: "Vocal quality issues like breathiness/roughness correlate with speech rate anomalies per voice metric research"
+    - target: filler_word
+      relation: triggers
+      weight: expected
+      description: "Vocal quality degradation co-occurs with increased filler word usage as speakers lose fine motor phonatory control per voice metric research"
+    - target: engagement_dimension
+      relation: limits
+      weight: expected
+      description: "Monotone or dysphonic vocal quality directly reduces audience engagement as shown by 'The Drone' archetype per voice metric research"
+      target_file: scoring_entities
+    - target: negative_qualifier
+      relation: triggers
+      weight: expected
+      description: "Pathological voice quality indicators (high jitter >1.04%, low HNR <12dB) trigger negative scoring qualifiers per Voice Quality Metric Research"
+      target_file: scoring_entities
+    - target: extraneous_load_marker
+      relation: triggers
+      weight: expected
+      description: "Robotic or monotonous narration requires extra effort to decode increasing extraneous load per Applying Mayer's Principles Practical Checklist"
+      target_file: cognitive_load_entities
+  delivery_rate_issue:
+    description: Speech rate and pacing problems identified in coaching feedback
+    canonical_id: delivery_rate_issue
+    entity_kind: quality_indicator
+    family: delivery
+    gliner_label: DELIVERY_RATE_ISSUE
+    gliner_description: Speech rate pacing problem too fast rushed slow monotone flat trailing off mumbling
+    examples:
+    - speaking too fast
+    - rushed delivery
+    - monotone presentation
+    - flat affect
+    - trailing off at sentence ends
+    - mumbling
+    - hard to hear
+    - swallowed syllables
+    anti_examples:
+    - fast track project
+    - delivery service
+    - flat design
+    confidence_threshold: 0.7
+    aliases:
+    - pacing issue
+    - rate problem
+    - tempo concern
+    indicators:
+    - too fast
+    - too slow
+    - rushed
+    - monotone
+    - flat
+    - trailing off
+    - mumbling
+    - hard to hear
+    - volume drop
+    - inaudible
+    - unclear
+    patterns:
+    - (too|very) (fast|slow|quiet|loud)
+    - (rushed|monotone|flat|mumbling)
+    - trailing off
+    - hard to hear
+    - volume (drop|drops|dropped)
+    color: '#f39c12'
+    relates_to:
+    - target: working_memory_marker
+      relation: triggers
+      weight: optional
+      description: Speaking too fast overloads working memory
+      target_file: cognitive_load_entities
+    - target: pause_marker
+      relation: supported_by
+      weight: required
+      description: Strategic pause insertion is the primary mechanism for controlling delivery
+        rate; optimal 500-600ms pauses reduce WPM from conversational 150-160 to elite 100-120
+        per Unified Performance Framework
+    - target: performance_tier
+      relation: triggers
+      weight: required
+      description: Speech rate directly determines performance tier placement; >170 WPM maps
+        to The Manic archetype, <100 WPM maps to The Drone archetype per Unified Performance Framework
+    - target: extraneous_load_marker
+      relation: triggers
+      weight: expected
+      description: Excessive speech rate (>170 WPM) overloads audience processing capacity
+        creating extraneous cognitive load per dual-channel processing theory
+      target_file: cognitive_load_entities
+    - target: nonverbal_cue
+      relation: bridges
+      weight: expected
+      description: Rushed delivery rate correlates with restricted gesture range and frozen
+        posture; optimal rate enables full use of the Power Box gesture space per Ethos research
+    - target: performance_tier
+      relation: limits
+      weight: expected
+      description: Novice speakers have fast rate above 160 wpm due to anxiety while elite speakers speak at 100-120 wpm per Elite Speaker Linguistic Analysis
+    - target: presentation_anxiety_marker
+      relation: supported_by
+      weight: expected
+      description: "Delivery rate issues are driven by presentation anxiety; the master protocol prescribes speaking slightly slower than baseline specifically to signal low anxiety per Anatomy of Presence research"
+      target_file: delivery_entities
+    - target: logos_appeal
+      relation: limits
+      weight: expected
+      description: "Delivery rate issues limit logos appeal; speaking too fast (>170 WPM) exceeds the listener's processing capacity, reducing retention of logical arguments per Vocal Profiling research"
+      target_file: rhetorical_devices_entities
+    - target: vocal_quality_issue
+      relation: triggers
+      weight: expected
+      description: "Excessive speech rate (>6 syllables/sec) triggers vocal quality issues — vowel centralization and spectral reduction degrade intelligibility and acoustic clarity per Voice Coaching and Clinical Analysis"
+    - target: engagement_dimension
+      relation: limits
+      weight: expected
+      description: "Delivery rate issues directly limit engagement scoring — both >180 WPM (cognitive backlog, 17-25% comprehension drop) and monotone pitch (<3 ST sigma) measurably reduce audience engagement per Voice Quality Metric Research"
+      target_file: scoring_entities
+    - target: working_memory_marker
+      relation: limits
+      weight: expected
+      description: "Excessive speech rate overwhelms auditory processing loop and listener working memory capacity per voice metric research"
+      target_file: cognitive_load_entities
+    - target: novice_learner
+      relation: limits
+      weight: required
+      description: "Excessive delivery rate >180 WPM limits novice learner comprehension most severely due to lack of chunking schema per Voice Quality Metric Research"
+      target_file: audience_entities
+  power_verb:
+    description: High-impact action verbs that convey authority and leadership
+    canonical_id: power_verb
+    entity_kind: rhetorical_device
+    family: lexical_choice
+    gliner_label: POWER_VERB
+    gliner_description: High-impact action verb authority leadership spearheaded ignited transformed mobilized propelled
+    examples:
+    - spearheaded the initiative
+    - ignited a transformation
+    - mobilized the team
+    - propelled growth
+    - championed the cause
+    - orchestrated the rollout
+    - catalyzed innovation
+    anti_examples:
+    - spearhead mint plant
+    - ignited the fire
+    confidence_threshold: 0.65
+    aliases:
+    - action verb
+    - impact verb
+    - leadership verb
+    indicators:
+    - spearheaded
+    - ignited
+    - transformed
+    - mobilized
+    - propelled
+    - championed
+    - orchestrated
+    - catalyzed
+    - revolutionized
+    - pioneered
+    - galvanized
+    - architected
+    - forged
+    - unleashed
+    patterns:
+    - (spearheaded|ignited|transformed|mobilized|propelled|championed|orchestrated) \w+
+    - (catalyzed|revolutionized|pioneered|galvanized|architected|forged|unleashed) \w+
+    color: '#2ecc71'
+    relates_to:
+    - target: rhetorical_pattern
+      relation: supports
+      weight: required
+      description: Power verbs (launched, transformed, spearheaded) form the foundation of dynamic rhetorical patterns. They
+        create agency in discourse and signal action-orientation. Patterns of power verbs throughout a presentation establish
+        a consistent voice of authority and agency.
+    - target: ethos_appeal
+      relation: supports
+      weight: expected
+      description: Power verbs (launched, transformed, spearheaded) construct ethos through
+        agency language; decisive action vocabulary signals executive presence per Canonical Methodology
+      target_file: rhetorical_devices_entities
+    - target: emphasis_marker
+      relation: supported_by
+      weight: expected
+      description: Power verbs gain impact through vocal emphasis; stressed delivery of action
+        verbs amplifies their authority signalling effect per Ethos and Physicality research
+    - target: value_proposition
+      relation: supports
+      weight: expected
+      description: "Power verbs directly strengthen value proposition impact — 'transform' vs 'help' signals decisive action and authority per Best-Practice Elevator Pitches"
+      target_file: narrative_entities
+    - target: action_marker
+      relation: supports
+      weight: expected
+      description: Power verbs map directly to sales action markers; verbs like accelerated,
+        captured, transformed serve dual rhetorical and sales narrative functions per SOAR framework
+      target_file: sales_entities
+    - target: bluf_hook
+      relation: supports
+      weight: expected
+      description: Power verbs support BLUF hooks by providing the decisive, action-oriented language that makes bottom-line
+        opening statements authoritative and impactful per Crafting Powerful Opening Plays
+      target_file: opening_hooks_entities
+    - target: performance_tier
+      relation: enables
+      weight: expected
+      description: Level 4 Visionary speakers show high verb dynamism with discourse organizer bundles while Level 1 Novice speakers show low passive verb dynamism per Elite Speaker Linguistic Analysis
+    - target: pathos_appeal
+      relation: enables
+      weight: expected
+      description: "Dynamic action verbs (ignite, shatter, unleash) activate emotional imagery and visceral response, directly enabling pathos appeal per Ethos and Physicality research"
+    - target: hedge_marker
+      relation: contrasts_with
+      weight: expected
+      description: "High-agency dynamic verbs (spearheaded, ignited, transformed) contrast with weak stative substitutes; replacing stative verbs increases perceived leadership competence per Architecture of Influence"
+      target_file: rhetorical_devices_entities
+    - target: boost_marker
+      relation: supports
+      weight: expected
+      description: "Active verbs in brand statements (thrive, lead, drive, bridge) amplify confidence and assertiveness, directly supporting boost markers in personal brand messaging per Personal Branding Framework"
+      target_file: stance_markers_entities
+    - target: authority_opener
+      relation: supports
+      weight: expected
+      description: "Power verbs support authority openers; vocal anchoring with downward inflection and command language signals certainty and authority in initial interactions per Anatomy of Presence research"
+    - target: passive_voice_marker
+      relation: contrasts_with
+      weight: expected
+      description: "Power verbs contrast with passive voice — elite speakers use high dynamic-to-stative verb ratios while passive auxiliary verbs correlate negatively with leadership perception (elite_speaker_taxonomy)"
+      target_file: writing_entities
+    - target: filler_word
+      relation: contrasts_with
+      weight: expected
+      description: "Elite speakers replace low-agency stative verbs and filler-prone hedging with high-dynamism power verbs; power verbs signal competence while fillers undermine it (Architecture of Influence, Sections 1.2, 1.4)"
+    - target: delivery_rate_issue
+      relation: limits
+      weight: optional
+      description: "Optimal elite speech rate of 100-120 wpm constrains power verb density; slower pacing allows each power verb to land with emphasis (Architecture of Influence, Sections 1.2, 1.4)"
+  rhetorical_pattern:
+    description: Named rhetorical devices used for persuasive impact in speeches
+    canonical_id: rhetorical_pattern
+    entity_kind: rhetorical_device
+    family: speech_craft
+    gliner_label: RHETORICAL_PATTERN
+    gliner_description: Rhetorical device anaphora tricolon repetition parallel structure antithesis chiasmus
+    examples:
+    - We will fight. We will win. We will prevail.
+    - Not just good — great. Not just great — transformative.
+    - Ask not what your country can do for you
+    - I have a dream... I have a dream... I have a dream
+    - Government of the people, by the people, for the people
+    anti_examples:
+    - Please repeat your answer
+    - The pattern in the data
+    confidence_threshold: 0.6
+    subtypes:
+      anaphora:
+        description: Repetition of opening words across consecutive phrases
+        examples:
+        - We will... We will... We will...
+      tricolon:
+        description: Three parallel phrases or clauses for rhythmic impact
+        examples:
+        - of the people, by the people, for the people
+      antithesis:
+        description: Contrasting ideas in parallel structure
+        examples:
+        - Not just X — but Y
+      chiasmus:
+        description: Reversed parallel structure (AB → BA)
+        examples:
+        - Ask not what your country can do for you — ask what you can do for your country
+    aliases:
+    - figure of speech
+    - persuasion technique
+    - oratory device
+    indicators:
+    - not just
+    - but also
+    - we will
+    - we must
+    - I have
+    - let us
+    patterns:
+    - (\w+ ){2,}\. \1
+    - not just \w+ .+ but \w+
+    color: '#1abc9c'
+    relates_to:
+    - target: anaphora
+      relation: contains
+      weight: required
+      description: Rhetorical patterns subsume named figures of speech; anaphora (repetition
+        of opening words) is a core component of rhetorical patterning per elite speaker analysis
+      target_file: rhetorical_devices_entities
+    - target: tricolon
+      relation: contains
+      weight: required
+      description: Tricolon (rule of three parallel phrases) is a foundational rhetorical
+        pattern that creates rhythm and memorability in persuasive speech
+      target_file: rhetorical_devices_entities
+    - target: chiasmus
+      relation: contains
+      weight: expected
+      description: Chiasmus (reversed parallel structure AB-BA) is an advanced rhetorical
+        pattern used by elite speakers to create memorable contrasts per Canonical Methodology
+      target_file: rhetorical_devices_entities
+    - target: epistrophe
+      relation: contains
+      weight: expected
+      description: Epistrophe (repetition of closing words) is the complement to anaphora
+        and frequently appears in high-impact rhetorical sequences
+      target_file: rhetorical_devices_entities
+    - target: pause_marker
+      relation: supported_by
+      weight: expected
+      description: Rhetorical patterns depend on strategic pausing for delivery impact;
+        pauses before and after tricolons and anaphora amplify their persuasive effect
+    - target: nonverbal_cue
+      relation: supported_by
+      weight: expected
+      description: Rhetorical patterns are amplified through coordinated gesture and movement;
+        the Power Box gesture space supports parallel structure delivery per Ethos research
+    - target: narrative_hook
+      relation: enables
+      weight: expected
+      description: Rhetorical patterns create compelling narrative hooks; tricolon and anaphora
+        are primary devices for crafting memorable opening statements per Canonical Methodology
+      target_file: narrative_entities
+    - target: lexical_bundle
+      relation: contains
+      weight: expected
+      description: Elite discourse uses formulaic sequences as rhetorical tools with lexical bundles functioning as discourse organizers per Elite Speaker Linguistic Analysis
+    - target: claim
+      relation: supports
+      weight: expected
+      description: "Rhetorical patterns (anaphora, tricolon, antithesis) support claims by providing persuasive delivery structure — Action Titles are declarative claims that rhetorical patterns amplify per Canonical Presentation Methodology"
+      target_file: narrative_entities
+    - target: antithesis
+      relation: contains
+      weight: expected
+      description: "Rhetorical patterns contain antithesis as a specific contrast device juxtaposing opposing ideas for persuasive effect per Analyzing Story for Business Communication"
+      target_file: rhetorical_devices_entities
+    - target: ethos_appeal
+      relation: supports
+      weight: expected
+      description: "Rhetorical patterns support ethos appeal; Quintilian argued Actio was the dominant factor in persuasion — a mediocre speech delivered with superb physical rhetoric outperforms a brilliant speech delivered poorly per Anatomy of Presence research"
+      target_file: rhetorical_devices_entities
+    - target: engagement_cue
+      relation: supports
+      weight: expected
+      description: "Rhetorical patterns support engagement cues; the staircase intonation pattern (step-wise pitch changes) signals structured persuasive argumentation that holds attention per Vocal Profiling research"
+      target_file: delivery_entities
+    - target: rhetorical_question
+      relation: contains
+      weight: expected
+      description: "Rhetorical patterns contain rhetorical questions as an engagement technique great speakers employ alongside storytelling per Public Speaking research"
+      target_file: rhetorical_devices_entities
+    - target: performance_tier
+      relation: enables
+      weight: expected
+      description: "Rhetorical patterns (anaphora, tricolon, metaphor density) enable higher performance tiers — the Visionary tier is defined by masterful use of discourse architecture (elite_speaker_taxonomy)"
+    - target: pause_marker
+      relation: contains
+      weight: expected
+      description: "Rhetorical patterns structurally contain strategic pauses marking syntactic boundaries and emphasis points per voice metric research"
+  lexical_bundle:
+    description: Multi-word formulaic sequences characteristic of elite speakers
+    canonical_id: lexical_bundle
+    entity_kind: rhetorical_device
+    family: speech_craft
+    gliner_label: LEXICAL_BUNDLE
+    gliner_description: Formulaic phrase speaker bundle I want to tell you here is the thing let me show
+    examples:
+    - I want to tell you
+    - Here's the thing
+    - Let me show you
+    - What I've learned is
+    - The truth is
+    - Here's what I know
+    - Let me be clear
+    - Make no mistake
+    anti_examples:
+    - bundle of sticks
+    - product bundle
+    confidence_threshold: 0.65
+    aliases:
+    - formulaic sequence
+    - set phrase
+    - stock phrase
+    indicators:
+    - I want to
+    - here's the thing
+    - let me
+    - what I
+    - the truth is
+    - make no mistake
+    - here's what
+    - the fact is
+    - the reality is
+    patterns:
+    - I want to (tell|show|share)
+    - here's (the thing|what)
+    - let me (show|tell|be)
+    - the (truth|fact|reality) is
+    - make no mistake
+    color: '#3498db'
+    relates_to:
+    - target: authority_opener
+      relation: supports
+      weight: expected
+      description: Lexical bundles like 'Let me be clear' and 'Make no mistake' function as
+        authority opener signals establishing speaker command per Canonical Methodology research
+    - target: ethos_appeal
+      relation: supports
+      weight: expected
+      description: Formulaic bundles construct ethos through discourse organiser patterns;
+        bundles like 'The truth is' and 'Here is what I know' signal directness and credibility
+      target_file: rhetorical_devices_entities
+    - target: bluf_hook
+      relation: enables
+      weight: expected
+      description: Lexical bundles provide the syntactic scaffolding for BLUF (Bottom Line Up
+        Front) openings; 'Here is what you need to know' is both a bundle and a BLUF delivery mechanism
+      target_file: opening_hooks_entities
+    - target: working_memory_marker
+      relation: supports
+      weight: expected
+      description: Frame markers reduce listener anxiety by providing a roadmap aligning with chunking limitations of human working memory per Elite Speaker Linguistic Analysis
+      target_file: cognitive_load_entities
+    - target: visionary_bundle
+      relation: contains
+      weight: expected
+      description: Elite speakers dominate use of discourse organizer bundles such as I want to show you and Let me tell you which are a type of lexical bundle per Elite Speaker Linguistic Analysis
+      target_file: rhetorical_devices_entities
+    - target: rhetorical_pattern
+      relation: supports
+      weight: expected
+      description: "Lexical bundles support rhetorical patterns by providing recurring multi-word sequences that create the staircase intonation structure of persuasive speech per Vocal Profiling research"
+    - target: engagement_marker
+      relation: supports
+      weight: expected
+      description: "Lexical bundles such as 'what I want to tell you' and 'if you look at' function as engagement markers that simulate dialogue and force active audience participation per elite_speaker_taxonomy"
+      target_file: stance_markers_entities
+    - target: academic_bundle
+      relation: contrasts_with
+      weight: expected
+      description: "Visionary lexical bundles (discourse organisers, participant-oriented) contrast with academic bundles (stance, referential) in register and rhetorical function per elite_speaker_taxonomy"
+      target_file: discourse_entities
+    - target: academic_bundle
+      relation: contains
+      weight: required
+      description: "Academic bundles ('In the context of...', 'On the other hand...') are a specific functional class of lexical bundles identified in academic lecture corpus analysis (Architecture of Influence, Part 3)"
+      target_file: rhetorical_devices_entities
+  pause_marker:
+    description: Notations indicating strategic or problematic pauses in speech
+    canonical_id: pause_marker
+    entity_kind: prosodic
+    family: paralinguistic
+    gliner_label: PAUSE_MARKER
+    gliner_description: Strategic pause silence beat dramatic pause power pause notation in speaker notes transcript
+    examples:
+    - '[pause]'
+    - '[long pause]'
+    - '[beat]'
+    - '[silence]'
+    - '...'
+    - (pause for effect)
+    - '[2-second pause]'
+    anti_examples:
+    - pause the video
+    - press pause
+    confidence_threshold: 0.85
+    aliases:
+    - silence notation
+    - beat marker
+    - dramatic pause
+    indicators:
+    - '[pause]'
+    - '[beat]'
+    - '[silence]'
+    - '...'
+    - (pause)
+    - '[long pause]'
+    patterns:
+    - \[pause\]
+    - \[beat\]
+    - \[silence\]
+    - \.\.\.
+    - \[\d+-second pause\]
+    color: '#95a5a6'
+    relates_to:
+    - target: delivery_rate_issue
+      relation: supports
+      weight: required
+      description: Strategic pausing is a core tool for managing delivery rate. Pauses reduce actual WPM and create cognitive
+        headroom for audiences. The optimal speech rate (100-120 wpm for elite speakers, 150-160 for conversational) is achieved
+        through strategic pause placement.
+    - target: emphasis_marker
+      relation: supports
+      weight: required
+      description: Strategic pauses enable emphasis. A pause after a key statement signals its importance to the audience.
+        The pause provides time for cognitive consolidation and emotional resonance of emphasized content.
+      target_file: discourse_entities
+    - target: filler_word
+      relation: contrasts_with
+      weight: required
+      description: Strategic pauses are the antithesis of filler words; elite speakers replace
+        um/uh disfluencies with emphatic silence of 250-600ms per Unified Performance Framework
+    - target: performance_tier
+      relation: enables
+      weight: expected
+      description: Mastery of strategic pausing differentiates speaker tiers; elite speakers
+        use 500-600ms pauses for emphasis while novices fill silence with disfluencies
+    - target: working_memory_marker
+      relation: resolves
+      weight: expected
+      description: Strategic pauses provide cognitive processing time that resolves working
+        memory overload; 500ms pauses allow audience consolidation per dual-channel theory
+      target_file: cognitive_load_entities
+    - target: nonverbal_cue
+      relation: enables
+      weight: expected
+      description: Pauses create space for deliberate gesture and movement; the beat pause
+        enables gestural emphasis within the Power Box per Ethos and Physicality research
+    - target: rhetorical_pattern
+      relation: enables
+      weight: expected
+      description: Strategic pauses punctuate rhetorical devices; pauses before and after
+        tricolons and anaphora amplify their rhythmic and persuasive impact
+    - target: confidence_technique
+      relation: supported_by
+      weight: expected
+      description: Intentional pausing is a core confidence technique; physiological sigh
+        breathing during pauses enables vocal reset and anxiety management per Ethos research
+      target_file: delivery_entities
+    - target: narrative_tension
+      relation: supports
+      weight: expected
+      description: Strategic pauses support narrative tension by creating anticipatory silence that amplifies the emotional weight
+        of key statements and revelations per Crafting Powerful Opening Plays
+      target_file: narrative_entities
+    - target: tricolon
+      relation: enables
+      weight: expected
+      description: "Strategic pauses before and after tricolon elements create the rhythmic separation that makes three-part structures land with full impact per Ethos and Physicality research"
+      target_file: rhetorical_devices_entities
+    - target: extraneous_load_marker
+      relation: resolves
+      weight: expected
+      description: "Effective pausing resolves extraneous cognitive load by breaking information into digestible chunks that improve retention by 22% per Vocal Profiling research"
+      target_file: cognitive_load_entities
+    - target: clarity_dimension
+      relation: supports
+      weight: expected
+      description: "Deliberate pauses at syntactic boundaries enhance perceived clarity and fluency; 250ms+ cognitive pauses allow audience information encoding per Voice Quality Metric Research"
+      target_file: scoring_entities
+    - target: germane_load_marker
+      relation: enables
+      weight: expected
+      description: "Strategic pauses provide cognitive room — audience processing time that supports germane (meaning-making) load by allowing reflection and integration (Architecture of Influence, Section 1.4)"
+      target_file: cognitive_load_entities
+    - target: structure_dimension
+      relation: supports
+      weight: optional
+      description: "Cognitive/rhetorical pauses at syntactic boundaries contribute to perceived structural organization of speech delivery"
+      target_file: scoring_entities
+  nonverbal_cue:
+    description: Descriptions of body language, gestures, and physical presence in speaker notes
+    canonical_id: nonverbal_cue
+    entity_kind: physical_delivery
+    family: nonverbal
+    gliner_label: NONVERBAL_CUE
+    gliner_description: Body language gesture posture eye contact pointing fidgeting pacing head tilt movement
+    examples:
+    - open hand gesture
+    - pointing at the screen
+    - crossed arms
+    - fidgeting with pen
+    - leaning forward
+    - slouching
+    - pacing back and forth
+    - making eye contact
+    - looking at slides
+    - head tilt
+    anti_examples:
+    - nonverbal agreement
+    - cue the music
+    - cue card
+    confidence_threshold: 0.65
+    subtypes:
+      gesture:
+        indicators:
+        - pointing
+        - open hands
+        - closed fists
+        - palm up
+        - palm down
+        - waving
+      posture:
+        indicators:
+        - leaning forward
+        - slouching
+        - standing tall
+        - crossed arms
+        - hands in pockets
+      eye_contact:
+        indicators:
+        - looking down
+        - reading slides
+        - scanning audience
+        - avoiding eye contact
+        - sustained gaze
+      movement:
+        indicators:
+        - pacing
+        - frozen
+        - swaying
+        - rocking
+        - shifting weight
+    aliases:
+    - body language
+    - gesture
+    - physical cue
+    indicators:
+    - pointing
+    - open hands
+    - crossed arms
+    - fidgeting
+    - leaning
+    - slouching
+    - pacing
+    - eye contact
+    - looking down
+    - head tilt
+    - standing tall
+    patterns:
+    - (pointing|leaning|slouching|pacing|fidgeting)
+    - (open|closed) (hands|fists|arms)
+    - (eye contact|looking down|scanning audience)
+    - head (tilt|nod|shake)
+    color: '#8e44ad'
+    relates_to:
+    - target: ethos_appeal
+      relation: supports
+      weight: required
+      description: Nonverbal cues (gesture, posture, eye contact, facial expression) are primary vehicles for establishing
+        ethos. Audiences form judgments about credibility within 7 seconds based on nonverbal signals before processing verbal
+        content.
+      target_file: rhetorical_devices_entities
+    - target: performance_tier
+      relation: triggers
+      weight: expected
+      description: Nonverbal behaviour is a primary differentiator across performance tiers;
+        self-adaptor frequency >5.5/min indicates anxiety tier per Unified Performance Framework
+    - target: vocal_quality_issue
+      relation: bridges
+      weight: expected
+      description: Nonverbal tension (shoulder elevation, jaw clenching) co-occurs with vocal
+        quality issues; both stem from physical tension patterns per Ethos and Physicality research
+    - target: delivery_rate_issue
+      relation: bridges
+      weight: expected
+      description: Restricted gesture range correlates with rushed delivery; frozen posture
+        and rapid speech co-occur as anxiety indicators per Unified Performance Framework
+    - target: emphasis_marker
+      relation: supports
+      weight: expected
+      description: Deliberate gesture (palm-down authority, open-palm inclusion) amplifies
+        vocal emphasis creating dual-channel reinforcement per Ethos and Physicality research
+    - target: pause_marker
+      relation: bridges
+      weight: expected
+      description: Strategic pauses create space for deliberate gesture transition; beat pauses
+        enable gestural emphasis within the Power Box framework per Ethos research
+    - target: pathos_appeal
+      relation: enables
+      weight: expected
+      description: Facial expression and gesture are primary vehicles for emotional appeal;
+        thin-slicing research shows audiences read pathos through nonverbal channels first
+      target_file: rhetorical_devices_entities
+    - target: confidence_technique
+      relation: enables
+      weight: expected
+      description: "Expansive nonverbal cues (shoulder abduction >30 degrees, stable COP, Duchenne smiles) directly enable perception of confidence by observers per Unified Performance Framework"
+      target_file: delivery_entities
+    - target: logos_appeal
+      relation: supports
+      weight: expected
+      description: "Nonverbal cues support logos appeal; biomechanical efficiency, symmetry of movement, and economy of gesture signal control and predictability per Anatomy of Presence research"
+      target_file: rhetorical_devices_entities
+    - target: working_memory_marker
+      relation: supports
+      weight: expected
+      description: "Nonverbal cues (spatial anchoring gestures, deictic pointing) support working memory by providing multimodal encoding that disambiguates pronoun references and reduces cognitive load per elite_speaker_taxonomy"
+      target_file: cognitive_load_entities
+    - target: presentation_anxiety_marker
+      relation: supports
+      weight: expected
+      description: "Self-adaptor frequency correlates strongly with state anxiety (r=0.95) serving as measurable anxiety indicators per voice metric research"
+      target_file: delivery_entities
+    - target: engagement_cue
+      relation: enables
+      weight: expected
+      description: "Synchronized gesture-speech timing per McNeill's Window facilitates lexical access and comprehension enabling engagement per voice metric research"
+      target_file: delivery_entities
+    - target: engagement_dimension
+      relation: supports
+      weight: expected
+      description: "Synchronized nonverbal cues enhance audience engagement assessment scores per Voice Quality Metric Research"
+      target_file: scoring_entities
+  uptalk_indicator:
+    description: Markers of High Rising Terminal (HRT) that undermine speaker authority
+    canonical_id: uptalk_indicator
+    entity_kind: prosodic
+    family: paralinguistic
+    gliner_label: UPTALK_INDICATOR
+    gliner_description: High rising terminal uptalk question intonation on statement undermining authority certainty
+    examples:
+    - We launched the product?
+    - The results were positive?
+    - I'm the project lead?
+    - right?
+    - yeah?
+    - you know?
+    anti_examples:
+    - What did you launch?
+    - Were the results positive?
+    confidence_threshold: 0.7
+    aliases:
+    - HRT
+    - rising intonation
+    - question intonation
+    indicators:
+    - right?
+    - yeah?
+    - you know?
+    - okay?
+    patterns:
+    - \w+\?
+    - (right|yeah|okay)\?
+    note: Requires audio analysis for definitive detection; text patterns are heuristic only
+    color: '#d35400'
+    relates_to:
+    - target: authority_opener
+      relation: contrasts_with
+      weight: required
+      description: Uptalk (rising terminal intonation on declarative statements) signals uncertainty and undermines authority.
+        Authority openers require falling terminal intonation. Uptalk is antithetical to authority markers.
+    - target: hedge_marker
+      relation: bridges
+      weight: expected
+      description: Uptalk is the prosodic equivalent of lexical hedging; rising intonation
+        on declaratives and hedge words frequently co-occur in low-authority delivery patterns
+    - target: vocal_quality_issue
+      relation: bridges
+      weight: expected
+      description: Uptalk and vocal fry co-occur as dual credibility killers; both signal
+        reduced vocal authority and undermine perceived competence per Ethos research
+    - target: certainty_marker
+      relation: contrasts_with
+      weight: required
+      description: Uptalk converts declarative statements into implicit questions, directly
+        opposing certainty markers that encode epistemic commitment and authority
+      target_file: discourse_entities
+    - target: performance_tier
+      relation: limits
+      weight: expected
+      description: Persistent uptalk caps speaker at developing tier regardless of content
+        quality; elite speakers use falling terminal intonation on key claims per Ethos research
+    - target: ethos_appeal
+      relation: limits
+      weight: expected
+      description: Uptalk undermines perceived ethos by converting authoritative claims into
+        approval-seeking questions; it signals low status in executive communication contexts
+      target_file: rhetorical_devices_entities
+    - target: confidence_technique
+      relation: contrasts_with
+      weight: expected
+      description: "Uptalk's rising intonation on declaratives directly contrasts with confident declarative delivery marked by falling terminal pitch per Unified Performance Framework"
+      target_file: delivery_entities
+    - target: boost_marker
+      relation: contrasts_with
+      weight: expected
+      description: "Uptalk contrasts with boost markers; rising intonation undercuts certainty while boosters amplify it by signaling questions instead of statements per Vocal Profiling research"
+      target_file: stance_markers_entities
+    - target: hedge_marker
+      relation: supports
+      weight: optional
+      description: "Upward pitch contour at statement endings functions as vocal hedging device signaling uncertainty per prosodic research"
+      target_file: stance_markers_entities
+  performance_tier:
+    description: Labels from the performance scoring framework indicating speaker level
+    canonical_id: performance_tier
+    entity_kind: assessment
+    family: scoring
+    gliner_label: PERFORMANCE_TIER
+    gliner_description: Speaker assessment tier label elite proficient developing needs coaching voice quality rating
+    examples:
+    - Elite Speaker
+    - Proficient Speaker
+    - Developing Speaker
+    - Needs Coaching
+    - Excellent Voice Quality
+    - Good Voice Quality
+    - Acceptable Voice Quality
+    - Voice Quality Concern
+    anti_examples:
+    - elite membership
+    - developing country
+    confidence_threshold: 0.9
+    aliases:
+    - speaker tier
+    - performance level
+    - coaching category
+    indicators:
+    - Elite Speaker
+    - Proficient Speaker
+    - Developing Speaker
+    - Needs Coaching
+    - Excellent Voice
+    - Good Voice
+    - Acceptable
+    - Concern
+    patterns:
+    - (Elite|Proficient|Developing) Speaker
+    - Needs Coaching
+    - (Excellent|Good|Acceptable) Voice Quality
+    - Voice Quality Concern
+    color: '#27ae60'
+    relates_to:
+    - target: structure_dimension
+      relation: supports
+      weight: required
+      description: Performance tiers (Novice, Technocrat, Performer, Visionary) each have characteristic structures. Visionary
+        tier requires mastery of discourse architecture; Novice tier typically exhibits disorganized structure. Performance
+        tier strongly correlates with structure dimension scores.
+      target_file: scoring_entities
+    - target: vocal_quality_issue
+      relation: contains
+      weight: expected
+      description: Performance tier assessment subsumes vocal quality evaluation; jitter,
+        shimmer, and HNR thresholds map directly to tier placement per Unified Performance Framework
+    - target: delivery_rate_issue
+      relation: contains
+      weight: expected
+      description: Performance tier assessment includes delivery rate evaluation; WPM ranges
+        map to diagnostic archetypes (The Manic >170, The Drone <100) per Unified Performance Framework
+    - target: nonverbal_cue
+      relation: contains
+      weight: expected
+      description: Performance tier assessment encompasses nonverbal behaviour evaluation;
+        self-adaptor frequency and gesture range are tier-differentiating metrics per Unified Performance Framework
+    - target: filler_word
+      relation: supported_by
+      weight: expected
+      description: Filler word density is a primary input to performance tier classification;
+        elite tier requires <1 filler per 100 words per Unified Performance Framework thresholds
+    - target: engagement_dimension
+      relation: bridges
+      weight: expected
+      description: Performance tier maps to engagement scoring dimension; speaker tier determines
+        expected engagement behaviours and audience interaction quality
+      target_file: scoring_entities
+    - target: clarity_dimension
+      relation: bridges
+      weight: expected
+      description: Performance tier correlates with clarity scoring; higher tiers demonstrate
+        greater vocal clarity, articulation precision, and message distillation
+      target_file: scoring_entities
+    - target: kirkpatrick_level
+      relation: bridges
+      weight: expected
+      description: Performance tier evaluation aligns with Kirkpatrick Level 2 (learning/skill)
+        and Level 3 (behaviour transfer) assessment of speaker competency development
+      target_file: assessment_entities
+    - target: proficiency_level
+      relation: specialises
+      weight: expected
+      description: Performance tiers (Elite, Proficient, Developing, Needs Coaching) are
+        domain-specific specialisations of generic proficiency level descriptors for speaker assessment
+      target_file: assessment_entities
+    - target: novice_learner
+      relation: contains
+      weight: expected
+      description: Level 1 Novice tier maps to novice learner characteristics including high disfluency passive voice and fast anxious rate per Elite Speaker Linguistic Analysis
+      target_file: audience_entities
+    - target: expert_learner
+      relation: contains
+      weight: expected
+      description: Level 4 Visionary tier maps to expert mastery with low PID high metaphor density strategic silence and high pitch variance per Elite Speaker Linguistic Analysis
+      target_file: audience_entities
+    - target: rubric_component
+      relation: supported_by
+      weight: required
+      description: "Performance tier classification is directly supported by measurable rubric components — Jitter, Shimmer, HNR, F0 range, speaking rate, pause ratio, and filler density provide the empirical scoring basis per World-Class Public Speaking research"
+      target_file: assessment_entities
+    - target: clarity_dimension
+      relation: supports
+      weight: expected
+      description: "Performance tiers map to measurable voice clarity metrics including CPP/CPPS thresholds and HNR levels per voice metric research"
+      target_file: scoring_entities
+  emphasis_marker:
+    description: Text formatting indicating vocal emphasis in speaker scripts
+    canonical_id: emphasis_marker
+    entity_kind: prosodic
+    family: paralinguistic
+    gliner_label: EMPHASIS_MARKER
+    gliner_description: Vocal emphasis marker bold italic caps underline stress in speaker script presentation notes
+    examples:
+    - CRITICAL point here
+    - '**this matters**'
+    - '*absolutely essential*'
+    - __key takeaway__
+    - NEVER do this
+    anti_examples:
+    - README file
+    - API_KEY constant
+    confidence_threshold: 0.75
+    aliases:
+    - stress marker
+    - emphasis notation
+    indicators:
+    - ALL CAPS words in running text
+    - '**bold markers**'
+    - '*italic markers*'
+    - __underline markers__
+    patterns:
+    - '[A-Z]{4,}'
+    - \*\*\w+\*\*
+    - \*\w+\*
+    - __\w+__
+    color: '#c0392b'
+    relates_to:
+    - target: lexical_bundle
+      relation: supports
+      weight: required
+      description: Emphasis markers highlight discourse organizer bundles and key propositions. Bundles like 'I want to show
+        you' or 'If you look at' gain power through vocal emphasis and strategic pausing that marks them as important.
+    - target: pause_marker
+      relation: supported_by
+      weight: required
+      description: Emphasis markers depend on adjacent pauses for maximum impact; a pre-emphasis
+        pause creates anticipation while a post-emphasis pause allows cognitive consolidation
+    - target: nonverbal_cue
+      relation: supported_by
+      weight: expected
+      description: Vocal emphasis is amplified through coordinated gesture; palm-down authority
+        gestures and forward lean reinforce stressed content per dual coding theory
+    - target: rhetorical_pattern
+      relation: enables
+      weight: expected
+      description: Emphasis markers signal the key words within rhetorical patterns; stressed
+        delivery of tricolon peaks and anaphora openings amplifies their persuasive effect
+    - target: delivery_rate_issue
+      relation: limits
+      weight: expected
+      description: Excessive speech rate prevents effective emphasis delivery; rushed speakers
+        flatten emphasis markers by eliminating the pitch and duration variation they require
+    - target: engagement_cue
+      relation: supports
+      weight: expected
+      description: "Emphasis markers (intensity variability, pitch excursions) support engagement cues by preventing listener habituation; charismatic speakers vary volume to emphasize key words per Vocal Profiling research"
+      target_file: delivery_entities
+    - target: germane_load_marker
+      relation: supports
+      weight: expected
+      description: "Strategic pauses (500-600ms) support germane cognitive processing by enabling semantic chunking and memory encoding — 15-20% silence ratio is optimal for audience digestion per World-Class Public Speaking research"
+      target_file: cognitive_load_entities
+    - target: engagement_cue
+      relation: enables
+      weight: expected
+      description: "Pitch dynamics (4-6 semitone sigma) and spectral brightness variation directly enable audience engagement per voice metrics research"
+      target_file: delivery_entities
+    - target: engagement_dimension
+      relation: supports
+      weight: expected
+      description: "Pitch variability 4-6 semitones and dynamic spectral emphasis sustain listener engagement per Voice Quality Metric Research"
+      target_file: scoring_entities
+  authority_opener:
+    description: Strong, declarative opening statement that immediately establishes speaker authority — no throat-clearing,
+      no apology, no agenda preamble
+    canonical_id: authority_opener
+    entity_kind: delivery_pattern
+    family: opening_quality
+    gliner_label: AUTHORITY_OPENER
+    gliner_description: Authority opener strong declarative confident first sentence I am here to tell you the answer is here
+      is the most important thing make no mistake
+    examples:
+    - Here is what you need to know.
+    - I am going to tell you something that will change how you think about this.
+    - The answer is simple. The execution is not.
+    - Make no mistake — this decision matters.
+    - 'Let me be direct: we have a 90-day window.'
+    - 'The most important thing in this room today is this:'
+    - You are about to see something you have not seen before.
+    - This is the most significant shift in our market in a decade.
+    anti_examples:
+    - Thank you for having me
+    - Good morning everyone
+    - I'm going to be covering...
+    - Sorry if the slides are a bit...
+    confidence_threshold: 0.7
+    aliases:
+    - strong opener
+    - declarative opener
+    - authority-first opening
+    indicators:
+    - here is what you need to know
+    - I am going to tell you
+    - make no mistake
+    - let me be direct
+    - the most important thing
+    - you are about to
+    - this is the most
+    patterns:
+    - here is (what|the|a) \w+
+    - make no mistake
+    - let me be (direct|clear|honest)
+    - the most (important|critical|significant) \w+
+    - I am (here to|going to) (tell|show)
+    color: '#27ae60'
+    scoring_note: 'AUTHORITY_OPENER detected in first 30 words: +5 points delivery quality; absence of opener (APOLOGY_OPENER
+      detected instead): -8 points'
+    note: Per World-Class Presentation Playbook — elite speakers make a strong declarative statement within the first 15 seconds;
+      average speakers spend the first 30-60 seconds establishing context before the audience has engaged
+    relates_to:
+    - target: apology_opener
+      relation: contrasts_with
+      weight: required
+      description: Authority openers (strong) vs apology openers (weak) — opposing opening strategies
+    - target: nonverbal_cue
+      relation: supported_by
+      weight: expected
+      description: Authority openers require congruent nonverbal delivery; open posture, sustained
+        eye contact, and grounded stance within the first 7 seconds per thin-slicing research
+    - target: uptalk_indicator
+      relation: rebuts
+      weight: required
+      description: Authority openers are incompatible with uptalk; rising terminal intonation
+        converts a declarative authority statement into an implicit question, negating its impact
+    - target: vocal_quality_issue
+      relation: limits
+      weight: expected
+      description: Vocal quality issues (breathiness, vocal fry, volume drop) undermine authority
+        openers; strong openers require full vocal projection and resonance per Ethos research
+    - target: ethos_appeal
+      relation: supports
+      weight: expected
+      description: Authority openers are the primary mechanism for establishing immediate ethos;
+        the first 15 seconds define the audience authority frame for the entire presentation
+      target_file: rhetorical_devices_entities
+    - target: lexical_bundle
+      relation: supported_by
+      weight: expected
+      description: Authority openers leverage formulaic bundles like 'Make no mistake' and
+        'Let me be direct' as syntactic scaffolding for declarative first statements
+    - target: confidence_technique
+      relation: supported_by
+      weight: expected
+      description: Authority openers require pre-speech confidence techniques; physiological
+        sigh breathing and power posing enable the vocal and postural control needed for strong openings
+      target_file: delivery_entities
+    - target: bluf_hook
+      relation: supports
+      weight: expected
+      description: Authority openers function as BLUF (Bottom Line Up Front) delivery mechanisms;
+        leading with the key message rather than context aligns with both opening strategies
+      target_file: opening_hooks_entities
+    - target: scqa_marker
+      relation: precedes
+      weight: optional
+      description: Authority openers can precede SCQA (Situation-Complication-Question-Answer)
+        structure; a strong declarative opening anchors the subsequent narrative architecture
+      target_file: rhetorical_devices_entities
+    - target: call_to_action
+      relation: enables
+      weight: expected
+      description: Strong authority openers create the credibility frame that enables effective
+        calls to action; audiences respond to CTAs from speakers who established authority early
+      target_file: narrative_entities
+    - target: situation_marker
+      relation: precedes
+      weight: optional
+      description: Authority openers precede situation-setting in SOAR/SCQA narratives; the
+        opening declaration anchors the audience before contextual detail is introduced
+      target_file: sales_entities
+    - target: quote_hook
+      relation: supported_by
+      weight: expected
+      description: Authority openers are supported by quote hooks which lend borrowed credibility from recognised authorities,
+        strengthening the speaker's declarative opening per Crafting Powerful Opening Plays
+      target_file: opening_hooks_entities
+    - target: narrative_hook
+      relation: specialises
+      weight: expected
+      description: "Authority openers specialise narrative hooks — a confident declarative opening is a specific type of attention-grabbing hook that uses assertion and credibility rather than story or question (Mastering Presentation Nerves)"
+      target_file: narrative_entities
+    - target: boost_marker
+      relation: supports
+      weight: expected
+      description: "Authority openers employ pressed phonation and shallow spectral tilt boosting speaker dominance per Voice Quality Metric Research"
+      target_file: stance_markers_entities
+  apology_opener:
+    description: Anti-pattern — apologetic, self-deprecating, or preamble-heavy opening that signals low speaker confidence
+      and reduces audience attention before the content begins
+    canonical_id: apology_opener
+    entity_kind: delivery_pattern
+    family: opening_quality
+    gliner_label: APOLOGY_OPENER
+    gliner_description: Apology opener weak self-deprecating sorry if this is basic bear with me I know we are running short
+      on time I will try to be brief
+    examples:
+    - I'm sorry if some of you have seen this before.
+    - Bear with me while I find the right slide.
+    - I know we're a bit short on time so I'll try to be brief.
+    - I apologise if this is a bit basic for some of you.
+    - Sorry, I'm not great at these things.
+    - I'll try not to take too long.
+    - I know there's a lot to cover so let me rush through...
+    - I apologise, this slide is a bit busy.
+    anti_examples:
+    - Let me get straight to it.
+    - Here is the core issue.
+    confidence_threshold: 0.75
+    aliases:
+    - throat clearing opener
+    - weak opener
+    - apologetic opener
+    indicators:
+    - I'm sorry
+    - I apologise
+    - bear with me
+    - I'll try to be brief
+    - I know we're short on time
+    - I'll try not to
+    - if this is a bit
+    - I know there's a lot
+    patterns:
+    - I('m| am) (sorry|apologise|afraid)
+    - bear with (me|us)
+    - I('ll| will) try (to be brief|not to|to rush)
+    - I know (we're|we are) (running|short)
+    - (sorry|apologies) if \w+
+    color: '#e74c3c'
+    scoring_note: 'APOLOGY_OPENER detected: -8 points delivery quality; APOLOGY_OPENER in executive presentation: -12 points
+      (authority signal failure)'
+    note: Per Architecture of Influence — apologetic openers signal low status to the audience before any content is delivered;
+      first 15 seconds define the audience's authority frame for the speaker
+    relates_to:
+    - target: authority_opener
+      relation: contrasts_with
+      weight: required
+      description: Apology openers (weak) vs authority openers (strong)
+    - target: nonverbal_cue
+      relation: bridges
+      weight: expected
+      description: Apology openers co-occur with submissive nonverbal cues (shoulder hunching,
+        gaze aversion, self-touching) that compound the authority loss per thin-slicing research
+    - target: uptalk_indicator
+      relation: bridges
+      weight: expected
+      description: Apology openers frequently feature uptalk intonation; apologetic phrasing
+        with rising terminal creates double uncertainty signalling per Ethos and Physicality research
+    - target: performance_tier
+      relation: triggers
+      weight: expected
+      description: Apology openers are a diagnostic marker for developing/needs-coaching tier;
+        their presence in the first 15 seconds signals insufficient confidence calibration
+    - target: filler_word
+      relation: bridges
+      weight: expected
+      description: Apology openers cluster with filler words (um, so, basically); both signal
+        planning load and low confidence in the opening seconds of delivery
+    - target: presentation_anxiety_marker
+      relation: supported_by
+      weight: expected
+      description: Apology openers are verbal manifestations of presentation anxiety; they
+        function as cognitive offloading of anxiety through pre-emptive face-saving per Ethos research
+      target_file: delivery_entities
+    - target: ethos_appeal
+      relation: limits
+      weight: expected
+      description: Apology openers undermine ethos before content delivery begins; apologising
+        signals low status and reduces perceived competence per Architecture of Influence research
+      target_file: rhetorical_devices_entities
+    - target: extraneous_load_marker
+      relation: triggers
+      weight: expected
+      description: Apology openers add extraneous cognitive load by forcing audiences to process
+        status-negotiation language instead of content per cognitive load theory
+      target_file: cognitive_load_entities
+    - target: performance_tier
+      relation: limits
+      weight: expected
+      description: Apologetic openings signal the struggling speaker profile with high self-consciousness that limits performance tier per Elite Speaker Linguistic Analysis
+    - target: hedge_marker
+      relation: supports
+      weight: expected
+      description: "Apology openers employ breathy phonation associated with hedging and submission signals per Voice Quality Metric Research"
+      target_file: stance_markers_entities
+domain_keywords:
+  primary:
+  - speaker
+  - delivery
+  - voice
+  - pitch
+  - pace
+  - pause
+  - gesture
+  - presence
+  - authority
+  - opening
+  secondary:
+  - filler
+  - monotone
+  - uptalk
+  - vocal fry
+  - projection
+  - articulation
+  - cadence
+  - apology
+  - confidence
+  - declarative
+quality_indicators:
+  filler_density:
+    description: Rate of filler word occurrence in speaker transcript
+    elite: < 1 filler per 100 words — authority maintained
+    proficient: 1-3 per 100 words — acceptable for most contexts
+    developing: 3-5 per 100 words — noticeable disruption to flow
+    needs_coaching: '> 5 per 100 words — significant authority impact'
+  opener_quality:
+    description: Strength of opening delivery pattern
+    strong: 'AUTHORITY_OPENER detected in first 30 words: +5 points'
+    weak: 'APOLOGY_OPENER detected: -8 points; in executive context: -12 points'
+    neutral: No AUTHORITY_OPENER or APOLOGY_OPENER — generic, unmemorable
+  rhetorical_density:
+    description: Frequency of rhetorical patterns in speech transcript
+    elite: '> 3 rhetorical devices per 500 words'
+    adequate: 1-3 per 500 words
+    sparse: < 1 per 500 words — flat, low-impact delivery
+  hedge_authority_ratio:
+    description: Balance between hedging language and authority markers
+    note: High hedge density relative to lexical_bundle and power_verb markers indicates low-authority delivery style
+    threshold: Hedge markers > 5 per 100 words with < 2 power verbs or lexical bundles = low authority register

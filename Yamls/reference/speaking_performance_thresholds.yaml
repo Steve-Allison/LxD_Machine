@@ -1,0 +1,283 @@
+# ==============================================================================
+# Speaking Performance Thresholds
+# Quantitative metrics for executive speaking assessment and coaching
+# ==============================================================================
+
+_meta:
+  id: speaking_performance_thresholds
+  title: "Speaking Performance Thresholds"
+  description: "Research-validated thresholds for speech rate, pitch variability, pause metrics, and nonverbal delivery metrics used in speaker assessment and coaching."
+  domain: performance
+  domain_type: workflow
+  purpose: reference
+  version: "1.3.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - World-Class_Public_Speaking_Research.md"
+    - "Corpus/Research/Research - Unified Performance Framework.md"
+    - "Corpus/Research/Research - Presentation Delivery_ Ethos and Physicality.md"
+    - "Corpus/Research/Research - The Architecture of Influence_ A Comprehensive Multimodal Taxonomy of Elite vs. Average Public Speaking.md"
+    - "Corpus/Research/Research - Vocal Profiling for Executive Coaching.md"
+    - "Corpus/Research/RESEARCH-BASED_ENHANCEMENTS FOR VOICE.md"
+  relationships:
+# ==============================================================================
+# FUNDAMENTAL FREQUENCY (F0)
+# ==============================================================================
+
+fundamental_frequency:
+  male:
+    optimal_hz:
+      min: 115
+      max: 133
+    research_basis: "Optimal male speaking fundamental frequency - Titze (1994)"
+  female:
+    optimal_hz:
+      min: 200
+      max: 220
+    research_basis: "Optimal female speaking fundamental frequency - Titze (1994)"
+
+# ==============================================================================
+# SPEECH RATE
+# ==============================================================================
+
+speech_rate:
+  words_per_minute:
+    optimal:
+      min: 150
+      max: 160
+    warning_fast: 180
+    warning_fast_impact: "17-25% retention drop above 180 WPM"
+    warning_slow: 120
+    warning_slow_impact: "Audience disengagement below 120 WPM"
+    research_basis: "Comprehension-optimal rate - Foulke & Sticht (1969)"
+
+  syllables_per_second:
+    optimal:
+      min: 4.5
+      max: 5.5
+    fast_threshold: 6.0
+    fast_note: "Tech speakers frequently exceed 6 syll/sec"
+    research_basis: "Syllable rate analysis of public speaking corpora"
+
+  context_adjustments:
+    keynote_emotional:
+      optimal_wpm: 130
+      note: "Emotional keynote content warrants slower rate for impact and pause space"
+    technical_presentation:
+      optimal_wpm: 155
+      note: "Higher density content requires standard optimal rate; slower risks losing expert audience"
+    virtual_webinar:
+      optimal_wpm: 145
+      note: "Virtual audiences have higher cognitive load from screen fatigue; slightly slower rate improves retention"
+    executive_boardroom:
+      optimal_wpm: 150
+      note: "Decision-maker audiences prefer deliberate pace — signals confidence, not rushing to fill time"
+
+# ==============================================================================
+# PAUSE METRICS
+# ==============================================================================
+
+pause_metrics:
+  emphatic_pause:
+    duration_ms:
+      min: 500
+      max: 600
+    purpose: reference
+    research_basis: "Dramatic pause duration in elite speakers"
+
+  power_pause:
+    duration_sec:
+      min: 1.5
+      max: 2.0
+    purpose: reference
+    research_basis: "Extended pause patterns in charismatic leadership speeches"
+
+  silence_ratio:
+    optimal_percent:
+      min: 15
+      max: 20
+    problem_low: 10
+    problem_low_impact: "Run-on sentences, audience cognitive overload"
+    problem_high: 30
+    problem_high_impact: "Perceived as hesitant, unprepared, or uncertain"
+    research_basis: "Silence-to-speech ratio in effective public speaking"
+
+  # ---------------------------------------------------------------------------
+  # Pause placement strategy — Added v1.1.0
+  # Sources: Research - World-Class Public Speaking; Architecture of Influence
+  # ---------------------------------------------------------------------------
+  pause_placement:
+    description: "Strategic pause placement patterns associated with elite speakers"
+    before_key_claim:
+      duration_ms: 400
+      purpose: "Primes audience attention; signals importance of upcoming statement"
+    after_rhetorical_question:
+      duration_min_sec: 2.0
+      purpose: "Allows audience internal processing — do not fill with answer immediately"
+    at_section_boundary:
+      duration_ms: 700
+      purpose: "Signals topic transition; reduces cognitive bleed between sections"
+    after_strong_data_point:
+      duration_ms: 500
+      purpose: "Allows statistic to land before explanation follows"
+    anti_pattern:
+      filled_pause_filler: "Um/uh fillers replace productive silence — signals unpreparedness and reduces authority"
+
+# ==============================================================================
+# PITCH VARIABILITY
+# ==============================================================================
+
+pitch_variability:
+  semitone_variability:
+    charismatic:
+      min: 3.0
+      max: 4.0
+    monotone_threshold: 1.5
+    monotone_impact: "Perceived as robotic, disengaged, or boring"
+    research_basis: "Pitch variability in charismatic speech - Rosenberg & Hirschberg (2009)"
+
+  dynamic_range:
+    target_semitones: 10
+    description: "Total F0 range >10 semitones indicates dynamic speaking"
+    research_basis: "F0 range analysis of TED Talk speakers"
+
+  uptalk_detection:
+    hrt_f0_increase_percent: 40
+    description: "Terminal F0 rise >40% indicates High Rising Terminal (uptalk)"
+    impact: "Undermines authority and certainty perception"
+    research_basis: "Warren (2016) - Uptalk identification threshold"
+
+# ==============================================================================
+# FILLER WORD THRESHOLDS
+# Sources: Research - World-Class Public Speaking; Architecture of Influence
+# ==============================================================================
+
+filler_words:
+  description: "Quantitative thresholds for filler word frequency in professional speaking"
+  measurement_unit: "Occurrences per 100 words of connected speech"
+
+  performance_tiers:
+    elite:
+      max_per_100_words: 1
+      label: "Elite — broadcast quality"
+    proficient:
+      range_per_100_words: [1, 3]
+      label: "Proficient — acceptable professional standard"
+    developing:
+      range_per_100_words: [3, 5]
+      label: "Developing — noticeable; coaching recommended"
+    needs_coaching:
+      min_per_100_words: 5
+      label: "Needs coaching — significantly undermines credibility"
+
+  common_types:
+    verbal_fillers: ["um", "uh", "er", "ah"]
+    discourse_fillers: ["like", "you know", "I mean", "basically", "literally", "right?", "OK so"]
+    apology_openers:
+      examples:
+        - "Sorry, just to give you some context..."
+        - "I know you've heard this before but..."
+        - "This might be a bit basic but..."
+        - "Bear with me..."
+      label: "APOLOGY_OPENER"
+      scoring_impact: "-8 points (standard); -12 points (executive context)"
+
+  executive_context_notes:
+    authority_opener_target: "First 30 words must be declarative, not apologetic or hedged"
+    scoring_reference: "See performance_entities.yaml: AUTHORITY_OPENER (+5), APOLOGY_OPENER (-8/-12)"
+
+# ==============================================================================
+# NONVERBAL DELIVERY
+# ==============================================================================
+
+nonverbal:
+  gesture_timing:
+    lead_time_ms:
+      min: 200
+      max: 500
+    description: "Gestures should precede associated speech by 200-500ms for naturalness"
+    problem: "Gestures after speech appear rehearsed or disconnected"
+    research_basis: "McNeill (1992) - Hand and Mind: gesture-speech synchrony"
+
+  head_tilt:
+    dominance_degrees:
+      min: -15
+      max: -10
+    description: "Slight downward tilt projects authority and confidence"
+    submission_threshold: 15
+    submission_note: "Upward tilt >15 degrees perceived as submissive or uncertain"
+    research_basis: "Rule et al. (2012) - Head tilt and dominance perception"
+
+  eye_contact:
+    optimal_percent:
+      min: 60
+      max: 70
+    description: "Percentage of speaking time maintaining audience eye contact"
+    research_basis: "Argyle & Cook (1976) - Gaze in social interaction"
+
+  # ---------------------------------------------------------------------------
+  # Virtual delivery nonverbals — Added v1.1.0
+  # Sources: Research - Unified Performance Framework.md
+  # ---------------------------------------------------------------------------
+  virtual_specific:
+    camera_gaze:
+      optimal_percent_at_camera: 70
+      note: "Looking at own video or notes reads as disengagement to remote audience; camera = eye contact"
+      coaching: "Position key bullet points directly beside or above the camera lens"
+    framing:
+      eye_level: "Camera lens should be at or slightly above eye level — looking up into camera = submissive"
+      head_headroom: "1–2 fingers above head — avoid excessive headroom or cut-off framing"
+      background: "Neutral, uncluttered; branded background if virtual background used"
+    lighting:
+      direction: "Key light from front-left or front-right; avoid backlit windows"
+      colour_temperature: "Warm (3200K–4000K) preferred for skin tone rendering on HD cameras"
+    energy_adjustment:
+      note: "Screen fatigue requires ~20% higher energy/expressiveness than in-room equivalent to register equivalently via webcam"
+      pitch_variability_boost: "+0.5 semitones recommended for virtual vs. in-room delivery"
+
+# ==============================================================================
+# OVERALL PERFORMANCE TIERS
+# ==============================================================================
+
+performance_tiers:
+  elite:
+    label: "Elite Speaker"
+    score_range: [90, 100]
+    characteristics:
+      - "Charismatic pitch variability (3-4 ST)"
+      - "Strategic power pauses (1.5-2s)"
+      - "Optimal speech rate (150-160 WPM)"
+      - "15-20% silence ratio"
+      - "Natural gesture-speech synchrony"
+      - "< 1 filler word per 100 words"
+      - "Authority opener in first 30 words"
+
+  proficient:
+    label: "Proficient Speaker"
+    score_range: [75, 89]
+    characteristics:
+      - "Good pitch variability (2-3 ST)"
+      - "Appropriate pausing"
+      - "Controlled speech rate (140-170 WPM)"
+      - "Adequate silence ratio (12-22%)"
+      - "1-3 filler words per 100 words"
+
+  developing:
+    label: "Developing Speaker"
+    score_range: [60, 74]
+    characteristics:
+      - "Limited pitch variability (1.5-2 ST)"
+      - "Inconsistent pausing"
+      - "Variable speech rate"
+      - "3-5 filler words per 100 words"
+
+  needs_coaching:
+    label: "Needs Coaching"
+    score_range: [0, 59]
+    characteristics:
+      - "Monotone delivery (<1.5 ST)"
+      - "No strategic pausing"
+      - "Too fast (>180 WPM) or too slow (<120 WPM)"
+      - "> 5 filler words per 100 words"
+      - "Poor eye contact"
+      - "Apology opener detected"

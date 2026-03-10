@@ -1,0 +1,374 @@
+_meta:
+  id: media_taxonomy
+  title: "Media Taxonomy"
+  description: "Classification of multimedia asset types by media format, production stage, visual style, audio category, and distribution channel"
+  domain: visual
+  domain_type: cross_cutting
+  purpose: taxonomy
+  version: "1.3.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Creating Learning Videos - Process v2.md"
+    - "Corpus/Research/Research - Storyboard Best Practices.md"
+    - "Corpus/Research/Research - Sketch Style for Wireframes and Storyboards.md"
+    - "Corpus/Research/Research - Best Video Script Prompts.md"
+    - "Corpus/Research/Visual Best Practices for Corporate Learning Videos.md"
+    - "Corpus/Research/Research - Advanced Image Prompting for Technical Content.md"
+    - "Corpus/Research/Research - Image Prompt Writing Effectiveness.md"
+    - "Corpus/Research/Research - Infographics.md"
+    - "Corpus/Research/Learning Experience Design - Donald Clark - Combined.md"
+    - "Corpus/Research/Research - Narrative Visualization, Sketchnoting, Accessibility.md"
+  relationships:
+    - target: entities/media_entities.yaml
+      type: depends_on
+      description: "Media entity types for NER extraction"
+    - target: methodology/multimodal_video_standards.yaml
+      type: depends_on
+      description: "Video production quality standards"
+    - target: methodology/infographic_design_framework.yaml
+      type: depends_on
+      description: "Infographic design specifications"
+# ==============================================================================
+# MEDIA FORMAT TYPES
+# ==============================================================================
+
+media_formats:
+  video:
+    label: "Video"
+    description: "Moving image content with or without audio"
+    sub_types:
+      explainer_video:
+        label: "Explainer Video"
+        typical_duration: "60-180 seconds"
+        use_case: "Concept introduction, product overview"
+      tutorial_video:
+        label: "Tutorial / How-To Video"
+        typical_duration: "3-15 minutes"
+        use_case: "Step-by-step instruction, software walkthrough"
+      talking_head:
+        label: "Talking Head"
+        typical_duration: "2-10 minutes"
+        use_case: "Expert commentary, course introduction"
+      screen_recording:
+        label: "Screen Recording"
+        typical_duration: "3-20 minutes"
+        use_case: "Software demonstration, process documentation"
+      interview:
+        label: "Interview / Testimonial"
+        typical_duration: "2-10 minutes"
+        use_case: "Expert insight, customer story"
+      animation:
+        label: "Animated Video"
+        typical_duration: "60-300 seconds"
+        use_case: "Abstract concepts, data storytelling"
+
+  audio:
+    label: "Audio"
+    description: "Sound-only content including narration, music, and effects"
+    sub_types:
+      narration:
+        label: "Narration / Voiceover"
+        use_case: "Course narration, video voiceover"
+      podcast:
+        label: "Podcast Episode"
+        use_case: "Expert discussion, topic deep-dive"
+      audio_guide:
+        label: "Audio Guide"
+        use_case: "Guided practice, meditation-style instruction"
+      sound_effect:
+        label: "Sound Effect / SFX"
+        use_case: "Transition cues, feedback sounds, ambient"
+      music_bed:
+        label: "Background Music"
+        use_case: "Mood setting, pacing support"
+      sonification:
+        label: "Sonification"
+        description: "Representation of data or information through non-speech audio; maps data dimensions to sound properties (pitch, tempo, timbre) to convey patterns without visual reliance"
+        use_case: "Accessible data communication, audio-first experiences, multi-sensory data storytelling"
+        accessibility_note: "Primary accessibility affordance for visually impaired audiences engaging with data"
+
+  image:
+    label: "Static Image"
+    description: "Non-animated visual content"
+    sub_types:
+      photograph:
+        label: "Photograph"
+        use_case: "Real-world context, authenticity"
+      illustration:
+        label: "Illustration"
+        use_case: "Concept visualisation, brand expression"
+      icon:
+        label: "Icon"
+        use_case: "Navigation, feature highlight, categorisation"
+      diagram:
+        label: "Diagram"
+        use_case: "Process flow, architecture, relationships"
+      infographic:
+        label: "Infographic"
+        use_case: "Data storytelling, complex information summary"
+      screenshot:
+        label: "Screenshot"
+        use_case: "Software documentation, step illustration"
+      chart:
+        label: "Data Chart"
+        use_case: "Quantitative comparison, trend visualisation"
+      sketchnote:
+        label: "Sketchnote"
+        description: "Visual note-taking format combining hand-drawn typography, icons, containers, and connectors to represent ideas and their relationships; associated with improved recall vs. text-only notes"
+        use_case: "Visual summaries of talks or concepts, audience engagement during live sessions, reflective note-taking"
+      causal_loop_diagram:
+        label: "Causal Loop Diagram"
+        description: "Systems thinking diagram showing causal relationships and feedback loops between variables using nodes and directional arrows with positive/negative polarity markers"
+        use_case: "Complex systems explanation, policy impact analysis, root cause visualisation"
+      sankey_alluvial:
+        label: "Sankey / Alluvial Diagram"
+        description: "Flow diagram where link width is proportional to flow quantity; Sankey charts show one-way flows (e.g., energy, budget); alluvial charts show category changes over time"
+        use_case: "Proportional flow analysis, budget visualisation, audience migration over time, process efficiency"
+
+  interactive:
+    label: "Interactive Media"
+    description: "Content requiring learner input or manipulation"
+    sub_types:
+      interactive_video:
+        label: "Interactive Video"
+        use_case: "Branching scenarios, clickable hotspots"
+      simulation:
+        label: "Simulation"
+        use_case: "Software sandbox, process simulation"
+      interactive_infographic:
+        label: "Interactive Infographic"
+        use_case: "Explorable data, layered information"
+      h5p_activity:
+        label: "H5P Activity"
+        use_case: "Drag-and-drop, fill-in-the-blank, timeline"
+      scrollytelling:
+        label: "Scrollytelling"
+        description: "Scroll-triggered narrative where content elements (charts, images, annotations) animate or transform as the user scrolls; blends author-driven narrative with reader-paced exploration"
+        use_case: "Long-form data narratives, interactive journalism, guided story-driven reports"
+        narrative_mode: "martini_glass"
+      data_simulation:
+        label: "Data Simulation"
+        description: "Interactive model allowing users to manipulate input parameters and observe output changes in real time; supports 'what-if' exploration and building intuition for complex systems"
+        use_case: "Policy modelling, financial scenario planning, scientific concept exploration"
+      network_visualisation:
+        label: "Network Visualisation"
+        description: "Interactive graph layout rendering entities as nodes and relationships as edges; supports exploration of connection patterns, clusters, and influence pathways"
+        use_case: "Relationship mapping, social network analysis, knowledge graph exploration, dependency visualisation"
+
+  document:
+    label: "Document"
+    description: "Text-primary content formatted for reading or reference"
+    sub_types:
+      slide_deck:
+        label: "Slide Deck"
+        use_case: "Presentation, visual summary"
+      job_aid:
+        label: "Job Aid / Quick Reference"
+        use_case: "On-the-job reference, checklists"
+      workbook:
+        label: "Workbook"
+        use_case: "Guided exercises, reflection activities"
+      handout:
+        label: "Handout"
+        use_case: "Session companion, take-away reference"
+
+# ==============================================================================
+# PRODUCTION STAGES
+# ==============================================================================
+
+production_stages:
+  pre_production:
+    label: "Pre-Production"
+    description: "Planning and preparation before content creation begins"
+    deliverables:
+      - "creative brief"
+      - "storyboard"
+      - "script"
+      - "shot list"
+      - "asset list"
+      - "talent brief"
+      - "causal loop sketch"
+      - "visual facilitation map"
+      - "low-fidelity narrative prototype"
+
+  production:
+    label: "Production"
+    description: "Active creation of raw media content"
+    deliverables:
+      - "raw footage"
+      - "audio recordings"
+      - "illustration drafts"
+      - "screen captures"
+      - "animation keyframes"
+
+  post_production:
+    label: "Post-Production"
+    description: "Editing, assembly, and polishing of raw content"
+    deliverables:
+      - "edited video"
+      - "mixed audio"
+      - "composited graphics"
+      - "colour-graded footage"
+      - "captioned media"
+      - "ARIA labels and semantic tagging"
+      - "audio description track"
+
+  quality_assurance:
+    label: "Quality Assurance"
+    description: "Review, testing, and approval of finished assets"
+    deliverables:
+      - "review feedback"
+      - "accessibility audit"
+      - "brand compliance check"
+      - "technical QA report"
+      - "WCAG compliance audit"
+      - "screen reader compatibility check"
+      - "keyboard navigation test"
+
+  distribution:
+    label: "Distribution"
+    description: "Publishing and delivery of finalised assets"
+    deliverables:
+      - "published course"
+      - "hosted video"
+      - "downloadable asset"
+      - "embedded media"
+
+# ==============================================================================
+# VISUAL STYLES
+# ==============================================================================
+
+visual_styles:
+  photorealistic:
+    label: "Photorealistic"
+    description: "Real-world photography or photorealistic renders"
+    best_for: ["authenticity", "case studies", "testimonials"]
+
+  flat_design:
+    label: "Flat Design"
+    description: "Minimalist 2D graphics with solid colours and clean lines"
+    best_for: ["icons", "diagrams", "UI elements", "infographics"]
+
+  isometric:
+    label: "Isometric"
+    description: "3D-effect illustrations using isometric projection"
+    best_for: ["architecture diagrams", "process flows", "tech content"]
+
+  hand_drawn:
+    label: "Hand-Drawn / Sketch"
+    description: "Informal sketch-style illustrations"
+    best_for: ["storyboards", "wireframes", "brainstorming visuals"]
+
+  corporate_minimal:
+    label: "Corporate Minimal"
+    description: "Clean, professional aesthetic with brand colours and typography"
+    best_for: ["slide decks", "executive reports", "formal documentation"]
+
+  data_viz:
+    label: "Data Visualisation"
+    description: "Specialised visual encoding of quantitative data"
+    best_for: ["charts", "dashboards", "statistical reports"]
+
+  motion_graphics:
+    label: "Motion Graphics"
+    description: "Animated graphic elements and kinetic typography"
+    best_for: ["explainer videos", "title sequences", "transitions"]
+
+  narrative_data_viz:
+    label: "Narrative Data Visualisation"
+    description: "Data visualisation with an integrated storytelling layer — annotations, guided viewing paths, and structured narrative sequences guide the audience through the data; bridges author-driven storytelling and reader-driven exploration"
+    best_for: ["data journalism", "executive dashboards with commentary", "scrollytelling", "analytical presentations"]
+
+  visual_facilitation:
+    label: "Visual Facilitation"
+    description: "Large-format live drawing that captures ideas, decisions, and group thinking in real time using graphic facilitation techniques; combines text, icons, and spatial organisation for group sense-making"
+    best_for: ["workshops", "strategy sessions", "live event capture", "retrospectives", "sketchnote summaries"]
+
+# ==============================================================================
+# CLASSIFICATION DIMENSIONS
+# ==============================================================================
+
+classification_dimensions:
+  media_format:
+    name: "Media Format"
+    description: "The primary medium of the content asset"
+    values:
+      - video
+      - audio
+      - image
+      - interactive
+      - document
+
+  production_stage:
+    name: "Production Stage"
+    description: "The phase of the media production pipeline"
+    values:
+      - pre_production
+      - production
+      - post_production
+      - quality_assurance
+      - distribution
+
+  visual_style:
+    name: "Visual Style"
+    description: "The aesthetic treatment of visual assets"
+    values:
+      - photorealistic
+      - flat_design
+      - isometric
+      - hand_drawn
+      - corporate_minimal
+      - data_viz
+      - motion_graphics
+      - narrative_data_viz
+      - visual_facilitation
+
+  audience_modality:
+    name: "Audience Modality"
+    description: "The sensory channel through which the asset is consumed"
+    values:
+      - visual_only
+      - audio_only
+      - audiovisual
+      - interactive
+      - text_primary
+      - non_visual_audio
+
+  distribution_channel:
+    name: "Distribution Channel"
+    description: "The platform or channel through which the media is delivered"
+    values:
+      - lms_embedded
+      - video_platform
+      - social_media
+      - email
+      - print
+      - in_app
+      - live_session
+
+  accessibility_profile:
+    name: "Accessibility Profile"
+    description: "The level of accessibility accommodation built into the media asset"
+    values:
+      - fully_accessible
+      - wcag_aa_compliant
+      - captions_only
+      - visual_description_added
+      - accessibility_not_assessed
+
+  narrative_mode:
+    name: "Narrative Mode"
+    description: "The narrative structure approach used for data visualisation and interactive media assets, based on the Segel & Heer (2010) typology of narrative visualisation genres"
+    values:
+      - magazine_style
+      - annotated_chart
+      - partitioned_poster
+      - flow_chart
+      - slideshow
+      - film_animation
+      - scrollytelling
+      - annotated_timeline
+      - drill_down
+      - guided_exploration
+      - narrative_dashboard
+      - comparative_view

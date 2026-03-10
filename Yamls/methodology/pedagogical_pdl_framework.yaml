@@ -1,0 +1,952 @@
+_meta:
+  id: pedagogical_pdl_framework
+  title: Pedagogical PDL
+  description: PDL analysis prompts, rubrics, coaching, scored exemplars, and grounding rules for reliable LLM analysis
+  domain: pedagogical
+  domain_type: workflow
+  purpose: methodology
+  version: "2.2.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Comprehensive Learning Design Framework.md"
+    - "Corpus/Research/Research - Best Practices for Writing Effective Corporate Learning Content.md"
+  academic_sources:
+    - file: pedagogical_frameworks.yaml
+      usage: "Framework definitions for {gagne_events_list}, {primary_frameworks}, rubric criteria"
+    - file: ../scoring/synthesis_weights.yaml
+      usage: "Scoring synthesis and quality gates"
+
+pdl_analysis:
+  # ---------------------------------------------------------------------------
+  # Analysis Prompt Templates
+  # ---------------------------------------------------------------------------
+  analysis_prompts:
+    gagne_analysis: |
+      Analyse the following content against Gagné's Nine Events of Instruction.
+      For each event, identify:
+      1. Whether the event is present (Yes/Partial/No)
+      2. Specific evidence (quote or timestamp)
+      3. Quality assessment (Strong/Adequate/Weak)
+      4. Improvement recommendation if needed
+
+      Events to check: {gagne_events_list}
+
+    blooms_analysis: |
+      Analyse the learning objectives in this content against Bloom's Taxonomy.
+      For each objective identified:
+      1. State the objective
+      2. Identify the cognitive level (Remember/Understand/Apply/Analyze/Evaluate/Create)
+      3. Identify the knowledge dimension (Factual/Conceptual/Procedural/Metacognitive)
+      4. Assess whether activities/assessment match the stated level
+
+    arcs_analysis: |
+      Analyse the motivational design using the ARCS model.
+      For each component (Attention, Relevance, Confidence, Satisfaction):
+      1. Rate presence (0-100)
+      2. Identify specific strategies used
+      3. Note gaps or weaknesses
+      4. Provide specific improvement suggestions
+
+    mayer_analysis: |
+      Analyse the multimedia design against Mayer's 12 Principles.
+      For each applicable principle:
+      1. Compliance status (Compliant/Partial/Violated)
+      2. Specific evidence
+      3. Impact on learning (if violated)
+      4. Specific fix recommendation
+
+    clt_analysis: |
+      Analyse cognitive load management.
+      Assess:
+      1. Extraneous load sources (list and severity)
+      2. Intrinsic load management (chunking, sequencing, scaffolding)
+      3. Germane load opportunities (practice, elaboration, connections)
+      4. Overall cognitive load risk (Low/Moderate/High/Critical)
+
+    adult_learning_analysis: |
+      Analyse appropriateness for adult learners using Knowles' Andragogy.
+      For each assumption:
+      1. How well is it addressed?
+      2. Specific evidence
+      3. Improvement opportunity
+
+    comprehensive_analysis: |
+      Perform comprehensive pedagogical analysis using all applicable frameworks.
+      Content type: {content_type}
+      Context Profile: {context_profile} (Use this to adjust strictness of checks)
+
+      Primary frameworks to apply: {primary_frameworks}
+      Secondary frameworks to consider: {secondary_frameworks}
+
+      For every Critical Gap identified, you MUST provide a "Remediation Strategy"
+      drawn directly from the `remediation_strategies` block of the relevant framework configuration.
+
+      Provide:
+      1. Executive summary (overall pedagogical quality score 0-100)
+      2. Framework-by-framework analysis (referencing specific indicators)
+      3. Key strengths (top 3)
+      4. Critical gaps (prioritised by severity)
+      5. Actionable Remediation Plan (Step-by-step fixes for the critical gaps)
+
+  # ---------------------------------------------------------------------------
+  # Evaluation Rubrics
+  # ---------------------------------------------------------------------------
+  evaluation_rubrics:
+    overall_pedagogical_quality:
+      description: "Holistic assessment of instructional design quality"
+      scale:
+        90-100: "Exemplary - Comprehensive application of learning science principles"
+        80-89: "Strong - Most principles applied effectively with minor gaps"
+        70-79: "Adequate - Core principles present but opportunities for enhancement"
+        60-69: "Developing - Several gaps that may impact learning effectiveness"
+        50-59: "Weak - Significant gaps requiring substantial revision"
+        0-49: "Critical - Fundamental redesign needed"
+
+    gagne_completeness:
+      description: "Coverage of Gagné's Nine Events"
+      scoring:
+        per_event:
+          present_strong: 11
+          present_adequate: 8
+          present_weak: 5
+          partial: 3
+          absent: 0
+        total_possible: 99
+      thresholds:
+        excellent: 85
+        good: 70
+        adequate: 55
+        needs_improvement: 40
+
+    blooms_alignment:
+      description: "Alignment between objectives, activities, and assessment"
+      criteria:
+        - "Objectives use appropriate action verbs"
+        - "Activities match cognitive level of objectives"
+        - "Assessment measures stated objectives"
+        - "Appropriate challenge level for audience"
+      scoring:
+        all_aligned: 100
+        mostly_aligned: 80
+        partially_aligned: 60
+        misaligned: 40
+        no_objectives: 20
+
+    arcs_motivation:
+      description: "Motivational design effectiveness"
+      components:
+        attention:
+          weight: 0.25
+          criteria: ["Novel elements", "Variability", "Curiosity triggers"]
+        relevance:
+          weight: 0.30
+          criteria: ["Goal alignment", "Experience connection", "Immediate utility"]
+        confidence:
+          weight: 0.25
+          criteria: ["Clear expectations", "Success opportunities", "Learner control"]
+        satisfaction:
+          weight: 0.20
+          criteria: ["Intrinsic rewards", "Recognition", "Application opportunity"]
+
+    multimedia_compliance:
+      description: "Adherence to Mayer's multimedia principles"
+      scoring:
+        per_principle:
+          compliant: 10
+          partial: 5
+          violated: 0
+          not_applicable: null
+      critical_violations:
+        - "redundancy"
+        - "coherence"
+        - "modality"
+
+    cognitive_load_risk:
+      description: "Risk of cognitive overload"
+      levels:
+        low:
+          score_range: [0, 25]
+          description: "Well-managed cognitive load"
+        moderate:
+          score_range: [26, 50]
+          description: "Some load concerns to address"
+        high:
+          score_range: [51, 75]
+          description: "Significant load issues likely impacting learning"
+        critical:
+          score_range: [76, 100]
+          description: "Severe overload risk requiring immediate attention"
+      factors:
+        - "Information density"
+        - "Element interactivity"
+        - "Split attention sources"
+        - "Extraneous content"
+        - "Pacing appropriateness"
+
+  # ---------------------------------------------------------------------------
+  # Gap Detection Rules
+  # ---------------------------------------------------------------------------
+  gap_analysis:
+    critical_gaps:
+      description: "Gaps that significantly impact learning effectiveness"
+      rules:
+        - gap: "No learning objectives stated"
+          severity: "critical"
+          frameworks: ["blooms_taxonomy", "gagne_nine_events"]
+          recommendation: "Add explicit, measurable learning objectives using Bloom's action verbs"
+
+        - gap: "No practice or application opportunity"
+          severity: "critical"
+          frameworks: ["gagne_nine_events", "merrill_first_principles"]
+          recommendation: "Add hands-on practice activities aligned with objectives"
+
+        - gap: "Information dump without structure"
+          severity: "critical"
+          frameworks: ["cognitive_load_theory", "gagne_nine_events"]
+          recommendation: "Chunk content into digestible segments with clear organisation"
+
+        - gap: "No relevance established for learners"
+          severity: "high"
+          frameworks: ["arcs_model", "knowles_andragogy"]
+          recommendation: "Explicitly connect content to learner goals, jobs, and real-world application"
+
+        - gap: "Assessment misaligned with objectives"
+          severity: "high"
+          frameworks: ["blooms_taxonomy", "kirkpatrick_evaluation"]
+          recommendation: "Ensure assessment measures the cognitive level stated in objectives"
+
+        - gap: "No attention hook"
+          severity: "moderate"
+          frameworks: ["gagne_nine_events", "arcs_model"]
+          recommendation: "Add engaging opening—surprising fact, question, story, or visual"
+
+        - gap: "No summary or transfer guidance"
+          severity: "moderate"
+          frameworks: ["gagne_nine_events", "merrill_first_principles"]
+          recommendation: "Add clear summary and guidance on applying learning to real contexts"
+
+        - gap: "Redundant on-screen text with narration"
+          severity: "moderate"
+          frameworks: ["mayer_multimedia_principles"]
+          recommendation: "Remove on-screen text that duplicates narration; use graphics instead"
+
+        - gap: "No prior knowledge activation"
+          severity: "moderate"
+          frameworks: ["gagne_nine_events", "merrill_first_principles"]
+          recommendation: "Connect to what learners already know before introducing new content"
+
+        - gap: "No feedback mechanism"
+          severity: "moderate"
+          frameworks: ["gagne_nine_events"]
+          recommendation: "Add feedback on practice activities—self-check, peer, or instructor feedback"
+
+    gap_prioritisation:
+      description: "How to prioritise gaps for remediation"
+      priority_order:
+        1: "Critical gaps affecting fundamental learning"
+        2: "High-severity gaps affecting key outcomes"
+        3: "Moderate gaps affecting optimisation"
+        4: "Minor enhancements"
+      effort_consideration: "Balance impact against revision effort"
+
+  # ---------------------------------------------------------------------------
+  # Coaching Suggestions
+  # ---------------------------------------------------------------------------
+  coaching_suggestions:
+    by_gap_type:
+      missing_objectives:
+        suggestion: "Write 2-4 learning objectives using this format: 'By the end of this [module/session], learners will be able to [action verb] [specific content] [under what conditions].'"
+        resources: ["Bloom's Taxonomy verb list", "ABCD objective format"]
+
+      missing_practice:
+        suggestion: "Add at least one practice activity where learners actively DO something with the content. Options: scenario-based question, hands-on exercise, case analysis, simulation, role play."
+        resources: ["Practice activity templates", "Scenario design guide"]
+
+      poor_chunking:
+        suggestion: "Break content into 5-7 minute segments maximum. Each chunk should cover one main idea. Add visual transitions between chunks."
+        resources: ["Chunking guidelines", "Cognitive load checklist"]
+
+      low_engagement:
+        suggestion: "Add variety every 3-5 minutes: different media, interaction, question, story, or activity. Hook attention in first 30 seconds."
+        resources: ["ARCS strategy menu", "Attention techniques"]
+
+      missing_relevance:
+        suggestion: "Within first 2 minutes, answer 'Why should I care?' Connect to learner's job, goals, pain points, or career growth."
+        resources: ["Relevance statement templates", "WIIFM framework"]
+
+      weak_examples:
+        suggestion: "Add concrete examples for every abstract concept. Include at least one worked example showing step-by-step application."
+        resources: ["Example design checklist", "Worked example template"]
+
+    improvement_templates:
+      quick_wins:
+        description: "High-impact, low-effort improvements"
+        items:
+          - "Add opening hook (5 min to create)"
+          - "State objectives explicitly (5 min)"
+          - "Add summary slide/section (10 min)"
+          - "Convert bullet points to visuals (varies)"
+
+      structural_improvements:
+        description: "Medium-effort structural changes"
+        items:
+          - "Reorganise into Gagné event sequence"
+          - "Add practice activity per objective"
+          - "Create assessment aligned with objectives"
+          - "Add prior knowledge connection"
+
+      comprehensive_revision:
+        description: "Major redesign efforts"
+        items:
+          - "Redesign around authentic problem (Action Mapping)"
+          - "Rebuild multimedia to Mayer principles"
+          - "Create scaffolded practice sequence"
+          - "Develop comprehensive assessment strategy"
+
+# SECTION 7: SCORED EXEMPLARS
+# Benchmark examples showing what different quality levels look like
+# =============================================================================
+
+scored_exemplars:
+  description: "Reference examples showing what scores of 90, 70, 50 look like for each framework"
+  purpose: "Calibration for consistent scoring; few-shot examples for LLM analysis"
+
+  gagne_exemplars:
+    score_90:
+      name: "Exemplary: Sales Negotiation Masterclass"
+      characteristics:
+        - "Compelling hook with surprising customer story (Event 1)"
+        - "3 clear, measurable objectives with WIIFM (Event 2)"
+        - "Prior knowledge quiz linking to past experiences (Event 3)"
+        - "Chunked content with multimedia variety (Event 4)"
+        - "Scaffolded guidance from simple to complex (Event 5)"
+        - "3 realistic role-play scenarios with branching (Event 6)"
+        - "Immediate AI-powered feedback with explanations (Event 7)"
+        - "Competency-based final assessment (Event 8)"
+        - "Job aids + 30-day reinforcement plan (Event 9)"
+      evidence: "All 9 events present and strong; 15-20 indicators per event"
+
+    score_70:
+      name: "Adequate: Product Training Module"
+      characteristics:
+        - "Opening with product demo (weak hook)"
+        - "Objectives stated but vague ('understand features')"
+        - "Brief 'what you may know' mention"
+        - "Good content with visuals"
+        - "Some guidance but limited scaffolding"
+        - "Quiz-based practice only (no application)"
+        - "Right/wrong feedback, minimal explanation"
+        - "Basic knowledge check assessment"
+        - "Summary slide, no transfer support"
+      gaps: "Events 1,2,6,7,9 are weak; needs stronger practice and feedback"
+
+    score_50:
+      name: "Weak: Compliance Training"
+      characteristics:
+        - "Starts with 'Welcome to this module'"
+        - "Topics listed, no real objectives"
+        - "No prior knowledge connection"
+        - "Dense text slides read aloud"
+        - "No scaffolding or guidance"
+        - "Knowledge check after content dump"
+        - "'Correct/Incorrect' feedback only"
+        - "Pass/fail quiz"
+        - "Abrupt ending"
+      gaps: "Missing events 1,2,3,5,9; events 6-8 minimal; fundamental redesign needed"
+
+  bloom_exemplars:
+    score_90:
+      name: "Exemplary: Data Analysis Course"
+      objective_examples:
+        - level: "Create"
+          objective: "Design and implement a predictive model for customer churn using Python"
+          activities: "Build model, validate, present recommendations"
+          assessment: "Portfolio project with peer review"
+        - level: "Evaluate"
+          objective: "Evaluate the validity of three statistical approaches for the given dataset"
+          activities: "Compare methods, justify selection"
+          assessment: "Written critique with rubric"
+      characteristics: "Higher-order objectives; activities match level; assessment proves competency"
+
+    score_70:
+      name: "Adequate: Software Skills Training"
+      objective_examples:
+        - level: "Apply"
+          objective: "Apply formatting techniques to create professional documents"
+          activities: "Follow along exercises"
+          assessment: "Complete sample document"
+      characteristics: "Mid-level objectives; some alignment gaps"
+      gaps: "Assessment easier than objective; limited Analyse/Evaluate/Create"
+
+    score_50:
+      name: "Weak: Information Dump"
+      objective_examples:
+        - level: "Remember"
+          objective: "Identify the key features of the new system"
+          activities: "Read slides"
+          assessment: "Multiple choice recall"
+      characteristics: "Low-level objectives only; assessment = recall"
+      gaps: "No higher-order thinking; activities don't build competency"
+
+  arcs_exemplars:
+    score_90:
+      name: "Exemplary: Leadership Development"
+      attention: "Opens with 'Your team just lost your best performer—what would you do?' scenario"
+      relevance: "Each module tied to participant's actual team challenges; WIIFM in first 60 seconds"
+      confidence: "Progressive difficulty; success metrics visible; choice of learning paths"
+      satisfaction: "Peer recognition; apply to real project; celebration of wins"
+      characteristics: "All 4 components strong; emotional engagement; personal connection"
+
+    score_70:
+      name: "Adequate: Technical Certification"
+      attention: "Career benefits stated; some industry examples"
+      relevance: "Job relevance mentioned but generic"
+      confidence: "Practice available but no progress indicators"
+      satisfaction: "Certificate at end; no intrinsic rewards"
+      gaps: "Relevance generic; confidence support limited; satisfaction = extrinsic only"
+
+    score_50:
+      name: "Weak: Mandatory Training"
+      attention: "'You must complete this training'"
+      relevance: "No WIIFM; compliance focus only"
+      confidence: "No success indicators; punitive tone"
+      satisfaction: "None; just requirement completion"
+      gaps: "All 4 components weak or missing; demotivating design"
+
+  mayer_exemplars:
+    score_90:
+      name: "Exemplary: Medical Procedure Training"
+      principles_applied:
+        - "Coherence: Only essential content; no corporate branding clutter"
+        - "Signalling: Arrows, highlights, numbered steps"
+        - "Redundancy: Graphics + narration (no on-screen text duplication)"
+        - "Spatial Contiguity: Labels integrated into diagrams"
+        - "Temporal Contiguity: Animation synced with narration"
+        - "Segmenting: User-paced 2-minute segments"
+        - "Modality: Complex graphics + audio narration"
+        - "Personalisation: Conversational tone, 'you' language"
+        - "Voice: Warm human narrator"
+      characteristics: "All applicable principles followed; multimedia optimised for learning"
+
+    score_70:
+      name: "Adequate: Software Tutorial"
+      principles_applied:
+        - "Some signalling"
+        - "Reasonable segmenting"
+        - "Human voice"
+      violations:
+        - "On-screen text duplicates narration (redundancy)"
+        - "Decorative images (coherence)"
+        - "Dense screens (spatial contiguity)"
+      gaps: "3 violations affecting cognitive load"
+
+    score_50:
+      name: "Weak: Slideshow with Voiceover"
+      violations:
+        - "Full slides read verbatim (redundancy)"
+        - "No visuals, just text (modality ignored)"
+        - "Monotone TTS voice (voice principle)"
+        - "No signalling or structure"
+        - "25-minute unbroken segment"
+      gaps: "Multiple critical violations; not designed for learning"
+
+  cognitive_load_exemplars:
+    score_90:
+      name: "Exemplary: Complex Skill Training"
+      characteristics:
+        intrinsic: "Carefully sequenced from simple to complex; part-task before whole-task"
+        extraneous: "Minimal; clean design; integrated formats"
+        germane: "Reflection prompts; connections to prior knowledge; elaboration questions"
+      strategies:
+        - "Worked examples with fading"
+        - "Scaffolded complexity"
+        - "Spaced practice built in"
+        - "Schema-building activities"
+
+    score_70:
+      name: "Adequate: Moderate Complexity"
+      characteristics:
+        intrinsic: "Some chunking; not fully scaffolded"
+        extraneous: "Some clutter but manageable"
+        germane: "Limited reflection opportunities"
+      gaps: "Needs better scaffolding; more germane activities"
+
+    score_50:
+      name: "Weak: Information Overload"
+      characteristics:
+        intrinsic: "All at once; no sequencing"
+        extraneous: "Dense slides; split attention; irrelevant content"
+        germane: "None; passive consumption"
+      gaps: "High overload risk; learners will disengage or fail to encode"
+
+  action_mapping_exemplars:
+    score_90:
+      name: "Exemplary: Sales Performance Improvement"
+      characteristics:
+        business_goal: "Increase close rate from 23% to 30% within 6 months"
+        actions_identified: "5 specific behaviours observed in top performers"
+        root_cause_analysis: "70% skill gap, 30% tool/process issues"
+        practice_design: "Branching scenarios with realistic customer objections"
+        information_approach: "Job aids for product specs; training for negotiation skills"
+      evidence: "Training focused on DO, not KNOW; measurable business outcome"
+
+    score_70:
+      name: "Adequate: Onboarding Programme"
+      characteristics:
+        business_goal: "Reduce time to productivity from 90 to 60 days"
+        actions_identified: "General competency list"
+        practice_design: "Some scenario-based activities"
+      gaps: "Business goal present but actions vague; some information dump"
+
+    score_50:
+      name: "Weak: Knowledge Transfer"
+      characteristics:
+        business_goal: "None stated (SME wanted to share knowledge)"
+        actions_identified: "None (focus on information)"
+        practice_design: "Quiz after each section"
+      gaps: "No business alignment; information-focused; training may not be the solution"
+
+# ==============================================================================
+# SECTION 8: GROUNDING RULES
+# Preventing hallucination and ensuring data fidelity in LLM analysis
+# ==============================================================================
+
+grounding_rules:
+  description: "Critical rules to prevent LLM hallucination and ensure analysis is grounded in provided data"
+  source: "IBM PDL v4 Best Practices"
+
+  # ---------------------------------------------------------------------------
+  # CORE GROUNDING PRINCIPLES
+  # ---------------------------------------------------------------------------
+  core_principles:
+    description: "Fundamental rules for every PDL prompt"
+
+    data_fidelity:
+      rule: "USE ONLY PROVIDED DATA"
+      description: "LLM must base all analysis, scores, and recommendations solely on content explicitly present in the input"
+      enforcement:
+        - "Quote exact text from input when citing evidence"
+        - "If data is missing, state 'Not provided in input'"
+        - "Never invent examples, statistics, or specifics not in source material"
+        - "Use conditional language when inferring: 'Based on [evidence], this suggests...'"
+
+    source_attribution:
+      rule: "CITE SOURCES FOR ALL CLAIMS"
+      description: "Every assertion must be traceable to specific input content"
+      enforcement:
+        - "Include slide/section reference for evidence"
+        - "Use format: 'Slide 5: [quoted text]' for citations"
+        - "For inferences, state: 'Inferred from [specific evidence]'"
+        - "If no evidence exists, state: 'No evidence found in content'"
+
+    assumption_transparency:
+      rule: "EXPLICITLY LABEL ASSUMPTIONS"
+      description: "When reasonable defaults or assumptions are needed, clearly label them"
+      enforcement:
+        - "Format: '[Value] (assumed - recommend validation)'"
+        - "Distinguish 'measured' vs 'assumed' vs 'stakeholder_estimate'"
+        - "Provide recommendation to obtain actual data where possible"
+
+    quantitative_integrity:
+      rule: "NEVER INVENT NUMBERS"
+      description: "Financial figures, percentages, and metrics must come from input or be clearly marked"
+      enforcement:
+        - "If ROI data not provided: 'roi_calculable: false'"
+        - "If baseline unknown: 'Baseline: 0% (assumed - validation required)'"
+        - "If cost not quantified: 'Cost of Gap: Not quantified. Qualitative impact: [description]'"
+        - "Never fabricate dollar figures, percentages, or time estimates"
+
+  # ---------------------------------------------------------------------------
+  # PROMPT GROUNDING TEMPLATES
+  # ---------------------------------------------------------------------------
+  grounding_templates:
+    description: "Standard grounding language to include in prompts"
+
+    standard_grounding: |
+      GROUNDING - USE ONLY PROVIDED DATA:
+      - Quote exact text from input for all evidence
+      - If data is missing, state: "Not provided in input"
+      - For assumptions, state: "[Value] (assumed - recommend validation)"
+      - Never invent statistics, examples, or specifics not in source material
+      - Cite slide/section numbers for all claims
+
+    quantitative_grounding: |
+      QUANTITATIVE GROUNDING:
+      - Use exact figures from input for baseline/target metrics
+      - If baseline is assumed (e.g., "0%"), state: "Baseline: X% (assumed - recommend validation)"
+      - If business impact is described qualitatively, state that - do NOT invent £/$ figures
+      - If cost_of_gap is not quantified, state: "Cost of Gap: Not quantified. Qualitative impact: [description]"
+      - For ROI: If NO financial figures provided in input, output:
+        roi_calculable: false
+        roi_statement: "Not calculable - no financial data provided"
+        roi_data_needed: ["development_cost", "delivery_cost", "expected_revenue_impact"]
+
+    evidence_grounding: |
+      EVIDENCE REQUIREMENTS:
+      - Every score must have at least one supporting quote from the content
+      - Use format: "Evidence: '[quoted text]' (Slide X)"
+      - If no evidence found, score as 0 or N/A and state: "No evidence in content"
+      - Distinguish between:
+        * Present & Strong: Clear, explicit evidence
+        * Present & Weak: Implied or partial evidence
+        * Absent: No evidence found
+
+    recommendation_grounding: |
+      RECOMMENDATION GROUNDING:
+      - Recommendations must address specific gaps found in analysis
+      - Reference the framework criterion that triggered the recommendation
+      - Provide actionable guidance, not vague suggestions
+      - If recommending data collection, specify exactly what data is needed
+
+  # ---------------------------------------------------------------------------
+  # HALLUCINATION PREVENTION PATTERNS
+  # ---------------------------------------------------------------------------
+  hallucination_prevention:
+    description: "Common hallucination patterns and how to prevent them"
+
+    invented_examples:
+      pattern: "LLM creates specific examples not in the source material"
+      prevention:
+        prompt_addition: "Use ONLY examples explicitly present in the content. If no examples exist, state 'No examples provided in content.'"
+        detection: "Check if specific names, companies, or scenarios appear in input"
+
+    fabricated_statistics:
+      pattern: "LLM generates plausible-sounding statistics"
+      prevention:
+        prompt_addition: "Quote exact statistics from the input. If statistics are needed but not provided, state: 'No quantitative data provided. Recommend collecting: [specific data needed]'"
+        detection: "Verify all percentages and numbers against input document"
+
+    assumed_context:
+      pattern: "LLM fills in missing context with assumed information"
+      prevention:
+        prompt_addition: "Work only with explicitly stated information. For missing context, state: 'Context not provided - assuming [X]. Recommend confirming with stakeholders.'"
+        detection: "Check for claims about audience, objectives, or context not in input"
+
+    implied_success:
+      pattern: "LLM assumes positive outcomes without evidence"
+      prevention:
+        prompt_addition: "Assess only what is evidenced. Do not assume success or effectiveness. If outcomes are not stated, note: 'Outcomes not specified in content.'"
+        detection: "Look for claims about 'improved', 'successful', 'effective' without supporting data"
+
+    timeline_invention:
+      pattern: "LLM creates specific timelines or durations not provided"
+      prevention:
+        prompt_addition: "Use only explicitly stated timelines. If duration is not specified, state: 'Duration not specified. Recommend: [typical range for content type].'"
+        detection: "Verify all time references (weeks, months, hours) against input"
+
+  # ---------------------------------------------------------------------------
+  # OUTPUT SCHEMA PATTERNS FOR GROUNDED DATA
+  # ---------------------------------------------------------------------------
+  grounded_output_schemas:
+    description: "JSON schema patterns that enforce grounding"
+
+    metric_with_source:
+      description: "Schema for metrics that must cite their source"
+      schema:
+        type: object
+        properties:
+          value:
+            type: string
+            description: "The metric value"
+          source:
+            type: string
+            enum: ["measured", "assumed", "stakeholder_estimate", "calculated", "not_provided"]
+          evidence:
+            type: string
+            description: "Quote or reference from input supporting this value"
+          validation_note:
+            type: string
+            description: "Recommendation if value needs validation"
+
+    roi_projection:
+      description: "Schema for ROI data that handles missing information"
+      schema:
+        type: object
+        properties:
+          roi_calculable:
+            type: boolean
+            description: "Whether sufficient data exists to calculate ROI"
+          roi_ratio:
+            type: number
+            description: "Calculated ROI ratio (only if calculable)"
+          total_investment:
+            type: object
+            properties:
+              value: { type: number }
+              source: { type: string, enum: ["provided", "estimated", "not_provided"] }
+              evidence: { type: string }
+          expected_returns:
+            type: object
+            properties:
+              value: { type: number }
+              source: { type: string, enum: ["provided", "estimated", "not_provided"] }
+              evidence: { type: string }
+          roi_statement:
+            type: string
+            description: "Human-readable explanation of ROI or why it cannot be calculated"
+          data_needed:
+            type: array
+            items: { type: string }
+            description: "List of data points needed to calculate ROI if missing"
+
+    evidence_based_score:
+      description: "Schema for scores that must provide evidence"
+      schema:
+        type: object
+        properties:
+          score:
+            type: integer
+            minimum: 0
+            maximum: 100
+          evidence:
+            type: array
+            items:
+              type: object
+              properties:
+                quote:
+                  type: string
+                  description: "Exact text from content"
+                location:
+                  type: string
+                  description: "Slide number, section, or timestamp"
+                assessment:
+                  type: string
+                  enum: ["strong", "adequate", "weak"]
+          gaps:
+            type: array
+            items:
+              type: object
+              properties:
+                criterion:
+                  type: string
+                  description: "What was looked for but not found"
+                impact:
+                  type: string
+                  description: "How this gap affects the score"
+          confidence:
+            type: string
+            enum: ["high", "medium", "low"]
+            description: "Confidence based on evidence quantity and quality"
+
+  # ---------------------------------------------------------------------------
+  # CHAIN OF THOUGHT FOR GROUNDED ANALYSIS
+  # ---------------------------------------------------------------------------
+  grounded_cot:
+    description: "Chain of thought patterns that enforce grounding"
+
+    pedagogical_analysis_cot: |
+      CHAIN OF THOUGHT - Analyse with grounding:
+      1. SCAN CONTENT: What pedagogical elements are EXPLICITLY present?
+         - List each element with its location (slide/section)
+      2. CHECK FRAMEWORKS: For each framework criterion:
+         - Quote specific evidence if found
+         - Mark as "Not found" if absent
+         - Do NOT infer or assume
+      3. SCORE WITH EVIDENCE: For each score:
+         - Cite the evidence that justifies the score
+         - If evidence is weak, reduce score accordingly
+         - If no evidence, score as 0 or N/A
+      4. IDENTIFY GAPS: What is missing?
+         - List specific criteria not evidenced
+         - Do NOT assume gaps are filled elsewhere
+      5. RECOMMEND WITH SPECIFICITY: For each gap:
+         - Reference the framework criterion
+         - Provide concrete, actionable guidance
+         - Do NOT give vague suggestions
+
+    learning_goal_cot: |
+      CHAIN OF THOUGHT - Grounded goal analysis:
+      1. ANALYSE THE GAP: What specific knowledge/skill deficiency is STATED in the input?
+         - Quote the gap statement
+         - If not stated, note: "Gap not explicitly defined"
+      2. CONNECT TO BUSINESS: How does the input connect this to business outcomes?
+         - Quote business impact statements
+         - If qualitative only, note: "Qualitative impact: [description]"
+      3. EXTRACT METRICS: What baseline and target metrics are PROVIDED?
+         - Quote exact figures from input
+         - If assumed, state: "[Value] (assumed - validation needed)"
+      4. ASSESS ROI DATA: Are financial figures explicitly provided?
+         - If yes: Quote and use them
+         - If no: Set roi_calculable: false
+         - List what data would be needed
+      5. FORMULATE GOAL: Craft goal statement using ONLY provided information
+         - Fill gaps with "[To be determined]" not invented values
+
+  # ---------------------------------------------------------------------------
+  # VALIDATION CHECKLIST
+  # ---------------------------------------------------------------------------
+  validation_checklist:
+    description: "Checklist for validating grounded output"
+
+    pre_submission:
+      - check: "All statistics appear in input"
+        action: "Cross-reference every number with source document"
+
+      - check: "All examples are from input"
+        action: "Verify named entities and specific scenarios exist in source"
+
+      - check: "Assumptions are labelled"
+        action: "Search output for reasonable defaults that should be marked"
+
+      - check: "Missing data acknowledged"
+        action: "Verify 'Not provided' or 'Not calculable' appears where appropriate"
+
+      - check: "Evidence cited for scores"
+        action: "Each score should have at least one supporting quote"
+
+      - check: "Recommendations trace to gaps"
+        action: "Each recommendation should reference a specific finding"
+
+    red_flags:
+      - "Specific company names not in input"
+      - "Exact percentages without source citation"
+      - "Dollar/pound figures without input reference"
+      - "Timelines (weeks, months) not from input"
+      - "Success claims without outcome data"
+      - "Comparisons to industry benchmarks not provided"
+
+# ==============================================================================
+# SECTION 9: PDL EXECUTION PATTERNS
+# Best practices for multi-step PDL workflows
+# ==============================================================================
+
+pdl_execution_patterns:
+  description: "Patterns for effective PDL program design"
+  source: "IBM PDL v4 Best Practices"
+
+  # ---------------------------------------------------------------------------
+  # OUTPUT SUPPRESSION
+  # ---------------------------------------------------------------------------
+  output_control:
+    description: "Controlling what appears in final output vs intermediate processing"
+
+    recommended_pattern:
+      name: "Sequential defs with empty text"
+      description: "Define variables in defs block, use sibling text: '' to suppress output"
+      example: |
+        text:
+          - defs:
+              step1_result:
+                model: ${ model }
+                input: "Analyse: ${ content }"
+                parser: json
+            text: ""  # No output from this step
+
+          - defs:
+              step2_result:
+                model: ${ model }
+                input: "Based on: ${ step1_result }"
+                parser: json
+            text: ""  # No output from this step
+
+          # Only final step produces output
+          - |
+            # Analysis Report
+            ${ step1_result.summary }
+            ${ step2_result.recommendations }
+
+    alternative_pattern:
+      name: "contribute control"
+      description: "Use contribute: [] to prevent output contribution"
+      note: "Less reliable inside text blocks - prefer defs pattern"
+
+  # ---------------------------------------------------------------------------
+  # CONTEXT COMPRESSION
+  # ---------------------------------------------------------------------------
+  context_compression:
+    description: "Reducing token usage in multi-step workflows"
+
+    principles:
+      - "Step 1: Receives FULL raw data (unavoidable entry point)"
+      - "Steps 2-N: Receive COMPRESSED views + synthesized outputs from previous steps"
+      - "Final Step: Receives ONLY synthesized outputs (no raw data)"
+
+    compression_techniques:
+      truncation:
+        example: "${ field[:150] if field else 'N/A' }"
+        description: "Limit field length with fallbacks"
+
+      selective_extraction:
+        example: |
+          {% for s in slides -%}
+          [{{ s.index }}] {{ s.headline }} ({{ s.type }})
+          {% endfor %}
+        description: "Extract only essential fields"
+
+      list_slicing:
+        example: "{% for a in actions[:3] %}{{ a.claim[:80] }}; {% endfor %}"
+        description: "Take first N items, truncate each"
+
+      conditional_inclusion:
+        example: "{% if slide.notes %}[{{ slide.index }}] {{ slide.notes[:100] }}{% endif %}"
+        description: "Include only if present"
+
+  # ---------------------------------------------------------------------------
+  # CHAIN OF THOUGHT INTEGRATION
+  # ---------------------------------------------------------------------------
+  cot_integration:
+    description: "When to use inline vs imported Chain of Thought"
+
+    inline_cot:
+      when_to_use:
+        - "Domain-specific reasoning steps"
+        - "When grounding rules must be enforced"
+        - "Structured output generation"
+        - "Complex multi-step workflows"
+      advantages:
+        - "Task-specific reasoning"
+        - "Can enforce grounding at each step"
+        - "Lower token overhead (no examples)"
+
+    imported_cot:
+      when_to_use:
+        - "Standard reasoning tasks"
+        - "When you have high-quality demonstration examples"
+        - "Generic mathematical or logical reasoning"
+      advantages:
+        - "Reusable across programs"
+        - "Proven patterns from prompt library"
+
+  # ---------------------------------------------------------------------------
+  # ERROR HANDLING
+  # ---------------------------------------------------------------------------
+  error_handling:
+    description: "Handling parsing failures and invalid outputs"
+
+    json_repair:
+      description: "PDL automatically repairs common JSON errors"
+      handled_issues:
+        - "Missing closing braces"
+        - "Trailing commas"
+        - "Unquoted keys"
+        - "Minor syntax errors"
+
+    fallback_patterns:
+      missing_field: |
+        ${ result.field | default('Not provided') }
+
+      type_coercion: |
+        ${ result.score | int | default(0) }
+
+      conditional_access: |
+        {% if result.section %}
+        ${ result.section.content }
+        {% else %}
+        Section not found in analysis.
+        {% endif %}
+
+    spec_validation:
+      description: "Use spec to enforce output structure"
+      example: |
+        model: ${ model }
+        parser: json
+        spec:
+          type: object
+          properties:
+            score:
+              type: integer
+              minimum: 0
+              maximum: 100
+            evidence:
+              type: array
+              minItems: 1

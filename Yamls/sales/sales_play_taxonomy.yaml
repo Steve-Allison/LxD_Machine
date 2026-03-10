@@ -1,0 +1,320 @@
+_meta:
+  version: "3.2.0"
+  description: "Complete FY26 sales play hierarchy mapping Portfolio Plays (L1) → Strategic Sales Plays (L2) → Application Sales Tactics (L3) → Industry Adaptations (L4) with narrative guardrails and technology enablers"
+  domain: sales
+  domain_type: cross_cutting
+  id: sales_play_taxonomy
+  title: "FY26 Sales Play Hierarchy"
+  purpose: reference
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Using SOAR Storytelling most effectively.md"
+    - "Corpus/Research/The Universal Narrative Methodology: A Framework for Crafting and Improving Stories.md"
+    - "Corpus/Research/Research - Canonical Presentation Methodology Research.md"
+  confidence_scope:
+    included:
+    - All FY26 Portfolio Plays (L1) and Strategic Sales Plays (L2) as shown in FY26 overview/TPG materials
+    - FY26 catalog application buckets as shown in FY26 overview/TPG materials
+    - L3 tactic lists only for applications whose FY26 GTM Guides were fetched and contain explicit tactic names
+    - L4 industry list from FY26 verticalized one-pagers menu and FY26 TPG industry messaging
+    excluded:
+    - L3 tactic lists for applications not yet fetched/parsed (will be added when those FY26 GTM guides are ingested)
+    - L4 mapping of each industry to specific strategic plays (not inferred without explicit FY26 source tables)
+  sources:
+  - file: FY26 Sales Plays Overviews - Account Planning v1.0.pptx
+    refs:
+    - turn6search361
+    - turn5search360
+  - file: FY26 Targeting & Positioning Guide_Dec 15 Final.pptx
+    refs:
+    - turn7search449
+  - file: Accelerate 2026 PPT _CSC - Bangkok.pptx
+    refs:
+    - turn6search557
+    - turn5search362
+  - file: FY26 RTCDP Application Sales Play GTM Guide.pptx
+    refs:
+    - turn6search562
+  - file: FY26 RTCDP Collaboration Application Sales Play GTM Guide.pptx
+    refs:
+    - turn6search560
+  - file: 12. FY26 Marketo Engage Sales Play GTM Guide.pptx
+    refs:
+    - turn6search561
+  - file: FY26 Verticalized Strategic Sales Play One-Pagers.pptx
+    refs:
+    - turn6search564
+  relationships:
+    - target: sales/soar_hierarchy_framework.yaml
+      type: depends_on
+      description: "Both classification systems for sales plays; taxonomy values align to SOAR structure"
+hierarchy_levels:
+  L1: Portfolio Play
+  L2: Strategic Sales Play
+  L3: Application Sales Tactic
+  L4: Industry adaptation
+governance:
+  directory_source:
+    file: FY26 Targeting & Positioning Guide_Dec 15 Final.pptx
+    refs:
+    - turn7search449
+    note: FY26 Sales Play Directory slide is the navigation index.
+fy26_catalog_applications:
+  Content, Commerce & Workflows:
+  - Learning Manager
+  - Workfront Workflow
+  - Workfront Planning
+  - Adobe Commerce
+  - Frame.io
+  - GenStudio for Performance Marketing
+  - AEM Sites Optimizer
+  - LLM Optimizer
+  - AEM Sites
+  - AEM Assets
+  - AEM Forms
+  - AEM Guides
+  Data & Audiences:
+  - Content Analytics
+  - Mix Modeler
+  - Analytics
+  - Real-Time CDP Collaboration
+  - Customer Journey Analytics
+  - Customer Journey Analytics B2B Edition
+  - Real-Time CDP
+  - Real-Time CDP B2B Edition
+  Customer Journeys:
+  - Marketo Engage
+  - Marketo Measure
+  - Dynamic Chat
+  - Adobe Journey Optimizer
+  - Adobe Journey Optimizer B2B Edition
+  - Campaign
+  - Target
+  Advertising:
+  - Adobe Advertising
+  Creative (DMe):
+  - Creative Cloud
+  - Express
+  - Firefly Services
+  - Firefly Custom Models
+  - Firefly Foundry
+  - Firefly Design Intelligence
+  - FF for Creative Production
+  - FF Creative Production
+  New/Coming Soon (as labeled in FY26 materials):
+  - GenStudio for Content Mktg (H2)
+  - Commerce as a Cloud Serv.
+  - AJO Experimentation Accelerator
+  - Journey Optimizer Experimentation Accelerator
+  - Adobe Commerce Optimizer
+sales_play_taxonomy:
+  portfolio_plays:
+  - id: FY26_L1_CSC
+    name: Content Supply Chain for the AI World
+    level: L1
+    strategic_sales_plays:
+    - id: FY26_L2_WP
+      name: 'W&P: Workflows, Planning & Metadata'
+      level: L2
+      parent_id: FY26_L1_CSC
+      lead_applications:
+      - Workfront Workflow
+      - Workfront Planning
+      - Frame.io
+      - AEM Assets
+    - id: FY26_L2_CP_SCT
+      name: 'C&P: Supercharge Creative Teams'
+      level: L2
+      parent_id: FY26_L1_CSC
+      lead_applications:
+      - Creative Cloud
+      - FF for Creative Production
+      - Frame.io
+      - FF Custom Models
+      - FF Foundry
+    - id: FY26_L2_CP_SAP
+      name: 'C&P: Scaled Asset Production'
+      level: L2
+      parent_id: FY26_L1_CSC
+      lead_applications:
+      - FF Services
+      - FF Creative Production
+      - FF Design Intelligence
+      - FF Custom Models
+      - FF Foundry
+    - id: FY26_L2_CP_OB
+      name: 'C&P: On-brand Creation for Marketers and beyond'
+      level: L2
+      parent_id: FY26_L1_CSC
+      lead_applications:
+      - Adobe Express
+      - GenStudio for Performance Marketing
+    - id: FY26_L2_AM_REUSE
+      name: 'Asset Management: Asset Mgmt & Reuse'
+      level: L2
+      parent_id: FY26_L1_CSC
+      lead_applications:
+      - AEM Assets
+      - Workfront
+    - id: FY26_L2_RI_CI
+      name: 'Reporting & Insights: Content Insights'
+      level: L2
+      parent_id: FY26_L1_CSC
+      lead_applications:
+      - Content Analytics
+      - GenStudio for Performance Marketing
+    notes: 'FY26 CSC: six strategic sales plays align 1:1 with CSC entry points.'
+    evidence:
+      refs:
+      - turn6search557
+      - turn5search362
+      - turn6search361
+  - id: FY26_L1_UCX
+    name: Unified Customer Experience for the AI World
+    level: L1
+    strategic_sales_plays:
+    - id: FY26_L2_UCX_ABA
+      name: Agentic Brand Activation
+      level: L2
+      parent_id: FY26_L1_UCX
+    - id: FY26_L2_UCX_CCE
+      name: Customer-centric Engagement
+      level: L2
+      parent_id: FY26_L1_UCX
+    - id: FY26_L2_UCX_CA
+      name: Customer Acquisition
+      level: L2
+      parent_id: FY26_L1_UCX
+    - id: FY26_L2_UCX_OCA
+      name: Omnichannel Content Activation
+      level: L2
+      parent_id: FY26_L1_UCX
+    lead_applications:
+    - Real-Time CDP Collaboration
+    - Journey Optimizer
+    - Journey Optimizer Experimentation Accelerator
+    - Real-Time CDP
+    - Mix Modeler
+    - Content Analytics
+    - Brand Concierge
+    - Customer Journey Analytics
+    - Adobe Experience Manager Sites
+    - Adobe Experience Manager Sites Optimizer
+    - LLM Optimizer
+    evidence:
+      refs:
+      - turn6search361
+      - turn7search449
+  - id: FY26_L1_B2B
+    name: B2B GTM Orchestration
+    level: L1
+    strategic_sales_plays:
+    - id: FY26_L2_B2B_MO
+      name: Marketing Orchestration
+      level: L2
+      parent_id: FY26_L1_B2B
+    - id: FY26_L2_B2B_CLG
+      name: Content–led Growth
+      level: L2
+      parent_id: FY26_L1_B2B
+    - id: FY26_L2_B2B_CAMPACC
+      name: Campaign Acceleration
+      level: L2
+      parent_id: FY26_L1_B2B
+    - id: FY26_L2_B2B_B2BCOM
+      name: B2B Commerce
+      level: L2
+      parent_id: FY26_L1_B2B
+    - id: FY26_L2_B2B_AO
+      name: Account Orchestration
+      level: L2
+      parent_id: FY26_L1_B2B
+    lead_applications:
+    - Adobe Experience Manager
+    - Workfront
+    - Marketo
+    - Commerce
+    - Learning Manager
+    - GenStudio for Performance Marketing
+    - Real-Time CDP B2B Edition
+    - Adobe Experience Manager Guides
+    - Journey Optimizer B2B Edition
+    - Customer Journey Analytics B2B Edition
+    evidence:
+      refs:
+      - turn6search361
+      - turn7search449
+application_sales_tactics:
+  by_application:
+    Real-Time CDP (Portfolio):
+    - 'RTCDP B2C: New, Rip & Replace'
+    - 'RTCDP B2C: Cross-Sell'
+    - 'RTCDP: Capacity, Capability, and Volume Upsell'
+    - 'RTCDP: Data Composability'
+    - 'RTCDP B2B Edition: B2B New, Rip & Replace'
+    - 'RTCDP B2B Edition: B2B Cross-sell'
+    - 'RTCDP: RTCDP Connections, Server-Side Event Forwarding'
+    - 'AAM: Data Management Evolution'
+    Real-Time CDP Collaboration:
+    - 'RTCDP: Data Collaboration for Brands'
+    - 'RTCDP: Audience Monetization for Publishers and Media Networks'
+    Marketo Engage:
+    - Replace MAP with ME (Greenfield)
+    - Replace MAP with ME (Cross-sell)
+    - ME Maturity Upsell to ME Prime
+    - ME Cross-Channel Upsell
+    - ME Volume & Performance Upsell
+    - ME Analytics & Attribution Upsell
+industry_verticalization:
+  industries:
+  - Automotive
+  - Consumer Goods
+  - Financial Services
+  - Financial Services & Insurance
+  - Healthcare
+  - High Tech
+  - Industrial Manufacturing
+  - Life sciences
+  - Media & Entertainment
+  - Media and Entertainment
+  - Public Sector
+  - Retail
+  - Travel & Hospitality
+
+# ==============================================================================
+# SOAR NARRATIVE NOTES
+# Narrative deployment guidance for the FY26 sales play hierarchy
+# Source: Research - Using SOAR Storytelling most effectively.md
+# ==============================================================================
+
+soar_narrative_notes:
+  purpose: "Guidance on applying SOAR narrative framework across the L1 to L4 play hierarchy"
+  source: "Research - Using SOAR Storytelling most effectively.md; Research - Canonical Presentation Methodology Research.md"
+
+  hierarchy_narrative_pattern:
+    L1:
+      soar_emphasis: "S + O dominant (40/40% weight)"
+      narrative_role: "Establish the transformational vision and urgency for change"
+      opening_strategy: "Lead with industry trend or provocative statistic (Situation), escalate to loss-aversion frame (Opportunity)"
+      key_message: "The world has changed; here is why acting now matters"
+    L2:
+      soar_emphasis: "O + A + R (30/40/30% weight)"
+      narrative_role: "Make the pain specific and the solution concrete"
+      opening_strategy: "One-line bridge to L1 vision, then deep-dive into customer problem and use cases"
+      key_message: "Here is the specific problem, our approach, and the proof it works"
+    L3:
+      soar_emphasis: "A + R dominant (50/30% weight)"
+      narrative_role: "Demonstrate technical credibility and validated outcomes"
+      opening_strategy: "Bridge to L2 value prop, then capabilities walkthrough with benchmarks"
+      key_message: "Here is exactly how it works and how similar customers succeeded"
+    L4:
+      soar_emphasis: "A + R dominant, persona-WIIFM first"
+      narrative_role: "Translate the play into the persona language and priorities"
+      opening_strategy: "WIIFM statement, then approach steps in persona workflow terms, then role-relevant proof"
+      key_message: "Here is what this means for you, your team, and your KPIs"
+
+  play_count_narrative_implications:
+    csc_plays: 6
+    ucx_plays: 4
+    b2b_plays: 5
+    guidance: "Each L2 play must have a distinct Opportunity villain and Action hero to avoid narrative collision at L1 presentations"

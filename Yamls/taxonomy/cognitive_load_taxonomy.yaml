@@ -1,0 +1,320 @@
+_meta:
+  id: cognitive_load_taxonomy
+  purpose: taxonomy
+  version: "1.2.0"
+  last_updated: "2026-03-01"
+  description: "Classification of cognitive load constructs by load type, Mayer principle category, design strategy, expertise sensitivity, and content modality."
+  domain: pedagogical
+  domain_type: workflow
+  corpus_sources:
+    - "Corpus/Research/Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md"
+    - "Corpus/Research/Best Practices for Writing Effective Corporate Learning Content.md"
+    - "Corpus/Research/Theory_Mayers_Principles_of_Multimedia_Learning-_A_Comprehensive_Summary.md"
+    - "Corpus/Research/mayers_15_principles.md"
+  academic_sources:
+    - "Sweller (1988) - Cognitive Load During Problem Solving"
+    - "Mayer (2009) - Multimedia Learning"
+    - "Paas & Sweller (2012) - An Evolutionary Upgrade of Cognitive Load Theory"
+  relationships:
+    - target: entities/cognitive_load_entities.yaml
+      type: depends_on
+      description: "Cognitive load entity types for NER extraction"
+    - target: methodology/cognitive_load_principles.yaml
+      type: depends_on
+      description: "CLT application framework with Mayer's 15 principles"
+    - target: methodology/mayer_principles.yaml
+      type: depends_on
+      description: "Detailed Mayer principle definitions with effect sizes"
+# ==============================================================================
+# LOAD TYPES
+# ==============================================================================
+
+load_types:
+  extraneous:
+    label: "Extraneous Load"
+    description: "Unnecessary cognitive effort imposed by poor instructional design — can and should be eliminated"
+    management_goal: "Minimise"
+    causes:
+      - split_attention: "Related information in separate locations"
+      - redundancy: "Same information in multiple channels"
+      - chartjunk: "Decorative non-data elements"
+      - poor_hierarchy: "Unclear what is important"
+      - inconsistent_design: "Requires re-learning visual patterns"
+    mayer_principles:
+      - coherence
+      - signalling
+      - redundancy
+      - spatial_contiguity
+      - temporal_contiguity
+
+  intrinsic:
+    label: "Intrinsic Load"
+    description: "Inherent difficulty of the material — determined by element interactivity and cannot be eliminated, only managed"
+    management_goal: "Manage"
+    factors:
+      - element_interactivity: "Number of elements that must be processed simultaneously"
+      - prerequisite_knowledge: "Prior knowledge required for comprehension"
+      - concept_abstraction: "Degree of abstraction in the content"
+    mayer_principles:
+      - segmenting
+      - pre_training
+      - modality
+
+  germane:
+    label: "Germane Load"
+    description: "Productive effort spent on schema construction and deep processing — should be maximised once extraneous is reduced"
+    management_goal: "Maximise"
+    mechanisms:
+      - schema_construction: "Building mental models of domain structures"
+      - elaboration: "Connecting new information to existing knowledge"
+      - self_explanation: "Generating explanations for why steps work"
+      - retrieval_practice: "Strengthening memory through active recall"
+    mayer_principles:
+      - multimedia
+      - personalisation
+      - voice
+      - generative_activity
+
+# ==============================================================================
+# MAYER PRINCIPLE CATEGORIES
+# ==============================================================================
+
+mayer_principle_categories:
+  reduce_extraneous:
+    label: "Reduce Extraneous Processing"
+    description: "Principles that eliminate unnecessary cognitive load"
+    principles:
+      coherence:
+        id: 1
+        name: "Coherence"
+        rule: "Exclude extraneous words, pictures, and sounds"
+        effect_size: "d = 0.86"
+      signalling:
+        id: 2
+        name: "Signalling / Cueing"
+        rule: "Use cues to highlight essential material"
+        effect_size: "d = 0.38"
+      redundancy:
+        id: 3
+        name: "Redundancy"
+        rule: "Graphics + narration beats graphics + narration + text"
+        effect_size: "d = 0.72"
+      spatial_contiguity:
+        id: 4
+        name: "Spatial Contiguity"
+        rule: "Place text near corresponding graphics"
+        effect_size: "d = 1.12"
+      temporal_contiguity:
+        id: 5
+        name: "Temporal Contiguity"
+        rule: "Present words and pictures simultaneously"
+        effect_size: "d = 1.31"
+
+  manage_essential:
+    label: "Manage Essential Processing"
+    description: "Principles that help learners manage inherent content complexity"
+    principles:
+      segmenting:
+        id: 6
+        name: "Segmenting"
+        rule: "Present complex content in learner-paced segments"
+        effect_size: "d = 0.79"
+      pre_training:
+        id: 7
+        name: "Pre-training"
+        rule: "Teach component concepts before the full lesson"
+        effect_size: "d = 0.85"
+      modality:
+        id: 8
+        name: "Modality"
+        rule: "Graphics + narration beats graphics + on-screen text"
+        effect_size: "d = 0.76"
+
+  foster_generative:
+    label: "Foster Generative Processing"
+    description: "Principles that encourage deep cognitive engagement and meaning-making"
+    principles:
+      multimedia:
+        id: 9
+        name: "Multimedia"
+        rule: "Words and pictures together beat words alone"
+        effect_size: "d = 1.39"
+      personalisation:
+        id: 10
+        name: "Personalisation"
+        rule: "Conversational style beats formal style"
+        effect_size: "d = 0.79"
+      voice:
+        id: 11
+        name: "Voice"
+        rule: "Human voice beats machine voice"
+        effect_size: "d = 0.69"
+      image:
+        id: 12
+        name: "Image"
+        rule: "Speaker image is not always necessary"
+        effect_size: "d = 0.09"
+      embodiment:
+        id: 13
+        name: "Embodiment"
+        rule: "Human-like gestures from on-screen agents aid learning"
+        effect_size: "d = 0.36"
+      immersion:
+        id: 14
+        name: "Immersion"
+        rule: "More immersion is not always better"
+        effect_size: "Mixed"
+      generative_activity:
+        id: 15
+        name: "Generative Activity"
+        rule: "Prompting learners to generate responses aids learning"
+        effect_size: "d = 0.71"
+
+# ==============================================================================
+# DESIGN STRATEGIES
+# ==============================================================================
+
+design_strategies:
+  progressive_disclosure:
+    label: "Progressive Disclosure"
+    description: "Present only what is needed at each moment; reveal complexity gradually"
+    techniques:
+      - animation_builds: "Reveal content element by element"
+      - layered_diagrams: "Start simple, add complexity progressively"
+      - drill_down: "Overview first, detail on demand"
+      - chunked_navigation: "Content divided into navigable sections"
+    load_type_targeted: extraneous
+
+  worked_examples:
+    label: "Worked Examples"
+    description: "Provide step-by-step solutions for learners to study before attempting problems"
+    techniques:
+      - faded_examples: "Gradually remove steps as learner progresses"
+      - self_explanation_prompts: "Ask learners to explain each step"
+      - completion_problems: "Provide partial solution for learner to finish"
+    load_type_targeted: germane
+
+  retrieval_practice:
+    label: "Retrieval Practice"
+    description: "Use low-stakes quizzing and spaced recall to strengthen learning"
+    techniques:
+      - low_stakes_quizzing: "Frequent ungraded quizzes with feedback"
+      - spaced_repetition: "Review at expanding intervals"
+      - interleaving: "Mix problem types during practice"
+    load_type_targeted: germane
+
+  adaptive_scaffolding:
+    label: "Adaptive Scaffolding"
+    description: "Adjust instructional support based on learner expertise level"
+    techniques:
+      - expertise_assessment: "Pre-test to determine learner level"
+      - scaffolding_fade: "Reduce support as competence grows"
+      - optional_depth: "Provide advanced detail on demand"
+    load_type_targeted: intrinsic
+
+# ==============================================================================
+# EXPERTISE SENSITIVITY
+# ==============================================================================
+
+expertise_sensitivity:
+  novice_beneficial:
+    label: "Novice Beneficial"
+    description: "Strategies that significantly help low-prior-knowledge learners"
+    principles: [segmenting, pre_training, signalling, spatial_contiguity, modality, worked_examples]
+    application: "Apply liberally for novice audiences"
+
+  expertise_reversal:
+    label: "Expertise Reversal"
+    description: "Strategies that help novices but hinder expert learners"
+    principles: [segmenting, pre_training, signalling, embodiment, worked_examples]
+    application: "Reduce or eliminate for expert audiences"
+
+  universally_beneficial:
+    label: "Universally Beneficial"
+    description: "Strategies that help all learners regardless of expertise"
+    principles: [coherence, redundancy, multimedia, generative_activity]
+    application: "Always apply regardless of audience"
+
+# ==============================================================================
+# CONTENT MODALITY APPLICATION
+# ==============================================================================
+
+content_modality_application:
+  slide_presentation:
+    label: "Slide Presentation"
+    primary_risks: ["text overload", "split attention", "redundancy"]
+    key_principles: [coherence, signalling, redundancy, spatial_contiguity]
+    constraints:
+      max_words: 40
+      max_bullets: 7
+      max_data_series: 4
+
+  video_content:
+    label: "Video / Animation"
+    primary_risks: ["temporal misalignment", "talking head distraction", "information dump"]
+    key_principles: [temporal_contiguity, segmenting, modality, voice]
+    constraints:
+      max_segment_length: "2-6 minutes"
+      max_on_screen_text: "10-15 words"
+
+  written_document:
+    label: "Written Document / eLearning"
+    primary_risks: ["wall of text", "undefined jargon", "no visual support"]
+    key_principles: [multimedia, personalisation, pre_training, signalling]
+    constraints:
+      max_paragraph_sentences: 4
+      max_section_concepts: 6
+
+  interactive_module:
+    label: "Interactive / eLearning Module"
+    primary_risks: ["navigation confusion", "cognitive overload from interactivity"]
+    key_principles: [segmenting, generative_activity, progressive_disclosure]
+    constraints:
+      max_interactions_per_screen: 3
+
+# ==============================================================================
+# CLASSIFICATION DIMENSIONS
+# ==============================================================================
+
+classification_dimensions:
+  load_type:
+    name: "Load Type"
+    description: "The category of cognitive load according to Cognitive Load Theory"
+    values:
+      - extraneous
+      - intrinsic
+      - germane
+
+  mayer_category:
+    name: "Mayer Principle Category"
+    description: "The functional category of Mayer's multimedia learning principle"
+    values:
+      - reduce_extraneous
+      - manage_essential
+      - foster_generative
+
+  design_strategy:
+    name: "Design Strategy"
+    description: "The instructional design strategy for managing cognitive load"
+    values:
+      - progressive_disclosure
+      - worked_examples
+      - retrieval_practice
+      - adaptive_scaffolding
+
+  expertise_sensitivity:
+    name: "Expertise Sensitivity"
+    description: "How the strategy's effectiveness varies with learner expertise"
+    values:
+      - novice_beneficial
+      - expertise_reversal
+      - universally_beneficial
+
+  content_modality:
+    name: "Content Modality"
+    description: "The type of content the cognitive load construct applies to"
+    values:
+      - slide_presentation
+      - video_content
+      - written_document
+      - interactive_module

@@ -1,0 +1,869 @@
+_meta:
+  id: learning_objectives_entities
+  purpose: entity
+  version: 1.24.0
+  last_updated: '2026-03-09'
+  description: GLiNER entity definitions for detecting learning objective patterns including Bloom's action verbs, objective
+    quality markers, competency statements, and measurability indicators.
+  domain: pedagogical
+  domain_type: workflow
+  corpus_sources:
+  - Corpus/Research/Research - Writing Learning Objectives.md
+  - Corpus/Research/Research - Essential Inputs for Learning Objectives.md
+  - Corpus/Research/Learner Outcomes - Instructions v4.md
+  - Corpus/Research/Guide to Writing Learning Gap and Learning Goal Statements for Corporate Learning.md
+  - Corpus/Research/Research - Comprehensive Learning Design Framework.md
+  - Corpus/Research/Research - Merrills Instructional Design Theories Applied.md
+  - Corpus/Research/Research - Scenario-Based Training_ A Comprehensive Guide.md
+  - Corpus/Research/Research - Roleplay & Scenarios for Learning.md
+  - Corpus/Research/Research - Learner Persona Research and Development.md
+  - Corpus/Research/donald_clarks_100_tips_for_effective_learning_design.md
+  - Corpus/Research/recommended-training-effectiveness-questions-for-postcourse-eval.md
+  - Corpus/Research/Applying_Learning_Theory_Practical_Checklist.md
+  - Corpus/Research/Research - Corporate Learning Assessment- Strategies, Modalities, and Best Practices.md
+  - Corpus/Research/Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md
+  - Corpus/Research/Best Practices for Structuring Corporate Learning Content.md
+  - Corpus/Research/Methodology - How do we move from this research to a sequenced A.I. Enhanced Course Pipeline_.md
+  - Corpus/Research/Content Map - Instructions v3.md
+  academic_sources:
+  - Anderson & Krathwohl (2001) - A Taxonomy for Learning, Teaching, and Assessing
+  - Bloom et al. (1956) - Taxonomy of Educational Objectives
+  relationships:
+  - target: taxonomy/learning_objectives_taxonomy.yaml
+    type: depends_on
+    description: Bloom's level definitions and verb classifications
+  - target: methodology/learning_objectives_framework.yaml
+    type: depends_on
+    description: Objective writing methodology and quality rules
+gliner_config:
+  model: urchade/gliner_multi_pii-v1
+  batch_size: 8
+  context_window: 512
+  domain_keywords:
+    primary:
+    - objective
+    - outcome
+    - learner will
+    - able to
+    - competency
+    - goal
+    - skill
+    secondary:
+    - Bloom
+    - measurable
+    - observable
+    - action verb
+    - criterion
+    - condition
+entity_types:
+  remember_verb:
+    description: Bloom's Level 1 action verbs indicating recall-level learning objectives
+    canonical_id: remember_verb
+    entity_kind: blooms_verb
+    family: lower_order
+    gliner_label: REMEMBER_VERB
+    gliner_description: Bloom's remember verb define list name recall identify state label recognise match select
+    examples:
+    - define the key terms
+    - list the five stages
+    - identify the components
+    - recall the procedure
+    - name the three pillars
+    anti_examples:
+    - define your own approach
+    - list and evaluate options
+    confidence_threshold: 0.75
+    blooms_level: 1
+    indicators:
+    - define
+    - list
+    - name
+    - recall
+    - identify
+    - state
+    - label
+    - recognise
+    - match
+    - select
+    patterns:
+    - (define|list|name|recall|identify|state|label|recognise) (the|all|each|key)
+    color: '#bdc3c7'
+    relates_to:
+    - target: understand_verb
+      relation: precedes
+      weight: required
+      description: 'Bloom''s taxonomy: remember precedes understand'
+    - target: understand_verb
+      relation: enables
+      weight: expected
+      description: Bloom recall forms the foundation for comprehension — learners must remember before they can understand
+    - target: apply_verb
+      relation: precedes
+      weight: required
+      description: In Bloom's taxonomy, Remember verbs precede Apply verbs in a learning progression sequence
+    - target: formative_assessment
+      relation: triggers
+      weight: expected
+      description: Remember-level objectives typically require formative assessment to verify foundational knowledge retention
+      target_file: assessment_entities
+    - target: working_memory_marker
+      relation: supported_by
+      weight: expected
+      description: CLT research limits remember-level objective quantity per lesson to 1-2 maximum due to working memory constraints
+        on simultaneous information processing
+      target_file: cognitive_load_entities
+    - target: quiz_activity
+      relation: triggers
+      weight: expected
+      description: Test Cards include binary correct/incorrect and instant response validation to assess recall-level knowledge —
+        remember objectives trigger quiz-type validation activities (Comprehensive Learning Design Framework)
+      target_file: activity_types_entities
+    - target: instructional_strategy
+      relation: triggers
+      weight: required
+      description: "CDT Remember level prescribes repetition, mnemonics, and simple recall quizzes as appropriate instructional strategies per Merrill"
+      target_file: pedagogical_frameworks_entities
+    - target: cognitive_level
+      relation: specialises
+      weight: required
+      description: "Bloom's Taxonomy cognitive progression from basic recall through creative application — remember is the foundational recall level per Essential Inputs for Learning Objectives"
+      target_file: pedagogical_frameworks_entities
+    - target: quiz_activity
+      relation: supported_by
+      weight: required
+      description: "Remember-level objectives are supported by quiz activities providing retrieval practice through knowledge checks testing recall of key facts and principles (Best-Practice Learning Activities)"
+      target_file: activity_types_entities
+    - target: mayer_generative_principle
+      relation: supported_by
+      weight: optional
+      description: "Retrieval practice in generative activities strengthens recall at remember-level per Applying Mayer's Principles Practical Checklist"
+      target_file: cognitive_load_entities
+    taxonomy_mapping:
+    - taxonomy: learning_objectives_taxonomy
+      dimension: bloom_level
+      values:
+      - remember
+      strength: primary
+    - taxonomy: learning_objectives_taxonomy
+      dimension: cognitive_category
+      values:
+      - lower_order_thinking
+      strength: primary
+    - taxonomy: pedagogical_frameworks_taxonomy
+      dimension: bloom_level_alignment
+      values:
+      - remember
+      strength: primary
+  understand_verb:
+    description: Bloom's Level 2 action verbs indicating comprehension-level learning objectives
+    canonical_id: understand_verb
+    entity_kind: blooms_verb
+    family: lower_order
+    gliner_label: UNDERSTAND_VERB
+    gliner_description: Bloom's understand verb explain describe interpret summarise classify compare contrast paraphrase
+      differentiate
+    examples:
+    - explain the difference between
+    - describe how the process works
+    - compare the two approaches
+    - summarise the key findings
+    - interpret the results
+    anti_examples:
+    - explain and then create
+    - compare prices
+    confidence_threshold: 0.7
+    blooms_level: 2
+    indicators:
+    - explain
+    - describe
+    - interpret
+    - summarise
+    - classify
+    - compare
+    - contrast
+    - paraphrase
+    - differentiate
+    - infer
+    patterns:
+    - (explain|describe|interpret|summarise|classify|compare|contrast) (the|how|why|what)
+    - differentiate between
+    color: '#3498db'
+    relates_to:
+    - target: remember_verb
+      relation: precedes
+      weight: required
+      description: 'Bloom''s taxonomy: remember precedes understand'
+    - target: remember_verb
+      relation: enables
+      weight: expected
+      description: Achieving remember enables understand
+    - target: apply_verb
+      relation: precedes
+      weight: required
+      description: 'Bloom''s taxonomy: understand precedes apply'
+    - target: apply_verb
+      relation: enables
+      weight: expected
+      description: Comprehension enables practical application — learners must understand concepts before applying them
+    - target: formative_assessment
+      relation: triggers
+      weight: expected
+      description: Enabling objectives at Understand level require formative assessment checkpoints to verify component knowledge
+        before terminal performance
+      target_file: assessment_entities
+    - target: cognitive_level
+      relation: specialises
+      weight: required
+      description: "Bloom's Taxonomy cognitive progression — understand represents the comprehension level above recall per Essential Inputs for Learning Objectives"
+      target_file: pedagogical_frameworks_entities
+    - target: discussion_activity
+      relation: supported_by
+      weight: expected
+      description: "Understand-level objectives are supported by discussion activities including peer instruction sessions where learners explain concepts to each other, reinforcing comprehension (Best-Practice Learning Activities)"
+      target_file: activity_types_entities
+    - target: quiz_activity
+      relation: supported_by
+      weight: expected
+      description: "Understand-level objectives are supported by quiz activities — multiple-choice and matching formats test recall and comprehension of key concepts and terminology (Best-Practice Learning Activities)"
+      target_file: activity_types_entities
+    taxonomy_mapping:
+    - taxonomy: learning_objectives_taxonomy
+      dimension: bloom_level
+      values:
+      - understand
+      strength: primary
+    - taxonomy: learning_objectives_taxonomy
+      dimension: cognitive_category
+      values:
+      - lower_order_thinking
+      strength: primary
+    - taxonomy: pedagogical_frameworks_taxonomy
+      dimension: bloom_level_alignment
+      values:
+      - understand
+      strength: primary
+  apply_verb:
+    description: Bloom's Level 3 action verbs indicating application-level learning objectives
+    canonical_id: apply_verb
+    entity_kind: blooms_verb
+    family: lower_order
+    gliner_label: APPLY_VERB
+    gliner_description: Bloom's apply verb apply use execute implement demonstrate operate produce calculate complete solve
+    examples:
+    - apply the framework to a scenario
+    - demonstrate the workflow
+    - use the tool to complete
+    - implement the process
+    - execute the procedure
+    anti_examples:
+    - apply for a job
+    - use caution
+    confidence_threshold: 0.7
+    blooms_level: 3
+    indicators:
+    - apply
+    - use
+    - execute
+    - implement
+    - demonstrate
+    - operate
+    - produce
+    - calculate
+    - complete
+    - solve
+    patterns:
+    - (apply|use|implement|demonstrate|execute) (the|a|this)
+    - (produce|complete|solve) (a|the|an)
+    color: '#2ecc71'
+    relates_to:
+    - target: understand_verb
+      relation: precedes
+      weight: required
+      description: 'Bloom''s taxonomy: understand precedes apply'
+    - target: understand_verb
+      relation: enables
+      weight: expected
+      description: Achieving understand enables apply
+    - target: analyze_verb
+      relation: precedes
+      weight: required
+      description: 'Bloom''s taxonomy: apply precedes analyze'
+    - target: analyze_verb
+      relation: enables
+      weight: expected
+      description: Application skills enable analytical decomposition of complex problems
+    - target: scenario_activity
+      relation: triggers
+      weight: required
+      description: Apply objectives require scenario-based or hands-on activities to practice skill application
+      target_file: activity_types_entities
+    - target: practice_activity
+      relation: triggers
+      weight: expected
+      description: Assessments should measure application not just recall — apply-level objectives trigger practice activities
+        including case study analysis and problem-solving exercises (Comprehensive Learning Design Framework)
+      target_file: activity_types_entities
+    - target: kirkpatrick_level
+      relation: supported_by
+      weight: expected
+      description: "Apply-level learning objectives are assessed through Kirkpatrick Level 3 (behavior/transfer) — Intent to Use construct directly targets application of learned knowledge per recommended-training-effectiveness-questions"
+      target_file: assessment_entities
+    - target: cognitive_level
+      relation: specialises
+      weight: required
+      description: "Bloom's Taxonomy cognitive progression — apply represents the application level of cognitive processing per Essential Inputs for Learning Objectives"
+      target_file: pedagogical_frameworks_entities
+    - target: assessment_item_type
+      relation: enables
+      weight: expected
+      description: "Application-level verbs enable scenario-based and role-play assessment item types rather than recall-only formats — higher-order objectives require performance assessments per Corporate Learning Assessment research"
+      target_file: assessment_entities
+    - target: practice_activity
+      relation: supported_by
+      weight: required
+      description: "Apply-level learning objectives are supported by practice activities including virtual labs, sandboxes, role-plays, and hands-on exercises requiring skill application (Best-Practice Learning Activities)"
+      target_file: activity_types_entities
+    - target: scenario_activity
+      relation: supported_by
+      weight: expected
+      description: "Apply-level objectives are supported by scenario activities including branching simulations and case studies requiring learners to apply knowledge to realistic problems (Best-Practice Learning Activities)"
+      target_file: activity_types_entities
+    - target: planning_artefact_marker
+      relation: supported_by
+      weight: expected
+      description: "Performance-based action verbs in objectives operationalised through Content Map activity columns"
+      target_file: content_architecture_entities
+    - target: mayer_generative_principle
+      relation: supported_by
+      weight: expected
+      description: "Transfer tests measuring application improve with generative learning strategies per Applying Mayer's Principles Practical Checklist"
+      target_file: cognitive_load_entities
+    taxonomy_mapping:
+    - taxonomy: learning_objectives_taxonomy
+      dimension: bloom_level
+      values:
+      - apply
+      strength: primary
+    - taxonomy: learning_objectives_taxonomy
+      dimension: cognitive_category
+      values:
+      - lower_order_thinking
+      strength: primary
+    - taxonomy: pedagogical_frameworks_taxonomy
+      dimension: bloom_level_alignment
+      values:
+      - apply
+      strength: primary
+  analyze_verb:
+    description: Bloom's Level 4 action verbs indicating analysis-level learning objectives
+    canonical_id: analyze_verb
+    entity_kind: blooms_verb
+    family: higher_order
+    gliner_label: ANALYZE_VERB
+    gliner_description: Bloom's analyze verb analyze examine differentiate distinguish break down categorise deconstruct diagnose
+      investigate
+    examples:
+    - analyze a customer presentation
+    - examine the root cause
+    - categorise the objections
+    - diagnose the performance issue
+    - break down the workflow
+    anti_examples:
+    - analyze later
+    - examine the room
+    confidence_threshold: 0.7
+    blooms_level: 4
+    indicators:
+    - analyze
+    - analyse
+    - examine
+    - differentiate
+    - distinguish
+    - break down
+    - categorise
+    - deconstruct
+    - diagnose
+    - investigate
+    patterns:
+    - (analy[sz]e|examine|diagnose|investigate|deconstruct) (the|a|an)
+    - (break down|categorise|distinguish) (the|between)
+    color: '#f39c12'
+    relates_to:
+    - target: apply_verb
+      relation: precedes
+      weight: required
+      description: 'Bloom''s taxonomy: apply precedes analyze'
+    - target: apply_verb
+      relation: enables
+      weight: expected
+      description: Achieving apply enables analyze
+    - target: evaluate_verb
+      relation: precedes
+      weight: required
+      description: 'Bloom''s taxonomy: analyze precedes evaluate'
+    - target: evaluate_verb
+      relation: enables
+      weight: expected
+      description: Analytical skills enable evaluative judgement and critical assessment
+    - target: summative_assessment
+      relation: triggers
+      weight: expected
+      description: Terminal objectives at Analyze level and above require summative assessment to evaluate integrated complex
+        performance capabilities
+      target_file: assessment_entities
+    - target: scenario_activity
+      relation: triggers
+      weight: expected
+      description: "CDT Find level requires learners to diagnose novel problems and derive new solutions typically via complex scenario activities per Merrill"
+      target_file: activity_types_entities
+    - target: reflection_activity
+      relation: supported_by
+      weight: expected
+      description: "Analysis-level objectives are supported by reflection activities that require learners to examine, categorise, and diagnose their roleplay performance per roleplay research"
+      target_file: activity_types_entities
+    - target: audience_kpi
+      relation: supports
+      weight: optional
+      description: "Data Literacy Gap across HR and Marketing roles requires analyze-level skills to translate metrics into strategic insights and business stories per Learner Persona Research"
+      target_file: audience_entities
+    - target: cognitive_level
+      relation: specialises
+      weight: required
+      description: "Bloom's Taxonomy cognitive progression — analyze represents higher-order analytical processing per Essential Inputs for Learning Objectives"
+      target_file: pedagogical_frameworks_entities
+    - target: assessment_item_type
+      relation: enables
+      weight: expected
+      description: "Analysis-level verbs enable complex assessment item types such as case analyses and project work rather than simple recall formats per Corporate Learning Assessment research"
+      target_file: assessment_entities
+    - target: scenario_activity
+      relation: supported_by
+      weight: expected
+      description: "Analyze-level objectives are supported by scenario activities including case study analysis and branching scenarios requiring learners to break down complex situations (Best-Practice Learning Activities)"
+      target_file: activity_types_entities
+    - target: discussion_activity
+      relation: enables
+      weight: expected
+      description: "Analysis-level Bloom's objectives enable paired dialogue activities with challenger-clarifier roles requiring critical questioning per Activities Research v4"
+      target_file: activity_types_entities
+    - target: learner_characteristic
+      relation: supports
+      weight: expected
+      description: "Step 1 Audience Simulator requires analyzing audience current vs desired state across four dimensions supporting learner characteristic identification"
+      target_file: pedagogical_frameworks_entities
+    taxonomy_mapping:
+    - taxonomy: learning_objectives_taxonomy
+      dimension: bloom_level
+      values:
+      - analyze
+      strength: primary
+    - taxonomy: learning_objectives_taxonomy
+      dimension: cognitive_category
+      values:
+      - higher_order_thinking
+      strength: primary
+    - taxonomy: pedagogical_frameworks_taxonomy
+      dimension: bloom_level_alignment
+      values:
+      - analyze
+      strength: primary
+  evaluate_verb:
+    description: Bloom's Level 5 action verbs indicating evaluation-level learning objectives
+    canonical_id: evaluate_verb
+    entity_kind: blooms_verb
+    family: higher_order
+    gliner_label: EVALUATE_VERB
+    gliner_description: Bloom's evaluate verb evaluate judge critique justify assess recommend defend rate prioritise argue
+    examples:
+    - evaluate the presentation against the rubric
+    - justify the choice of approach
+    - recommend the best strategy
+    - critique a peer's deliverable
+    - assess the quality of
+    anti_examples:
+    - evaluate the cost
+    - judge the competition
+    confidence_threshold: 0.7
+    blooms_level: 5
+    indicators:
+    - evaluate
+    - judge
+    - critique
+    - justify
+    - assess
+    - recommend
+    - defend
+    - rate
+    - prioritise
+    - argue
+    patterns:
+    - (evaluate|assess|critique|justify|recommend) (the|a|an|whether)
+    - (defend|argue) (the|your|a)
+    color: '#e74c3c'
+    relates_to:
+    - target: analyze_verb
+      relation: precedes
+      weight: required
+      description: 'Bloom''s taxonomy: analyze precedes evaluate'
+    - target: analyze_verb
+      relation: enables
+      weight: expected
+      description: Achieving analyze enables evaluate
+    - target: create_verb
+      relation: precedes
+      weight: required
+      description: 'Bloom''s taxonomy: evaluate precedes create'
+    - target: create_verb
+      relation: enables
+      weight: expected
+      description: Evaluative skills enable creative synthesis and novel production
+    - target: scenario_activity
+      relation: supported_by
+      weight: expected
+      description: "Branching scenarios force learners to evaluate options where there is rarely a single right answer, requiring judgment in interpersonal skills and strategic thinking per SBT guide"
+      target_file: activity_types_entities
+    - target: expert_learner
+      relation: supports
+      weight: optional
+      description: "Tech Specialists have shifted from code writers to code editors/evaluators, requiring evaluation-level cognitive engagement to review AI-generated output per Learner Persona Research"
+      target_file: audience_entities
+    - target: cognitive_level
+      relation: specialises
+      weight: required
+      description: "Bloom's Taxonomy cognitive progression — evaluate represents the judgment level per Essential Inputs for Learning Objectives"
+      target_file: pedagogical_frameworks_entities
+    - target: assessment_item_type
+      relation: enables
+      weight: expected
+      description: "Evaluation-level verbs enable assessment formats requiring judgment and critique, such as case study evaluation and peer review tasks per Corporate Learning Assessment research"
+      target_file: assessment_entities
+    - target: reflection_activity
+      relation: supported_by
+      weight: expected
+      description: "Evaluate-level objectives are supported by reflection activities including demo recording analysis and peer review where learners critically assess performance against standards (Best-Practice Learning Activities)"
+      target_file: activity_types_entities
+    - target: discussion_activity
+      relation: supported_by
+      weight: optional
+      description: "Evaluate-level objectives are supported by discussion activities — structured debates and peer critiques require learners to make judgments and defend positions against evaluation criteria (Best-Practice Learning Activities)"
+      target_file: activity_types_entities
+    - target: summative_assessment
+      relation: triggers
+      weight: expected
+      description: "Evaluate-level objectives trigger summative assessment through portfolio-based evaluation, performance simulations, and 360-degree feedback at module level per Comprehensive Learning Design Framework"
+      target_file: assessment_entities
+    - target: rubric_component
+      relation: enables
+      weight: expected
+      description: "Step 4 Red Team operationalizes evaluate-level cognition through three explicit quality gate rubric components"
+      target_file: assessment_entities
+    taxonomy_mapping:
+    - taxonomy: learning_objectives_taxonomy
+      dimension: bloom_level
+      values:
+      - evaluate
+      strength: primary
+    - taxonomy: learning_objectives_taxonomy
+      dimension: cognitive_category
+      values:
+      - higher_order_thinking
+      strength: primary
+    - taxonomy: pedagogical_frameworks_taxonomy
+      dimension: bloom_level_alignment
+      values:
+      - evaluate
+      strength: primary
+  create_verb:
+    description: Bloom's Level 6 action verbs indicating creation-level learning objectives
+    canonical_id: create_verb
+    entity_kind: blooms_verb
+    family: higher_order
+    gliner_label: CREATE_VERB
+    gliner_description: Bloom's create verb create design develop produce construct generate plan build formulate compose
+    examples:
+    - create a customer value story
+    - design an onboarding sequence
+    - build a discovery question bank
+    - develop a training plan
+    - compose a pitch deck
+    anti_examples:
+    - create an account
+    - design team
+    confidence_threshold: 0.7
+    blooms_level: 6
+    indicators:
+    - create
+    - design
+    - develop
+    - produce
+    - construct
+    - generate
+    - plan
+    - build
+    - formulate
+    - compose
+    patterns:
+    - (create|design|develop|build|compose) (a|an|the|your)
+    - (generate|formulate|construct|produce) (a|an|the)
+    color: '#9b59b6'
+    relates_to:
+    - target: evaluate_verb
+      relation: precedes
+      weight: required
+      description: 'Bloom''s taxonomy: evaluate precedes create'
+    - target: evaluate_verb
+      relation: enables
+      weight: expected
+      description: Achieving evaluate enables create
+    - target: summative_assessment
+      relation: triggers
+      weight: required
+      description: Create-level objectives require summative assessment to evaluate complex performance and synthesis
+      target_file: assessment_entities
+    - target: reflection_activity
+      relation: triggers
+      weight: expected
+      description: "FPI Integration phase promotes creation through action plans peer teaching and teach-back activities that transfer learning to real world per Merrill"
+      target_file: activity_types_entities
+    - target: cognitive_level
+      relation: specialises
+      weight: required
+      description: "Bloom's Taxonomy cognitive progression — create represents the highest synthesis level per Essential Inputs for Learning Objectives"
+      target_file: pedagogical_frameworks_entities
+    - target: germane_load_marker
+      relation: enables
+      weight: expected
+      description: "Create-level activities (project briefs, peer-review, showcase presentations) are the highest form of generative learning, enabling deep germane processing and schema construction (Applying_Learning_Theory_Practical_Checklist)"
+      target_file: cognitive_load_entities
+    - target: assessment_item_type
+      relation: enables
+      weight: expected
+      description: "Creation-level verbs enable project-based and portfolio assessment item types where learners produce original work products per Corporate Learning Assessment research"
+      target_file: assessment_entities
+    - target: collaborative_activity
+      relation: supported_by
+      weight: expected
+      description: "Create-level objectives are supported by collaborative activities including hackathons, action learning projects, and slide deck creation tasks requiring original work products (Best-Practice Learning Activities)"
+      target_file: activity_types_entities
+    taxonomy_mapping:
+    - taxonomy: learning_objectives_taxonomy
+      dimension: bloom_level
+      values:
+      - create
+      strength: primary
+    - taxonomy: learning_objectives_taxonomy
+      dimension: cognitive_category
+      values:
+      - higher_order_thinking
+      strength: primary
+    - taxonomy: pedagogical_frameworks_taxonomy
+      dimension: bloom_level_alignment
+      values:
+      - create
+      strength: primary
+  unmeasurable_verb:
+    description: Vague or unmeasurable verbs that indicate poorly-written learning objectives
+    canonical_id: unmeasurable_verb
+    entity_kind: quality_flag
+    family: objective_quality
+    gliner_label: UNMEASURABLE_VERB
+    gliner_description: Unmeasurable verb understand know appreciate learn be aware of be familiar with grasp feel vague objective
+    examples:
+    - understand the importance of
+    - know the different types
+    - appreciate the value of
+    - be aware of the risks
+    - be familiar with the tools
+    - learn about the framework
+    anti_examples:
+    - understand is not measurable
+    - know your audience
+    confidence_threshold: 0.8
+    aliases:
+    - vague objective
+    - weak verb
+    - unmeasurable outcome
+    indicators:
+    - understand
+    - know
+    - appreciate
+    - learn
+    - be aware of
+    - be familiar with
+    - grasp
+    - feel
+    - realise
+    - gain an understanding
+    patterns:
+    - (understand|appreciate|grasp|learn about) (the|how|why|what)
+    - be (aware|familiar|comfortable) (of|with)
+    - gain (an understanding|awareness|familiarity)
+    color: '#e74c3c'
+    relates_to:
+    - target: remember_verb
+      relation: contrasts_with
+      weight: expected
+      description: Unmeasurable verbs contrast with well-formed Bloom's verbs — they cannot be assessed
+    - target: remember_verb
+      relation: rebuts
+      weight: required
+      description: Unmeasurable verbs (understand, know, learn) must be replaced with measurable action verbs from Bloom's
+        taxonomy
+    - target: objective_stem
+      relation: limits
+      weight: required
+      description: Unmeasurable verbs violate objective quality criteria requiring clarity, measurability, and observable
+        workplace behaviours per Mager and ABCD frameworks
+    - target: engagement_dimension
+      relation: limits
+      weight: expected
+      description: "Dull learning objectives presented up-front damage learner engagement by wasting the primacy effect window — attention is the currency and edu-speak objectives devalue it per Clark 100 Tips"
+      target_file: scoring_entities
+    taxonomy_mapping:
+    - taxonomy: learning_objectives_taxonomy
+      dimension: objective_quality
+      values:
+      - weak_or_invalid
+      strength: primary
+  objective_stem:
+    description: Standard stems that introduce a learning objective statement
+    canonical_id: objective_stem
+    entity_kind: structural_marker
+    family: objective_quality
+    gliner_label: OBJECTIVE_STEM
+    gliner_description: Learning objective stem by the end of this the learner will be able to after completing participants
+      will
+    examples:
+    - By the end of this module, learners will be able to
+    - After completing this course, participants will
+    - Upon completion, the learner will
+    - At the end of this session, you will be able to
+    anti_examples:
+    - by the end of the day
+    - the learner profile
+    confidence_threshold: 0.85
+    aliases:
+    - objective opener
+    - outcome statement
+    indicators:
+    - by the end of
+    - learner will be able to
+    - after completing
+    - upon completion
+    - participants will
+    - you will be able to
+    patterns:
+    - (by the end of|after completing|upon completion)
+    - (learner|participant|attendee|you) will (be able to)?
+    - 'learning (objective|outcome|goal):'
+    color: '#1abc9c'
+    relates_to:
+    - target: remember_verb
+      relation: contains
+      weight: expected
+      description: Objective stems contain Bloom's verbs as their action component
+    - target: instructional_event
+      relation: triggers
+      weight: required
+      description: Learning objectives (Bloom verbs) trigger specific Gagné instructional events to deliver appropriate support
+      target_file: pedagogical_frameworks_entities
+    - target: kirkpatrick_level
+      relation: triggers
+      weight: required
+      description: Learning objectives determine which Kirkpatrick level of assessment is appropriate
+      target_file: assessment_entities
+    - target: instructional_strategy
+      relation: triggers
+      weight: required
+      description: Learning objectives defined with Bloom verbs directly drive instructional strategy selection
+      target_file: pedagogical_frameworks_entities
+    - target: working_memory_marker
+      relation: supported_by
+      weight: expected
+      description: CLT limits objective quantity to 5-9 per course and 2-3 per module due to adult working memory processing
+        constraints on simultaneous information chunks
+      target_file: cognitive_load_entities
+    - target: proficiency_level
+      relation: contains
+      weight: expected
+      description: Mager framework and ABCD method require objectives specify degree of mastery criterion mapping directly
+        to proficiency levels
+      target_file: assessment_entities
+    - target: learner_characteristic
+      relation: supported_by
+      weight: expected
+      description: ABCD method requires explicit Audience identification connecting learning objective stems to learner
+        characteristics and contexts
+      target_file: pedagogical_frameworks_entities
+    - target: alignment_marker
+      relation: enables
+      weight: expected
+      description: "Well-written objective stems with ABCD structure directly enable instructional alignment by specifying observable behaviours, conditions, and measurable performance standards per Learning Gap/Goal guide"
+      target_file: content_architecture_entities
+    - target: assessment_item_type
+      relation: enables
+      weight: expected
+      description: "Objective stems enable appropriate assessment item type selection by specifying the measurable action learners must demonstrate, ensuring alignment between instruction and evaluation per Corporate Learning Assessment research"
+      target_file: assessment_entities
+    - target: planning_artefact_marker
+      relation: supported_by
+      weight: expected
+      description: "Objective stems are supported by planning artefact markers — content structure planning documents embed learning objectives as foundational design anchors per Structuring Corporate Learning Content"
+      target_file: content_architecture_entities
+    - target: pedagogical_sequence_marker
+      relation: supported_by
+      weight: expected
+      description: "Objective stems depend on pedagogical sequencing — terminal objectives require hierarchically ordered enabling objectives that must be learned sequentially to achieve integrated performance per Writing Learning Objectives research"
+      target_file: content_architecture_entities
+    - target: content_structure_marker
+      relation: supported_by
+      weight: expected
+      description: "Objective stems are organized by content structure tiers — course-level (3-5 objectives), module-level (2-3), lesson-level (1-2) mapping directly to structural levels per Writing Learning Objectives research"
+      target_file: content_architecture_entities
+    taxonomy_mapping:
+    - taxonomy: learning_objectives_taxonomy
+      dimension: objective_quality
+      values:
+      - strong
+      - acceptable
+      strength: primary
+quality_indicators:
+  positive:
+  - measurable action verb
+  - clear condition specified
+  - defined success criterion
+  - aligned to Bloom's level
+  - ABCD formula complete
+  negative:
+  - unmeasurable verb (understand, know, appreciate)
+  - missing condition
+  - no success criterion
+  - Bloom's level mismatch with assessment
+  - vague or compound objective
+domain_keywords:
+  primary:
+  - objective
+  - outcome
+  - learner will
+  - able to
+  - competency
+  - goal
+  - skill
+  - demonstrate
+  - apply
+  - analyze
+  - evaluate
+  - create
+  secondary:
+  - bloom
+  - action verb
+  - measurable
+  - ABCD
+  - condition
+  - criterion
+  - recall
+  - recognize
+  - explain
+  - classify
+  - design
+  - by the end of

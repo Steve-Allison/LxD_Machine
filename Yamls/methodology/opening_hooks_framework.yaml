@@ -1,0 +1,1068 @@
+_meta:
+  id: opening_hooks_framework
+  title: "Opening Hooks"
+  description: "Frameworks for crafting and analysing powerful opening statements including BLUF, curiosity gaps, and attention psychology."
+  domain: narrative
+  domain_type: cross_cutting
+  purpose: methodology
+  version: "1.2.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Crafting Powerful Opening Plays.md"
+    - "Corpus/Research/Storytelling_for_Different_Business_Personas.md"
+  relationships:
+    - target: entities/narrative_entities.yaml
+      type: depends_on
+      description: "NARRATIVE_HOOK entity type for extraction"
+# ==============================================================================
+# PSYCHOLOGICAL FOUNDATIONS
+# ==============================================================================
+
+psychological_principles:
+  description: "Cognitive science principles underlying effective openers"
+
+  primacy_effect:
+    definition: "First information receives disproportionate attention and memory encoding"
+    mechanism: "Early items get more rehearsal, entering long-term memory"
+    mechanism_detail: "Early items enjoy greater attention and rehearsal, transferring to durable long-term memory. The brain devotes extra focus to the beginning, so it sticks."
+    source: "Glanzer & Cunitz (1966)"
+    citation: "Glanzer, M., & Cunitz, A. R. (1966). Two storage mechanisms in free recall. Journal of Verbal Learning and Verbal Behavior, 5(4), 351–360."
+    implication: "Lead with strongest point — don't warm up with fluff"
+    implication_extended: "First impressions are premium real estate. Audiences remember opening lines disproportionately well. Use primacy to plant the most important point when attention is highest."
+    detection_signals:
+      positive:
+        - "Core message in first sentence"
+        - "Key insight stated immediately"
+        - "Value proposition front-loaded"
+      negative:
+        - "Pleasantries before substance"
+        - "Agenda/outline before hook"
+        - "Generic introduction"
+
+  von_restorff_effect:
+    definition: "Distinctive/unexpected elements are remembered better"
+    mechanism: "Contrast triggers orienting response; unique retrieval cues"
+    mechanism_detail: "Contrast jolts the brain. When one element differs markedly, it triggers an orienting response — the brain 'wakes up.' Distinctive items benefit from unique retrieval cues in memory; they aren't confused with the rest."
+    source: "von Restorff (1933)"
+    citation: "von Restorff, H. (1933). Über die Wirkung von Bereichsbildungen im Spurenfeld. Psychologische Forschung, 18(1), 299–342. Supplemented by Hunt, R. R. (2013)."
+    citation_secondary: "Chee, Q. W., & Goh, W. D. (2018). What explains the von Restorff effect? Journal of Memory and Language, 99, 49–61."
+    implication: "Stand out from expected pattern to be memorable"
+    techniques:
+      - "Unexpected format (start with question, not statement)"
+      - "Contrarian claim against assumption"
+      - "Visual surprise or pattern break"
+      - "Unusual analogy or metaphor"
+
+  curiosity_gap:
+    definition: "Gap between what we know and want to know creates tension"
+    mechanism: "Unresolved questions trigger dopamine reward-seeking"
+    mechanism_detail: "The brain treats unresolved questions like a tension that demands resolution. A perceived knowledge gap triggers an urge backed by dopamine-driven reward circuits to seek closure. Curiosity ramps up activity in brain regions linked to pleasure and memory formation."
+    source: "Loewenstein (1994)"
+    citation: "Loewenstein, G. (1994). The psychology of curiosity: A review and reinterpretation. Psychological Bulletin, 116(1), 75–98."
+    implication: "Pose question or tease insight without full answer"
+    resolution_requirement: "Always pay off the curiosity gap — an itch scratched yields a rewarding 'aha!' that makes the message stick. Failing to resolve creates audience frustration and destroys credibility."
+    patterns:
+      question_hook: "Why do 80% of projects fail despite..."
+      teaser: "One small change boosted performance by 40% - we'll see how."
+      mystery: "What if I told you the solution was already in front of you?"
+      incomplete_pattern: "Three things every leader knows... but rarely acts on."
+
+  emotional_arousal:
+    definition: "Heightened emotion captures attention and enhances memory"
+    mechanism: "Amygdala activation flags event as important"
+    mechanism_detail: "When the amygdala fires, it flags the moment as important, releasing stress hormones (adrenaline, cortisol) that enhance memory consolidation. Moderate arousal focuses attention on the emotional stimulus while tuning out unrelated info."
+    source: "Cahill et al. (1995)"
+    citation: "Cahill, L., Prins, B., Weber, M., & McGaugh, J. L. (1995). β-Adrenergic activation and memory for emotional events. Nature, 371(6499), 702–704."
+    citation_secondary: "McGaugh, J. L. (2004). The amygdala modulates the consolidation of memories of emotionally arousing experiences. Annual Review of Neuroscience, 27, 1–28."
+    implication: "Trigger emotion early, but channel constructively"
+    caution: "Extreme emotional arousal (amygdala hijack) can narrow thinking or prompt rash action. Use ethically: the goal is to focus attention and engagement, not to send listeners into panic or anger that overrides the message."
+    emotion_types:
+      effective:
+        - "Surprise (unexpected fact)"
+        - "Concern (risk/stakes)"
+        - "Hope (possibility)"
+        - "Curiosity (intriguing question)"
+      caution:
+        - "Fear (can backfire if too intense)"
+        - "Anger (use sparingly)"
+    persona_emotion_priming:
+      description: "Primary and secondary emotional triggers mapped to common B2B audience personas"
+      marketing_leader:
+        primary_emotion: concern
+        trigger: "Inability to prove ROI when under board scrutiny"
+        secondary_emotion: hope
+        trigger_note: "Pair concern with aspiration — competitive advantage, market leadership"
+      creative_leader:
+        primary_emotion: frustration
+        trigger: "Creative vision blocked by operational constraints"
+        secondary_emotion: hope
+        trigger_note: "Redirect to creative empowerment and quality-at-scale"
+      ops_persona:
+        primary_emotion: urgency
+        trigger: "Accumulating complexity from disconnected systems"
+        secondary_emotion: relief
+        trigger_note: "Offer consolidation as resolution to chronic friction"
+      it_leader:
+        primary_emotion: concern
+        trigger: "Security and scalability risk from legacy infrastructure"
+        secondary_emotion: confidence
+        trigger_note: "Ground opener in technical credibility and migration clarity"
+      source: "Storytelling_for_Different_Business_Personas.md"
+
+  narrative_transportation:
+    definition: "Story absorption reduces critical resistance"
+    mechanism: "Mental resources devoted to story world, not counter-arguing"
+    mechanism_detail: "In a transported state, people lower their defenses; they are less inclined to counter-argue and more open to the story's message or moral. Identification amplifies this: if the audience feels connected to a protagonist, persuasive impact is boosted by empathy and personal relevance."
+    source: "Green & Brock (2000)"
+    citation: "Green, M. C., & Brock, T. C. (2000). The role of transportation in the persuasiveness of public narratives. Journal of Personality and Social Psychology, 79(5), 701–721."
+    citation_secondary: "van Laer, T., de Ruyter, K., Visconti, L. M., & Wetzels, M. (2014). The extended transportation-imagery model. Journal of Consumer Research, 40(5), 797–817."
+    implication: "Open with story to transport before making claims"
+    identification_principle: "Ensure the story's protagonist or situation mirrors the audience's context so they identify ('That could be us'). Audience identification is the amplifier of narrative transportation's persuasive effect."
+    story_opener_elements:
+      - "Specific character (named or identifiable)"
+      - "Concrete situation (sensory details)"
+      - "Tension or problem"
+      - "Relatable context"
+
+  cognitive_ease_and_dissonance:
+    definition: "Cognitive ease — effortlessness in thinking; fluent, clear information feels right. Cognitive dissonance — mental discomfort from conflicting beliefs, motivating resolution."
+    mechanism: "Cognitive ease produces a subtle 'this feels right' signal; dissonance creates discomfort that drives the audience to seek resolution."
+    citation: "Festinger, L. (1957). A Theory of Cognitive Dissonance. Stanford University Press. Kahneman, D. (2011). Thinking, Fast and Slow. Farrar, Straus and Giroux."
+    implication: "Balance comfort with challenge. Use cognitive ease (clear, jargon-free language) to build initial trust, then inject slight dissonance (challenge an assumption) to spur engagement — resolve it by end of opener."
+    opener_application: "Make the message easy to grasp while unsettling complacency just enough to intrigue."
+    source: "Crafting Powerful Opening Plays.md"
+
+  social_proof_and_authority:
+    definition: "Social proof — tendency to look to others' behaviour to guide decisions under uncertainty. Authority — tendency to be influenced by those perceived as credible experts."
+    mechanism: "Social proof leverages herd instinct; authority works because signs of expertise and legitimacy dramatically increase compliance and receptivity."
+    citation: "Cialdini, R. B. (2021). Influence, New and Expanded. Harper Business. Milgram, S. (1963) on obedience to authority."
+    evidence: "Hotel towel reuse rates increased 26% when signs cited peer behavior. Recommendations carry significantly more weight when backed by an expert's title or attire."
+    opener_application: "Open with credible social proof or authority cues: 'Over 300 companies have adopted this approach...' or 'According to MIT researchers...' Lowers audience skepticism at the outset."
+    source: "Crafting Powerful Opening Plays.md"
+
+  temporal_discounting_and_urgency:
+    definition: "Temporal discounting — tendency to value immediate rewards far more than future rewards. Urgency capitalizes on this to prompt immediate attention."
+    mechanism: "Shorter deadlines create greater urgency. An approaching deadline overrides procrastination by signalling the brain that waiting is not an option."
+    citation: "Frederick, S., Loewenstein, G., & O'Donoghue, T. (2002). Time discounting. Journal of Economic Literature, 40(2), 351–401. Zhu, M., Yang, Y., & Hsee, C. K. (2018). The mere urgency effect. Journal of Consumer Research, 45(3), 673–690."
+    implication: "Highlight immediacy to prompt immediate attention. Lead with a time-sensitive problem: 'In the next 12 months, 1 in 5 businesses will face X...'"
+    caution: "Do not create false urgency; Zhu et al. (2018) warns that spurious urgency undermines trust once discovered."
+    source: "Crafting Powerful Opening Plays.md"
+
+  contrast_and_incongruity:
+    definition: "Introduction of something unexpected that violates audience expectations — a sudden twist, jarring fact, or novel element that doesn't fit the usual pattern."
+    mechanism: "Surprise is cognitive glue. When the brain encounters a discrepancy from expectation, it pays extra attention and signals the hippocampus to prioritize storage."
+    citation: "Frank, D., Kafkas, A., & Montaldi, D. (2022). Experiencing surprise: The temporal dynamics of its impact on memory. Journal of Neuroscience, 42(33), 6435–6444."
+    evidence: "Frank et al. (2022): surprising stimuli spark immediate brain network communication between visual cortex and hippocampus, enhancing recall of those stimuli."
+    implication: "Include a smart twist or contrast early — shocking statistic, anomaly, or tonal contrast. Use in moderation; ensure surprise ties meaningfully into the message."
+    source: "Crafting Powerful Opening Plays.md"
+
+  nudge_theory:
+    definition: "Designing the decision environment (choice architecture) to gently influence behaviour in a predictable way without restricting options."
+    mechanism: "Nudges leverage cognitive biases and automatic behaviours. Simplifying choices, using defaults, or framing outcomes makes the desired behaviour the path of least resistance."
+    citation: "Thaler, R. H., & Sunstein, C. R. (2008). Nudge. Yale University Press. Mertens, S. et al. (2022). PNAS, 119(1)."
+    opener_application: "In the first moments, the audience is deciding 'Do I listen or tune out?' Craft the opener to nudge them toward engagement: remove friction, use cognitive ease, pose questions they naturally answer 'yes' to, include social proof."
+    source: "Crafting Powerful Opening Plays.md"
+
+# ==============================================================================
+# POWERFUL OPENING PLAY (PoP)
+# ==============================================================================
+
+powerful_opening_play:
+  description: "The deliberately engineered first 15–60 seconds (or opening paragraph) of any story, pitch, presentation, or video that simultaneously captures attention, signals relevance, creates a knowledge or emotion gap, frames the takeaway, and establishes credibility."
+  duration_range: "15–60 seconds"
+  strategic_framing: "The opening chess move in a game for attention and persuasion: it positions the speaker to control the narrative from the very first turn."
+  compounding_effect: "Nail the PoP and everything that follows enjoys a tailwind; miss it and you will fight uphill for the rest of the talk."
+  source: "Crafting Powerful Opening Plays.md, Section 3"
+
+  five_elements:
+    captures_attention:
+      description: "Interrupts the audience's default mental state and directs full focus."
+      typical_forms: ["startling statistic", "vivid anecdote", "provocative question"]
+    signals_relevance:
+      description: "Shows immediately why the message matters to this audience."
+      method: "State the pain, upside, or urgency in their language."
+    creates_gap:
+      description: "Triggers curiosity or emotion that demands resolution."
+      method: "Tease of a surprising result, mystery, or high-stakes scenario."
+    frames_takeaway:
+      description: "Hints at or states the bottom-line benefit so listeners know where they are heading."
+      method: "BLUF sentence, promise, or high-level solution claim."
+    establishes_credibility:
+      description: "Uses social proof or authority cues so the audience decides the speaker is worth listening to."
+      method: "Reference to respected peers, data source, or expert."
+
+  litmus_test:
+    question_1: "Can the audience repeat the gist 30 seconds later? If not, it is not vivid or simple enough."
+    question_2: "Does it answer 'So what?' before slide 2 or sentence 2? If not, move the bottom line up front."
+    question_3: "Would a colleague say 'Tell me more' after hearing it? If not, add a curiosity or emotion trigger."
+
+# ==============================================================================
+# AUDIENCE PREPARATION PROTOCOL
+# ==============================================================================
+
+audience_preparation_protocol:
+  description: "Pre-brainstorm research steps to ensure the hook resonates with the specific audience."
+  source: "Crafting Powerful Opening Plays.md, Section 4 Phase 1"
+
+  empathy_mapping:
+    description: "Before brainstorming hooks, sketch what the audience thinks, feels, says, and does regarding the topic."
+    output: "List of audience fears, desires, frustrations, and aspirations"
+  jobs_to_be_done:
+    description: "Identify the audience's core job-to-be-done — what outcome are they urgently seeking?"
+    application: "Align the opener to what they urgently need to achieve or avoid"
+  urgency_triggers:
+    description: "Find what issues are time-sensitive or high-stakes for this group."
+    examples: ["External deadlines", "Regulatory compliance dates", "Quarterly targets"]
+  prior_knowledge:
+    description: "Identify common assumptions, buzzwords, or scepticism."
+    strategy: "Hook by either confirming a belief in a surprising way or challenging an assumption. Meet them where they are, then lead somewhere new."
+  cultural_context:
+    description: "Consider recent events or internal context — industry hype cycle, recent scandal, or painful project failure."
+    application: "Opening after a major industry event relevant to the topic makes the hook feel especially timely."
+  minimum_output:
+    description: "Before brainstorming, answer: What keeps this audience up at night? What excites them? What language do they use?"
+
+# ==============================================================================
+# OPENER FRAMEWORKS
+# ==============================================================================
+
+frameworks:
+  description: "Proven structures for powerful openings"
+
+  bluf:
+    name: "BLUF - Bottom Line Up Front"
+    description: "Lead with the core message/conclusion immediately"
+    origin: "Military communication; executive briefings"
+    forced_clarity_benefit: "BLUF forces the speaker to distill the message, providing crystal-clear direction for both speaker and audience."
+    structure:
+      1: "State the main point/recommendation/conclusion"
+      2: "Provide supporting context"
+      3: "Elaborate with evidence"
+
+    when_to_use:
+      - "Executive audiences valuing efficiency"
+      - "When conclusion is positive/compelling"
+      - "Time-constrained presentations"
+      - "Email subjects and first sentences"
+    when_best_used: "Especially effective for executive and C-suite audiences who prize efficiency and outcomes. Also effective in emails and written reports."
+
+    when_to_avoid:
+      - "When audience may resist conclusion"
+      - "Complex topics needing build-up"
+      - "When bad news needs context first"
+
+    patterns:
+      direct_claim: "[Key outcome] is possible. Here's how."
+      recommendation: "My recommendation is [X]. Let me show you why."
+      headline: "[Measurable result] in [timeframe]."
+
+    examples:
+      good:
+        - "We can reduce costs by 40% within 6 months. Here's the plan."
+        - "Bottom line: this approach works. Three companies have proven it."
+        - "The data is clear: customer satisfaction drives revenue growth."
+      enterprise: "We can reduce your data processing costs by 50% within 3 months. Our platform achieves this by... — tells the exec the most important thing first, then substantiates."
+      poor:
+        - "I'd like to share some research with you today about costs..."
+        - "Let me start by telling you about our company..."
+        - "There are many factors to consider when thinking about..."
+
+    detection_patterns:
+      - "(?i)^(bottom line|the key point|in short|here's the insight)"
+      - "(?i)^we (can|will|should|recommend|propose)"
+      - "(?i)^(my recommendation|our conclusion|the answer)"
+      - "\\d+%.*\\d+.*(?:month|year|week)"
+
+    persona_guidance:
+      marketing_leader:
+        tone: visionary
+        lead_with: "Business outcome metrics (revenue growth, market share, brand equity)"
+        example_pattern: "[X% revenue growth] is achievable. Here's how."
+      it_leader:
+        tone: "technical, confident"
+        lead_with: "TCO, security, or scalability improvement"
+        example_pattern: "Consolidating to one platform cuts TCO by [X%] and eliminates [N] legacy risks."
+      creative_leader:
+        tone: pragmatic
+        lead_with: "Reduction in rework, bottlenecks, or time-to-market"
+        example_pattern: "Your team can ship campaigns [X] faster, without sacrificing brand quality."
+      ops_persona:
+        tone: "detailed, technical"
+        lead_with: "Process efficiency gain or integration consolidation"
+        example_pattern: "Replacing [N] disconnected tools with one platform cuts reporting overhead by [X%]."
+      source: "Storytelling_for_Different_Business_Personas.md"
+
+  pass:
+    name: "PASS - Problem, Agitation, Solution, Success"
+    description: "Build emotional tension through problem before offering solution"
+    origin: "Copywriting; sales methodology"
+    strength_rationale: "PASS takes the audience on a mini journey from pain to relief, which is inherently persuasive and memorable. The agitation step builds urgency and emotion — the audience practically aches for relief."
+    structure:
+      problem: "State the audience's pain point — a problem they deeply care about to immediately get their attention."
+      agitation: "Amplify the stakes/urgency — make them feel why it is unacceptable to leave it unsolved."
+      solution: "Present your answer as the resolution to the tension built."
+      success: "Paint the positive outcome or proof — often a quick success story or vision of the future."
+
+    when_to_use:
+      - "Sales and persuasion contexts"
+      - "When audience has felt the problem"
+      - "Product/service introductions"
+
+    examples:
+      full_opener: |
+        "Data integration is a mess—teams waste hours stitching reports. [Problem]
+        70% of analysts spend more time cleaning data than analysing it. [Agitation]
+        Today we're introducing DataUnifier 360. [Solution]
+        Beta clients cut reporting time from 2 days to 2 hours. [Success]"
+      enterprise: |
+        "Problem: 'Employee cyber training is often ignored, leaving companies exposed.'
+        Agitation: 'Breaches due to human error cost firms $X billion annually.'
+        Solution: 'Our gamified security platform makes training stick.'
+        Success: 'After implementing it, MegaCorp saw phishing incidents drop to zero last quarter.'"
+
+    persona_guidance:
+      marketing_leader:
+        problem_frame: "Fragmented systems and lack of ROI visibility"
+        agitation_hook: "70% of marketing spend cannot be directly tied to revenue outcomes"
+      creative_leader:
+        problem_frame: "Creative bottlenecks and manual workflows blocking brand quality"
+        agitation_hook: "Content demand has outpaced team capacity — brand consistency suffers"
+      ops_persona:
+        problem_frame: "Disconnected tools, duplicated effort, and lack of governance"
+        agitation_hook: "[N] vendors, [N] integrations, zero single source of truth"
+      it_leader:
+        problem_frame: "Legacy tech debt and fragmented MarTech stack"
+        agitation_hook: "Every new tool added without integration deepens the security surface"
+      source: "Storytelling_for_Different_Business_Personas.md"
+
+  question_hook:
+    name: "Provocative Question"
+    description: "Open with question that demands an answer"
+    structure:
+      1: "Pose unexpected or challenging question"
+      2: "Pause for effect (in live) or let it land"
+      3: "Pivot to your answer/content"
+
+    question_types:
+      rhetorical: "What if everything you believed about X was wrong?"
+      statistical: "Why do 80% of digital transformations fail?"
+      personal: "When was the last time you felt truly confident in your data?"
+      hypothetical: "Imagine if your team could do X in half the time..."
+
+    best_practice: "High-stakes questions often start with 'What if...?' or 'Have you ever...?' The scenario should be plausible and important. After posing, let it linger or follow with 'That's exactly what happened to X...' to transition."
+    template: "What would you do if [high-stakes scenario]?"
+
+    examples:
+      - "What would you do with an extra hour every day?"
+      - "Why do companies with the best products sometimes lose?"
+      - "How much is bad data costing your business right now?"
+
+  contrast_opener:
+    name: "Contrast/Before-After"
+    description: "Juxtapose current state with possible future"
+    structure:
+      current_state: "Here's where you are / what most do"
+      future_state: "Here's where you could be / what's possible"
+      bridge: "Here's how to get there"
+
+    patterns:
+      - "Most companies do X. Leaders do Y."
+      - "You're spending [time/money] on X. Imagine spending it on Y instead."
+      - "Today it takes [effort]. Tomorrow it could take [less]."
+
+    persona_guidance:
+      marketing_leader:
+        current_state: "Fragmented visibility, siloed channels, unmeasured ROI"
+        future_state: "Unified data, omnichannel execution, proven revenue attribution"
+      creative_leader:
+        current_state: "Manual reviews, rework loops, missed deadlines"
+        future_state: "Streamlined approvals, brand-consistent output at scale"
+      ops_persona:
+        current_state: "Multiple disconnected vendors, duplicated work, no governance"
+        future_state: "Consolidated platform, automated workflows, full audit trail"
+      it_leader:
+        current_state: "Legacy tech debt, fragmented stack, security exposure"
+        future_state: "Integrated, scalable, secure infrastructure with clear migration path"
+      source: "Storytelling_for_Different_Business_Personas.md"
+
+  story_hook:
+    name: "Mini-Story Opener"
+    description: "Begin with a brief, vivid anecdote"
+    structure:
+      character: "Identifiable protagonist (ideally audience proxy)"
+      situation: "Concrete, sensory-rich context"
+      tension: "Problem or challenge"
+      cliffhanger: "...and then [pause for main content]"
+
+    duration: "15-45 seconds"
+    best_practice: "Introduce a character and conflict immediately. Use present tense for immediacy. Even a two-sentence story humanizes the point. Ensure it is true or representative — authenticity matters."
+    template: "[Name/role] was [dramatic situation] when [something unexpected]."
+
+    elements:
+      essential:
+        - "Specific details (names, numbers, places)"
+        - "Present tense for immediacy"
+        - "Sensory language"
+      enhance:
+        - "Dialogue snippet"
+        - "Emotion word"
+        - "Unexpected detail"
+
+    examples:
+      - "Last March, Sarah—a marketing director at a Fortune 500—sat in a meeting, watching her team present data she knew was wrong. She couldn't prove it. That changed when..."
+      - "Picture this: 3 AM, a hospital IT system goes dark. A patient in critical care waits as doctors scramble in the dark..."
+
+    persona_guidance:
+      marketing_leader:
+        protagonist_type: "CMO or VP Marketing under board pressure on ROI"
+        tension_type: "Inability to prove marketing's revenue contribution"
+        tone: visionary
+      creative_leader:
+        protagonist_type: "Creative director whose team is buried in rework and approval cycles"
+        tension_type: "Brand quality sacrificed to meet campaign volume demands"
+        tone: pragmatic
+      ops_persona:
+        protagonist_type: "Marketing Ops VP managing a sprawling, unintegrated tech stack"
+        tension_type: "Spending more time firefighting integrations than enabling the business"
+        tone: "detailed, urgent"
+      it_leader:
+        protagonist_type: "CIO managing legacy platform migration while security team escalates risks"
+        tension_type: "Balancing modernisation pressure against resource and budget constraints"
+        tone: "technical, confident"
+      source: "Storytelling_for_Different_Business_Personas.md"
+
+  statistic_shock:
+    name: "Surprising Statistic"
+    description: "Lead with a number that defies expectations"
+    structure:
+      1: "State surprising data point"
+      2: "Give context that makes it real"
+      3: "Pivot to implications"
+
+    best_practice: "Make it concrete and contextual. Instead of 'Big Data is growing fast,' say 'By next year, the average person will generate 1.7 MB of data per second.' Pair the stat with a quick rhetorical question or implication."
+    template: "Every [timeframe], [quantifiable shocking thing] happens. E.g.: 'Every hour, 120 cyber attacks strike small businesses.'"
+
+    criteria:
+      effective_statistics:
+        - "Counter-intuitive or unexpected"
+        - "Personally relevant to audience"
+        - "From credible source"
+        - "Recent/current"
+      ineffective_statistics:
+        - "Vague or rounded ('millions of...')"
+        - "Expected/obvious"
+        - "Unverifiable"
+
+    patterns:
+      - "[Number] [unexpected outcome]. Think about that."
+      - "Every [time period], [dramatic frequency] happens."
+      - "[Percentage] of [audience group] experience [problem]. Are you one of them?"
+
+    examples:
+      - "Every 39 seconds, a company falls victim to a cyberattack. That's twice since I started speaking."
+      - "73% of employees say they'd leave their job for better work-life balance. How many of your team?"
+
+    persona_guidance:
+      marketing_leader:
+        preferred_metrics: ["ROI", "revenue attribution", "market share", "campaign time-to-market"]
+        stat_frame: "Cost of fragmentation on marketing performance"
+      creative_leader:
+        preferred_metrics: ["content velocity", "rework rate", "time-to-market", "brand consistency score"]
+        stat_frame: "Volume demand vs. team capacity gap"
+      ops_persona:
+        preferred_metrics: ["tool count", "process cycle time", "integration failure rate", "compliance incidents"]
+        stat_frame: "Cost of disconnected systems on operational efficiency"
+      it_leader:
+        preferred_metrics: ["TCO", "security incidents", "legacy system count", "migration cost"]
+        stat_frame: "Risk and cost exposure from fragmented MarTech infrastructure"
+      source: "Storytelling_for_Different_Business_Personas.md"
+
+  aida_paso:
+    name: "AIDA/PASO — Attention, Interest, Desire, Action (problem-first variant)"
+    description: "AIDA framework rooted in the audience's problem reality. Attention is captured by acknowledging a real problem; Interest built by agitating it; Desire created by a compelling solution and outcome vision; Action foreshadowed."
+    origin: "AIDA: classic marketing/sales framework. PASO: problem-centred variant."
+    strength: "AIDA is time-tested for guiding an audience from passive to active. Problem-first PASO roots the Attention step in the audience's reality, ensuring resonance before moving toward acceptance of the call-to-action."
+    source: "Crafting Powerful Opening Plays.md, Section 3"
+    structure:
+      attention_via_problem: "Immediately acknowledge a real problem the audience faces"
+      interest_via_agitation: "Build interest by agitating and amplifying the problem"
+      desire_via_solution_and_outcome: "Offer a compelling solution and vision of the outcome"
+      action_via_forward_foreshadow: "Promise that by the end the audience will know how to act"
+    example: "Attention: 'Data latency is killing real-time analytics.' Interest: 'Your dashboards freeze, decisions lag, and competitors swoop in faster.' Desire: 'Our new streaming pipeline eliminates latency, meaning you get insights instantly.' Action: 'By the end of this talk, you'll know how to implement this and transform your data strategy.'"
+
+  startle_story_solution:
+    name: "Startle, Story, Solution"
+    description: "Three-step sequence: jarring element → narrative context → clear resolution. An emotional rollercoaster: surprise/alarm → curiosity/identification → relief/insight."
+    source: "Crafting Powerful Opening Plays.md, Section 3"
+    structure:
+      startle: "A jarring element that shakes the audience awake — startling fact or bold claim"
+      story: "A narrative that contextualizes the startle and engages emotionally"
+      solution: "The main point or resolution that converts generated energy into a clear direction"
+    strengths:
+      - "Commands attention early"
+      - "Humanizes the shock via story"
+      - "Converts emotional energy into actionable direction"
+    enterprise_adaptation: "Use a startling industry-relevant statistic as the startle, then a brief concrete scenario narrative, then introduce the solution as a mini case study."
+    example: "Startle: '93% of company networks have already been breached — most just don't know it yet.' Story: 'Meet Acme Corp: last year, their CEO received an email that looked legit... it wasn't.' Solution: 'Our solution intercepted exactly that kind of attack using AI anomaly detection.'"
+
+  three_act_cold_open:
+    name: "Three-Act Cold Open"
+    description: "Borrowed from screenwriting — three acts compressed into the opening. Immerses the audience dynamically before the 'title sequence' of the main content."
+    source: "Crafting Powerful Opening Plays.md, Section 3"
+    structure:
+      act_1_hook: "Grab attention with an opening scene or statement — the bait"
+      act_2_intrigue: "Build suspense or complexity, raise questions — audience wonders 'where is this going?'"
+      act_3_payoff: "Deliver the reveal or punchline that connects to the main message — satisfying but opening a door"
+    strengths:
+      - "Creates a sense of completion plus curiosity"
+      - "Connects to the main topic via the pay-off"
+      - "Makes audience feel something was delivered before the main content begins"
+    example: "Act 1: 'The data center goes dark — it's 2 AM, and every server is offline.' Act 2: 'Over 1 million customers are locked out... Engineers scramble... a single overlooked software patch...' Act 3: 'That's a nightmare scenario our company faced last year. We survived — barely. Today, I'll share the fail-safe architecture we developed so you never live that story.'"
+
+  so_what_who_cares_now_what:
+    name: "So What? Who Cares? Now What?"
+    description: "Three-question grid that preemptively answers the audience's implicit challenge at every level: significance, relevance, and action."
+    source: "Crafting Powerful Opening Plays.md, Section 3"
+    structure:
+      so_what: "Why does this matter? What is the significance?"
+      who_cares: "Why is it relevant to this specific audience in this room?"
+      now_what: "What should be done next? What action or change is implied?"
+    strengths:
+      - "Forces clarity and audience-centricity"
+      - "Prevents flashy-but-irrelevant openers"
+      - "Covers meaning, relevance, and action — the holy trinity of persuasive communication"
+    application: "State an interesting fact or point, immediately answer 'So what?' with the implication, explicitly connect it to who is in the room, and introduce 'Now what?' as a cliffhanger."
+    example: |
+      "So What: 'Our churn rate jumped 5% last quarter — $2M in lost revenue.'
+      Who Cares: 'Investors care (valuation), sales care (harder to win than retain), customers care.'
+      Now What: 'I propose a retention task force. In 10 minutes I'll outline the plan to cut churn in half by year-end.'"
+
+  persona_lead:
+    name: "Persona Pain Lead"
+    description: "Open by naming the specific daily challenge of the audience persona before any agenda or claim. Distinct from PASS (4-beat arc) and BLUF (conclusion-first) — this is a single-sentence persona-acknowledgment opener."
+    origin: "Adobe persona-driven B2B selling methodology"
+    source: "Storytelling_for_Different_Business_Personas.md"
+    structure:
+      1: "Name the persona's primary daily friction (not a generic problem)"
+      2: "Quantify or intensify the cost of that friction if possible"
+      3: "Transition to your value proposition or story"
+    when_to_use:
+      - "Sales presentations to a known persona type"
+      - "When persona mapping has been completed in advance"
+      - "Enterprise multi-stakeholder decks where each section opens for a different role"
+    when_to_avoid:
+      - "When audience composition is unknown or mixed without a clear primary persona"
+      - "When the pain point hasn't been validated — risks misidentification"
+    persona_patterns:
+      marketing_leader: "You're under pressure to prove marketing's revenue contribution — yet [X%] of your spend can't be directly traced to pipeline."
+      creative_leader: "Your team is producing more content than ever, but brand consistency is slipping and rework is eating the roadmap."
+      ops_persona: "You're managing [N] tools that were never designed to talk to each other — and every new initiative adds another integration to maintain."
+      it_leader: "Your legacy stack is the thing standing between the business and its digital transformation goals — and the budget to fix it isn't growing."
+    detection_patterns:
+      - "(?i)^you('re| are) (under|managing|dealing with|facing)"
+      - "(?i)^your (team|org|stack|budget|roadmap)"
+      - "(?i)^(as a|for a) (CMO|CIO|CTO|VP|director)"
+
+# ==============================================================================
+# HOOK TYPE TAXONOMY
+# ==============================================================================
+
+hook_types:
+  description: "Classification of opener types for detection and scoring"
+
+  question:
+    description: "Opens with a question to engage curiosity"
+    subtypes:
+      rhetorical: "No answer expected; makes audience think"
+      direct: "Invites immediate mental response"
+      provocative: "Challenges assumptions"
+    indicators:
+      - "?"
+      - "^(what|why|how|when|where|who|have you|do you|did you|can you)"
+    best_practice: "High-stakes questions often start with 'What if...?' or 'Have you ever...?' After posing, let it linger or follow with 'That's exactly what happened to X...' to transition."
+    template: "What would you do if [high-stakes scenario]?"
+    strength: "high"
+
+  story:
+    description: "Opens with narrative/anecdote"
+    indicators:
+      - "imagine"
+      - "picture this"
+      - "let me tell you"
+      - "last (week|month|year)"
+      - "there was"
+      - "I remember"
+      - specific names and places
+    best_practice: "Introduce a character and conflict immediately. Use present tense for immediacy. Even a two-sentence story humanizes the point. Ensure it is true or representative — authenticity matters."
+    template: "[Name/role] was [dramatic situation] when [something unexpected]."
+    strength: "high"
+
+  statistic:
+    description: "Opens with surprising data"
+    indicators:
+      - "\\d+%"
+      - "\\d+ (out of|in|every)"
+      - "research shows"
+      - "studies find"
+      - "according to"
+    best_practice: "Make it concrete and contextual. Pair the stat with a quick rhetorical question or implication. Use specific quantifiers, not vague ones ('120 per hour' not 'many')."
+    template: "Every [timeframe], [quantifiable shocking thing] happens."
+    strength: "high"
+
+  quote:
+    description: "Opens with attributed quotation"
+    indicators:
+      - "\"[^\"]+\""
+      - "as [Name] said"
+      - "[Name] once wrote"
+    strength: "medium"
+
+  bold_claim:
+    description: "Opens with assertive statement"
+    indicators:
+      - "is dead"
+      - "is wrong"
+      - "must change"
+      - "everything you know"
+      - "the truth is"
+    strength: "high"
+
+  bluf_direct:
+    description: "Opens with bottom-line conclusion"
+    indicators:
+      - "bottom line"
+      - "in short"
+      - "my recommendation"
+      - "we should"
+      - "the answer is"
+    strength: "high"
+
+  context_setter:
+    description: "Opens with situational framing"
+    indicators:
+      - "in today's"
+      - "in a world where"
+      - "given the current"
+      - "as we face"
+    strength: "medium"
+
+  extreme_analogy:
+    description: "Takes an insight and casts it in extreme terms or a different domain to create a mental jolt. The analogy should illuminate, not just shock."
+    indicators:
+      - "like [extreme comparison]"
+      - "is the equivalent of"
+      - "is as [extreme qualifier] as"
+    best_practice: "Test the analogy on someone unconnected — if they get the point, it works. The analogy should paint a vivid picture: 'Our AI is as accurate as a fighter pilot landing on an aircraft carrier in a storm.'"
+    template: "[Problem] is like [extreme comparison]. E.g.: 'Managing 100 cloud accounts is like herding cats in a hurricane.'"
+    strength: "high"
+    source: "Crafting Powerful Opening Plays.md"
+
+  controlled_vulnerability:
+    description: "A personal confession or humility point that connects to the message. Hooks through relatability and curiosity — the audience wants to know why and what was learned."
+    indicators:
+      - "I'll admit"
+      - "I have a confession"
+      - "I was wrong about"
+      - "I still remember when I failed"
+    best_practice: "In executive settings, a leader confessing a prior wrong assumption and sharing what changed their mind can be particularly effective. The confession is authentic but the pivot to lesson maintains authority."
+    template: "I have a confession: [personal struggle or mistake]."
+    strength: "medium_to_high"
+    source: "Crafting Powerful Opening Plays.md"
+
+  weak_generic:
+    description: "Opens with low-impact generic statements"
+    indicators:
+      - "thank you for"
+      - "i'm here to"
+      - "today i will"
+      - "good morning"
+      - "let me introduce"
+      - "my name is"
+    strength: "low"
+    remediation: "Replace with stronger hook type"
+
+# ==============================================================================
+# ANTI-PATTERNS
+# ==============================================================================
+
+anti_patterns:
+  description: "Common weak openers to avoid or remediate"
+
+  throat_clearing:
+    description: "Unnecessary preamble before substance"
+    examples:
+      - "Thank you for having me..."
+      - "I'm really excited to be here..."
+      - "Let me start by saying..."
+      - "Before I begin, I want to..."
+    remediation: "Delete and start with hook"
+    remediation_detail: "Jump directly into value. Save thank-yous for later or make them ultra-brief. Begin with content that matters, not housekeeping."
+
+  agenda_first:
+    description: "Listing topics before engaging"
+    examples:
+      - "Today I'll cover three areas..."
+      - "Here's what we'll discuss..."
+      - "My agenda for today..."
+    remediation: "Lead with hook; move agenda to after hook"
+
+  dictionary_definition:
+    description: "Starting with word definition"
+    examples:
+      - "According to the dictionary..."
+      - "X is defined as..."
+      - "Let's define what we mean by..."
+    remediation: "Show concept in action instead"
+
+  apology:
+    description: "Undermining credibility at start"
+    examples:
+      - "I know this is a lot..."
+      - "I'm not an expert, but..."
+      - "Forgive the technical slides..."
+    remediation: "Delete; project confidence"
+    remediation_detail: "Never apologize — project confidence. If you must acknowledge something, do it succinctly with a solution-minded tone."
+
+  history_lesson:
+    description: "Excessive background before relevance"
+    examples:
+      - "Let me take you back to..."
+      - "Historically, we've always..."
+      - "Since the beginning of..."
+    remediation: "Start with current relevance; add history later if needed"
+
+  false_modesty:
+    description: "Downplaying value of content"
+    examples:
+      - "This is just a quick update..."
+      - "I don't have anything too exciting..."
+      - "You probably already know this..."
+    remediation: "State value proposition confidently"
+
+  cliche_and_jargon:
+    description: "Opening with overused quotes or drowning in buzzwords. Clichés make eyes roll and heavy jargon alienates audiences."
+    examples:
+      - "'Webster's dictionary defines innovation as...'"
+      - "'Leveraging synergies to paradigm-shift digital transformation'"
+      - "Tired motivational quotes without original context"
+    remediation: "Be fresh and plainspoken. Find a unique angle or personal take. Replace jargon with simpler descriptors or analogies."
+    source: "Crafting Powerful Opening Plays.md"
+
+  burying_the_lead:
+    description: "Taking too long to get to the point — giving extensive background before revealing why the audience should care."
+    examples:
+      - "Three slides of company history before the value proposition"
+      - "Explaining methodology before stating the finding"
+      - "Context-first structure that buries the insight in paragraph 4"
+    remediation: "Apply BLUF — state a compelling point early. Ask: 'If I had only 30 seconds, what would I want them to know?' Put that up front."
+    source: "Crafting Powerful Opening Plays.md"
+
+  no_emotional_connection:
+    description: "Openers that are technically informative but dry — pure data or abstract talk with no human element. The audience may not feel why it matters and thus tunes out."
+    examples:
+      - "'Slide 1 of 47: Market Overview'"
+      - "Opening with a methodology diagram"
+      - "Leading with company financial results without framing human stakes"
+    remediation: "Engage emotions early through a quick story, a relatable problem, or expressive tone. Even in a data-heavy talk, frame numbers in terms of human impact."
+    source: "Crafting Powerful Opening Plays.md"
+
+  overhyping:
+    description: "Grand claims that raise scepticism if not immediately proven. Overuse of superlatives without backup weakens credibility."
+    examples:
+      - "'This will completely change your life forever...'"
+      - "'The most revolutionary product ever created'"
+      - "Superlatives without supporting evidence"
+    remediation: "Be bold but credible. If the hook is a big claim, follow it quickly with evidence or specifics. Let data or testimonials do the bragging."
+    source: "Crafting Powerful Opening Plays.md"
+
+  disconnected_hook:
+    description: "A hook that grabs attention but then feels disjointed from the main content — leaving the audience confused: 'What was that opening about anyway?'"
+    examples:
+      - "Opening with an entertaining anecdote that has no explicit connection to the topic"
+      - "A startling statistic from an unrelated domain"
+      - "A joke with no segue to content"
+    remediation: "Ensure a smooth transition. Extract the lesson from a story: 'That story illustrates why we need X.' A metacomment ('I share that because...') can clarify."
+    source: "Crafting Powerful Opening Plays.md"
+
+  persona_mismatch:
+    description: "Using the wrong metric, tone, or pain framing for the actual audience persona."
+    examples:
+      - "Opening with TCO arguments to a CMO (IT language to marketing audience)"
+      - "Opening with visionary brand narrative to a CIO evaluating security compliance"
+      - "Citing content velocity metrics to an IT leader focused on architecture"
+    remediation: |
+      Identify audience persona before crafting opener. Map to correct metric register:
+      - Marketing Leader: ROI, revenue attribution, brand equity
+      - Creative Leader: content velocity, rework rate, time-to-market
+      - Ops Persona: process efficiency, integration count, governance
+      - IT Leader: TCO, security posture, legacy system risk
+    detection_signals:
+      - "Metric terminology inconsistent with known audience role"
+      - "Tone register misaligned (e.g. visionary language to a technical evaluator)"
+    source: "Storytelling_for_Different_Business_Personas.md"
+
+# ==============================================================================
+# SCORING & DETECTION
+# ==============================================================================
+
+scoring:
+  description: "Rubric for evaluating opener quality"
+
+  dimensions:
+    attention_capture:
+      weight: 0.30
+      criteria:
+        excellent: "Immediately grabs attention; impossible to ignore"
+        good: "Engages interest; curious to hear more"
+        adequate: "Serviceable; audience waits for substance"
+        weak: "Easy to tune out; generic"
+        poor: "Active disengagement; throat-clearing"
+
+    relevance_signal:
+      weight: 0.25
+      criteria:
+        excellent: "Immediately clear why audience should care"
+        good: "Relevance implied; connection evident"
+        adequate: "Relevance will become clear"
+        weak: "Unclear relevance to audience"
+        poor: "Appears irrelevant or self-serving"
+      persona_alignment_check:
+        description: "Assess whether hook language matches the known or inferred audience persona"
+        signals:
+          aligned:
+            - "Metric vocabulary matches persona role (ROI for CMO, TCO for CIO)"
+            - "Pain point named is on persona's documented pain list"
+            - "Tone register matches persona preference (visionary/pragmatic/technical/confident)"
+          misaligned:
+            - "Metric vocabulary belongs to a different persona category"
+            - "Pain point is generic or role-agnostic"
+            - "Tone register contradicts persona preference"
+        source: "Storytelling_for_Different_Business_Personas.md"
+
+    memorability:
+      weight: 0.20
+      criteria:
+        excellent: "Vivid, quotable, will be remembered"
+        good: "Distinctive; likely to stick"
+        adequate: "Reasonable; may be recalled"
+        weak: "Forgettable; blends with others"
+        poor: "Actively forgettable; cliché"
+
+    flow_to_content:
+      weight: 0.15
+      criteria:
+        excellent: "Seamless bridge to main message"
+        good: "Clear connection to content"
+        adequate: "Reasonable transition"
+        weak: "Jarring shift; disconnect"
+        poor: "No apparent connection"
+
+    brevity:
+      weight: 0.10
+      criteria:
+        excellent: "Punchy; no wasted words"
+        good: "Concise; efficient"
+        adequate: "Reasonable length"
+        weak: "Could be tighter"
+        poor: "Rambling; delayed impact"
+
+    credibility:
+      description: "Does the opener ring true and build trust? Uses evidence, social proof, or authority cues."
+      criteria:
+        present: "Fully believable and authoritative — cites data, named source, or peer adoption"
+        absent: "Opener feels exaggerated or off-base"
+      note: "Weight TBD; treated as equally weighted dimension in research rubric."
+      source: "Crafting Powerful Opening Plays.md, Section 6 DIY Attention-Score Rubric"
+
+  score_bands:
+    excellent: [90, 100]
+    strong: [80, 89]
+    adequate: [70, 79]
+    developing: [60, 69]
+    weak: [50, 59]
+    critical: [0, 49]
+
+  readability_guidance:
+    tool: "Flesch-Kincaid grade level test"
+    target_general_audience: "Grade 8 or below"
+    target_specialist_audience: "Grade 10–12"
+    rationale: "Lower readability score ensures cognitive ease — the audience's brain says 'yes, I get this' rather than spending cognitive resources decoding."
+    source: "Crafting Powerful Opening Plays.md, Section 4 Phase 4"
+
+  detection_rules:
+    first_sentence_check:
+      - "Check hook_type classification"
+      - "Flag if weak_generic detected"
+      - "Check for anti-pattern matches"
+    first_paragraph_check:
+      - "Assess time to substance"
+      - "Count filler words/phrases"
+      - "Evaluate specificity (names, numbers, details)"
+
+# ==============================================================================
+# REMEDIATION STRATEGIES
+# ==============================================================================
+
+remediation:
+  description: "Strategies for improving weak openers"
+
+  weak_to_strong:
+    generic_greeting:
+      original: "Good morning everyone, thank you for being here."
+      improved: "[BLUF/Statistic/Question hook] Good morning."
+      action: "Insert hook before greeting; shorten greeting"
+
+    agenda_first:
+      original: "Today I'll cover three areas: strategy, execution, and results."
+      improved: "[Hook that previews value]. We'll explore strategy, execution, and results."
+      action: "Lead with hook; move agenda after first value statement"
+
+    slow_build:
+      original: "Let me give you some background on our company..."
+      improved: "[Client outcome]. Here's how we helped them—and can help you."
+      action: "Lead with result; provide context as needed"
+
+  hook_enhancement:
+    add_specificity:
+      generic: "We help companies grow."
+      specific: "We helped Acme Corp grow revenue 40% in 18 months."
+
+    add_tension:
+      flat: "Data quality is important."
+      tension: "Bad data cost enterprises $15M last year. How much did it cost you?"
+
+    add_relevance:
+      self_focused: "Our platform is industry-leading."
+      audience_focused: "Your team could reclaim 10 hours per week."
+
+  hook_ideation_tactics:
+    description: "Practical techniques for generating hook options"
+    source: "Crafting Powerful Opening Plays.md, Section 4 Phase 3"
+    startling_statistic: "Take a strong data point and lead with it in a punchy way. Make it concrete and contextual — pair the stat with a quick rhetorical question or implication."
+    vivid_anecdote: "Turn an anecdote into a mini scene. Introduce a character and conflict immediately. Use present tense for immediacy. Even two sentences humanizes the point."
+    high_stakes_question: "Pose a question that implicitly challenges the audience. Start with 'What if...?' or 'Have you ever...?' Follow with 'That's exactly what happened to X...' to transition."
+    extreme_analogy: "Take an insight and cast it in extreme terms or a different domain. Test on someone unconnected to verify comprehension."
+    controlled_vulnerability: "Start with a personal confession or humility point connected to the message. Pivot to what was learned or how it drove a solution."
+
+  hook_prototype_checklist:
+    description: "Stress-test protocol for hook candidates before delivery"
+    source: "Crafting Powerful Opening Plays.md, Section 4 Phase 4"
+    ab_test: "If two competing hook lines exist, test them on trusted colleagues. Ask which opener makes them more interested to hear the rest."
+    cognitive_load_audit: "Check for clarity and simplicity. Show it to someone unfamiliar — if they furrow their brow, simplify."
+    cognitive_dissonance_check: "Does the hook raise a question or puzzle (curiosity, not confusion)? After hearing the hook, would someone itch for continuation? Ensure an open loop that the audience wants closed."
+    emotion_and_tone_balance: "Read the hook out loud. Is the tone appropriate? Is it too alarming without assurance? Ensure the right level of emotion — engage without distressing."
+    delivery_rehearsal: "Practice the opener out loud in conditions similar to the actual setting. Memorize or deeply internalize opening lines — frees cognitive capacity for eye contact and emotional delivery."
+
+# ==============================================================================
+# ENTITY EXTRACTION PATTERNS
+# ==============================================================================
+
+extraction:
+  description: "Patterns for extracting hooks from content"
+
+  boundaries:
+    opening_scope: "first 100 words or first 3 sentences"
+    alternative_hooks: "slide titles, section headers"
+
+  patterns:
+    question_hook: "^[^.!?]*\\?(?:\\s|$)"
+    statistic_hook: "\\d+(?:\\.\\d+)?%|\\d+(?:,\\d{3})+|\\$\\d+"
+    story_hook: "(?i)(imagine|picture|last week|last month|there was|I remember)"
+    bluf_hook: "(?i)^(bottom line|in short|my recommendation|we should|the answer)"
+    contrast_hook: "(?i)(most companies|leaders|while others|unlike)"
+    persona_lead_hook: "(?i)^you('re| are) (under|managing|dealing with|facing)|^your (team|org|stack|budget)"
+
+  hook_quality_signals:
+    high_quality:
+      - "Specific numbers"
+      - "Named entities (people, companies)"
+      - "Sensory language"
+      - "Active voice"
+      - "Question format"
+      - "Social proof or authority cue in first 2 sentences"
+      - "Explicit 'So what?' or 'Who cares?' answered within opening paragraph"
+      - "Present tense used in anecdote (creates immediacy)"
+      - "Specific quantifier rather than vague qualifier ('120 cyber attacks per hour' vs. 'many attacks')"
+      - "Open loop created — question raised but not yet answered"
+      - "Single core idea (not multiple points crammed into opener)"
+    low_quality:
+      - "We/I-focused"
+      - "Passive voice"
+      - "Vague quantifiers (many, some, various)"
+      - "Filler words (just, actually, basically)"
+      - "Presence of apology language ('I'm sorry if...', 'Forgive me for...')"
+      - "Superlatives without immediate evidence ('the most revolutionary', 'game-changing')"
+      - "Opener disconnected from body content (no explicit bridge)"
+      - "Jargon density high without relatable definitions"
+      - "Abstract opener with no human element (character, scenario, or emotion)"
+
+  audit_framework:
+    name: "HOOK-SCAN"
+    description: "Mnemonic checklist for rapid hook quality audit"
+    source: "Crafting Powerful Opening Plays.md, Section 6"
+    letters:
+      H: "Human-centric — does the opening speak to human experiences or emotions?"
+      O1: "Originality — is the hook fresh and unexpected, or a cliché the audience has heard before?"
+      O2: "One Core Idea — can the audience grasp the gist in one go? Avoid cramming multiple points."
+      K: "Kick-off with Key info — does it put the bottom line or key point right up front?"
+      S: "Surprise/Contrast — does it subvert expectations or include a striking contrast?"
+      C: "Clarity — is the language simple, concrete, and specific? No jargon or ambiguity."
+      A: "Audience Relevance — will this make this specific audience care immediately?"
+      N: "Novelty — is something novel introduced (new fact, idea, or perspective)?"
+      I: "Integrity — is the hook truthful and aligned with what will actually be delivered?"
+      E: "Energy — does the opener convey energy or passion through tone, wording, or visuals?"
+
+# ==============================================================================
+# CHANNEL ADAPTATION
+# ==============================================================================
+
+channel_adaptation:
+  description: "Guidance for adapting hook delivery to specific presentation mediums."
+  source: "Crafting Powerful Opening Plays.md, Section 4 Phase 5"
+
+  slides_and_stage:
+    hook_slide: "Complement the spoken hook with a bold slide — single arresting image or statistic in large text. A black slide with one big number or one word can be dramatically effective."
+    delivery: "Practice pacing and pauses after the hook line to let it sink in. Deliver hook with confidence before managing slides or clicker — avoid technical fumbling immediately after the hook line."
+
+  video_cold_open:
+    structure: "Lead with a quick visual cold open before any intro titles. Jump-cutting to the hook works well — an immediate question on screen or a 5-second dramatization."
+    accessibility: "Ensure captions or clear audio since viewers may have sound off initially."
+    pacing: "Attention spans on video are shorter — tighten hook delivery to a few seconds punch."
+
+  written_brief:
+    hook_location: "The hook is the title, subtitle, or first sentence/paragraph. 'Above the fold' content must be gripping — subject line or heading should contain the hook essence."
+    style: "Use strong verbs and descriptive terms to convey emotion without vocal tone. Keep extremely succinct — long-winded writing does not hook busy exec readers skimming."
+
+# ==============================================================================
+# HOOK LANGUAGE REFERENCE
+# ==============================================================================
+
+hook_language_reference:
+  description: "Practical B2B language reference for hook crafting — power verbs and quantifiers that increase credibility and impact."
+  source: "Crafting Powerful Opening Plays.md, Section 6"
+
+  power_verbs:
+    - "accelerate"
+    - "streamline"
+    - "ignite"
+    - "slash"
+    - "empower"
+    - "unleash"
+    - "transform"
+    - "detect"
+    - "prevent"
+    - "turbocharge"
+
+  power_quantifiers:
+    - "10x"
+    - "99.9%"
+    - "zero"
+    - "millions"
+    - "number 1"
+    - "only"
+    - "24/7"
+    - "3 out of 4"
+    - "less than 5 minutes"
+    - "100+"
+
+  usage_principle: "Replace vague language with concrete power language. 'Improve efficiency' becomes 'turbocharge your efficiency.' 'Many' becomes 'millions.' Specifics are more credible than approximations. Ensure usage is factual — do not claim zero downtime if it is not zero."

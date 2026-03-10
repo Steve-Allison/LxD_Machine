@@ -1,0 +1,294 @@
+_meta:
+  id: performance_taxonomy
+  title: "Performance Taxonomy"
+  description: "Classification of speaker and presenter performance by competency tier, vocal quality category, physical delivery dimension, speaking style, and anxiety management level"
+  domain: performance
+  domain_type: workflow
+  purpose: taxonomy
+  version: "1.3.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - World-Class_Public_Speaking_FULL_RESEARCH.md"
+    - "Corpus/Research/Research - Elite Speaker Linguistic Analysis Taxonomy.md"
+    - "Corpus/Research/Research - The Architecture of Influence_ A Comprehensive Multimodal Taxonomy of Elite vs. Average Public Speaking.md"
+    - "Corpus/Research/Research - Unified Performance Framework.md"
+    - "Corpus/Research/Research - Voice Coaching and Clinical Analysis.md"
+    - "Corpus/Research/Research - Vocal Profiling for Executive Coaching.md"
+    - "Corpus/Research/Research - Voice Quality Metric Research Parameters.md"
+    - "Corpus/Research/research_-_mastering_presentation_nerves.md"
+    - "Corpus/Research/RESEARCH-BASED_ENHANCEMENTS FOR VOICE.md"
+  relationships:
+    - target: entities/performance_entities.yaml
+      type: depends_on
+      description: "Performance entity types for NER extraction"
+    - target: reference/speaking_performance_thresholds.yaml
+      type: depends_on
+      description: "Numeric thresholds for performance tier boundaries"
+    - target: reference/voice_quality_thresholds.yaml
+      type: depends_on
+      description: "Clinical thresholds for vocal quality assessment"
+# ==============================================================================
+# SPEAKER COMPETENCY TIERS
+# ==============================================================================
+
+competency_tiers:
+  elite:
+    label: "Elite"
+    tier: 4
+    description: "World-class communicator with mastery across all performance dimensions"
+    characteristics:
+      - "commands attention through presence alone"
+      - "seamless integration of verbal and nonverbal channels"
+      - "strategic use of rhetorical devices"
+      - "adaptive to audience energy in real time"
+    filler_rate: "< 1 per minute"
+    hedge_rate: "< 0.5 per minute"
+    rhetorical_device_usage: "frequent and varied"
+    silence_ratio: "18-22% of total speaking time (strategic pauses as deliberate rhetorical tool)"
+
+  proficient:
+    label: "Proficient"
+    tier: 3
+    description: "Confident and effective communicator with strong command of delivery fundamentals"
+    characteristics:
+      - "consistent vocal variety and projection"
+      - "purposeful gestures and movement"
+      - "effective audience engagement"
+      - "recovers smoothly from disruptions"
+    filler_rate: "1-3 per minute"
+    hedge_rate: "0.5-1.5 per minute"
+    rhetorical_device_usage: "regular"
+    silence_ratio: "15-18% of total speaking time (pauses used to emphasise key points)"
+
+  developing:
+    label: "Developing"
+    tier: 2
+    description: "Building core delivery skills with inconsistent application"
+    characteristics:
+      - "shows awareness of delivery principles"
+      - "inconsistent vocal variety"
+      - "some distracting habits"
+      - "relies on notes or slides"
+    filler_rate: "3-6 per minute"
+    hedge_rate: "1.5-3 per minute"
+    rhetorical_device_usage: "occasional"
+    silence_ratio: "8-14% (pauses present but not strategic; some hesitation pauses)"
+
+  needs_coaching:
+    label: "Needs Coaching"
+    tier: 1
+    description: "Significant delivery challenges requiring structured intervention"
+    characteristics:
+      - "monotone or flat delivery"
+      - "frequent disfluencies"
+      - "minimal audience engagement"
+      - "visible anxiety indicators"
+    filler_rate: "> 6 per minute"
+    hedge_rate: "> 3 per minute"
+    rhetorical_device_usage: "rare or absent"
+    silence_ratio: "< 8% or > 25% (either rushing with no pauses, or frequent uncontrolled hesitation pauses)"
+
+# ==============================================================================
+# VOCAL QUALITY CATEGORIES
+# ==============================================================================
+
+vocal_quality_categories:
+  pitch:
+    label: "Pitch"
+    description: "Fundamental frequency and intonation patterns"
+    sub_dimensions:
+      range: "Semitone span between lowest and highest pitch"
+      variability: "Frequency of pitch changes per utterance"
+      contour: "Rising, falling, or circumflex intonation patterns"
+    clinical_markers:
+      positive: ["wide pitch range", "natural variation", "downward terminal contour"]
+      negative: ["monotone", "uptalk", "vocal fry", "narrow range"]
+    quantified_thresholds:
+      optimal_sd: "3-4 semitones standard deviation across an utterance"
+      monotone_threshold: "< 2 semitones SD (clinically flat, audience disengagement risk)"
+      theatrical_threshold: "> 5 semitones SD (over-expressive, perceived as performative)"
+      elite_marker: "Controlled variation of 3-4 semitones SD with deliberate downward cadence on key statements"
+
+  pace:
+    label: "Pace"
+    description: "Speech rate, pausing patterns, and temporal dynamics"
+    sub_dimensions:
+      rate: "Words or syllables per minute"
+      pause_frequency: "Number of pauses per 100 words"
+      pause_duration: "Average length of pauses in seconds"
+      rate_variation: "Degree of tempo change across utterances"
+    clinical_markers:
+      positive: ["strategic pauses", "varied tempo", "deliberate emphasis"]
+      negative: ["rushed", "too slow", "no pauses", "trailing off"]
+    quantified_thresholds:
+      optimal_wpm: "150-160 WPM (sweet spot for comprehension and perceived authority)"
+      elite_target: "155 WPM average with deliberate modulation between 120-180 WPM"
+      cognitive_overload_threshold: "> 170 WPM (17-25% retention drop; Mayer 2009)"
+      severe_overload_threshold: "> 180 WPM (significant comprehension degradation)"
+      lethargic_threshold: "< 120-130 WPM (audience attention drift, perceived lack of confidence)"
+    pause_typology:
+      emphatic: "500-600ms — used before or after key statements to signal importance"
+      power: "1.0-2.0s — extended silence that commands attention and projects authority"
+      transition: "800-1000ms — marks movement between major topics or sections"
+      list: "300-400ms — separates items in a spoken list for clarity"
+      micro: "< 200ms — brief catch-breath pauses that do not interrupt flow"
+      hesitation: "> 1.0s at non-boundary positions (not following punctuation) — signals uncertainty; coaching target for reduction"
+
+  projection:
+    label: "Projection"
+    description: "Volume, resonance, and audibility"
+    sub_dimensions:
+      volume: "Loudness level relative to environment"
+      resonance: "Tonal richness and warmth"
+      articulation: "Clarity of consonant and vowel production"
+    clinical_markers:
+      positive: ["clear articulation", "appropriate volume", "resonant tone"]
+      negative: ["mumbling", "too quiet", "shouting", "breathy"]
+
+  quality:
+    label: "Voice Quality"
+    description: "Timbral characteristics and vocal health indicators"
+    sub_dimensions:
+      breathiness: "Degree of air escape during phonation"
+      strain: "Degree of muscular tension in voice production"
+      roughness: "Irregularity of vocal fold vibration"
+    clinical_markers:
+      positive: ["clear phonation", "effortless production", "consistent quality"]
+      negative: ["hoarse", "strained", "creaky", "nasal", "constricted"]
+    acoustic_quality_metrics:
+      jitter_threshold: "< 1.04% — perturbation in fundamental frequency cycle-to-cycle; above threshold indicates vocal health concern"
+      shimmer_threshold: "< 3.81% — amplitude variation between cycles; above threshold indicates vocal instability"
+      hnr_threshold: "> 20 dB Harmonics-to-Noise Ratio — measures clarity of voice relative to noise; below threshold indicates breathy or dysphonic voice quality"
+      clinical_significance: "These three metrics (jitter, shimmer, HNR) are standard clinical Voice Handicap Index markers used in speech-language pathology for executive vocal health screening"
+
+# ==============================================================================
+# PHYSICAL DELIVERY DIMENSIONS
+# ==============================================================================
+
+physical_delivery_dimensions:
+  gesture:
+    label: "Gesture"
+    description: "Hand and arm movements used to reinforce or illustrate spoken content"
+    effectiveness_spectrum:
+      high: ["open palm gestures", "illustrative movements", "purposeful pointing"]
+      neutral: ["hands at sides", "minimal movement"]
+      low: ["fidgeting", "self-touching", "repetitive gestures", "pocket hands"]
+
+  posture:
+    label: "Posture"
+    description: "Body positioning and stance conveying authority and openness"
+    effectiveness_spectrum:
+      high: ["open stance", "grounded feet", "shoulders back", "slight forward lean"]
+      neutral: ["standing still", "symmetrical stance"]
+      low: ["slouching", "weight shifting", "crossed arms", "turned away"]
+
+  movement:
+    label: "Movement"
+    description: "Purposeful locomotion within the presentation space"
+    effectiveness_spectrum:
+      high: ["strategic stage use", "movement to signal transitions", "approach for emphasis"]
+      neutral: ["stationary but stable"]
+      low: ["pacing", "swaying", "rocking", "frozen in place"]
+
+  eye_contact:
+    label: "Eye Contact"
+    description: "Visual connection with audience members"
+    effectiveness_spectrum:
+      high: ["sustained 3-5 second connections", "scanning full room", "inclusive coverage"]
+      neutral: ["intermittent eye contact", "general audience gaze"]
+      low: ["reading slides", "looking down", "staring at one spot", "avoiding gaze"]
+
+  facial_expression:
+    label: "Facial Expression"
+    description: "Congruence between facial affect and spoken content"
+    effectiveness_spectrum:
+      high: ["congruent with content", "animated", "genuine smile", "expressive range"]
+      neutral: ["pleasant neutral expression"]
+      low: ["flat affect", "incongruent expression", "nervous smile", "furrowed brow"]
+
+# ==============================================================================
+# SPEAKING STYLES
+# ==============================================================================
+
+speaking_styles:
+  authoritative:
+    label: "Authoritative"
+    description: "Command-driven delivery with clear expertise and conviction"
+    vocal_markers: ["lower pitch register", "deliberate pace 130-150 WPM", "downward terminal intonation", "longer power pauses 1.0-2.0s", "minimal hedge language", "jitter < 0.8% and HNR > 22 dB for gravitas signal"]
+    best_for: ["executive briefings", "crisis communication", "compliance training"]
+
+  conversational:
+    label: "Conversational"
+    description: "Warm, relatable delivery that feels like a one-to-one dialogue"
+    vocal_markers: ["natural pitch variation 2.5-4 semitones SD", "moderate pace 155-165 WPM", "informal cadence with rising intonation on questions", "micro-pauses 200-300ms at clause boundaries", "occasional uptalk acceptable"]
+    best_for: ["eLearning narration", "team meetings", "coaching sessions"]
+
+  inspirational:
+    label: "Inspirational"
+    description: "Energetic, visionary delivery designed to motivate and mobilise"
+    vocal_markers: ["wide pitch range 4-5 semitones SD", "varied tempo 120-175 WPM with intentional modulation", "strategic power pauses 1.5-2.0s before vision statements", "building crescendo with increased volume on key phrases", "downward cadence on call-to-action"]
+    best_for: ["keynotes", "change management", "vision presentations"]
+
+  instructional:
+    label: "Instructional"
+    description: "Clear, structured delivery optimised for knowledge transfer"
+    vocal_markers: ["moderate steady pace 150-160 WPM", "explicit verbal signposting ('first', 'next', 'finally')", "deliberate emphasis on key terms with slight pitch rise and pause", "list pauses 300-400ms between items", "consistent volume without dramatic variation"]
+    best_for: ["training sessions", "tutorials", "demonstrations"]
+
+  storytelling:
+    label: "Storytelling"
+    description: "Narrative-driven delivery using tension, character, and arc"
+    vocal_markers: ["dramatic pauses 500ms-2.0s at plot tension points", "character voice differentiation via pitch shift", "tempo shifts (slow for gravity, fast for urgency)", "emotional range across full pitch span", "silence ratio 18-22% weighted toward climax moments"]
+    best_for: ["sales presentations", "case studies", "opening hooks"]
+
+# ==============================================================================
+# CLASSIFICATION DIMENSIONS
+# ==============================================================================
+
+classification_dimensions:
+  competency_tier:
+    name: "Competency Tier"
+    description: "Overall speaker performance level"
+    values:
+      - elite
+      - proficient
+      - developing
+      - needs_coaching
+
+  vocal_dimension:
+    name: "Vocal Dimension"
+    description: "The specific aspect of vocal delivery being assessed"
+    values:
+      - pitch
+      - pace
+      - projection
+      - quality
+
+  physical_dimension:
+    name: "Physical Dimension"
+    description: "The specific aspect of physical delivery being assessed"
+    values:
+      - gesture
+      - posture
+      - movement
+      - eye_contact
+      - facial_expression
+
+  speaking_style:
+    name: "Speaking Style"
+    description: "The dominant delivery approach for the context"
+    values:
+      - authoritative
+      - conversational
+      - inspirational
+      - instructional
+      - storytelling
+
+  anxiety_management:
+    name: "Anxiety Management"
+    description: "Level of presentation anxiety and coping effectiveness"
+    values:
+      - managed_invisible
+      - managed_visible
+      - partially_managed
+      - unmanaged

@@ -1,0 +1,106 @@
+_meta:
+  id: pedagogical_patterns
+  title: "Pedagogical Patterns"
+  description: "Configuration for assessing and designing educational/training content."
+  domain: pedagogical
+  domain_type: workflow
+  purpose: methodology
+  version: "1.2.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Crafting Powerful Opening Plays.md"
+    - "Corpus/Research/Research - Comprehensive Learning Design Framework.md"
+    - "Corpus/Research/Research - Corporate Learning Assessment- Strategies, Modalities, and Best Practices.md"
+
+
+# ==============================================================================
+# FIRST PRINCIPLES OF INSTRUCTION (MERRILL)
+# ==============================================================================
+
+first_principles:
+  description: "The 5-phase cycle for effective instruction."
+  scoring_anchors: !include ../shared/scoring.yaml
+
+  principles:
+    1_problem_centered:
+      definition: "Learning is promoted when learners are engaged in solving real-world problems."
+      checklist:
+        - "Is the problem authentic?"
+        - "Is the whole task introduced early ('Pebble in the Pond')?"
+        - "Is there a progression of complexity?"
+    2_activation:
+      definition: "Learning is promoted when existing knowledge is activated as a foundation."
+      checklist:
+        - "Does it recall prior experience?"
+        - "Does it use relevant analogies?"
+    3_demonstration:
+      definition: "Learning is promoted when new knowledge is demonstrated to the learner."
+      checklist:
+        - "Show, don't just tell."
+        - "Are examples and non-examples provided?"
+        - "Is the demonstration consistent with the content type?"
+    4_application:
+      definition: "Learning is promoted when new knowledge is applied by the learner."
+      checklist:
+        - "Is there immediate feedback?"
+        - "Is there coaching/scaffolding?"
+    5_integration:
+      definition: "Learning is promoted when new knowledge is integrated into the learner's world."
+      checklist:
+        - "Is there a plan for public demonstration?"
+        - "Is there reflection or personal adaptation?"
+
+# ==============================================================================
+# COMPONENT DISPLAY THEORY (CDT)
+# ==============================================================================
+
+component_display_theory:
+  description: "Prescriptive matrix for micro-level instructional strategy."
+
+  performance_content_matrix:
+    content_types:
+      fact: "Arbitrary information (names, dates, symbols)."
+      concept: "Categories defined by shared attributes."
+      procedure: "Ordered sequence of steps."
+      principle: "Cause-and-effect relationships or rules."
+
+    performance_levels:
+      remember: "Recall or recognize."
+      use: "Apply to a specific case."
+      find: "Derive a new abstraction or solution."
+
+  prescriptions:
+    concept_use:
+      strategy: "Definition (Rule) + Examples (Positive) + Non-Examples (Negative)."
+      feedback: "Explain WHY it is an example or non-example."
+    procedure_use:
+      strategy: "Step-by-step Demo + Guided Practice + Sandbox Simulation."
+      feedback: "Corrective feedback on specific steps."
+    principle_use:
+      strategy: "Statement of Principle + Cause/Effect Examples."
+      feedback: "Show consequences of choices."
+
+# ==============================================================================
+# GAGNE'S NINE EVENTS (MAPPED TO FPI)
+# ==============================================================================
+
+gagne_mapping:
+  description: "Mapping of Gagne's events to the FPI cycle for compatibility."
+
+  activation: ["Gain Attention", "Inform Learners of Objectives", "Stimulate Recall"]
+  demonstration: ["Present the Content", "Provide Learning Guidance"]
+  application: ["Elicit Performance", "Provide Feedback", "Assess Performance"]
+  integration: ["Enhance Retention and Transfer"]
+
+# ==============================================================================
+# INSTRUCTIONAL CONTENT TYPES
+# ==============================================================================
+
+instructional_types:
+  description: "Classification of content blocks."
+
+  types:
+    expository: "Telling/Showing (Lecture, Video, Text)."
+    inquisitory: "Asking/Doing (Quiz, Simulation, Discussion)."
+    generality: "Abstract Rules/Definitions."
+    instance: "Specific Examples/Cases."

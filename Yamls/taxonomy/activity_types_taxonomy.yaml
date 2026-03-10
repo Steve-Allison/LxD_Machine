@@ -1,0 +1,348 @@
+_meta:
+  id: activity_types_taxonomy
+  title: "Activity Types Taxonomy"
+  description: "Classification of 34 synchronous and asynchronous learning activity types by delivery mode, cognitive level, group format, and primary learning outcome"
+  domain: pedagogical
+  domain_type: classification
+  purpose: taxonomy
+  version: "1.3.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+    - "Corpus/Research/Activities - Research + Instructions v4.md"
+  academic_sources:
+    - "Bloom et al. (1956) - Taxonomy of Educational Objectives"
+    - "Gagné (1985) - The Conditions of Learning"
+    - "Prince (2004) - Does Active Learning Work?"
+
+  relationships:
+    - target: entities/activity_types_entities.yaml
+      type: depends_on
+      description: "Activity entity types for NER extraction"
+# ==============================================================================
+# TOP-LEVEL CLASSIFICATION: DELIVERY MODE
+# ==============================================================================
+
+delivery_modes:
+  synchronous:
+    label: "Synchronous"
+    description: "Activities that occur in real time with instructor or peers present"
+    requires_facilitation: true
+
+  asynchronous:
+    label: "Asynchronous"
+    description: "Activities that learners complete independently at their own pace"
+    requires_facilitation: false
+
+  blended:
+    label: "Blended"
+    description: "Activities that combine synchronous and asynchronous elements"
+    requires_facilitation: partial
+
+# ==============================================================================
+# SYNCHRONOUS ACTIVITY TYPES (16 types)
+# ==============================================================================
+
+synchronous:
+
+  # FACILITATED DISCUSSION
+  facilitated_discussion:
+    display_name: "Facilitated Discussion"
+    mode: synchronous
+    group_format: whole_group
+    bloom_levels: [understand, analyze, evaluate]
+    cognitive_complexity: medium
+    duration_range: "20-45 min"
+    outcome_type: conceptual
+    sub_types:
+      - socratic_questioning
+      - panel_discussion
+      - fishbowl_discussion
+      - think_pair_share
+
+  # COLLABORATIVE PROBLEM SOLVING
+  collaborative_problem_solving:
+    display_name: "Collaborative Problem Solving"
+    mode: synchronous
+    group_format: small_group
+    bloom_levels: [analyze, evaluate, create]
+    cognitive_complexity: high
+    duration_range: "30-90 min"
+    outcome_type: applied
+    sub_types:
+      - case_study_analysis
+      - problem_based_learning
+      - design_sprint
+      - hackathon
+
+  # LIVE DEMONSTRATION
+  live_demonstration:
+    display_name: "Live Demonstration"
+    mode: synchronous
+    group_format: any
+    bloom_levels: [remember, understand]
+    cognitive_complexity: low
+    duration_range: "15-30 min"
+    outcome_type: procedural
+    sub_types:
+      - product_demo
+      - worked_example
+      - think_aloud
+
+  # ROLEPLAY AND SIMULATION
+  roleplay_simulation:
+    display_name: "Roleplay and Simulation"
+    mode: synchronous
+    group_format: pairs_or_small_group
+    bloom_levels: [apply, evaluate]
+    cognitive_complexity: high
+    duration_range: "20-60 min"
+    outcome_type: applied
+    sub_types:
+      - sales_roleplay
+      - customer_scenario
+      - objection_handling_drill
+      - discovery_simulation
+
+  # PEER INSTRUCTION
+  peer_instruction:
+    display_name: "Peer Instruction"
+    mode: synchronous
+    group_format: pairs_or_small_group
+    bloom_levels: [understand, analyze]
+    cognitive_complexity: medium
+    duration_range: "20-30 min"
+    outcome_type: conceptual
+    sub_types:
+      - peer_teaching
+      - expert_jigsaw
+      - reciprocal_questioning
+
+  # BRAINSTORMING
+  brainstorming:
+    display_name: "Brainstorming"
+    mode: synchronous
+    group_format: small_group
+    bloom_levels: [create]
+    cognitive_complexity: medium
+    duration_range: "15-30 min"
+    outcome_type: generative
+    sub_types:
+      - free_brainstorm
+      - mind_mapping
+      - brainwriting
+      - round_robin
+
+  # HANDS-ON WORKSHOP
+  hands_on_workshop:
+    display_name: "Hands-On Workshop"
+    mode: synchronous
+    group_format: small_group
+    bloom_levels: [apply, analyze]
+    cognitive_complexity: high
+    duration_range: "45-90 min"
+    outcome_type: applied
+    sub_types:
+      - product_lab
+      - configuration_workshop
+      - build_session
+
+  # DEBATE
+  debate:
+    display_name: "Structured Debate"
+    mode: synchronous
+    group_format: teams
+    bloom_levels: [analyze, evaluate]
+    cognitive_complexity: high
+    duration_range: "30-60 min"
+    outcome_type: argumentation
+    sub_types:
+      - formal_debate
+      - four_corners
+      - devil_advocate
+
+  # Q&A SESSION
+  qa_session:
+    display_name: "Q&A Session"
+    mode: synchronous
+    group_format: whole_group
+    bloom_levels: [remember, understand]
+    cognitive_complexity: low
+    duration_range: "10-20 min"
+    outcome_type: clarification
+    sub_types:
+      - open_qa
+      - hot_seat
+      - ask_the_expert
+
+# ==============================================================================
+# ASYNCHRONOUS ACTIVITY TYPES (18 types)
+# ==============================================================================
+
+asynchronous:
+
+  # KNOWLEDGE CHECK
+  knowledge_check:
+    display_name: "Knowledge Check"
+    mode: asynchronous
+    group_format: individual
+    bloom_levels: [remember, understand]
+    cognitive_complexity: low
+    duration_range: "2-10 min"
+    outcome_type: recall
+    sub_types:
+      - multiple_choice_quiz
+      - true_false
+      - matching_exercise
+      - fill_in_the_blank
+
+  # SCENARIO-BASED ASSESSMENT
+  scenario_assessment:
+    display_name: "Scenario-Based Assessment"
+    mode: asynchronous
+    group_format: individual
+    bloom_levels: [apply, analyze, evaluate]
+    cognitive_complexity: high
+    duration_range: "15-30 min"
+    outcome_type: applied
+    sub_types:
+      - branching_scenario
+      - decision_tree
+      - situational_judgement
+
+  # VIDEO WATCH
+  video_watch:
+    display_name: "Video with Reflection"
+    mode: asynchronous
+    group_format: individual
+    bloom_levels: [remember, understand]
+    cognitive_complexity: low
+    duration_range: "3-15 min"
+    outcome_type: conceptual
+    sub_types:
+      - explainer_video
+      - expert_interview
+      - product_walkthrough_video
+      - story_video
+
+  # READING AND REFLECTION
+  reading_reflection:
+    display_name: "Reading and Reflection"
+    mode: asynchronous
+    group_format: individual
+    bloom_levels: [understand, analyze]
+    cognitive_complexity: medium
+    duration_range: "10-30 min"
+    outcome_type: conceptual
+    sub_types:
+      - article_review
+      - case_study_reading
+      - framework_study
+      - guided_reading
+
+  # SELF-ASSESSMENT
+  self_assessment:
+    display_name: "Self-Assessment"
+    mode: asynchronous
+    group_format: individual
+    bloom_levels: [evaluate]
+    cognitive_complexity: medium
+    duration_range: "10-20 min"
+    outcome_type: metacognitive
+    sub_types:
+      - competency_self_rating
+      - reflection_journal
+      - pre_post_confidence_scale
+
+  # JOB AID APPLICATION
+  job_aid_application:
+    display_name: "Job Aid Application"
+    mode: asynchronous
+    group_format: individual
+    bloom_levels: [apply]
+    cognitive_complexity: low
+    duration_range: "5-20 min"
+    outcome_type: procedural
+    sub_types:
+      - checklist_walkthrough
+      - template_completion
+      - reference_card_use
+
+  # PRACTICE EXERCISE
+  practice_exercise:
+    display_name: "Guided Practice Exercise"
+    mode: asynchronous
+    group_format: individual
+    bloom_levels: [apply]
+    cognitive_complexity: medium
+    duration_range: "15-30 min"
+    outcome_type: applied
+    sub_types:
+      - software_practice
+      - worked_example_completion
+      - drag_and_drop_sort
+
+  # RESEARCH TASK
+  research_task:
+    display_name: "Research Task"
+    mode: asynchronous
+    group_format: individual
+    bloom_levels: [analyze, evaluate, create]
+    cognitive_complexity: high
+    duration_range: "30-90 min"
+    outcome_type: generative
+    sub_types:
+      - competitive_research
+      - customer_discovery
+      - industry_analysis
+
+  # PORTFOLIO OR PROJECT
+  portfolio_project:
+    display_name: "Portfolio or Project"
+    mode: asynchronous
+    group_format: individual
+    bloom_levels: [create, evaluate]
+    cognitive_complexity: high
+    duration_range: "60-240 min"
+    outcome_type: generative
+    sub_types:
+      - capstone_project
+      - presentation_build
+      - business_case_creation
+      - portfolio_submission
+
+# ==============================================================================
+# CLASSIFICATION DIMENSIONS
+# ==============================================================================
+
+classification_dimensions:
+  bloom_level:
+    remember: "Recall of facts and concepts"
+    understand: "Interpretation and explanation"
+    apply: "Use of knowledge in new situations"
+    analyze: "Breaking down and examining components"
+    evaluate: "Judging based on criteria"
+    create: "Producing new or original work"
+
+  cognitive_complexity:
+    low: "Single-answer recall; minimal processing"
+    medium: "Requires interpretation, comparison, or application"
+    high: "Multi-step reasoning, judgment, or creation"
+
+  group_format:
+    individual: "Learner works alone"
+    pairs: "Two learners"
+    small_group: "3-6 learners"
+    whole_group: "Entire cohort"
+    teams: "Competing or collaborating teams"
+    any: "Format is flexible"
+
+  outcome_type:
+    recall: "Can reproduce facts or steps"
+    conceptual: "Can explain and discuss ideas"
+    procedural: "Can perform a process correctly"
+    applied: "Can use knowledge in context"
+    generative: "Can produce something new"
+    argumentation: "Can construct and defend a position"
+    metacognitive: "Can assess and regulate own learning"
+    clarification: "Can resolve uncertainty through dialogue"

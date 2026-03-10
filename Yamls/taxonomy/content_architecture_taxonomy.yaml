@@ -1,0 +1,397 @@
+_meta:
+  id: content_architecture_taxonomy
+  purpose: taxonomy
+  version: "1.2.0"
+  last_updated: "2026-03-01"
+  description: "Classification of content architecture constructs by artefact type, design phase, structural granularity, pedagogical function, and delivery format."
+  domain: pedagogical
+  domain_type: workflow
+  corpus_sources:
+    - "Corpus/Research/High-Level Planning Tools in Corporate Learning - Wireframes, Content Maps & Course Blueprints.md"
+    - "Corpus/Research/Instruction for Creating Content Maps.md"
+    - "Corpus/Research/Research - Wireframe Best Practices.md"
+    - "Corpus/Research/Content Map - Instructions v3.md"
+    - "Corpus/Research/Best Practices for Structuring Corporate Learning Content.md"
+  academic_sources:
+    - "Wiggins & McTighe (2005) - Understanding by Design"
+    - "Moore (2017) - Map It: The Hands-On Guide to Strategic Training Design"
+  relationships:
+    - target: entities/content_architecture_entities.yaml
+      type: depends_on
+      description: "Content architecture entity types for NER extraction"
+    - target: methodology/pedagogical_patterns.yaml
+      type: depends_on
+      description: "Pedagogical design patterns and sequence definitions"
+    - target: taxonomy/activity_types_taxonomy.yaml
+      type: depends_on
+      description: "Activity type classification for interaction elements"
+# ==============================================================================
+# ARTEFACT TYPES
+# ==============================================================================
+
+artefact_types:
+  course_blueprint:
+    label: "Course Blueprint"
+    description: "High-level curriculum outline mapping modules to learning outcomes, audience, duration, and delivery method"
+    fidelity: strategic
+    typical_format: "Spreadsheet or one-page canvas"
+    key_components:
+      - learning_objectives: "Measurable outcomes aligned to business goals"
+      - module_sequence: "Ordered list of modules with durations"
+      - assessment_strategy: "How learners will be evaluated"
+      - delivery_method: "Synchronous, asynchronous, or blended"
+      - prerequisites: "Prior knowledge or skills required"
+
+  content_map:
+    label: "Content Map"
+    description: "Tabular tool aligning each module's objectives, topics, activities, assessments, and outcomes in a single view"
+    fidelity: planning
+    typical_format: "Spreadsheet with rows per module and columns per component"
+    key_components:
+      - module_column: "Module name or number"
+      - objectives_column: "Learning objectives addressed"
+      - topics_column: "Key content topics"
+      - activities_column: "Learning activities and interactions"
+      - assessment_column: "Formative and summative assessments"
+      - outcomes_column: "Expected learning outcomes"
+      - duration_column: "Estimated time allocation"
+
+  wireframe:
+    label: "Wireframe"
+    description: "Low-to-medium fidelity planning document outlining the structure and flow of a learning asset segment by segment"
+    fidelity: design
+    typical_format: "Tabular or slide-based layout"
+    key_components:
+      - segment_label: "Segment or scene identifier"
+      - duration_estimate: "Projected length of segment"
+      - visual_description: "What learners will see (placeholders)"
+      - audio_narration: "What learners will hear"
+      - on_screen_text: "Key terms, labels, or titles displayed"
+      - media_elements: "Charts, diagrams, photos, animations specified"
+      - interaction_notes: "Knowledge checks or activities embedded"
+      - objective_alignment: "Which learning objective this segment serves"
+
+  screenplan:
+    label: "Screenplan"
+    description: "Screen-by-screen outline specifying purpose, content summary, media, and layout for each display state"
+    fidelity: design
+    typical_format: "Document or slide with one screen per page"
+    key_components:
+      - screen_purpose: "What the screen achieves"
+      - content_summary: "Key information presented"
+      - media_specification: "Images, video, animation, or interactive elements"
+      - layout_notes: "Spatial arrangement of elements"
+      - navigation: "How learner progresses to next screen"
+
+  storyboard:
+    label: "Storyboard"
+    description: "High-fidelity scene-by-scene visualisation with finalised text, imagery descriptions, and production notes"
+    fidelity: production
+    typical_format: "Document or tool with visual frame and annotation columns"
+    key_components:
+      - scene_visual: "Detailed description or sketch of what appears on screen"
+      - narration_script: "Finalised voice-over text"
+      - on_screen_text: "Exact text displayed"
+      - motion_notes: "Transitions, animations, camera movements"
+      - timing: "Precise duration per scene"
+      - production_notes: "Instructions for developers or animators"
+
+  action_map:
+    label: "Action Map"
+    description: "Visual diagram connecting business goals to performer actions to practice activities, minimising unnecessary content (Cathy Moore framework)"
+    fidelity: strategic
+    typical_format: "Visual mind-map or flowchart"
+    key_components:
+      - business_goal: "The organisational metric to improve"
+      - performer_actions: "What people need to do on the job"
+      - barriers: "Why people are not doing it (knowledge, motivation, environment)"
+      - practice_activities: "Realistic activities that build the required skills"
+      - minimal_information: "Only the content needed to support practice"
+
+# ==============================================================================
+# DESIGN PHASES
+# ==============================================================================
+
+design_phases:
+  discovery:
+    label: "Discovery"
+    description: "Needs analysis, audience research, and business goal identification"
+    artefacts_produced: ["stakeholder interviews", "needs analysis", "audience profiles"]
+    key_questions:
+      - "What business problem are we solving?"
+      - "Who is the target audience?"
+      - "What do learners already know?"
+    iteration_readiness: ideation
+
+  planning:
+    label: "Planning"
+    description: "Strategic design decisions — objectives, structure, assessment strategy, and content mapping"
+    artefacts_produced: ["course_blueprint", "content_map", "action_map"]
+    key_questions:
+      - "What should learners be able to do after training?"
+      - "How will we assess learning?"
+      - "What is the optimal module sequence?"
+    iteration_readiness: draft
+
+  design:
+    label: "Design"
+    description: "Detailed structural planning — wireframes, screenplans, and interaction design"
+    artefacts_produced: ["wireframe", "screenplan", "interaction_specification"]
+    key_questions:
+      - "What does each segment look like?"
+      - "Where do interactions and knowledge checks go?"
+      - "How does the visual flow support learning?"
+    iteration_readiness: refined
+
+  development:
+    label: "Development"
+    description: "Content creation — storyboards, scripts, media production, and authoring"
+    artefacts_produced: ["storyboard", "script", "media_assets"]
+    key_questions:
+      - "Is the narration script finalised?"
+      - "Are all media assets specified?"
+      - "Do production notes give enough detail for developers?"
+    iteration_readiness: final
+
+  production:
+    label: "Production"
+    description: "Building the final learning asset — recording, animating, assembling, and publishing"
+    artefacts_produced: ["finished_video", "published_elearning", "packaged_course"]
+    key_questions:
+      - "Does the finished asset match the storyboard?"
+      - "Have all interactions been implemented?"
+      - "Is the asset accessible and tested?"
+    iteration_readiness: locked
+
+  evaluation:
+    label: "Evaluation"
+    description: "Measuring effectiveness, gathering feedback, and planning reinforcement"
+    artefacts_produced: ["evaluation_report", "learner_feedback", "booster_modules"]
+    key_questions:
+      - "Did learners achieve the stated objectives?"
+      - "Did the training impact business metrics?"
+      - "What reinforcement is needed?"
+    iteration_readiness: iterating
+
+# ==============================================================================
+# STRUCTURAL GRANULARITY
+# ==============================================================================
+
+structural_granularity:
+  course_level:
+    label: "Course Level"
+    description: "The entire learning programme or curriculum"
+    typical_duration: "Hours to days"
+    planning_artefact: course_blueprint
+    contains: ["modules"]
+
+  module_level:
+    label: "Module Level"
+    description: "A distinct unit of instruction organised around a cluster of related learning objectives"
+    typical_duration: "30-90 minutes"
+    planning_artefact: content_map
+    contains: ["topics", "segments"]
+
+  topic_level:
+    label: "Topic Level"
+    description: "A major subject area or concept group within a module"
+    typical_duration: "10-30 minutes"
+    planning_artefact: wireframe
+    contains: ["segments", "scenes"]
+
+  segment_level:
+    label: "Segment Level"
+    description: "A self-contained portion of content, typically one pedagogical sequence stage"
+    typical_duration: "2-10 minutes"
+    planning_artefact: wireframe
+    contains: ["scenes", "screens"]
+
+  scene_level:
+    label: "Scene Level"
+    description: "A single view, shot, or screen state within a segment"
+    typical_duration: "15-120 seconds"
+    planning_artefact: storyboard
+    contains: ["frames", "interaction_points"]
+
+# ==============================================================================
+# PEDAGOGICAL FUNCTION
+# ==============================================================================
+
+pedagogical_function:
+  hook_and_opening:
+    label: "Hook & Opening"
+    stage_number: 1
+    description: "Attention-grabbing introduction that motivates learners and creates relevance"
+    typical_duration: "30-90 seconds"
+    techniques:
+      - provocative_question: "Open with a question the learner cannot yet answer"
+      - scenario_tease: "Preview a realistic challenge they will learn to solve"
+      - statistic_shock: "Present a surprising fact or data point"
+      - story_opening: "Begin with a relatable narrative"
+    mayer_principles: ["coherence", "personalisation"]
+
+  roadmap:
+    label: "Roadmap / Advance Organiser"
+    stage_number: 2
+    description: "Preview of what the learner will cover, establishing expectations and a mental framework"
+    typical_duration: "30-60 seconds"
+    techniques:
+      - visual_agenda: "Show the module structure visually"
+      - learning_objectives: "State what learners will be able to do"
+      - overview_diagram: "Provide a high-level concept map"
+    mayer_principles: ["signalling", "pre_training"]
+
+  pre_training:
+    label: "Pre-training / Key Terms"
+    stage_number: 3
+    description: "Foundational vocabulary and prerequisite concepts taught before main complexity"
+    typical_duration: "1-3 minutes"
+    techniques:
+      - glossary_introduction: "Define key terms with examples"
+      - component_preview: "Teach parts before the whole"
+      - prerequisite_review: "Activate prior knowledge"
+    mayer_principles: ["pre_training", "segmenting"]
+
+  core_instruction:
+    label: "Core Instruction"
+    stage_number: 4
+    description: "Primary content delivery — the main explanatory, demonstrative, or exploratory material"
+    typical_duration: "3-15 minutes per segment"
+    techniques:
+      - segmented_delivery: "Break into 2-6 minute chunks"
+      - worked_examples: "Step-by-step demonstrations"
+      - dual_coding: "Words and pictures together"
+      - progressive_disclosure: "Start simple, add complexity"
+    mayer_principles: ["multimedia", "segmenting", "modality", "spatial_contiguity"]
+
+  practice_and_retrieval:
+    label: "Practice & Retrieval"
+    stage_number: 5
+    description: "In-line knowledge checks, activities, and retrieval practice embedded within or after core content"
+    typical_duration: "1-3 minutes per check"
+    techniques:
+      - knowledge_check: "Brief quiz items with immediate feedback"
+      - scenario_challenge: "Decision-making in a realistic context"
+      - drag_and_drop: "Sorting or matching activity"
+      - discussion_prompt: "Peer interaction or reflection"
+    mayer_principles: ["generative_activity"]
+
+  summary_and_reflection:
+    label: "Summary & Reflection"
+    stage_number: 6
+    description: "Consolidation of key points and personal reflection on how to apply the learning"
+    typical_duration: "1-2 minutes"
+    techniques:
+      - key_takeaways: "Bulleted list of essential points"
+      - visual_recap: "Diagram or infographic summarising the content"
+      - reflection_prompt: "Ask learners to connect to their own context"
+    mayer_principles: ["coherence", "signalling"]
+
+  assessment_and_closure:
+    label: "Assessment & Closure"
+    stage_number: 7
+    description: "Summative evaluation and transition to next learning or application"
+    typical_duration: "2-5 minutes"
+    techniques:
+      - summative_quiz: "Graded assessment covering module objectives"
+      - scenario_test: "Performance-based assessment in realistic context"
+      - next_step_cue: "Direction to follow-up resources or next module"
+      - call_to_action: "Prompt to apply learning on the job"
+    mayer_principles: ["generative_activity"]
+
+# ==============================================================================
+# DELIVERY FORMAT
+# ==============================================================================
+
+delivery_format:
+  synchronous:
+    label: "Synchronous"
+    description: "Real-time delivery requiring simultaneous participation of learners and facilitator"
+    modalities:
+      - instructor_led_classroom: "In-person facilitated session"
+      - virtual_instructor_led: "Live online session via video conferencing"
+      - webinar: "Broadcast-style presentation with limited interaction"
+      - workshop: "Hands-on facilitated practice session"
+      - coaching_session: "One-on-one or small-group guidance"
+    strengths: ["Immediate Q&A", "Social learning", "Accountability"]
+    constraints: ["Schedule dependency", "Scalability limits"]
+
+  asynchronous:
+    label: "Asynchronous"
+    description: "Self-paced delivery that learners complete on their own schedule"
+    modalities:
+      - elearning_module: "Interactive self-paced digital course"
+      - video_lesson: "Pre-recorded instructional video"
+      - microlearning_unit: "Standalone 2-10 minute self-paced module"
+      - reading_material: "Documents, articles, or reference guides"
+      - job_aid: "Quick-reference performance support tool"
+      - podcast_audio: "Audio-only instructional content"
+    strengths: ["Flexible scheduling", "Scalable", "Repeatable"]
+    constraints: ["No live interaction", "Self-motivation required"]
+
+  blended:
+    label: "Blended"
+    description: "Combination of synchronous and asynchronous elements in a structured learning journey"
+    modalities:
+      - flipped_classroom: "Async pre-work followed by live application session"
+      - cohort_based: "Self-paced content with scheduled group touchpoints"
+      - spaced_learning_programme: "Multiple touchpoints spaced over days or weeks"
+    strengths: ["Best of both worlds", "Supports reinforcement", "Social + flexible"]
+    constraints: ["Complex to design and schedule", "Requires coordination"]
+
+# ==============================================================================
+# CLASSIFICATION DIMENSIONS
+# ==============================================================================
+
+classification_dimensions:
+  artefact_type:
+    name: "Artefact Type"
+    description: "The kind of instructional design planning document"
+    values:
+      - course_blueprint
+      - content_map
+      - wireframe
+      - screenplan
+      - storyboard
+      - action_map
+
+  design_phase:
+    name: "Design Phase"
+    description: "The stage in the instructional design workflow"
+    values:
+      - discovery
+      - planning
+      - design
+      - development
+      - production
+      - evaluation
+
+  structural_granularity:
+    name: "Structural Granularity"
+    description: "The hierarchical level of the content unit"
+    values:
+      - course_level
+      - module_level
+      - topic_level
+      - segment_level
+      - scene_level
+
+  pedagogical_function:
+    name: "Pedagogical Function"
+    description: "The instructional role the content plays within a learning sequence"
+    values:
+      - hook_and_opening
+      - roadmap
+      - pre_training
+      - core_instruction
+      - practice_and_retrieval
+      - summary_and_reflection
+      - assessment_and_closure
+
+  delivery_format:
+    name: "Delivery Format"
+    description: "How the content is delivered to learners"
+    values:
+      - synchronous
+      - asynchronous
+      - blended

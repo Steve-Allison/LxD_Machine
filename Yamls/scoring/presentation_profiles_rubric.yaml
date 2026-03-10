@@ -1,0 +1,655 @@
+# ==============================================================================
+# Presentation Quality Rubric
+# Canonical definitions for presentation/slide deck quality assessment
+# ==============================================================================
+
+_meta:
+  id: presentation_profiles_rubric
+  title: Presentation Profiles Rubric
+  description: Presentation type-specific rubric weights for executive, training, sales, thought leadership, and slidument contexts
+  domain: pedagogical
+  domain_type: workflow
+  purpose: scoring
+  version: "1.3.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Canonical Presentation Methodology Research.md"
+    - "Corpus/Research/Research - Slide Deck Design Playbook Research.md"
+    - "Corpus/Research/The Cognitive-Visual Bridge - Operationalizing Presentation Design for Maximum Comprehension.md"
+    - "Corpus/Research/The World-Class Presentation Playbook.md"
+  academic_sources:
+    - "cognitive_load_rubric.yaml"
+    - "visual_design_rubric.yaml"
+    - "accessibility_rubric.yaml"
+
+rubric_weights:
+  executive:
+    structure: 0.25      # SCQA framework, answer-first
+    content: 0.30        # Data-driven, ROI focus
+    visual: 0.20         # Professional, minimal
+    delivery: 0.15       # Time management, clarity
+    credibility: 0.10    # Proof points, risk mitigation
+
+  training:
+    structure: 0.30      # Gagné's Nine Events completeness
+    content: 0.25        # Learning objectives, practice alignment
+    visual: 0.15         # Instructional clarity
+    delivery: 0.20       # Energy management, interaction
+    credibility: 0.10    # Examples, job aids
+
+  sales:
+    structure: 0.20      # SOAR framework, emotional arc
+    content: 0.25        # Problem-solution fit, differentiation
+    visual: 0.20         # Professional, customer-focused
+    delivery: 0.15       # Confidence, objection handling
+    credibility: 0.20    # Customer results, proof points
+
+  thought_leadership:
+    structure: 0.20      # Sparkline or big idea focus
+    content: 0.30        # Insight quality, originality
+    visual: 0.25         # Memorable, shareable
+    delivery: 0.20       # Inspiration, vocal variety
+    credibility: 0.05    # Authority through insight
+
+  # New type: Slidument — document-density deck designed for reading, not presenting
+  slidument:
+    structure: 0.25      # Document-grade structure (Minto Pyramid)
+    content: 0.40        # Information completeness dominates
+    visual: 0.15         # Clarity aids; emotional impact secondary
+    delivery: 0.10       # Async consumption; no live delivery
+    credibility: 0.10    # Sourcing, footnotes, methodology
+    description: "A slidument is designed for reading, not presenting. Rules invert: dense content is appropriate; 'less is more' visual principles apply to navigation clarity, not emotional impact. Emotional arc is secondary to information completeness."
+    research_basis: "The Cognitive-Visual Bridge.md — Slidument anti-pattern in live delivery contexts; appropriate for leave-behind decks"
+    live_delivery_flag: false
+    appropriate_contexts:
+      - "Leave-behind deck (distributed after meeting)"
+      - "Due diligence or technical documentation deck"
+      - "Board report read independently"
+    forbidden_contexts:
+      - "Live boardroom presentation"
+      - "Sales pitch with presenter"
+      - "Conference keynote"
+
+# ==============================================================================
+# QUALITY DIMENSIONS
+# ==============================================================================
+
+dimensions:
+  structure:
+    description: "Presentation framework and narrative architecture"
+    evaluates:
+      - framework_selection: "Appropriate framework for presentation type"
+      - framework_completeness: "All required framework elements present"
+      - vertical_flow: "Slide titles tell complete story"
+      - opening_strength: "Hook + WIIFM + promise within 3 slides"
+      - closing_strength: "Clear CTA with rationale and timeline"
+      - transitions: "Smooth section transitions with signposting"
+
+  content:
+    description: "Message clarity, evidence quality, and audience alignment"
+    evaluates:
+      - transformation_statement: "Clear audience transformation defined"
+      - action_titles: "Assertions (not topic labels) throughout"
+      - evidence_quality: "Specific, quantified, verifiable proof points"
+      - audience_alignment: "Content matches audience role/knowledge level"
+      - one_idea_per_slide: "Single clear message per slide"
+      - mece_logic: "Mutually exclusive, collectively exhaustive"
+
+  visual:
+    description: "Visual design effectiveness and cognitive load management"
+    evaluates:
+      - cognitive_load: "5-7 elements per slide maximum"
+      - text_density: "6×6 rule or stricter applied"
+      - visual_hierarchy: "Size, color, position guide attention"
+      - data_visualization: "Charts clear, insight-driven, direct-labeled"
+      - consistency: "Template adherence, no Frankendeck"
+      - multimedia_principles: "Mayer's principles applied"
+
+  delivery:
+    description: "Facilitation readiness and pacing"
+    evaluates:
+      - timing_feasible: "Realistic slide count for time allotted"
+      - speaker_notes: "Cues, transitions, discussion prompts included"
+      - interaction_points: "Questions, polls, activities planned"
+      - energy_management: "Variety every 10-15 minutes"
+      - backup_plan: "Contingency for tech failures or time changes"
+
+  credibility:
+    description: "Authority, proof points, and trust signals"
+    evaluates:
+      - quantified_results: "Specific metrics (%, $, time)"
+      - customer_names: "Named customers or detailed anonymization"
+      - third_party_validation: "Gartner, Forrester, G2, awards"
+      - risk_acknowledgment: "Tradeoffs and constraints mentioned"
+      - referenceable_proof: "Offer to connect to happy customers"
+
+# ==============================================================================
+# PRESENTATION TYPE REQUIREMENTS
+# ==============================================================================
+
+presentation_types:
+  executive:
+    framework: "SCQA"
+    required_elements:
+      - answer_first: "Recommendation in first 5 slides"
+      - roi_slide: "Payback period, NPV/IRR if sophisticated"
+      - risk_scenarios: "Best/base/worst case analysis"
+      - specific_ask: "$ + timeline + deadline"
+    data_slide_percentage: { min: 0.40, max: 0.50 }
+    text_density_rule: "6×6 or stricter (4×4 preferred)"
+    slide_count:
+      live_target: { min: 10, max: 20 }
+      leave_behind_target: { approx: 30 }
+      description: "Live boardroom: 10-20 slides. Leave-behind version may expand to ~30 slides with supporting detail."
+      research_basis: "The World-Class Presentation Playbook.md"
+    pace_seconds_per_slide: { min: 90, max: 120 }
+    whitespace_target_pct: { min: 40, max: 60 }
+    forbidden:
+      - burying_lead: "Recommendation after slide 5"
+      - vague_cta: "'Let's discuss' instead of specific ask"
+      - reveal_structure: "Animation-only builds that hide context — executives read ahead and resent being gate-kept"
+      - slide_wall_of_text: "Dense text blocks that require reading, not scanning"
+
+  training:
+    framework: "Gagné's Nine Events"
+    required_elements:
+      - learning_objectives: "ABCD format, Bloom's verbs"
+      - practice_activity: "Minimum 30% of session time"
+      - assessment: "Aligned to objectives (Bloom's level match)"
+      - job_aid: "Checklist, template, or quick reference"
+    event_coverage:
+      - gain_attention: required
+      - inform_objectives: required
+      - stimulate_recall: required
+      - present_content: required
+      - provide_guidance: required
+      - elicit_performance: required
+      - provide_feedback: required
+      - assess_performance: required
+      - enhance_retention: required
+    practice_percentage: { min: 0.30, max: 0.40 }
+    clt_anti_patterns:
+      description: "Cognitive Load Theory violations specific to training decks"
+      research_basis: "The Cognitive-Visual Bridge.md"
+      split_attention:
+        description: "Placing text explanation far from the diagram it describes — forces dual-scanning and increases extraneous load"
+        violation_label: "split_attention_effect"
+        fix: "Integrate text labels directly onto or adjacent to the diagram element"
+        penalty: 8
+      redundancy_effect:
+        description: "Reading verbatim slide text aloud while it's on screen — identical information in two channels simultaneously degrades comprehension"
+        violation_label: "redundancy_effect"
+        fix: "Either remove narration (let the slide speak) or replace slide text with non-redundant elaboration"
+        penalty: 6
+      wall_of_text_training:
+        description: "Slides dense with prose that learners read while instructor teaches — creates split-attention between reading and listening"
+        violation_label: "training_wall_of_text"
+        fix: "Reduce slide to concept + visual; move prose to speaker notes or job aid handout"
+        penalty: 8
+    forbidden:
+      - no_practice: "Lecture only, no application"
+      - misaligned_assessment: "Bloom's level mismatch"
+
+  sales:
+    framework: "SOAR"
+    required_elements:
+      - situation_beat: "Customer context, baseline state"
+      - opportunity_beat: "Quantified cost/risk/opportunity ($/%)"
+      - approach_beat: "Differentiation explicit"
+      - results_beat: "Customer names + quantified outcomes"
+      - cta_explicit: "Specific action (pilot, POC, contract)"
+    emotional_arc: "Neutral → Tension → Confidence → Excitement"
+    visual_arc: "Cool → Warm → Active → Bright colors"
+    proof_points_min: 3
+    slide_count:
+      live_sales_deck: { min: 10, max: 15 }
+      leave_behind: { approx: 30 }
+      description: "Live sales deck: 10-15 slides at 90-120s per slide = 15-30 minute conversation. Leave-behind expands with supporting proof points."
+      research_basis: "The World-Class Presentation Playbook.md"
+    pace_seconds_per_slide: { min: 90, max: 120 }
+    forbidden:
+      - product_dump: "Feature list without customer context"
+      - vague_value_prop: "Generic claims without specifics"
+      - no_proof: "Claims without customer evidence"
+
+  thought_leadership:
+    framework: "Duarte Sparkline or SCQA (insight-driven)"
+    required_elements:
+      - big_idea: "Single, novel, memorable insight"
+      - insight_not_info: "New perspective, not just facts"
+      - story_structure: "Narrative arc with emotion"
+      - evidence: "Data, research, or first-person experience"
+      - cta_behavioral: "Specific action, mindset shift, or movement"
+    text_per_slide_max: 9  # words (3×3 rule)
+    visual_percentage: { min: 0.40, max: 0.50 }
+    forbidden:
+      - sales_pitch: "Product demo disguised as thought leadership"
+      - empty_inspiration: "Platitudes without frameworks/data"
+      - no_takeaway: "Interesting but not actionable"
+
+# ==============================================================================
+# VENUE CONTEXT
+# Delivery context changes which criteria apply
+# ==============================================================================
+
+venue_context:
+  description: "Presentation venue and delivery format changes the weighting and thresholds for quality criteria. The same deck may perform well in one venue and fail in another."
+  research_basis: "The World-Class Presentation Playbook.md; The Cognitive-Visual Bridge.md"
+
+  boardroom:
+    description: "Intimate setting, 4-15 people, projected or screen, close viewing distance"
+    primary_criteria:
+      - "BLUF / SCQA structure critical — executives will interrupt if recommendation is buried"
+      - "3-Second Rule applied at every slide — executive impatience is low"
+      - "Whitespace 40-60% — reading distance makes density tolerable, but whitespace shows executive grade"
+      - "No reveal/build animations — executives read ahead; gate-keeping creates friction"
+    adjusted_thresholds:
+      min_action_title_percentage: 0.90  # Higher than default 0.80
+      min_whitespace_pct: 40
+      reveal_structures: "forbidden"
+      font_size_minimum_pt: 18
+
+  ballroom:
+    description: "Large audience, 50-5000+ people, large screen, far viewing distance"
+    primary_criteria:
+      - "Visual impact dominates — text must be legible from far distance (minimum 28pt body)"
+      - "3-Second Rule is more forgiving — emotional impact replaces information density"
+      - "Slides are backdrop to presenter — low text dependency"
+      - "STAR moments must be visually impactful — the moment should work without audio"
+    adjusted_thresholds:
+      font_size_minimum_pt: 28  # Override standard 18pt — far viewing distance
+      text_density: "minimal"   # 3×3 rule or stricter
+      whitespace_target_pct: { min: 60, max: 75 }  # Sparser for large screen
+      reveal_structures: "permitted"  # Controlled builds can be effective at scale
+
+  hybrid:
+    description: "Mixed in-person and remote audience; simultaneous viewing on screen and device"
+    primary_criteria:
+      - "Design for smallest screen (laptop/tablet) — not the room screen"
+      - "No animation-only carriers — remote attendees may miss timing"
+      - "Every slide must be self-contained — remote viewers cannot follow presenter gesture"
+      - "Captions required if spoken content contains essential information not in slides"
+    adjusted_thresholds:
+      font_size_minimum_pt: 20  # Slightly above standard — device viewing
+      animation_carriers: "forbidden"  # Remote viewers miss reveals
+      self_contained: true       # Slides must work without presenter
+
+  async_distribution:
+    description: "Deck distributed for reading without presenter (leave-behind, email attachment, Slack share)"
+    primary_criteria:
+      - "Slidument rules apply — density appropriate"
+      - "Speaker notes become essential context"
+      - "Every visual must be self-explanatory without presenter narration"
+      - "Action captions on every chart — no analytical cognitive debt left for reader"
+    adjusted_thresholds:
+      action_captions_required: true
+      speaker_notes_required: true
+      animation_carriers: "forbidden"
+
+# ==============================================================================
+# QUALITY CHECKS
+# ==============================================================================
+
+checks:
+  # ---------------------------------------------------------------------------
+  # Transformation Statement
+  # ---------------------------------------------------------------------------
+  transformation_statement:
+    description: "Clear definition of audience transformation"
+    required: true
+    criteria:
+      format: "Transform [audience] from [current] to [desired] so that [outcome]"
+      components:
+        - specific_audience: "Named role/persona (not 'everyone')"
+        - current_state: "Observable belief/behavior"
+        - desired_state: "Observable change"
+        - business_outcome: "Measurable result"
+    validation_patterns:
+      - "transform .+ from .+ to .+ so that"
+      - "move .+ from .+ to .+ in order to"
+
+  # ---------------------------------------------------------------------------
+  # Vertical Flow Test (Dot-Dash)
+  # ---------------------------------------------------------------------------
+  vertical_flow:
+    description: "Slide titles alone tell complete story"
+    criteria:
+      all_action_titles: "Assertions, not topic labels"
+      logical_progression: "Each title leads naturally to next"
+      mece_coverage: "No gaps or redundancies"
+    negative_patterns:
+      - "^(Overview|Agenda|Introduction|Conclusion)$"
+      - "^(Background|Context|Summary)$"
+      - "^[A-Z][a-z]+ [A-Z][a-z]+$"  # Title Case topic labels
+
+  # ---------------------------------------------------------------------------
+  # BLUF Compliance (Bottom Line Up Front)
+  # Discrete check — separate from SCQA completeness
+  # ---------------------------------------------------------------------------
+  bluf_compliance:
+    description: "The recommendation, answer, or key insight appears in the first 10-20% of the presentation — before supporting evidence. BLUF is the executive default; burying the recommendation is a hard failure for executive-type presentations."
+    research_basis: "The World-Class Presentation Playbook.md"
+    required_for_types: ["executive"]
+    recommended_for_types: ["sales"]
+    criteria:
+      recommendation_slide_position: "Recommendation must appear by slide 5 (or 20% of deck, whichever is earlier)"
+      opening_answer_signal: "First 2 slides establish the conclusion or recommendation — not just context"
+    test: "Read only the first 3 slides. Does the executive know the recommendation and why it matters?"
+    violation_label: "bluf_violation"
+    penalty: 15  # Hard failure for executive type
+    bonus: 3     # When BLUF is achieved with clear rationale
+
+  # ---------------------------------------------------------------------------
+  # Claim-Evidence Coherence (Dot-Dash Logic Rule)
+  # ---------------------------------------------------------------------------
+  claim_evidence_coherence:
+    description: "The body content of each slide must prove the claim made by the action title. This is the Dot-Dash Logic Rule: the 'dot' (title) makes the assertion; the 'dash' (body) proves it. If the body does not prove the title, the slide is structurally broken."
+    research_basis: "The Cognitive-Visual Bridge.md; The World-Class Presentation Playbook.md"
+    test: "For each slide: read the title, then cover it. Does the body content prove exactly that claim, and only that claim?"
+    coherence_types:
+      strong: "Body content directly and exclusively proves the title assertion"
+      partial: "Body partly proves the title but includes irrelevant additional content"
+      broken: "Body is related to the title topic but proves a different claim"
+      absent: "No logical connection between title and body"
+    violation_label: "claim_evidence_mismatch"
+    penalty_per_broken_slide: 5
+    penalty_per_absent_slide: 8
+    bonus_per_perfect_slide: 1  # Capped at max_bonus_slides: 5
+
+  # ---------------------------------------------------------------------------
+  # Horizontal Flow Test
+  # ---------------------------------------------------------------------------
+  horizontal_flow:
+    description: "The logical connection between adjacent slides is evident without the presenter. A viewer skimming slides in sequence should understand why each slide follows the previous one."
+    research_basis: "The World-Class Presentation Playbook.md"
+    test: "Read slides 1, 2, 3 in sequence. Is the 'therefore' or 'and so' between each pair explicit or obvious? If the sequence requires presenter narration to make sense, horizontal flow is broken."
+    violation_label: "horizontal_flow_broken"
+    penalty_per_broken_transition: 4
+    positive_indicators:
+      - "Section transition slides with signpost language"
+      - "Action title of slide N+1 follows logically from action title of slide N"
+      - "Connective language in action titles: 'Therefore', 'As a result', 'To achieve this'"
+    negative_indicators:
+      - "Topic shifts with no bridge"
+      - "Section breaks with no transition signpost"
+      - "Adjacent slides requiring verbal explanation to connect"
+
+  # ---------------------------------------------------------------------------
+  # MECE Audit (Executive Quality Gate)
+  # ---------------------------------------------------------------------------
+  mece_audit:
+    description: "For executive presentations: the slide set must be Mutually Exclusive, Collectively Exhaustive. Each slide covers exactly one distinct idea (ME); together, the slides cover the complete argument with no gaps (CE)."
+    research_basis: "The World-Class Presentation Playbook.md; Minto Pyramid Principle"
+    required_for_types: ["executive"]
+    criteria:
+      mutually_exclusive:
+        test: "Do any two slides make the same claim or present overlapping content?"
+        violation_label: "mece_overlap"
+        penalty_per_violation: 5
+      collectively_exhaustive:
+        test: "Does the slide set contain all the arguments needed to support the main claim?"
+        violation_label: "mece_gap"
+        penalty_per_gap: 5
+    bonus: 3  # When MECE audit passes completely
+
+  # ---------------------------------------------------------------------------
+  # Opening Sequence
+  # ---------------------------------------------------------------------------
+  opening:
+    description: "Effective hook and promise within first 3 slides"
+    required_slides: [1, 2, 3]
+    slide_1: "Title + context"
+    slide_2:
+      name: "Hook"
+      types:
+        - statistical_shock
+        - curiosity_gap
+        - problem_based
+        - success_story
+        - provocative_question
+        - trend_based
+      duration_seconds: { min: 30, max: 90 }
+    slide_3:
+      name: "Promise or Agenda"
+      required_elements:
+        - outcome_focus: "What audience will gain/learn"
+        - time_estimate: "Section durations if long presentation"
+
+  # ---------------------------------------------------------------------------
+  # Closing Sequence
+  # ---------------------------------------------------------------------------
+  closing:
+    description: "Clear call-to-action with rationale"
+    required: true
+    criteria:
+      explicit_ask: "Specific action (not vague 'let's talk')"
+      rationale: "Why this action matters"
+      timeline: "When by (date or relative timeframe)"
+      de_risk: "Address final objection/hesitation"
+      next_steps: "Who does what"
+    by_presentation_type:
+      executive:
+        ask_format: "$[amount] + [action] + by [date]"
+        example: "$2M budget approval by Feb 15"
+      training:
+        ask_format: "Apply [skill] in [context] by [timeframe]"
+        example: "Redesign 3 slides using 6×6 rule this week"
+      sales:
+        ask_format: "[action] with [scope] + [investment] + [decision date]"
+        example: "30-day pilot with 10 agents, $15K, decision by Feb 15"
+      thought_leadership:
+        ask_format: "Behavioral change or mindset shift"
+        example: "Stop asking 'how many slides?' Start asking 'what must they remember?'"
+
+  # ---------------------------------------------------------------------------
+  # Slide Count vs Time
+  # ---------------------------------------------------------------------------
+  timing:
+    description: "Realistic slide count for time allotted"
+    guidelines:
+      executive: 1.0  # minutes per slide (fast pace)
+      training: 1.5   # minutes per slide (includes practice)
+      sales: 1.5      # minutes per slide (includes discussion)
+      thought_leadership: 2.0  # minutes per slide (storytelling)
+    calibrated_pace_seconds_per_slide:
+      description: "90-120 seconds per slide is the calibrated standard for live presentations. Below 60s = rushing; above 180s = losing audience attention."
+      research_basis: "The World-Class Presentation Playbook.md"
+      minimum_seconds: 90
+      maximum_seconds: 120
+      rushing_threshold_seconds: 60
+      stalling_threshold_seconds: 180
+    validation:
+      min_slides_per_minute: 0.5
+      max_slides_per_minute: 2.0
+    warnings:
+      too_fast: "More than 2 slides/minute risks rushing"
+      too_slow: "Fewer than 0.5 slides/minute risks losing attention"
+
+  # ---------------------------------------------------------------------------
+  # Action Titles — 3-Level Rubric
+  # ---------------------------------------------------------------------------
+  action_titles:
+    description: "Slide titles make assertions, not topic labels"
+    criteria:
+      format: "Subject + Verb + Object/Outcome"
+      makes_claim: "Defensible statement"
+      not_question: "Assertion, not interrogative"
+    three_level_rubric:
+      description: "Action title quality scored on 1-5 scale"
+      research_basis: "The World-Class Presentation Playbook.md; The Cognitive-Visual Bridge.md"
+      score_5:
+        label: "Action title with metric and mechanism"
+        description: "Full Result + Mechanism + Timeframe formula; makes a specific, measurable, defensible claim"
+        examples:
+          - "Unified AI platform reduces creative cycle time by 40% in 90 days"
+          - "Cloud migration eliminates $2.4M annual infrastructure cost by Q3"
+      score_3:
+        label: "Descriptive assertion"
+        description: "Makes a claim but lacks specificity — no metric or mechanism"
+        examples:
+          - "AI reduces creative cycle time significantly"
+          - "Cloud migration eliminates infrastructure cost"
+      score_1:
+        label: "Topic label"
+        description: "No assertion — names the subject without making a claim"
+        examples:
+          - "AI and Productivity"
+          - "Cloud Migration"
+          - "Market Analysis"
+    positive_examples:
+      - "AI capabilities are now table stakes"
+      - "Disconnected tools cost $2.4M annually"
+      - "Zero-downtime migration eliminates risk"
+    negative_examples:
+      - "Market Analysis"  # topic label
+      - "How Do We Grow?"  # question
+      - "Background"       # generic
+
+  # ---------------------------------------------------------------------------
+  # Framework Completeness
+  # ---------------------------------------------------------------------------
+  framework_completeness:
+    description: "All required framework elements present"
+    by_framework:
+      SCQA:
+        required: [situation, complication, question, answer]
+        answer_position: { max_slide: 5 }
+      SOAR:
+        required: [situation, opportunity, approach, results]
+        beat_percentages:
+          situation: { min: 0.15, max: 0.20 }
+          opportunity: { min: 0.20, max: 0.25 }
+          approach: { min: 0.30, max: 0.40 }
+          results: { min: 0.20, max: 0.25 }
+      Gagne:
+        required: [gain_attention, inform_objectives, stimulate_recall, present_content, provide_guidance, elicit_performance, provide_feedback, assess_performance, enhance_retention]
+        practice_time_min: 0.30  # 30% of session time
+      Sparkline:
+        required: [what_is, what_could_be, oscillation, new_bliss]
+        oscillation_cycles: { min: 3, max: 5 }
+
+# ==============================================================================
+# QUALITY SIGNALS
+# ==============================================================================
+
+positive_signals:
+  - transformation_clear: "Audience transformation explicitly stated"
+  - vertical_flow_passes: "Titles tell complete story"
+  - action_titles_throughout: "All titles are assertions"
+  - hook_within_60s: "Hook grabs attention immediately"
+  - cta_explicit: "Clear, specific call-to-action"
+  - timing_realistic: "Slide count matches time allocation"
+  - framework_complete: "All required elements present"
+  - proof_quantified: "Results include specific metrics"
+  - accessible: "WCAG 2.2 AA standards met"
+  - no_frankendeck: "Consistent template throughout"
+  - bluf_achieved: "Recommendation in first 10-20% of deck (executive/sales)"
+  - claim_evidence_coherent: "Body content proves each action title"
+  - horizontal_flow_clear: "Slide transitions are self-evident"
+  - mece_passes: "No overlaps or gaps in argument set (executive)"
+  - venue_optimized: "Design choices appropriate for delivery context"
+
+negative_signals:
+  - missing_transformation: "No clear audience transformation"
+  - vertical_flow_fails: "Titles don't tell story"
+  - topic_labels: "Generic headings (Background, Overview)"
+  - weak_hook: "No hook or hook after 3 slides"
+  - vague_cta: "Generic 'let's talk' ending"
+  - timing_unrealistic: "Too many/few slides for time"
+  - framework_incomplete: "Missing required elements"
+  - vague_proof: "Claims without quantification"
+  - accessibility_fails: "Contrast, text size violations"
+  - frankendeck: "Inconsistent templates/styles"
+  - bluf_violation: "Recommendation buried after slide 5 (executive type)"
+  - claim_evidence_mismatch: "Body content does not prove title claim"
+  - horizontal_flow_broken: "Transitions require presenter narration"
+  - reveal_structure_executive: "Animation builds hide context from executives"
+  - clt_violation_training: "Split-attention, redundancy, or wall-of-text (training type)"
+  - wrong_venue_design: "Dense deck designed for boardroom used in ballroom"
+
+# ==============================================================================
+# THRESHOLDS
+# ==============================================================================
+
+thresholds:
+  min_transformation_confidence: 0.70
+  min_vertical_flow_score: 0.75
+  min_action_title_percentage: 0.80
+  max_topic_label_percentage: 0.20
+  min_framework_completeness: 1.00  # All elements required
+  min_timing_feasibility: 0.80
+  min_accessibility_score: 0.90
+  # New thresholds from D1+D2 research
+  bluf_max_slide_position: 5             # Recommendation must appear by slide 5 (executive)
+  live_sales_deck_slide_max: 15          # 10-15 slides for live sales presentation
+  leave_behind_slide_target: 30          # ~30 slides appropriate for leave-behind
+  calibrated_pace_min_seconds: 90        # 90s minimum per slide in live delivery
+  calibrated_pace_max_seconds: 120       # 120s maximum per slide in live delivery
+  whitespace_target_min_pct: 40          # 40% minimum whitespace
+  whitespace_target_max_pct: 60          # 60% maximum whitespace (except ballroom)
+  cognitive_intent_max_seconds: 2        # Intent of slide must be readable in ≤2 seconds
+  recall_after_5min_target_pct: 90       # ≥90% of key message recallable 5 min later
+
+# ==============================================================================
+# PENALTIES (Score Deductions)
+# ==============================================================================
+
+penalties:
+  missing_transformation: 0.15        # No transformation statement
+  vertical_flow_broken: 0.10          # Titles don't tell story
+  topic_labels_excessive: 0.08        # >20% generic headings
+  weak_opening: 0.08                  # No hook within 3 slides
+  vague_closing: 0.10                 # No clear CTA
+  framework_incomplete: 0.15          # Missing required elements
+  timing_unrealistic: 0.05            # Slide count mismatch
+  frankendeck: 0.08                   # Inconsistent templates
+  accessibility_violation: 0.10       # WCAG failures
+  # New penalties from D1+D2 research
+  bluf_violation: 0.15                # Recommendation buried (executive type)
+  claim_evidence_mismatch: 0.05       # Per broken claim-body coherence
+  horizontal_flow_broken: 0.04        # Per broken slide-to-slide transition
+  reveal_structure_executive: 0.06    # Animation builds in executive deck
+  clt_split_attention_training: 0.08  # Split-attention violation in training deck
+  clt_redundancy_effect_training: 0.06  # Redundancy effect in training deck
+  mece_overlap: 0.05                  # Per MECE overlap violation (executive)
+  mece_gap: 0.05                      # Per MECE gap (executive)
+  wrong_venue_design: 0.08            # Deck design mismatched to delivery venue
+
+# ==============================================================================
+# BONUSES (Score Additions)
+# ==============================================================================
+
+bonuses:
+  transformation_excellent: 0.03      # Clear, specific, measurable
+  vertical_flow_perfect: 0.03         # Compelling story in titles alone
+  action_titles_100pct: 0.02          # All titles are assertions
+  hook_exceptional: 0.02              # Emotionally resonant hook
+  cta_specific: 0.03                  # $ + timeline + rationale
+  framework_exemplary: 0.02           # Exceeds minimum requirements
+  timing_optimized: 0.02              # Perfect slide count for time
+  template_excellence: 0.02           # Exceptional visual consistency
+  # New bonuses from D1+D2 research
+  bluf_achieved: 0.03                 # Recommendation in first 10-20% with clear rationale
+  claim_evidence_perfect: 0.02        # All slides pass claim-evidence coherence test
+  horizontal_flow_seamless: 0.02      # All transitions self-evident
+  mece_perfect: 0.03                  # Full MECE compliance (executive)
+  venue_optimized: 0.02               # Design choices explicitly calibrated to delivery context
+
+# ==============================================================================
+# SUBSCORE ROLLUP
+# ==============================================================================
+
+weights_contrib:
+  transformation_statement: content
+  vertical_flow: structure
+  opening: structure
+  closing: structure
+  timing: delivery
+  action_titles: content
+  framework_completeness: structure
+  bluf_compliance: structure
+  claim_evidence_coherence: content
+  horizontal_flow: structure
+  mece_audit: structure
+  clt_anti_patterns: visual
+  venue_context: delivery

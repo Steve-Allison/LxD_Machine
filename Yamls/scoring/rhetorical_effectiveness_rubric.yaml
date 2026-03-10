@@ -1,0 +1,1149 @@
+# ==============================================================================
+# rhetorical_effectiveness_rubric.yaml
+# Scoring rubric for rhetorical quality in presentations and narratives
+# ==============================================================================
+
+_meta:
+  id: rhetorical_effectiveness_rubric
+  title: "Rhetorical Effectiveness Rubric"
+  description: "Scoring rubric for rhetorical quality covering device variety, appeal balance, argument structure, persuasive techniques, and logical coherence"
+  domain: narrative
+  domain_type: cross_cutting
+  purpose: scoring
+  version: "1.0.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/a-guide-to-good-reasoning-cultivating-intellectual-virtues-16112.md"
+    - "Corpus/Research/Research - Researching Narrative and Discourse Analysis.md"
+    - "Corpus/Research/Research - Using Monroes Motivated Sequence.md"
+    - "Corpus/Research/Research - Argument Mining with MTL and PDL.md"
+  academic_sources:
+    - "Aristotle - Rhetoric (ethos, pathos, logos)"
+    - "Toulmin (1958) - The Uses of Argument"
+    - "Monroe (1935) - Motivated Sequence"
+    - "Perelman & Olbrechts-Tyteca (1969) - The New Rhetoric"
+  relationships:
+    - target: ../entities/rhetorical_devices_entities.yaml
+      type: depends_on
+      description: "Entity types for rhetorical device extraction"
+    - target: ../methodology/rhetorical_devices_framework.yaml
+      type: derived_from
+      description: "Framework defining rhetorical device taxonomy"
+    - target: narrative_quality_rubric.yaml
+      type: related_to
+      description: "Complementary rubric evaluating narrative structure"
+    - target: discourse_coherence_rubric.yaml
+      type: related_to
+      description: "Complementary rubric evaluating discourse flow"
+
+# ==============================================================================
+# RUBRIC WEIGHTS
+# ==============================================================================
+
+rubric_weights:
+  device_variety: 0.20       # Range and appropriateness of rhetorical devices
+  appeal_balance: 0.25       # Ethos / pathos / logos balance
+  argument_structure: 0.25   # Toulmin completeness
+  persuasive_impact: 0.15    # Monroe's Motivated Sequence application
+  logical_coherence: 0.15    # Validity, fallacy avoidance, evidence quality
+
+# ==============================================================================
+# DIMENSIONS
+# ==============================================================================
+
+dimensions:
+
+  # ----------------------------------------------------------------------------
+  device_variety:
+    name: "Device Variety"
+    description: >
+      Range and appropriateness of rhetorical devices — metaphor, analogy, repetition,
+      antithesis, anaphora, epistrophe, chiasmus, alliteration, rhetorical question,
+      and others — deployed across the content with purpose and contextual fit.
+    score_levels:
+      1:
+        label: "Absent"
+        description: >
+          No identifiable rhetorical devices. Content is purely declarative.
+          No figurative language, no structural patterning, no deliberate
+          sound or emphasis techniques. Reads as a data dump or operational
+          manual. Source: a-guide-to-good-reasoning identifies this as 'mere
+          assertion' — offering no persuasive scaffold.
+        indicators:
+          - "Only declarative statements with no figurative language"
+          - "No repetition patterns or structural echoes"
+          - "No analogies or comparative framing"
+      2:
+        label: "Sparse"
+        description: >
+          One or two incidental devices. Devices appear to be accidental rather
+          than deliberate. No consistency across sections. May include a single
+          metaphor or an unrepeated rhetorical question, but no systematic
+          application of device families.
+        indicators:
+          - "One metaphor or analogy present but not developed"
+          - "Rhetorical question posed without follow-through"
+          - "No device variety across sections"
+      3:
+        label: "Functional"
+        description: >
+          Three to four distinct device types used with clear intent. At least
+          one comparison device (metaphor or analogy), one emphasis device
+          (repetition or anaphora), and one structural device. Devices support
+          the argument but do not consistently elevate it.
+        indicators:
+          - "Analogy or metaphor used to explain a key concept"
+          - "Anaphora or repetition used for emphasis at least once"
+          - "Rhetorical question used to create engagement"
+      4:
+        label: "Varied"
+        description: >
+          Five or more distinct device types. Devices are distributed across
+          multiple sections. Mix of sound devices, comparison devices, and
+          structural emphasis devices. Devices reinforce the argument rather
+          than existing as ornaments. Appropriate to the audience register.
+        indicators:
+          - "Metaphor developed and extended across a section"
+          - "Antithesis used to frame a contrast or trade-off"
+          - "Anaphora or epistrophe used for list emphasis"
+          - "Alliteration or assonance reinforces a key phrase"
+      5:
+        label: "Masterful"
+        description: >
+          Six or more device types deployed with precision. Devices work in
+          concert to create tonal variety, emphasis, and memorability. Device
+          choices are audience-appropriate and context-sensitive. At least one
+          device creates a memorable 'quotable' moment. Source: RSTformer
+          research (Researching Narrative and Discourse Analysis) demonstrates
+          that rhetorical structure creates coherence at the discourse level —
+          not just the sentence level.
+        indicators:
+          - "Multiple device families represented (sound, comparison, structure, emphasis)"
+          - "At least one extended metaphor or developed analogy"
+          - "Devices create measurable tonal variety across sections"
+          - "At least one device produces a memorable, citable phrase"
+
+  # ----------------------------------------------------------------------------
+  appeal_balance:
+    name: "Appeal Balance"
+    description: >
+      Balance of Aristotelian appeals — ethos (credibility and character),
+      pathos (emotional resonance), and logos (logic and evidence) — appropriate
+      to the content context and audience. Drawn from Aristotle's Rhetoric and
+      validated by Perelman & Olbrechts-Tyteca (1969).
+    score_levels:
+      1:
+        label: "Single-mode"
+        description: >
+          Only one appeal type present. Typically all-logos (data only) or
+          all-pathos (emotional story only). No credibility signals, no
+          emotional content, or no logical structure. Creates an incomplete
+          persuasive experience. Source: a-guide-to-good-reasoning establishes
+          that true persuasion requires true premises (logos) AND conversational
+          relevance (pathos) AND clarity (ethos).
+        indicators:
+          - "Only statistics and evidence — zero emotional content"
+          - "Only emotional appeal — no evidence or reasoning"
+          - "No credibility signals (credentials, track record, references)"
+      2:
+        label: "Dominated"
+        description: >
+          One appeal dominates heavily (>75% of content) with minimal others.
+          May have a token statistic or a brief emotional moment but fails to
+          integrate the secondary appeals into the persuasive arc.
+        indicators:
+          - "Mostly logos with a single anecdote appended"
+          - "Mostly pathos with one credential reference"
+          - "No consistent weaving of multiple appeal types"
+      3:
+        label: "Partial"
+        description: >
+          Two of three appeals are meaningfully present. Typically logos and
+          ethos, or logos and pathos. The third appeal is absent or tokenistic.
+          Functional persuasion but misses a dimension the audience would respond to.
+        indicators:
+          - "Data and credibility present; emotional resonance absent"
+          - "Story and emotion present; evidence weak or absent"
+          - "Two appeal types appear in separate sections without integration"
+      4:
+        label: "Balanced"
+        description: >
+          All three appeals present and meaningfully represented. No appeal is
+          absent. The balance reflects context — a technical audience may see
+          60% logos, while an executive audience may see more pathos. Appeals
+          appear in multiple sections, not siloed.
+        indicators:
+          - "Credibility signals in opening (ethos)"
+          - "Data and logical progression through middle (logos)"
+          - "Emotional resonance and relatable scenario (pathos)"
+          - "Transitions link the three appeals"
+      5:
+        label: "Integrated"
+        description: >
+          All three appeals woven together so that each reinforces the others.
+          Ethos is established through concrete achievement (not just assertion),
+          pathos is grounded in real-world data, and logos is made emotionally
+          vivid through narrative. Appeal weighting is appropriate to the audience
+          and delivery context. Source: Farzam et al. (2023) via Argument Mining
+          with MTL and PDL — quality argumentation requires simultaneous coherence,
+          strength, and rhetorical technique working as a unified structure.
+        indicators:
+          - "Credential demonstrated through specific achievement, not claimed"
+          - "Data presented within a human story — statistic gains emotional force"
+          - "Emotional appeal validated by evidence — story backed by proof"
+          - "Appeal type transitions are smooth and purposeful"
+
+  # ----------------------------------------------------------------------------
+  argument_structure:
+    name: "Argument Structure"
+    description: >
+      Completeness and quality of argument construction using the Toulmin Model:
+      Claim, Grounds, Warrant, Backing, Qualifier, and Rebuttal.
+      Source: Toulmin (1958) The Uses of Argument; operationalized by
+      Farzam et al. (2023) in MTL argument mining — claim/premise/major-claim
+      identification as foundational argument mining tasks.
+    score_levels:
+      1:
+        label: "Claim only"
+        description: >
+          Only claims are present with no supporting grounds, no warrant
+          linking evidence to conclusion, no qualifiers. Content is mere
+          assertion. Source: a-guide-to-good-reasoning identifies this as
+          the weakest argumentative form — no reason offered for belief.
+        indicators:
+          - "Conclusions stated without any premises"
+          - "No 'because', 'since', 'therefore' or inferential connectors"
+          - "All claims treated as self-evidently true"
+      2:
+        label: "Claim + Grounds"
+        description: >
+          Claims are supported by evidence (grounds) but the inferential link
+          (warrant) is unstated or assumed. The reader must supply the reasoning
+          why the grounds support the claim. Satisfies minimal argument standard
+          but is vulnerable to challenge.
+        indicators:
+          - "Evidence cited but connection to conclusion not explained"
+          - "Statistics presented without logical interpretation"
+          - "No acknowledgment of possible objections"
+      3:
+        label: "Claim + Grounds + Warrant"
+        description: >
+          The three core Toulmin components present. Claim is stated, grounds
+          provided, and the warrant (the reasoning principle that links grounds
+          to claim) is explicit. Arguments are defensible but may lack backing
+          for the warrant itself, and qualifiers are absent.
+        indicators:
+          - "Explicit statement of why evidence supports conclusion"
+          - "Causal or analogical reasoning articulated"
+          - "Argument follows recognizable inferential pattern"
+      4:
+        label: "Core + Backing + Qualifier"
+        description: >
+          Five of six Toulmin components present. Claim, grounds, warrant, and
+          backing (evidence for the warrant principle itself) are all present.
+          Qualifier indicates the degree of certainty. Only rebuttal is absent.
+          Argument is robust and shows intellectual honesty about limitations.
+        indicators:
+          - "The reasoning principle itself is supported with evidence or authority"
+          - "Hedging language appropriately qualifies the conclusion"
+          - "Argument acknowledges scope conditions or constraints"
+      5:
+        label: "Complete Toulmin"
+        description: >
+          All six components present: Claim, Grounds, Warrant, Backing,
+          Qualifier, and Rebuttal. Counter-arguments are acknowledged and
+          addressed. This represents the gold standard for argument quality.
+          Source: a-guide-to-good-reasoning: 'A refusal to come to an unjustified
+          conclusion is an element in an honest man's religion' — intellectual
+          honesty requires acknowledging limits and rebutting objections.
+        indicators:
+          - "Anticipated objections are named and addressed"
+          - "Conclusion is appropriately qualified, not overstated"
+          - "Warrant principle is backed by authority or evidence"
+          - "Grounds are specific and verifiable, not vague"
+          - "Argument graph is acyclic — no circular reasoning"
+
+  # ----------------------------------------------------------------------------
+  persuasive_impact:
+    name: "Persuasive Impact"
+    description: >
+      Application of Monroe's Motivated Sequence (MMS) and call-to-action
+      effectiveness. Monroe (1935) identified five stages — Attention, Need,
+      Satisfaction, Visualization, Action — that mirror natural human decision
+      processing. Source: Research - Using Monroe's Motivated Sequence.
+    score_levels:
+      1:
+        label: "No sequence"
+        description: >
+          No evidence of persuasive sequence structure. Content presents
+          information without any attempt to motivate the audience through
+          stages of engagement, problem awareness, solution, vision, and action.
+          No call to action.
+        indicators:
+          - "No hook or attention-capturing opening"
+          - "No problem framing or need establishment"
+          - "No call to action present"
+      2:
+        label: "Hook only"
+        description: >
+          Attention stage present but sequence incomplete. Content opens with
+          an engaging element but fails to establish need or guide the audience
+          toward action. The persuasive arc is abandoned after the opening.
+        indicators:
+          - "Strong opening that doesn't connect to a problem"
+          - "Attention captured but need not established"
+          - "No visualization or action stage"
+      3:
+        label: "Attention + Need + Satisfaction"
+        description: >
+          First three MMS stages present. Content grabs attention, establishes
+          a clear problem or need, and offers a satisfying solution. The
+          audience knows what to think but has not been shown what their world
+          looks like post-action and has not been directed toward action.
+        indicators:
+          - "Attention: compelling opening present"
+          - "Need: problem or gap articulated with emotional or factual weight"
+          - "Satisfaction: solution proposed with logical support"
+          - "Visualization and Action stages absent"
+      4:
+        label: "Four stages"
+        description: >
+          Attention, Need, Satisfaction, and Visualization present. The audience
+          is shown a vivid picture of the positive outcome (or negative outcome
+          of inaction) through the Visualization stage. Call to action is present
+          but may be generic rather than specific and sequenced.
+        indicators:
+          - "Visualization: concrete picture of future state painted"
+          - "Positive and/or negative visualization used"
+          - "Call to action present but not urgency-framed"
+      5:
+        label: "Full MMS with CTA"
+        description: >
+          All five MMS stages present and effective. Attention hooks immediately.
+          Need is established with specific data or relatable scenario. Satisfaction
+          proposes a concrete, credible solution. Visualization creates vivid
+          future state (positive outcome of action OR negative consequence of
+          inaction). Action stage delivers a clear, specific, low-friction next
+          step. Source: Monroe (1935) — sequence mirrors natural human decision
+          processing from engagement to commitment.
+        indicators:
+          - "Attention: story, statistic, or question that creates immediate relevance"
+          - "Need: specific problem with emotional and evidential weight"
+          - "Satisfaction: solution tied directly to the need"
+          - "Visualization: concrete before/after or future state scenario"
+          - "Action: specific, low-friction CTA matched to audience readiness"
+
+  # ----------------------------------------------------------------------------
+  logical_coherence:
+    name: "Logical Coherence"
+    description: >
+      Logical validity, fallacy avoidance, and evidence quality. Content must
+      move from premises to conclusions through valid inferential steps, cite
+      evidence that actually supports claims, and avoid well-documented logical
+      fallacies. Source: a-guide-to-good-reasoning — four argument merits:
+      true premises, good logic, conversational relevance, clarity.
+    score_levels:
+      1:
+        label: "Logically flawed"
+        description: >
+          Contains one or more serious logical fallacies. Conclusions do not
+          follow from premises. Evidence is absent or contradicts the conclusions.
+          Arguments may be circular (begging the question) or miss the point
+          entirely. Source: a-guide-to-good-reasoning identifies these as
+          'argument-based fallacies — indicating a specific flaw in the argument.'
+        indicators:
+          - "Circular reasoning detected (conclusion restates premise)"
+          - "Ad hominem or straw man fallacy present"
+          - "False dichotomy framing detected"
+          - "Evidence contradicts or is irrelevant to conclusion"
+      2:
+        label: "Weak"
+        description: >
+          No overt fallacies but logical connections are weak or implicit.
+          Conclusions go beyond what evidence supports. Premises may be vague
+          or unverifiable. Motive-based fallacies (appeal to authority,
+          appeal to sympathy) may be present without acknowledgment.
+        indicators:
+          - "Conclusions overstated relative to evidence provided"
+          - "Hasty generalization from single case"
+          - "Unverifiable premises treated as established facts"
+          - "Post hoc reasoning (correlation presented as causation)"
+      3:
+        label: "Sound"
+        description: >
+          Arguments are logically valid — conclusions follow from premises.
+          No major fallacies. Evidence is relevant to claims. Minor issues
+          with precision (premises could be more specific, evidence could be
+          stronger) but the inferential structure is defensible.
+        indicators:
+          - "Inference indicators present and accurate (since, therefore, because)"
+          - "Evidence is relevant to the claim it supports"
+          - "No detected logical fallacies"
+          - "Appropriate hedging language used where certainty is limited"
+      4:
+        label: "Rigorous"
+        description: >
+          Arguments are valid and premises are well-supported. Evidence
+          quality is high — sources credible, statistics contextualised.
+          Logical structure follows recognizable valid forms (modus ponens,
+          inductive generalization, analogical reasoning). Intellectual honesty
+          is demonstrated through appropriate qualification.
+        indicators:
+          - "Evidence sources are credible and relevant"
+          - "Inductive generalizations appropriately scoped"
+          - "Analogies are apt and structural (not superficial)"
+          - "Premises flagged as contested where appropriate"
+      5:
+        label: "Exemplary"
+        description: >
+          Logically impeccable structure with high-quality, specific evidence.
+          Inference chains are explicit and valid. Fallacies are actively
+          avoided and the text demonstrates awareness of counter-evidence.
+          The argument graph (as per Farzam et al. via Argument Mining with
+          MTL and PDL) would form a valid directed acyclic graph — claims
+          supported by premises, premises backed by grounds, no cycles.
+          Source: a-guide-to-good-reasoning — 'intellectual honesty is wanting,
+          above all, to know the truth.'
+        indicators:
+          - "All claims have explicit supporting grounds"
+          - "Evidence is specific, verifiable, and current"
+          - "Potential counter-evidence acknowledged"
+          - "No detected fallacies across any of the four categories"
+          - "Causal claims explicitly distinguished from correlational ones"
+
+# ==============================================================================
+# ARISTOTELIAN APPEALS — Detailed Framework
+# ==============================================================================
+
+aristotelian_appeals:
+  source: "Aristotle - Rhetoric; validated by Corpus/Research/Research - Argument Mining with MTL and PDL.md"
+  description: >
+    The three fundamental modes of rhetorical persuasion. Effective rhetoric
+    integrates all three; deficiency in any one creates a persuasive gap.
+
+  ethos:
+    definition: "Credibility and character of the speaker or content source"
+    indicators:
+      strong:
+        - "Specific credentials or achievements cited (not merely claimed)"
+        - "Named expert or credible authority quoted"
+        - "Track record demonstrated through concrete results"
+        - "Acknowledgment of limitations or uncertainty (signals intellectual honesty)"
+        - "Use of inclusive, respectful language signaling good character"
+      weak:
+        - "Self-referential credibility claims ('We are the best')"
+        - "Appeal to authority without relevance check"
+        - "No credentials or social proof signals"
+    context_weighting:
+      technical_audience: 0.40      # Technical audiences weight expertise heavily
+      executive_audience: 0.30      # Executives balance ethos with results (logos)
+      emotional_campaign: 0.20      # Emotional contexts weight pathos more
+
+  pathos:
+    definition: "Emotional resonance and audience connection"
+    indicators:
+      strong:
+        - "Specific, relatable scenario that mirrors audience experience"
+        - "Story with named characters or concrete human stakes"
+        - "Vivid visualization of consequence (positive or negative outcome)"
+        - "Language that activates audience values (not just interests)"
+        - "Monroe's Visualization stage (positive/negative future state)"
+      weak:
+        - "Generic emotional appeal without specificity"
+        - "Emotional manipulation without evidentiary basis"
+        - "Fear appeal without constructive alternative (creates paralysis)"
+        - "Sentimental story disconnected from the core argument"
+    context_weighting:
+      change_management: 0.40       # Behavioral change requires strong pathos
+      executive_vision: 0.35
+      technical_briefing: 0.15
+
+  logos:
+    definition: "Logical reasoning and evidentiary support"
+    indicators:
+      strong:
+        - "Specific, verifiable statistics with source attribution"
+        - "Causal reasoning with explicit inferential connectors"
+        - "Comparative data (before/after, benchmark, target-vs-actual)"
+        - "Analogy with structural (not just surface) similarity"
+        - "Evidence relevant to the specific claim it supports"
+      weak:
+        - "Vague generalizations ('most experts agree')"
+        - "Statistics without context or baseline"
+        - "Correlation presented as causation"
+        - "Evidence that supports a related but different claim"
+    context_weighting:
+      scientific_or_technical: 0.55
+      business_case: 0.45
+      persuasive_speech: 0.30
+
+  ideal_balance_ratios:
+    technical_audience:
+      logos: 0.55
+      ethos: 0.30
+      pathos: 0.15
+    executive_audience:
+      logos: 0.40
+      ethos: 0.35
+      pathos: 0.25
+    general_audience:
+      logos: 0.35
+      ethos: 0.30
+      pathos: 0.35
+    change_management:
+      logos: 0.30
+      ethos: 0.25
+      pathos: 0.45
+
+# ==============================================================================
+# TOULMIN ARGUMENT MODEL — Scoring Criteria
+# ==============================================================================
+
+toulmin_argument_model:
+  source: "Toulmin (1958) The Uses of Argument; operationalized by Farzam et al. (2023) — Corpus/Research/Research - Argument Mining with MTL and PDL.md"
+  description: >
+    The six-component Toulmin model provides the most rigorous framework for
+    argument evaluation. Farzam et al. (2023) confirm that claim/premise
+    identification occupies a common semantic space with quality assessment —
+    structural completeness predicts argument quality.
+
+  components:
+    claim:
+      definition: "The controversial statement or conclusion being argued for"
+      scoring_criteria:
+        strong: "Clearly stated, non-trivial, falsifiable or assessable"
+        weak: "Vague, circular, or mere restatement of premises"
+      example_strong: "Investing in narrative training increases sales close rates"
+      example_weak: "Good communication is important for sales"
+
+    grounds:
+      definition: "The evidence, data, or reasons that support the claim"
+      scoring_criteria:
+        strong: "Specific, verifiable, relevant data or case evidence"
+        weak: "Generic observations, hearsay, or irrelevant data"
+      example_strong: "Teams trained in narrative structure showed 23% higher win rates (IBM, 2024)"
+      example_weak: "Everyone knows good stories help in sales"
+
+    warrant:
+      definition: "The inference principle linking grounds to claim"
+      scoring_criteria:
+        strong: "Explicit statement of why this evidence supports this conclusion"
+        weak: "Warrant left unstated, assumed obvious to reader"
+      example_strong: "Because narrative engagement activates the audience's own values, trained storytellers encounter less resistance"
+      example_weak: "(Implicit — left for reader to supply)"
+
+    backing:
+      definition: "Evidence or authority supporting the warrant principle itself"
+      scoring_criteria:
+        strong: "Research citation, established theoretical framework, or domain authority"
+        weak: "Warrant accepted as self-evident without backing"
+      example_strong: "Neuroscience research confirms that narrative triggers oxytocin release, increasing trust and receptiveness (Zak, 2014)"
+
+    qualifier:
+      definition: "The degree of certainty — how strongly the claim is held"
+      scoring_criteria:
+        strong: "Appropriate hedging ('typically', 'in most cases', 'under these conditions')"
+        weak: "Overstated certainty ('always', 'proven', 'guaranteed')"
+      example_strong: "In most B2B enterprise sales contexts, narrative-trained teams outperform those without training"
+
+    rebuttal:
+      definition: "Acknowledgment of conditions under which the claim does not hold"
+      scoring_criteria:
+        strong: "Named conditions or objections addressed with counter-evidence"
+        weak: "No objections acknowledged — argument appears to ignore dissent"
+      example_strong: "Where audiences are highly technical and time-constrained, data-dense formats may outperform narrative"
+
+  minimum_components_by_context:
+    written_report: 4          # Claim, Grounds, Warrant, Qualifier at minimum
+    presentation: 3            # Claim, Grounds, Warrant
+    executive_briefing: 5      # Add Backing and Qualifier
+    published_argument: 6      # All six required
+
+# ==============================================================================
+# MONROE'S MOTIVATED SEQUENCE — Evaluation Criteria
+# ==============================================================================
+
+monroes_motivated_sequence:
+  source: "Monroe (1935); Corpus/Research/Research - Using Monroe's Motivated Sequence.md"
+  description: >
+    Five-stage persuasive sequence that mirrors natural human decision-making.
+    Originally developed for speeches, now validated across educational content,
+    corporate training, and sales presentations. Each stage must build on the
+    prior stage.
+
+  stages:
+    attention:
+      purpose: "Capture immediate audience interest and establish relevance"
+      effective_techniques:
+        - "Startling statistic that reframes the problem"
+        - "Brief relatable scenario or pain-point story"
+        - "Provocative rhetorical question"
+        - "Vivid analogy that names the core tension"
+        - "Unexpected or counter-intuitive claim"
+      evaluation_criteria:
+        strong: "Audience immediately recognizes personal relevance within 30 seconds"
+        weak: "Opens with agenda, housekeeping, or speaker bio"
+      scoring_weight: 0.15
+
+    need:
+      purpose: "Establish that a problem exists and motivate the audience to care"
+      effective_techniques:
+        - "Specific evidence of the problem's scope or cost"
+        - "Relatable example of the problem's human impact"
+        - "Data showing the gap between current and desired state"
+        - "Named consequence of inaction"
+      evaluation_criteria:
+        strong: "Audience feels the need as their own; stakes are clear and personal"
+        weak: "Generic problem statement without specificity or stakes"
+      scoring_weight: 0.25
+
+    satisfaction:
+      purpose: "Present the solution that resolves the need"
+      effective_techniques:
+        - "Clear explanation of how the solution addresses each element of the need"
+        - "Step-by-step logic connecting solution to problem"
+        - "Proof point or precedent that the solution works"
+        - "Positioned from audience perspective (customer as hero)"
+      evaluation_criteria:
+        strong: "Solution directly addresses every element of the need stage; audience can see the fit"
+        weak: "Solution proposed without connection to the stated need"
+      scoring_weight: 0.25
+
+    visualization:
+      purpose: "Create a vivid mental picture of the future state"
+      visualization_types:
+        positive: "Vivid depiction of the benefits and positive outcomes of taking action"
+        negative: "Vivid depiction of the continued pain and consequences of inaction"
+        contrast: "Before/after comparison that makes the gap viscerally clear"
+      evaluation_criteria:
+        strong: "Audience can vividly imagine themselves in the described future state"
+        weak: "Visualization is abstract or generic ('things will be better')"
+      scoring_weight: 0.20
+
+    action:
+      purpose: "Direct the audience to a specific, achievable next step"
+      effective_techniques:
+        - "Single, clear, low-friction next step"
+        - "Urgency framing grounded in real consequences (not artificial scarcity)"
+        - "CTA echoes the story's resolution ('to achieve results like these...')"
+        - "Matched to audience's current readiness and authority"
+      evaluation_criteria:
+        strong: "Specific, named next step with clear pathway; logically implied by the story"
+        weak: "Vague CTA ('reach out to us'), no urgency, or CTA disconnected from story"
+      scoring_weight: 0.15
+
+  sequence_integrity:
+    description: "Stages must be completed in order — each stage activates the next"
+    failure_modes:
+      skipped_need: "Satisfaction without Need feels like a solution without a problem"
+      skipped_visualization: "Action without Visualization feels abstract and low-urgency"
+      attention_only: "Engagement without follow-through wastes the hook"
+    minimum_stages_required: 3     # Attention, Need, Satisfaction at minimum
+
+# ==============================================================================
+# RHETORICAL DEVICES CATALOG
+# ==============================================================================
+
+rhetorical_devices_catalog:
+  source: "Corpus/Research/Research - Researching Narrative and Discourse Analysis.md; rhetorical_devices_framework.yaml"
+  description: >
+    Categorized inventory of rhetorical devices evaluated in the device_variety
+    dimension. RSTformer research (Researching Narrative and Discourse Analysis)
+    demonstrates that rhetorical structure is not merely ornamental — it governs
+    the attention mechanism's weighting of discourse relations.
+
+  categories:
+
+    repetition_devices:
+      description: "Devices that create emphasis and memorability through structured repetition"
+      devices:
+        anaphora:
+          definition: "Repetition of a word or phrase at the beginning of successive clauses"
+          effectiveness_markers:
+            - "Reinforces the central theme across a list"
+            - "Creates rhythmic momentum and audience anticipation"
+          example: "'We will invest. We will build. We will lead.'"
+          scoring_credit: high
+        epistrophe:
+          definition: "Repetition of a word or phrase at the end of successive clauses"
+          effectiveness_markers:
+            - "Creates a memorable closing emphasis"
+            - "Binds list items to a unifying concept"
+          example: "'For our customers. For our teams. For our future.'"
+          scoring_credit: high
+        tricolon:
+          definition: "A series of three parallel elements"
+          effectiveness_markers:
+            - "Exploits the cognitive preference for groups of three"
+            - "Creates complete, satisfying rhetorical unit"
+          example: "'Fast, scalable, and proven.'"
+          scoring_credit: medium
+
+    comparison_devices:
+      description: "Devices that illuminate through structural or conceptual comparison"
+      devices:
+        metaphor:
+          definition: "Direct identification of one thing with another"
+          effectiveness_markers:
+            - "Maps a complex idea onto a familiar structure"
+            - "Extended metaphors provide sustained conceptual scaffolding"
+          scoring_credit: high
+        analogy:
+          definition: "Structural comparison between two domains to explain reasoning"
+          effectiveness_markers:
+            - "Argument from analogy: two cases with structural (not merely surface) similarity"
+            - "Validity depends on the degree of structural overlap"
+          source_note: "a-guide-to-good-reasoning Chapter 15 — Arguments from Analogy: validity requires genuine structural parallel"
+          scoring_credit: high
+        antithesis:
+          definition: "Juxtaposition of contrasting ideas in parallel structure"
+          effectiveness_markers:
+            - "Creates memorable tension between competing ideas"
+            - "Sharpens the value proposition by naming what is rejected"
+          example: "'Not slower processes — smarter ones.'"
+          scoring_credit: medium
+
+    sound_devices:
+      description: "Devices that create emphasis and memorability through phonological patterning"
+      devices:
+        alliteration:
+          definition: "Repetition of the same initial consonant sound"
+          effectiveness_markers:
+            - "Increases memorability of key phrases"
+            - "Should not dominate — used at critical emphasis points only"
+          scoring_credit: low
+        assonance:
+          definition: "Repetition of vowel sounds within nearby words"
+          effectiveness_markers:
+            - "Creates subtle tonal harmony"
+          scoring_credit: low
+
+    emphasis_devices:
+      description: "Devices that direct audience attention and create structural clarity"
+      devices:
+        rhetorical_question:
+          definition: "A question posed for effect — the answer is implied"
+          effectiveness_markers:
+            - "Engages audience's cognitive participation"
+            - "Should be followed through — question should be answered by the content"
+          scoring_credit: medium
+        chiasmus:
+          definition: "Inverted parallel structure in successive clauses"
+          effectiveness_markers:
+            - "Creates a memorable reversible statement"
+            - "Signals dialectical sophistication"
+          example: "'We don't adapt content to audiences — we adapt audiences to content.'"
+          scoring_credit: high
+        hypophora:
+          definition: "Asking a question and then immediately answering it"
+          effectiveness_markers:
+            - "Controls the frame of the response"
+            - "Demonstrates authority while maintaining engagement"
+          scoring_credit: medium
+
+# ==============================================================================
+# FALLACY DETECTION
+# ==============================================================================
+
+fallacy_detection:
+  source: "Corpus/Research/a-guide-to-good-reasoning-cultivating-intellectual-virtues-16112.md — Chapter 8: Fallacies"
+  description: >
+    Common logical fallacies to detect and penalize. Divided into argument-based
+    fallacies (flaws in the argument structure) and motive-based fallacies (flaws
+    in the persuasive motive). Source taxonomy: a-guide-to-good-reasoning
+    distinguishes these two categories explicitly.
+
+  argument_based_fallacies:
+    description: "Indicate a specific flaw in the argument itself"
+    fallacies:
+      begging_the_question:
+        definition: "Conclusion restates or presupposes a premise rather than being inferred from it"
+        detection_pattern: "Premise and conclusion are paraphrases of each other"
+        penalty_tier: high
+        example: "Our solution is the best because nothing else performs as well."
+      missing_the_point:
+        definition: "Conclusion does not address the question actually at issue"
+        detection_pattern: "Conclusion is valid but irrelevant to the stated question"
+        penalty_tier: high
+      equivocation:
+        definition: "A key term shifts meaning between premises, making a fallacious argument appear valid"
+        detection_pattern: "Same word used with two different definitions in the same argument"
+        penalty_tier: high
+        source: "a-guide-to-good-reasoning — Fallacy of Equivocation due to semantic ambiguity"
+      amphiboly:
+        definition: "Fallacy arising from syntactic ambiguity — the sentence structure admits two readings"
+        detection_pattern: "Argument depends on an ambiguous grammatical construction"
+        penalty_tier: medium
+      straw_man:
+        definition: "Misrepresenting an opponent's position in a weaker form to attack it more easily"
+        detection_pattern: "Counter-argument described in terms the original arguer would reject"
+        penalty_tier: high
+        source: "a-guide-to-good-reasoning — Straw Man as version of missing the point"
+      false_dichotomy:
+        definition: "Presenting two options as exhaustive when more options exist"
+        detection_pattern: "'Either X or Y' where additional options are available"
+        penalty_tier: high
+      slippery_slope:
+        definition: "Claiming a moderate action will inevitably lead to an extreme outcome"
+        detection_pattern: "Chain of consequences without evidence of the causal links"
+        penalty_tier: medium
+        source: "a-guide-to-good-reasoning — Slippery slope fallacy says the border is nonexistent"
+      hasty_generalization:
+        definition: "Drawing a broad conclusion from an insufficient sample"
+        detection_pattern: "Single case or small sample used to support universal claim"
+        penalty_tier: medium
+      post_hoc:
+        definition: "Concluding causation from temporal sequence (X preceded Y, therefore X caused Y)"
+        detection_pattern: "Correlation presented as causation without mechanism"
+        penalty_tier: medium
+      composition_division:
+        definition: "Inferring that a whole has a property because its parts do (composition) or vice versa (division)"
+        detection_pattern: "Property shifts from part to whole or whole to part without justification"
+        penalty_tier: medium
+        source: "a-guide-to-good-reasoning — Chapter 10: Fallacy of composition and division"
+
+  motive_based_fallacies:
+    description: "Indicate a flaw in the persuasive motive — take advantage of cognitive biases"
+    source: "a-guide-to-good-reasoning — Motive-based fallacies indicate a flaw in the motives the argument tends to promote"
+    fallacies:
+      ad_hominem:
+        definition: "Attacking the person making the argument rather than the argument itself"
+        detection_pattern: "Credibility attack used as primary refutation without addressing the argument"
+        penalty_tier: high
+        note: "Distinguished from legitimate credibility challenge — ad hominem is fallacious when the person's characteristics are irrelevant to the argument's validity"
+      appeal_to_authority:
+        definition: "Using an authority citation as a substitute for argument where the audience should reason independently"
+        detection_pattern: "Authority cited in place of reasoning; audience not given the reasoning"
+        penalty_tier: medium
+        note: "Legitimate authority citation (expert in relevant domain) is not fallacious — fallacy occurs when authority is irrelevant or replaces reasoning"
+      appeal_to_sympathy:
+        definition: "Using emotional appeal to substitute for argument where the appeal is irrelevant to the conclusion"
+        detection_pattern: "Emotional content is the only support for a factual or logical claim"
+        penalty_tier: medium
+      appeal_to_consequences:
+        definition: "Arguing that a belief is true because believing it has good consequences"
+        detection_pattern: "The desirability of a conclusion is offered as evidence for its truth"
+        penalty_tier: medium
+
+# ==============================================================================
+# ARGUMENT MINING INDICATORS
+# ==============================================================================
+
+argument_mining_indicators:
+  source: "Corpus/Research/Research - Argument Mining with MTL and PDL.md — Farzam et al. (2023)"
+  description: >
+    Argument component identification markers derived from multi-task learning
+    research. Farzam et al. (2023) demonstrate that claims, premises, and
+    relations occupy a shared semantic space — detecting one informs detection
+    of the others. These indicators support automated argument structure scoring.
+
+  component_markers:
+    major_claim_indicators:
+      description: "Linguistic markers that signal the central thesis of an argument"
+      patterns:
+        - "The fundamental challenge is..."
+        - "What this demonstrates is..."
+        - "The core insight is..."
+        - "This confirms that..."
+        - "The evidence points to..."
+      note: "Major claims are distinct from supporting claims — they are the terminal node in the argument graph"
+
+    claim_indicators:
+      description: "Markers signaling a contested statement being argued for"
+      patterns:
+        - "Therefore..."
+        - "This means that..."
+        - "It follows that..."
+        - "Consequently..."
+        - "Hence..."
+        - "We conclude that..."
+
+    premise_indicators:
+      description: "Markers signaling a reason or evidence being offered in support of a claim"
+      patterns:
+        - "Because..."
+        - "Since..."
+        - "Given that..."
+        - "The evidence shows..."
+        - "Research indicates..."
+        - "As demonstrated by..."
+        - "On account of..."
+
+    support_relation_markers:
+      description: "Phrases indicating that one argument unit supports another"
+      patterns:
+        - "This is confirmed by..."
+        - "In support of this..."
+        - "As evidenced by..."
+
+    attack_relation_markers:
+      description: "Phrases indicating that one argument unit challenges another"
+      patterns:
+        - "However, this overlooks..."
+        - "This contradicts..."
+        - "Counter to this claim..."
+        - "Despite this, the evidence shows..."
+
+  quality_assessment_signals:
+    coherence_signals:
+      high: ["clear inferential connectors between all claims and premises", "no logical gaps between steps"]
+      low: ["abrupt topic shifts", "conclusions that do not follow from stated premises"]
+    strength_signals:
+      high: ["specific verifiable evidence", "relevant domain authority", "multiple independent grounds for the same claim"]
+      low: ["vague generalizations", "single anecdote as primary evidence", "self-referential claims"]
+    propaganda_technique_flags:
+      patterns:
+        - "Loaded language (emotionally charged terms not earned by context)"
+        - "Name calling or glittering generalities"
+        - "Bandwagon appeal (everyone is doing it)"
+        - "Card stacking (only favorable evidence presented)"
+      source_note: "Farzam et al. (2023) identify these as rhetorical technique signals in a shared semantic space with argument quality"
+
+# ==============================================================================
+# ANTI-PATTERNS
+# ==============================================================================
+
+anti_patterns:
+  description: "Rhetorical failures that systematically undermine persuasive effectiveness"
+
+  all_logos_no_pathos:
+    label: "Data Desert"
+    description: >
+      Content is entirely data-driven with no emotional resonance. Statistics and
+      evidence are present but no human story, no relatable scenario, no visualization
+      of impact. Audience understands the argument but does not feel motivated to act.
+    detection_signals:
+      - "No personal pronoun 'you' in the first 20% of content"
+      - "No narrative scenario or case example"
+      - "No future-state visualization"
+    penalty: 0.08
+    fix: "Add a relatable human scenario in the opening; use Monroe's Visualization stage"
+
+  appeal_to_authority_only:
+    label: "Citation Shield"
+    description: >
+      Argument consists primarily of authority citations with no independent reasoning.
+      Audience cannot evaluate the argument themselves — they can only accept or
+      reject the authority. Source: a-guide-to-good-reasoning — appeal to authority
+      takes advantage of inclination toward timidity.
+    detection_signals:
+      - "All claims attributed to external sources with no warrant"
+      - "No inferential connectors between citations and conclusions"
+      - "Audience cannot evaluate without the cited source"
+    penalty: 0.06
+
+  logical_fallacies_present:
+    label: "Fallacious Reasoning"
+    description: >
+      One or more of the logical fallacies identified in fallacy_detection are
+      detected. The presence of any argument-based fallacy undermines the
+      credibility of the entire argument, even if some claims are sound.
+    detection_signals:
+      - "Circular reasoning, straw man, false dichotomy, or hasty generalization detected"
+      - "Post hoc causation claims"
+      - "Equivocation in key terms"
+    penalty: 0.12
+
+  device_overuse:
+    label: "Rhetorical Overload"
+    description: >
+      Too many rhetorical devices deployed in rapid succession, creating
+      tonal instability. More than 3 devices per paragraph, or devices
+      that clash (e.g., chiasmus immediately followed by anaphora on the
+      same topic), creates confusion rather than emphasis.
+    detection_signals:
+      - "3+ distinct devices within a single paragraph"
+      - "Device clashes that create tonal conflict"
+      - "Devices feel decorative rather than functional"
+    penalty: 0.04
+
+  mms_skipped_need:
+    label: "Solution Without Problem"
+    description: >
+      Content moves directly from Attention to Satisfaction, skipping the Need
+      stage. The audience has not been given a reason to care about the solution
+      before it is presented. Source: Monroe (1935) — Need stage is what
+      motivates the audience to engage with the Satisfaction.
+    detection_signals:
+      - "Solution presented in slide 1 or 2 with no prior problem framing"
+      - "No data or scenario establishing the problem's cost or urgency"
+    penalty: 0.07
+
+  mms_no_visualization:
+    label: "Abstract Action"
+    description: >
+      Content presents Attention, Need, and Satisfaction but skips Visualization.
+      The audience is asked to act without being shown what the positive outcome
+      looks like. Action feels abstract and low-urgency.
+    detection_signals:
+      - "No before/after contrast"
+      - "No future-state scenario"
+      - "CTA not grounded in a described outcome"
+    penalty: 0.05
+
+  ethos_only_assertion:
+    label: "Credibility Without Content"
+    description: >
+      Credibility is asserted ('We are the market leader') rather than demonstrated
+      through concrete evidence. This inverts proper ethos construction — genuine
+      ethos emerges from demonstrated achievement, not self-declaration.
+    detection_signals:
+      - "Superlative claims without supporting evidence"
+      - "No specific achievement cited to support credibility claim"
+      - "Awards or rankings cited without context"
+    penalty: 0.05
+
+  toulmin_claim_only:
+    label: "Ungrounded Claims"
+    description: >
+      Arguments consist of claims without supporting grounds, warrants, or backing.
+      This is the minimum Toulmin failure — the argument provides no basis for
+      the audience to accept the conclusion. Source: a-guide-to-good-reasoning
+      — 'mere assertion' is not an argument.
+    detection_signals:
+      - "Conclusion stated without inference indicator"
+      - "No evidence cited for core claim"
+      - "No logical structure connecting premise to conclusion"
+    penalty: 0.10
+
+  emotional_manipulation:
+    label: "Pathos Without Logos"
+    description: >
+      Emotional appeals are used as substitutes for evidence rather than
+      complements to it. Creates appeal to sympathy fallacy. Audiences who
+      notice the absence of evidence will distrust the emotional appeal.
+    detection_signals:
+      - "Emotional story with no data support"
+      - "Fear appeal without constructive alternative"
+      - "Urgency created artificially rather than through real consequence"
+    penalty: 0.06
+
+  discourse_incoherence:
+    label: "Structural Fragmentation"
+    description: >
+      Content lacks the discourse-level coherence identified by RSTformer research.
+      Sections do not have identifiable rhetorical relations (cause, elaboration,
+      contrast). The argument graph would have orphaned nodes — claims that are
+      not connected to any supporting premise or subsequent conclusion.
+      Source: Researching Narrative and Discourse Analysis — RSTformer demonstrates
+      that discourse structure governs which content is 'core' versus 'satellite.'
+    detection_signals:
+      - "Sections that do not connect causally or rhetorically to adjacent sections"
+      - "Major claims that lack any supporting sub-arguments"
+      - "No rhetorical relations detectable between paragraphs"
+    penalty: 0.07
+
+# ==============================================================================
+# CHECKS — Validation Rules
+# ==============================================================================
+
+checks:
+
+  toulmin_completeness:
+    description: "Verifies minimum Toulmin components are present"
+    minimum_components: 3          # Claim, Grounds, Warrant required at minimum
+    optimal_components: 5          # Add Backing and Qualifier for high scores
+    check_for: ["claim", "grounds", "warrant", "backing", "qualifier", "rebuttal"]
+    failure_action: "apply penalty: missing_toulmin_component"
+
+  appeal_coverage:
+    description: "Verifies all three Aristotelian appeals are meaningfully present"
+    minimum_appeals: 2             # At least two of three must be present
+    optimal_appeals: 3             # All three required for score > 3
+    failure_action: "apply penalty: single_appeal_mode"
+
+  mms_stage_coverage:
+    description: "Verifies Monroe's Motivated Sequence stage presence"
+    minimum_stages: 3              # Attention, Need, Satisfaction required
+    optimal_stages: 5              # All five for score of 5 on persuasive_impact
+    required_cta: true             # Action stage required for stages >= 4
+    failure_action: "apply penalty: missing_mms_stage"
+
+  device_minimum:
+    description: "Verifies minimum rhetorical device variety"
+    min_devices_per_section: 1     # At least one device per major section
+    min_total_device_types: 3      # At least 3 distinct device types in full content
+    failure_action: "apply penalty: insufficient_device_variety"
+
+  fallacy_scan:
+    description: "Scans for logical fallacies listed in fallacy_detection"
+    zero_tolerance_fallacies:
+      - begging_the_question
+      - straw_man
+      - false_dichotomy
+      - ad_hominem
+    medium_tolerance_fallacies:
+      - post_hoc
+      - hasty_generalization
+      - appeal_to_authority
+    failure_action: "apply penalty: logical_fallacy_detected"
+
+  discourse_coherence:
+    description: "Validates that rhetorical relations exist between major sections"
+    required_relation_types: ["elaboration", "cause", "contrast", "evidence"]
+    min_identifiable_relations: 2
+    source: "RSTformer methodology — discourse structure governs which units are nucleus vs satellite"
+    failure_action: "apply penalty: discourse_incoherence"
+
+# ==============================================================================
+# THRESHOLDS
+# ==============================================================================
+
+thresholds:
+  min_rhetorical_devices_total: 3          # Minimum distinct device types across full content
+  min_devices_per_section: 1              # At least one device per major section
+  max_devices_per_paragraph: 3            # More than 3 triggers overuse penalty
+  ideal_appeal_ratio_logos: 0.35          # General audience baseline
+  ideal_appeal_ratio_pathos: 0.35         # General audience baseline
+  ideal_appeal_ratio_ethos: 0.30          # General audience baseline
+  minimum_toulmin_components: 3           # Claim, Grounds, Warrant required
+  optimal_toulmin_components: 5           # Backing and Qualifier added for high scores
+  minimum_mms_stages: 3                   # Attention, Need, Satisfaction required
+  optimal_mms_stages: 5                   # All five for highest persuasive_impact score
+  min_argument_units: 2                   # At least one claim and one premise required
+  max_fallacy_count: 0                    # Zero tolerance for argument-based fallacies
+  motive_fallacy_tolerance: 1             # One motive-based fallacy before penalty
+  min_logical_connectors: 3              # 'since', 'therefore', 'because' count
+  discourse_relation_minimum: 2           # Minimum identifiable RST-style relations
+  cta_required_from_stage: 3             # Action CTA required when MMS >= 3 stages used
+
+# ==============================================================================
+# PENALTIES (Score Deductions)
+# ==============================================================================
+
+penalties:
+  logical_fallacy_argument_based: 0.12     # Any argument-based fallacy (begging_question, straw_man, false_dichotomy)
+  ungrounded_claim: 0.10                   # Major claim with no grounds or premise
+  missing_toulmin_component: 0.08          # Each missing core Toulmin component (Claim/Grounds/Warrant)
+  mms_skipped_need: 0.07                   # Satisfaction presented without Need stage
+  discourse_incoherence: 0.07              # No identifiable rhetorical relations between sections
+  all_logos_no_pathos: 0.08               # No emotional content — data desert
+  single_appeal_mode: 0.07                 # Only one of three Aristotelian appeals present
+  emotional_manipulation: 0.06            # Pathos without logos — appeal to sympathy fallacy
+  appeal_to_authority_only: 0.06          # Citation shield — no independent reasoning
+  ethos_only_assertion: 0.05              # Credibility claimed, not demonstrated
+  mms_no_visualization: 0.05             # No future-state visualization present
+  logical_fallacy_motive_based: 0.05      # Motive-based fallacy (ad_hominem, appeal_to_consequences)
+  device_overuse: 0.04                    # 3+ devices per paragraph creating tonal clash
+  missing_cta: 0.04                       # No call to action when MMS >= 3 stages used
+  insufficient_device_variety: 0.04       # Fewer than 3 distinct device types
+  post_hoc_reasoning: 0.04               # Correlation presented as causation
+  overstated_qualifier: 0.03             # 'always', 'proven', 'guaranteed' without qualification
+
+# ==============================================================================
+# BONUSES (Score Additions)
+# ==============================================================================
+
+bonuses:
+  complete_toulmin_model: 0.03             # All six Toulmin components present
+  full_mms_sequence: 0.03                  # All five Monroe stages with effective CTA
+  appeals_integrated: 0.03                 # All three appeals woven together, not siloed
+  extended_metaphor: 0.02                  # Developed analogy or metaphor sustained across a section
+  rebuttal_acknowledged: 0.02             # Counter-argument named and addressed
+  appropriate_qualifier: 0.02            # Conclusion hedged with appropriate certainty language
+  discourse_relations_explicit: 0.02      # RST-style relations between sections explicit (cause, contrast, elaboration)
+  vivid_visualization: 0.02               # Monroe's Visualization stage creates concrete before/after picture
+  device_variety_five_plus: 0.02          # Five or more distinct device types deployed
+  specific_verifiable_evidence: 0.01      # Data cited with specific source and context
+  fallacy_avoidance_clean: 0.01           # Zero fallacies detected across all categories
+  intellectual_honesty_signal: 0.01       # Limitation or counter-evidence acknowledged proactively

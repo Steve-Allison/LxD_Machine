@@ -1,0 +1,428 @@
+_meta:
+  id: presentation_structures_taxonomy
+  purpose: taxonomy
+  version: "1.4.0"
+  last_updated: "2026-03-01"
+  description: "Narrative frameworks for presentations including SCQA, Minto Pyramid, Duarte Sparkline, and SOAR."
+  domain: narrative
+  domain_type: workflow
+  corpus_sources:
+    - "Corpus/Research/Best Practices for Writing Effective Corporate Learning Content.md"
+    - "Corpus/Research/Crafting Powerful Opening Plays.md"
+    - "Corpus/Research/Research - Comprehensive Audience Analysis.md"
+    - "Corpus/Research/Research - Canonical Presentation Methodology Research.md"
+    - "Corpus/Research/The Universal Narrative Methodology: A Framework for Crafting and Improving Stories.md"
+
+  # No matching entity file (intentional): macro-framework classification (Minto, Duarte, SOAR)
+  # is performed at the whole-deck level, not as NER span detection. Slide-level entity
+  # detection is handled by slide_types_entities.yaml.
+  relationships:
+    - target: entities/slide_types_entities.yaml
+      type: depends_on
+      description: "Slide-level entity extraction used as the NER proxy for individual slides within these macro frameworks"
+classification_dimensions:
+  - name: structural_framework
+    description: "Overarching presentation narrative framework applied to the whole deck"
+    values:
+      - minto_pyramid
+      - duarte_sparkline
+      - soar_framework
+      - vonnegut_shape
+      - monroe_sequence
+  - name: title_strategy
+    description: "Headline type applied to communicate the slide's key assertion"
+    values:
+      - action_title
+      - label_title
+      - question_title
+  - name: narrative_shape
+    description: "Vonnegut story shape archetype governing emotional arc"
+    values:
+      - man_in_hole
+      - rags_to_riches
+      - icarus
+      - cinderella
+  - name: slide_density
+    description: "Information density category governing dwell time and design approach"
+    values:
+      - lean
+      - moderate
+      - dense
+      - slidument
+
+minto_pyramid:
+  description: "Barbara Minto's structured communication framework"
+
+  core_principle: "Start with the answer, then provide supporting logic"
+
+  structure:
+    top_level:
+      name: "Governing Thought"
+      role: "Single main message/recommendation"
+      placement: "First (BLUF: Bottom Line Up Front)"
+
+    second_level:
+      name: "Key Line Arguments"
+      role: "2-5 main supporting points"
+      rule: "MECE (Mutually Exclusive, Collectively Exhaustive)"
+
+    third_level:
+      name: "Supporting Data/Evidence"
+      role: "Facts, data, examples supporting each key line"
+
+  scqa_framework:
+    description: "Narrative structure for introducing the pyramid"
+
+    situation:
+      role: "Establish stable, agreed-upon context"
+      content: "Facts the audience already knows and accepts"
+      tone: "Neutral, factual"
+      visual_treatment: "Understated, contextual imagery"
+      example: "Our market share has been stable at 23% for three years"
+
+    complication:
+      role: "Introduce disruption, problem, or change"
+      content: "What has changed or gone wrong"
+      tone: "Tension, concern, urgency"
+      visual_treatment: "Warning colours, contrast, tension imagery"
+      example: "New competitor has captured 8% of market in 6 months"
+
+    question:
+      role: "The question that arises from the complication"
+      content: "What the audience now needs answered"
+      placement: "Often implicit rather than stated"
+      example: "How do we respond to this competitive threat?"
+
+    answer:
+      role: "Your recommendation/solution"
+      content: "The governing thought of your pyramid"
+      tone: "Confident, actionable"
+      visual_treatment: "Positive colours, solution imagery"
+      example: "We must accelerate digital transformation and launch in Q1"
+
+  application_to_presentations:
+    executive_summary_slide:
+      content: "State the governing thought (answer)"
+      supporting: "List the key line arguments"
+    body_sections:
+      structure: "One section per key line argument"
+      each_section: "Argument + supporting evidence"
+    conclusion:
+      content: "Restate governing thought"
+      add: "Call to action, next steps"
+
+# ==============================================================================
+# DUARTE SPARKLINE
+# ==============================================================================
+
+duarte_sparkline:
+  description: "Nancy Duarte's presentation structure based on 'what is' vs 'what could be'"
+
+  core_concept: "Alternate between current state and future possibility to create tension and momentum"
+
+  structure:
+    what_is:
+      role: "Describe the current reality, status quo"
+      tone: "Grounded, factual, sometimes problematic"
+      purpose: "Establish common ground, acknowledge reality"
+
+    what_could_be:
+      role: "Paint the vision of a better future"
+      tone: "Aspirational, exciting, compelling"
+      purpose: "Create desire for change, inspire action"
+
+  narrative_arc:
+    beginning:
+      opens_with: "What is (current state)"
+      establishes: "Common ground with audience"
+
+    middle:
+      pattern: "Alternate What Is ↔ What Could Be"
+      frequency: "Multiple oscillations"
+      effect: "Builds tension, creates longing"
+      techniques:
+        - "Contrast current problems with future solutions"
+        - "Show obstacles, then show how to overcome"
+        - "Present data (is), then interpretation/opportunity (could be)"
+
+    ending:
+      climax: "New Bliss - the transformed future"
+      content: "Vision realised, call to action"
+      tone: "Inspirational, motivating"
+
+  visual_treatment:
+    what_is_sections:
+      colours: "More muted, grounded tones"
+      imagery: "Current state, familiar situations"
+      tone: "Serious, factual"
+
+    what_could_be_sections:
+      colours: "Brighter, more aspirational"
+      imagery: "Future vision, possibilities"
+      tone: "Optimistic, exciting"
+
+  slide_deck_application:
+    - "Slide 1-3: What Is (establish current context)"
+    - "Slide 4-5: What Could Be (introduce the vision)"
+    - "Slides 6-12: Alternate Is/Could Be (build case)"
+    - "Slide 13-14: New Bliss (the destination)"
+    - "Slide 15: Call to Action"
+
+# ==============================================================================
+# SOAR STORYTELLING FRAMEWORK
+# ==============================================================================
+
+soar_framework:
+  description: "Four-beat narrative structure for business presentations"
+
+  # Note: Narrative weighting (slide count/emphasis) is dynamic based on
+  # the Sales Stage defined in config/domain/soar_mapping.yaml
+
+  beats:
+    situation:
+      role: "Set the scene and context"
+      content:
+        - "Background information"
+        - "Current state"
+        - "Relevant history"
+      visual_cues:
+        colours: "Neutral tones (greys, blues)"
+        imagery: "Status quo, familiar contexts"
+        icons: "Information, context, calendar"
+
+    opportunity:
+      role: "Identify the gap, problem, or chance"
+      content:
+        - "Pain points or challenges"
+        - "Market opportunity"
+        - "Competitive threat"
+        - "Unmet need"
+      visual_cues:
+        colours: "Warning tones (amber, orange)"
+        imagery: "Gaps, barriers, opportunities"
+        icons: "Target, magnifying glass, warning"
+      emotional_arc: "Tension, concern, urgency"
+
+    action:
+      role: "Present your solution or proposal"
+      content:
+        - "Proposed approach"
+        - "Strategy and tactics"
+        - "Implementation plan"
+        - "How it addresses the opportunity"
+      visual_cues:
+        colours: "Constructive tones (green, teal)"
+        imagery: "Building, moving, implementing"
+        icons: "Gears, arrows, tools, people"
+      emotional_arc: "Confidence, momentum"
+
+    result:
+      role: "Show the outcome and benefits"
+      content:
+        - "Expected results"
+        - "Benefits and value"
+        - "ROI/metrics"
+        - "Success criteria"
+      visual_cues:
+        colours: "Celebration tones (gold, bright green)"
+        imagery: "Success, achievement, celebration"
+        icons: "Trophy, checkmark, growth chart"
+      emotional_arc: "Optimism, satisfaction, motivation"
+
+  visual_arc_progression:
+    colour_temperature: "Cool -> Warm -> Cool -> Bright"
+    imagery_mood: "Neutral -> Tense -> Active -> Celebratory"
+    energy_level: "Low -> Medium -> High -> High-Positive"
+
+  stage_alignment:
+    description: "Visual emphasis must match the Sales Stage weights (from soar_mapping.yaml)"
+    guidelines:
+      high_situation_weight: "Use more context slides, neutral visuals, and 'What Is' framing."
+      high_action_weight: "Focus on process diagrams, screenshots, and 'How it Works' visuals."
+      high_result_weight: "Prioritize data visualizations, testimonials, and 'Success' imagery."
+
+# ==============================================================================
+# ACTION TITLES VS LABEL TITLES
+# ==============================================================================
+
+title_types:
+  description: "Headline strategies for slides"
+
+  action_titles:
+    definition: "Titles that make an assertion or claim"
+    structure: "Subject + Verb + Object/Outcome"
+    examples:
+      - "Digital transformation will reduce costs by 30%"
+      - "Customer satisfaction has increased year-over-year"
+      - "Three factors drive competitive advantage"
+    benefits:
+      - "Immediately conveys the point"
+      - "Audience knows what to take away"
+      - "Supports skimmability"
+      - "Forces clarity of thought"
+    when_to_use: "Most business presentations, executive communications"
+
+  label_titles:
+    definition: "Titles that merely describe the topic"
+    structure: "Noun phrase or topic label"
+    examples:
+      - "Q3 Financial Results"
+      - "Market Analysis"
+      - "Next Steps"
+    problems:
+      - "Audience must read slide to understand point"
+      - "Key message may be buried in content"
+      - "Presenter must verbally add the 'so what'"
+    when_acceptable:
+      - "Reference slides (appendix)"
+      - "Exploratory workshops (conclusions TBD)"
+      - "Section dividers"
+
+  question_titles:
+    definition: "Titles that pose a question"
+    structure: "Question word + topic"
+    examples:
+      - "How can we improve retention?"
+      - "What drives customer loyalty?"
+    benefits:
+      - "Creates engagement and curiosity"
+      - "Sets up the content as the answer"
+    limitations:
+      - "Requires the slide to answer the question"
+      - "Less direct than action titles"
+    when_to_use: "Opening discussion, audience engagement"
+
+  transformation_technique:
+    from_label: "Market Analysis"
+    to_action: "Market share is declining due to new entrants"
+    method: "Ask 'so what?' about the label to find the action title"
+
+# ==============================================================================
+# VONNEGUT STORY SHAPES
+# ==============================================================================
+
+vonnegut_shapes:
+  description: "Kurt Vonnegut's story shape archetypes applied to presentations"
+
+  man_in_hole:
+    shape: "Starts OK → Falls into trouble → Climbs out successfully"
+    emotional_arc: [0, -2, 2]
+    business_application: "Problem-solving presentations"
+    example: "We faced a crisis, here's how we solved it"
+    visual_treatment:
+      opening: "Stable, neutral"
+      middle: "Dark, concerning"
+      end: "Bright, triumphant"
+
+  rags_to_riches:
+    shape: "Starts low → Steady rise to success"
+    emotional_arc: [-2, 0, 2]
+    business_application: "Growth stories, transformation narratives"
+    example: "Our journey from startup to market leader"
+    visual_treatment:
+      opening: "Humble, constrained"
+      middle: "Building, growing"
+      end: "Successful, expansive"
+
+  icarus:
+    shape: "Rise to height → Fall from grace"
+    emotional_arc: [0, 2, -2]
+    business_application: "Cautionary tales, risk presentations"
+    example: "Why overconfidence led to market exit"
+    visual_treatment:
+      opening: "Neutral"
+      middle: "Successful, bold"
+      end: "Concerning, warning"
+
+  cinderella:
+    shape: "Rise → Setback → Ultimate triumph"
+    emotional_arc: [-1, 2, 0, 2]
+    business_application: "Resilience stories, turnaround narratives"
+    example: "How we overcame setbacks to exceed targets"
+    visual_treatment:
+      opening: "Modest, constrained"
+      middle_rise: "Hopeful, growing"
+      setback: "Challenged, but not defeated"
+      end: "Triumphant, confident"
+
+# ==============================================================================
+# PACING & RHYTHM
+# ==============================================================================
+
+pacing_rhythm:
+  description: "Managing information density and visual rhythm"
+
+  slide_density_categories:
+    lean:
+      dwell_time: "<10 seconds"
+      content: "One concept, minimal text"
+      purpose: "Statement slides, transitions, emotional beats"
+      design: "Large visual, few words, maximum impact"
+
+    moderate:
+      dwell_time: "10-30 seconds"
+      content: "2-3 points, balanced"
+      purpose: "Standard information delivery"
+      design: "Clear hierarchy, digestible chunks"
+
+    dense:
+      dwell_time: "30-60 seconds"
+      content: "Multiple data points, complex visuals"
+      purpose: "Analysis slides, detailed evidence"
+      design: "Careful organisation, guided attention"
+
+    slidument:
+      dwell_time: ">60 seconds"
+      content: "Document disguised as slide"
+      warning: "Avoid in live presentations"
+      acceptable: "Leave-behind reference materials only"
+
+  rhythm_techniques:
+    breather_slides:
+      purpose: "Allow processing after dense content"
+      content: "Image only, simple quote, key takeaway"
+      frequency: "After every 3-5 dense slides"
+
+    summary_slides:
+      purpose: "Consolidate previous section"
+      content: "Key points from preceding slides"
+      frequency: "End of each major section"
+
+    transition_slides:
+      purpose: "Signal shift between topics"
+      content: "Section title, minimal content"
+      effect: "Resets attention, prepares for new topic"
+
+  the_10_20_30_rule:
+    description: "Guy Kawasaki's pitch deck guideline"
+    slides: "10 slides maximum"
+    minutes: "20 minutes maximum"
+    font_size: "30pt minimum"
+    applicability: "Investor pitches, time-constrained presentations"
+
+# ==============================================================================
+# STANDARD TEMPLATE SLIDE TYPES
+# ==============================================================================
+
+template_structure:
+  description: "Standard narrative building blocks for presentations"
+
+  title_slide:
+    role: "Sets visual tone and context"
+    elements: ["Presentation title", "Subtitle", "Presenter info"]
+
+  section_divider:
+    role: "Signals topic shift and resets attention"
+    elements: ["Section title", "Number", "Brief subtitle"]
+
+  content_slide:
+    role: "Standard information delivery"
+    elements: ["Action title", "Content body", "Footer"]
+
+  data_slide:
+    role: "Evidence and proof"
+    elements: ["Action title (insight)", "Visualisation", "Source"]
+
+  quote_slide:
+    role: "Emotional resonance or authority"
+    elements: ["Quote (large)", "Attribution", "Source photo"]

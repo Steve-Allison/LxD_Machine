@@ -1,0 +1,1057 @@
+_meta:
+  id: visual_design_rubric
+  title: Visual Design Rubric
+  description: Visual design quality assessment for presentation slides, incorporating semiotic metafunctions, narrative architecture, cognitive accessibility, and advanced data visualization standards
+  domain: pedagogical
+  domain_type: workflow
+  purpose: scoring
+  version: "1.4.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md"
+    - "Corpus/Research/Best Practices for Writing Effective Corporate Learning Content.md"
+    - "Corpus/Research/Research - Comprehensive Audience Analysis.md"
+    - "Corpus/Research/The Semiotics of Strategy - A Framework for Visual Rhetoric in Professional Communication.md"
+    - "Corpus/Research/The Unseen Structure - A Technical Deep-Dive into Narrative Visualization and Accessibility.md"
+
+  relationships:
+    - target: scoring/cognitive_load_rubric.yaml
+      type: related_to
+    - target: scoring/accessibility_rubric.yaml
+      type: related_to
+    - target: scoring/presentation_profiles_rubric.yaml
+      type: related_to
+
+dimensions:
+  - name: visual_hierarchy
+    description: "Use of size, weight, color, and position to guide viewer attention and establish information priority"
+    score_levels:
+      - score: 0
+        label: absent
+        description: "No visual hierarchy; all elements appear equal in weight"
+      - score: 1
+        label: partial
+        description: "Some hierarchy elements present but inconsistent or weak"
+      - score: 2
+        label: clear
+        description: "Clear size and weight hierarchy with consistent scanning pattern"
+      - score: 3
+        label: exemplary
+        description: "Optimal hierarchy with three-second scan rule met; information priority crystal clear"
+  - name: contrast_and_accessibility
+    description: "Color contrast ratios and accessibility compliance for inclusive visual design"
+    score_levels:
+      - score: 0
+        label: failing
+        description: "Contrast ratios below WCAG AA minimum; multiple accessibility failures"
+      - score: 1
+        label: partial
+        description: "Some contrast issues; AA compliance inconsistent"
+      - score: 2
+        label: compliant
+        description: "WCAG AA contrast requirements met throughout"
+      - score: 3
+        label: exemplary
+        description: "Exceeds AA requirements; colour-blind safe palette; alt text on all images"
+  - name: gestalt_and_layout
+    description: "Application of gestalt principles and grid-based layout for perceptual organisation"
+    score_levels:
+      - score: 0
+        label: disorganised
+        description: "No gestalt grouping; arbitrary element placement"
+      - score: 1
+        label: partial
+        description: "Some proximity and alignment applied inconsistently"
+      - score: 2
+        label: organised
+        description: "Consistent gestalt grouping with grid alignment"
+      - score: 3
+        label: exemplary
+        description: "Expert gestalt application with figure-ground and continuity perfectly balanced"
+  - name: typography_quality
+    description: "Font selection, hierarchy, line length, and readability adherence"
+    score_levels:
+      - score: 0
+        label: poor
+        description: "Typography violates readability standards; multiple font families; no hierarchy"
+      - score: 1
+        label: basic
+        description: "Single font family used; hierarchy partially defined"
+      - score: 2
+        label: good
+        description: "Clear typographic hierarchy meeting size and weight standards"
+      - score: 3
+        label: exemplary
+        description: "Optimal typography with correct line length, leading, and heading hierarchy"
+  - name: data_visualisation_quality
+    description: "Chart type appropriateness, labeling standards, action captions, and data-ink ratio"
+    score_levels:
+      - score: 0
+        label: poor
+        description: "Inappropriate chart types; no direct labeling; labels missing"
+      - score: 1
+        label: basic
+        description: "Appropriate chart types but legends used instead of direct labels"
+      - score: 2
+        label: good
+        description: "Direct labeling applied; action captions present on key charts"
+      - score: 3
+        label: exemplary
+        description: "Optimal data-ink ratio; all charts directly labeled with insight-driven action captions"
+  - name: semiotic_effectiveness
+    description: "Semiotic metafunction alignment (representational, interpersonal, compositional) and narrative architecture coherence"
+    score_levels:
+      - score: 0
+        label: absent
+        description: "No coherent visual rhetoric; images decorative only"
+      - score: 1
+        label: partial
+        description: "Some semiotic intentionality but metafunctions misaligned"
+      - score: 2
+        label: structured
+        description: "Clear representational and compositional metafunctions applied"
+      - score: 3
+        label: exemplary
+        description: "All three metafunctions optimised with narrative architecture supporting the story arc"
+
+visual_hierarchy:
+  description: "Use size, color, position, and weight to guide attention"
+
+  principles:
+    size:
+      headline: { min: 32, ideal: 36, max: 48 }  # points
+      subheadline: { min: 24, ideal: 28, max: 32 }
+      body_text: { min: 18, ideal: 20, max: 24 }
+      caption: { min: 14, ideal: 16, max: 18 }
+      size_ratio: { min: 1.5 }  # Headline must be ≥1.5× body size
+
+    weight:
+      headline: "Bold or Semibold"
+      body: "Regular"
+      emphasis: "Bold (sparingly - <10% of text)"
+
+    color:
+      primary: "Headlines, key data points"
+      secondary: "Supporting text, labels"
+      accent: "Call-outs, critical information (<5% of content)"
+
+    position:
+      f_pattern: "Western audiences read F-pattern (top-left → top-right → down-left)"
+      z_pattern: "Presentations often use Z-pattern (title top → visual center → CTA bottom-right)"
+      focal_point: "Most important element in optical center or top-third"
+
+  violations:
+    uniform_text: "All text same size/weight (no hierarchy)"
+    inverted_hierarchy: "Body text larger than headline"
+    competing_focal_points: "3+ elements same visual weight fighting for attention"
+
+# ==============================================================================
+# TYPOGRAPHY
+# ==============================================================================
+
+typography:
+  description: "Font selection, sizing, and spacing for readability"
+
+  font_selection:
+    sans_serif:
+      recommended: ["Helvetica", "Arial", "Calibri", "Open Sans", "Roboto"]
+      use_for: "Body text, headlines, data labels"
+      reason: "Superior screen readability"
+
+    serif:
+      use_for: "Print materials, long-form reading"
+      avoid: "Presentations (lower screen legibility)"
+
+    decorative:
+      use_for: "Brand-specific headlines only"
+      avoid: "Body text, data labels"
+
+  font_pairing:
+    max_fonts: 2  # One for headlines, one for body (or same font, different weights)
+    violation: "3+ font families (visual chaos)"
+    amateurism_marker: "Using more than 2 typefaces is a standard marker of amateurism in professional presentation design. Each additional font family introduces a new visual grammar that competes with the others."
+    research_basis: "The Semiotics of Strategy.md"
+
+  authority_modernity_axis:
+    description: "Typeface selection communicates on a Seriousness-Approachability and Tradition-Innovation axis. Select typefaces that match the intended ethos, not just readability."
+    research_basis: "The Semiotics of Strategy.md"
+    axes:
+      authority_axis:
+        high_authority: "Serif typefaces (Times, Georgia, Garamond) — tradition, gravitas, expertise"
+        moderate_authority: "Geometric sans-serif (Futura, Gotham) — modern authority, design-forward"
+        low_authority: "Humanist sans-serif (Gill Sans, Myriad) — approachable, conversational"
+      modernity_axis:
+        traditional: "Classic serifs (Garamond, Palatino)"
+        contemporary: "Grotesque sans (Helvetica, Arial, Calibri)"
+        innovative: "Neo-grotesque or variable fonts (Inter, DM Sans)"
+    application:
+      executive_financial: "High-authority serif or geometric sans"
+      technology_startup: "Contemporary grotesque or innovative neo-grotesque"
+      creative_marketing: "Humanist or bold display (headline only)"
+
+  sizing:
+    minimum_readable:
+      in_person: 18  # points (back row test)
+      virtual: 20    # points (webcam compression)
+
+    recommended:
+      headline: 36
+      subhead: 28
+      body: 20
+      caption: 16
+
+    by_room_size:
+      small_room_20_people: { min: 18 }
+      medium_room_50_people: { min: 24 }
+      large_room_200_people: { min: 32 }
+      auditorium_500_plus: { min: 48 }
+
+  spacing:
+    line_height:
+      min: 1.2  # × font size
+      ideal: 1.5
+      max: 2.0
+
+    letter_spacing:
+      default: 0  # normal
+      all_caps: 0.05  # 5% tracking for readability
+
+  violations:
+    too_small: "<18pt (unreadable from back)"
+    too_tight: "Line height <1.2 (cramped)"
+    all_caps_abuse: "Entire paragraphs in ALL CAPS (hard to read)"
+    three_plus_fonts: "3 or more font families — amateurism marker"
+
+# ==============================================================================
+# COLOR
+# ==============================================================================
+
+color:
+  description: "Color palette, contrast, and meaning"
+
+  palette_structure:
+    primary: "Brand color (headlines, key elements)"
+    secondary: "Supporting color (subheads, accents)"
+    neutrals: "Gray scale for body text, backgrounds"
+    accent: "1-2 accent colors for call-outs, data highlights"
+
+    max_colors_per_slide: 5  # Including neutrals
+    violation: "Rainbow slide (7+ colors, no coherence)"
+
+  semantic_uniqueness_rule:
+    description: "Each color in the presentation palette must map to exactly one semantic category. Color should carry meaning, not decorate. When a color appears, the viewer should know immediately what category it represents."
+    research_basis: "The Unseen Structure.md"
+    standard: "One semantic category per palette color — throughout the entire deck"
+    examples:
+      correct: "Blue = benefits; Orange = risks; Green = achieved results — consistent throughout"
+      violation: "Blue used for both benefits on slide 3 and background on slide 7 — ambiguity"
+    violation_label: "color_semantic_overload"
+    penalty: 6
+
+  rhetorical_function_test:
+    description: "Every color decision must serve one of these rhetorical functions: (1) Hierarchy — guiding the eye; (2) Category — distinguishing data series; (3) Emphasis — highlighting the key point; (4) Ethos — brand trust and professional identity. Purely decorative color fails this test."
+    research_basis: "The Semiotics of Strategy.md"
+    functions:
+      - hierarchy
+      - category
+      - emphasis
+      - ethos
+    violation_label: "decorative_color_use"
+    test: "For each color element: which rhetorical function does it serve? If none, remove it."
+
+  industry_color_associations:
+    description: "Color carries industry-specific connotations. Violating these creates subliminal dissonance."
+    research_basis: "The Semiotics of Strategy.md"
+    financial_services:
+      authoritative: ["Navy", "Deep Blue", "Forest Green"]
+      avoid: ["Bright Orange", "Hot Pink", "Lime Green"]
+    technology:
+      innovative: ["Electric Blue", "Cyan", "Deep Purple"]
+      enterprise_credible: ["Slate Blue", "Charcoal", "Muted Teal"]
+    healthcare:
+      trust: ["Blue", "Teal", "Clean White"]
+      avoid: ["Red (except danger)", "Dark Heavy Tones"]
+    creative_marketing:
+      expressive: ["Bold Primaries", "Vibrant Accents", "High Contrast"]
+      avoid: "Overly conservative or desaturated palettes"
+
+  color_meaning:
+    semantic_colors:
+      success: "Green"
+      warning: "Yellow/Orange"
+      error: "Red"
+      info: "Blue"
+
+    cultural_considerations:
+      red_china: "Good fortune, celebration"
+      red_western: "Danger, stop, error"
+      white_western: "Purity, clean"
+      white_eastern: "Death, mourning"
+
+    avoid:
+      color_only_meaning: "Never use color alone to convey information (accessibility)"
+
+  contrast:
+    text_on_background:
+      min_ratio: 4.5  # WCAG AA for small text
+      detail: "See accessibility_rubric.yaml for full standards"
+
+    data_visualization:
+      min_difference: "Adjacent chart segments must have ≥30% luminance difference"
+      colorblind_safe: "Use patterns + colors (not color alone)"
+
+  background_colors:
+    recommended:
+      light: "White (#FFFFFF), Light Gray (#F5F5F5)"
+      dark: "Dark Blue (#1A1A2E), Charcoal (#2D2D2D)"
+
+    avoid:
+      mid_tone: "Medium gray (#808080) - poor contrast with both light and dark text"
+      busy_patterns: "Gradients, textures, photos as full-slide backgrounds"
+
+  violations:
+    low_contrast: "Text hard to read on background"
+    color_overload: ">5 colors per slide"
+    rainbow_chart: "Chart with 10 different colors (confusing)"
+    color_semantic_overload: "Same color used for multiple semantic categories"
+
+# ==============================================================================
+# LAYOUT & SPACING
+# ==============================================================================
+
+layout:
+  description: "Slide layout, grid systems, and white space"
+
+  grid_system:
+    aspect_ratio: "16:9 (modern standard, not 4:3)"
+    safe_margins:
+      top: "10% of slide height"
+      bottom: "10% of slide height"
+      left: "8% of slide width"
+      right: "8% of slide width"
+    reason: "Prevents edge clipping on projectors, allows breathing room"
+
+  layout_patterns:
+    title_content:
+      headline: "Top 10-15% of slide"
+      content_area: "Remaining space with margins"
+      most_common: "80% of slides"
+
+    full_bleed_image:
+      text_overlay: "Max 9 words, high contrast"
+      use_for: "Section dividers, emotional impact"
+
+    two_column:
+      left: "Text or bullets"
+      right: "Visual or data"
+      split: "50/50 or 40/60"
+
+    data_focused:
+      headline: "Insight statement (not generic 'Q4 Results')"
+      chart: "70-80% of slide space"
+      annotation: "Callouts for key data points"
+
+  white_space:
+    purpose: "Reduce cognitive load, guide attention, create elegance"
+    minimum: "30% of slide should be empty space"
+    ideal: "40-50% white space"
+    violations:
+      cramming: "<20% white space (visual clutter)"
+      edge_to_edge: "Content touching slide borders"
+
+  alignment:
+    text: "Left-aligned (Western audiences) - easier to scan than centered"
+    headlines: "Left or center (consistency required)"
+    visuals: "Centered or aligned to grid"
+    violations:
+      mixed_alignment: "Some slides left, some center, some right (inconsistent)"
+
+# ==============================================================================
+# SEMIOTIC METAFUNCTIONS
+# Kress & van Leeuwen (1996) social semiotics framework for visual analysis
+# ==============================================================================
+
+semiotic_metafunctions:
+  description: "Every visual element in a presentation simultaneously serves three metafunctions: Representational (what it depicts), Interactive (how it positions the viewer), and Compositional (how elements are organized in space). Assessing all three enables systematic visual rhetoric evaluation."
+  research_basis: "The Semiotics of Strategy.md — Kress & van Leeuwen (1996)"
+
+  representational:
+    description: "What the visual depicts and how it represents its subject"
+
+    narrative_visuals:
+      definition: "Visuals that show action, process, or change over time — there is a directional vector (arrow, path, sequence)"
+      subtypes:
+        - transactional: "One participant acts on another (A → B)"
+        - non_transactional: "Action with no clear receiver (solo actor)"
+        - sequential: "Process steps in time order"
+      vector_clarity:
+        standard: "Vectors (arrows, lines, paths) must be unambiguous — direction and target must be immediately legible"
+        violation_label: "ambiguous_vector"
+        penalty: 4
+
+    conceptual_visuals:
+      definition: "Visuals that show structure, classification, or essence — no directional action"
+      subtypes:
+        - classificational: "Taxonomies, org charts, category maps"
+        - analytical: "Part-whole relationships (pie charts, Venn diagrams)"
+        - symbolic: "Metaphors, icons, emblems"
+      appropriate_use: "Analytical visuals for structure explanation; symbolic visuals for emotional/brand moments"
+
+    quality_test: "Can a viewer identify the visual type (narrative or conceptual) within 3 seconds? If not, the representational function is unclear."
+
+  interactive:
+    description: "How the visual positions the viewer — the power relationship between image and audience"
+
+    contact:
+      demand_gaze: "Subject looks directly at viewer — creates engagement and demands response; appropriate for emotionally charged content, testimonials"
+      offer_gaze: "Subject does not look at viewer — information is offered, not demanded; appropriate for neutral data slides"
+      application: "Use demand gaze in opening/closing slides; offer gaze in data and analytical slides"
+
+    social_distance:
+      close_shot: "Close-up of person — intimate, personal, emotional"
+      medium_shot: "Person from waist up — social, professional"
+      long_shot: "Full body or scene — public, distant, objective"
+      application: "Match shot type to emotional register of the slide"
+
+    perspective_and_power:
+      high_angle: "Camera above subject — viewer feels power over subject; use for 'overview' or 'control' narratives"
+      eye_level: "Camera at eye level — equal relationship; most neutral"
+      low_angle: "Camera below subject — subject has power; use for aspiration or authority"
+      violation_label: "perspective_power_mismatch"
+      description: "Using low-angle imagery on a 'customer as hero' slide positions the customer as powerful — which is correct. Using high-angle on an authority figure undermines the intended ethos."
+
+  compositional:
+    description: "How elements are organized in the visual space — what meaning spatial arrangement creates"
+
+    given_new:
+      principle: "In Western reading cultures, the LEFT side of the visual carries 'Given' (what is already known); the RIGHT side carries 'New' (what is being introduced)"
+      research_basis: "Kress & van Leeuwen (1996) — verified by Western reading direction studies"
+      application:
+        correct: "Current state on left; future state on right. Problem on left; solution on right."
+        violation: "Placing the new insight on the left and the familiar context on the right — inverts reader expectation"
+      violation_label: "given_new_inversion"
+      penalty: 4
+
+    ideal_real:
+      principle: "TOP of the visual carries 'Ideal' (aspirational, emotional, generalized); BOTTOM carries 'Real' (practical, technical, evidence)"
+      application:
+        correct: "Vision or key claim at top; supporting data at bottom. Aspirational image at top; detail at bottom."
+        violation: "Data and evidence at top, aspirational claim at bottom — undermines emotional arc"
+      violation_label: "ideal_real_inversion"
+      penalty: 3
+
+    salience:
+      principle: "The most salient (visually dominant) element should be the most important element"
+      test: "Where does the eye go first? Is that the most important element on the slide?"
+      violation_label: "salience_mismatch"
+      description: "A decorative image draws the eye before the key data point — salience is misaligned"
+      penalty: 5
+
+    framing:
+      principle: "Strong framing (borders, whitespace separation) creates visual isolation; weak framing allows elements to flow together"
+      application:
+        strong_framing: "Use for mutually exclusive categories, competing options, before/after"
+        weak_framing: "Use for continuous narratives, processes, interconnected systems"
+      violation_label: "framing_logic_mismatch"
+      description: "Using weak framing (no borders) for mutually exclusive categories creates apparent overlap"
+
+# ==============================================================================
+# IMAGE FUNCTION
+# Dual Coding Theory classification of image use
+# ==============================================================================
+
+image_function:
+  description: "Images in presentations should serve a cognitive function, not decorate. Dual Coding Theory (Paivio 1971) shows that images aligned with verbal content enhance encoding; decorative images compete for attention without adding memory traces."
+  research_basis: "The Semiotics of Strategy.md — Paivio (1971) Dual Coding Theory"
+
+  elaboration:
+    definition: "Image provides additional information that extends or deepens the verbal message without redundancy"
+    cognitive_effect: "Creates dual memory trace (verbal + visual) — strongest for recall"
+    examples:
+      - "A process diagram that shows steps described in the title"
+      - "A photograph of a real customer referenced in a case study"
+      - "A chart that proves the quantitative claim in the action title"
+    score_impact: "Bonus: dual_coding_achieved"
+
+  extension:
+    definition: "Image introduces a related but distinct dimension (emotion, metaphor, context) that the verbal channel does not"
+    cognitive_effect: "Enriches mental model without redundancy; adds emotional register"
+    examples:
+      - "An image of a frustrated team while text describes productivity loss"
+      - "A metaphor image (bridge) while text describes a transition strategy"
+    score_impact: "Strong positive — no penalty"
+
+  redundancy:
+    definition: "Image repeats exactly what the verbal channel already shows — no additional information"
+    cognitive_effect: "Wastes visual channel; doubles extraneous load without memory benefit (Mayer Redundancy Effect)"
+    examples:
+      - "Icon of a person next to the word 'People'"
+      - "Chart showing data already shown in a data table on the same slide"
+    violation_label: "redundant_image"
+    penalty: 3
+
+  decoration:
+    definition: "Image has no semantic connection to the verbal content — purely aesthetic"
+    cognitive_effect: "Competes for attention without adding meaning; increases extraneous cognitive load"
+    examples:
+      - "Stock photo of happy people shaking hands on a slide about data security"
+      - "Abstract texture as slide background on a financial performance slide"
+      - "Decorative icons that don't represent the content"
+    violation_label: "decorative_image"
+    penalty: 5
+    note: "This is the most common visual design failure in corporate presentations"
+
+  quality_test: "Cover the image; read the slide text. Does removing the image lose any information? If yes: elaboration or extension. If no: redundancy or decoration."
+
+# ==============================================================================
+# DATA VISUALIZATION
+# ==============================================================================
+
+data_visualization:
+  description: "Chart design for clarity and insight"
+
+  chart_selection:
+    comparison:
+      use: "Bar chart (horizontal or vertical)"
+      avoid: "Pie chart (harder to compare)"
+
+    trend_over_time:
+      use: "Line chart"
+      avoid: "Bar chart (cluttered with many time points)"
+
+    part_to_whole:
+      use: "Stacked bar, treemap"
+      caution: "Pie chart (only if 2-5 segments)"
+
+    distribution:
+      use: "Histogram, box plot"
+
+    relationship:
+      use: "Scatter plot"
+
+    # Advanced chart types with narrative_goal axis
+    advanced_types:
+      description: "Advanced chart types are appropriate when the narrative goal requires displaying a specific relationship pattern that standard charts cannot represent."
+      research_basis: "The Unseen Structure.md"
+
+      sankey_diagram:
+        narrative_goal: "Show flow volumes between categories — where things come from and where they go"
+        use_cases: ["Budget allocation flows", "Customer journey drop-off", "Supply chain volume"]
+        cognitive_requirement: "Reader must understand flow as both category and magnitude"
+        avoid_when: "Only two categories; use stacked bar instead"
+
+      causal_loop_diagram:
+        narrative_goal: "Show system feedback loops and non-linear causality"
+        use_cases: ["Reinforcing growth loops", "Balancing feedback constraints", "Systems thinking narratives"]
+        cognitive_requirement: "Reader must follow circular causality"
+        avoid_when: "Audience unfamiliar with systems thinking — add annotation guide"
+
+      parallel_coordinate_plot:
+        narrative_goal: "Compare multiple variables across many items simultaneously"
+        use_cases: ["Multi-attribute product comparison", "Portfolio analysis across KPIs", "Cohort performance across metrics"]
+        cognitive_requirement: "High analytical sophistication required"
+        avoid_when: "Executive audience or <3 variables"
+
+      scatterplot_matrix:
+        narrative_goal: "Explore pairwise correlations across many variables at once"
+        use_cases: ["Data exploration summary", "Research findings overview", "Feature importance mapping"]
+        cognitive_requirement: "Requires analytical reading patience"
+        avoid_when: "Live presentation; better for leave-behind or appendix"
+
+      t_sne_projection:
+        narrative_goal: "Show high-dimensional cluster structure in 2D"
+        use_cases: ["AI model cluster visualization", "Customer segment mapping", "Content similarity mapping"]
+        cognitive_requirement: "Reader must understand that axes are not interpretable — only cluster proximity matters"
+        required_annotation: "Always annotate cluster labels; never leave projection unlabeled"
+        violation_label: "unlabelled_projection"
+        penalty: 8
+
+  design_standards:
+    direct_labeling:
+      principle: "Label data points directly (not via legend)"
+      reason: "Reduces saccades (eye movements), lower cognitive load"
+      effect: "Mayer's spatial contiguity principle"
+
+    data_ink_ratio:
+      principle: "Maximize data, minimize non-data ink (Tufte)"
+      remove:
+        - grid_lines: "Use sparingly or remove"
+        - chart_borders: "Usually unnecessary"
+        - 3d_effects: "No depth (distorts data)"
+        - decorative_fills: "Gradients, textures in bars"
+
+    axis_labeling:
+      required: "All axes must have labels and units"
+      title: "Should state insight, not just chart type"
+      example_bad: "Q4 Sales by Region"
+      example_good: "West region drove 60% of Q4 growth"
+
+    color_in_charts:
+      max_colors: 5  # per chart
+      emphasis: "Highlight 1-2 key data points with accent color"
+      de_emphasis: "Gray out non-critical data"
+
+  violations:
+    chart_junk:
+      description: "Decorative elements that don't convey information"
+      examples: ["3D effects", "drop shadows", "background images", "excessive grid lines"]
+
+    misleading_scales:
+      description: "Y-axis doesn't start at zero (exaggerates differences)"
+      exception: "Small variations in large numbers (annotate clearly)"
+
+    legend_instead_of_labels:
+      description: "Forces reader to look back and forth"
+      fix: "Direct labeling"
+
+    unlabeled_data:
+      description: "Reader can't understand what chart shows"
+      fix: "Axis labels, data labels, clear title"
+
+    hairball_diagram:
+      description: "Network or relationship diagram with so many edges and nodes that no pattern is legible — typically caused by insufficient node filtering or cluster pre-processing"
+      violation_label: "hairball_diagram"
+      fix: "Filter to top N nodes; highlight key subgraph; use cluster summary instead of full network"
+      penalty: 8
+
+    conclusion_buried:
+      description: "Data visualization shows data from which the conclusion must be manually derived — no annotation, action caption, or callout guides the viewer to the insight"
+      violation_label: "conclusion_buried"
+      fix: "Add action caption identifying the conclusion; annotate the key data element; use callout box"
+      penalty: 5
+
+# ==============================================================================
+# TEMPLATE CONSISTENCY
+# ==============================================================================
+
+template_consistency:
+  description: "Prevent 'Frankendeck' - inconsistent slide templates"
+
+  required_consistency:
+    font_family: "Same throughout deck"
+    font_sizes: "Consistent hierarchy (headline always 36pt, body always 20pt)"
+    color_palette: "Same 3-5 colors throughout"
+    layout_patterns: "Reuse same layouts (title-content, two-column, full-bleed)"
+    logo_placement: "Same position every slide (e.g., bottom-right corner)"
+
+  allowable_variation:
+    section_dividers: "Can use different background color/layout"
+    data_slides: "May need different layout than text slides"
+    closing_slide: "Can have unique treatment"
+
+  frankendeck_symptoms:
+    different_fonts: "Slide 5 uses Arial, Slide 12 uses Times New Roman"
+    color_chaos: "Each slide introduces new color (no palette)"
+    template_mixing: "Slides from 3 different PowerPoint themes"
+    inconsistent_headers: "Headline sometimes top-left, sometimes centered"
+
+  prevention:
+    use_master_slides: "Create slide master with locked elements"
+    color_palette: "Define 3-5 colors, stick to them"
+    layout_library: "Create 5-7 layout templates, reuse"
+
+# ==============================================================================
+# GESTALT PRINCIPLES
+# ==============================================================================
+
+gestalt_principles:
+  description: "How humans perceive visual relationships"
+
+  proximity:
+    principle: "Items close together are perceived as related"
+    application: "Group related content, separate unrelated content"
+    spacing: "Related items: 10-20px apart; Unrelated: 40-60px apart"
+
+  similarity:
+    principle: "Items that look similar are perceived as related"
+    application: "Same color/shape for same category"
+    example: "All benefits in blue, all features in green"
+
+  continuity:
+    principle: "Eyes follow lines and curves"
+    application: "Use lines to guide attention (arrows, underlines, borders)"
+
+  closure:
+    principle: "Mind completes incomplete shapes"
+    application: "Simple icons can be partially drawn (brain fills in)"
+
+  figure_ground:
+    principle: "Distinguish object from background"
+    application: "High contrast between content and background"
+    violation: "Text on busy photo background (poor figure-ground)"
+
+# ==============================================================================
+# NARRATIVE ARCHITECTURE
+# Structural coherence of the visual narrative
+# ==============================================================================
+
+narrative_architecture:
+  description: "Slide decks are not a collection of visuals — they are a visual argument. Narrative architecture evaluates whether the structural and rhetorical choices across slides create a coherent argument that the visual channel reinforces."
+  research_basis: "The Semiotics of Strategy.md"
+
+  action_titles_vs_label_titles:
+    standard: "Every slide title must make an assertion (action title), not name a topic (label title)"
+    research_basis: "Minto Pyramid Principle; The Semiotics of Strategy.md"
+    action_title_criteria:
+      - "Contains a verb with subject and predicate"
+      - "Makes a specific, defensible claim"
+      - "Viewer knows the slide's conclusion before reading body"
+    label_title_indicators:
+      - "Title Case noun phrases with no verb"
+      - "Generic nouns: 'Overview', 'Analysis', 'Results', 'Background'"
+      - "Question format (assertions, not interrogatives)"
+    violation_label: "label_title"
+    penalty: 5  # Per label title
+
+  dot_dash_test:
+    description: "Read only the action titles in sequence. If the title sequence does not form a coherent standalone narrative, the deck's narrative architecture is broken."
+    research_basis: "The Semiotics of Strategy.md; Duarte Resonate"
+    pass_criteria: "Title-only reading produces complete, logical argument"
+    fail_criteria: "Gaps, topic labels, or non-sequiturs appear in title sequence"
+    violation_label: "dot_dash_failure"
+    penalty: 8  # Structural failure of deck narrative
+
+  visual_coding_consistency:
+    description: "Visual coding (what each color, shape, icon, or layout position means) must remain consistent throughout the deck. Inconsistent coding forces the viewer to re-learn the visual language on each slide."
+    violation_label: "visual_coding_inconsistency"
+    examples:
+      violation: "Blue circles represent 'problems' on slide 4 but 'solutions' on slide 9"
+      compliant: "Blue circles consistently represent one semantic category throughout"
+    penalty: 5
+
+  semiotic_conflict:
+    description: "A semiotic conflict occurs when the visual channel sends a message that contradicts or undermines the verbal channel. This is a high-severity violation because the viewer unconsciously registers the contradiction, reducing trust and comprehension."
+    research_basis: "The Semiotics of Strategy.md"
+    violation_label: "semiotic_conflict"
+    severity: "high"
+    examples:
+      - "Slide about team empowerment uses a high-angle shot of the team (positions them as inferior)"
+      - "Slide celebrating growth uses a downward-sloping chart (wrong direction)"
+      - "Slide about innovation uses conservative, traditional imagery"
+      - "Slide about customer success uses demand gaze on the seller, not the customer"
+    penalty: 10  # High severity
+    bonus: 3      # When verbal/visual channels are perfectly aligned
+
+# ==============================================================================
+# IMAGE QUALITY
+# ==============================================================================
+
+image_quality:
+  description: "Standards for photography and graphics"
+
+  resolution:
+    minimum_dpi: 72  # screen
+    recommended_dpi: 150  # high-quality screen
+    print_dpi: 300  # if slide deck will be printed
+
+  image_types:
+    photography:
+      format: "JPG (photos), PNG (graphics with transparency)"
+      min_width: 1920  # pixels (for 16:9 full-bleed)
+      avoid: "Pixelated, low-res stock photos"
+
+    icons:
+      format: "SVG (vector) or high-res PNG"
+      style: "Consistent icon family (all line, all filled, all flat)"
+      avoid: "Mixing icon styles (clip art + line icons)"
+
+    charts:
+      format: "Native chart object (editable) preferred over image"
+      fallback: "High-res PNG or SVG export"
+
+  authentic_vs_generic_photography:
+    description: "Authentic photography creates ethos and trust; generic stock photography undermines both. The distinction is legible to professional audiences within seconds."
+    research_basis: "The Semiotics of Strategy.md"
+    authentic:
+      definition: "Images specific to the actual context, brand, or people being represented"
+      characteristics:
+        - "Real customers or team members (not stock models)"
+        - "Actual office, product, or environment"
+        - "Specific and unique — could not appear in a competitor's deck"
+      ethos_impact: "High — signals authenticity, expertise, real-world grounding"
+    generic:
+      definition: "Stock photography that could represent any company in any industry"
+      characteristics:
+        - "Overly staged 'happy business people' scenarios"
+        - "Multicultural diversity photos that feel calculated"
+        - "Generic office/handshake/meeting imagery"
+      ethos_impact: "Low — signals laziness, inauthenticity, or low investment"
+    violation_label: "generic_photography"
+    penalty: 3  # Per slide with generic stock imagery that undermines brand ethos
+    bonus: 2    # Per slide with authentic, specific imagery
+
+  violations:
+    pixelation: "Blurry, low-resolution images"
+    distortion: "Stretched/squished aspect ratio"
+    watermarks: "Stock photo watermarks visible"
+
+# ==============================================================================
+# NARRATIVE SEQUENCING
+# Progressive disclosure and BLUF visual pyramid structure
+# ==============================================================================
+
+narrative_sequencing:
+  description: "The order and pacing of information across the visual sequence determines comprehension and retention. BLUF (Bottom Line Up Front) applied visually means the key conclusion appears before supporting evidence."
+  research_basis: "The Unseen Structure.md"
+
+  bluf_visual_structure:
+    description: "Apply the BLUF principle to the visual sequence: the most important chart or visual element should appear early in the deck's visual arc, not at the end. Evidence slides support the claim; they do not build toward it."
+    research_basis: "The Unseen Structure.md; Minto Pyramid Principle"
+    violation_label: "bluf_buried"
+    examples:
+      correct: "Summary chart on slide 2 shows the final outcome; subsequent slides provide supporting evidence"
+      violation: "10 slides of supporting data, with the key conclusion revealed only on slide 11"
+    penalty: 6
+    bonus: 2
+
+  progressive_disclosure:
+    description: "Complex visualizations should scaffold comprehension: introduce the framework first, then populate with data, then annotate the key insight. Don't show a complete complex chart and explain it afterward."
+    research_basis: "The Unseen Structure.md"
+    stages:
+      - stage_1: "Show empty or skeletal framework — 'this is the structure'"
+      - stage_2: "Populate with data — 'this is what we measured'"
+      - stage_3: "Annotate key insight — 'this is what it means'"
+    application: "Appropriate for: complex diagrams, multi-variable charts, system maps"
+    violation_label: "progressive_disclosure_absent"
+    description_violation: "Complex chart presented all at once with no scaffolding annotation"
+    penalty: 3
+
+  annotation_scaffolding:
+    description: "Annotations should guide the viewer's eye through the visualization in a deliberate sequence — not all annotations at once, but building toward the key insight."
+    standards:
+      - "Primary annotation: the key takeaway (most prominent)"
+      - "Secondary annotations: supporting data points (smaller, less prominent)"
+      - "Context labels: axis, categories (smallest, subdued)"
+    violation_label: "annotation_chaos"
+    description_violation: "All annotations at equal prominence — no visual hierarchy in annotation layer"
+    penalty: 3
+
+# ==============================================================================
+# COGNITIVE ACCESSIBILITY
+# Making visual content cognitively accessible to all viewers
+# ==============================================================================
+
+cognitive_accessibility:
+  description: "Visual content must be designed so that cognitive effort is directed at understanding the message, not decoding the visual format. These standards reduce extraneous cognitive load for all viewers."
+  research_basis: "The Unseen Structure.md; Mayer (2009) Redundancy and Spatial Contiguity Principles"
+
+  pyramid_principle_for_text:
+    description: "Text hierarchies should reflect the Minto Pyramid: most important claim at the top (largest/most prominent), supporting points below, evidence below that. Never bury the key point in a sub-bullet."
+    research_basis: "The Unseen Structure.md; Minto Pyramid Principle"
+    violation_label: "inverted_pyramid_text"
+    examples:
+      correct: "Key claim as headline (36pt bold); 2-3 supporting points as body bullets (20pt); evidence as sub-bullets (16pt)"
+      violation: "Five equal-weight bullets with the key insight buried as bullet 4"
+    penalty: 5
+
+  color_semantic_uniqueness:
+    description: "Each color in the palette maps to exactly one semantic category throughout the deck. When the same color appears on multiple slides, viewers should know immediately what it represents."
+    research_basis: "The Unseen Structure.md"
+    standard: "Establish color legend in first data slide; maintain throughout without exception"
+    violation_label: "color_semantic_overload"
+    penalty: 6  # Already defined in color section; cross-reference
+
+  dual_coding_discipline:
+    description: "Visual and verbal channels should be used in complementary roles — verbal for sequential, logical information; visual for spatial, relational, and emotional information. Using both channels for identical content wastes capacity."
+    research_basis: "Paivio (1971) Dual Coding Theory; Mayer Redundancy Principle"
+    standards:
+      - "Verbal channel: claims, sequence, arguments"
+      - "Visual channel: structure, relationship, magnitude, emotion"
+    violation_label: "channel_redundancy"
+    description_violation: "Reading slide text aloud while showing identical text on screen"
+    penalty: 6
+
+  color_blind_safety:
+    description: "8% of males have some form of color vision deficiency (deuteranopia/protanopia most common). Red-green distinctions must not be the sole differentiator."
+    research_basis: "The Unseen Structure.md; WCAG 2.2"
+    standards:
+      - "Never use red/green as the only distinguishing factor between data categories"
+      - "Use pattern + color combinations for charts"
+      - "Verify palette using a colorblind simulation tool"
+    recommended_colorblind_safe_palettes: ["IBM Color Blind Safe", "Wong (2011) 8-color palette", "Okabe & Ito (2008)"]
+    violation_label: "colorblind_unsafe"
+    penalty: 6
+
+  baked_text_in_image:
+    description: "Text embedded directly in an image (rather than as a text layer) cannot be resized, translated, screen-read, or searched. It also tends to pixelate at different screen resolutions."
+    research_basis: "The Unseen Structure.md"
+    violation_label: "baked_text_in_image"
+    examples: ["Infographic with text burned into the PNG", "Chart screenshot with annotations embedded in the image"]
+    penalty: 5
+    fix: "Use text layers over images; export charts with editable text elements"
+
+# ==============================================================================
+# ANTI-PATTERNS
+# Named failure modes with remediation guidance
+# ==============================================================================
+
+anti_patterns:
+  description: "Named visual design failure modes that consistently damage comprehension, credibility, or retention."
+  research_basis: "The Semiotics of Strategy.md; The Unseen Structure.md"
+
+  equidistant_list:
+    definition: "A bulleted or numbered list where all items are separated by identical spacing and visual weight — creating the impression that all items are equally important"
+    problem: "Real arguments have hierarchy. Equidistant lists hide priority, obscure relationships, and prevent the reader from knowing where to focus."
+    fix: "Use indentation for sub-points; bold or increase size of primary points; or replace list with visual hierarchy (pyramid, matrix, or ranked diagram)"
+    violation_label: "equidistant_list"
+    penalty: 4
+
+  hairball_diagram:
+    definition: "A network or relationship diagram with so many nodes and edges that no pattern is legible — the result looks like a ball of yarn"
+    fix: "Pre-process to show top N nodes; highlight a key subgraph; use cluster summary; or animate to show one path at a time"
+    violation_label: "hairball_diagram"
+    penalty: 8
+
+  conclusion_buried:
+    definition: "The key insight or takeaway is not visible until the viewer has read the entire chart or visual — there is no action caption, annotation, or callout that pre-surfaces the conclusion"
+    fix: "Add action caption; annotate the key data point with an arrow and label; use callout box"
+    violation_label: "conclusion_buried"
+    penalty: 5
+
+  baked_text_in_image:
+    definition: "Text is burned into an image file (PNG/JPG) rather than existing as an editable text layer"
+    fix: "Use editable text layers; export charts as SVG or use native chart objects"
+    violation_label: "baked_text_in_image"
+    penalty: 5
+
+  animation_only_carrier:
+    definition: "Essential information is accessible only through an animation or transition — if the animation is paused, skipped, or presented as a static export, the information is lost"
+    fix: "Every animated element must have a visible static state that contains the essential information; animations should enhance, not carry"
+    violation_label: "animation_only_carrier"
+    penalty: 8
+
+  unlabelled_projection:
+    definition: "A dimensionality-reduction projection (t-SNE, PCA, UMAP) is shown without cluster labels — axes are meaningless but clusters are not annotated"
+    fix: "Always label clusters; always include a footnote explaining that axis positions are not interpretable"
+    violation_label: "unlabelled_projection"
+    penalty: 8
+
+  semiotic_conflict:
+    definition: "The visual channel directly contradicts or undermines the message of the verbal channel"
+    fix: "Conduct a verbal-visual coherence audit on every slide; ask 'does this image support, extend, or contradict the title?'"
+    violation_label: "semiotic_conflict"
+    penalty: 10
+
+  visual_coding_inconsistency:
+    definition: "A color, shape, or icon is used to represent different semantic categories on different slides"
+    fix: "Establish a visual coding legend on the first data slide and maintain it throughout without exception"
+    violation_label: "visual_coding_inconsistency"
+    penalty: 5
+
+# ==============================================================================
+# QUALITY CHECKS
+# ==============================================================================
+
+checks:
+  hierarchy_check:
+    headline_larger_than_body: { min_ratio: 1.5 }
+    max_font_sizes: 3  # Headline, body, caption
+    consistent_sizing: "Same element types same size throughout"
+
+  color_check:
+    max_colors_per_slide: 5
+    palette_consistency: "Same colors used throughout deck"
+    contrast_ratio: { min: 4.5 }  # See accessibility_rubric.yaml
+    semantic_uniqueness: "Each color maps to one semantic category throughout"
+
+  layout_check:
+    white_space_percentage: { min: 0.30, ideal: 0.40 }
+    safe_margins: "Content within 8-10% margins"
+    alignment_consistent: "Same alignment pattern throughout"
+
+  data_viz_check:
+    direct_labeling: "Charts use direct labels (not legends)"
+    insight_in_title: "Chart titles state finding, not just topic"
+    no_chart_junk: "No 3D effects, unnecessary grid lines"
+    no_hairball: "Network diagrams have legible structure"
+    action_captions: "All charts have action captions, not topic titles"
+
+  consistency_check:
+    font_family_consistent: "Max 2 fonts throughout"
+    template_consistent: "No Frankendeck symptoms"
+    logo_position_consistent: "Logo same place every slide"
+    visual_coding_consistent: "Color/icon/shape coding consistent throughout"
+
+  semiotic_check:
+    given_new_alignment: "Left = Given (known); Right = New (introduced)"
+    ideal_real_alignment: "Top = Ideal (aspirational); Bottom = Real (evidence)"
+    salience_alignment: "Most salient element = most important"
+    verbal_visual_coherence: "No semiotic conflicts"
+
+  image_function_check:
+    no_decorative_images: "Images serve elaboration or extension function"
+    authentic_photography: "No generic stock photography undermining ethos"
+    no_baked_text: "No text burned into image files"
+
+# ==============================================================================
+# THRESHOLDS
+# ==============================================================================
+
+thresholds:
+  min_headline_size: 32  # points
+  min_body_size: 18
+  min_white_space: 0.30  # 30% of slide
+  max_colors_per_slide: 5
+  min_contrast_ratio: 4.5
+  max_fonts: 2
+  # New thresholds from E1+E2 research
+  max_chart_categories: 6          # >6 = cognitive overload
+  max_annotation_levels: 3         # Primary/secondary/context
+  salience_check_threshold_sec: 3  # Eye should find anchor in ≤3 seconds
+  given_new_compliance: 1.00       # All two-part visuals must follow Given/New
+  color_semantic_uniqueness: true  # Each color = one semantic category
+
+# ==============================================================================
+# PENALTIES
+# ==============================================================================
+
+penalties:
+  hierarchy_violation: 0.06         # No clear visual hierarchy
+  text_too_small: 0.08              # <18pt body text
+  color_overload: 0.05              # >5 colors per slide
+  low_contrast: 0.10                # Text unreadable on background
+  frankendeck: 0.10                 # Inconsistent templates
+  chart_junk: 0.05                  # 3D effects, decorative elements
+  no_white_space: 0.06              # <20% empty space (cramming)
+  pixelated_images: 0.04            # Low-resolution graphics
+  misleading_chart: 0.08            # Y-axis manipulation, no labels
+  # New penalties from E1 (Semiotics of Strategy)
+  semiotic_conflict: 0.10           # Verbal-visual channel contradiction
+  visual_coding_inconsistency: 0.05 # Color/icon meaning changes between slides
+  equidistant_list: 0.04            # No hierarchy in list structure
+  given_new_inversion: 0.04         # Given/New layout violated
+  ideal_real_inversion: 0.03        # Ideal/Real layout violated
+  salience_mismatch: 0.05           # Most salient ≠ most important
+  three_plus_fonts: 0.06            # Amateurism marker
+  decorative_image: 0.05            # Image serves decoration only
+  generic_photography: 0.03         # Stock imagery undermining ethos
+  label_title: 0.05                 # Topic label instead of action title
+  dot_dash_failure: 0.08            # Deck narrative broken in title sequence
+  # New penalties from E2 (The Unseen Structure)
+  conclusion_buried: 0.05           # Insight not pre-surfaced
+  color_semantic_overload: 0.06     # Color used for multiple semantic categories
+  animation_only_carrier: 0.08      # Essential info only accessible via animation
+  hairball_diagram: 0.08            # Illegible network diagram
+  unlabelled_projection: 0.08       # t-SNE/PCA without cluster labels
+  baked_text_in_image: 0.05         # Text burned into image file
+  colorblind_unsafe: 0.06           # Red/green only distinction
+
+# ==============================================================================
+# BONUSES
+# ==============================================================================
+
+bonuses:
+  hierarchy_excellent: 0.02         # Clear, consistent hierarchy
+  color_harmony: 0.02               # Cohesive, limited palette
+  white_space_generous: 0.02        # 40%+ white space
+  direct_labeling: 0.02             # All charts directly labeled
+  template_excellence: 0.03         # Perfect consistency throughout
+  professional_images: 0.02         # High-res, on-brand imagery
+  # New bonuses from E1+E2 research
+  semiotic_alignment: 0.03          # Verbal and visual channels fully aligned
+  dual_coding_achieved: 0.02        # Images elaborating/extending verbal content
+  semantic_color_discipline: 0.02   # Consistent color-to-meaning mapping throughout
+  bluf_visual_structure: 0.02       # Key visual conclusion surfaced early
+  authentic_photography: 0.02       # Real/specific imagery enhancing ethos
+  progressive_disclosure: 0.02      # Complex charts scaffolded appropriately
+  action_captions_complete: 0.02    # All charts have action captions

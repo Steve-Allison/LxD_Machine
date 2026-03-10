@@ -1,0 +1,1145 @@
+_meta:
+  id: scoring_entities
+  title: Scoring Entities
+  description: GLiNER2 entity definitions for detecting quality dimension labels, rubric category names, score qualifiers,
+    and evaluative language in assessed content
+  domain: pedagogical
+  domain_type: cross_cutting
+  purpose: entity
+  version: 1.28.0
+  last_updated: '2026-03-09'
+  corpus_sources:
+  - 'Corpus/Research/The World-Class Presentation Playbook: A Cognitive-Based System for Design, Structure, and Delivery.md'
+  - 'Corpus/Research/The Semiotics of Strategy: A Comprehensive Handbook on the Visual Analysis of Professional Slide Communications.md'
+  - 'Corpus/Research/Full Research Findings: Slide-Based Presentation Design.md'
+  - Corpus/Research/Research - Comprehensive Learning Design Framework.md
+  - Corpus/Research/Crafting Powerful Opening Plays.md
+  - Corpus/Research/Research - Visual Communication and Storytelling.md
+  - Corpus/Research/Research - Canonical Presentation Methodology Research.md
+  - Corpus/Research/Research - Unified Performance Framework.md
+  - Corpus/Research/Research - Voice Quality Metric Research Parameters.md
+  - Corpus/Research/Research - visualisation_techniques_corporate_learning.md
+  - Corpus/Research/slide_design_research_monograph.md
+  - Corpus/Research/slide_design_research_monograph_part_3.md
+  - Corpus/Research/slide_design_research_monograph_part_4.md
+  - Corpus/Research/module-integration-strategy.md
+  - Corpus/Research/Research - Slide Deck Design Playbook Research.md
+  - Corpus/Research/research_-_the_architecture_of_influence__a_comprehensive_multim.md
+  - Corpus/Research/Research - Best Video Script Prompts.md
+  academic_sources:
+  - Mayer (2009) - Multimedia Learning
+  - Bloom (1956) - Taxonomy of Educational Objectives
+  - Toulmin (2003) - The Uses of Argument
+  relationships:
+  - target: taxonomy/scoring_taxonomy.yaml
+    type: depends_on
+    description: Quality dimension classification for entity label validation
+entity_types:
+  clarity_dimension:
+    label: CLARITY_DIMENSION
+    field_description: Clarity quality dimension clear simple easy to understand readable legible comprehensible straightforward
+    description: Reference to clarity, simplicity, or comprehensibility as a quality dimension
+    entity_kind: quality_dimension
+    family: communication_quality
+    examples:
+    - The message lacks clarity.
+    - Very easy to understand.
+    - Could be clearer in its intent.
+    - The language is accessible.
+    - Simply stated and legible.
+    - Comprehensible to a general audience.
+    confidence_threshold: 0.7
+    field: scoring
+    indicators:
+    - clarity
+    - clear
+    - simple
+    - easy to understand
+    - readable
+    - legible
+    - comprehensible
+    - accessible
+    patterns:
+    - (lacks|has|shows) clarity
+    - (clear|simple|easy) (to |and )?\w+
+    - (readable|legible|comprehensible) \w+
+    color: '#2980b9'
+    relates_to:
+    - target: clt_compliance_dimension
+      relation: enables
+      weight: required
+      description: Clarity reduces extraneous cognitive load achieved via coherence (no fluff), signaling (highlight key points),
+        action titles
+    - target: visual_quality_dimension
+      relation: supports
+      weight: expected
+      description: Visual clarity achieved through no chartjunk, direct labelling, CRAP principles managing cognitive overload
+    - target: structure_dimension
+      relation: enables
+      weight: expected
+      description: Narrative clarity via Minto Pyramid (top-down answer first), SCQA structure, MECE arguments reduces audience
+        cognitive effort
+    - target: cognitive_load_dimension
+      relation: supports
+      weight: expected
+      description: Single objective focus and eliminating extraneous content at topic level — clarity directly supports cognitive
+        load management (Comprehensive Learning Design Framework)
+    - target: bluf_hook
+      relation: supported_by
+      weight: expected
+      description: Clarity dimension scoring is supported by BLUF hooks which demonstrate conclusion-first structure, reducing
+        cognitive effort for the audience per Crafting Powerful Opening Plays
+      target_file: opening_hooks_entities
+    - target: design_principle
+      relation: supported_by
+      weight: required
+      description: Clarity scoring is supported by design principles whose primary overarching goal is unambiguous message
+        transmission per Visual Communication and Storytelling
+      target_file: visual_elements_entities
+    - target: extraneous_load_marker
+      relation: contrasts_with
+      weight: required
+      description: "Clarity scoring is inversely related to extraneous load; Score 5 means zero extraneous load per Slide Deck Design Playbook"
+      target_file: cognitive_load_entities
+    - target: typography_element
+      relation: supported_by
+      weight: expected
+      description: "Clarity scoring is directly supported by typography element quality including legibility and hierarchy per slide design research monograph"
+      target_file: visual_elements_entities
+    - target: readability_flag
+      relation: contains
+      weight: required
+      description: "Clarity scoring uses Flesch-Kincaid Grade Level (target 8-10 for business) and ISO 24495-1 'Understandable' principle as readability measures (Cognitive Interface, §4.1, §5.1)"
+      target_file: writing_entities
+    - target: microlearning_format
+      relation: supported_by
+      weight: expected
+      description: "Script writing demands extreme concision without sacrificing clarity: active voice, conversational tone, 75-150 words for text or 30-90 seconds for video per AI Microlearning Guide"
+      target_file: content_format_entities
+    - target: outcome_statement
+      relation: supported_by
+      weight: required
+      description: "Clarity scoring requires declarative conclusion titles that convey insight in <=3 seconds per the Slide Cognitive Score headline test (Slide Deck Design Playbook)"
+      target_file: narrative_entities
+    - target: claim
+      relation: supports
+      weight: required
+      description: "Clarity scoring requires Action Titles to be full declarative sentences with active verbs and insights; the 'So What?' test is the audit criterion (Canonical Presentation Methodology)"
+      target_file: narrative_entities
+    - target: extraneous_load_marker
+      relation: limits
+      weight: expected
+      description: "PID target <0.5 and de-densification strategy directly operationalize clarity by reducing extraneous cognitive burden; high PID scores reduce clarity (Architecture of Influence, Section 1.1, Part 2)"
+      target_file: cognitive_load_entities
+    - target: vocal_quality_issue
+      relation: limits
+      weight: expected
+      description: "Clarity scoring directly limited by vocal quality issues per voice metric research"
+      target_file: performance_entities
+    - target: delivery_rate_issue
+      relation: supported_by
+      weight: expected
+      description: "Clarity scoring affected by delivery rate — controlled rate supports intelligibility per Clear Speaker archetype"
+      target_file: performance_entities
+    - target: readability_flag
+      relation: supported_by
+      weight: expected
+      description: "Clarity scoring supported by readability metrics; Flesch-Kincaid Grade 8-10 as concrete audit check"
+      target_file: writing_entities
+    taxonomy_mapping:
+    - taxonomy: scoring_taxonomy
+      dimension: clarity_assessment
+      values:
+      - coherence
+      - signaling
+      - action_title
+      - mece
+      - message_focus
+      strength: primary
+  structure_dimension:
+    label: STRUCTURE_DIMENSION
+    field_description: Structure organisation flow coherence logical order sequencing well-organised narrative arc progression
+    description: Reference to structure, organisation, or narrative flow as a quality dimension
+    entity_kind: quality_dimension
+    family: communication_quality
+    examples:
+    - The structure is logical.
+    - Well-organised from start to finish.
+    - The flow needs improvement.
+    - Lacks a coherent narrative arc.
+    - Good sequencing of ideas.
+    - The content progresses naturally.
+    confidence_threshold: 0.7
+    field: scoring
+    indicators:
+    - structure
+    - organisation
+    - flow
+    - coherence
+    - logical order
+    - sequencing
+    - well-organised
+    - narrative arc
+    patterns:
+    - (the )?(structure|organisation|flow) (is|lacks|needs)
+    - (well|poorly)[- ](organised|structured|sequenced)
+    - (logical|coherent|clear) (order|flow|progression)
+    color: '#8e44ad'
+    relates_to:
+    - target: clarity_dimension
+      relation: enables
+      weight: required
+      description: Logical structure via Minto Pyramid, SCQA (Situation/Complication/Question/Answer), Problem-Insight-Solution-Value
+    - target: narrative_quality_dimension
+      relation: supports
+      weight: expected
+      description: Narrative structure (hero journey, business storytelling) guides audience through coherent argument flow
+    - target: engagement_dimension
+      relation: enables
+      weight: expected
+      description: Progressive disclosure (one idea per slide), segmentation, build animations manage intrinsic cognitive
+        load
+    - target: scqa_marker
+      relation: supported_by
+      weight: expected
+      description: "Structure dimension scoring is supported by the SCQA framework (Situation-Complication-Question-Answer) which provides the logical narrative architecture that ensures bulletproof storylining per Canonical Presentation Methodology"
+      target_file: rhetorical_devices_entities
+    - target: content_structure_marker
+      relation: contains
+      weight: required
+      description: "Structure scoring evaluates Information Mapping compliance, Minto Pyramid ordering, BLUF placement, and heading hierarchy depth (Cognitive Interface, §1.1.1, §3.1, §5.2)"
+      target_file: content_architecture_entities
+    - target: content_structure_marker
+      relation: supports
+      weight: required
+      description: "Structure scoring evaluates SCQA compliance, MECE logic, and Horizontal Flow coherence; the Dot-Dash storyline must form a standalone executive summary (Canonical Presentation Methodology)"
+      target_file: content_architecture_entities
+    - target: session_structure_marker
+      relation: supported_by
+      weight: expected
+      description: "Structure quality scoring informed by session structure markers delineating intro body conclusion (Best Video Script Prompts)"
+      target_file: delivery_entities
+    - target: content_structure_marker
+      relation: supported_by
+      weight: required
+      description: "Structure scoring supported by Minto Pyramid compliance and Information Mapping block engineering"
+      target_file: content_architecture_entities
+    taxonomy_mapping:
+    - taxonomy: scoring_taxonomy
+      dimension: structure_assessment
+      values:
+      - minto_pyramid
+      - scqa
+      - mece_logic
+      - progressive_disclosure
+      - segmentation
+      strength: primary
+  engagement_dimension:
+    label: ENGAGEMENT_DIMENSION
+    field_description: Engagement compelling interesting captivating resonant gripping memorable hooks the audience draws
+      in
+    description: Reference to engagement, interest, or audience connection as a quality dimension
+    entity_kind: quality_dimension
+    family: communication_quality
+    examples:
+    - Highly engaging throughout.
+    - The content is compelling.
+    - Fails to capture audience interest.
+    - A strong hook at the start.
+    - Very memorable phrasing.
+    - Resonates with the target audience.
+    confidence_threshold: 0.7
+    field: scoring
+    indicators:
+    - engaging
+    - compelling
+    - captivating
+    - memorable
+    - resonant
+    - hook
+    - audience interest
+    - gripping
+    patterns:
+    - (highly|very|quite)? (engaging|compelling|captivating)
+    - (fails|succeeds) to (engage|capture|hook)
+    - (strong|weak) (hook|opening|close)
+    color: '#e67e22'
+    relates_to:
+    - target: cognitive_load_dimension
+      relation: supports
+      weight: expected
+      description: Interactive elements, real-world examples, visual storytelling maintain germane load for deep processing
+    - target: visual_narrative_element
+      relation: enables
+      weight: expected
+      description: Visual storytelling, real examples, audience-as-hero framing sustain engagement without increasing extraneous
+        load
+      target_file: visual_elements_entities
+    - target: narrative_quality_dimension
+      relation: supports
+      weight: expected
+      description: Narrative hooks (problem statement, contrast, surprise) trigger emotional engagement while call-to-action
+        sustains motivation
+    - target: narrative_hook
+      relation: supported_by
+      weight: expected
+      description: Engagement dimension scoring is supported by narrative hooks which create the attention-capturing openings
+        that drive audience connection per Crafting Powerful Opening Plays
+      target_file: narrative_entities
+    - target: emphasis_marker
+      relation: contains
+      weight: expected
+      description: "The engagement scoring dimension encompasses prosodic emphasis markers — pitch variability (>2.0 ST to avoid monotone) and emphatic pausing — as measurable engagement indicators per Unified Performance Framework"
+      target_file: performance_entities
+    - target: nonverbal_cue
+      relation: supported_by
+      weight: expected
+      description: "Engagement scoring is directly supported by nonverbal cues — gesture-speech synchrony (stroke preceding speech peak by 100-300ms per McNeill's Window) and dynamic pitch variation (4-6 ST sigma) per Voice Quality Metric Research"
+      target_file: performance_entities
+    - target: visual_element
+      relation: supported_by
+      weight: expected
+      description: "Engagement scoring is supported by visual elements — well-designed icons, photographs, diagrams, and infographics sustain audience attention through dual coding and visual variety per Visualisation Techniques research"
+      target_file: visual_elements_entities
+    - target: audience_motivator
+      relation: supported_by
+      weight: expected
+      description: "Engagement scoring is supported by audience motivators which provide the persona-specific hooks and relevance signals that drive sustained attention per slide design research monograph part 3"
+      target_file: audience_entities
+    - target: practice_activity
+      relation: supported_by
+      weight: expected
+      description: "Engagement scoring dimension is supported by practice activities including gamified challenges, hands-on labs, and interactive exercises that drive learner participation (Best-Practice Learning Activities)"
+      target_file: activity_types_entities
+    - target: motivation_element
+      relation: supports
+      weight: expected
+      description: "Engagement scoring dimension supports motivation element measurement — engagement increase (>40% over baseline) and completion rate (>85%) are tracked as success metrics per module-integration-strategy"
+      target_file: pedagogical_frameworks_entities
+    - target: engagement_cue
+      relation: supported_by
+      weight: expected
+      description: "LSM warmth score (target 0.85) and inclusive pronoun usage are measurable proxies for audience engagement quality in the evaluation framework (Architecture of Influence, Part 2 Section 3)"
+      target_file: delivery_entities
+    - target: pause_marker
+      relation: supported_by
+      weight: expected
+      description: "Engagement scoring benefits from strategic pause usage and varied silence ratio per voice metric research"
+      target_file: performance_entities
+    - target: call_to_action
+      relation: supported_by
+      weight: expected
+      description: "Engagement scoring accounts for CTA effectiveness in driving viewer action (Best Video Script Prompts)"
+      target_file: narrative_entities
+    taxonomy_mapping:
+    - taxonomy: scoring_taxonomy
+      dimension: engagement_assessment
+      values:
+      - interactive_element
+      - storytelling
+      - real_world_relevance
+      - emotional_hook
+      strength: secondary
+  evidence_quality_dimension:
+    label: EVIDENCE_QUALITY_DIMENSION
+    field_description: Evidence quality proof credibility supported substantiated data-backed claims sourced references cited
+    description: Reference to evidence quality, credibility, or substantiation as a quality dimension
+    entity_kind: quality_dimension
+    family: argument_quality
+    examples:
+    - Claims are well-supported.
+    - Lacks sufficient evidence.
+    - Data-backed and credible.
+    - References are not cited.
+    - Strong use of customer proof.
+    - The argument is substantiated.
+    confidence_threshold: 0.7
+    field: scoring
+    indicators:
+    - well-supported
+    - lacks evidence
+    - data-backed
+    - credible
+    - cited
+    - proof
+    - substantiated
+    patterns:
+    - (well|poorly)[- ](supported|substantiated|evidenced)
+    - (lacks|has|shows) (evidence|proof|data)
+    - (data|research|evidence)[- ](backed|driven|based)
+    color: '#27ae60'
+    relates_to:
+    - target: narrative_quality_dimension
+      relation: supports
+      weight: expected
+      description: Evidence types (data stats, citations, customer stories, expert testimony) support claims per argumentation
+        theory
+    - target: data_statistic
+      relation: supports
+      weight: expected
+      description: Quantified evidence (statistics, benchmarks, validated outcomes) strengthen persuasiveness via spatial
+        contiguity principle
+      target_file: evidence_types_entities
+    - target: positive_qualifier
+      relation: supports
+      weight: expected
+      description: Positive qualifiers (proven, validated, documented) attached to evidence claims signal strength of support
+    - target: evidence
+      relation: supported_by
+      weight: required
+      description: "Evidence quality scoring depends on evidence entities — the Dashes (data points, charts, qualitative proof) must prove the Dot (claim); logically invalid slides lack evidence support per Canonical Presentation Methodology"
+      target_file: narrative_entities
+    - target: evidence
+      relation: supports
+      weight: required
+      description: "Evidence quality scoring evaluates Vertical Flow — whether Dashes (body content) explicitly prove their Dots (claims); chart trends must match title assertions (Canonical Presentation Methodology)"
+      target_file: narrative_entities
+    taxonomy_mapping:
+    - taxonomy: scoring_taxonomy
+      dimension: evidence_assessment
+      values:
+      - data_statistic
+      - research_citation
+      - case_study
+      - expert_authority
+      strength: primary
+  visual_quality_dimension:
+    label: VISUAL_QUALITY_DIMENSION
+    field_description: Visual quality design aesthetic slide layout typography colour contrast imagery clean professional
+    description: Reference to visual design, layout, or aesthetic quality as a scoring dimension
+    entity_kind: quality_dimension
+    family: design_quality
+    examples:
+    - The slide design is clean.
+    - Poor use of typography.
+    - Strong visual hierarchy.
+    - The imagery is high quality.
+    - Colour contrast is insufficient.
+    - The layout is professional.
+    confidence_threshold: 0.7
+    field: scoring
+    indicators:
+    - design
+    - typography
+    - visual hierarchy
+    - imagery
+    - colour contrast
+    - layout
+    - clean
+    - professional
+    patterns:
+    - (the )?(slide )?(design|layout|visual) (is|looks) \w+
+    - (poor|strong|good|weak) (use of )?(typography|imagery|design|colour)
+    - (visual )?(hierarchy|contrast|balance) \w+
+    color: '#16a085'
+    relates_to:
+    - target: clarity_dimension
+      relation: enables
+      weight: required
+      description: Visual quality via CRAP (contrast, repetition, alignment, proximity), no chartjunk, direct labelling per
+        Tufte
+    - target: chart_type
+      relation: enables
+      weight: expected
+      description: Chart type selection (bar, line, pie) optimises for audience task with appropriate selection reducing extraneous
+        load
+      target_file: visual_elements_entities
+    - target: cognitive_debt_marker
+      relation: limits
+      weight: expected
+      description: Visual quality prevents cognitive debt from decoration, poor typography, low contrast, and missing labels
+      target_file: visual_elements_entities
+    - target: design_principle
+      relation: supported_by
+      weight: required
+      description: Visual quality scoring is directly supported by adherence to design principles of hierarchy contrast balance
+        and unity per Visual Communication and Storytelling
+      target_file: visual_elements_entities
+    - target: accessibility_dimension
+      relation: supports
+      weight: expected
+      description: "Visual quality directly supports accessibility — well-designed visuals with proper contrast, alt text, and non-colour encoding meet both quality and inclusion standards per Visualisation Techniques research"
+    - target: layout_pattern
+      relation: supported_by
+      weight: expected
+      description: "Visual quality scoring is directly supported by layout pattern adherence to design grid principles per slide design research monograph"
+      target_file: visual_elements_entities
+    - target: layout_pattern
+      relation: supports
+      weight: required
+      description: "Visual quality scoring evaluates grid compliance, Squint Test passage, and style guide adherence; all elements must snap to the 12-column grid (Canonical Presentation Methodology)"
+      target_file: visual_elements_entities
+    - target: chart_type
+      relation: supported_by
+      weight: expected
+      description: "Visual quality scoring supported by Tufte Data-Ink Ratio and Cognitive Fit chart selection"
+      target_file: visual_elements_entities
+    taxonomy_mapping:
+    - taxonomy: scoring_taxonomy
+      dimension: visual_assessment
+      values:
+      - crap_framework
+      - chartjunk_removal
+      - direct_labelling
+      - colour_contrast
+      strength: primary
+  cognitive_load_dimension:
+    label: COGNITIVE_LOAD_DIMENSION
+    field_description: Cognitive load information density overwhelming complex overloaded too much text busy cluttered
+    description: Reference to cognitive load, information density, or processing burden as a quality dimension
+    entity_kind: quality_dimension
+    family: learning_quality
+    examples:
+    - Too much information on one slide.
+    - The cognitive load is high.
+    - Information density is overwhelming.
+    - The slide is cluttered.
+    - Complex but digestible.
+    - Text-heavy and hard to process.
+    confidence_threshold: 0.7
+    field: scoring
+    indicators:
+    - cognitive load
+    - information density
+    - overwhelming
+    - cluttered
+    - too much text
+    - busy
+    - hard to process
+    patterns:
+    - cognitive (load|overload) \w+
+    - (too much|overwhelming) (information|content|text)
+    - (cluttered|busy|dense) \w+
+    - (hard|difficult) to (process|digest|read)
+    color: '#e74c3c'
+    relates_to:
+    - target: clt_compliance_dimension
+      relation: specialises
+      weight: required
+      description: 'CLT compliance: minimise extraneous load, manage intrinsic load via chunking, maximise germane load for
+        deep processing'
+    - target: extraneous_load_marker
+      relation: supports
+      weight: required
+      description: Extraneous load markers (clutter, poor layout, redundant text, confusing legend) must be eliminated per
+        CLT
+      target_file: cognitive_load_entities
+    - target: intrinsic_load_marker
+      relation: supports
+      weight: required
+      description: Intrinsic load managed via pre-training (priming schemas), segmentation (chunking), modality (audio plus
+        visual)
+      target_file: cognitive_load_entities
+    - target: germane_load_marker
+      relation: enables
+      weight: required
+      description: 'Germane load: deep processing for schema building via multimedia examples and interactivity without extraneous
+        cost'
+      target_file: cognitive_load_entities
+    - target: extraneous_load_marker
+      relation: contains
+      weight: required
+      description: Cognitive load scoring dimension contains extraneous load markers from cluttered or ambiguous visual designs
+        per Visual Communication and Storytelling
+      target_file: cognitive_load_entities
+    - target: design_principle
+      relation: supported_by
+      weight: expected
+      description: "Cognitive load dimension scoring is supported by design principles (C.R.A.P. — Contrast, Repetition, Alignment, Proximity) which manage the audience's attention economy and reduce processing burden per Canonical Presentation Methodology"
+      target_file: visual_elements_entities
+    - target: delivery_rate_issue
+      relation: contains
+      weight: required
+      description: "The cognitive load scoring dimension contains delivery rate as a primary measurable factor — speech rate >180 WPM directly degrades listener comprehension per Unified Performance Framework"
+      target_file: performance_entities
+    - target: pause_marker
+      relation: contains
+      weight: expected
+      description: "The cognitive load scoring dimension contains pause management — strategic pauses (500-600ms) support cognitive consolidation while excessive pauses (>1000ms) signal disfluency per Unified Performance Framework"
+      target_file: performance_entities
+    - target: cognitive_debt_marker
+      relation: contains
+      weight: required
+      description: "Cognitive load dimension scoring contains cognitive debt markers (wall of text, bullet overload, split attention) as primary penalty triggers that compound when multiple violations co-occur per slide design research monograph part 4"
+      target_file: visual_elements_entities
+    - target: microlearning_format
+      relation: supported_by
+      weight: expected
+      description: "Cognitive load scoring dimension is supported by microlearning format which segments content into 3-10 minute focused units to manage processing demands (Best-Practice Learning Activities)"
+      target_file: content_format_entities
+    - target: working_memory_marker
+      relation: supports
+      weight: required
+      description: "Cognitive load scoring dimension directly evaluates working memory compliance — one idea per slide, <=3 clusters, no duplicated text-speech channels per Slide Deck Design Playbook"
+      target_file: cognitive_load_entities
+    - target: extraneous_load_marker
+      relation: supported_by
+      weight: required
+      description: "Cognitive load scoring informed by extraneous load measurement as primary quality metric"
+      target_file: cognitive_load_entities
+    - target: delivery_rate_issue
+      relation: supported_by
+      weight: expected
+      description: "Cognitive load scoring informed by speech rate metrics; rates above 180 WPM cause 17-25% comprehension drops per voice metric research"
+      target_file: performance_entities
+    - target: mayer_extraneous_principle
+      relation: supported_by
+      weight: required
+      description: "Cognitive load scoring assesses adherence to Mayer's extraneous reduction principles per Applying Mayer's Principles Practical Checklist"
+      target_file: cognitive_load_entities
+    - target: mayer_essential_principle
+      relation: supported_by
+      weight: required
+      description: "Cognitive load scoring evaluates essential processing management via segmenting per Applying Mayer's Principles Practical Checklist"
+      target_file: cognitive_load_entities
+    taxonomy_mapping:
+    - taxonomy: scoring_taxonomy
+      dimension: cognitive_load_assessment
+      values:
+      - extraneous_load
+      - intrinsic_load
+      - germane_load
+      - working_memory_limit
+      strength: primary
+  accessibility_dimension:
+    label: ACCESSIBILITY_DIMENSION
+    field_description: Accessibility inclusive alt text colour blind contrast WCAG screen reader readable plain language
+    description: Reference to accessibility, inclusion, or compliance as a quality dimension
+    entity_kind: quality_dimension
+    family: inclusion_quality
+    examples:
+    - Fails WCAG colour contrast standards.
+    - Alt text is missing.
+    - Not screen reader compatible.
+    - Good use of plain language.
+    - Accessible to colour-blind users.
+    - The content is inclusive.
+    confidence_threshold: 0.72
+    field: scoring
+    indicators:
+    - accessibility
+    - WCAG
+    - alt text
+    - screen reader
+    - colour blind
+    - inclusive
+    - plain language
+    patterns:
+    - (fails|meets|exceeds) (WCAG|accessibility) \w+
+    - alt text (is|missing|needs)
+    - screen reader \w+
+    - (colour|color)[- ]blind \w+
+    color: '#9b59b6'
+    relates_to:
+    - target: clt_compliance_dimension
+      relation: enables
+      weight: required
+      description: Accessibility (captions, alt-text, colour contrast 4.5:1, keyboard navigation) required per WCAG 2.2 AA
+        for all learners
+    - target: color_only_indicator
+      relation: limits
+      weight: required
+      description: Avoid colour-only information coding; use text labels, patterns, icons with colour for colourblind accessibility
+      target_file: accessibility_entities
+    - target: low_contrast_text
+      relation: limits
+      weight: required
+      description: Text contrast must meet WCAG AA (4.5:1 normal, 3:1 large); use contrast checker tool before finalising
+        slides
+      target_file: accessibility_entities
+    - target: clarity_dimension
+      relation: supports
+      weight: expected
+      description: WCAG 2.1 implementation (semantic structure, captions, transcripts, alt-text, high contrast, large touch
+        targets) directly supports content clarity for all learners (Comprehensive Learning Design Framework)
+    - target: accessibility_feature
+      relation: supported_by
+      weight: required
+      description: Accessibility scoring dimension is supported by accessibility features including WCAG contrast ratios and
+        cognitive accessibility guidelines per Visual Communication and Storytelling
+      target_file: visual_elements_entities
+    - target: color_only_indicator
+      relation: supported_by
+      weight: required
+      description: Accessibility dimension scoring detects color-only indicators as violations requiring secondary visual encoding
+        per Visual Communication and Storytelling
+      target_file: accessibility_entities
+    - target: missing_alt_indicator
+      relation: contains
+      weight: expected
+      description: "Accessibility dimension scoring contains missing alt text detection — images without text alternatives are the highest-severity WCAG 1.1.1 violation per Visualisation Techniques research"
+      target_file: accessibility_entities
+    - target: animation_type
+      relation: limits
+      weight: expected
+      description: "Accessibility dimension scoring constrains animation type usage — animations must provide reduced-motion alternatives and never serve as sole content carrier per slide design research monograph part 4"
+      target_file: visual_elements_entities
+    - target: microlearning_format
+      relation: supports
+      weight: required
+      description: "WCAG 2.1 Level AA mandatory; Universal Design for Learning requires multiple means of representation, engagement, and action/expression per AI Microlearning Guide"
+      target_file: content_format_entities
+    - target: readability_flag
+      relation: supported_by
+      weight: expected
+      description: "Accessibility scoring supported by ISO 24495-1 readability compliance (Relevant, Findable, Understandable, Usable)"
+      target_file: writing_entities
+    taxonomy_mapping:
+    - taxonomy: scoring_taxonomy
+      dimension: accessibility_assessment
+      values:
+      - wcag_aa_compliance
+      - caption_availability
+      - alt_text
+      - colour_contrast
+      strength: primary
+  narrative_quality_dimension:
+    label: NARRATIVE_QUALITY_DIMENSION
+    field_description: Narrative quality action titles SCQA BLUF dot-dash logic claim evidence coherence story arc title sequence
+    description: Reference to narrative architecture quality — action titles, SCQA, BLUF, and claim-evidence coherence
+    entity_kind: quality_dimension
+    family: narrative_quality
+    examples:
+    - The action title is weak — topic label only.
+    - Strong SCQA structure throughout.
+    - BLUF is present on slide 1.
+    - The slide body does not prove the title claim.
+    - Title sequence forms a standalone narrative.
+    - Missing the complication in the problem setup.
+    - Bottom Line Up Front is present.
+    - The dot-dash logic is broken on slide 4.
+    confidence_threshold: 0.7
+    field: scoring
+    indicators:
+    - action title
+    - SCQA
+    - BLUF
+    - dot-dash
+    - title claim
+    - narrative arc
+    - claim evidence
+    - title sequence
+    - bottom line up front
+    patterns:
+    - (action|label|topic) title \w+
+    - SCQA \w+
+    - BLUF \w+
+    - dot[- ]dash (logic|test|rule)
+    - (title|slide) (claim|sequence|narrative)
+    action_title_rubric:
+      score_5: Result + Mechanism + Timeframe (e.g., 'Reduced costs 30% in 90 days using AI automation')
+      score_3: Assertion without mechanism (e.g., 'AI reduces operational costs')
+      score_1: Topic label only (e.g., 'AI and Operational Efficiency')
+    note: 'Claim-evidence coherence: slide body must prove action title claim; broken = penalty 5-8 per slide'
+    relates_to:
+    - target: structure_dimension
+      relation: supports
+      weight: required
+      description: 'Narrative quality: arc (hero journey, problem-solution-value), tension (complication), resolution, call-to-action'
+    - target: claim
+      relation: supports
+      weight: expected
+      description: Claims must be supported (warrant to evidence to qualifier) per Toulmin argumentation avoiding unsupported
+        assertions
+      target_file: narrative_entities
+    - target: narrative_hook
+      relation: triggers
+      weight: expected
+      description: Opening hooks (question, statistic, contrast, problem statement) establish narrative tension and audience
+        attention
+      target_file: narrative_entities
+    - target: story_hook
+      relation: supported_by
+      weight: expected
+      description: Narrative quality dimension scoring is supported by story hooks which demonstrate narrative architecture
+        through vivid character-driven openings per Crafting Powerful Opening Plays
+      target_file: opening_hooks_entities
+    - target: visual_narrative_element
+      relation: supported_by
+      weight: required
+      description: Narrative quality scoring is supported by visual narrative elements that synchronize plot visual and emotional
+        arcs per Visual Communication and Storytelling
+      target_file: visual_elements_entities
+    - target: scqa_marker
+      relation: supported_by
+      weight: expected
+      description: "Narrative quality scoring evaluates SCQA flow, logical progression, and answer-first clarity per Slide Deck Design Playbook"
+      target_file: rhetorical_devices_entities
+    - target: narrative_tension
+      relation: supports
+      weight: expected
+      description: "Narrative quality scoring evaluates whether SCQA creates proper tension-resolution arc and whether Horizontal Flow produces a coherent standalone summary (Canonical Presentation Methodology)"
+      target_file: narrative_entities
+    - target: visionary_bundle
+      relation: supported_by
+      weight: expected
+      description: "Visionary lexical bundles ('I want to show you...') mark elite narrative quality; the evaluation framework classifies bundle type as a core discourse feature (Architecture of Influence, Part 2 Section 1)"
+      target_file: rhetorical_devices_entities
+    - target: SOAR_NARRATIVE_QUALITY
+      relation: supported_by
+      weight: expected
+      description: "Narrative quality scoring evaluates SOAR adherence for distinct section purposes"
+      target_file: sales_entities
+    taxonomy_mapping:
+    - taxonomy: scoring_taxonomy
+      dimension: narrative_assessment
+      values:
+      - narrative_arc
+      - tension_resolution
+      - claim_evidence_warrant
+      - call_to_action
+      strength: primary
+  clt_compliance_dimension:
+    label: CLT_COMPLIANCE_DIMENSION
+    field_description: CLT cognitive load theory compliance split attention redundancy wall of text extraneous load 25 35
+      percent reduction
+    description: Reference to Cognitive Load Theory compliance — CLT anti-patterns (split-attention, redundancy, wall-of-text)
+      and design efficiency
+    entity_kind: quality_dimension
+    family: learning_quality
+    examples:
+    - Split-attention effect present.
+    - Wall of text violates CLT principles.
+    - Redundant information repeated in text and narration.
+    - Extraneous cognitive load is high.
+    - CLT-compliant design throughout.
+    - Text and visuals are split — forces eye movement.
+    - 25% cognitive load reduction achieved.
+    - Germane load optimised through scaffolding.
+    confidence_threshold: 0.7
+    field: scoring
+    indicators:
+    - split-attention
+    - wall of text
+    - redundancy effect
+    - extraneous load
+    - cognitive load theory
+    - CLT
+    - germane load
+    - intrinsic load
+    patterns:
+    - split[- ]attention \w+
+    - wall of text
+    - redundancy (effect|issue)
+    - (CLT|cognitive load theory) \w+
+    - (extraneous|germane|intrinsic) (load|cognitive)
+    clt_anti_patterns:
+      split_attention: Text label separated from visual element (penalty 6)
+      redundancy_effect: Same content in both text and narration simultaneously (penalty 7)
+      wall_of_text_training: Dense paragraph blocks in training content (penalty 8)
+    note: CLT-compliant design reduces cognitive load by 25-35% (Mayer 2009); target load 0.80-0.88 multiplier
+    relates_to:
+    - target: extraneous_load_marker
+      relation: limits
+      weight: required
+      description: "CLT compliance scoring evaluates against PID max 0.50, disfluency max 2/min, and speech rate 100-130 wpm thresholds — all extraneous load sources (Architecture of Influence, Part 2 Section 3)"
+      target_file: cognitive_load_entities
+    - target: extraneous_load_marker
+      relation: supports
+      weight: required
+      description: "CLT compliance measures whether extraneous load is minimised per coherence and redundancy per Applying Mayer's Principles Practical Checklist"
+      target_file: cognitive_load_entities
+    - target: intrinsic_load_marker
+      relation: supports
+      weight: required
+      description: "CLT compliance assesses intrinsic load management through segmenting and pre-training per Applying Mayer's Principles Practical Checklist"
+      target_file: cognitive_load_entities
+  semiotic_coherence_dimension:
+    label: SEMIOTIC_COHERENCE_DIMENSION
+    field_description: Semiotic coherence visual coding consistency meaning conflict symbol clash mixed metaphors compositional
+      grammar given new ideal real
+    description: Reference to semiotic coherence — consistent visual coding, compositional grammar, and absence of semiotic
+      conflict
+    entity_kind: quality_dimension
+    family: design_quality
+    examples:
+    - Semiotic conflict between title and visual.
+    - Visual coding is inconsistent across slides.
+    - The Given/New spatial arrangement is maintained.
+    - Mixed visual metaphors undermine the message.
+    - Compositional grammar is well-applied.
+    - Colour coding shifts meaning mid-deck.
+    - Ideal/Real layout used correctly.
+    - The image contradicts the title message.
+    confidence_threshold: 0.68
+    field: scoring
+    indicators:
+    - semiotic
+    - visual coding
+    - compositional grammar
+    - given/new
+    - ideal/real
+    - semiotic conflict
+    - visual metaphor
+    - coding inconsistency
+    patterns:
+    - semiotic (conflict|coherence|coding)
+    - visual (coding|metaphor|consistency)
+    - (given|new|ideal|real) \w+ (layout|arrangement|placement)
+    - (image|visual) (contradicts|conflicts|undermines)
+    semiotic_scoring:
+      conflict_penalty: 10
+      inconsistency_penalty: 5
+      coherence_bonus: 3
+    source: Kress & van Leeuwen (1996) semiotic metafunctions
+    relates_to:
+    - target: visual_quality_dimension
+      relation: enables
+      weight: expected
+      description: 'Semiotic coherence: visual symbols (icons, colours, typography) consistently convey meaning across all
+        slides'
+    - target: semiotic_arrangement
+      relation: supports
+      weight: expected
+      description: 'Semiotics: position (left=past, right=future), colour (red=urgent, green=positive), size (big=important)
+        consistently applied'
+      target_file: visual_elements_entities
+    - target: brand_element
+      relation: supports
+      weight: optional
+      description: Brand consistency (logo placement, colour palette, font family) reinforces semiotic coherence without cognitive
+        distraction
+      target_file: visual_elements_entities
+    - target: semiotic_arrangement
+      relation: supported_by
+      weight: required
+      description: Semiotic coherence scoring is directly supported by proper semiotic arrangements encoding signifier-signified
+        relationships per Visual Communication and Storytelling
+      target_file: visual_elements_entities
+    taxonomy_mapping:
+    - taxonomy: scoring_taxonomy
+      dimension: semiotic_assessment
+      values:
+      - visual_consistency
+      - symbol_meaning
+      - colour_coding
+      - typography_hierarchy
+      strength: secondary
+  positive_qualifier:
+    label: POSITIVE_QUALIFIER
+    field_description: Positive score qualifier excellent outstanding strong exceptional world-class best-in-class highly
+      effective
+    description: Language signalling a high score or strong performance across any dimension
+    entity_kind: score_qualifier
+    family: evaluative_language
+    examples:
+    - Excellent use of narrative structure.
+    - Outstanding visual clarity.
+    - A strong and compelling argument.
+    - Exceptional engagement throughout.
+    - World-class execution.
+    - Highly effective delivery.
+    confidence_threshold: 0.72
+    field: scoring
+    indicators:
+    - excellent
+    - outstanding
+    - strong
+    - exceptional
+    - world-class
+    - highly effective
+    - best-in-class
+    patterns:
+    - (excellent|outstanding|exceptional) (use of|quality|\w+)
+    - (strong|highly effective) \w+
+    - world[- ]class \w+
+    color: '#27ae60'
+    relates_to:
+    - target: negative_qualifier
+      relation: contrasts_with
+      weight: required
+      description: Positive vs negative evaluative language — opposing assessment poles
+    - target: structure_dimension
+      relation: supports
+      weight: required
+      description: Positive qualifiers (clear hierarchy, logical flow, consistent formatting, explicit transitions) directly
+        support structure dimension scores. Well-organized presentations score higher on structure dimensions.
+    - target: evidence_quality_dimension
+      relation: supports
+      weight: expected
+      description: Positive qualifiers (proven, validated, documented, peer-reviewed) attached to claims/evidence signal strength
+        and credibility
+    taxonomy_mapping:
+    - taxonomy: scoring_taxonomy
+      dimension: qualifier_type
+      values:
+      - proven
+      - validated
+      - documented
+      - peer_reviewed
+      strength: secondary
+  negative_qualifier:
+    label: NEGATIVE_QUALIFIER
+    field_description: Negative score qualifier poor weak lacks missing insufficient unclear confusing ineffective needs improvement
+    description: Language signalling a low score or weak performance across any dimension
+    entity_kind: score_qualifier
+    family: evaluative_language
+    examples:
+    - Poor narrative structure.
+    - Lacks clarity throughout.
+    - Weak evidence to support the claim.
+    - Missing a clear call to action.
+    - Confusing and hard to follow.
+    - Needs significant improvement.
+    confidence_threshold: 0.72
+    field: scoring
+    indicators:
+    - poor
+    - weak
+    - lacks
+    - missing
+    - confusing
+    - needs improvement
+    - insufficient
+    patterns:
+    - (poor|weak|insufficient) \w+
+    - (lacks|missing) (a |\w+ )?\w+
+    - (confusing|unclear|hard to) \w+
+    - needs (improvement|work|revision)
+    color: '#e74c3c'
+    relates_to:
+    - target: positive_qualifier
+      relation: contrasts_with
+      weight: required
+      description: Negative vs positive evaluative language
+    - target: developmental_qualifier
+      relation: contrasts_with
+      weight: expected
+      description: Negative (deficit-framed) vs developmental (growth-framed) feedback
+    - target: visual_quality_dimension
+      relation: limits
+      weight: required
+      description: Negative qualifiers (accessibility violations, visual clutter, poor contrast, dated design) directly reduce
+        visual quality dimension scores. Each negative qualifier acts as a constraint on overall quality assessment.
+    - target: evidence_quality_dimension
+      relation: limits
+      weight: expected
+      description: Negative qualifiers (alleged, arguably, some evidence) signal claim weakness though honest hedging increases
+        credibility
+    taxonomy_mapping:
+    - taxonomy: scoring_taxonomy
+      dimension: qualifier_type
+      values:
+      - alleged
+      - arguably
+      - possibly
+      - hedging
+      - uncertainty
+      strength: secondary
+  developmental_qualifier:
+    label: DEVELOPMENTAL_QUALIFIER
+    field_description: Developmental partial emerging adequate developing approaching with more work could benefit from
+    description: Language signalling a mid-range or developing performance level
+    entity_kind: score_qualifier
+    family: evaluative_language
+    examples:
+    - Adequate but not compelling.
+    - Developing in the right direction.
+    - Could benefit from stronger evidence.
+    - Approaching the expected standard.
+    - With more work, this could be excellent.
+    - Partially effective.
+    confidence_threshold: 0.68
+    field: scoring
+    indicators:
+    - adequate
+    - developing
+    - could benefit
+    - approaching
+    - partially
+    - with more work
+    - emerging
+    patterns:
+    - adequate (but|and|with) \w+
+    - could (benefit|improve|be) \w+
+    - (approaching|nearing|towards) \w+
+    - partially (effective|successful|complete)
+    color: '#f39c12'
+    relates_to:
+    - target: negative_qualifier
+      relation: contrasts_with
+      weight: expected
+      description: Developmental (growth-oriented) vs negative (deficit-oriented) feedback
+    - target: structure_dimension
+      relation: supports
+      weight: optional
+      description: 'Developmental qualifiers indicate content maturity: prototype, beta, production for credibility assessment'
+    taxonomy_mapping:
+    - taxonomy: scoring_taxonomy
+      dimension: qualifier_type
+      values:
+      - prototype
+      - beta
+      - production_ready
+      - mature
+      strength: secondary
+gliner_config:
+  model: gliner-large-v2
+  batch_size: 32
+  default_confidence_threshold: 0.7
+  context_window: 512
+  entity_groups:
+    quality_dimensions:
+    - CLARITY_DIMENSION
+    - STRUCTURE_DIMENSION
+    - ENGAGEMENT_DIMENSION
+    - EVIDENCE_QUALITY_DIMENSION
+    - VISUAL_QUALITY_DIMENSION
+    - COGNITIVE_LOAD_DIMENSION
+    - ACCESSIBILITY_DIMENSION
+    - NARRATIVE_QUALITY_DIMENSION
+    - CLT_COMPLIANCE_DIMENSION
+    - SEMIOTIC_COHERENCE_DIMENSION
+    score_qualifiers:
+    - POSITIVE_QUALIFIER
+    - NEGATIVE_QUALIFIER
+    - DEVELOPMENTAL_QUALIFIER
+domain_keywords:
+  primary:
+  - scoring
+  - rubric
+  - quality
+  - dimension
+  - assessment
+  - evaluation
+  - clarity
+  - structure
+  - engagement
+  - evidence
+  - visual
+  - accessibility
+  - cognitive load
+  - narrative quality
+  - CLT
+  - semiotic
+  - action title
+  - BLUF
+  - SCQA
+  secondary:
+  - outstanding
+  - excellent
+  - poor
+  - weak
+  - adequate
+  - developing
+  - effective
+  - compelling
+  - credible
+  - inclusive
+  - dot-dash
+  - split attention
+  - wall of text
+  - visual coding
+  - compositional grammar
+quality_indicators:
+  dimension_coverage:
+    narrow: < 3 dimensions detected — limited assessment scope
+    adequate: 3-5 dimensions — reasonable coverage
+    comprehensive: '> 5 dimensions — full multi-dimensional assessment'
+  qualifier_balance:
+    critical: '> 70% negative qualifiers'
+    mixed: Mix of positive and negative qualifiers
+    positive: '> 70% positive qualifiers'
+  score_band_separators:
+    adequate_to_strong: '70→80: CLT compliance + 25-35% research backing'
+    strong_to_excellent: '80→90: Format modality optimisation'

@@ -1,0 +1,521 @@
+# ==============================================================================
+# Strip-Card Learning Hierarchy
+# Module-Topic-Strip-Card structural specifications for learning content
+# ==============================================================================
+
+_meta:
+  id: strip_card_framework
+  title: "Strip-Card Learning Hierarchy"
+  description: "Four-level content hierarchy (Module → Topic → Strip → Card) with duration thresholds, card type definitions, scaffolding evolution, and modality adaptations for structured learning design."
+  domain: pedagogical
+  domain_type: workflow
+  purpose: methodology
+  version: "1.3.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Gold Standard Structure for Any Corporate-Learning Asset v3.md"
+    - "Corpus/Research/Research - Comprehensive Learning Design Framework.md"
+    - "Corpus/Research/Best Practices for Structuring Corporate Learning Content.md"
+  relationships:
+# ==============================================================================
+# HIERARCHY LEVELS
+# ==============================================================================
+
+hierarchy:
+  module:
+    definition: "Complete unit of instruction with defined learning outcomes"
+    contains: "topics"
+    optimal_topic_count:
+      min: 3
+      max: 7
+      research_basis: "Miller (1956) - Working memory capacity 7±2 chunks"
+    duration_by_modality:
+      e_learning:
+        min_minutes: 45
+        max_minutes: 60
+      ilt:
+        min_minutes: 60
+        max_minutes: 120
+      vilt:
+        min_minutes: 45
+        max_minutes: 90
+        note: "Shorter than ILT due to screen fatigue"
+      microlearning:
+        note: "Modules composed of multiple microlearning units delivered over days"
+    consistent_structure: "Hook → Roadmap → Pre-training → Core Content → Practice → Summary → Assessment → Next Steps"
+    media_mix: "Target 40% text, 40% visuals, 20% interactive elements"
+    purpose_functions:
+      - "Cognitive load management through logical sequencing"
+      - "Flexible learning paths and content reusability"
+      - "Scalable delivery and performance alignment"
+
+  topic:
+    definition: "Major thematic section within a module"
+    contains: "strips"
+    optimal_strip_count:
+      min: 2
+      max: 5
+      research_basis: "Manageable cognitive grouping within working memory limits"
+    optimal_duration_minutes: "10-15"
+    interaction_frequency: "2-3 activities per topic"
+    close_pattern: "Criterion-referenced test or scenario + next-step cue (badge or module unlock)"
+
+  strip:
+    definition: "Bite-sized segment focusing on one sub-concept"
+    contains: "cards"
+    optimal_card_count:
+      min: 3
+      max: 7
+      research_basis: "Miller (1956) - 7±2 chunks per processing unit"
+    duration_by_modality:
+      e_learning:
+        min_minutes: 5
+        max_minutes: 7
+        research_basis: "Mayer's Segmenting Principle - self-paced segments of 5-7 minutes"
+      video:
+        max_minutes: 7
+        research_basis: "Video attention data - engagement drops sharply after 5-7 minutes"
+      ilt:
+        min_minutes: 10
+        max_minutes: 15
+        research_basis: "Maximum lecture segment before interaction in classroom setting"
+    segmenting_principle: "Self-paced, segmented instruction leads to deeper understanding, especially for novices, by allowing time to consolidate each part of the lesson"
+    learner_control: "Allow learners to navigate or pause between segments; display progress indicator showing content divided into manageable parts"
+    retrieval_cadence: "Embed one retrieval interaction (quiz, poll, or drag-and-drop) every 5-7 minutes"
+    recommended_segment_pattern: "Problem → Explanation → Example"
+    quality_criteria:
+      - "Logical start and end points"
+      - "Consistent interaction patterns across strips"
+      - "Mobile-first responsive design"
+      - "Completion tracking capability"
+
+  card:
+    definition: "Individual instructional element within a strip"
+    is_atomic: true
+    duration_range:
+      min_seconds: 30
+      max_seconds: 180
+    dwell_time_optimal:
+      min_seconds: 45
+      max_seconds: 90
+      source: "Comprehensive Learning Design Framework"
+    stackability: "Cards combine into larger sequences; each card must be standalone-valid"
+    universal_design_principles:
+      - "Single learning objective per card"
+      - "Clear visual hierarchy"
+      - "Mobile-optimized interface"
+      - "WCAG 2.1 AA compliance"
+      - "Fast loading times"
+
+# ==============================================================================
+# CARD TYPES
+# ==============================================================================
+
+card_types:
+  hook:
+    purpose: "Grab attention, establish social presence, spark relevance"
+    gagne_event: "gain_attention"
+    duration:
+      min_seconds: 30
+      max_seconds: 90
+    elements:
+      - "Warm greeting with conversational tone"
+      - "Specific hook mechanism: quick story, surprising statistic, or relatable scenario to activate curiosity or emotion"
+      - "Visual thumbnail of the problem this training solves"
+      - "Business pain point (required)"
+      - "End-state outcome — what the learner will be able to do (required)"
+    design_principles:
+      - "Start immediately with the attention-grabber"
+      - "Connect to learning objectives within first 15 seconds"
+      - "Use conversational, not academic, tone"
+      - "Incorporate interactivity where possible"
+    research_basis: "Gagné Event 1 - Gain attention through cognitive arousal; short video intros increase attention and emotional buy-in (Best Practices Structuring)"
+
+  pre_training:
+    purpose: "Offload essential terminology to reduce later cognitive load"
+    gagne_event: "stimulate_recall"
+    duration:
+      min_seconds: 30
+      max_seconds: 60
+    elements:
+      - "Glossary or concept map"
+      - "Skip option for confident learners"
+      - "Simple explanatory diagrams"
+    skip_option: "Required — allow confident learners to skip if they already know the basics; provide skip-ahead control for advanced learners"
+    facilitator_note: "Frame as orientation, not test; present as 'here are the key terms we will use' not 'let's test what you already know'"
+    research_basis: "Mayer's Pre-training Principle - introduce key concepts before main lesson; pre-trained learners score significantly higher on transfer questions because they are not overwhelmed by new jargon during instruction (Gold Standard Structure)"
+
+  teach:
+    purpose: "Deliver core content in tight, scaffolded chunks"
+    gagne_event: "present_content"
+    duration:
+      min_seconds: 60
+      max_seconds: 180
+    sub_elements:
+      - "Introduction signalling the goal"
+      - "Content delivery (show and tell with multimedia)"
+      - "Worked example or illustrative story"
+    signalling_techniques:
+      techniques:
+        - "Arrows or circles on graphics to highlight critical details"
+        - "Bold or highlighted keywords"
+        - "Verbal emphasis cues ('This is crucial:', 'Watch for...')"
+        - "One-by-one bullet reveal to control pacing"
+      effect_size: "d = 0.38, meta-analysis of 29 studies (Gold Standard Structure, Section 1.4)"
+    multimedia_principles:
+      - "Dual coding: pair visual with auditory explanation"
+      - "Temporal contiguity: narration and graphics presented simultaneously"
+      - "Modality effect: spoken text + visuals outperforms on-screen text + visuals"
+      - "Progressive disclosure: reveal information incrementally"
+    anti_patterns:
+      - "Dense text on screen when narration is present (redundancy effect — causes cognitive overload)"
+      - "Narrating verbatim what is on screen (modality principle violation)"
+      - "Irrelevant decorative images: seductive details effect, d ≈ −0.30 reduction in recall (Gold Standard Structure)"
+      - "Covering more than one concept per card (violates segmenting principle)"
+      - "Academic or bureaucratic tone instead of conversational direct address"
+    research_basis: "Gagné Events 4-5 - Present content and provide learning guidance"
+
+  dialogue:
+    purpose: "Facilitate discussion and collaborative meaning-making"
+    gagne_event: "stimulate_recall"
+    duration:
+      min_seconds: 60
+      max_seconds: 120
+    elements:
+      - "Discussion prompt or question"
+      - "Peer interaction structure"
+      - "Facilitator synthesis of key themes"
+    implementation_methods:
+      - "Open-ended prompts requiring reflection, not recall"
+      - "Scenario-based discussion questions"
+      - "Experience sharing: 'When have you seen this in your work?'"
+      - "Collaborative problem-solving with peer comparison"
+    platforms: "Discussion forums, breakout rooms, social learning tools, or live facilitated conversation"
+    research_basis: "Vygotsky's ZPD - learning through social interaction and dialogue"
+
+  practice:
+    purpose: "Apply knowledge through hands-on activity"
+    gagne_event: "elicit_performance"
+    duration:
+      min_seconds: 90
+      max_seconds: 180
+    elements:
+      - "1-3 practice questions or mini-simulation"
+      - "Immediate feedback on performance"
+      - "Application-focused reflection prompt"
+    feedback_type: "Catalytic — explain why the correct answer is right AND why each distractor is wrong"
+    feedback_requirement: "Explanatory, not binary (never 'Correct/Incorrect' alone)"
+    items_per_instance: "1-3 items per practice card"
+    scaffolding: "Progress from guided practice (with hints) to independent practice across the module sequence"
+    research_basis: "Gagné Event 6 - Elicit performance for active processing; medium-to-large effect size on factual, conceptual, and problem-solving scores (Taylor & Francis 2024; PMC 2024)"
+
+  test:
+    purpose: "Assess learning with formative or summative evaluation"
+    gagne_event: "assess_performance"
+    duration:
+      min_seconds: 30
+      max_seconds: 90
+    elements:
+      - "Scenario-based or simulation-format assessment questions (preferred over factual recall)"
+      - "Low-stakes tone for formative checks"
+      - "Expert reasoning walkthrough in feedback"
+      - "Completion action: mastery badge or next-module unlock"
+    assessment_types:
+      formative: "During learning — low-stakes, explanatory feedback"
+      summative: "End of section — confirms readiness to proceed"
+      diagnostic: "Pre-assessment — identifies knowledge gaps before instruction"
+    feedback_requirement: "Explanatory, not binary; actively retrieving answers significantly boosts long-term retention (testing effect)"
+    research_basis: "Gagné Event 8 - Assess performance to confirm learning"
+
+  transfer:
+    purpose: "Bridge learning to workplace application"
+    gagne_event: "enhance_retention_transfer"
+    duration:
+      min_seconds: 30
+      max_seconds: 60
+    elements:
+      - "Downloadable job aid or summary"
+      - "Preview of next module"
+      - "Reflection prompt (required): application-focused question ('How will you use this in your next [context]?')"
+      - "Peer sharing prompt or commitment statement"
+      - "Job aid offer (optional): checklist, decision tree, or reference card"
+    research_basis: "Gagné Event 9 - Enhance retention and transfer to real work; reflection prompts convert inert knowledge into transfer intentions (The eLearning Coach)"
+
+  reflection:
+    purpose: "Prompt metacognitive connection and application planning"
+    gagne_event: "enhance_retention_transfer"
+    duration:
+      min_seconds: 30
+      max_seconds: 60
+    elements:
+      - "Open-ended application prompt ('How could you use this in your next [context]?')"
+      - "Journal starter or 'think before you click' pause"
+      - "Optional discussion question for social sharing"
+    design_note: "Distinct from practice card (no right/wrong answer); distinct from transfer card (no job aid or module preview)"
+    research_basis: "Generative learning: metacognitive reflection deepens encoding and improves transfer (Gold Standard Structure, Section 1.6)"
+
+  scenario:
+    purpose: "Immersive decision-making practice in realistic context"
+    gagne_event: "elicit_performance"
+    duration:
+      min_seconds: 60
+      max_seconds: 180
+    elements:
+      - "Realistic workplace context establishing the stakes"
+      - "Two or more decision options with distinct consequences"
+      - "Consequence feedback showing outcome of each choice"
+      - "Expert debrief explaining optimal path and reasoning"
+    design_note: "Distinct from practice card: scenario has branching and consequences; practice card has right/wrong Q&A"
+    research_basis: "Scenario-based learning drives decision-making skill and behavioural transfer (Gold Standard Structure, Section 4.5)"
+
+  job_aid:
+    purpose: "Point-of-need performance support for task execution"
+    gagne_event: "enhance_retention_transfer"
+    duration:
+      min_seconds: 0
+      max_seconds: 0
+      note: "Reference card — consumed on demand, not timed"
+    elements:
+      - "Numbered steps for a procedure, OR"
+      - "Decision tree for troubleshooting, OR"
+      - "Annotated diagram for equipment or interface"
+    design_rule: "Brevity and scannability over explanation; no narrative text"
+    research_basis: "Performance support tools reduce error rates and reliance on recall at point of need (Gold Standard Structure, Section 4.2)"
+
+# ==============================================================================
+# FIRST MODULE BLUEPRINT
+# ==============================================================================
+
+first_module_blueprint:
+  description: "Recommended structure for the opening module of any course"
+  assessment_specification:
+    knowledge_checks_per_module: "3-5 formative checks plus one final evaluation"
+    media_mix: "Target 40% text, 40% visuals, 20% interactive elements"
+  components:
+    - id: 1
+      name: "hook_and_hello"
+      objective: "Grab attention, establish social presence, spark relevance"
+    - id: 2
+      name: "course_roadmap"
+      objective: "Provide orientation and cognitive mapping"
+      elements:
+        - "Visual roadmap diagram"
+        - "Module labeling by topic and capability"
+        - "Highlight current module position"
+        - "Revisit at module transitions"
+      display_behavior: "Re-shown after each strip or chunk with current step indicated"
+      research_basis: "Advance organizers lower extraneous cognitive load and raise LMS completion rates (Best Practices Structuring)"
+    - id: 3
+      name: "pre_training_key_concepts"
+      objective: "Offload essential terminology to avoid overload later"
+    - id: 4
+      name: "structured_learning_segments"
+      objective: "Deliver content in tight, scaffolded chunks"
+      sub_pattern: "intro → content → example → practice → reflection"
+      segment_internal_structure:
+        - "1. Intro — signal the goal of this segment"
+        - "2. Content — show and tell using multimedia (dual coding)"
+        - "3. Example — worked example or illustrative story"
+        - "4. Practice — 1-2 questions or mini simulation"
+        - "5. Reflection — application-focused prompt"
+      segment_duration: "3-5 minute content blocks with learner control ('Next', 'Try this')"
+    - id: 5
+      name: "knowledge_check"
+      objective: "Reinforce learning, build early confidence"
+      question_type: "Scenario-based, not factual recall"
+      tone: "Low-stakes — frame as practice, not evaluation"
+      feedback: "Expert reasoning walkthrough, not binary correct/incorrect"
+    - id: 6
+      name: "recap_and_reflect"
+      objective: "Summarize, prompt metacognitive connection"
+      elements:
+        - "Bulleted summary"
+        - "Journal prompt or discussion starter"
+        - "Link back to roadmap"
+    - id: 7
+      name: "whats_next"
+      objective: "Reinforce continuity, give autonomy"
+      elements:
+        - "Downloadable aid or summary"
+        - "Preview next module"
+        - "Peer sharing prompt"
+  design_rules:
+    signalling: "Bold headers, icons, roadmap diagram, verbal cues ('Watch for...', 'This is key...')"
+    scaffolding: "Walk-throughs, layered examples, hinting, retry loops, glossary provided upfront"
+    segmenting: "3-5 minute content blocks with learner control ('Next', 'Try this') between each"
+    coherence: "Remove fun facts and decorative visuals; use visuals only if directly instructional"
+    voice_persona: "Warm, inclusive first-person tone ('We will explore this together...')"
+
+# ==============================================================================
+# SCAFFOLDING EVOLUTION
+# ==============================================================================
+
+scaffolding_evolution:
+  module_1:
+    signalling: "Strong - Introduce icons, colors, cues explicitly"
+    scaffolding: "Maximum support - step-by-step guidance, worked examples, retry options"
+    language: "Explicit explanations of structure and expectations"
+    interaction: "Guided quizzes with feedback hints"
+    reflection: "Prompted with examples and sentence starters"
+    research_basis: "Novice learners need maximum scaffolding - Vygotsky ZPD"
+
+  modules_2_plus:
+    signalling: "Precision - Embed patterns, reduce narration intensity"
+    scaffolding: "Faded support - partial then independent practice"
+    language: "Cumulative references (e.g., 'As we saw in Module 1...')"
+    interaction: "Scenario-based with adaptive feedback"
+    reflection: "Open-ended, self-directed application prompts"
+    expert_pathway: "Offer skip-ahead controls and deeper practice exercises for advanced learners"
+    optional_support_mechanism: "Offer opt-in scaffolding: 'Need a refresher? Click here for a quick recap'"
+    example_sequence:
+      - "Module 1: Instructor walks through scenario step-by-step (full support)"
+      - "Module 2: Learner completes similar scenario with on-screen hints (partial support)"
+      - "Module 3: Learner completes scenario with minimal guidance, then compares with expert model"
+    research_basis: "Expertise reversal effect - reduce scaffolding as competence grows (Kalyuga 2007); Nottingham Trent / Edutopia scaffolding fade research"
+
+  continuity_techniques:
+    - "Consistent structure: hook → roadmap → core → practice → summary → assessment"
+    - "Cumulative phrasing linking to prior modules"
+    - "Visual and structural continuity (same layout, icons, colors)"
+    - "Progress indicators showing advancement through course"
+    - "Language: cumulative references ('As we saw in Module 1...', 'Let's build on last week's challenge...')"
+    - "Module close with forward prompt ('Now that we have tackled the basics, next up: ...')"
+    - "Progress narration ('That was step 2 of 5')"
+    - "Conceptual shift signalling ('Now let's zoom in on the practical side...')"
+  spaced_retrieval_nudges: "Push at 2-3 days and 1 week post-topic; 1, 7, and 30-day review yields 50% better long-term retention (PMC systematic review)"
+  social_learning_integration:
+    - "Module level: discussion forums and major achievement badges"
+    - "Topic level: peer challenges and progress bars"
+    - "Strip level: quick polls and micro-rewards"
+    - "Card level: share buttons and instant feedback"
+
+# ==============================================================================
+# MODALITY ADAPTATIONS
+# ==============================================================================
+
+modality_adaptations:
+  e_learning:
+    module_duration: "45-60 minutes"
+    segment_size: "5-7 minutes"
+    interaction_frequency: "Every 3-5 minutes"
+    assessment: "Embedded formative quizzes; end-of-module summative"
+    navigation_requirements:
+      - "Visible progress indicator"
+      - "Menu or navigation button allowing review of prior sections"
+      - "Pause/rewind control for video content"
+      - "Skip-ahead for learners who can test out of known content"
+    adaptive_branching: "If a learner answers incorrectly, offer an extra explanation or easier follow-up question before continuing"
+    typical_pattern: "Intro video or story → roadmap → interleaved quizzes and videos → section review"
+
+  ilt:
+    session_duration: "60-120 minutes"
+    lecture_segment_max: "10-15 minutes before interaction"
+    max_lecture_without_interaction: "10-15 minutes — avoid exceeding this without some form of learner activity"
+    interaction_types: "Group discussions, role-plays, hands-on practice"
+    interaction_patterns:
+      - "Think-pair-share: pose a question, learners discuss in pairs, then share with group (Vygotskian social constructivism)"
+      - "Small group case study: teams solve a case while instructor circulates to coach (fosters generative processing)"
+    assessment: "Live observation, group exercises, capstone demonstrations"
+
+  vilt:
+    session_duration: "45-90 minutes (shorter due to screen fatigue)"
+    segment_max: "Shorter segments, more frequent breaks"
+    segment_duration: "15-20 minutes of instruction before interactivity"
+    interaction_types: "Polls, chat, breakout rooms, annotation"
+    interaction_tools:
+      - "Polls"
+      - "Chat discussions (ask everyone to type a response, not just unmuted responses)"
+      - "Breakout rooms for small group work"
+      - "Digital whiteboards and live annotation"
+      - "Q&A queue"
+    required_roles:
+      - "Facilitator (content delivery and discussion)"
+      - "Producer or tech host (manages polls, breakout rooms, technical issues)"
+      - "Moderator (monitors chat, surfaces questions, ensures quiet participants are heard)"
+    social_presence_tactics:
+      - "Use learner names frequently"
+      - "Encourage webcam on"
+      - "Respond quickly to chat to signal attention"
+      - "Ask open questions requiring typed responses from all"
+    special_considerations:
+      - "Use platform features actively"
+      - "Encourage webcams"
+      - "Dedicated moderator recommended"
+
+  microlearning:
+    unit_duration: "2-10 minutes per unit (optimal burst for mobile and on-the-go consumption)"
+    focus: "One specific objective per unit"
+    delivery_pattern: "Spaced repetition (e.g., daily units)"
+    delivery_schedule: "Spaced — daily mini-quizzes or weekly refreshers; deliver at point-of-need"
+    interaction: "1-2 questions per unit"
+    internal_time_split: "Typical 4-min unit = 3 min content + 1 min quiz or application prompt"
+    standalone_connectable: "Each unit must stand alone; if part of a series, include sequence numbering (e.g., 'Unit 3 of 10')"
+    recommended_formats:
+      - "Short video (under 3 minutes)"
+      - "Podcast or audio clip"
+      - "Infographic with interactive overlay"
+      - "Scenario-based quiz"
+    engagement_mechanisms:
+      - "Badges and completion certificates"
+      - "Points or streaks for daily completion"
+      - "Leaderboards for team challenges"
+    complex_topic_pattern: "Sequence of micro-units as a structured learning path, not standalone clips"
+    research_basis: "Spacing effect: six 5-minute lessons over a week yields better retention than one 30-minute course (Gold Standard Structure, Section 4.4)"
+
+  mobile:
+    design_considerations:
+      - "Large legible fonts"
+      - "High contrast visuals"
+      - "Minimal typing required"
+      - "Touch-friendly interactions"
+      - "Optimized file sizes"
+    design_requirements:
+      - "Responsive layout adapting to screen size"
+      - "Tappable navigation (no hover-only interactions)"
+      - "Legible text at mobile scale (minimum 16px body)"
+    interaction_constraints:
+      - "Prefer tap interactions (multiple choice, sliders, drag) over typing"
+      - "Buttons finger-friendly in size (minimum 44x44px touch target)"
+    technical_requirements:
+      - "File sizes optimized for mobile networks"
+      - "Offline capability with real-time sync on reconnect"
+      - "Gesture recognition support"
+      - "Fast loading (under 3 seconds on 4G)"
+
+# ==============================================================================
+# COGNITIVE FOUNDATIONS
+# ==============================================================================
+
+cognitive_foundations:
+  working_memory_limit:
+    capacity: "7±2 chunks"
+    source: "Miller (1956)"
+    implication: "Card count per strip and topic count per module bounded by this limit"
+  attention_span:
+    complex_content_minutes: "8-10 minutes"
+    optimal_session_minutes: "15-20 with breaks"
+    implication: "Strip and topic durations calibrated to attention curve"
+  spaced_repetition:
+    retention_benefit: "50% better long-term retention"
+    review_schedule: "1 day, 7 days, 30 days post-learning"
+    source: "Comprehensive Learning Design Framework"
+  active_learning:
+    interaction_frequency: "Every 3-5 minutes of content"
+    source: "Comprehensive Learning Design Framework"
+
+# ==============================================================================
+# ACCESSIBILITY REQUIREMENTS
+# ==============================================================================
+
+accessibility_requirements:
+  standard: "WCAG 2.2 AA across all modalities"
+  requirements:
+    - "Captions on all video and audio content"
+    - "Alt-text on all images and diagrams"
+    - "Keyboard-friendly navigation (no mouse-only interactions)"
+    - "High contrast ratio (minimum 4.5:1 for normal text)"
+    - "Large touch targets for mobile (minimum 44x44px)"
+    - "RTL language support for localization"
+  sources:
+    - "Best Practices for Structuring Corporate Learning Content.md"
+    - "Comprehensive Learning Design Framework.md"

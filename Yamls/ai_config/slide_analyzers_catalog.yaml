@@ -1,0 +1,358 @@
+# ==============================================================================
+# Visual Analysis Catalog
+# Canonical definitions for 24 visual analyzers and their evaluation criteria
+# ==============================================================================
+
+_meta:
+  version: "2.3.0"
+  description: "Catalog of 24 visual analyzers defining what each measures, applicable frameworks, and evaluation criteria - implementation-agnostic reference for any visual analysis pipeline"
+  purpose: "reference"
+  domain: ai
+  domain_type: cross_cutting
+  id: slide_analyzers_catalog
+  title: "Visual Analysis Catalog"
+  last_updated: "2026-03-01"
+  note: "Stripped implementation details (weights, phases, scopes, prompt_files) - projects define their own"
+  corpus_sources:
+    - "Corpus/Research/Visual Narrative Flow Pass.md"
+    - "Corpus/Research/The Unseen Structure: A Technical Deep-Dive into Narrative, Visualization, and Accessibility.md"
+
+  relationships:
+    - target: ai_config/analyzer_catalog.yaml
+      type: depends_on
+      description: "Slide catalog derived from main catalog; slide analyzers are a domain-specific subset"
+# This file defines WHAT each analyzer measures, not HOW it's implemented.
+# Projects should:
+#   - Select which analyzers to use
+#   - Assign their own weights and phases
+#   - Define their own prompt files and execution order
+
+# ==============================================================================
+# EVALUATION FRAME
+# ==============================================================================
+
+evaluation:
+  scoring_anchors:
+    description: "Generic analyzer scoring bands (0-100)"
+    bands:
+      excellent: "90-100 (clear alignment, no major violations)"
+      good: "70-89 (minor issues)"
+      mixed: "50-69 (several issues)"
+      poor: "0-49 (major comprehension impact)"
+  data_requirements:
+    required:
+      - "Rendered slide image or slide DOM"
+      - "Text content per element"
+      - "Element bounding boxes (x,y,w,h)"
+      - "Font sizes and weights"
+      - "Foreground/background colors"
+    optional:
+      - "Gridlines or layout guides"
+      - "Chart data series metadata"
+  fallback:
+    rule: "If required data is missing, set confidence low and avoid strong claims"
+
+# ==============================================================================
+# ANALYZER CATALOG
+# ==============================================================================
+
+analyzers:
+
+  # ---------------------------------------------------------------------------
+  # COGNITIVE & ACCESSIBILITY
+  # ---------------------------------------------------------------------------
+
+  cognitive_load:
+    description: "Measures cognitive demands using Miller's Law (7+/-2) and split-attention effect"
+    framework: "Miller's Law, Cognitive Load Theory"
+    evaluates:
+      - element_count: "Total visual elements competing for attention"
+      - text_blocks: "Number of distinct text regions"
+      - chart_complexity: "Data series and dimensions in visualizations"
+    guidelines:
+      max_elements: 9
+      max_text_blocks: 5
+      chart_complexity_limit: 3
+
+  accessibility:
+    description: "Checks WCAG compliance for color contrast, text size, and readability"
+    framework: "WCAG 2.1 AA"
+    evaluates:
+      - contrast_ratio: "Foreground/background color contrast"
+      - font_size: "Minimum readable text size"
+      - color_independence: "Information not conveyed by color alone"
+    guidelines:
+      min_contrast_ratio: 4.5
+      min_font_size_pt: 18
+      min_heading_size_pt: 24
+
+  # ---------------------------------------------------------------------------
+  # INSTRUCTIONAL DESIGN PRINCIPLES
+  # ---------------------------------------------------------------------------
+
+  mayer_principles:
+    description: "Evaluates multimedia learning principles for effective visual-verbal integration"
+    framework: "Mayer's Cognitive Theory of Multimedia Learning"
+    principles:
+      coherence: "Remove extraneous material that doesn't support learning"
+      signaling: "Highlight essential material with visual cues"
+      redundancy: "Avoid redundant on-screen text that duplicates narration"
+      spatial_contiguity: "Place related elements near each other"
+      temporal_contiguity: "Present related elements simultaneously"
+
+  merrill_principles:
+    description: "Applies First Principles of Instruction for effective learning design"
+    framework: "Merrill's First Principles of Instruction"
+    principles:
+      problem_centered: "Learning involves real-world problems"
+      activation: "Activate prior knowledge before new content"
+      demonstration: "Show rather than just tell"
+      application: "Provide practice opportunities"
+      integration: "Enable transfer to real-world context"
+
+  dual_coding:
+    description: "Analyzes visual-verbal synergy using Paivio's Dual Coding Theory"
+    framework: "Paivio's Dual Coding Theory"
+    coding_types:
+      structural: "Visual represents conceptual structure"
+      analogical: "Visual provides analogy or metaphor"
+      representative: "Visual shows real instance"
+      decorative: "Aesthetic only, no meaning reinforcement (flag as concern)"
+    detects:
+      - seductive_details: "Distracting decorative elements"
+      - channel_synergy: "Visual and verbal channels reinforcing each other"
+
+  # ---------------------------------------------------------------------------
+  # VISUAL GRAMMAR & SEMIOTICS
+  # ---------------------------------------------------------------------------
+
+  semiotic_grammar:
+    description: "Analyzes visual grammar using Kress & van Leeuwen's metafunctions"
+    framework: "Kress & van Leeuwen Visual Grammar"
+    metafunctions:
+      representational: "What is depicted and how relationships are constructed"
+      interactive: "How the image addresses and positions the viewer"
+      compositional: "How information is arranged (Given-New, Ideal-Real)"
+
+  focus_clarity:
+    description: "Evaluates slide focus using KWICK 5-second test methodology"
+    framework: "KWICK Methodology"
+    dimensions:
+      key_point: "Can the main message be identified in 5 seconds?"
+      words_visuals: "Do words suggest appropriate visual metaphors?"
+      in_context: "Is complexity appropriate for audience?"
+      crystal_clear: "Are charts and data immediately understandable?"
+      keep_focus: "Do visual cues draw eye to most important element?"
+
+  # ---------------------------------------------------------------------------
+  # DESIGN PRINCIPLES
+  # ---------------------------------------------------------------------------
+
+  crap:
+    description: "Evaluates CRAP design principles for visual effectiveness"
+    framework: "Robin Williams' CRAP Principles"
+    principles:
+      contrast: "Different elements should be obviously different"
+      repetition: "Repeat visual elements throughout design for unity"
+      alignment: "Every element should have visual connection to another"
+      proximity: "Related items should be grouped together"
+
+  tufte:
+    description: "Applies Tufte's data visualization principles for clarity and integrity"
+    framework: "Tufte's Visual Display of Quantitative Information"
+    metrics:
+      data_ink_ratio: "Maximize data-to-ink ratio, minimize non-data ink"
+      chartjunk_detection: "Identify decorative but non-informative elements"
+      lie_factor: "Check for misleading visual representations"
+
+  typography:
+    description: "Analyzes font choices, hierarchy, and readability"
+    framework: "Typography Best Practices"
+    checks:
+      - font_pairing_harmony: "Compatible typeface combinations"
+      - heading_body_hierarchy: "Clear visual distinction between levels"
+      - line_length_optimal: "45-75 characters per line"
+      - line_spacing_ratio: "1.4-1.6x font size"
+      - font_count_limit: "Maximum 2 fonts per design"
+
+  visual_hierarchy:
+    description: "Evaluates visual weight distribution and eye-flow patterns"
+    framework: "Visual Hierarchy Theory"
+    patterns:
+      z_pattern: "Left-to-right, top-to-bottom reading flow"
+      f_pattern: "Headline-focused scanning pattern"
+      gutenberg: "Primary/terminal optical areas diagonal"
+
+  # ---------------------------------------------------------------------------
+  # AUTHENTICITY & BRAND
+  # ---------------------------------------------------------------------------
+
+  image_authenticity:
+    description: "Detects stock photography and evaluates image authenticity impact"
+    framework: "Visual Credibility Assessment"
+    stock_indicators:
+      - generic_poses: "Staged handshakes, forced smiles"
+      - diverse_casting: "Artificially balanced demographics"
+      - perfect_lighting: "Studio quality in 'candid' shots"
+      - common_tropes: "Handshake, lightbulb, puzzle pieces"
+    authenticity_signals:
+      - real_products: "Actual product photos"
+      - team_photos: "Real team in workspace"
+      - customer_evidence: "Real logos, testimonials"
+      - specific_context: "Recognizable locations"
+
+  visual_voice:
+    description: "Evaluates visual voice consistency and detects semiotic conflicts"
+    framework: "Brand Voice Alignment"
+    voice_spectrums:
+      authority: "Authoritative/Expert vs Approachable/Friendly"
+      innovation: "Innovative/Cutting-edge vs Traditional/Established"
+      energy: "Dynamic/Urgent vs Calm/Measured"
+      formality: "Corporate/Formal vs Casual/Relaxed"
+    conflict_types:
+      - value_conflict: "'We're agile' + rigid diagram"
+      - tone_conflict: "'Urgent action' + calm palette"
+      - brand_conflict: "'Premium' + low-res imagery"
+
+  deck_cohesion:
+    description: "Detects Frankendeck symptoms and evaluates visual cohesion"
+    framework: "Visual Consistency Assessment"
+    frankendeck_indicators:
+      - font_mixing: "Incompatible typefaces"
+      - icon_clash: "Mixing flat, 3D, line icons"
+      - color_inconsistency: "Palette variations without purpose"
+      - image_mismatch: "Photos mixed with clipart"
+      - layout_chaos: "Inconsistent margins/grids"
+      - template_fragments: "Remnants of different templates"
+    glance_test:
+      - professional_impression
+      - brand_recognizable
+      - quality_perception
+      - style_clarity
+
+  # ---------------------------------------------------------------------------
+  # NARRATIVE & STORYTELLING
+  # ---------------------------------------------------------------------------
+
+  visual_soar:
+    description: "Detects SOAR framework alignment in visual elements"
+    framework: "SOAR Storytelling Framework"
+    beats:
+      situation: "Context-setting visuals (neutral tones, status quo imagery)"
+      opportunity: "Problem/gap visuals (warning tones, tension imagery)"
+      action: "Solution visuals (constructive tones, process imagery)"
+      result: "Outcome visuals (celebration tones, success imagery)"
+
+  emotional_arc:
+    description: "Identifies Vonnegut story shapes in presentation emotional flow"
+    framework: "Vonnegut Story Shapes"
+    arc_types:
+      man_in_hole: "Fall then rise - common business narrative"
+      rags_to_riches: "Steady rise - growth story"
+      icarus: "Rise then fall - cautionary tale"
+      cinderella: "Rise, fall, rise - transformation story"
+      oedipus: "Fall, rise, fall - complex challenge"
+
+  arc_alignment:
+    description: "Compares visual emotional arc to textual narrative arc"
+    framework: "Cross-Modal Arc Analysis"
+    alignment_checks:
+      - beat_synchronization: "Visual and text beats match"
+      - tone_consistency: "Visual tone matches text sentiment"
+      - pacing_alignment: "Visual rhythm matches narrative pace"
+
+  climax_payoff:
+    description: "Analyzes climax positioning and payoff resolution"
+    framework: "Narrative Structure Analysis"
+    checks:
+      - climax_detection: "Peak moment identification"
+      - buildup_quality: "Tension building effectiveness"
+      - payoff_completeness: "Resolution satisfaction"
+      - premature_reveals: "Spoiled endings"
+
+  visual_text_alignment:
+    description: "Measures coherence between visual elements and text content"
+    framework: "Visual-Verbal Coherence"
+    alignment_types:
+      supportive: "Visual reinforces text message"
+      neutral: "Generic/decorative imagery"
+      contradictory: "Visual conflicts with text"
+
+  visual_metaphor:
+    description: "Identifies and evaluates visual metaphors for effectiveness"
+    framework: "Conceptual Metaphor Analysis"
+    metaphor_categories:
+      - journey: "Roads, paths, stairs"
+      - growth: "Trees, seeds, arrows"
+      - connection: "Networks, handshakes, puzzles"
+      - strength: "Shields, anchors, foundations"
+      - innovation: "Light bulbs, rockets, gears"
+
+  transition:
+    description: "Evaluates visual continuity between consecutive slides"
+    framework: "Visual Flow Analysis"
+    continuity_factors:
+      - color_consistency
+      - layout_consistency
+      - typography_consistency
+      - narrative_flow
+
+  progressive_disclosure:
+    description: "Analyzes information revelation pacing and complexity curve"
+    framework: "Progressive Disclosure Theory"
+    patterns:
+      good_progression: "Complexity builds appropriately"
+      information_dump: "Too much at once"
+      premature_complexity: "Advanced before basics"
+      missing_scaffolding: "Jumps in difficulty"
+
+  narrative_structure:
+    description: "Analyzes narrative structure using SCR, Sparkline, and Action Titles"
+    framework: "Minto Pyramid, Duarte Sparkline"
+    headline_analysis:
+      action_title: "Makes an assertion (preferred)"
+      label_title: "Merely describes topic (weak)"
+      question_title: "Poses a question (engaging but lacks assertion)"
+    scr_framework:
+      situation: "Establishes stable, agreed-upon context"
+      complication: "Introduces disruption, problem, or tension"
+      resolution: "Proposes solution to specific complication"
+      support: "Provides evidence for above"
+    sparkline:
+      what_is: "Describes current state, status quo"
+      what_could_be: "Envisions future state, possibility"
+      call_to_adventure: "Inciting moment that creates tension"
+      new_bliss: "Transformed state after resolution"
+
+  pacing_rhythm:
+    description: "Analyzes information density and visual pacing rhythm"
+    framework: "Presentation Pacing Theory"
+    density_categories:
+      lean: "<10 seconds - One concept, minimal text"
+      moderate: "10-30 seconds - 2-3 points, balanced"
+      dense: "30-60 seconds - Multiple data points"
+      slidument: ">60 seconds - Document disguised as slide"
+    rhythm_roles:
+      breather: "Simple visual after complex content"
+      summary: "Consolidates previous dense slides"
+      transition: "Bridges between sections"
+      core_content: "Standard information delivery"
+      deep_dive: "Intentionally dense for analysis"
+
+# ==============================================================================
+# SUGGESTED ANALYZER GROUPINGS
+# (Reference only - projects define their own phases/execution order)
+# ==============================================================================
+
+suggested_groupings:
+  cognitive_accessibility:
+    description: "Foundational quality checks for cognitive load and accessibility"
+    analyzers: [cognitive_load, accessibility, mayer_principles, merrill_principles, semiotic_grammar, focus_clarity, dual_coding]
+
+  design_principles:
+    description: "Visual design principles evaluation"
+    analyzers: [crap, tufte, typography, visual_hierarchy, image_authenticity, visual_voice, deck_cohesion]
+
+  narrative_storytelling:
+    description: "Narrative and visual storytelling coherence"
+    analyzers: [visual_soar, emotional_arc, arc_alignment, climax_payoff, visual_text_alignment, visual_metaphor, transition, progressive_disclosure, narrative_structure, pacing_rhythm]

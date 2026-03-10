@@ -1,0 +1,590 @@
+_meta:
+  id: stance_markers_entities
+  purpose: entity
+  version: 2.12.0
+  last_updated: '2026-03-09'
+  description: NuExtract entity definitions for epistemic modality and stance detection.
+  domain: narrative
+  domain_type: cross_cutting
+  parent_config: stance_markers.yaml
+  corpus_sources:
+  - Corpus/Research/Research - Argument Mining with MTL and PDL.md
+  - Corpus/Research/Research - Researching Narrative and Discourse Analysis.md
+  - 'Corpus/Research/Structural Paradigms in Natural Language Processing: A Comprehensive Analysis of Narrative Orchestration,
+    Discourse Integration, and Latent Evaluation.md'
+  - 'Corpus/Research/PDL Architecture: Narrative & Discourse Analysis Series.md'
+  - Corpus/Research/Research - Presentation Delivery_ Ethos and Physicality.md
+  - Corpus/Research/Research - Personal Branding Framework for Early.md
+  - Corpus/Research/Research - Advanced Computational Discourse Analysis_ Operationalizing Rhetorical Structure Theory with
+    LLM.md
+  - Corpus/Research/Research - Analyzing Story for Business Communication.md
+  - Corpus/Research/Research - The Anatomy of Presence.md
+  - Corpus/Research/Research - Vocal Profiling for Executive Coaching.md
+  - Corpus/Research/Research - The Architecture of Influence_ A Comprehensive Multimodal Taxonomy of Elite vs. Average Public
+    Speaking.md
+  - Corpus/Research/RESEARCH-BASED_ENHANCEMENTS FOR VOICE.md
+  - Corpus/Research/tone_of_voice_guide.md
+  - Corpus/Research/Research - Public_Speaking_research.md
+  - Corpus/Research/Research - Canonical Presentation Methodology Research.md
+  - Corpus/Research/research_-_elite_speaker_linguistic_analysis_taxonomy.md
+  - Corpus/Research/research_-_comprehensive_audience_analysis.md
+  - Corpus/Research/research_-_the_architecture_of_influence__a_comprehensive_multim.md
+entity_types:
+  hedge_marker:
+    label: HEDGE
+    entity_kind: discourse_marker
+    family: epistemic_markers
+    field_description: Uncertainty marker like might may could possibly perhaps probably likely seems appears qualifier
+    description: Epistemic hedge reducing claim certainty
+    examples:
+    - might
+    - may
+    - could
+    - possibly
+    - perhaps
+    - probably
+    - likely
+    - seems to
+    - appears that
+    - suggests
+    - indicates
+    - potential
+    - somewhat
+    - rather
+    - fairly
+    - tend to
+    - in some cases
+    confidence_threshold: 0.65
+    indicators:
+    - modal verbs (might, could, may)
+    - epistemic adverbs (possibly, perhaps, probably)
+    - perception verbs (seems, appears)
+    - approximators (somewhat, rather, fairly)
+    - frequency hedges (tend to, in some cases)
+    certainty_impact: reduces by 0.2-0.5
+    composite_certainty_calculation: multiply base certainty by (1 - hedge_strength)
+    hedge_taxonomy:
+      modal:
+      - might
+      - may
+      - could
+      - would
+      adverbial:
+      - possibly
+      - perhaps
+      - probably
+      - likely
+      approximating:
+      - somewhat
+      - rather
+      - fairly
+      - partially
+      perceptual:
+      - seems
+      - appears
+      - looks like
+      - feels like
+      frequency:
+      - tend to
+      - sometimes
+      - in some cases
+      - often
+    relates_to:
+    - target: boost_marker
+      relation: contrasts_with
+      weight: required
+      description: Hedging (uncertainty, tentativeness) vs boosting (certainty, confidence) — opposing epistemic stances
+    - target: qualifier
+      relation: enables
+      weight: expected
+      description: Hedge markers provide the linguistic mechanisms for qualifiers
+      target_file: narrative_entities
+    - target: qualifier
+      relation: supports
+      weight: expected
+      description: "Discourse-Aware TS extracts hedging as conditional sub-propositions with hedge markers directly supporting qualification of discourse claims per Researching Narrative and Discourse Analysis"
+      target_file: narrative_entities
+    - target: certainty_marker
+      relation: limits
+      weight: expected
+      description: "Model Criticism framework shows hedging reduces certainty in latent discourse states with hedge markers directly constraining certainty markers per Researching Narrative and Discourse Analysis"
+      target_file: discourse_entities
+    - target: uptalk_indicator
+      relation: enables
+      weight: expected
+      description: "Hedging language co-occurs with rising terminal intonation (uptalk) — epistemic uncertainty in word choice manifests as vocal uncertainty in delivery per Ethos and Physicality research"
+      target_file: performance_entities
+    - target: presentation_anxiety_marker
+      relation: triggers
+      weight: expected
+      description: "Hedge markers trigger presentation anxiety indicators — excessive hedging ('I think maybe', 'sort of') in personal brand delivery signals low confidence, undermining gravitas per Personal Branding Framework"
+      target_file: delivery_entities
+    - target: concession_marker
+      relation: bridges
+      weight: expected
+      description: Hedge markers bridge to concession relations in discourse — hedging acknowledges limitations that RST maps
+        through Concession relations between nucleus and satellite per Advanced Computational Discourse Analysis research
+      target_file: discourse_entities
+    - target: hedge_marker
+      relation: specialises
+      weight: expected
+      description: "Stance hedge_marker specialises the performance hedge_marker; stance hedging is the linguistic realisation of performance-level hedging behaviour in speech per Architecture of Influence"
+      target_file: performance_entities
+    - target: ethos_appeal
+      relation: limits
+      weight: expected
+      description: "Hedging directly limits credibility — the tone guide warns against 'Some people say...' or 'You may or may not agree...' as these weaken the authoritative voice per tone_of_voice_guide"
+      target_file: rhetorical_devices_entities
+    - target: vocal_quality_issue
+      relation: triggers
+      weight: optional
+      description: "Self-doubt and uncertainty in hedging language directly triggers perceived vocal quality issues — sounding timid and less convincing per Public Speaking research"
+      target_file: performance_entities
+    - target: academic_bundle
+      relation: supported_by
+      weight: expected
+      description: "Stance hedge markers are supported by academic bundles — Technocrat tier overuses stance bundles that detach the speaker from assertions (elite_speaker_taxonomy)"
+      target_file: discourse_entities
+    - target: audience_objection
+      relation: bridges
+      weight: expected
+      description: "Hedging bridges to audience objections by acknowledging limitations preemptively — strategic use of epistemic markers (may, could, suggests) signals openness to concerns and reduces perceived dogmatism per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    - target: uptalk_indicator
+      relation: supported_by
+      weight: expected
+      description: "Hedging stance prosodically signalled by uptalk and breathy phonation with steep spectral tilt per Voice Quality Metric Research"
+      target_file: performance_entities
+    - target: apology_opener
+      relation: supported_by
+      weight: expected
+      description: "Hedging stance reinforced by apology openers using breathy phonation associated with submission per Voice Quality Metric Research"
+      target_file: performance_entities
+  boost_marker:
+    label: BOOST
+    entity_kind: discourse_marker
+    family: epistemic_markers
+    field_description: Certainty amplifier like definitely certainly clearly obviously absolutely must always never intensifier
+    description: Epistemic booster increasing claim certainty
+    examples:
+    - definitely
+    - certainly
+    - clearly
+    - obviously
+    - absolutely
+    - undoubtedly
+    - without question
+    - must
+    - always
+    - never
+    - inevitably
+    - unquestionably
+    - demonstrably
+    - proven
+    - established
+    - invariably
+    - empirically
+    confidence_threshold: 0.7
+    indicators:
+    - strong modal verbs (must, will)
+    - certainty adverbs (definitely, certainly, clearly)
+    - emphatic markers (absolutely, obviously, undoubtedly)
+    - universal quantifiers (always, never, all)
+    - evidence markers (demonstrably, empirically, proven)
+    certainty_impact: increases by 0.15-0.3
+    composite_certainty_calculation: multiply base certainty by (1 + boost_strength)
+    relates_to:
+    - target: hedge_marker
+      relation: contrasts_with
+      weight: required
+      description: Boosting (certainty) vs hedging (tentativeness) — opposing stances
+      target_file: performance_entities
+    - target: emphasis_marker
+      relation: enables
+      weight: expected
+      description: "Epistemic boosters (certainly, absolutely, undoubtedly) are delivered with vocal emphasis — increased volume, deliberate pacing, and pitch stress that physically reinforce the certainty claim per Ethos and Physicality research"
+      target_file: performance_entities
+    - target: confidence_technique
+      relation: enables
+      weight: expected
+      description: "Boost markers enable confidence techniques — emphatic language asserting brand strengths ('I thrive on collaboration', 'I never miss a deadline') directly feeds confidence-building in personal brand delivery per Personal Branding Framework"
+      target_file: delivery_entities
+    - target: certainty_marker
+      relation: supports
+      weight: expected
+      description: Boost markers support certainty markers by amplifying epistemic commitment — in RST discourse boosted
+        propositions occupy nuclear positions with stronger communicative intent per Advanced Computational Discourse Analysis
+        research
+      target_file: discourse_entities
+    - target: claim
+      relation: supports
+      weight: expected
+      description: "Boost markers support claims by amplifying certainty and conviction in the assertion per Analyzing Story for Business Communication"
+      target_file: narrative_entities
+    - target: authority_opener
+      relation: supports
+      weight: expected
+      description: "Boost markers support authority openers; downward inflection signals certainty, finality, and command — the auditory equivalent of epistemic boosting that reinforces authoritative opening statements per Anatomy of Presence research"
+      target_file: performance_entities
+    - target: ethos_appeal
+      relation: supports
+      weight: expected
+      description: "Boost markers support ethos appeal; vocal certainty (downward inflection) and confident posture are primary mechanisms for establishing credibility and authority per Anatomy of Presence research"
+      target_file: rhetorical_devices_entities
+    - target: uptalk_indicator
+      relation: contrasts_with
+      weight: expected
+      description: "Boost markers contrast with uptalk indicators; boosters amplify certainty while uptalk (rising terminal intonation) undercuts it by signaling questions instead of statements per Vocal Profiling research"
+      target_file: performance_entities
+    - target: engagement_marker
+      relation: enables
+      weight: expected
+      description: "Boosted, high-agency language (dynamic verbs, certainty) enables audience engagement by projecting competence and authority rather than hedging per Architecture of Influence"
+    - target: claim
+      relation: supports
+      weight: expected
+      description: "Boost markers strengthen claims with certainty language; the 'So What?' test requires Action Titles to be insight-driven declarative statements, not tentative labels (Canonical Presentation Methodology)"
+      target_file: narrative_entities
+    - target: power_verb
+      relation: supported_by
+      weight: expected
+      description: "Booster stance markers are directly reinforced by power verb usage that adds lexical certainty to prosodic emphasis per voice enhancements research"
+      target_file: performance_entities
+    - target: visionary_bundle
+      relation: supported_by
+      weight: expected
+      description: "Visionary TED-style bundles ('We are going to...', 'This is why we...') serve as the lexical realisation of boosting stance in discourse (Architecture of Influence, Section 1.3, Part 3)"
+      target_file: rhetorical_devices_entities
+    - target: authority_opener
+      relation: supported_by
+      weight: expected
+      description: "Boosting stance reinforced by authority openers employing pressed phonation for dominance per Voice Quality Metric Research"
+      target_file: performance_entities
+  position_marker:
+    label: POSITION
+    entity_kind: discourse_marker
+    family: epistemic_markers
+    field_description: Evaluative stance like fortunately unfortunately regrettably encouragingly disappointingly candidly
+      honestly frankly
+    description: Attitudinal marker expressing author evaluation
+    examples:
+    - fortunately
+    - unfortunately
+    - regrettably
+    - encouragingly
+    - disappointingly
+    - surprisingly
+    - remarkably
+    - notably
+    - importantly
+    - significantly
+    - candidly
+    - honestly
+    - frankly
+    - objectively
+    - subjectively
+    confidence_threshold: 0.65
+    indicators:
+    - evaluative adverbs (fortunately, unfortunately)
+    - stance adverbials (candidly, honestly, frankly)
+    - significance markers (importantly, notably, remarkably)
+    - affective markers (disappointingly, encouragingly)
+    stance_polarity:
+      positive:
+      - fortunately
+      - encouragingly
+      - remarkably
+      - notably
+      negative:
+      - unfortunately
+      - regrettably
+      - disappointingly
+      neutral:
+      - candidly
+      - honestly
+      - objectively
+      - frankly
+    relates_to:
+    - target: claim
+      relation: enables
+      weight: expected
+      description: Position markers provide the stance-taking language that frames claims
+      target_file: narrative_entities
+    - target: value_proposition
+      relation: supports
+      weight: expected
+      description: "Position markers support value propositions — declarative brand statements like 'I'm a UX Designer who combines artistic creativity with data-driven insight' explicitly position professional identity per Personal Branding Framework"
+      target_file: narrative_entities
+    - target: claim
+      relation: supports
+      weight: required
+      description: "Position markers signal the speaker's stance on claims; the BLUF/Pyramid Principle requires upfront positioning of the core recommendation as the Answer (Canonical Presentation Methodology)"
+      target_file: narrative_entities
+  attribution_marker:
+    label: ATTRIBUTION
+    entity_kind: discourse_marker
+    family: epistemic_markers
+    field_description: Attribution source citation according to based on as noted by as reported in sourced from author claims
+      researcher found
+    description: Explicit attribution of a claim to a named source — enables argument provenance tracking
+    examples:
+    - According to Gartner...
+    - As McKinsey reports...
+    - Based on the Forrester study...
+    - As noted by the author...
+    - As reported in the HBR...
+    - Citing the IDC research...
+    - Research by MIT found...
+    - The Harvard Business Review notes...
+    confidence_threshold: 0.72
+    indicators:
+    - '''according to [source]'''
+    - '''as [source] reports/notes/found'''
+    - '''based on [study/report]'''
+    - '''citing [authority]'''
+    - '''research by [institution]'''
+    attribution_type:
+      named_analyst:
+      - Gartner
+      - Forrester
+      - IDC
+      - McKinsey
+      - BCG
+      - Deloitte
+      academic:
+      - research by
+      - study from
+      - Harvard
+      - MIT
+      - Stanford
+      media:
+      - HBR
+      - WSJ
+      - FT
+      - Forbes
+      - reports in
+      customer:
+      - our customer found
+      - a client reported
+      - case study shows
+    use_in_argument_mining: Attribution markers enable source-grounded claim extraction; combine with CLAIM entity for provenance
+      mapping
+    relates_to:
+    - target: research_citation
+      relation: enables
+      weight: expected
+      description: Attribution markers provide the linguistic framing for citing research
+      target_file: evidence_types_entities
+    - target: research_citation
+      relation: bridges
+      weight: expected
+      description: "Discourse-Aware TS shows attribution markers bridge between discourse structure and evidence citations during proposition extraction per Researching Narrative and Discourse Analysis"
+      target_file: evidence_types_entities
+    - target: evidence
+      relation: supports
+      weight: expected
+      description: "Attribution markers signal sourced evidence — they explicitly connect claims to external authorities or data sources supporting evidence chains per UNIFIED_NARRATIVE_METHODOLOGY_v2"
+      target_file: narrative_entities
+  engagement_marker:
+    label: ENGAGEMENT
+    entity_kind: discourse_marker
+    family: epistemic_markers
+    field_description: Audience engagement inclusive collective we our together let us all of us shared community invitation
+    description: Inclusive language that draws the audience into shared ownership of the content
+    examples:
+    - let us consider
+    - we all know
+    - as we have seen
+    - our shared challenge
+    - together we can
+    - you and I both know
+    - all of us here
+    - in our experience
+    - when we look at this
+    confidence_threshold: 0.6
+    indicators:
+    - inclusive 'we' (audience + speaker)
+    - '''let us'', ''as we'', ''when we'', ''what we'''
+    - '''our shared'', ''our collective'', ''our common'''
+    - '''you and I'', ''all of us'', ''everyone here'''
+    engagement_function:
+      solidarity_building: Creates speaker-audience unity
+      shared_ownership: Audience feels co-responsible for conclusion
+      resistance_reduction: Inclusive framing reduces adversarial stance
+    note: Distinguish from vendor-centric 'we' (speaker only) by checking whether audience is explicitly included
+    relates_to:
+    - target: rhetorical_question
+      relation: contains
+      weight: optional
+      description: Engagement markers can manifest as rhetorical questions
+      target_file: discourse_entities
+    - target: inclusive_we
+      relation: contains
+      weight: optional
+      description: Engagement markers include inclusive-we language
+      target_file: rhetorical_devices_entities
+    - target: audience_motivator
+      relation: enables
+      weight: expected
+      description: "Engagement markers enable audience motivators — active listening, insightful questions, and responsive dialogue motivate audience connection and brand advocacy per Personal Branding Framework"
+      target_file: audience_entities
+    - target: engagement_cue
+      relation: bridges
+      weight: expected
+      description: "Engagement markers bridge to engagement cues in delivery; verbal engagement patterns connect to nonverbal engagement signals like the Duchenne smile and eyebrow flash per Anatomy of Presence research"
+      target_file: delivery_entities
+    - target: pathos_appeal
+      relation: supports
+      weight: optional
+      description: "Engagement markers (rhetorical questions, direct address, inclusive 'we') support pathos by creating audience connection per UNIFIED_NARRATIVE_METHODOLOGY_v2 Section 5.5"
+      target_file: rhetorical_devices_entities
+    - target: narrative_tension
+      relation: supports
+      weight: expected
+      description: "Engagement markers signal audience involvement; the SCQA Complication creates tension as a 'necessary precondition for engagement' in the canonical methodology (Canonical Presentation Methodology)"
+      target_file: narrative_entities
+    - target: lexical_bundle
+      relation: supported_by
+      weight: expected
+      description: "Engagement markers are supported by elite lexical bundles — discourse organizers like 'I want to show you' and 'If you look at' simulate dialogue with the audience (elite_speaker_taxonomy)"
+      target_file: performance_entities
+    - target: inclusive_we
+      relation: supported_by
+      weight: expected
+      description: "Research specifies replacing abstract 'one' or passive 'it' with inclusive 'we' or 'you' to increase LSM warmth score, directly instantiating audience engagement (Architecture of Influence, Part 2 Constraint #4)"
+      target_file: rhetorical_devices_entities
+stance_classification:
+  support:
+    value: 1
+    description: Author supports the proposition
+    indicators:
+    - agree
+    - support
+    - endorse
+    - advocate
+    - promote
+  contest:
+    value: -1
+    description: Author contests the proposition
+    indicators:
+    - disagree
+    - oppose
+    - reject
+    - refute
+    - challenge
+  neutral:
+    value: 0
+    description: Author takes no clear position
+    indicators:
+    - observe
+    - note
+    - report
+    - describe
+    - document
+certainty_scoring:
+  description: Composite certainty calculation based on hedge/boost markers
+  baseline_certainty:
+    unqualified_claim: 0.7
+    hedged_claim: 0.5
+    boosted_claim: 0.9
+  hedge_strength:
+    weak: 0.1
+    moderate: 0.3
+    strong: 0.5
+  boost_strength:
+    weak: 0.1
+    moderate: 0.2
+    strong: 0.3
+  calculation_rules:
+  - Start with baseline certainty (typically 0.7 for unqualified claims)
+  - 'For each hedge: multiply by (1 - hedge_strength)'
+  - 'For each boost: multiply by (1 + boost_strength)'
+  - Clamp final value to [0.0, 1.0]
+  - Multiple hedges compound multiplicatively
+  - Boost cancels first hedge if both present
+  - Attribution marker (ATTRIBUTION) increases baseline certainty to 0.75
+integration:
+  argumentlens_usage: 'ArgumentLens extracts HEDGE, BOOST, POSITION, ATTRIBUTION, and ENGAGEMENT
+
+    entities using NuExtract, then calculates composite certainty scores:
+
+
+    1. Detect all hedge/boost markers near claim (within 10 words)
+
+    2. Calculate base certainty (0.7 for unqualified; 0.75 with ATTRIBUTION)
+
+    3. Apply hedge/boost modifiers
+
+    4. Store certainty score with claim entity
+
+    5. Use for critique generation ("Low certainty claim requires stronger evidence")
+
+    6. ATTRIBUTION markers trigger source quality check
+
+    '
+  example_extraction: "Text: \"Customer satisfaction may improve, but definitely not overnight.\"\n\nEntities extracted:\n\
+    - HEDGE: \"may\" (hedge_strength: 0.3)\n- BOOST: \"definitely\" (boost_strength: 0.2)\n- POSITION: none\n\nCertainty calculation:\n\
+    - Claim 1: \"Customer satisfaction may improve\"\n  - Base: 0.7\n  - Apply hedge: 0.7 * (1 - 0.3) = 0.49\n  - Final: 0.49\
+    \ (moderate-low certainty)\n\n- Claim 2: \"not overnight\"\n  - Base: 0.7\n  - Apply boost: 0.7 * (1 + 0.2) = 0.84\n \
+    \ - Final: 0.84 (high certainty)\n"
+  scoring_impact: 'Stance markers influence narrative quality scoring:
+
+    - High hedge density (> 3 hedges per 100 words): -3 points (authority impact)
+
+    - Balanced hedge/boost ratio (0.5-1.5): neutral
+
+    - ATTRIBUTION present for key claims: +2 points per attributed claim
+
+    - ENGAGEMENT markers in executive content: +2 points (audience inclusion)
+
+    - Unchallenged boosters without evidence: -3 points (overclaiming)
+
+    '
+gliner_config:
+  model: gliner-large-v2
+  batch_size: 32
+  default_confidence_threshold: 0.65
+  context_window: 128
+  use_hybrid_extraction: true
+  entity_groups:
+    epistemic_stance:
+    - HEDGE_MARKER
+    - BOOST_MARKER
+    - ATTRIBUTION_MARKER
+    - EVIDENTIAL_MARKER
+domain_keywords:
+  primary:
+  - hedge
+  - boost
+  - certainty
+  - uncertainty
+  - claim
+  - stance
+  - epistemic
+  - modal
+  - confidence
+  secondary:
+  - might
+  - may
+  - could
+  - certainly
+  - definitely
+  - clearly
+  - perhaps
+  - possibly
+  - evidently
+  - apparently
+  - presumably
+  - suggests
+  - indicates
+quality_indicators:
+  stance_balance:
+    over_hedged: '> 3 HEDGE_MARKER per 200 words without corresponding BOOST_MARKER — content sounds tentative and unconvincing'
+    balanced: Hedge and boost markers appropriately balanced — calibrated epistemic authority
+    over_boosted: '> 4 BOOST_MARKER per 200 words — overclaiming detected; credibility risk'
+  certainty_calibration:
+    inappropriate_certainty: BOOST_MARKER on empirically uncertain claim — misleading confidence
+    appropriate_certainty: Certainty level matches evidence strength — credible and trustworthy
+  evidential_grounding:
+    ungrounded: Claims present without EVIDENTIAL_MARKER — assertions appear unsubstantiated
+    grounded: EVIDENTIAL_MARKER present alongside claims — evidence-backed assertions

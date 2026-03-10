@@ -1,0 +1,450 @@
+_meta:
+  id: scoring_weights
+  title: "Scoring Weights"
+  description: "Research-backed penalty and bonus weights for scoring analyzers covering cognitive load, headline coherence, engagement metrics, data visualization, visual hierarchy, and accessibility."
+  domain: pedagogical
+  domain_type: workflow
+  purpose: scoring
+  version: "1.4.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md"
+    - "Corpus/Research/Crafting Powerful Opening Plays.md"
+    - "Corpus/Research/Research - Comprehensive Learning Design Framework.md"
+    - "Corpus/Research/Full Research Findings - Slide-Based Presentation Design.md"
+    - "Corpus/Research/Slide Design Research Monograph - Part 2.md"
+
+
+  relationships:
+    - target: scoring/synthesis_weights.yaml
+      type: depends_on
+      description: "Both scoring weight configs; scoring_weights feeds into synthesis_weights aggregation"
+dimensions:
+  - name: cognitive_load_score
+    description: "Penalty and bonus weights for cognitive load violations and pacing compliance"
+    score_levels:
+      - score: 0
+        label: critical_violations
+        description: "Maximum penalty applied; overloaded slides throughout with no rest points"
+      - score: 1
+        label: elevated_load
+        description: "Partial penalties applied; cognitive variance above threshold"
+      - score: 2
+        label: managed
+        description: "Penalties below threshold; rest point bonuses partially earned"
+      - score: 3
+        label: optimised
+        description: "Minimal penalties; maximum rest point bonuses; cognitive debt cleared"
+  - name: headline_effectiveness
+    description: "Action title formula compliance, three-second rule, and Dot-Dash test penalties"
+    score_levels:
+      - score: 0
+        label: label_titles
+        description: "All or most headlines are label titles; action title formula not applied"
+      - score: 1
+        label: partial
+        description: "Some action titles but inconsistent; three-second rule often violated"
+      - score: 2
+        label: mostly_compliant
+        description: "Majority of headlines meet action title formula and three-second rule"
+      - score: 3
+        label: exemplary
+        description: "All headlines are action titles passing the Dot-Dash test"
+  - name: engagement_and_flow
+    description: "Neurochemical engagement, sparkline arc, and flow coherence weights"
+    score_levels:
+      - score: 0
+        label: flat
+        description: "No emotional arc variation; neurochemical engagement absent"
+      - score: 1
+        label: partial
+        description: "Some engagement signals but sparkline arc incomplete"
+      - score: 2
+        label: adequate
+        description: "Neurochemical density within targets; arc alignment present"
+      - score: 3
+        label: exemplary
+        description: "Full sparkline arc with STAR moment; maximum engagement bonuses"
+  - name: data_and_visual_quality
+    description: "Data visualisation and visual hierarchy score contributions"
+    score_levels:
+      - score: 0
+        label: poor
+        description: "Chart category caps exceeded; no action captions; poor visual hierarchy"
+      - score: 1
+        label: basic
+        description: "Some charts within caps; partial labeling; inconsistent hierarchy"
+      - score: 2
+        label: good
+        description: "Direct labeling applied; action captions on charts; visual hierarchy clear"
+      - score: 3
+        label: exemplary
+        description: "All charts labeled; action captions annotate takeaways; three-second scan rule met"
+  - name: accessibility_compliance
+    description: "WCAG 2.2 AA compliance weights for color contrast, font size, alt text, and color encoding"
+    score_levels:
+      - score: 0
+        label: non_compliant
+        description: "Multiple WCAG failures; color used as sole indicator; contrast below AA"
+      - score: 1
+        label: partial
+        description: "Some WCAG checks passing; critical issues remain"
+      - score: 2
+        label: compliant
+        description: "All core WCAG AA checks pass; alt text and contrast meet standard"
+      - score: 3
+        label: exemplary
+        description: "Full WCAG compliance with bonuses; inclusive design best practices applied"
+
+# ==============================================================================
+# COGNITIVE LOAD
+# ==============================================================================
+
+cognitive_load:
+  research_basis: "Sweller (1988) Cognitive Load Theory - minimize extraneous load. Miller (1956): working memory holds 7±2 items; Cowan (2001): functional capacity closer to 4 chunks."
+  weights:
+    overload_penalty_max: 40   # Max penalty for ratio of overloaded slides
+    critical_issue_penalty: 10 # Per critical CLT violation
+    high_issue_penalty: 5      # Per high-priority CLT issue
+    rest_point_bonus_max: 10   # Max bonus for cognitive pacing rest points
+    variance_threshold: 0.5    # Load variance above this triggers penalty
+    variance_penalty: 15       # Fixed penalty for high load variance
+
+  # Hard cap on conceptual clusters per slide
+  cluster_cap:
+    max_conceptual_clusters: 3
+    rationale: "Research shows audiences cannot retain more than 3 distinct concept clusters per slide in working memory. Exceeding this forces cognitive juggling and reduces net comprehension."
+    research_basis: "Full Research Findings - Slide-Based Presentation Design.md; Cowan (2001)"
+    violation_label: "cluster_overload"
+    penalty_per_excess_cluster: 4
+
+  # Rest point interval standard
+  rest_point_interval:
+    recommended_slide_interval: 5
+    maximum_slide_interval: 7
+    description: "A cognitive rest point (summary slide, visual interlude, or single-concept slide) should appear every 5-7 content slides to allow working memory consolidation."
+    research_basis: "Sweller (1988) CLT; Slide Design Research Monograph - Part 2.md"
+    violation_label: "rest_point_gap"
+    gap_penalty: 5  # Per interval exceeding maximum
+
+  # Five cognitive debt types — distinct penalty sub-classes
+  cognitive_debt_types:
+    description: "Cognitive debt is accumulated processing burden that degrades comprehension and retention. Each type has a distinct cause and remediation path. High cognitive debt in any single type caps the slide's effective score."
+    research_basis: "Full Research Findings - Slide-Based Presentation Design.md"
+
+    structural:
+      definition: "Unclear slide hierarchy, missing or topic-label action titles, inconsistent formatting"
+      examples:
+        - "No slide title present"
+        - "Title is a topic label ('Market Analysis') not an action ('AI disrupts market analysis timelines')"
+        - "Heading hierarchy inconsistent across slides"
+      remediation: "Apply Dot-Dash method: read only action titles; the deck story should be coherent"
+      penalty_weight: "critical_issue_penalty (10 per instance)"
+
+    semantic:
+      definition: "Abstract language, undefined jargon, concept overload — the message is cognitively inaccessible"
+      examples:
+        - "Undefined acronyms not in glossary"
+        - "Abstract business language without concrete examples"
+        - "Three competing conceptual frameworks presented without hierarchy"
+      remediation: "Reduce jargon density; anchor abstractions to concrete examples; limit to 1 primary framework per slide"
+      penalty_weight: "high_issue_penalty (5 per instance)"
+
+    perceptual:
+      definition: "Visual noise, low contrast, cluttered layout that forces effortful visual parsing"
+      examples:
+        - "Background imagery competing with text"
+        - "Font size below 18pt"
+        - "Insufficient color contrast (<4.5:1 for normal text)"
+        - "Equidistant list with no visual hierarchy"
+      remediation: "Increase whitespace to 40-60%; apply CRAP principles; enforce 18pt floor"
+      penalty_weight: "high_issue_penalty (5 per instance)"
+
+    analytical:
+      definition: "Raw data presented without interpretation — audience must perform the analytical work"
+      examples:
+        - "Data table with no callout identifying the key insight"
+        - "Chart with topic title instead of action caption"
+        - "Multiple metrics with no hierarchy of importance"
+      remediation: "Add action caption identifying takeaway; annotate chart with key data point; rank metrics by strategic relevance"
+      penalty_weight: "high_issue_penalty (5 per instance)"
+
+    temporal:
+      definition: "Information access is time-locked behind animation or reveal sequences, preventing natural reading pace"
+      examples:
+        - "Critical insight locked behind click-through animation"
+        - "Build sequence that hides context needed to understand current element"
+        - "Information only accessible via presenter narration (not present in deck)"
+      remediation: "Make leave-behind decks static; use ghosting or faded elements instead of hidden ones; ensure printed version is complete"
+      penalty_weight: "critical_issue_penalty (10 per instance)"
+
+# -----------------------------------------------------------------------------
+# Headline Coherence
+# Research: Minto Pyramid Principle, McKinsey presentation standards
+# -----------------------------------------------------------------------------
+headline:
+  research_basis: "Minto Pyramid Principle - headlines should form standalone narrative. Barbara Minto (1987): titles are assertions, not topic labels. Duarte (2010): Dot-Dash method validates structural coherence."
+  weights:
+    non_action_penalty_max: 20   # Max penalty for topic-only (non-action) headlines
+    flow_break_penalty: 5        # Per narrative discontinuity in headline flow
+    missing_headline_penalty: 15 # Per slide without headline (critical)
+    redundant_pair_penalty: 3    # Per pair of too-similar headlines
+    too_long_penalty: 2          # Per headline exceeding max_word_count
+    too_short_penalty: 2         # Per headline below min_word_count
+    max_word_count: 10           # Headlines should be max 10 words
+    min_word_count: 3            # Headlines should be min 3 words
+
+  # Action title formula standard
+  action_title_formula:
+    formula: "Result + Mechanism + Timeframe"
+    description: "Strong action titles encode the outcome, the method producing it, and the timeframe — making the slide's assertion complete and self-contained."
+    research_basis: "Full Research Findings - Slide-Based Presentation Design.md"
+    examples:
+      strong:
+        - "AI reduces content review time by 60% within 90 days"
+        - "Cloud migration eliminates legacy costs by end of Q2"
+        - "Unified platform increases creative output 3× in year one"
+      acceptable:
+        - "AI reduces content review time by 60%"      # Missing timeframe
+        - "Cloud migration eliminates legacy costs"     # Missing mechanism detail
+      weak:
+        - "AI and Productivity"                         # Topic label — no claim
+        - "Cloud Migration Overview"                    # No assertion
+        - "Results"                                     # Generic
+    scoring:
+      score_5: "Result + Mechanism + Timeframe all present; makes a defensible claim"
+      score_3: "Result present; mechanism or timeframe missing"
+      score_1: "Topic label only — no assertion"
+    violation_label: "topic_label_title"
+
+  # Three-second comprehension standard
+  three_second_rule:
+    description: "A slide's core takeaway must be cognitively accessible within 3 seconds of first view. This is the executive grade standard. Failure indicates action title, visual hierarchy, or cognitive debt problems."
+    threshold_seconds: 3
+    research_basis: "Full Research Findings - Slide-Based Presentation Design.md"
+    test: "Cover the slide body; read only the action title + visual anchor. Is the takeaway clear without reading body text?"
+    failure_indicators:
+      - "Action title is a topic label (reader cannot extract takeaway from title alone)"
+      - "No visual anchor — body is wall of text requiring full read"
+      - "Multiple competing visual elements with no clear hierarchy"
+    penalty: "Contributes to structural cognitive_debt and non_action_penalty"
+
+  # Dot-Dash structural coherence test
+  dot_dash_test:
+    description: "Read only the action titles of all slides in sequence. The result should be a coherent standalone narrative summary of the entire deck. If the title-only sequence is incoherent, narrative structure is broken."
+    research_basis: "Duarte (2010) Resonate; Full Research Findings - Slide-Based Presentation Design.md"
+    pass_criteria: "Title sequence tells complete story without body text"
+    fail_criteria: "Gaps, topic labels, or non-sequiturs appear in title-only reading"
+    violation_label: "dot_dash_failure"
+    penalty: "flow_break_penalty (5) per incoherent transition in title sequence"
+
+# -----------------------------------------------------------------------------
+# Neurochemistry Engagement
+# Research: Zak (2014) "Why Your Brain Loves Good Storytelling"
+# -----------------------------------------------------------------------------
+neurochemistry:
+  research_basis: "Zak (2014) - optimal engagement requires oxytocin + dopamine + norepinephrine. Narrative content generates oxytocin release, increasing trust and receptiveness by 18-22% in controlled studies."
+  weights:
+    base_score: 40             # Starting score before bonuses (additive scoring)
+    balance_max_bonus: 30      # Max bonus for having all 3 trigger types
+    density_max_bonus: 30      # Max bonus for optimal trigger density
+    optimal_density: 0.5       # Target: 1 trigger per 2 slides
+    missing_trigger_penalty: 5 # Per identified gap in emotional arc
+
+# -----------------------------------------------------------------------------
+# Duarte Sparkline
+# Research: Duarte (2010) "Resonate" methodology
+# -----------------------------------------------------------------------------
+sparkline:
+  research_basis: "Duarte (2010) Resonate - oscillation + STAR + new bliss pattern. Structure: What-Is → What-Could-Be oscillation resolves at New Bliss via Call to Adventure. Minimum 3 oscillation cycles required for engagement."
+  weights:
+    oscillation_max_bonus: 25    # Max bonus for what_is/what_could_be transitions
+    star_moment_bonus: 25        # Bonus for having a STAR moment
+    star_placement_bonus: 10     # Bonus for STAR in final third of deck
+    new_bliss_bonus: 20          # Bonus for inspiring ending
+    balance_max_bonus: 20        # Max bonus for state balance
+    final_third_threshold: 0.66  # STAR should be in final 33% (slide > 66% position)
+
+# -----------------------------------------------------------------------------
+# Flow Alignment
+# Research: Mayer (2009) "Multimedia Learning Principles"
+# -----------------------------------------------------------------------------
+flow_alignment:
+  research_basis: "Mayer (2009) Multimedia Learning - contiguity, coherence, signaling. Temporal contiguity: visual and verbal must align in time (+43-89% comprehension). Spatial contiguity: labels adjacent to elements (+65%). Signaling principle: highlighting key information (+35% retention)."
+  weights:
+    base_score: 20               # Starting base score (additive scoring)
+    flow_coherence_weight: 30    # Weight for visual-verbal flow coherence (0-1)
+    arc_alignment_weight: 30     # Weight for emotional arc alignment (0-1)
+    deck_alignment_weight: 20    # Weight for overall deck alignment (0-1)
+    timing_issue_penalty: 3      # Per visual-verbal timing misalignment
+    weak_segment_penalty: 5      # Per weak alignment segment
+    climax_alignment_bonus: 15   # Bonus for aligned visual/verbal climax
+
+# ==============================================================================
+# DATA VISUALIZATION
+# Slide Cognitive Score (SCS) sub-dimension
+# ==============================================================================
+
+data_visualization:
+  description: "Data visualization quality within the Slide Cognitive Score (SCS) rubric. Strong data visualization reduces analytical cognitive debt and enables the 3-second rule."
+  research_basis: "Full Research Findings - Slide-Based Presentation Design.md; Slide Design Research Monograph - Part 2.md"
+  scs_contribution: "Sub-dimension of Slide Cognitive Score (SCS) 50-point rubric"
+
+  chart_category_cap:
+    max_categories_per_chart: 6
+    description: "Charts with more than 6 categories force the viewer to perform active comparison work rather than reading insight directly. Cap at 6 drives simplification or chart splitting."
+    research_basis: "Full Research Findings - Slide-Based Presentation Design.md"
+    violation_label: "category_overload"
+    penalty: 5  # Per chart exceeding the cap
+
+  direct_labeling:
+    standard: "Data points must be labeled directly on the chart; legends require eye travel and increase analytical cognitive debt"
+    required: true
+    violation_label: "legend_only_chart"
+    exceptions:
+      - "Heat maps where direct labeling is impractical"
+      - "Charts with >15 data points where direct labeling creates perceptual debt"
+    penalty: 3  # Per chart with legend-only labeling
+    bonus: 2    # Per chart with complete direct labels
+
+  action_captions:
+    standard: "Every chart must have an action caption (not a topic title) that states the insight the chart proves"
+    description: "Action Caption: 'Cloud adoption cuts infrastructure cost by 40%'. Topic Title: 'Infrastructure Cost Trends'. Action captions eliminate analytical cognitive debt by pre-interpreting the data."
+    research_basis: "Full Research Findings - Slide-Based Presentation Design.md"
+    violation_label: "topic_title_chart"
+    penalty: 5  # Per chart with topic title instead of action caption
+    bonus: 2    # Per chart with clear action caption
+
+  annotate_takeaways:
+    standard: "Annotate the key data point or trend on the chart itself — arrow, callout box, or highlighted data marker"
+    description: "Annotation reduces analytical cognitive debt by directing visual attention to the single most important data element. Unannotated charts leave the interpretation burden on the viewer."
+    examples:
+      strong: "Red arrow pointing to inflection point with text 'Q3 tipping point: cost exceeds benefit'"
+      weak: "Chart without annotation; viewer must identify the relevant data point independently"
+    violation_label: "unannotated_chart"
+    penalty: 3  # Per chart missing key annotation
+
+  slide_cognitive_score:
+    description: "The Slide Cognitive Score (SCS) is a 50-point composite rubric for evaluating individual slide cognitive accessibility."
+    total_points: 50
+    thresholds:
+      redesign_required: "<34"
+      acceptable: "34-44"
+      executive_grade: "45-50"
+    research_basis: "Full Research Findings - Slide-Based Presentation Design.md"
+
+# ==============================================================================
+# VISUAL HIERARCHY
+# Slide Cognitive Score (SCS) sub-dimension
+# ==============================================================================
+
+visual_hierarchy:
+  description: "Visual hierarchy standards that enable the 3-second comprehension rule and reduce perceptual cognitive debt."
+  research_basis: "Full Research Findings - Slide-Based Presentation Design.md; Slide Design Research Monograph - Part 2.md"
+  scs_contribution: "Sub-dimension of Slide Cognitive Score (SCS) 50-point rubric"
+
+  whitespace:
+    optimal_range_pct: [40, 60]
+    description: "40-60% of the slide area should be whitespace. Below 40% creates crowding and perceptual cognitive debt. Above 60% may indicate insufficient content density (except rest-point slides)."
+    research_basis: "Full Research Findings - Slide-Based Presentation Design.md"
+    measurement: "Approximate ratio of non-content area to total slide area"
+    violations:
+      below_40pct:
+        label: "crowded_slide"
+        penalty: 5
+      below_30pct:
+        label: "critically_crowded_slide"
+        penalty: 10
+    bonus:
+      range: [45, 55]  # Optimal whitespace band
+      value: 2
+
+  three_second_scan_rule:
+    description: "A viewer's eye should identify the primary visual anchor (chart, image, or key text element) within 3 seconds. This requires a clear visual hierarchy with one dominant element per slide."
+    research_basis: "Full Research Findings - Slide-Based Presentation Design.md"
+    requirements:
+      - "One dominant visual element per slide (not two competing elements of equal size)"
+      - "Size contrast between primary and secondary elements (primary ≥2× size of secondary)"
+      - "Color contrast used to direct attention, not to decorate"
+    violations:
+      competing_anchors:
+        label: "no_clear_visual_anchor"
+        description: "Two or more elements of equal visual weight with no clear hierarchy"
+        penalty: 5
+      flat_hierarchy:
+        label: "flat_visual_hierarchy"
+        description: "All elements approximately equal size — no size contrast guiding attention"
+        penalty: 5
+
+  element_count:
+    maximum_elements_per_slide: 7
+    recommended_elements: 5
+    research_basis: "Miller (1956) 7±2; Cowan (2001) 4-chunk functional limit for complex visuals"
+    violation_label: "element_overload"
+    penalty_per_excess_element: 2
+
+  color_hierarchy:
+    max_hierarchy_colors: 3
+    description: "Maximum 3 colors used for visual hierarchy purposes (primary/secondary/accent). Decorative color use beyond this creates perceptual noise."
+    violations:
+      palette_explosion:
+        label: "too_many_hierarchy_colors"
+        penalty: 3
+
+# ==============================================================================
+# ACCESSIBILITY COMPLIANCE
+# WCAG 2.2 standards as scoring dimension
+# ==============================================================================
+
+accessibility_compliance:
+  description: "WCAG 2.2 Level AA compliance as a scoring dimension. Accessibility violations are also perceptual cognitive debt — low contrast and small text force effortful reading for all viewers, not just those with impairments."
+  research_basis: "Full Research Findings - Slide-Based Presentation Design.md; WCAG 2.2 (W3C 2023)"
+  standard: "WCAG 2.2 Level AA"
+
+  color_contrast:
+    normal_text:
+      minimum_ratio: 4.5    # WCAG 2.2 AA: 4.5:1 for text under 18pt
+      description: "Text below 18pt (14pt bold) requires 4.5:1 contrast ratio"
+      violation_label: "insufficient_contrast_normal_text"
+      penalty: 8
+    large_text:
+      minimum_ratio: 3.0    # WCAG 2.2 AA: 3:1 for large text (18pt+ or 14pt+ bold)
+      description: "Text 18pt or larger (or 14pt bold or larger) requires 3:1 contrast ratio"
+      violation_label: "insufficient_contrast_large_text"
+      penalty: 5
+    decorative_elements:
+      required: false
+      description: "Purely decorative elements with no informational function are exempt from contrast requirements"
+    measurement_tool: "WebAIM Contrast Checker or equivalent"
+
+  font_size:
+    minimum_body_size_pt: 18
+    description: "Body text minimum 18pt for presentation slides. Smaller text is inaccessible in projected environments and forces effortful reading, increasing extraneous cognitive load for all viewers — not only those with visual impairments."
+    research_basis: "Full Research Findings - Slide-Based Presentation Design.md"
+    violations:
+      below_18pt:
+        label: "font_too_small"
+        penalty: 5
+      below_14pt:
+        label: "font_critically_small"
+        penalty: 10
+    title_minimum_pt: 24
+    caption_minimum_pt: 16
+
+  alt_text:
+    required_for: ["charts", "diagrams", "images_with_informational_content"]
+    exempt: ["purely_decorative_images"]
+    violation_label: "missing_alt_text"
+    penalty: 3  # Per image missing alt text
+
+  color_not_sole_indicator:
+    rule: "Color must not be the only visual means of conveying information"
+    examples:
+      violation: "Red/green chart bars where color is the only distinction between categories"
+      compliant: "Red/green bars with pattern fill AND text labels"
+    violation_label: "color_only_indicator"
+    penalty: 6
+
+  bonuses:
+    full_wcag_compliance: 5   # All slides pass WCAG 2.2 AA
+    high_contrast_mode: 2     # Exceeds minimum contrast ratios (AAA level)

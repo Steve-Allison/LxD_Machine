@@ -1,0 +1,854 @@
+_meta:
+  id: pedagogical_profiles_framework
+  title: "Pedagogical Analysis Profiles"
+  description: "Content-type profiles (microlearning, video, VILT, compliance, etc.) with framework weight adjustments, constraints, and pedagogical threshold overrides."
+  domain: audience
+  domain_type: cross_cutting
+  purpose: methodology
+  version: "2.2.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md"
+    - "Corpus/Research/Crafting Powerful Opening Plays.md"
+    - "Corpus/Research/Research - Corporate Learning Assessment- Strategies, Modalities, and Best Practices.md"
+    - "Corpus/Research/Activities - Research + Instructions v4.md"
+    - "Corpus/Research/theory_mayer_s_principles_of_multimedia_learning-_a_comprehensive_summary.md"
+
+  relationships:
+    - target: methodology/pedagogical_frameworks.yaml
+      type: depends_on
+      description: "Framework definitions (Gagné, ARCS, Mayer, etc.)"
+    - target: methodology/mayer_principles.yaml
+      type: depends_on
+      description: "Multimedia principles referenced in video/e-learning profiles"
+# ==============================================================================
+# SYNCHRONOUS DELIVERY PROFILES
+# ==============================================================================
+
+profiles:
+  # ---------------------------------------------------------------------------
+  # INSTRUCTOR-LED TRAINING (ILT)
+  # ---------------------------------------------------------------------------
+  instructor_led_workshop:
+    description: "Live, in-person synchronous session with facilitator guidance"
+    aliases: ["ILT", "classroom_training", "face_to_face"]
+    typical_duration: "2-8 hours"
+
+    characteristics:
+      synchronous: true
+      instructor_present: true
+      participant_interaction: "high"
+      immediate_feedback: true
+      physical_materials: true
+
+    framework_adjustments:
+      gagne_nine_events:
+        required_events: [1, 2, 3, 4, 5, 6, 7, 8, 9]  # All events critical
+        weight: 1.2
+        notes: "Full instructional sequence expected"
+      arcs_model:
+        weight: 1.3  # Engagement is key for live sessions
+        emphasis: ["attention", "confidence"]
+      blooms_taxonomy:
+        weight: 1.0
+        target_levels: ["apply", "analyze"]  # Interactive allows higher levels
+      cognitive_load_theory:
+        weight: 0.9  # Instructor can scaffold in real-time
+
+    design_constraints:
+      max_lecture_segment: 20  # minutes before activity
+      activity_ratio: 0.40  # 40% of time in activities
+      required_elements:
+        - "Icebreaker or attention activity"
+        - "Stated learning objectives"
+        - "Participant practice opportunities"
+        - "Q&A segments"
+        - "Skill demonstration"
+      assessment_type: "formative in-session checks"
+
+    quality_indicators:
+      positive:
+        - "Clear facilitator guide with timing"
+        - "Varied activity types (discussion, practice, demo)"
+        - "Built-in energy management (breaks, movement)"
+        - "Real-world application exercises"
+      negative:
+        - "Wall of text slides (death by PowerPoint)"
+        - "No scheduled breaks in sessions >90min"
+        - "Lecture-only format"
+        - "No participant materials"
+
+  # ---------------------------------------------------------------------------
+  # VIRTUAL INSTRUCTOR-LED TRAINING (VILT)
+  # ---------------------------------------------------------------------------
+  virtual_instructor_led:
+    description: "Live, synchronous online session with remote facilitator"
+    aliases: ["VILT", "webinar", "virtual_classroom", "live_online"]
+    typical_duration: "60-180 minutes"
+
+    characteristics:
+      synchronous: true
+      instructor_present: true
+      participant_interaction: "medium"
+      immediate_feedback: true
+      technology_dependent: true
+      attention_span: "reduced vs ILT"
+
+    framework_adjustments:
+      gagne_nine_events:
+        required_events: [1, 2, 4, 5, 6, 7, 8]
+        optional_events: [3, 9]  # Recall/transfer harder virtually
+        weight: 1.1
+      arcs_model:
+        weight: 1.5  # Engagement is CRITICAL - easy to tune out
+        emphasis: ["attention"]
+      mayer_multimedia_principles:
+        weight: 1.3  # Screen-based requires strong multimedia design
+      cognitive_load_theory:
+        weight: 1.2  # Screen fatigue adds extraneous load
+
+    design_constraints:
+      max_session_length: 90  # minutes (with breaks for longer)
+      max_lecture_segment: 10  # minutes before interaction
+      engagement_frequency: 3  # interactions per 10 minutes
+      required_elements:
+        - "Attention hook in first 2 minutes"
+        - "Poll or chat activity every 10 minutes"
+        - "Breakout room activities (if >60 min)"
+        - "Screen share with annotation"
+        - "Clear visual aids (not text walls)"
+      technology_requirements:
+        - "Stable video/audio"
+        - "Screen sharing capability"
+        - "Chat function"
+        - "Polling tools"
+        - "Breakout room support (optional)"
+
+    quality_indicators:
+      positive:
+        - "Producer/co-host for technical support"
+        - "Interactive elements every 5-10 minutes"
+        - "Slides designed for screen (large fonts, visuals)"
+        - "Pre-session tech check"
+        - "Recording available post-session"
+      negative:
+        - "60+ min with no interaction"
+        - "Small text/complex diagrams"
+        - "No camera from facilitator"
+        - "Reading slides verbatim"
+        - "No participant engagement tools"
+
+    attention_management:
+      webcam_fatigue_mitigation:
+        - "Camera-optional for participants after first 10 min"
+        - "Movement/stretch breaks every 45 min"
+        - "Vary visual stimuli (slides, whiteboard, video clips)"
+      engagement_techniques:
+        - "Cold call by name (respectfully)"
+        - "Chat waterfall activities"
+        - "Annotate on screen collaboratively"
+        - "Quick polls with discussion"
+        - "Breakout challenges with report-back"
+
+  # ---------------------------------------------------------------------------
+  # HYBRID TRAINING
+  # ---------------------------------------------------------------------------
+  hybrid_training:
+    description: "Combined in-person and remote participants simultaneously"
+    aliases: ["hyflex", "blended_live"]
+    typical_duration: "2-4 hours"
+
+    characteristics:
+      synchronous: true
+      instructor_present: true
+      mixed_audience: true
+      complexity: "high"
+
+    framework_adjustments:
+      arcs_model:
+        weight: 1.4
+        notes: "Must engage both audiences equally"
+      cognitive_load_theory:
+        weight: 1.3  # Managing two modalities adds complexity
+
+    design_constraints:
+      required_elements:
+        - "Dedicated camera for room view"
+        - "Microphone for in-room audio"
+        - "Producer managing remote participants"
+        - "Activities that work for both audiences"
+        - "Explicit inclusion of remote participants"
+      avoid:
+        - "Breakout activities that exclude one group"
+        - "In-room side conversations"
+        - "Handwritten flipcharts not visible to remote"
+
+    quality_indicators:
+      positive:
+        - "Professional AV setup with room camera"
+        - "Producer role assigned for remote support"
+        - "Parallel activities for both groups"
+        - "Equal attention to chat and room questions"
+      negative:
+        - "Remote participants as afterthought"
+        - "Poor audio quality for remote"
+        - "No visibility of in-room activities"
+
+# ==============================================================================
+# ASYNCHRONOUS DELIVERY PROFILES
+# ==============================================================================
+
+  # ---------------------------------------------------------------------------
+  # VIDEO-BASED LEARNING
+  # ---------------------------------------------------------------------------
+  video_based:
+    description: "Pre-recorded video content for self-paced consumption"
+    aliases: ["video_course", "video_lesson", "recorded_content"]
+    typical_duration: "3-15 minutes per video"
+
+    characteristics:
+      synchronous: false
+      instructor_present: false  # recorded presence
+      participant_interaction: "none during playback"
+      replayable: true
+      mobile_friendly: true
+
+    framework_adjustments:
+      mayer_multimedia_principles:
+        weight: 1.5  # CRITICAL for video quality
+        required_principles:
+          - "coherence"  # No extraneous content
+          - "signaling"  # Visual cues for attention
+          - "segmenting"  # Chunked into short segments
+          - "modality"  # Narration over on-screen text
+          - "personalization"  # Conversational tone
+      gagne_nine_events:
+        required_events: [1, 2, 4, 5]  # Attention, Objectives, Content, Guidance
+        optional_events: [3, 6, 7, 8, 9]  # Often handled outside video
+        weight: 0.9
+      cognitive_load_theory:
+        weight: 1.4  # Can't pause and ask questions
+
+    design_constraints:
+      optimal_length:
+        min: 3  # minutes
+        max: 6  # minutes (research optimal)
+        hard_max: 15  # Never exceed without segmenting
+      speaking_pace: "150-160 words per minute"
+      on_screen_text: "minimal - narration carries content"
+      required_elements:
+        - "Hook in first 10 seconds"
+        - "Clear learning objective stated"
+        - "Visual support for key concepts"
+        - "Summary/recap at end"
+        - "Closed captions (accessibility)"
+      chapter_markers: "required for videos >5 min"
+
+    video_types:
+      talking_head:
+        description: "Instructor on camera speaking to learner"
+        best_for: ["motivation", "storytelling", "personal connection"]
+        design_tips:
+          - "Eye contact with camera"
+          - "Visible gestures"
+          - "Plain, non-distracting background"
+      screencast:
+        description: "Screen recording with narration"
+        best_for: ["software training", "demonstrations", "walkthroughs"]
+        design_tips:
+          - "Zoom on key areas"
+          - "Use cursor highlighting"
+          - "Pause for complex steps"
+      animated_explainer:
+        description: "Motion graphics with narration"
+        best_for: ["concepts", "processes", "abstract ideas"]
+        design_tips:
+          - "Sync animation to narration (temporal contiguity)"
+          - "Minimal on-screen text"
+          - "Consistent visual style"
+      hybrid_video:
+        description: "Mix of talking head, screencast, and graphics"
+        best_for: ["comprehensive lessons", "varied engagement"]
+
+    quality_indicators:
+      positive:
+        - "Professional audio quality (no echo/background noise)"
+        - "Consistent visual style throughout"
+        - "Captions/transcripts available"
+        - "Interactive pause points (in LMS)"
+        - "Chapter navigation enabled"
+      negative:
+        - "Monotone delivery"
+        - "Reading script verbatim"
+        - "Poor audio quality"
+        - "Static slides with voiceover (low engagement)"
+        - "No visual movement for >30 seconds"
+
+  # ---------------------------------------------------------------------------
+  # MICROLEARNING
+  # ---------------------------------------------------------------------------
+  microlearning:
+    description: "Short (2-5 min), single-objective content focused on immediate application"
+    aliases: ["micro_lesson", "learning_nugget", "bite_sized"]
+    typical_duration: "2-5 minutes"
+
+    characteristics:
+      synchronous: false
+      single_objective: true
+      mobile_first: true
+      just_in_time: true
+      spaced_repetition_compatible: true
+
+    framework_adjustments:
+      gagne_nine_events:
+        required_events: [1, 4, 6, 8]  # Attention, Content, Practice, Assess
+        optional_events: [2, 3, 5, 7, 9]  # Objectives/Recall implied or skipped
+        weight: 0.8  # Less structural rigour needed
+      cognitive_load_theory:
+        weight: 1.5  # Critical: must be low load
+        strictness: "high"
+      mayer_multimedia_principles:
+        weight: 1.2
+        required_principles: ["coherence", "signaling", "segmenting"]
+      self_determination_theory:
+        weight: 1.2
+        emphasis: ["autonomy", "competence"]  # Learner-paced, mastery-focused format inherently supports SDT
+        notes: "Learner-paced completion, single-objective mastery, and just-in-time relevance directly satisfy SDT autonomy and competence needs"
+
+    design_constraints:
+      max_concepts: 1
+      max_duration: 5  # minutes
+      required_elements:
+        - "Single clear objective"
+        - "Immediate application opportunity"
+        - "Mobile-friendly format"
+        - "Stand-alone (no prerequisites)"
+      format_options:
+        - "Short video (2-4 min)"
+        - "Interactive card deck"
+        - "Quick quiz with feedback"
+        - "Infographic with key points"
+        - "Audio snippet with visual summary"
+
+    quality_indicators:
+      positive:
+        - "Completes in <5 min"
+        - "Single focused objective"
+        - "Immediately applicable"
+        - "Works on mobile"
+        - "Part of larger curriculum (but standalone)"
+      negative:
+        - "Multiple unrelated concepts"
+        - "Requires prior modules to understand"
+        - "Dense text walls"
+        - "No application opportunity"
+
+  # ---------------------------------------------------------------------------
+  # SELF-PACED E-LEARNING COURSE
+  # ---------------------------------------------------------------------------
+  self_paced_course:
+    description: "Asynchronous, comprehensive learning module with interactions"
+    aliases: ["e-learning", "wbt", "online_course", "scorm_module"]
+    typical_duration: "15-45 minutes per module"
+
+    characteristics:
+      synchronous: false
+      instructor_present: false
+      interactive: true
+      tracked: true  # LMS tracking
+      branching_possible: true
+
+    framework_adjustments:
+      merrill_first_principles:
+        weight: 1.2  # Problem-centred design is crucial for self-drive
+        required_principles: ["problem", "activation", "demonstration", "application"]
+      mayer_multimedia_principles:
+        weight: 1.2  # Multimedia design carries the teaching load
+      gagne_nine_events:
+        required_events: [1, 2, 3, 4, 5, 6, 7, 8]
+        weight: 1.0
+      cognitive_load_theory:
+        weight: 1.1
+      self_determination_theory:
+        weight: 1.1
+        emphasis: ["autonomy", "competence"]
+        notes: "Branching paths + learner control support autonomy. Scaffolded difficulty + achievement feedback support competence."
+
+    design_constraints:
+      max_module_length: 45  # minutes
+      interaction_frequency: 3  # per 10 minutes of content
+      required_elements:
+        - "Clear navigation and progress indicator"
+        - "Knowledge checks throughout"
+        - "Scenario-based practice"
+        - "Summary/key takeaways"
+        - "Final assessment"
+      accessibility:
+        - "Keyboard navigable"
+        - "Screen reader compatible"
+        - "Closed captions for all audio"
+        - "WCAG 2.1 AA compliant"
+
+    quality_indicators:
+      positive:
+        - "Scenario-based learning with consequences"
+        - "Branching based on learner choices"
+        - "Immediate feedback on interactions"
+        - "Realistic practice environment"
+        - "Mobile responsive design"
+      negative:
+        - "Click-next page turners"
+        - "No meaningful interactions"
+        - "Wall of text screens"
+        - "No practice opportunities"
+        - "Linear path with no learner agency"
+
+  # ---------------------------------------------------------------------------
+  # JOB AID / PERFORMANCE SUPPORT
+  # ---------------------------------------------------------------------------
+  job_aid_reference:
+    description: "Performance support tool for in-the-moment use"
+    aliases: ["quick_reference", "cheat_sheet", "reference_card", "qrg"]
+    typical_duration: "< 2 minutes to find answer"
+
+    characteristics:
+      synchronous: false
+      learning_purpose: false  # Performance support, not learning
+      just_in_time: true
+      searchable: true
+      task_specific: true
+
+    framework_adjustments:
+      cognitive_load_theory:
+        weight: 2.0  # Must be instantly usable
+        minimise_extraneous: true
+      gagne_nine_events:
+        weight: 0.0  # Not an instructional event
+      blooms_taxonomy:
+        weight: 0.5  # Less about levels, more about retrieval
+
+    design_constraints:
+      max_steps: 7  # per procedure
+      max_words_per_step: 25
+      required_elements:
+        - "Scannable structure (headers, bullets)"
+        - "Clear step numbering"
+        - "Visual examples where applicable"
+        - "Searchable format (PDF or web)"
+      format_options:
+        - "Laminated card"
+        - "PDF quick reference"
+        - "Digital searchable database"
+        - "Mobile app"
+        - "Embedded contextual help"
+
+    quality_indicators:
+      positive:
+        - "Answer findable in <30 seconds"
+        - "Clear visual hierarchy"
+        - "Numbered steps"
+        - "Embedded in workflow (contextual)"
+      negative:
+        - "Long paragraphs"
+        - "Buried in training materials"
+        - "No index or search"
+        - "Out of date"
+
+# ==============================================================================
+# COMPLIANCE & CERTIFICATION PROFILES
+# ==============================================================================
+
+  # ---------------------------------------------------------------------------
+  # COMPLIANCE TRAINING
+  # ---------------------------------------------------------------------------
+  compliance_training:
+    description: "Mandatory training to meet regulatory or policy requirements"
+    aliases: ["regulatory_training", "mandatory_training", "annual_compliance"]
+    typical_duration: "15-60 minutes"
+
+    characteristics:
+      mandatory: true
+      tracked: true
+      deadline_driven: true
+      assessment_required: true
+      completion_record: true
+
+    framework_adjustments:
+      gagne_nine_events:
+        required_events: [2, 4, 6, 8]  # Objectives, Content, Practice, Assessment
+        weight: 0.9
+      arcs_model:
+        weight: 1.2  # Must engage despite mandatory nature
+        emphasis: ["relevance"]  # "Why this matters to YOU"
+      cognitive_load_theory:
+        weight: 1.1
+
+    compliance_requirements:
+      assessment:
+        passing_score: 80  # typical minimum
+        max_attempts: 3
+        remediation_required: true
+      tracking:
+        completion_required: true
+        time_on_task: true  # some regulations require minimum time
+        assessment_score: true
+      documentation:
+        completion_certificate: true
+        training_record: true
+        audit_trail: true
+
+    design_constraints:
+      required_elements:
+        - "Clear policy/regulation citations"
+        - "Scenario-based examples of violations"
+        - "Consequences of non-compliance"
+        - "Reporting procedures"
+        - "Assessment with passing threshold"
+        - "Completion certificate"
+      engagement_strategies:
+        - "Relatable scenarios"
+        - "Consequences demonstrated (not just stated)"
+        - "Real-world examples"
+        - "Interactive case studies"
+        - "Avoid 'legal-speak' - plain language"
+
+    quality_indicators:
+      positive:
+        - "Relevant, realistic scenarios"
+        - "Clear 'what to do' actions"
+        - "Engaging despite topic"
+        - "Annually updated content"
+        - "Quick refresher option for recertification"
+      negative:
+        - "Wall of policy text"
+        - "Lecture-only format"
+        - "Same content year after year"
+        - "Click-through without engagement"
+        - "Trick questions in assessment"
+
+  # ---------------------------------------------------------------------------
+  # CERTIFICATION PREPARATION
+  # ---------------------------------------------------------------------------
+  certification_prep:
+    description: "Content preparing learners for formal certification exam"
+    aliases: ["exam_prep", "certification_course", "cert_prep"]
+    typical_duration: "4-40 hours total"
+
+    characteristics:
+      goal_oriented: true
+      high_stakes: true
+      assessment_focused: true
+      external_validation: true
+
+    framework_adjustments:
+      blooms_taxonomy:
+        weight: 1.3
+        target_levels: ["apply", "analyze", "evaluate"]  # Match exam levels
+      cognitive_load_theory:
+        weight: 1.0
+      retrieval_practice:
+        weight: 1.5  # Testing effect is crucial
+
+    design_constraints:
+      required_elements:
+        - "Exam blueprint/objectives alignment"
+        - "Practice questions matching exam format"
+        - "Explanation for correct AND incorrect answers"
+        - "Performance tracking by domain"
+        - "Timed practice exams"
+      retrieval_practice:
+        quiz_frequency: "every concept/section"
+        spaced_practice: true
+        feedback_type: "elaborated (explain why)"
+
+    quality_indicators:
+      positive:
+        - "Aligned to current exam blueprint"
+        - "Abundant practice questions"
+        - "Detailed answer explanations"
+        - "Performance analytics by topic"
+        - "Study plan generator"
+      negative:
+        - "Outdated exam objectives"
+        - "Insufficient practice questions"
+        - "Only correct answers explained"
+        - "No progress tracking"
+
+# ==============================================================================
+# SPECIALISED FORMAT PROFILES
+# ==============================================================================
+
+  # ---------------------------------------------------------------------------
+  # SIMULATION / IMMERSIVE LEARNING
+  # ---------------------------------------------------------------------------
+  simulation_based:
+    description: "Immersive practice environment mimicking real-world context"
+    aliases: ["simulation", "virtual_lab", "immersive_learning", "VR_training"]
+    typical_duration: "15-60 minutes per session"
+
+    characteristics:
+      experiential: true
+      safe_to_fail: true
+      realistic_context: true
+      decision_making: true
+
+    framework_adjustments:
+      merrill_first_principles:
+        weight: 1.5  # Problem-centred design is essential
+        emphasis: ["application", "integration"]
+      kolb_experiential:
+        weight: 1.3  # Full cycle: experience → reflect → conceptualise → experiment
+      cognitive_apprenticeship:
+        weight: 1.2  # Model → Coach → Fade scaffold is the simulation architecture
+        phase_mapping:
+          initial_run: "modelling (expert walkthrough with think-aloud)"
+          practice_run: "coaching (hints, prompts, targeted feedback)"
+          assessment_run: "fading (unguided, performance tracked)"
+      cognitive_load_theory:
+        weight: 1.0  # Scaffolding controls load
+
+    design_constraints:
+      required_elements:
+        - "Realistic scenario/environment"
+        - "Meaningful decisions with consequences"
+        - "Feedback on performance"
+        - "Opportunity to retry/improve"
+        - "Debrief/reflection component"
+      scaffolding_levels:
+        - "Guided walkthrough (first attempt)"
+        - "Hints available (practice)"
+        - "Unguided (assessment)"
+
+    quality_indicators:
+      positive:
+        - "Authentic task environment"
+        - "Multiple decision paths"
+        - "Realistic consequences"
+        - "Performance analytics"
+        - "Debrief that connects to real job"
+      negative:
+        - "Unrealistic scenarios"
+        - "Single 'correct' path only"
+        - "No feedback on decisions"
+        - "Too complex without scaffolding"
+
+  # ---------------------------------------------------------------------------
+  # SOCIAL / COLLABORATIVE LEARNING
+  # ---------------------------------------------------------------------------
+  social_collaborative:
+    description: "Learning through peer interaction and collaboration"
+    aliases: ["cohort_learning", "peer_learning", "collaborative"]
+    typical_duration: "varies - ongoing"
+
+    characteristics:
+      peer_interaction: true
+      community_based: true
+      constructivist: true
+      moderator_facilitated: true
+
+    framework_adjustments:
+      social_constructivism:
+        weight: 1.5
+      arcs_model:
+        weight: 1.2
+        emphasis: ["relevance", "satisfaction"]
+      blooms_taxonomy:
+        weight: 1.1
+        target_levels: ["analyze", "evaluate", "create"]
+      self_determination_theory:
+        weight: 1.4
+        emphasis: ["relatedness", "autonomy"]
+        notes: "Social format directly satisfies relatedness need (community belonging). Voluntary participation and choice of contribution method support autonomy."
+      alexanders_dialogic_principles:
+        weight: 1.3
+        required_principles: ["collective", "reciprocal", "cumulative", "purposeful"]
+        notes: "Discussion design must move beyond IRE (Initiate-Respond-Evaluate) to true dialogic exchange; facilitators must build on learner contributions cumulatively"
+
+    design_constraints:
+      required_elements:
+        - "Discussion prompts with clear expectations"
+        - "Peer feedback mechanisms"
+        - "Group activities/projects"
+        - "Facilitator/moderator presence"
+        - "Community guidelines"
+      platform_requirements:
+        - "Discussion forums"
+        - "Peer review capabilities"
+        - "Group workspaces"
+        - "Notification system"
+
+    quality_indicators:
+      positive:
+        - "Active facilitator engagement"
+        - "Rich peer discussions"
+        - "Diverse perspectives shared"
+        - "Collaborative outputs produced"
+      negative:
+        - "Ghost town forums"
+        - "One-way posting (no replies)"
+        - "No facilitator presence"
+        - "Unclear expectations"
+
+  # ---------------------------------------------------------------------------
+  # BLENDED LEARNING PROGRAMME
+  # ---------------------------------------------------------------------------
+  blended_programme:
+    description: "Integrated multi-modal learning journey combining formats"
+    aliases: ["learning_journey", "curriculum", "blended_curriculum"]
+    typical_duration: "days to months"
+
+    characteristics:
+      multi_modal: true
+      sequenced: true
+      cohort_based: "optional"
+      progressive: true
+
+    framework_adjustments:
+      gagne_nine_events:
+        weight: 1.1
+        scope: "across_programme"  # Events may span multiple activities
+      kirkpatrick_evaluation:
+        weight: 1.3  # Full evaluation model applies
+      spaced_practice:
+        weight: 1.4  # Distribution over time is key benefit
+
+    design_constraints:
+      required_elements:
+        - "Learning path with clear progression"
+        - "Pre-work before synchronous sessions"
+        - "Application activities between sessions"
+        - "Capstone or integration project"
+        - "Manager/mentor involvement"
+      sequencing:
+        - "Asynchronous content before synchronous discussion"
+        - "Theory before practice"
+        - "Simple before complex"
+        - "Spaced practice across programme"
+
+    quality_indicators:
+      positive:
+        - "Intentional blend (not random mix)"
+        - "Activities build on each other"
+        - "Real-world application between sessions"
+        - "Manager involvement/support"
+        - "Clear learning path visualization"
+      negative:
+        - "Disconnected components"
+        - "No spacing/reinforcement"
+        - "Missing transfer activities"
+        - "No capstone/integration"
+
+  # ---------------------------------------------------------------------------
+  # COACHING / MENTORING
+  # ---------------------------------------------------------------------------
+  coaching_mentoring:
+    description: "One-to-one or small group developmental relationship focusing on skill growth through guided practice and feedback"
+    aliases: ["coaching", "mentoring", "executive_coaching", "peer_coaching"]
+    typical_duration: "30-60 minutes per session, sustained over weeks to months"
+
+    characteristics:
+      synchronous: true
+      instructor_present: true
+      personalised: "high"
+      safe_to_fail: true
+      relationship_based: true
+      goal_directed: true
+
+    framework_adjustments:
+      cognitive_apprenticeship:
+        weight: 1.5  # Coaching IS the application of cognitive apprenticeship
+        phase_mapping:
+          sessions_1_to_3: "modelling (coach demonstrates thinking and approach)"
+          sessions_4_to_8: "coaching (learner performs, coach observes and prompts)"
+          sessions_9_plus: "fading (learner leads, coach intervenes only on request)"
+      self_determination_theory:
+        weight: 1.4
+        emphasis: ["autonomy", "competence", "relatedness"]
+        notes: "All three SDT needs are high in coaching: autonomy (learner sets agenda), competence (targeted feedback on mastery), relatedness (trust relationship with coach)"
+      kirkpatrick_evaluation:
+        weight: 1.2
+        emphasis: ["level_3", "level_4"]  # Behaviour change and results are the primary goals
+      knowles_andragogy:
+        weight: 1.3
+        notes: "Adult learners directing their own development; coaching must honour self-concept and leverage experience"
+
+    design_constraints:
+      required_elements:
+        - "Agreed development goals (learner-led)"
+        - "Structured agenda with learner preparation"
+        - "Observation of real performance (where possible)"
+        - "Specific behavioural feedback (not general praise)"
+        - "Practice commitments between sessions"
+        - "Progress review against goals"
+      session_structure:
+        opening: "Check-in on previous commitment and progress"
+        exploration: "Identify specific skill gap or challenge"
+        practice: "Role-play, case work, or real-situation debrief"
+        planning: "Commitment to specific action before next session"
+      coaching_conversations:
+        useful_models: ["GROW (Goal-Reality-Options-Will)", "CLEAR (Contracting-Listening-Exploring-Action-Review)", "OSCAR (Outcome-Situation-Choices-Actions-Review)"]
+        avoid: "Advice-giving before exploring learner's own solutions"
+
+    quality_indicators:
+      positive:
+        - "Learner owns the agenda, not the coach"
+        - "Behavioural change observed between sessions"
+        - "Specific commitments made at each session"
+        - "Coach uses questioning before advising"
+        - "Progress measurable against development goals"
+      negative:
+        - "Coach doing most of the talking"
+        - "Advice-led rather than question-led"
+        - "No action commitments or follow-through"
+        - "Generic feedback ('well done') with no specifics"
+        - "Dependency created rather than independence built"
+
+    ltem_target_tiers: [6, 7]  # Task Competency and Transfer
+
+# ==============================================================================
+# PROFILE SELECTION GUIDANCE
+# ==============================================================================
+
+selection_guidance:
+  decision_factors:
+    - factor: "Synchronous requirement"
+      if_yes: ["instructor_led_workshop", "virtual_instructor_led", "hybrid_training", "coaching_mentoring"]
+      if_no: ["video_based", "self_paced_course", "microlearning"]
+
+    - factor: "Mandatory completion tracking"
+      if_yes: ["compliance_training", "self_paced_course", "certification_prep"]
+      if_no: ["any profile appropriate"]
+
+    - factor: "Mobile-first delivery"
+      if_yes: ["microlearning", "video_based", "job_aid_reference"]
+      if_no: ["self_paced_course", "simulation_based"]
+
+    - factor: "Skill practice required"
+      if_yes: ["simulation_based", "instructor_led_workshop", "self_paced_course", "coaching_mentoring"]
+      if_no: ["video_based", "microlearning"]
+
+    - factor: "Behaviour change target (Kirkpatrick L3)"
+      if_yes: ["coaching_mentoring", "simulation_based", "blended_programme"]
+      if_no: ["any profile for knowledge outcomes"]
+
+    - factor: "Peer learning or community building"
+      if_yes: ["social_collaborative", "instructor_led_workshop", "blended_programme"]
+      if_no: ["video_based", "microlearning", "self_paced_course"]
+
+    - factor: "Time available"
+      very_limited: ["microlearning", "job_aid_reference"]
+      moderate: ["video_based", "virtual_instructor_led"]
+      substantial: ["self_paced_course", "blended_programme", "coaching_mentoring"]
+
+  ltem_profile_mapping:
+    description: "Maps delivery profiles to LTEM tiers to set realistic expectations for learning outcomes"
+    source: "Activities - Research + Instructions v4.md (LTEM)"
+    tier_1_attendance: ["any profile — completion only tracked"]
+    tier_2_activity: ["compliance_training", "self_paced_course (click-through only)"]
+    tier_3_learner_reaction: ["any profile with satisfaction survey"]
+    tier_4_knowledge: ["video_based", "microlearning", "self_paced_course", "certification_prep"]
+    tier_5_decision_making: ["self_paced_course (branching)", "certification_prep", "simulation_based"]
+    tier_6_task_competency: ["simulation_based", "instructor_led_workshop", "coaching_mentoring"]
+    tier_7_transfer: ["coaching_mentoring", "blended_programme", "on_the_job_training"]
+    tier_8_effects: ["blended_programme (with L4 measurement)", "coaching_mentoring (with ROI tracking)"]
+    guidance: "Design backwards from target tier; if Tier 7 (Transfer) is required, video-based and microlearning alone are insufficient"

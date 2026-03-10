@@ -1,0 +1,685 @@
+# Figure References and Deictic Markers
+# Based on: Multimodal discourse analysis and CLIP visual-text alignment research
+# Source: Cross-modal reference detection patterns
+
+_meta:
+  id: figure_references_framework
+  title: "Figure References"
+  description: "Deictic markers and patterns for detecting text references to visual elements, supporting cross-modal coherence analysis."
+  domain: narrative
+  domain_type: cross_cutting
+  purpose: methodology
+  version: "1.2.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Researching Narrative and Discourse Analysis.md"
+    - "Corpus/Research/Research - Visual Communication and Storytelling.md"
+    - "Corpus/Research/Visual Narrative Flow Pass.md"
+    - "Corpus/Research/The Unseen Structure: A Technical Deep-Dive into Narrative, Visualization, and Accessibility.md"
+
+  relationships:
+    - target: methodology/visual_narrative_framework.yaml
+      type: depends_on
+      description: "Visual communication overlap: figure references used in visual storytelling"
+
+# Reference Type Categories
+reference_types:
+  direct:
+    definition: "Explicit linguistic reference to visual element using specific label or identifier"
+    linguistic_markers:
+      figure_labels: ["Figure 1", "Fig. 2", "Chart A", "Graph 3", "Diagram 4", "Table 1"]
+      slide_references: ["this slide shows", "as shown in this chart", "the graph illustrates"]
+      labeled_references: ["the pie chart on the right", "the bar graph above", "the timeline below"]
+
+    examples:
+      explicit_label: "Figure 3 demonstrates the revenue growth trajectory"
+      slide_reference: "This chart shows our market share increasing from 12% to 28%"
+      positioned_reference: "The diagram on the left illustrates the system architecture"
+
+    detection_pattern: "Figure|Chart|Graph|Diagram|Table|Image + (number|position)"
+
+    presentation_context:
+      slide_titles: "Often use: 'Growth Trajectory (Fig 1)', 'Market Share Analysis'"
+      speaker_notes: "Detailed references: 'Walk through Figure 2, highlighting Q3 spike'"
+      callout_boxes: "Arrows or annotations linking text to visual elements"
+
+  indirect:
+    definition: "Implicit reference to visual content without explicit label; requires inference"
+    linguistic_markers:
+      demonstrative_pronouns: ["this", "that", "these", "those"]
+      generic_visual_terms: ["the data", "the results", "the trend", "the pattern", "the comparison"]
+      contextual_references: "Terms that semantically align with visual content without naming it"
+
+    examples:
+      demonstrative_reference: "This shows our competitive advantage"  # Assumes visual on slide
+      generic_reference: "The data clearly indicates accelerating growth"  # Refers to chart data
+      contextual_reference: "Our fastest growth occurred in Q3"  # Aligns with chart showing Q3 spike
+
+    detection_pattern: "Demonstrative + visual_term | Generic_reference + semantic_alignment"
+
+    presentation_context:
+      slide_bullets: "Often use indirect references assuming visual is visible"
+      live_presentation: "Speaker uses 'this' while gesturing at screen"
+      speaker_notes: "May clarify: 'Point to upper-right section of chart'"
+
+  deictic:
+    definition: "Spatial or temporal pointing words that require visual context to resolve"
+    linguistic_markers:
+      spatial_deictics: ["here", "there", "above", "below", "left", "right", "top", "bottom"]
+      temporal_deictics: ["now", "then", "before", "after", "currently", "previously"]
+      demonstrative_pronouns: ["this", "that", "these", "those"]
+
+    examples:
+      spatial_deictic: "Here we see the revenue trend"  # Requires visual to locate 'here'
+      temporal_deictic: "Now notice the spike in Q3"  # Refers to temporal point in chart
+      demonstrative_deictic: "These are our key differentiators"  # Assumes visual list visible
+
+    detection_pattern: "Spatial_marker|Temporal_marker|Demonstrative + verb_of_perception"
+
+    ambiguity:
+      issue: "Deictic markers are highly context-dependent; same word can refer to different visuals"
+      resolution_strategy: "Use CLIP embeddings to match deictic reference to nearest visual element"
+      example: "'This chart' could refer to any chart on slide; CLIP identifies which chart by semantic similarity"
+
+    presentation_context:
+      live_delivery: "Deictics most effective with speaker gestures"
+      printed_deck: "Deictics may be ambiguous without visual proximity cues"
+      speaker_notes: "Often translate deictics to explicit: 'this chart' → 'the revenue chart'"
+
+# Visual Element Types
+visual_element_types:
+  chart:
+    subtypes:
+      bar_chart: "Categorical comparisons"
+      line_chart: "Trends over time"
+      pie_chart: "Proportional breakdowns"
+      scatter_plot: "Correlations and distributions"
+      area_chart: "Cumulative trends"
+      parallel_coordinate_plot: "Multi-dimensional data visualization where each axis represents one variable and data points are drawn as crossing lines; used for high-dimensional pattern detection"
+      scatterplot_matrix: "Grid of pairwise scatterplots (SPLOM) showing all variable-to-variable correlations in a dataset; N variables produce N×N matrix of small charts"
+
+    linguistic_indicators:
+      - "chart"
+      - "graph"
+      - "bars"
+      - "trend line"
+      - "data visualization"
+
+    common_references:
+      - "The chart shows revenue growth of 45%"
+      - "As illustrated in the bar graph"
+      - "The trend line indicates acceleration"
+
+  diagram:
+    subtypes:
+      flowchart: "Process flows and decision trees"
+      architecture_diagram: "System components and connections"
+      venn_diagram: "Overlapping concepts or sets"
+      network_diagram:
+        base_definition: "Relationships and nodes"
+        narrative_subtypes:
+          pathfinding_network: "Network pruned to show only the path between two nodes; all non-path nodes hidden — narrative is the route itself"
+          community_network: "Network organized by algorithmically detected communities; color-coded by cluster — narrative is the macro-structure"
+          ego_network: "Network centered on a single node with progressive degree-expansion — narrative is the focal node's sphere of influence"
+        linguistic_indicators: ["network", "nodes", "edges", "connections", "graph", "clusters", "communities", "relationships"]
+        community_reference_patterns: ["this cluster", "the blue group", "the segment on the left"]
+        pathfinding_reference_patterns: ["path", "connection between", "route from", "how A connects to B"]
+        ego_reference_patterns: ["your connections", "nodes at this level", "1st degree", "neighbors"]
+        research_source: "The Unseen Structure, Section I.B"
+      timeline: "Chronological sequences"
+      sankey_diagram: "Flow/process visualization where band width encodes quantity; shows attrition, distribution, or stage transitions between categories"
+      causal_loop_diagram: "Feedback loop structures with reinforcing (R) and balancing (B) nodes and directional causal links; shows system dynamics over time"
+      stock_and_flow_diagram: "Quantitative system dynamics model showing accumulations (stocks) and rates of change (flows); used for simulation narratives"
+
+    linguistic_indicators:
+      - "diagram"
+      - "flowchart"
+      - "architecture"
+      - "process flow"
+      - "system map"
+      - "sankey"
+      - "alluvial"
+      - "funnel"
+      - "attrition"
+      - "causal loop"
+      - "feedback loop"
+      - "stock and flow"
+      - "simulation"
+
+    common_references:
+      - "The diagram illustrates our three-tier architecture"
+      - "This flowchart shows the customer journey"
+      - "The timeline highlights key milestones"
+
+  image:
+    subtypes:
+      photograph: "Real-world captures (products, people, places)"
+      screenshot: "Software interface captures"
+      illustration: "Custom artwork or icons"
+      logo: "Brand marks and symbols"
+      symbolic: "Aspirational or metaphorical imagery used to carry narrative meaning rather than literal information"
+    visual_metaphor_categories:
+      journey: "Paths, roadmaps, bridges, doors — narrative of progression"
+      transformation: "Before/after, butterfly, sunrise — narrative of change"
+      growth: "Upward arrows, trees, expanding circles — narrative of increase"
+      connection: "Networks, chains, handshakes — narrative of relationship"
+      innovation: "Lightbulbs, rockets, breakthroughs — narrative of discovery"
+    symbolic_linguistic_indicators: ["envision", "imagine", "the future of", "journey", "transformation", "opportunity"]
+    research_source: "Visual Narrative Flow Pass, Section Visual Metaphors & Symbolism"
+
+    linguistic_indicators:
+      - "image"
+      - "photo"
+      - "picture"
+      - "screenshot"
+      - "illustration"
+
+    common_references:
+      - "The image shows our product in use"
+      - "This screenshot demonstrates the new interface"
+      - "The photo captures our team at the launch event"
+
+  table:
+    subtypes:
+      data_table: "Structured numerical data"
+      comparison_table: "Feature matrices or benchmarks"
+      schedule_table: "Timelines or calendars"
+
+    linguistic_indicators:
+      - "table"
+      - "matrix"
+      - "comparison"
+      - "feature list"
+
+    common_references:
+      - "The table compares our pricing tiers"
+      - "This matrix shows feature parity with competitors"
+      - "Refer to the schedule in Table 2"
+
+  projection_map:
+    definition: "2D or 3D projection of high-dimensional data using algorithms such as t-SNE or UMAP; axes are computationally generated and lack inherent semantic meaning — meaning resides in cluster labels and relative positions"
+    subtypes:
+      dimensionality_reduction: "t-SNE or UMAP projection of embedding space onto 2D scatter; clusters represent semantic groupings"
+      latent_space_map: "Visualization of AI model latent representations"
+    linguistic_indicators: ["t-SNE", "UMAP", "embedding space", "cluster map", "projection", "latent space", "2D map", "dimensionality reduction"]
+    coherence_note: "CLIP cosine similarity is unreliable for projection maps; text-visual linking must rely on cluster labels and annotations, not pixel gestalt"
+    research_source: "The Unseen Structure, Section I.D"
+
+  icon:
+    subtypes:
+      concept_icon: "Visual metaphors for abstract ideas"
+      action_icon: "UI elements (buttons, controls)"
+      status_icon: "Indicators (checkmarks, warnings, errors)"
+
+    linguistic_indicators:
+      - "icon"
+      - "symbol"
+      - "indicator"
+      - "marker"
+
+    common_references:
+      - "The checkmark icons indicate completed milestones"
+      - "Green status symbols show healthy systems"
+
+# Deictic Marker Patterns
+deictic_markers:
+  demonstrative_pronouns:
+    this:
+      proximity: "near"  # Close to speaker or current focus
+      examples:
+        - "This chart shows growth"
+        - "This demonstrates our approach"
+
+    that:
+      proximity: "far"  # Distant from speaker or previous topic
+      examples:
+        - "That graph illustrated the problem"
+        - "That represents our legacy system"
+
+    these:
+      proximity: "near"
+      plurality: "multiple"
+      examples:
+        - "These are the key metrics"
+        - "These icons represent core features"
+
+    those:
+      proximity: "far"
+      plurality: "multiple"
+      examples:
+        - "Those were the challenges we faced"
+        - "Those bars show historical performance"
+
+  spatial_markers:
+    here:
+      location: "current_position"
+      examples:
+        - "Here we see the revenue trend"
+        - "The data here shows acceleration"
+
+    there:
+      location: "referenced_position"
+      examples:
+        - "There in the upper right quadrant"
+        - "Look there at the Q3 spike"
+
+    above:
+      location: "vertical_superior"
+      examples:
+        - "The diagram above illustrates the flow"
+        - "As shown above, growth is accelerating"
+
+    below:
+      location: "vertical_inferior"
+      examples:
+        - "The table below details pricing"
+        - "See below for implementation timeline"
+
+    left:
+      location: "horizontal_sinister"
+      examples:
+        - "The chart on the left shows before state"
+        - "To the left, you'll see legacy metrics"
+
+    right:
+      location: "horizontal_dexter"
+      examples:
+        - "The chart on the right shows after state"
+        - "On the right, improved metrics"
+
+    top:
+      location: "vertical_superior"
+      examples:
+        - "At the top of the slide"
+        - "The headline metric at the top"
+
+    bottom:
+      location: "vertical_inferior"
+      examples:
+        - "The disclaimer at the bottom"
+        - "Bottom section shows appendix data"
+
+  cross_slide_temporal:
+    definition: "Text references that point to visual elements on a different slide, not the current one; require slide-sequence context to resolve"
+    backward_references:
+      markers: ["as shown earlier", "as we just saw", "as discussed above", "in the previous slide", "recall that"]
+      resolution: "Look up visual on previous slide(s); CLIP proximity strategy inapplicable — requires slide index lookup"
+    forward_references:
+      markers: ["as we will see", "in the next slide", "coming up", "we'll show", "as we'll demonstrate"]
+      resolution: "Mark as forward reference; resolve when target slide is reached during sequential processing"
+    detection_note: "Cross-slide references do NOT resolve via within-slide CLIP/proximity — requires sequential_context_window strategy"
+    research_source: "Visual Narrative Flow Pass, Batch Processing Strategy"
+
+  temporal_markers:
+    now:
+      temporal_focus: "present"
+      examples:
+        - "Now we see improvement"
+        - "Currently this metric is rising"
+
+    then:
+      temporal_focus: "past_or_future_sequence"
+      examples:
+        - "Then revenue began to climb"
+        - "We'll then deploy to production"
+
+    before:
+      temporal_focus: "anterior"
+      examples:
+        - "Before optimization, latency was high"
+        - "The situation before our solution"
+
+    after:
+      temporal_focus: "posterior"
+      examples:
+        - "After implementation, costs dropped"
+        - "The improved state after deployment"
+
+# Visual-Text Linking Strategies
+linking_strategies:
+  proximity_based:
+    description: "Link text to nearest visual element on slide"
+    method: "Measure spatial distance between text block and visual elements"
+    use_case: "Resolving 'this chart' when multiple charts present"
+    limitation: "May fail if text conceptually refers to distant visual"
+
+  semantic_alignment:
+    description: "Use CLIP embeddings to match text meaning to visual content"
+    method: "Compute cosine similarity between text embedding and visual embedding"
+    threshold: 0.65  # Minimum similarity to consider a match
+    use_case: "Matching indirect references ('the data shows') to specific chart"
+    threshold_exceptions:
+      projection_maps: "CLIP cosine similarity is unreliable for t-SNE/UMAP visualizations; axes have no semantic meaning; cluster labels are the primary text-visual anchor — use label matching instead"
+      simulation_outputs: "Dynamic simulation results (Stock and Flow) produce continuously changing visuals; static CLIP threshold inapplicable; use textual outcome injection as primary coherence signal"
+      symbolic_images: "Metaphorical imagery (e.g., sunrise = transformation) requires metaphor-category mapping, not direct semantic similarity"
+    research_source: "The Unseen Structure, Sections I.A and I.D"
+
+  explicit_label_matching:
+    description: "Match labeled references (Figure 1, Chart A) to visual metadata"
+    method: "Extract label from text, look up visual element with matching label"
+    accuracy: "Very high (>95%) when labels are present"
+    limitation: "Requires visuals to be labeled in source document"
+
+  structural_position:
+    description: "Use slide layout structure to resolve spatial deictics"
+    method: "Map 'above', 'below', 'left', 'right' to slide quadrants or regions"
+    use_case: "Resolving 'the diagram on the left' when two diagrams present"
+
+  sequential_context_window:
+    description: "Resolve cross-slide references using a sliding window of adjacent slides when within-slide resolution fails"
+    method: "When proximity and semantic_alignment both fail, extend context to ±N adjacent slides (batch_size 5, overlap 2)"
+    applicable_reference_types: ["cross_slide_temporal", "indirect"]
+    parameters:
+      batch_size: 5
+      overlap: 2
+    trigger: "Activate when within-slide resolution fails or cross_slide_temporal markers are detected"
+    limitation: "Does not scale linearly; processing cost increases with deck length"
+    research_source: "Visual Narrative Flow Pass, Batch Processing Strategy"
+
+  narrative_chunking_alignment:
+    description: "Link sequential text chunks (scrollytelling steps) to corresponding visual states; each chunk has a 1:1 relationship with a specific visual configuration"
+    method: "Assign chunk index to visual state index; text reference within a chunk resolves to the visual in that state only, not other slides"
+    use_case: "Multi-step narrative slides, scrollytelling presentations, step-by-step process explanations"
+    limitation: "Requires pre-defined chunk-to-visual-state mapping; cannot be inferred purely from text content alone"
+    coherence_note: "Standard CLIP strategy insufficient; chunk index must scope visual state before similarity matching"
+    research_source: "The Unseen Structure, Section III.A — Chunking & Progressive Disclosure"
+
+# Cross-Modal Coherence Assessment
+coherence_dimensions:
+  semantic_consistency:
+    definition: "Text and visual convey the same core message"
+    measurement: "CLIP cosine similarity between text and visual embeddings"
+    thresholds:
+      high: ">0.75"  # Strong semantic alignment
+      medium: "0.60-0.75"  # Moderate alignment
+      low: "<0.60"  # Weak or contradictory alignment
+
+    examples:
+      high_coherence:
+        text: "Revenue grew 45% in Q3"
+        visual: "Bar chart showing Q3 bar 45% taller than Q2"
+        similarity: 0.82
+
+      low_coherence:
+        text: "Our product is the fastest"
+        visual: "Pie chart showing market share distribution"
+        similarity: 0.42  # Text discusses speed, visual shows share
+
+  redundancy_vs_complementarity:
+    definition: "Whether visual and text duplicate information or add unique value"
+
+    redundant:
+      definition: "Visual and text convey identical information"
+      example:
+        text: "45% revenue growth"
+        visual: "Chart with single bar labeled '45% growth'"
+      assessment: "Redundant - visual adds no new information"
+
+    complementary:
+      definition: "Visual and text each contribute unique information"
+      example:
+        text: "Revenue grew across all regions"
+        visual: "Map showing growth percentages per region (EMEA 30%, APAC 50%, Americas 40%)"
+      assessment: "Complementary - visual provides regional breakdown text summarizes"
+
+    contradictory:
+      definition: "Visual and text convey conflicting information"
+      example:
+        text: "Costs decreased significantly"
+        visual: "Line chart showing costs increasing 20%"
+      assessment: "Contradictory - major coherence issue"
+
+    expansion:
+      definition: "Visual adds emotional or contextual meaning beyond what text explicitly states; the visual provides a layer the text does not have"
+      example:
+        text: "Our team delivered the project on time"
+        visual: "Photo of energized, smiling team at launch event"
+      assessment: "Expansion - visual extends the emotional register of a factual text claim; valid design pattern when intentional"
+      research_source: "Visual Narrative Flow Pass, Text-Visual Alignment section"
+
+    decorative:
+      definition: "Visual is independent of text — it tells a separate, unrelated story or is purely aesthetic with no semantic connection to surrounding text"
+      example:
+        text: "Revenue grew 45% in Q3"
+        visual: "Generic stock photo of abstract cityscape"
+      assessment: "Decorative - visual adds no semantic value; may distract from the text claim"
+      coherence_score_implication: "CLIP similarity will be low; should not be penalized as 'contradictory' — requires separate classification"
+      research_source: "Visual Narrative Flow Pass, Text-Visual Alignment section"
+
+  narrative_sequencing:
+    definition: "Whether text-visual ordering follows Pyramid Principle (key insight first) or buries conclusion after supporting data"
+    pyramid_principle: "Key insight stated before supporting visual detail (BLUF — Bottom Line Up Front); visuals then serve as proof, not surprise"
+    inverted_structure: "Supporting data presented before conclusion; creates cognitive delay for sequential readers"
+    accessibility_implication: "Sequential readers (screen readers, audio-only) must process full supporting detail before reaching the conclusion if inverted structure is used"
+    research_source: "The Unseen Structure, Section III.A — The Pyramid Principle"
+
+  dual_channel_completeness:
+    definition: "Whether the text narrative can stand alone as a complete semantic representation of the visual, enabling non-visual comprehension"
+    complete: "Text narrative fully represents the visual's information; a person without the image loses no essential meaning"
+    incomplete: "Text relies on visual for essential information not expressed in words; a person without the image loses critical content"
+    assessment_method: "Remove the visual; check if text alone conveys all essential claims — if coherence score drops dramatically, text is incomplete"
+    research_source: "The Unseen Structure, Section III — Dual-Coding Theory (Paivio)"
+
+  emotional_arc:
+    definition: "Coherence between visual emotional progression and the narrative's emotional structure across a slide sequence"
+    arc_patterns:
+      problem_buildup: "Visuals escalate in tension/darkness through the problem section before resolving with bright/aspirational imagery"
+      vision_first: "Aspirational visuals lead, then pull back to show problem, then return to vision"
+      balanced: "Consistent emotional tone maintained throughout without dramatic shifts"
+    intensity_scale:
+      description: "Per-slide emotional intensity scored 1–10 (1=calm/neutral, 10=high tension/high aspiration)"
+      trajectory_types: ["ascending", "descending", "u-shaped", "inverted-u"]
+    observable_indicators:
+      color_progression: "Warm→Cool, Dark→Bright (or reverse)"
+      image_subject: "Cluttered/frustrated imagery → clean/aspirational imagery"
+      visual_complexity: "Dense→sparse (relief) or sparse→dense (buildup)"
+    research_source: "Visual Narrative Flow Pass, Emotional Arc and Pacing & Rhythm sections"
+
+  visual_pacing_rhythm:
+    definition: "Sequential coherence of visual density, complexity, and style across slides; the cross-slide 'rhythm' of visual information"
+    components:
+      slide_density: "Text-heavy vs visual-heavy distribution across slides"
+      color_progression: "Color scheme transitions across the deck"
+      visual_complexity_progression: "Simple→complex or complex→simple across the deck"
+      breathing_room: "White-space and simplicity frequency (prevents visual fatigue)"
+    distinction_from_information_density: "information_density measures a single slide; visual_pacing_rhythm measures the flow across the full deck"
+    research_source: "Visual Narrative Flow Pass, Pacing & Rhythm section"
+
+  metaphor_consistency:
+    definition: "Whether visual metaphors are coherent and consistent across a slide sequence; mixed metaphor families create cognitive dissonance"
+    scale: "0.0 (incoherent, multiple conflicting metaphor families) to 1.0 (fully consistent metaphor system)"
+    metaphor_families:
+      journey: "Paths, roadmaps, bridges, doors"
+      transformation: "Before/after, butterfly, sunrise"
+      growth: "Upward arrows, trees, expanding circles"
+      connection: "Networks, chains, handshakes"
+      innovation: "Lightbulbs, rockets, breakthroughs"
+    anti_pattern: "Mixed metaphor families (e.g., journey imagery on slides 1-3, innovation imagery on slides 4-5, growth imagery on slide 6) without intentional transition"
+    research_source: "Visual Narrative Flow Pass, Visual Metaphors & Symbolism section"
+
+  information_density:
+    definition: "Ratio of information in visual vs text"
+    measurement: "Count distinct propositions in visual and text"
+
+    visual_heavy:
+      definition: "Visual contains more information than text"
+      example:
+        text: "Our architecture is scalable"
+        visual: "Detailed architecture diagram with 15 components and 30 connections"
+      implication: "Text provides high-level summary; visual provides detail"
+
+    text_heavy:
+      definition: "Text contains more information than visual"
+      example:
+        text: "Revenue grew 45% (from $100M to $145M), driven by enterprise segment (60% growth) and SMB segment (30% growth), with Q3 as strongest quarter"
+        visual: "Simple bar chart showing total revenue growth"
+      implication: "Visual provides high-level trend; text provides granular detail"
+
+# Presentation-Specific Patterns
+presentation_patterns:
+  data_slide_standard:
+    text_pattern: "Title states claim, bullet provides context, deictic references visual"
+    example:
+      title: "Revenue Growth Accelerating"
+      bullet: "This chart shows 45% YoY increase in Q3"
+      visual: "Bar chart with quarterly revenue"
+    reference_type: "deictic (this chart)"
+
+  process_flow_standard:
+    text_pattern: "Title states process name, bullets describe steps, deictic traces flow"
+    example:
+      title: "Customer Onboarding Process"
+      bullets: ["Here prospects enter pipeline", "Then they complete evaluation", "Finally they deploy"]
+      visual: "Flowchart with stages"
+    reference_type: "deictic (here, then, finally)"
+
+  comparison_standard:
+    text_pattern: "Title states comparison, bullets highlight differentiators, spatial deictics locate elements"
+    example:
+      title: "Us vs Competitors"
+      bullets: ["On the left, competitor limitations", "On the right, our advantages"]
+      visual: "Side-by-side comparison table"
+    reference_type: "spatial deictic (left, right)"
+
+  soar_visual_arc_standard:
+    description: "SOAR narrative visual arc for sales/executive decks — visual signature for each narrative stage"
+    stages:
+      situation: "Charts showing decline, cluttered workflows, frustrated users — dark/dense visual tone"
+      opportunity: "Vision boards, clean interfaces, aspirational imagery — bright/open visual tone"
+      action: "Process diagrams, product screenshots, step-by-step flows — structured/informational visual tone"
+      result: "Success metrics, upward trends, happy customers — positive/celebratory visual tone"
+    common_arc_sequences:
+      classic: "S-S-O-A-R"
+      condensed: "O-A-R"
+      action_heavy: "S-O-A-A-R"
+    reference_type: "direct and indirect references to each stage's characteristic visual type"
+    research_source: "Visual Narrative Flow Pass, Visual SOAR Pattern section"
+
+  scrollytelling_standard:
+    description: "Narrative pattern where sequential text chunks are synchronized 1:1 with visual states; as the user progresses through text, the visualization updates to a new state"
+    text_pattern: "Each chunk begins with key insight (Pyramid Principle — BLUF); deictic references (this, now, here) resolve to the active visual state for that chunk only"
+    example:
+      chunk_1: "Overall network shows three distinct community clusters [Community-centric view active]"
+      chunk_2: "Now trace your product's supply chain path [Pathfinding view active]"
+      chunk_3: "Here is the actual shipping time compared to 2019 levels [Branching temporal view active]"
+    reference_type: "deictic (now, here, this) scoped to active visual state per chunk"
+    linking_note: "Standard CLIP linking strategy insufficient — use narrative_chunking_alignment strategy; chunk index must scope visual state before similarity matching"
+    research_source: "The Unseen Structure, Section IV — Narrative Design & Digital Implementation"
+
+# GLiNER2 Extraction Guidance
+extraction_strategy:
+  step_1_identify_references:
+    description: "Extract all text segments that reference visual elements"
+    markers: "Figure labels, demonstratives, spatial deictics, visual terms"
+    output: "List of reference phrases with type classification"
+
+  step_2_classify_reference_type:
+    direct: "Contains explicit label (Figure 1, Chart A)"
+    indirect: "Uses generic visual term (the data, the chart)"
+    deictic: "Uses pointing words (this, here, above)"
+
+  step_3_extract_deictic_markers:
+    demonstratives: ["this", "that", "these", "those"]
+    spatial: ["here", "there", "above", "below", "left", "right"]
+    temporal: ["now", "then", "before", "after"]
+
+  step_4_semantic_linking:
+    description: "Use CLIP to match text references to visual elements"
+    method: "Compute similarity between reference text and visual content"
+    threshold: 0.65
+    output: "Paired (text_reference, visual_element, similarity_score)"
+
+# GLiNER Label Sets (for multi-pass extraction)
+gliner_labels:
+  figure_references:
+    # Pass 1: Text references to visual elements
+    - "figure_reference"
+    - "diagram_reference"
+    - "chart_reference"
+    - "graph_reference"
+    - "icon_reference"
+    - "illustration_reference"
+    - "image_reference"
+    - "table_reference"
+    - "network_reference"          # References to network/graph visualizations
+    - "simulation_reference"       # References to dynamic simulation outputs (SFD, CLD)
+    - "cluster_reference"          # References to communities or groups within a network
+    - "counterfactual_reference"   # References to 'what-if' or projected scenario lines
+    - "flow_reference"             # References to Sankey/alluvial flow diagrams
+    - "projection_reference"       # References to t-SNE/UMAP or dimensionality-reduction visuals
+    - "cross_slide_reference"      # References that point to visuals on a different slide
+
+  visual_descriptions:
+    # Pass 2: Visual element descriptions
+    - "visual_description"
+    - "caption"
+    - "alt_text"
+    - "image_label"
+    - "diagram_label"
+    - "chart_title"
+    - "extended_description"       # Long-form textual alternative to a visual (accessibility shadow structure)
+    - "aria_label"                 # ARIA label or live region content for dynamic visuals
+
+# Regex Patterns for Figure Reference Detection
+regex_patterns:
+  # Fallback patterns for detecting references when GLiNER misses them
+  - pattern: "see (?:the )?(?:diagram|figure|chart|illustration|graph|image|table)"
+    description: "Directive to view visual element"
+  - pattern: "(?:this|the) (?:diagram|figure|chart|illustration|graph|image|table) shows"
+    description: "Visual element as subject of sentence"
+  - pattern: "as (?:shown|illustrated|depicted) in"
+    description: "Reference to visual demonstration"
+  - pattern: "refer to (?:the )?(?:diagram|figure|chart|illustration)"
+    description: "Explicit instruction to reference visual"
+  - pattern: "(?:diagram|figure|chart|illustration|graph|image|table) \\d+"
+    description: "Numbered visual element references"
+  - pattern: "(?:this|the) (?:cluster|group|community|segment|tribe)"
+    description: "Deictic reference to a community or cluster within a network visualization"
+  - pattern: "(?:simulate|run|model|project) (?:a|the)? (?:\\w+ )*(?:scenario|simulation|model)"
+    description: "Reference to a dynamic simulation output"
+  - pattern: "(?:as shown in|compared to) (?:the )?(?:dashed|solid|projected|actual|counterfactual) (?:line|path)"
+    description: "Reference to a branching temporal or counterfactual visualization line"
+  - pattern: "(?:the )?(?:flow|attrition|drop.off|funnel|throughput) (?:shows|indicates)"
+    description: "Reference to Sankey or flow diagram narrative elements"
+  - pattern: "(?:as shown earlier|as we just saw|as discussed above|in the previous slide|as we will see|coming up)"
+    description: "Cross-slide deictic reference pointing to visual on different slide"
+
+# ==============================================================================
+# VISUAL-TEXT COHERENCE ANTI-PATTERNS
+# ==============================================================================
+
+anti_patterns:
+  text_baked_into_visual:
+    definition: "Text labels or narrative content rendered as pixels inside an image or canvas, making them invisible to screen readers and NLP pipelines"
+    example: "A chart where 'Sales: 10M' is drawn as part of the PNG rather than as semantic text"
+    consequence: "Text invisible to NER pipeline, CLIP text encoder, and screen readers; figure_reference detection will fail on baked-in text; CLIP similarity may be unusually high due to text-as-image coincidence"
+    detection: "Absence of machine-readable text alongside image; check if visible text has corresponding DOM text equivalent"
+    research_source: "The Unseen Structure, Section III.A — Separating Text from Visualization (The DOM Rule)"
+
+  visual_without_text_anchor:
+    description: "A visual element is present with no textual reference (deictic, indirect, or direct) anchoring it to the surrounding narrative"
+    also_known_as: "orphaned visual"
+    consequence: "Cross-modal coherence score cannot be computed; no figure reference to link; CLIP semantic alignment has no text to match against"
+    detection: "Zero figure references in text window surrounding visual element"
+    research_source: "The Unseen Structure, Section I.A — accessibility challenge note"
+
+  hairball_visualization:
+    definition: "A network or relationship diagram so dense with nodes and edges that it becomes unreadable — shows everything, explains nothing"
+    example: "A network graph of 500 nodes with 2000 edges shown without clustering or pruning"
+    consequence: "No legible narrative; deictic references ('this connection', 'that node') are unresolvable — which connection? which node?"
+    remedy: "Apply narrative simplification before reference detection: pathfinding, community clustering, or ego-centric pruning"
+    research_source: "The Unseen Structure, Section I.B — The Unseen Threads"
+
+  counterfactual_line_unlabeled:
+    definition: "A branching temporal visualization where counterfactual or projected lines are visually present but lack textual labels distinguishing them from actual data"
+    example: "A dashed line on a chart with no text reference explaining it represents a 'what if' scenario"
+    consequence: "Indirect reference ('the projected path') cannot be disambiguated from actual data; coherence analysis produces false positives"
+    detection: "Dashed or differently-styled line present with no explicit counterfactual_reference in surrounding text"
+    research_source: "The Unseen Structure, Section I.C — Branching Narratives (Counterfactuals)"
+
+  mixed_metaphor_family:
+    definition: "Multiple incompatible visual metaphor families (journey + innovation + growth) appear across a slide deck without intentional narrative transitions"
+    consequence: "Metaphor_consistency score drops; audience experiences subconscious incoherence; emotional arc breaks"
+    detection: "Visual metaphor category classification produces 3+ distinct families in a single deck without structural transition points"
+    remedy: "Choose one primary metaphor family for the deck; use secondary families only at deliberate transition points (e.g., problem→solution boundary)"
+    research_source: "Visual Narrative Flow Pass, Visual Metaphors & Symbolism section"

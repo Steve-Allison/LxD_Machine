@@ -1,0 +1,467 @@
+# RST (Rhetorical Structure Theory) Relations
+# Based on: Niklaus et al. (2023) - Discourse-Aware Text Simplification
+# Source: DATS research - Seven core relations cover ~76% of RST Discourse Treebank
+
+_meta:
+  id: rst_framework
+  title: "RST Relations"
+  description: "Rhetorical Structure Theory relations from DATS research, covering the seven core relations that account for 76% of RST Discourse Treebank instances."
+  domain: narrative
+  domain_type: cross_cutting
+  purpose: methodology
+  version: "1.2.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - PDL for Discourse-Aware Text Simplification.md"
+    - "Corpus/Research/Research - Researching Narrative and Discourse Analysis.md"
+
+
+# Core RST Relations (frequency-ranked from RST Discourse Treebank)
+rst_relations:
+  elaboration:
+    frequency: 25.65
+    nuclearity: "satellite"
+    definition: "The satellite provides additional detail, specification, or elaboration about the nucleus"
+    business_context: "Used when providing supporting details, examples, or clarifications"
+    linguistic_markers:
+      - "specifically"
+      - "in particular"
+      - "for example"
+      - "such as"
+      - "namely"
+      - "that is"
+      - "in other words"
+    syntactic_patterns:
+      - "relative_clause"  # "The product, which was launched in 2020, ..."
+      - "apposition"  # "Our CEO, Jane Smith, announced..."
+      - "parenthetical"  # "The revenue (excluding one-time charges) increased..."
+    extraction_strategy: "Identify descriptive clauses that add specificity without changing core proposition"
+    transformation_targets:
+      - input: "The product, which was launched in 2020, exceeded expectations."
+        output_nucleus: "The product exceeded expectations."
+        output_satellite: "It was launched in 2020."
+        link: "elaboration"
+      - input: "Our CEO — a 20-year veteran — announced the restructuring."
+        output_nucleus: "Our CEO announced the restructuring."
+        output_satellite: "She is a 20-year veteran."
+        link: "elaboration"
+      - input: "Revenue grew 12%, driven primarily by enterprise sales."
+        output_nucleus: "Revenue grew 12%."
+        output_satellite: "Enterprise sales were the primary driver."
+        link: "elaboration"
+    source: "Researching Narrative and Discourse Analysis.md"
+
+  joint:
+    frequency: 23.78
+    nuclearity: "multi_nuclear"
+    definition: "Two or more nuclei present independent but related information of equal importance"
+    business_context: "Lists of equal-priority items, parallel benefits, or coordinated actions"
+    linguistic_markers:
+      - "and"
+      - "also"
+      - "additionally"
+      - "furthermore"
+      - "moreover"
+      - "as well as"
+    syntactic_patterns:
+      - "coordinate_clause"  # "We improved speed and we reduced costs"
+      - "parallel_structure"  # "First... Second... Third..."
+      - "bullet_list"  # Slide bullets often represent Joint relations
+    extraction_strategy: "Identify coordinating conjunctions linking independent clauses of equal rhetorical weight; apply DisSim coordinate clause split rule: S → S CC S — each conjunct becomes an independent proposition node in the Linked Proposition Tree"
+
+  attribution:
+    frequency: 9.97
+    nuclearity: "satellite"
+    definition: "The satellite identifies the source or speaker of the information in the nucleus"
+    business_context: "Quotes, citations, reported claims, customer testimonials"
+    linguistic_markers:
+      - "according to"
+      - "says"
+      - "claims"
+      - "reports"
+      - "stated"
+      - "announced"
+      - "believes"
+    syntactic_patterns:
+      - "reported_speech"  # "The CEO said that revenue increased"
+      - "citation"  # "According to Gartner, the market will grow"
+      - "testimonial"  # "Customer X reports a 30% improvement"
+    extraction_strategy: "Identify reporting verbs and attributive phrases that introduce quoted or sourced content"
+
+  same_unit:
+    frequency: 9.32
+    nuclearity: "multi_nuclear"
+    definition: "Used when a single logical unit is interrupted by an embedded clause; the split parts must be conceptually linked"
+    business_context: "Interrupted sentences where main clause is split by subordinate content"
+    linguistic_markers:
+      - "comma_pair"  # "The product, developed in 2020, launched successfully"
+      - "dash_pair"  # "The strategy—which took years—succeeded"
+      - "parenthetical_interruption"
+    syntactic_patterns:
+      - "interrupted_clause"
+      - "parenthetical_insertion"
+      - "clause_embedding"
+    extraction_strategy: "Identify main clause fragments separated by intervening material; rejoin as single unit"
+    structural_note: "same_unit is NOT a semantic relation — it is a span-integrity mechanism used when the RST tree must encode an interrupted clause. Do not confuse with elaboration or joint. The two fragments share the same rhetorical role; the interrupting material is treated as a nested satellite of the rejoined unit."
+    source: "PDL for Discourse-Aware Text Simplification.md"
+
+  contrast:
+    frequency: 5.0
+    nuclearity: "multi_nuclear"
+    definition: "The satellite presents information that conflicts with, qualifies, or opposes the nucleus"
+    business_context: "Comparisons, trade-offs, limitations, objections, counter-arguments"
+    linguistic_markers:
+      - "but"
+      - "however"
+      - "although"
+      - "yet"
+      - "nevertheless"
+      - "on the other hand"
+      - "conversely"
+      - "in contrast"
+      - "whereas"
+      - "while"
+    syntactic_patterns:
+      - "adversative_clause"  # "Revenue increased, but costs also rose"
+      - "concessive_clause"  # "Although expensive, the product succeeded"
+      - "comparison"  # "Unlike our competitors, we offer..."
+      - "adverbial_concessive"  # DisSim Tregex: SBAR < (IN < /although|though|whereas/) — extracts fronted concessive adverbials
+    extraction_strategy: "Identify adversative conjunctions and contrastive markers signaling opposition or qualification"
+
+  temporal:
+    frequency: 4.5  # Estimated from research
+    nuclearity: "satellite"
+    definition: "The satellite establishes the time frame or temporal sequence of the nucleus"
+    business_context: "Timeline events, sequences, deadlines, historical context"
+    linguistic_markers:
+      - "when"
+      - "after"
+      - "before"
+      - "since"
+      - "until"
+      - "while"
+      - "during"
+      - "following"
+      - "prior to"
+      - "subsequently"
+    syntactic_patterns:
+      - "temporal_clause"  # "After launching the product, we saw growth"
+      - "time_expression"  # "In Q3 2023, revenue increased"
+      - "sequence_marker"  # "First... then... finally..."
+    extraction_strategy: "Identify temporal subordinators and time expressions that establish chronological relationships"
+    disambiguation_notes:
+      since_ambiguity: "'since' is temporal when followed by a date, time expression, or punctual event (e.g., 'since 2020', 'since the launch'). Classify as cause when followed by a reason clause without a temporal anchor. Resolution heuristic: since + [NP_date | temporal_adverb] = temporal; since + [S_reason] = cause."
+      while_ambiguity: "'while' is temporal when denoting concurrent events of roughly equal duration; may indicate contrast when both clauses have equal salience and no clear temporal co-occurrence."
+    source: "PDL for Discourse-Aware Text Simplification.md"
+
+  cause:
+    frequency: 4.0  # Estimated from research
+    nuclearity: "satellite"
+    definition: "The satellite provides the reason, cause, or necessary condition for the nucleus"
+    business_context: "Explanations, justifications, causal reasoning, impact analysis"
+    linguistic_markers:
+      - "because"
+      - "since"
+      - "as"
+      - "due to"
+      - "given that"
+      - "thanks to"
+      - "as a result of"
+      - "consequently"
+      - "therefore"
+      - "thus"
+    syntactic_patterns:
+      - "causal_clause"  # "We succeeded because we innovated"
+      - "reason_expression"  # "Due to market demand, we expanded"
+      - "conditional"  # "If we invest, we will grow"
+    extraction_strategy: "Identify causal subordinators and logical connectives indicating reason or consequence"
+    disambiguation_notes:
+      since_ambiguity: "Shared ambiguity with temporal: 'since' is causal when the following clause provides a reason without a temporal anchor. Absence of date/time expression in the clause = causal reading."
+      as_ambiguity: "'as' is causal when replaceable by 'because' without meaning change; temporal when replaceable by 'while' or 'at the time when'."
+    simplification_risk: "Causal relations are high-risk for omission errors — splitting nucleus and satellite without an explicit connective destroys the logical dependency. Always preserve or make explicit 'because'/'therefore' when simplifying a cause relation."
+    canonical_example:
+      input: "The launch succeeded because the team executed flawlessly."
+      nucleus: "The launch succeeded."
+      satellite: "The team executed flawlessly."
+      link: "because (cause)"
+    source: "PDL for Discourse-Aware Text Simplification.md — Researching Narrative and Discourse Analysis.md"
+
+  condition:
+    frequency: 3.5  # Estimated from research
+    nuclearity: "satellite"
+    definition: "The satellite specifies a condition or requirement necessary for the nucleus to hold"
+    business_context: "Requirements, prerequisites, assumptions, contingencies"
+    linguistic_markers:
+      - "if"
+      - "unless"
+      - "provided that"
+      - "assuming"
+      - "in case"
+      - "on condition that"
+      - "supposing"
+    syntactic_patterns:
+      - "conditional_clause"  # "If we invest, we will succeed"
+      - "requirement"  # "To achieve growth, we must innovate"
+      - "contingency"  # "Unless we act, we will fail"
+    extraction_strategy: "Identify conditional subordinators indicating prerequisite relationships"
+    variant_note: "In some RST annotation schemes, Background is treated as a specialised condition (scene-setting precondition). In the DATS framework, condition is reserved for logical/required preconditions; Background is a separate relation for context-setting satellites that are helpful but not logically required."
+
+  background:
+    frequency: 2.5  # Estimated from Researching Narrative and Discourse Analysis research
+    nuclearity: "satellite"
+    definition: "The satellite provides contextual information or scene-setting that enables the reader to understand the nucleus, without being a logical prerequisite"
+    business_context: "Historical context, situational background, prerequisite knowledge for interpreting a claim; opening framing in presentations"
+    linguistic_markers:
+      - "given that"
+      - "in the context of"
+      - "historically"
+      - "by way of background"
+      - "to set the scene"
+      - "at that time"
+      - "in those days"
+    syntactic_patterns:
+      - "scene_setting_clause"    # "In the context of rising rates, the strategy made sense"
+      - "historical_preamble"     # "Historically, this sector has underperformed..."
+      - "framing_phrase"          # "Given the regulatory environment, we decided..."
+    extraction_strategy: "Identify framing clauses that establish conditions of intelligibility without being required preconditions; remove satellite and verify nucleus remains self-standing and true"
+    distinction_from_condition: "Background provides helpful context; condition specifies a required logical precondition. Background can be dropped without destroying the nucleus's truth value; condition cannot."
+    source: "Researching Narrative and Discourse Analysis.md"
+
+  concession:
+    frequency: 2.0  # Estimated from Researching Narrative and Discourse Analysis research
+    nuclearity: "satellite"
+    definition: "The satellite acknowledges a point that might seem to undermine the nucleus, but the nucleus is nonetheless asserted — the conceded point is subordinated to the main claim"
+    business_context: "Objection handling, acknowledging limitations while maintaining a claim, pre-emptive counter-argument, balanced argumentation"
+    linguistic_markers:
+      - "although"
+      - "even though"
+      - "granted that"
+      - "admittedly"
+      - "while it is true that"
+      - "despite"
+      - "notwithstanding"
+      - "it is true that ... but"
+    syntactic_patterns:
+      - "concessive_clause"      # "Although costs rose, the project was profitable"
+      - "acknowledging_phrase"   # "Admittedly, the rollout was delayed, but results were strong"
+      - "despite_construction"   # "Despite the headwinds, growth continued"
+    extraction_strategy: "Identify concessive markers where the satellite weakens but does not negate the nucleus; the nucleus retains full assertoric force after extraction"
+    distinction_from_contrast: "In contrast (multi_nuclear), both spans have equal rhetorical weight — neither overrides the other. In concession (mono-nuclear), the satellite is subordinate — it acknowledges an opposing view that the nucleus overrides. Test: can you reorder the two spans? If yes and meaning is symmetric, it is contrast. If the main claim must come second, it is concession."
+    source: "Researching Narrative and Discourse Analysis.md"
+
+# Nuclearity Classification
+nuclearity:
+  nucleus:
+    definition: "Central proposition essential to writer's communicative purpose"
+    priority: "high"
+    retention_strategy: "Must always be preserved in simplification"
+    summarization_priority: "In extractive summarization, nucleus spans are retained first; satellite spans are primary candidates for deletion. When a satellite is deleted, the nucleus must remain grammatically and semantically complete as a standalone sentence without it."
+
+  satellite:
+    definition: "Supporting proposition that modifies, elaborates, or contextualizes the nucleus"
+    priority: "medium"
+    retention_strategy: "Can be split into separate sentence but must maintain explicit link to nucleus"
+    subtypes_named_in_research:
+      - "informational_satellite: adds propositional content (elaboration, cause, condition, background)"
+      - "presentational_satellite: affects reader's attitude or motivation (concession, antithesis, motivation)"
+      - "subject_matter_satellite: describes relations between real-world entities (temporal, cause, condition)"
+
+  multi_nuclear:
+    definition: "Multiple propositions of equal rhetorical weight"
+    priority: "high"
+    retention_strategy: "All nuclei must be preserved; can be separated but marked as coordinate"
+
+# Relation Detection Strategies
+detection_strategies:
+  marker_based:
+    description: "Use explicit linguistic markers (conjunctions, connectives) to identify relations"
+    accuracy: "high"
+    coverage: "60-70%"
+    limitation: "Misses implicit relations"
+
+  syntactic_pattern_based:
+    description: "Use syntactic structure (relative clauses, subordination) to identify relations"
+    accuracy: "medium"
+    coverage: "80-90%"
+    limitation: "Requires robust parsing"
+    dissim_meta_categories:
+      total_rules: 35  # DisSim implements 35 Tregex rules across 4 meta-categories (Niklaus et al. 2019)
+      categories:
+        coordinate_clauses: "Split conjoined S nodes linked by CC (and/but/or) — maps to Joint and Contrast"
+        adverbial_clauses: "Extract fronted or postposed SBAR — maps to Temporal, Cause, Condition, Concession"
+        relative_clauses: "Extract SBAR with WH-word modifying NP — maps to Elaboration, Background"
+        appositions: "Extract NP , NP or NP-dash-NP patterns — maps to Elaboration, Same-Unit"
+      tool_reference: "DisSim (Niklaus et al. 2019) — open-source Java implementation using Stanford CoreNLP Tregex"
+    source: "PDL for Discourse-Aware Text Simplification.md"
+
+  semantic_embedding_based:
+    description: "Use GLiNER2 or sentence embeddings to detect implicit rhetorical relationships"
+    accuracy: "medium"
+    coverage: "95%+"
+    limitation: "May misclassify relation type"
+
+  probabilistic_parser_based:
+    description: "Use trained discourse parsers (e.g., DMRST) that output probability distributions over relation types rather than hard labels"
+    accuracy: "high"
+    coverage: "95%+"
+    limitation: "Computationally intensive; requires pre-trained model; domain adaptation may be needed"
+    tool: "DMRST (Discourse-level Multi-scale RST parser) — Liu et al. 2021"
+    output: "Labeled Discourse Distribution (LDD) tensor — soft assignment across all relation types per span pair"
+    advantage: "Handles implicit relations and ambiguous connectives by distributing confidence across plausible labels rather than forcing a single hard classification"
+    source: "Researching Narrative and Discourse Analysis.md"
+
+  confidence_threshold_review:
+    description: "Route low-confidence automated RST predictions for human review"
+    threshold: 0.8  # Relations with top-label confidence < 0.8 are flagged for review
+    rationale: "Probabilistic parsers assign soft distributions; below 0.8 top-relation confidence indicates genuine ambiguity that automated systems should not resolve unilaterally"
+    common_ambiguity_pairs:
+      - "cause vs temporal (shared 'since' marker)"
+      - "concession vs contrast (adversative vs subordinate framing)"
+      - "background vs elaboration (context vs detail)"
+      - "condition vs cause (hypothetical vs actual causal chain)"
+    source: "PDL for Discourse-Aware Text Simplification.md"
+
+# Presentation-Specific Applications
+presentation_context:
+  slide_structure_mapping:
+    title_to_content: "elaboration"  # Title = Nucleus, Content bullets = Satellites (elaboration)
+    bullet_to_bullet: "joint"  # Parallel bullets typically represent Joint relations
+    speaker_notes_to_slide: "elaboration"  # Notes elaborate on slide content
+
+  common_patterns:
+    benefits_list: "joint"  # "Benefit A, Benefit B, Benefit C" = Joint multi-nuclear
+    problem_solution: "cause"  # "Problem (cause) → Solution (nucleus)"
+    feature_benefit: "elaboration"  # "Feature X (nucleus) provides benefit Y (elaboration)"
+    before_after: "contrast"  # "Before (nucleus) vs After (satellite/contrast)"
+    timeline: "temporal"  # Sequential events linked by temporal relations
+
+  pedagogical_implications:
+    clarity_requirement: "Explicit relations improve comprehension for non-experts"
+    simplification_guidance: "Split complex slides into minimal propositions linked by explicit relations"
+    coherence_preservation: "Maintain relation labels when decomposing content"
+
+  surface_realization:
+    description: "After RST-based decomposition, output sentences must be grammatically complete and coherent as standalone units"
+    requirements:
+      pronoun_resolution: "All pronouns in extracted satellite sentences must be resolved to full NPs if the antecedent is in the nucleus (now a separate sentence)"
+      grammatical_completeness: "Satellite clauses (e.g., adverbial SBAR) must be converted to full sentences — supply explicit subject and finite verb"
+      connective_preservation: "When splitting nucleus and satellite, retain or make explicit the rhetorical connective in one of the output sentences"
+    failure_example:
+      input: "After launching in Asia, the company saw rapid growth."
+      bad_output: "After launching in Asia. The company saw rapid growth."
+      good_output: "The company launched in Asia. Subsequently, it saw rapid growth."
+    source: "PDL for Discourse-Aware Text Simplification.md"
+
+  coherence_guidance:
+    explicit_markers_required: "When decomposing multi-clause sentences, always add an explicit discourse connective at the start of the satellite output sentence"
+    coherence_gap_risk: "Omitting relation markers between decomposed sentences creates coherence gaps that readers must infer — this reduces comprehension in non-expert audiences"
+    marker_selection_by_relation:
+      elaboration: ["Specifically,", "In particular,", "That is,"]
+      cause: ["Because", "This is because", "As a result,"]
+      temporal: ["Then,", "Subsequently,", "After this,"]
+      contrast: ["However,", "In contrast,", "On the other hand,"]
+      condition: ["If this holds,", "Provided that,", "Assuming this,"]
+      background: ["By way of background,", "To set the scene,", "In context,"]
+      concession: ["Admittedly,", "It is true that", "Granted,"]
+    source: "Researching Narrative and Discourse Analysis.md"
+
+# Scoring Thresholds for Discourse Analysis
+scoring_thresholds:
+  rst_diversity:
+    low: 0.3  # Below 30% of relation types present
+    good: 0.6  # 60%+ relation type diversity
+
+  complexity_score:
+    poor: 0.5  # Below 50% match to ideal distribution
+    good: 0.7  # 70%+ match to ideal
+
+  connective_density:
+    sparse: 5.0  # Less than 5 connectives per 100 entities
+    ideal_min: 10.0  # 10-20 per 100 entities is ideal
+    ideal_max: 20.0
+    excessive: 30.0  # More than 30 per 100 is too dense
+
+  compound_complex_threshold: 0.3  # Warn if >30% of sentences are compound-complex
+
+  structural_coherence:
+    description: "Proportion of decomposed proposition pairs that have explicit discourse markers bridging them"
+    low: 0.4   # Below 40% of splits have explicit bridging markers
+    good: 0.7  # 70%+ of splits have explicit bridging markers
+    excellent: 0.9  # 90%+ — fully marked decomposition
+    source: "Researching Narrative and Discourse Analysis.md"
+
+  downstream_benchmarks:
+    rst_correct_decomposition_vs_naive_splitting:
+      openIE_precision_improvement: "+346%"  # RST-guided decomposition vs naive sentence splitting
+      openIE_recall_improvement: "+52%"
+      source: "PDL for Discourse-Aware Text Simplification.md — Niklaus et al. 2023"
+    interpretation: "RST-correct proposition decomposition dramatically improves downstream information extraction — the precision gain confirms that coherence-preserving splits produce cleaner, extractable propositions"
+
+  evaluation_metrics:
+    SARI:
+      description: "System output vs reference: measures Added, Kept, and Deleted n-grams across simplification candidates"
+      use_case: "Text simplification quality evaluation — balances simplicity against information retention"
+      target: "> 40 SARI score for acceptable simplification quality"
+    SAMSA:
+      description: "Structural Assessment of Multi-Sentence Answers — evaluates propositional decomposition quality"
+      use_case: "RST-based sentence splitting evaluation; measures structural preservation independent of lexical choice"
+      target: "0.0–1.0 scale; > 0.6 = good structural preservation"
+    discourse_accuracy:
+      description: "Proportion of RST relation labels correctly preserved or made explicit in simplified output"
+      target: "> 0.80 discourse accuracy"
+    schema_compliance:
+      description: "Proportion of output sentences conforming to RST-defined minimal proposition schema (predicate + core arguments)"
+      target: "> 0.90 schema compliance"
+    source: "PDL for Discourse-Aware Text Simplification.md"
+
+# RST Applications in NLP Tasks
+rst_in_nlp_applications:
+  summarization:
+    principle: "Nucleus spans are primary candidates for extractive summary sentences; satellite spans are candidates for deletion"
+    implementation: "Build RST tree over document; extract all nucleus leaf nodes; order by discourse position"
+    evidence: "RST-based summarizers outperform lead-baseline on standard summarization benchmarks (Marcu 1998; Hirao et al. 2013)"
+    risk: "Over-pruning satellites may lose essential context — apply coherence_guidance.coherence_gap_risk checks"
+
+  text_simplification:
+    principle: "Decompose complex sentences along RST boundaries into minimal propositions; preserve rhetorical relations via explicit connectives"
+    tool: "DisSim pipeline (Niklaus et al. 2019/2023) — 35 Tregex rules covering 4 meta-categories"
+    output_structure: "Linked Proposition Tree (LPT) — each node is a minimal proposition; edges are RST relation labels"
+    quality_metrics:
+      structural: "SAMSA score (> 0.6 = good structural preservation)"
+      lexical: "SARI score (> 40 = acceptable simplification)"
+    source: "PDL for Discourse-Aware Text Simplification.md"
+
+  evaluation:
+    RSTformer:
+      description: "Liu et al. 2023 ACL — integrates RST tree structure into Transformer attention via Labeled Discourse Distribution (LDD) tensor"
+      improvement: "RST-aware attention improves coherence scoring over BERT baseline on discourse coherence tasks"
+      application: "Use to score RST-correctness of generated text in automated evaluation pipelines"
+      source: "Researching Narrative and Discourse Analysis.md"
+    discourse_coherence_scoring:
+      description: "Use RST relation coverage and diversity as proxy metrics for text coherence quality"
+      metrics: ["rst_diversity", "connective_density", "structural_coherence"]
+
+# Linked Proposition Tree (LPT) — Output Structure for RST-Based Decomposition
+linked_proposition_tree:
+  description: "The canonical output structure produced by RST-based sentence simplification; represents a text as a tree of minimal propositions connected by RST relation labels"
+  source: "PDL for Discourse-Aware Text Simplification.md"
+  components:
+    node:
+      description: "A minimal proposition — a single predicate with its core arguments; cannot be further decomposed without losing meaning"
+      properties:
+        - "predicate"
+        - "subject"
+        - "object_or_complement"
+        - "modifiers_as_separate_child_nodes"
+    edge:
+      description: "A labeled RST relation connecting two proposition nodes (nucleus→satellite or nucleus↔nucleus)"
+      label_set: "Core 7 original relations + background + concession = 9 primary labels in this framework"
+    hierarchy:
+      description: "Nucleus propositions are parents; satellite propositions are children; multi-nuclear relations (joint, contrast) connect siblings at the same level"
+  construction_steps:
+    step_1: "Parse input sentence with constituency or dependency parser (e.g., Stanford CoreNLP)"
+    step_2: "Apply DisSim Tregex rules to identify RST split boundaries (coordinate, adverbial, relative, apposition)"
+    step_3: "Extract nucleus proposition (main clause) as root node"
+    step_4: "Extract satellite clauses as child nodes with RST relation edge labels"
+    step_5: "Resolve pronouns and restore ellipsis to ensure each node is a grammatically standalone sentence"
+    step_6: "Add explicit discourse connectives to satellite sentences per coherence_guidance.marker_selection_by_relation"

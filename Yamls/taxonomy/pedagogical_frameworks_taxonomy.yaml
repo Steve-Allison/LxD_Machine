@@ -1,0 +1,357 @@
+_meta:
+  id: pedagogical_frameworks_taxonomy
+  title: "Pedagogical Frameworks Taxonomy"
+  description: "Classification of 16 research-validated instructional design frameworks by learning paradigm — behaviourist, cognitivist, constructivist, humanist, and experiential — with selection guidance and use case routing"
+  domain: pedagogical
+  domain_type: classification
+  purpose: taxonomy
+  version: "1.4.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md"
+    - "Corpus/Research/Strategic Design: A Full Analysis of Merrill's First Principles and Component Display Theory for Corporate Learning.md"
+  academic_sources:
+    - "Skinner (1953) - Science and Human Behavior"
+    - "Piaget (1970) - Cognitivism"
+    - "Vygotsky (1978) - Constructivism"
+    - "Knowles (1984) - Andragogy"
+    - "Gagne (1985) - The Conditions of Learning"
+    - "Bloom et al. (1956) - Taxonomy of Educational Objectives"
+    - "Kolb (1984) - Experiential Learning"
+    - "Mayer (2009) - Multimedia Learning"
+
+  relationships:
+    - target: entities/pedagogical_frameworks_entities.yaml
+      type: depends_on
+      description: "Pedagogical framework entity types for NER extraction"
+classification_dimensions:
+  - name: learning_paradigm
+    description: "Foundational theoretical orientation of the pedagogical framework"
+    values:
+      - behaviourist
+      - cognitivist
+      - constructivist
+      - social_learning
+      - humanist_andragogical
+      - experiential
+  - name: bloom_level_alignment
+    description: "Bloom's taxonomy level the framework is best suited to develop"
+    values:
+      - remember
+      - understand
+      - apply
+      - analyze
+      - evaluate
+      - create
+  - name: delivery_format
+    description: "Delivery modality for which the framework is most effective"
+    values:
+      - elearning
+      - ilt
+      - blended
+      - self_directed
+      - virtual_ilt
+      - on_the_job
+  - name: audience_experience_level
+    description: "Learner experience level the framework is optimised for"
+    values:
+      - novice
+      - intermediate
+      - experienced
+
+# ==============================================================================
+# LEARNING PARADIGMS (TOP LEVEL)
+# ==============================================================================
+
+paradigms:
+
+  # --------------------------------------------------------------------------
+  # BEHAVIOURIST
+  # Focus: observable behaviour, stimulus-response, reinforcement
+  # --------------------------------------------------------------------------
+  behaviourist:
+    label: "Behaviourist"
+    description: "Learning is a change in observable behaviour produced by stimulus-response relationships and reinforcement"
+    theoretical_roots: "Skinner, Pavlov, Watson"
+    core_assumptions:
+      - "Behaviour is shaped by consequences"
+      - "Observable outcomes are the measure of learning"
+      - "Reinforcement accelerates skill acquisition"
+    best_for:
+      - compliance_training
+      - procedural_skill_practice
+      - habit_formation
+      - knowledge_recall_drills
+    limitations:
+      - "Does not account for internal cognitive processes"
+      - "Risk of surface learning without deep understanding"
+
+    frameworks:
+      spaced_repetition:
+        label: "Spaced Repetition"
+        core_author: "Ebbinghaus (1885)"
+        primary_use: "Long-term retention of facts and vocabulary"
+        design_pattern: "Increasing interval review of content based on forgetting curve"
+        bloom_alignment: [remember, understand]
+        when_to_use: "Vocabulary, terminology, product knowledge requiring recall under pressure"
+        when_to_avoid: "Complex reasoning or creation tasks"
+
+      mastery_learning:
+        label: "Mastery Learning"
+        core_author: "Bloom (1971)"
+        primary_use: "Ensuring all learners achieve a defined competency before progression"
+        design_pattern: "Assess → Reteach → Reassess until criterion met"
+        bloom_alignment: [remember, understand, apply]
+        when_to_use: "Safety-critical content; certification; sequential skill ladders"
+        when_to_avoid: "Open-ended exploration or creative tasks"
+
+  # --------------------------------------------------------------------------
+  # COGNITIVIST
+  # Focus: mental processes, schema, memory, information processing
+  # --------------------------------------------------------------------------
+  cognitivist:
+    label: "Cognitivist"
+    description: "Learning involves the internal processing of information — attention, encoding, schema formation, and retrieval"
+    theoretical_roots: "Piaget, Ausubel, Bruner"
+    core_assumptions:
+      - "Learning occurs through mental processing, not just behaviour change"
+      - "Prior knowledge (schema) shapes new learning"
+      - "Memory has limited capacity (working memory) and vast long-term storage"
+    best_for:
+      - concept_explanation
+      - schema_building
+      - complex_information_presentation
+      - problem_solving
+    limitations:
+      - "Less emphasis on social or emotional dimensions of learning"
+
+    frameworks:
+      gagnes_nine_events:
+        label: "Gagné's Nine Events of Instruction"
+        core_author: "Gagné (1985)"
+        primary_use: "Systematic instructional design ensuring all cognitive conditions are met"
+        design_pattern: "Gain attention → Inform objectives → Recall → Present → Feedback → Assess → Transfer"
+        bloom_alignment: [remember, understand, apply, analyze]
+        when_to_use: "Any formal instructional design; ILT and eLearning modules"
+        when_to_avoid: "Informal performance support or exploratory learning"
+
+      blooms_taxonomy:
+        label: "Bloom's Taxonomy (Revised)"
+        core_author: "Anderson & Krathwohl (2001)"
+        primary_use: "Aligning objectives, activities, and assessments to cognitive levels"
+        design_pattern: "Classify objectives → Select appropriate verb → Align activity and assessment"
+        bloom_alignment: [remember, understand, apply, analyze, evaluate, create]
+        when_to_use: "All formal instructional design — framework for objective writing"
+        when_to_avoid: "Not a design model — a classification tool, not a sequencer"
+
+      cognitive_load_theory:
+        label: "Cognitive Load Theory"
+        core_author: "Sweller (1988)"
+        primary_use: "Designing instruction that minimises extraneous load while maximising germane load"
+        design_pattern: "Chunk content → Reduce split attention → Use worked examples → Fade support"
+        bloom_alignment: [apply, analyze]
+        when_to_use: "Complex multi-step technical training; anything with high intrinsic load"
+        when_to_avoid: "Simple, low-complexity content where load is not a concern"
+
+      mayers_multimedia_principles:
+        label: "Mayer's Multimedia Learning Principles"
+        core_author: "Mayer (2009)"
+        primary_use: "Optimising multimedia learning materials — eLearning, video, slide design"
+        design_pattern: "Apply 12 principles to reduce extraneous processing and improve coherence"
+        bloom_alignment: [understand, apply]
+        when_to_use: "eLearning, video production, slide design, any dual-channel content"
+        when_to_avoid: "Print-only or audio-only content"
+
+  # --------------------------------------------------------------------------
+  # CONSTRUCTIVIST
+  # Focus: learner actively builds knowledge through experience and reflection
+  # --------------------------------------------------------------------------
+  constructivist:
+    label: "Constructivist"
+    description: "Learners actively construct knowledge through experience, reflection, and interaction with their environment"
+    theoretical_roots: "Piaget, Dewey, Vygotsky"
+    core_assumptions:
+      - "Knowledge is constructed, not transmitted"
+      - "Prior experience shapes interpretation of new information"
+      - "Reflection is essential for deep learning"
+    best_for:
+      - problem_based_learning
+      - case_study_analysis
+      - project_based_work
+      - discovery_learning
+    limitations:
+      - "Requires careful facilitation to avoid misconceptions"
+      - "Less efficient for procedural skill acquisition"
+
+    frameworks:
+      merrills_first_principles:
+        label: "Merrill's First Principles of Instruction"
+        core_author: "Merrill (2002)"
+        primary_use: "Ensuring instruction is grounded in real-world problem solving"
+        design_pattern: "Centre on real problem → Activate prior knowledge → Demonstrate → Apply → Integrate"
+        bloom_alignment: [apply, analyze, create]
+        when_to_use: "Scenario-based learning; complex skill development"
+        when_to_avoid: "Simple recall or procedural drills"
+
+      problem_based_learning:
+        label: "Problem-Based Learning (PBL)"
+        core_author: "Barrows (1980)"
+        primary_use: "Developing deep understanding through solving authentic problems"
+        design_pattern: "Present ill-structured problem → Self-directed research → Group discussion → Debrief"
+        bloom_alignment: [analyze, evaluate, create]
+        when_to_use: "Complex, real-world problem domains; higher education; leadership"
+        when_to_avoid: "Novice learners who need foundational scaffolding first"
+
+      discovery_learning:
+        label: "Discovery / Inquiry Learning"
+        core_author: "Bruner (1961)"
+        primary_use: "Encouraging learners to explore and find answers independently"
+        design_pattern: "Pose question → Explore → Form hypothesis → Test → Reflect"
+        bloom_alignment: [analyze, evaluate, create]
+        when_to_use: "Creative problem solving; innovation; senior professional development"
+        when_to_avoid: "Safety-critical or procedural content where exploration is risky"
+
+  # --------------------------------------------------------------------------
+  # SOCIAL LEARNING
+  # Focus: learning through observation, collaboration, and community
+  # --------------------------------------------------------------------------
+  social_learning:
+    label: "Social Learning"
+    description: "Learning occurs through observation of others, social interaction, and participation in communities of practice"
+    theoretical_roots: "Vygotsky, Bandura, Lave & Wenger"
+    core_assumptions:
+      - "We learn by watching others (modelling)"
+      - "Zone of Proximal Development — learning happens with just-enough support"
+      - "Communities of practice sustain professional learning"
+    best_for:
+      - mentoring_programmes
+      - peer_learning
+      - communities_of_practice
+      - coaching
+    limitations:
+      - "Dependent on quality of models and peers"
+      - "Can reinforce bad practices if not curated"
+
+    frameworks:
+      social_learning_theory:
+        label: "Social Learning Theory"
+        core_author: "Bandura (1977)"
+        primary_use: "Designing observation, modelling, and vicarious learning opportunities"
+        design_pattern: "Model → Observe → Reproduce → Reinforce"
+        bloom_alignment: [understand, apply]
+        when_to_use: "Sales coaching, roleplay, peer learning, mentoring"
+        when_to_avoid: "Content requiring deep individual reflection"
+
+      communities_of_practice:
+        label: "Communities of Practice"
+        core_author: "Lave & Wenger (1991)"
+        primary_use: "Sustaining ongoing informal learning through practitioner community"
+        design_pattern: "Create shared domain → Foster community → Enable practice sharing"
+        bloom_alignment: [apply, evaluate, create]
+        when_to_use: "Long-term professional development; knowledge sharing cultures"
+        when_to_avoid: "Short-term training events"
+
+  # --------------------------------------------------------------------------
+  # HUMANIST / ANDRAGOGICAL
+  # Focus: learner autonomy, motivation, and self-direction
+  # --------------------------------------------------------------------------
+  humanist_andragogical:
+    label: "Humanist / Andragogical"
+    description: "Adult learners are self-directed, experience-rich, and motivated by relevance to their personal and professional goals"
+    theoretical_roots: "Knowles, Maslow, Rogers"
+    core_assumptions:
+      - "Adults need to know why they are learning"
+      - "Adults bring significant prior experience to learning"
+      - "Adults are self-directed and problem-centred"
+    best_for:
+      - professional_development
+      - leadership_learning
+      - self_paced_elearning
+      - any_adult_corporate_training
+    limitations:
+      - "Less applicable to novice learners who need direction"
+
+    frameworks:
+      andragogy:
+        label: "Andragogy (Adult Learning Theory)"
+        core_author: "Knowles (1984)"
+        primary_use: "Ensuring all corporate training respects adult learning principles"
+        design_pattern: "Explain why → Leverage experience → Problem-centre → Self-direct → Relevance-driven"
+        bloom_alignment: [understand, apply, evaluate]
+        when_to_use: "All adult corporate training — foundational lens for any design"
+        when_to_avoid: "Children's education context"
+
+  # --------------------------------------------------------------------------
+  # EXPERIENTIAL
+  # Focus: learning through doing, reflection, and cyclical experience
+  # --------------------------------------------------------------------------
+  experiential:
+    label: "Experiential"
+    description: "Learning is a cyclical process of concrete experience, reflective observation, conceptual abstraction, and active experimentation"
+    theoretical_roots: "Dewey, Kolb, Schön"
+    core_assumptions:
+      - "Experience without reflection is not learning"
+      - "Learning is cyclical, not linear"
+      - "Reflection bridges experience and abstraction"
+    best_for:
+      - leadership_development
+      - coaching
+      - action_learning_sets
+      - simulation_debriefs
+    limitations:
+      - "Time-intensive"
+      - "Requires skilled facilitation of reflection"
+
+    frameworks:
+      kolbs_learning_cycle:
+        label: "Kolb's Experiential Learning Cycle"
+        core_author: "Kolb (1984)"
+        primary_use: "Structuring learning around a cycle of experience, reflection, abstraction, and testing"
+        design_pattern: "Concrete experience → Reflective observation → Abstract conceptualisation → Active experimentation"
+        bloom_alignment: [apply, evaluate, create]
+        when_to_use: "Leadership programmes; coaching; action learning; simulation debriefs"
+        when_to_avoid: "Standalone recall or knowledge transfer sessions"
+
+      action_learning:
+        label: "Action Learning"
+        core_author: "Revans (1980)"
+        primary_use: "Developing leadership through working on real organisational challenges with peer support"
+        design_pattern: "Present real problem → Set of peers question → Implement → Reflect → Repeat"
+        bloom_alignment: [evaluate, create]
+        when_to_use: "Senior leadership; organisational change; complex cross-functional challenges"
+        when_to_avoid: "Novice learners; content requiring foundation knowledge first"
+
+# ==============================================================================
+# SELECTION GUIDE
+# ==============================================================================
+
+selection_guide:
+  by_bloom_level:
+    remember_understand: [gagnes_nine_events, blooms_taxonomy, spaced_repetition, mayers_multimedia_principles]
+    apply: [mastery_learning, cognitive_load_theory, social_learning_theory, andragogy]
+    analyze_evaluate: [problem_based_learning, merrills_first_principles, communities_of_practice, kolbs_learning_cycle]
+    create: [discovery_learning, action_learning, problem_based_learning]
+
+  by_delivery_format:
+    elearning: [gagnes_nine_events, mayers_multimedia_principles, cognitive_load_theory, mastery_learning]
+    ilt_vilt: [gagnes_nine_events, social_learning_theory, andragogy, kolbs_learning_cycle]
+    blended: [spaced_repetition, communities_of_practice, merrills_first_principles]
+    coaching: [social_learning_theory, action_learning, kolbs_learning_cycle, andragogy]
+    performance_support: [cognitive_load_theory, mastery_learning]
+
+  by_audience_experience_level:
+    novice: [gagnes_nine_events, mastery_learning, cognitive_load_theory, blooms_taxonomy]
+    intermediate: [merrills_first_principles, social_learning_theory, problem_based_learning]
+    experienced: [andragogy, action_learning, discovery_learning, communities_of_practice]
+
+# ==============================================================================
+# PARADIGM COMPATIBILITY MATRIX
+# Can paradigms be combined in one design?
+# ==============================================================================
+
+compatibility:
+  behaviourist_cognitivist: "High — very commonly combined (structured content + cognitive sequencing)"
+  cognitivist_constructivist: "High — core of most quality instructional design"
+  constructivist_social: "High — collaborative problem solving"
+  social_humanist: "High — adult peer learning"
+  behaviourist_constructivist: "Low — philosophical tension; use with care"

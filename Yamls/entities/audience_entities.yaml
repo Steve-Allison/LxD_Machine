@@ -1,0 +1,2837 @@
+_meta:
+  id: audience_entities
+  title: Audience Entities
+  description: Unified audience entity extraction for buying personas, business roles, learner profiles, and presentation
+    audiences - comprehensive coverage for all people we present to
+  domain: audience
+  domain_type: cross_cutting
+  purpose: entity
+  version: 3.26.1
+  last_updated: '2026-03-09'
+  corpus_sources:
+  - Corpus/Research/Research - Essential Inputs for Learning Objectives.md
+  - Corpus/Research/Research - Comprehensive Audience Analysis.md
+  - Corpus/Research/Crafting Powerful Opening Plays.md
+  - Corpus/Research/Learner Outcomes - Instructions v4.md
+  - Corpus/Research/SOAR Narrative Mapping by Sales Stage.md
+  - 'Corpus/Research/The Canonical Presentation Lifecycle: A Strategic Methodology for High-Stakes Communication.md'
+  - Corpus/Research/Research - Comprehensive Learning Design Framework.md
+  - Corpus/Research/Research - Elite Speaker Linguistic Analysis Taxonomy.md
+  - Corpus/Research/Research - Merrills Instructional Design Theories Applied.md
+  - Corpus/Research/Research - Case Study Excellence.md
+  - Corpus/Research/Research - Personal Branding Framework for Early.md
+  - Corpus/Research/Research - Using Monroes Motivated Sequence.md
+  - Corpus/Research/Research - Using SOAR Storytelling most effectively.md
+  - Corpus/Research/Research - Analyzing Story for Business Communication.md
+  - Corpus/Research/Research - The Anatomy of Presence.md
+  - Corpus/Research/Research - Learner Persona Research and Development.md
+  - Corpus/Research/slide_design_research_monograph_part_3.md
+  - Corpus/Research/audience_analysis_for_presentations__how_to_know_your_audience_a.md
+  - Corpus/Research/tone_of_voice_guide.md
+  - Corpus/Research/module-integration-strategy.md
+  - Corpus/Research/Research - Corporate Learning Assessment- Strategies, Modalities, and Best Practices.md
+  - Corpus/Research/Research - Complete Guide to AI-powered Microlearning.md
+  - Corpus/Research/Best Practices for Structuring Corporate Learning Content.md
+  - Corpus/Research/course_structure_hierarchy_corpus_research.md
+  - Corpus/Research/research_-_slide_deck_design_playbook_research.md
+  - Corpus/Research/Research - Slide Deck Design Playbook Research.md
+  - Corpus/Research/course-creation-flow.md
+  - Corpus/Research/Research - Canonical Presentation Methodology Research.md
+  - Corpus/Research/research_-_the_architecture_of_influence__a_comprehensive_multim.md
+  - Corpus/Research/Content Map - Instructions v3.md
+  - Corpus/Research/Research - Best Video Script Prompts.md
+  relationships: null
+entity_types:
+  economic_buyer:
+    description: Executive with budget authority and final purchase approval
+    canonical_id: economic_buyer
+    entity_kind: buyer_persona
+    family: buying_audience
+    gliner_label: ECONOMIC_BUYER
+    gliner_description: Executive budget authority CFO CMO CRO final approval purchase decision ROI business case
+    examples:
+    - CFO
+    - CMO
+    - CRO
+    - VP of Marketing
+    - Chief Digital Officer
+    - budget holder
+    - economic decision maker
+    - executive sponsor
+    anti_examples:
+    - economy class
+    - economic conditions
+    - economic forecast
+    confidence_threshold: 0.75
+    match_policy_ref: defaults
+    aliases:
+    - budget_holder
+    - executive_buyer
+    - decision_maker
+    indicators:
+    - CFO
+    - CMO
+    - CRO
+    - CDO
+    - CIO
+    - VP
+    - Chief
+    - budget
+    - approval
+    - executive
+    patterns:
+    - C[A-Z]O
+    - VP of \w+
+    - Chief \w+ Officer
+    - budget \w+
+    color: '#2c3e50'
+    relates_to:
+    - target: decision_maker_marker
+      relation: enables
+      weight: expected
+      description: Economic buyer role provides the referent for MEDDPICC decision maker markers
+      target_file: sales_entities
+    - target: logos_appeal
+      relation: supported_by
+      weight: expected
+      description: "Economic buyers are persuaded by logical appeals emphasising cost savings, time savings, and ROI per Comprehensive Audience Analysis"
+      target_file: rhetorical_devices_entities
+    - target: data_statistic
+      relation: supported_by
+      weight: expected
+      description: "Economic buyers require statistics, metrics, and financial analysis as evidence per Comprehensive Audience Analysis"
+      target_file: evidence_types_entities
+    - target: audience_kpi
+      relation: contains
+      weight: required
+      description: "Economic buyers evaluate solutions against their KPIs including throughput, cost reduction, and client satisfaction per Comprehensive Audience Analysis"
+    - target: result_marker
+      relation: supported_by
+      weight: expected
+      description: "Economic buyers require result evidence showing measurable business outcomes and ROI per SOAR Narrative Mapping by Sales Stage"
+      target_file: sales_entities
+    - target: claim
+      relation: supported_by
+      weight: required
+      description: "The Audience Transformation Roadmap requires mapping economic buyers' Point A beliefs and Point B desired actions; claims must be tailored to justify their specific decision (Canonical Presentation Methodology)"
+      target_file: narrative_entities
+    - target: budget_objection
+      relation: triggers
+      weight: expected
+      description: "Economic buyers trigger budget objections as their primary purchasing concern — CFOs and budget holders scrutinise cost justification and ROI before approving spend per Comprehensive Audience Analysis"
+      target_file: sales_entities
+  technical_buyer:
+    description: Technical evaluator with product veto power based on technical requirements
+    canonical_id: technical_buyer
+    entity_kind: buyer_persona
+    family: buying_audience
+    gliner_label: TECHNICAL_BUYER
+    gliner_description: Technical evaluator CTO CIO architect IT security integration requirements veto assessment
+    examples:
+    - CTO
+    - CIO
+    - IT Director
+    - Enterprise Architect
+    - Security Officer
+    - Solutions Architect
+    - technical evaluator
+    - IT stakeholder
+    anti_examples:
+    - technical documentation
+    - technical support
+    - technical issues
+    confidence_threshold: 0.75
+    match_policy_ref: defaults
+    aliases:
+    - it_buyer
+    - tech_evaluator
+    - technical_stakeholder
+    indicators:
+    - CTO
+    - CIO
+    - IT
+    - architect
+    - security
+    - technical
+    - integration
+    - infrastructure
+    patterns:
+    - IT \w+
+    - \w+ Architect
+    - technical \w+
+    color: '#3498db'
+    relates_to:
+    - target: logos_appeal
+      relation: supported_by
+      weight: required
+      description: "Technical buyers require logos and ethos with detailed technical information and quantitative evidence per Comprehensive Audience Analysis"
+      target_file: rhetorical_devices_entities
+    - target: ethos_appeal
+      relation: supported_by
+      weight: expected
+      description: "Technical buyers value peer credibility and expert acknowledgement of their existing knowledge per Comprehensive Audience Analysis"
+      target_file: rhetorical_devices_entities
+    - target: industry_benchmark
+      relation: supported_by
+      weight: expected
+      description: "Technical buyers require performance benchmarks and industry security standard compliance as proof per Comprehensive Audience Analysis"
+      target_file: evidence_types_entities
+    - target: audience_objection
+      relation: triggers
+      weight: expected
+      description: "Technical buyers trigger objections rooted in technical scrutiny being skeptical of marketing hype and needing proof per Comprehensive Audience Analysis"
+    - target: data_statistic
+      relation: triggers
+      weight: optional
+      description: "Technical buyers trigger need for data evidence — scalability, security, and integration issues require technical proof points per SOAR Storytelling research"
+      target_file: evidence_types_entities
+    - target: action_marker
+      relation: supported_by
+      weight: expected
+      description: "Technical buyers require action-oriented solution details showing how the product addresses technical requirements per SOAR Narrative Mapping by Sales Stage"
+      target_file: sales_entities
+    - target: visual_demonstration
+      relation: supported_by
+      weight: expected
+      description: "Technical buyers require visual demonstrations as evidence of capability — they scrutinise product functionality and need proof-of-concept demos before committing per Comprehensive Audience Analysis"
+      target_file: evidence_types_entities
+  user_buyer:
+    description: End-user champion who will use the product daily
+    canonical_id: user_buyer
+    entity_kind: buyer_persona
+    family: buying_audience
+    gliner_label: USER_BUYER
+    gliner_description: End user practitioner daily user champion hands-on operator power user advocate workflow
+    examples:
+    - Marketing Manager
+    - Content Creator
+    - Campaign Manager
+    - Designer
+    - Analyst
+    - power user
+    - end user
+    - practitioner
+    anti_examples:
+    - user manual
+    - user interface
+    - user experience
+    confidence_threshold: 0.7
+    match_policy_ref: defaults
+    aliases:
+    - end_user
+    - practitioner
+    - hands_on_user
+    indicators:
+    - user
+    - practitioner
+    - manager
+    - analyst
+    - specialist
+    - coordinator
+    - hands-on
+    - daily
+    patterns:
+    - \w+ Manager
+    - \w+ Specialist
+    - \w+ Analyst
+    - end user
+    color: '#27ae60'
+    relates_to:
+    - target: audience_pain_point
+      relation: contains
+      weight: expected
+      description: "User buyers contain workflow pain points about daily tooling frustration and fear of complicated new tools per Comprehensive Audience Analysis"
+    - target: pathos_appeal
+      relation: supported_by
+      weight: expected
+      description: "User buyers respond to pathos with practical how-tos and assurances solving their daily pain in an encouraging tone per Comprehensive Audience Analysis"
+      target_file: rhetorical_devices_entities
+  champion:
+    description: Internal advocate driving the purchase decision forward
+    canonical_id: champion
+    entity_kind: buyer_persona
+    family: buying_audience
+    gliner_label: CHAMPION
+    gliner_description: Internal advocate sponsor promoter driver influencer supporter change agent evangelist
+    examples:
+    - project sponsor
+    - internal champion
+    - change agent
+    - transformation lead
+    - initiative owner
+    - advocate
+    confidence_threshold: 0.7
+    match_policy_ref: defaults
+    aliases:
+    - advocate
+    - sponsor
+    - promoter
+    indicators:
+    - champion
+    - advocate
+    - sponsor
+    - driver
+    - promoter
+    - evangelist
+    - change agent
+    patterns:
+    - \w+ champion
+    - \w+ advocate
+    - \w+ sponsor
+    color: '#9b59b6'
+    relates_to:
+    - target: champion_marker
+      relation: enables
+      weight: expected
+      description: Champion buying role provides the referent for MEDDPICC champion markers
+      target_file: sales_entities
+    - target: internal_champion
+      relation: enables
+      weight: expected
+      description: Champion role enables the internal champion narrative archetype
+      target_file: character_archetypes_entities
+    - target: audience_motivator
+      relation: contains
+      weight: expected
+      description: "Champions contain audience motivators that drive their advocacy such as involvement in pilot programs and role leverage per Comprehensive Audience Analysis"
+    - target: call_to_action
+      relation: enables
+      weight: expected
+      description: "Influencer identification maps champions as stakeholders who gain power from the proposal; champions enable the call to action by advocating internally (Canonical Presentation Methodology)"
+      target_file: narrative_entities
+  influencer:
+    description: Stakeholder who shapes opinions but doesn't have final authority
+    canonical_id: influencer
+    entity_kind: buyer_persona
+    family: buying_audience
+    gliner_label: INFLUENCER
+    gliner_description: Stakeholder advisor consultant subject matter expert SME thought leader opinion shaper
+    examples:
+    - subject matter expert
+    - SME
+    - consultant
+    - advisor
+    - thought leader
+    - key stakeholder
+    anti_examples:
+    - social media influencer
+    - Instagram influencer
+    confidence_threshold: 0.7
+    match_policy_ref: defaults
+    abbreviation_rules:
+      uppercase_only: true
+      word_boundary: true
+      requires_anchors:
+      - b2b_marketing
+      anchors_min: 1
+      anchors_window_tokens: 15
+    aliases:
+    - advisor
+    - sme
+    - consultant
+    indicators:
+    - SME
+    - expert
+    - advisor
+    - consultant
+    - stakeholder
+    - influencer
+    patterns:
+    - subject matter \w+
+    - \w+ expert
+    - \w+ advisor
+    color: '#e67e22'
+    relates_to:
+    - target: ethos_appeal
+      relation: enables
+      weight: expected
+      description: "Influential individuals enable ethos appeal because if they respond positively it influences their peers per Comprehensive Audience Analysis"
+      target_file: rhetorical_devices_entities
+  marketing_executive:
+    description: Chief Marketing Officer or equivalent marketing leadership
+    canonical_id: marketing_executive
+    entity_kind: business_role
+    family: executive_roles
+    gliner_label: MARKETING_EXECUTIVE
+    gliner_description: CMO Chief Marketing Officer marketing executive SVP VP brand strategy revenue
+    examples:
+    - CMO
+    - Chief Marketing Officer
+    - SVP Marketing
+    - Head of Marketing
+    - marketing executive
+    confidence_threshold: 0.8
+    match_policy_ref: defaults
+    aliases:
+    - cmo
+    - chief_marketing_officer
+    - head_of_marketing
+    indicators:
+    - CMO
+    - marketing
+    - brand
+    - demand
+    - customer acquisition
+    patterns:
+    - Chief Marketing \w+
+    - Head of Marketing
+    - SVP \w+ Marketing
+    color: '#2c3e50'
+  finance_executive:
+    description: Chief Financial Officer or equivalent finance leadership
+    canonical_id: finance_executive
+    entity_kind: business_role
+    family: executive_roles
+    gliner_label: FINANCE_EXECUTIVE
+    gliner_description: CFO Chief Financial Officer finance executive budget ROI TCO investment payback
+    examples:
+    - CFO
+    - Chief Financial Officer
+    - Head of Finance
+    - VP Finance
+    - finance executive
+    anti_examples:
+    - financial analyst
+    - accountant
+    confidence_threshold: 0.8
+    match_policy_ref: defaults
+    aliases:
+    - cfo
+    - chief_financial_officer
+    - head_of_finance
+    indicators:
+    - CFO
+    - finance
+    - budget
+    - ROI
+    - TCO
+    - investment
+    patterns:
+    - Chief Financial \w+
+    - Head of Finance
+    - VP Finance
+    color: '#27ae60'
+    relates_to:
+    - target: economic_buyer
+      relation: specialises
+      weight: expected
+      description: "Finance executives specialise the economic buyer role focused on ROI cost savings and payback period per Comprehensive Audience Analysis"
+  technology_executive:
+    description: CTO/CIO or equivalent technology leadership
+    canonical_id: technology_executive
+    entity_kind: business_role
+    family: executive_roles
+    gliner_label: TECHNOLOGY_EXECUTIVE
+    gliner_description: CTO CIO Chief Technology Information Officer IT executive architecture security integration
+    examples:
+    - CTO
+    - CIO
+    - Chief Technology Officer
+    - Chief Information Officer
+    - Head of IT
+    - VP Technology
+    confidence_threshold: 0.8
+    match_policy_ref: defaults
+    aliases:
+    - cto
+    - cio
+    - chief_technology_officer
+    - chief_information_officer
+    indicators:
+    - CTO
+    - CIO
+    - technology
+    - IT
+    - architecture
+    - security
+    - infrastructure
+    patterns:
+    - Chief \w+ Officer
+    - Head of IT
+    - VP Technology
+    color: '#3498db'
+    relates_to:
+    - target: audience_pain_point
+      relation: supports
+      weight: required
+      description: IT/Technology leaders face supporting fast-moving teams, limited resources, fragmented tech stacks, legacy
+        systems, technical debt
+    - target: audience_objection
+      relation: supports
+      weight: required
+      description: IT leaders object to flat/shrinking budgets preventing net new investments and high costs of retiring legacy
+        technology
+    - target: audience_motivator
+      relation: supports
+      weight: required
+      description: Technology leaders motivated by secure scalable infrastructure, system integration, digital transformation,
+        platform consolidation
+    - target: technical_audience
+      relation: specialises
+      weight: expected
+      description: IT/Technology leaders (CIO, CTO, MarTech directors) are apex technical personas serving as Approver/Influencer
+        in buying committees
+    - target: audience_kpi
+      relation: supports
+      weight: expected
+      description: Technology leaders evaluate via TCO, security metrics, scalability benchmarks, compliance certifications,
+        system uptime and SLAs
+    - target: technical_buyer
+      relation: specialises
+      weight: expected
+      description: "Technology executives specialise the technical buyer role being highly analytical and preferring data-driven logical discussions per Comprehensive Audience Analysis"
+    taxonomy_mapping:
+    - taxonomy: audience_taxonomy
+      dimension: buyer_persona
+      values:
+      - approver
+      - influencer
+      - user
+      strength: primary
+    parent_entity: executive_audience
+  revenue_executive:
+    description: Chief Revenue Officer or equivalent revenue leadership
+    canonical_id: revenue_executive
+    entity_kind: business_role
+    family: executive_roles
+    gliner_label: REVENUE_EXECUTIVE
+    gliner_description: CRO Chief Revenue Officer sales executive pipeline revenue growth forecast conversion
+    examples:
+    - CRO
+    - Chief Revenue Officer
+    - Head of Revenue
+    - VP Sales
+    - Sales Leader
+    confidence_threshold: 0.8
+    match_policy_ref: defaults
+    aliases:
+    - cro
+    - chief_revenue_officer
+    - head_of_revenue
+    indicators:
+    - CRO
+    - revenue
+    - sales
+    - pipeline
+    - forecast
+    - conversion
+    patterns:
+    - Chief Revenue \w+
+    - Head of Revenue
+    - VP Sales
+    color: '#e74c3c'
+  experience_executive:
+    description: Chief Experience Officer or equivalent CX leadership
+    canonical_id: experience_executive
+    entity_kind: business_role
+    family: executive_roles
+    gliner_label: EXPERIENCE_EXECUTIVE
+    gliner_description: CXO Chief Experience Officer customer experience journey satisfaction loyalty NPS
+    examples:
+    - CXO
+    - Chief Experience Officer
+    - Head of Experience
+    - Customer Experience Officer
+    - VP Customer Experience
+    confidence_threshold: 0.8
+    match_policy_ref: defaults
+    aliases:
+    - cxo
+    - chief_experience_officer
+    - head_of_cx
+    indicators:
+    - CXO
+    - experience
+    - customer journey
+    - satisfaction
+    - NPS
+    - loyalty
+    patterns:
+    - Chief Experience \w+
+    - Head of \w+ Experience
+    - Customer Experience \w+
+    color: '#9b59b6'
+  creative_executive:
+    description: Chief Creative Officer or equivalent creative leadership
+    canonical_id: creative_executive
+    entity_kind: business_role
+    family: executive_roles
+    gliner_label: CREATIVE_EXECUTIVE
+    gliner_description: CCO Chief Creative Officer creative executive brand design vision content assets
+    examples:
+    - CCO
+    - Chief Creative Officer
+    - Chief Design Officer
+    - Head of Creative
+    - VP Creative
+    confidence_threshold: 0.8
+    match_policy_ref: defaults
+    aliases:
+    - cco
+    - chief_creative_officer
+    - head_of_creative
+    indicators:
+    - CCO
+    - creative
+    - design
+    - brand
+    - visual
+    - content
+    patterns:
+    - Chief Creative \w+
+    - Chief Design \w+
+    - Head of Creative
+    color: '#e67e22'
+    relates_to:
+    - target: audience_pain_point
+      relation: supports
+      weight: required
+      description: 'Creative executives face pain points: insufficient content generation, brand differentiation, approval
+        bottlenecks, functional silos'
+    - target: audience_objection
+      relation: supports
+      weight: required
+      description: Creative leaders object to shrinking budgets, change management hurdles, siloed business structures, lack
+        of sponsorship
+    - target: audience_motivator
+      relation: supports
+      weight: required
+      description: Creative leaders are motivated by driving creative vision at marketing/technology intersection, reducing
+        rework, improving time to market
+    - target: executive_audience
+      relation: specialises
+      weight: expected
+      description: Creative leaders are executive-level personas serving as Champion/Influencer in buying decisions focused
+        on creative empowerment
+    taxonomy_mapping:
+    - taxonomy: audience_taxonomy
+      dimension: buyer_persona
+      values:
+      - champion
+      - influencer
+      strength: primary
+    parent_entity: executive_audience
+  operations_executive:
+    description: Chief Operating Officer or equivalent operations leadership
+    canonical_id: operations_executive
+    entity_kind: business_role
+    family: executive_roles
+    gliner_label: OPERATIONS_EXECUTIVE
+    gliner_description: COO Chief Operating Officer operations executive efficiency process scale transformation
+    examples:
+    - COO
+    - Chief Operating Officer
+    - Head of Operations
+    - VP Operations
+    confidence_threshold: 0.8
+    match_policy_ref: defaults
+    aliases:
+    - coo
+    - chief_operating_officer
+    - head_of_operations
+    indicators:
+    - COO
+    - operations
+    - efficiency
+    - process
+    - scale
+    patterns:
+    - Chief Operating \w+
+    - Head of Operations
+    - VP Operations
+    color: '#1abc9c'
+  marketing_leader:
+    description: VP or Director level marketing leadership
+    canonical_id: marketing_leader
+    entity_kind: business_role
+    family: senior_leadership_roles
+    gliner_label: MARKETING_LEADER
+    gliner_description: VP Director marketing leader demand generation campaigns pipeline conversion MQL
+    examples:
+    - VP of Marketing
+    - VP Marketing
+    - Director of Marketing
+    - Head of Demand Gen
+    - Senior Director Marketing
+    confidence_threshold: 0.75
+    match_policy_ref: defaults
+    aliases:
+    - vp_marketing
+    - director_marketing
+    - marketing_director
+    indicators:
+    - VP
+    - Director
+    - marketing
+    - demand
+    - campaigns
+    - pipeline
+    patterns:
+    - VP of? Marketing
+    - Director of? Marketing
+    - Head of Demand
+    color: '#2c3e50'
+    relates_to:
+    - target: audience_pain_point
+      relation: supports
+      weight: required
+      description: 'Marketing leaders face specific pain points: lack of ROI visibility, fragmented systems, budget pressure
+        shaping their narrative approach'
+    - target: audience_objection
+      relation: supports
+      weight: required
+      description: Marketing leaders commonly object to comprehensive technology overhauls, unclear GenAI capabilities, and
+        cost ballooning
+    - target: audience_motivator
+      relation: supports
+      weight: required
+      description: 'Key drivers for marketing leaders: increase ROI, drive brand consistency, accelerate campaign time to
+        market, deliver personalised experiences'
+    - target: executive_audience
+      relation: specialises
+      weight: expected
+      description: Marketing leaders (CMO, CBO, EVP/Director) are executive-level personas who serve as Approver/Champion
+        in buying committees
+    - target: audience_kpi
+      relation: supports
+      weight: expected
+      description: Marketing leaders focus on ROI, marketing performance, campaign time-to-market, brand equity, and personalisation
+        at scale metrics
+    taxonomy_mapping:
+    - taxonomy: audience_taxonomy
+      dimension: buyer_persona
+      values:
+      - approver
+      - champion
+      strength: primary
+    parent_entity: executive_audience
+  marketing_ops_leader:
+    description: Marketing Operations leadership - owns MarTech stack and data
+    canonical_id: marketing_ops_leader
+    entity_kind: business_role
+    family: senior_leadership_roles
+    gliner_label: MARKETING_OPS_LEADER
+    gliner_description: Director marketing operations MarTech automation integration data API workflow CRM
+    examples:
+    - Director of Marketing Operations
+    - Director MarTech
+    - Marketing Ops Director
+    - VP Marketing Operations
+    - Head of Marketing Ops
+    confidence_threshold: 0.75
+    match_policy_ref: defaults
+    aliases:
+    - director_marketing_ops
+    - martech_lead
+    - marketing_ops_director
+    indicators:
+    - marketing ops
+    - MarTech
+    - automation
+    - integration
+    - CRM
+    - data
+    patterns:
+    - Director of? Marketing Ops
+    - MarTech \w+
+    - Marketing Operations \w+
+    color: '#3498db'
+    relates_to:
+    - target: audience_pain_point
+      relation: supports
+      weight: required
+      description: Marketing ops leaders face disconnected tools, legacy manual processes, redundant technologies, shrinking
+        tech budgets
+    - target: audience_objection
+      relation: supports
+      weight: required
+      description: Ops personas object to too many disconnected processes, inability to achieve cross-department consensus,
+        legacy tech retirement
+    - target: audience_motivator
+      relation: supports
+      weight: required
+      description: Ops leaders driven by reducing technology redundancies, optimising content lifecycle, tracking KPIs, implementing
+        enterprise AI strategy
+    - target: audience_kpi
+      relation: supports
+      weight: expected
+      description: Ops leaders focus on process optimisation metrics, integration capabilities, system visibility, governance
+        compliance metrics
+    - target: business_audience
+      relation: specialises
+      weight: expected
+      description: Marketing ops leaders serve as Champion/Influencer/User in buying committees blending business process
+        and technical requirements
+    taxonomy_mapping:
+    - taxonomy: audience_taxonomy
+      dimension: buyer_persona
+      values:
+      - champion
+      - influencer
+      - user
+      strength: primary
+    parent_entity: executive_audience
+  ecommerce_leader:
+    description: E-Commerce leadership - owns digital commerce and conversion
+    canonical_id: ecommerce_leader
+    entity_kind: business_role
+    family: senior_leadership_roles
+    gliner_label: ECOMMERCE_LEADER
+    gliner_description: Director ecommerce digital commerce conversion AOV cart omnichannel retail online
+    examples:
+    - Director of E-Commerce
+    - E-Commerce Director
+    - Head of Digital Commerce
+    - VP E-Commerce
+    - Director Digital
+    confidence_threshold: 0.75
+    match_policy_ref: defaults
+    aliases:
+    - director_ecommerce
+    - ecommerce_director
+    - head_of_digital_commerce
+    indicators:
+    - e-commerce
+    - ecommerce
+    - digital commerce
+    - conversion
+    - AOV
+    - cart
+    - omnichannel
+    patterns:
+    - Director of? E-?Commerce
+    - Head of Digital Commerce
+    - VP E-?Commerce
+    color: '#27ae60'
+  content_strategy_leader:
+    description: Content Strategy leadership - owns content production and governance
+    canonical_id: content_strategy_leader
+    entity_kind: business_role
+    family: senior_leadership_roles
+    gliner_label: CONTENT_STRATEGY_LEADER
+    gliner_description: Director content strategy production governance brand assets localization velocity editorial
+    examples:
+    - Director of Content Strategy
+    - Content Strategy Director
+    - Head of Content
+    - VP Content
+    - Creative Ops Leader
+    confidence_threshold: 0.75
+    match_policy_ref: defaults
+    aliases:
+    - director_content_strategy
+    - head_of_content
+    - content_director
+    indicators:
+    - content strategy
+    - content
+    - editorial
+    - brand assets
+    - localization
+    - governance
+    patterns:
+    - Director of? Content
+    - Head of Content
+    - Content Strategy \w+
+    color: '#9b59b6'
+  analytics_leader:
+    description: Analytics/Data leadership - owns insights and measurement
+    canonical_id: analytics_leader
+    entity_kind: business_role
+    family: senior_leadership_roles
+    gliner_label: ANALYTICS_LEADER
+    gliner_description: Director analytics data insights measurement attribution BI customer 360 reporting
+    examples:
+    - Director of Data & Analytics
+    - Director Analytics
+    - Head of BI
+    - VP Analytics
+    - Chief Data Officer
+    confidence_threshold: 0.75
+    match_policy_ref: defaults
+    aliases:
+    - director_analytics
+    - head_of_bi
+    - analytics_director
+    indicators:
+    - analytics
+    - data
+    - insights
+    - BI
+    - attribution
+    - measurement
+    - reporting
+    patterns:
+    - Director of? \w+ Analytics
+    - Head of BI
+    - VP Analytics
+    color: '#e74c3c'
+  it_leader:
+    description: IT leadership - owns infrastructure, security, and integration
+    canonical_id: it_leader
+    entity_kind: business_role
+    family: senior_leadership_roles
+    gliner_label: IT_LEADER
+    gliner_description: IT Director Head of IT infrastructure security integration governance SSO compliance
+    examples:
+    - IT Director
+    - Director of IT
+    - Head of IT Operations
+    - VP IT
+    - IT Manager
+    confidence_threshold: 0.75
+    match_policy_ref: defaults
+    aliases:
+    - it_director
+    - head_of_it
+    - it_manager
+    indicators:
+    - IT
+    - infrastructure
+    - security
+    - integration
+    - SSO
+    - compliance
+    patterns:
+    - IT Director
+    - Director of IT
+    - Head of IT
+    color: '#34495e'
+  creative_director:
+    description: Creative Director - leads design and visual execution
+    canonical_id: creative_director
+    entity_kind: business_role
+    family: senior_leadership_roles
+    gliner_label: CREATIVE_DIRECTOR
+    gliner_description: Creative Director design visual brand art direction assets production team lead
+    examples:
+    - Creative Director
+    - Design Director
+    - Art Director
+    - Head of Design
+    - VP Design
+    confidence_threshold: 0.75
+    match_policy_ref: defaults
+    aliases:
+    - creative_director
+    - design_director
+    - art_director
+    indicators:
+    - creative director
+    - design
+    - art direction
+    - visual
+    - brand
+    patterns:
+    - Creative Director
+    - Design Director
+    - Art Director
+    - Head of Design
+    color: '#e67e22'
+  marketing_practitioner:
+    description: Marketing Manager or Specialist - executes campaigns daily
+    canonical_id: marketing_practitioner
+    entity_kind: business_role
+    family: practitioner_roles
+    gliner_label: MARKETING_PRACTITIONER
+    gliner_description: Marketing Manager Specialist campaign email automation lead generation execution daily user
+    examples:
+    - Marketing Manager
+    - Campaign Manager
+    - Marketing Specialist
+    - Email Marketing Manager
+    - Digital Marketing Manager
+    - Demand Gen Manager
+    confidence_threshold: 0.7
+    match_policy_ref: defaults
+    aliases:
+    - marketing_manager
+    - campaign_manager
+    - marketing_specialist
+    indicators:
+    - marketing manager
+    - campaign
+    - email
+    - demand gen
+    - digital marketing
+    patterns:
+    - Marketing Manager
+    - Campaign Manager
+    - \w+ Marketing Specialist
+    color: '#3498db'
+  content_practitioner:
+    description: Content Creator or Manager - produces and manages content
+    canonical_id: content_practitioner
+    entity_kind: business_role
+    family: practitioner_roles
+    gliner_label: CONTENT_PRACTITIONER
+    gliner_description: Content Creator Manager writer copywriter editor social media blog production assets
+    examples:
+    - Content Creator
+    - Content Manager
+    - Copywriter
+    - Content Writer
+    - Social Media Manager
+    - Blog Manager
+    confidence_threshold: 0.7
+    match_policy_ref: defaults
+    aliases:
+    - content_creator
+    - content_manager
+    - copywriter
+    indicators:
+    - content
+    - writer
+    - copywriter
+    - social media
+    - blog
+    - editorial
+    patterns:
+    - Content \w+
+    - Copywriter
+    - Social Media Manager
+    color: '#9b59b6'
+  design_practitioner:
+    description: Designer - creates visual assets and designs
+    canonical_id: design_practitioner
+    entity_kind: business_role
+    family: practitioner_roles
+    gliner_label: DESIGN_PRACTITIONER
+    gliner_description: Designer graphic visual UI UX creative assets brand production artist illustrator
+    examples:
+    - Graphic Designer
+    - Visual Designer
+    - UI Designer
+    - UX Designer
+    - Designer
+    - Digital Designer
+    confidence_threshold: 0.7
+    match_policy_ref: defaults
+    aliases:
+    - designer
+    - graphic_designer
+    - visual_designer
+    indicators:
+    - designer
+    - graphic
+    - visual
+    - UI
+    - UX
+    - creative
+    patterns:
+    - \w+ Designer
+    - Graphic Designer
+    - Visual Designer
+    color: '#e67e22'
+  analyst_practitioner:
+    description: Analyst - analyzes data and provides insights
+    canonical_id: analyst_practitioner
+    entity_kind: business_role
+    family: practitioner_roles
+    gliner_label: ANALYST_PRACTITIONER
+    gliner_description: Analyst data business marketing analytics reporting insights metrics dashboard BI
+    examples:
+    - Data Analyst
+    - Marketing Analyst
+    - Business Analyst
+    - Analytics Specialist
+    - BI Analyst
+    - Insights Analyst
+    confidence_threshold: 0.7
+    match_policy_ref: defaults
+    aliases:
+    - data_analyst
+    - marketing_analyst
+    - business_analyst
+    indicators:
+    - analyst
+    - analytics
+    - data
+    - insights
+    - BI
+    - reporting
+    patterns:
+    - \w+ Analyst
+    - Data Analyst
+    - Analytics \w+
+    color: '#e74c3c'
+  developer_practitioner:
+    description: Developer or Engineer - builds and integrates technical solutions
+    canonical_id: developer_practitioner
+    entity_kind: business_role
+    family: practitioner_roles
+    gliner_label: DEVELOPER_PRACTITIONER
+    gliner_description: Developer engineer software frontend backend fullstack integration API code programmer
+    examples:
+    - Software Developer
+    - Software Engineer
+    - Frontend Developer
+    - Backend Developer
+    - Full Stack Developer
+    - Web Developer
+    confidence_threshold: 0.7
+    match_policy_ref: defaults
+    aliases:
+    - developer
+    - engineer
+    - programmer
+    indicators:
+    - developer
+    - engineer
+    - software
+    - frontend
+    - backend
+    - API
+    - code
+    patterns:
+    - \w+ Developer
+    - \w+ Engineer
+    - Software \w+
+    color: '#1abc9c'
+  data_engineer_practitioner:
+    description: Data Engineer - builds data pipelines and integrations
+    canonical_id: data_engineer_practitioner
+    entity_kind: business_role
+    family: practitioner_roles
+    gliner_label: DATA_ENGINEER
+    gliner_description: Data Engineer ETL pipeline integration schema API streaming data warehouse database
+    examples:
+    - Data Engineer
+    - ETL Developer
+    - Data Pipeline Engineer
+    - Integration Engineer
+    - Data Architect
+    confidence_threshold: 0.7
+    match_policy_ref: defaults
+    aliases:
+    - data_engineer
+    - etl_developer
+    - pipeline_engineer
+    indicators:
+    - data engineer
+    - ETL
+    - pipeline
+    - integration
+    - schema
+    - warehouse
+    patterns:
+    - Data Engineer
+    - ETL \w+
+    - Data Pipeline \w+
+    color: '#34495e'
+  solutions_architect:
+    description: Solutions Architect - designs technical solutions and integrations
+    canonical_id: solutions_architect
+    entity_kind: business_role
+    family: practitioner_roles
+    gliner_label: SOLUTIONS_ARCHITECT
+    gliner_description: Solutions Architect enterprise technical architecture integration design consulting implementation
+    examples:
+    - Solutions Architect
+    - Enterprise Architect
+    - Technical Architect
+    - Integration Architect
+    - Cloud Architect
+    confidence_threshold: 0.75
+    match_policy_ref: defaults
+    aliases:
+    - solutions_architect
+    - enterprise_architect
+    - technical_architect
+    indicators:
+    - architect
+    - solutions
+    - enterprise
+    - technical
+    - integration
+    - cloud
+    patterns:
+    - \w+ Architect
+    - Solutions Architect
+    - Enterprise Architect
+    color: '#2c3e50'
+  project_manager:
+    description: Project Manager - coordinates projects and timelines
+    canonical_id: project_manager
+    entity_kind: business_role
+    family: practitioner_roles
+    gliner_label: PROJECT_MANAGER
+    gliner_description: Project Manager PM program coordinator timeline delivery stakeholder agile scrum
+    examples:
+    - Project Manager
+    - Program Manager
+    - Project Coordinator
+    - Delivery Manager
+    - Scrum Master
+    confidence_threshold: 0.7
+    match_policy_ref: defaults
+    aliases:
+    - project_manager
+    - program_manager
+    - pm
+    indicators:
+    - project manager
+    - program
+    - coordinator
+    - delivery
+    - agile
+    - scrum
+    patterns:
+    - Project Manager
+    - Program Manager
+    - \w+ Coordinator
+    color: '#27ae60'
+  novice_learner:
+    description: Beginner with little to no prior knowledge in the domain
+    canonical_id: novice_learner
+    entity_kind: learner_profile
+    family: learning_audience
+    gliner_label: NOVICE_LEARNER
+    gliner_description: Beginner newcomer new hire onboarding foundational basic introductory first-time learning
+    examples:
+    - beginner
+    - newcomer
+    - new hire
+    - entry-level
+    - first-time user
+    - novice
+    - onboarding participant
+    confidence_threshold: 0.7
+    match_policy_ref: defaults
+    aliases:
+    - beginner
+    - newcomer
+    - entry_level
+    indicators:
+    - beginner
+    - novice
+    - new
+    - first
+    - basic
+    - introductory
+    - foundational
+    - onboarding
+    patterns:
+    - new \w+
+    - first-time \w+
+    - beginner \w+
+    color: '#1abc9c'
+    relates_to:
+    - target: intermediate_learner
+      relation: precedes
+      weight: expected
+      description: 'Expertise progression: novice precedes intermediate'
+    - target: instructional_strategy
+      relation: triggers
+      weight: required
+      description: Novice learners require scaffolded instruction with explicit guidance and detailed explanations
+      target_file: pedagogical_frameworks_entities
+    - target: mayer_essential_principle
+      relation: triggers
+      weight: required
+      description: Novice learners benefit most from Mayer's signaling principle which reduces search effort
+      target_file: cognitive_load_entities
+    - target: analogy
+      relation: supported_by
+      weight: expected
+      description: "Uninformed audiences need basic examples and applications; start with analogies before technical depth per audience_analysis_for_presentations"
+      target_file: evidence_types_entities
+    - target: audience_pain_point
+      relation: contains
+      weight: expected
+      description: "Novice learners contain pain points related to overwhelm from new tools and information and fear of making mistakes per Comprehensive Audience Analysis"
+    - target: pathos_appeal
+      relation: supported_by
+      weight: expected
+      description: "Novice learners respond to pathos with encouraging mentor-like tone and support assurances per Comprehensive Audience Analysis"
+      target_file: rhetorical_devices_entities
+    - target: filler_word
+      relation: triggers
+      weight: expected
+      description: "Novice learners trigger filler word usage as presentation anxiety and lack of preparation lead to high disfluency rates per Elite Speaker Linguistic Analysis"
+      target_file: performance_entities
+    - target: instructional_strategy
+      relation: limits
+      weight: expected
+      description: "FPI's problem-centered approach can overwhelm novice learners with no prior knowledge requiring more demonstrations and scaffolding per Merrill"
+      target_file: pedagogical_frameworks_entities
+    - target: audience_motivator
+      relation: supported_by
+      weight: expected
+      description: "Novice learners are motivated by career currency, micro-credentials, and visible LinkedIn badges that signal competence in a volatile job market per Learner Persona Research"
+    - target: roleplay_activity
+      relation: supported_by
+      weight: expected
+      description: "Research prescribes Third Space role-play circles for novice learners to practice difficult conversations in psychologically safe environments per Learner Persona Research"
+      target_file: activity_types_entities
+    - target: progressive_disclosure_marker
+      relation: supported_by
+      weight: expected
+      description: "Novice learners prefer bite-sized visual content requiring progressive disclosure of complexity to match their learning reflex per Learner Persona Research"
+      target_file: cognitive_load_entities
+    - target: learner_characteristic
+      relation: specialises
+      weight: required
+      description: "Person analysis evaluates individual learner characteristics, prior knowledge, and learning preferences — novice learner is a specific learner characteristic profile with minimal prior knowledge per Essential Inputs for Learning Objectives"
+      target_file: pedagogical_frameworks_entities
+    - target: microlearning_format
+      relation: supported_by
+      weight: expected
+      description: "Novice learners are supported by microlearning formats — bite-sized modules with progressive disclosure reduce cognitive overload for beginners with no prior knowledge per AI Microlearning Guide"
+      target_file: content_format_entities
+    - target: intrinsic_load_marker
+      relation: triggers
+      weight: required
+      description: "Novice learners trigger higher intrinsic load for identical content — CLT predicts that low prior knowledge increases element interactivity, requiring aggressive scaffolding and segmenting per slide deck design playbook"
+      target_file: cognitive_load_entities
+    - target: extraneous_load_marker
+      relation: triggers
+      weight: expected
+      description: "Novice learners with low prior knowledge trigger higher extraneous cognitive load — unfamiliar terminology, complex layouts, and poorly scaffolded content impose unnecessary processing demands per Comprehensive Audience Analysis"
+      target_file: cognitive_load_entities
+    - target: elaboration_marker
+      relation: supported_by
+      weight: expected
+      description: "Lower PID through elaborative repetition 'disproportionately aids comprehension for non-native speakers' and by extension novice learners who lack domain schema (Architecture of Influence, Section 1.1)"
+      target_file: discourse_entities
+    - target: pedagogical_sequence_marker
+      relation: supported_by
+      weight: expected
+      description: "Content Map ensures foundational knowledge before advanced content supporting novice learner progression (Content Map Instructions v3)"
+      target_file: content_architecture_entities
+    - target: mayer_extraneous_principle
+      relation: supported_by
+      weight: expected
+      description: "Signaling especially beneficial for novices; 84% of studies showed improved recall with cues per Applying Mayer's Principles Practical Checklist"
+      target_file: cognitive_load_entities
+    taxonomy_mapping:
+    - taxonomy: pedagogical_frameworks_taxonomy
+      dimension: audience_experience_level
+      values:
+      - novice
+      strength: primary
+  intermediate_learner:
+    description: Learner with foundational knowledge seeking to deepen expertise
+    canonical_id: intermediate_learner
+    entity_kind: learner_profile
+    family: learning_audience
+    gliner_label: INTERMEDIATE_LEARNER
+    gliner_description: Intermediate practitioner some experience developing proficiency growing advancing upskilling
+    examples:
+    - intermediate user
+    - developing practitioner
+    - advancing learner
+    - upskilling employee
+    - growing professional
+    confidence_threshold: 0.7
+    match_policy_ref: defaults
+    aliases:
+    - developing
+    - advancing
+    - upskilling
+    indicators:
+    - intermediate
+    - developing
+    - growing
+    - advancing
+    - upskilling
+    - proficient
+    patterns:
+    - intermediate \w+
+    - developing \w+
+    color: '#3498db'
+    relates_to:
+    - target: novice_learner
+      relation: precedes
+      weight: expected
+      description: 'Expertise progression: novice precedes intermediate'
+    - target: advanced_learner
+      relation: precedes
+      weight: expected
+      description: 'Expertise progression: intermediate precedes advanced'
+    - target: expert_learner
+      relation: contrasts_with
+      weight: optional
+      description: "Intermediate learners contrast with expert learners in content depth needs requiring background and analogies vs technical details per Comprehensive Audience Analysis"
+    taxonomy_mapping:
+    - taxonomy: pedagogical_frameworks_taxonomy
+      dimension: audience_experience_level
+      values:
+      - intermediate
+      strength: primary
+  advanced_learner:
+    description: Experienced practitioner with strong domain knowledge
+    canonical_id: advanced_learner
+    entity_kind: learner_profile
+    family: learning_audience
+    gliner_label: ADVANCED_LEARNER
+    gliner_description: Advanced experienced senior practitioner proficient skilled veteran seasoned professional
+    examples:
+    - advanced user
+    - experienced practitioner
+    - senior professional
+    - skilled operator
+    - veteran user
+    confidence_threshold: 0.7
+    match_policy_ref: defaults
+    aliases:
+    - experienced
+    - senior
+    - skilled
+    indicators:
+    - advanced
+    - experienced
+    - senior
+    - skilled
+    - proficient
+    - veteran
+    patterns:
+    - advanced \w+
+    - experienced \w+
+    - senior \w+
+    color: '#9b59b6'
+    relates_to:
+    - target: intermediate_learner
+      relation: precedes
+      weight: expected
+      description: 'Expertise progression: intermediate precedes advanced'
+    - target: expert_learner
+      relation: precedes
+      weight: expected
+      description: 'Expertise progression: advanced precedes expert'
+    - target: logos_appeal
+      relation: supported_by
+      weight: expected
+      description: "Advanced learners require logos with technical details data and rigorous central-route analysis per Comprehensive Audience Analysis"
+      target_file: rhetorical_devices_entities
+    taxonomy_mapping:
+    - taxonomy: pedagogical_frameworks_taxonomy
+      dimension: audience_experience_level
+      values:
+      - advanced
+      strength: primary
+  expert_learner:
+    description: Subject matter expert with deep domain mastery
+    canonical_id: expert_learner
+    entity_kind: learner_profile
+    family: learning_audience
+    gliner_label: EXPERT_LEARNER
+    gliner_description: Expert master specialist authority thought leader deep expertise mastery domain expert SME
+    examples:
+    - expert
+    - master
+    - specialist
+    - authority
+    - thought leader
+    - domain expert
+    - SME
+    confidence_threshold: 0.75
+    match_policy_ref: defaults
+    aliases:
+    - master
+    - specialist
+    - authority
+    indicators:
+    - expert
+    - master
+    - specialist
+    - authority
+    - thought leader
+    - SME
+    patterns:
+    - \w+ expert
+    - \w+ master
+    - domain \w+
+    color: '#8e44ad'
+    relates_to:
+    - target: advanced_learner
+      relation: precedes
+      weight: expected
+      description: 'Expertise progression: advanced precedes expert'
+    - target: expertise_reversal_marker
+      relation: triggers
+      weight: expected
+      description: Expert learners may experience expertise reversal where detailed explanations increase cognitive load
+      target_file: cognitive_load_entities
+    - target: data_statistic
+      relation: supported_by
+      weight: expected
+      description: "Expert learners require data statistics and rigorous quantitative analysis as central-route information per Comprehensive Audience Analysis"
+      target_file: evidence_types_entities
+    - target: audience_motivator
+      relation: supported_by
+      weight: expected
+      description: "Expert learners are motivated by technical mastery, peer respect, and recognised credentials rather than gamification or social learning features per Learner Persona Research"
+    - target: practice_activity
+      relation: supported_by
+      weight: expected
+      description: "Expert technical learners reject video courses and demand sandbox environments where they learn by doing — breaking code and fixing it per Learner Persona Research"
+      target_file: activity_types_entities
+    - target: novice_learner
+      relation: contrasts_with
+      weight: expected
+      description: "Expert audiences can jump into technicalities while novices need basics; overestimating leaves novices exhausted, underestimating leaves experts distracted per audience_analysis_for_presentations"
+    - target: progressive_disclosure_marker
+      relation: limits
+      weight: expected
+      description: "Expert learners limit the utility of progressive disclosure — expertise reversal means scaffolding that helps novices becomes redundant cognitive load for experts who already possess the schemas per course structure hierarchy research"
+      target_file: cognitive_load_entities
+  adult_learner:
+    description: Adult professional with self-directed learning preferences
+    canonical_id: adult_learner
+    entity_kind: learner_profile
+    family: learning_audience
+    gliner_label: ADULT_LEARNER
+    gliner_description: Adult professional self-directed autonomous andragogy corporate employee working professional
+    examples:
+    - adult learner
+    - working professional
+    - corporate employee
+    - self-directed learner
+    - busy professional
+    confidence_threshold: 0.7
+    match_policy_ref: defaults
+    aliases:
+    - professional
+    - corporate_learner
+    - working_adult
+    indicators:
+    - adult
+    - professional
+    - employee
+    - self-directed
+    - autonomous
+    - busy
+    patterns:
+    - adult \w+
+    - working \w+
+    - corporate \w+
+    color: '#34495e'
+    relates_to:
+    - target: delivery_mode
+      relation: triggers
+      weight: expected
+      description: Adult learners prefer flexible delivery modes and self-directed learning opportunities
+      target_file: pedagogical_frameworks_entities
+    - target: delivery_modality
+      relation: enables
+      weight: expected
+      description: Adult learner characteristics (flexible learning paths, just-in-time support, mobile-responsive any-device
+        access) enable selection of appropriate delivery modalities (Comprehensive Learning Design Framework)
+      target_file: delivery_entities
+    - target: audience_motivator
+      relation: contains
+      weight: expected
+      description: "Adult learners contain motivators tied to practical relevance valuing time and transparency with no-nonsense reasoning per Comprehensive Audience Analysis"
+    - target: audience_objection
+      relation: triggers
+      weight: optional
+      description: "Adult learners trigger objections from experience including skepticism of new fads and worry about expertise devaluation per Comprehensive Audience Analysis"
+    - target: motivation_element
+      relation: supported_by
+      weight: expected
+      description: "FPI's problem-centered design creates intrinsic need-to-know motivation aligned with adult learners preference for relevant authentic tasks per Merrill"
+      target_file: pedagogical_frameworks_entities
+    - target: audience_pain_point
+      relation: triggers
+      weight: required
+      description: "Adult learners face the double disruption of automation and economic contraction with 39% of core skills projected outdated by 2030 per Learner Persona Research"
+    - target: formal_register
+      relation: supported_by
+      weight: expected
+      description: "The tone guide targets 'a bright, busy professional reading this between meetings' — adult learners are served by formal-yet-approachable register per tone_of_voice_guide"
+      target_file: writing_entities
+    - target: conversational_register
+      relation: supported_by
+      weight: expected
+      description: "The tone guide prescribes a voice that 'reads like a conversation with an expert who cares if you understand' — adult learners are supported by conversational register per tone_of_voice_guide"
+      target_file: writing_entities
+    - target: learning_objective
+      relation: limits
+      weight: expected
+      description: "Knowles' adult learning theory requires self-directed, problem-centered approaches that connect to immediate workplace application — adult learner characteristics directly constrain how learning objectives must be framed per Essential Inputs for Learning Objectives"
+      target_file: pedagogical_frameworks_entities
+    - target: formative_assessment
+      relation: supported_by
+      weight: expected
+      description: "Adult learners are supported by formative assessment — frequent low-stakes knowledge checks with immediate feedback align with andragogical need for self-directed progress monitoring per Corporate Learning Assessment research"
+      target_file: assessment_entities
+    - target: scenario_activity
+      relation: supported_by
+      weight: expected
+      description: "Adult learners are supported by scenario activities — authentic workplace scenarios connect to immediate job application needs and leverage existing professional experience per Corporate Learning Assessment research"
+      target_file: activity_types_entities
+    - target: reflection_activity
+      relation: supported_by
+      weight: expected
+      description: "Adult learners are supported by reflection activities — structured reflection on workplace experience activates prior knowledge and supports self-directed meaning-making per Corporate Learning Assessment research"
+      target_file: activity_types_entities
+    - target: discussion_activity
+      relation: supported_by
+      weight: expected
+      description: "Adult learners are supported by discussion activities that leverage their workplace experience and create peer-to-peer knowledge exchange (Best-Practice Learning Activities)"
+      target_file: activity_types_entities
+    - target: learner_characteristic
+      relation: supported_by
+      weight: expected
+      description: "Adult learner entity is supported by learner characteristic definitions including self-direction, experience-richness, and goal-orientation from adult learning theory (Best-Practice Learning Activities)"
+      target_file: pedagogical_frameworks_entities
+    - target: microlearning_format
+      relation: supported_by
+      weight: expected
+      description: "Adult learners are supported by microlearning formats — busy professionals prefer short, focused learning modules that fit between meetings and respect time constraints per AI Microlearning Guide"
+      target_file: content_format_entities
+    - target: job_aid_format
+      relation: supported_by
+      weight: expected
+      description: "Adult learners are supported by job aid formats — just-in-time reference materials align with adult preference for immediate workplace application per Structuring Corporate Learning Content"
+      target_file: content_format_entities
+    - target: planning_artefact_marker
+      relation: supported_by
+      weight: expected
+      description: "Adult learners are supported by planning artefacts — course blueprints and content maps communicate learning pathway structure, aligning with adult need for transparency about what they will learn and why per course structure hierarchy research"
+      target_file: content_architecture_entities
+    - target: germane_load_marker
+      relation: supported_by
+      weight: expected
+      description: "The de-densification strategy and strategic pause techniques provide cognitive room that supports adult learners' meaning-making capacity (Architecture of Influence, Sections 1.1, 1.4)"
+      target_file: cognitive_load_entities
+  visual_learner:
+    description: Learner who prefers visual information processing
+    canonical_id: visual_learner
+    entity_kind: learning_style
+    family: learning_audience
+    gliner_label: VISUAL_LEARNER
+    gliner_description: Visual learner diagrams charts graphics images infographics pictures spatial preference
+    examples:
+    - visual learner
+    - diagram preference
+    - graphic learner
+    - spatial thinker
+    confidence_threshold: 0.75
+    match_policy_ref: defaults
+    aliases:
+    - graphic_learner
+    - spatial_learner
+    indicators:
+    - visual
+    - diagram
+    - graphic
+    - picture
+    - image
+    - spatial
+    patterns:
+    - visual \w+
+    color: '#e74c3c'
+    relates_to:
+    - target: mayer_essential_principle
+      relation: supported_by
+      weight: optional
+      description: "Modality principle dual-channel approach benefits visual learners by offloading text to audio per Applying Mayer's Principles Practical Checklist"
+      target_file: cognitive_load_entities
+  auditory_learner:
+    description: Learner who prefers auditory information processing
+    canonical_id: auditory_learner
+    entity_kind: learning_style
+    family: learning_audience
+    gliner_label: AUDITORY_LEARNER
+    gliner_description: Auditory learner listening verbal discussion podcast audio narration spoken preference
+    examples:
+    - auditory learner
+    - listening preference
+    - verbal learner
+    - discussion-based
+    confidence_threshold: 0.75
+    match_policy_ref: defaults
+    aliases:
+    - verbal_learner
+    - listening_learner
+    indicators:
+    - auditory
+    - listening
+    - verbal
+    - discussion
+    - audio
+    - spoken
+    patterns:
+    - auditory \w+
+    - listening \w+
+    color: '#f39c12'
+  kinesthetic_learner:
+    description: Learner who prefers hands-on experiential learning
+    canonical_id: kinesthetic_learner
+    entity_kind: learning_style
+    family: learning_audience
+    gliner_label: KINESTHETIC_LEARNER
+    gliner_description: Kinesthetic hands-on experiential tactile practice simulation lab exercise learning by doing
+    examples:
+    - kinesthetic learner
+    - hands-on learner
+    - experiential learner
+    - tactile learner
+    - learning by doing
+    confidence_threshold: 0.75
+    match_policy_ref: defaults
+    aliases:
+    - hands_on_learner
+    - experiential_learner
+    - tactile_learner
+    indicators:
+    - kinesthetic
+    - hands-on
+    - experiential
+    - tactile
+    - practice
+    - simulation
+    - lab
+    patterns:
+    - hands-on \w+
+    - experiential \w+
+    color: '#16a085'
+  executive_audience:
+    description: C-suite and senior leadership requiring strategic overview
+    canonical_id: executive_audience
+    entity_kind: audience_segment
+    family: presentation_audience
+    gliner_label: EXECUTIVE_AUDIENCE
+    gliner_description: Executive C-suite leadership senior management board strategic overview high-level summary
+    examples:
+    - executive audience
+    - C-suite
+    - senior leadership
+    - board members
+    - management team
+    confidence_threshold: 0.75
+    match_policy_ref: defaults
+    aliases:
+    - leadership
+    - c_suite
+    - senior_management
+    indicators:
+    - executive
+    - C-suite
+    - leadership
+    - board
+    - senior
+    - management
+    patterns:
+    - executive \w+
+    - senior \w+
+    - C-suite
+    color: '#2c3e50'
+    relates_to:
+    - target: business_audience
+      relation: bridges
+      weight: expected
+      description: Executive audiences (C-suite) span across business and technical concerns requiring multi-layered narrative
+        approaches
+    - target: mixed_audience
+      relation: supports
+      weight: expected
+      description: Enterprise deals involve multiple executive personas in the buying committee forming mixed-audience scenarios
+    - target: audience_pain_point
+      relation: supports
+      weight: expected
+      description: 'All executive personas share common meta-pain-points: budget constraints, organisational complexity, and
+        risk mitigation concerns'
+    - target: bluf_hook
+      relation: supported_by
+      weight: expected
+      description: Executive audiences are supported by BLUF hooks which match their preference for conclusion-first communication
+        and immediate decision-relevant information per Crafting Powerful Opening Plays
+      target_file: opening_hooks_entities
+    - target: value_proposition
+      relation: supported_by
+      weight: required
+      description: "Executive audiences require value propositions emphasising big-picture outcomes and strategic value per Comprehensive Audience Analysis"
+      target_file: narrative_entities
+    - target: outcome_statement
+      relation: supported_by
+      weight: expected
+      description: "Executive audiences require outcome statements articulating cost savings time savings and ROI per Comprehensive Audience Analysis"
+      target_file: narrative_entities
+    - target: customer_story
+      relation: supported_by
+      weight: expected
+      description: "Executive audiences require case studies and references from the same industry for social proof per Comprehensive Audience Analysis"
+      target_file: evidence_types_entities
+    - target: visionary_bundle
+      relation: supported_by
+      weight: expected
+      description: "Executive audiences are supported by visionary discourse organizer bundles which use agentic high-agency language matching their strategic decision-making style per Elite Speaker Linguistic Analysis"
+      target_file: rhetorical_devices_entities
+    - target: ethos_appeal
+      relation: supported_by
+      weight: required
+      description: "Executive audiences are particularly influenced by ethos appeal; enclothed cognition research shows formal attire enhances abstract cognitive processing associated with strategic leadership per Anatomy of Presence research"
+      target_file: rhetorical_devices_entities
+    - target: authority_opener
+      relation: supported_by
+      weight: expected
+      description: "Executive audiences respond to authority openers; thin-slicing research shows 10-second judgments match semester-long evaluations, making the authoritative opening critical for executive contexts per Anatomy of Presence research"
+      target_file: performance_entities
+    - target: confidence_technique
+      relation: supported_by
+      weight: expected
+      description: "Executive audiences require confidence technique mastery; formal attire triggers abstract processing and social distance perception that aligns with executive expectations of leadership presence per Anatomy of Presence research"
+      target_file: delivery_entities
+    - target: scqa_marker
+      relation: supported_by
+      weight: required
+      description: "Executive audiences expect SCQA/Minto Pyramid structure with answer-first communication per Slide Deck Design Playbook"
+      target_file: rhetorical_devices_entities
+    - target: formal_register
+      relation: supported_by
+      weight: required
+      description: "The tone guide envisions 'a voice that would be welcome in both a boardroom and a brilliant classroom' — executive audiences directly require formal register per tone_of_voice_guide"
+      target_file: writing_entities
+    - target: opportunity_marker
+      relation: supported_by
+      weight: expected
+      description: "Executive audiences require opportunity framing that articulates strategic growth potential and market positioning per SOAR Narrative Mapping by Sales Stage"
+      target_file: sales_entities
+    - target: claim
+      relation: enables
+      weight: required
+      description: "Executive audiences require claim-first BLUF communication — their limited attention and strategic focus create conditions where clear action-title claims must lead every slide per slide deck design playbook"
+      target_file: narrative_entities
+    - target: progressive_disclosure_marker
+      relation: supported_by
+      weight: expected
+      description: "Executive audiences supported by progressive disclosure Layer 1 Billboard for time-poor executives"
+      target_file: cognitive_load_entities
+    - target: content_structure_marker
+      relation: supported_by
+      weight: expected
+      description: "Executive audiences supported by BLUF content structuring with recommendation in first paragraph"
+      target_file: content_architecture_entities
+    taxonomy_mapping:
+    - taxonomy: audience_taxonomy
+      dimension: audience_level
+      values:
+      - c_suite
+      - executive
+      - decision_maker
+      strength: primary
+  technical_audience:
+    description: Technical practitioners requiring detailed implementation information
+    canonical_id: technical_audience
+    entity_kind: audience_segment
+    family: presentation_audience
+    gliner_label: TECHNICAL_AUDIENCE
+    gliner_description: Technical practitioners developers engineers architects implementation detail specifications
+    examples:
+    - technical audience
+    - developers
+    - engineers
+    - architects
+    - IT team
+    - technical staff
+    confidence_threshold: 0.7
+    match_policy_ref: defaults
+    aliases:
+    - developers
+    - engineers
+    - it_staff
+    indicators:
+    - technical
+    - developer
+    - engineer
+    - architect
+    - IT
+    - implementation
+    patterns:
+    - technical \w+
+    - IT \w+
+    color: '#3498db'
+    relates_to:
+    - target: audience_motivator
+      relation: supports
+      weight: expected
+      description: Technical audiences are motivated by security, scalability, compliance, integration capability, and technical
+        debt reduction
+    - target: mixed_audience
+      relation: precedes
+      weight: expected
+      description: Technical audiences enter buying cycles after business case is established evaluating feasibility and architecture
+    - target: data_statistic
+      relation: supported_by
+      weight: required
+      description: "Technical audiences require detailed quantitative evidence and performance benchmarks per Comprehensive Audience Analysis"
+      target_file: evidence_types_entities
+    - target: expert_testimony
+      relation: supported_by
+      weight: expected
+      description: "Technical audiences value peer CTO testimonials and expert social proof per Comprehensive Audience Analysis"
+      target_file: evidence_types_entities
+    - target: audience_objection
+      relation: triggers
+      weight: expected
+      description: "Technical audiences trigger objections demanding proof and being skeptical of marketing hype per Comprehensive Audience Analysis"
+    - target: academic_bundle
+      relation: supported_by
+      weight: expected
+      description: "Technical audiences are supported by academic stance bundles which use hedged evidence-based language matching their analytical evaluation style per Elite Speaker Linguistic Analysis"
+      target_file: rhetorical_devices_entities
+    - target: before_after_comparison
+      relation: supported_by
+      weight: expected
+      description: "Technical evaluators require detailed implementation guides with architecture diagrams showing before-after states of technical implementations per Case Study Excellence"
+      target_file: evidence_types_entities
+    - target: intrinsic_load_marker
+      relation: triggers
+      weight: expected
+      description: "Technical content for technical audiences has high intrinsic load requiring aggressive segmenting, pre-training, and spatial contiguity per Slide Deck Design Playbook"
+      target_file: cognitive_load_entities
+    - target: content_structure_marker
+      relation: enables
+      weight: expected
+      description: "Technical audience expertise enables more detailed content structuring — their domain knowledge supports denser architecture diagrams and specification-level content organisation per slide deck design playbook"
+      target_file: content_architecture_entities
+    - target: complex_slide
+      relation: supports
+      weight: expected
+      description: "Technical audiences support layered architecture diagrams and sequence diagrams with annotation, requiring accuracy over storytelling per Slide Deck Design Playbook"
+      target_file: slide_types_entities
+    - target: visual_demonstration
+      relation: supported_by
+      weight: expected
+      description: "Technical audiences expect visual demonstrations showing implementation details — architecture diagrams, live demos, and proof-of-concept walkthroughs satisfy their need for tangible evidence per Comprehensive Audience Analysis"
+      target_file: evidence_types_entities
+    taxonomy_mapping:
+    - taxonomy: audience_taxonomy
+      dimension: audience_segment
+      values:
+      - technical_stakeholder
+      - architecture_focused
+      strength: primary
+  business_audience:
+    description: Business stakeholders focused on outcomes and ROI
+    canonical_id: business_audience
+    entity_kind: audience_segment
+    family: presentation_audience
+    gliner_label: BUSINESS_AUDIENCE
+    gliner_description: Business stakeholders managers directors outcomes ROI value benefits non-technical
+    examples:
+    - business audience
+    - business stakeholders
+    - managers
+    - directors
+    - business users
+    confidence_threshold: 0.7
+    match_policy_ref: defaults
+    aliases:
+    - business_users
+    - stakeholders
+    - managers
+    indicators:
+    - business
+    - stakeholder
+    - manager
+    - director
+    - outcomes
+    - ROI
+    patterns:
+    - business \w+
+    - \w+ stakeholders
+    color: '#27ae60'
+    relates_to:
+    - target: audience_motivator
+      relation: supports
+      weight: expected
+      description: Business audiences share common motivators around ROI, efficiency, growth, and competitive advantage though
+        weighting varies by role
+    - target: mixed_audience
+      relation: precedes
+      weight: expected
+      description: Business personas often comprise the first wave of buying committees establishing business case before
+        technical evaluation
+    - target: customer_story
+      relation: supported_by
+      weight: expected
+      description: "Business audiences require customer story narratives of similar companies succeeding for peer validation per Comprehensive Audience Analysis"
+      target_file: evidence_types_entities
+    - target: outcome_statement
+      relation: supported_by
+      weight: expected
+      description: "Business audiences require outcome statements articulating business value in their terms per Comprehensive Audience Analysis"
+      target_file: narrative_entities
+    - target: data_proof_slide
+      relation: supports
+      weight: expected
+      description: "Business audiences require data proof slides with insight headlines, annotated charts, and clear decision guidance per Slide Deck Design Playbook"
+      target_file: slide_types_entities
+    - target: value_proposition
+      relation: supported_by
+      weight: required
+      description: "Business audiences require clear value propositions linking solutions to business outcomes — ROI, efficiency gains, and competitive advantage must be explicitly articulated per Comprehensive Audience Analysis"
+      target_file: narrative_entities
+    taxonomy_mapping:
+    - taxonomy: audience_taxonomy
+      dimension: audience_segment
+      values:
+      - business_stakeholder
+      - non_technical_decision_maker
+      strength: primary
+  mixed_audience:
+    description: Diverse audience with varying technical and business backgrounds
+    canonical_id: mixed_audience
+    entity_kind: audience_segment
+    family: presentation_audience
+    gliner_label: MIXED_AUDIENCE
+    gliner_description: Mixed diverse cross-functional varied backgrounds general audience all levels broad
+    examples:
+    - mixed audience
+    - diverse audience
+    - cross-functional team
+    - all levels
+    - general audience
+    - broad audience
+    confidence_threshold: 0.7
+    match_policy_ref: defaults
+    aliases:
+    - diverse_audience
+    - cross_functional
+    - general_audience
+    indicators:
+    - mixed
+    - diverse
+    - cross-functional
+    - varied
+    - general
+    - broad
+    - all levels
+    patterns:
+    - mixed \w+
+    - diverse \w+
+    - cross-functional \w+
+    color: '#9b59b6'
+    relates_to:
+    - target: audience_pain_point
+      relation: supports
+      weight: expected
+      description: 'Mixed audiences collectively experience different pain points: business efficiency, technical integration,
+        governance, budget constraints'
+    - target: marketing_leader
+      relation: contains
+      weight: expected
+      description: Enterprise mixed audiences typically contain a marketing leader representing business outcomes perspective
+    - target: technology_executive
+      relation: contains
+      weight: expected
+      description: Enterprise mixed audiences typically contain IT/technology leaders representing technical feasibility and
+        integration
+    - target: marketing_ops_leader
+      relation: contains
+      weight: expected
+      description: Enterprise mixed audiences typically contain ops leaders representing process optimisation and implementation
+    - target: facilitation_technique
+      relation: supported_by
+      weight: expected
+      description: "Mixed audiences require facilitation techniques including perspective acknowledgement and structured segments per Comprehensive Audience Analysis"
+      target_file: delivery_entities
+    - target: inclusive_we
+      relation: supported_by
+      weight: expected
+      description: "Mixed audiences require inclusive we language to tie diverse needs back to a common goal per Comprehensive Audience Analysis"
+      target_file: rhetorical_devices_entities
+    - target: session_structure_marker
+      relation: supported_by
+      weight: expected
+      description: "Mixed audiences require session structure with sections clearly labeled by audience segment per Comprehensive Audience Analysis"
+      target_file: delivery_entities
+    - target: delivery_modality
+      relation: supported_by
+      weight: required
+      description: "Research mandates multi-modal delivery for mixed audiences: mobile-first for Gen Z, audio for Millennials, searchable knowledge bases for Gen X, face-to-face for Boomers per Learner Persona Research"
+      target_file: delivery_entities
+    - target: progressive_disclosure_marker
+      relation: supported_by
+      weight: expected
+      description: "Mixed audiences require progressive disclosure to serve both novice and expert members — layered content reveals detail progressively without overwhelming beginners or boring experts per slide design research monograph part 3"
+      target_file: cognitive_load_entities
+    - target: novice_learner
+      relation: contains
+      weight: expected
+      description: "Mixed audiences contain novice segments requiring basics alongside expert segments; presentations must accommodate all knowledge levels per audience_analysis_for_presentations"
+    - target: expert_learner
+      relation: contains
+      weight: expected
+      description: "Mixed audiences contain expert learners alongside other segments; overestimating leaves novices exhausted, underestimating leaves experts distracted per audience_analysis_for_presentations"
+    - target: accessibility_feature
+      relation: supported_by
+      weight: required
+      description: "Mixed audiences are supported by accessibility features — the system generates neurodiversity modes (ADHD, autism, dyslexia accommodations) and cultural variants (high/low context) to serve diverse groups per module-integration-strategy"
+      target_file: visual_elements_entities
+    taxonomy_mapping:
+    - taxonomy: audience_taxonomy
+      dimension: audience_composition
+      values:
+      - multi_persona
+      - multi_stakeholder
+      - buying_committee
+      strength: primary
+  audience_pain_point:
+    description: Challenge or frustration experienced by the target audience
+    canonical_id: audience_pain_point
+    entity_kind: audience_signal
+    family: audience_context
+    gliner_label: AUDIENCE_PAIN_POINT
+    gliner_description: Pain point challenge frustration problem obstacle struggle difficulty barrier blocker issue
+    examples:
+    - struggling with manual processes
+    - lack of visibility
+    - siloed data
+    - time constraints
+    - skill gaps
+    - resource limitations
+    anti_examples:
+    - pain medication
+    - point of sale
+    confidence_threshold: 0.65
+    match_policy_ref: defaults
+    aliases:
+    - challenge
+    - frustration
+    - problem
+    indicators:
+    - struggling
+    - lacking
+    - frustrated
+    - challenge
+    - problem
+    - obstacle
+    - barrier
+    - constraint
+    patterns:
+    - struggling with \w+
+    - lack of \w+
+    - \w+ constraints
+    color: '#e74c3c'
+    relates_to:
+    - target: value_proposition
+      relation: triggers
+      weight: required
+      description: Identified audience pain points directly trigger the articulation of a value proposition. The value proposition
+        must address the specific pain point to be relevant.
+      target_file: narrative_entities
+    - target: pain_point
+      relation: specialises
+      weight: required
+      description: "Audience pain points specialise narrative pain points for specific audience segments addressing what keeps them up at night per Comprehensive Audience Analysis"
+      target_file: narrative_entities
+    - target: monroe_sequence_marker
+      relation: supports
+      weight: required
+      description: "MMS's Need stage requires identifying and articulating audience-specific pain points to create the cognitive dissonance that drives motivation to learn per Monroe's Motivated Sequence research"
+      target_file: rhetorical_devices_entities
+    - target: problem_statement_hook
+      relation: supports
+      weight: expected
+      description: "Audience pain points support problem statement hooks by providing audience-specific problems that make openings personally relevant per Analyzing Story for Business Communication"
+      target_file: opening_hooks_entities
+    - target: presentation_anxiety_marker
+      relation: bridges
+      weight: expected
+      description: "Audience pain points bridge to presentation anxiety markers; anxiety is a universal audience pain point that the master protocol directly addresses through biomechanical and vocal techniques per Anatomy of Presence research"
+      target_file: delivery_entities
+    - target: audience_objection
+      relation: triggers
+      weight: expected
+      description: "Pain points (burnout, time poverty, trust deficit) directly trigger learner objections such as refusing leadership roles and rejecting inauthentic corporate training per Learner Persona Research"
+    - target: intrinsic_load_marker
+      relation: triggers
+      weight: expected
+      description: "Pain points like decision fatigue in executives and cognitive surplus near zero in Millennials indicate intrinsic cognitive load that constrains learning capacity per Learner Persona Research"
+      target_file: cognitive_load_entities
+    - target: narrative_slide
+      relation: supported_by
+      weight: expected
+      description: "Audience pain points are supported by narrative slides which visually frame the pain through hero images, contrast visuals, and bold problem statements that create emotional resonance per slide design research monograph part 3"
+      target_file: slide_types_entities
+    - target: audience_motivator
+      relation: contrasts_with
+      weight: optional
+      description: "Pain points represent problems while motivators represent desired outcomes; both are audience-analysis inputs that must be balanced per audience_analysis_for_presentations"
+    - target: learner_characteristic
+      relation: supports
+      weight: expected
+      description: "Audience pain points support learner characteristic identification — learning barriers and support needs documented in personas capture pain points that inform design per course-creation-flow"
+      target_file: pedagogical_frameworks_entities
+  audience_objection:
+    description: Resistance or concern raised by the target audience
+    canonical_id: audience_objection
+    entity_kind: audience_signal
+    family: audience_context
+    gliner_label: AUDIENCE_OBJECTION
+    gliner_description: Objection concern resistance hesitation doubt skepticism pushback barrier worry risk
+    examples:
+    - too expensive
+    - too complex
+    - not enough resources
+    - already have a solution
+    - timing isn't right
+    - need more proof
+    confidence_threshold: 0.65
+    match_policy_ref: defaults
+    aliases:
+    - concern
+    - resistance
+    - hesitation
+    indicators:
+    - too
+    - not enough
+    - already
+    - concern
+    - worried
+    - skeptical
+    - hesitant
+    patterns:
+    - too \w+
+    - not enough \w+
+    - already \w+
+    color: '#c0392b'
+    relates_to:
+    - target: rebuttal
+      relation: triggers
+      weight: required
+      description: "Audience objections trigger rebuttals requiring prepared clear answers or acknowledgements per Comprehensive Audience Analysis"
+      target_file: narrative_entities
+    - target: extraneous_load_marker
+      relation: triggers
+      weight: expected
+      description: "Learner objections to corporate polish training and forced gamification indicate extraneous cognitive load from irrelevant or distrusted instructional design elements per Learner Persona Research"
+      target_file: cognitive_load_entities
+  audience_motivator:
+    description: Goal or driver that motivates the target audience
+    canonical_id: audience_motivator
+    entity_kind: audience_signal
+    family: audience_context
+    gliner_label: AUDIENCE_MOTIVATOR
+    gliner_description: Motivator goal driver aspiration desire want need objective outcome success improvement
+    examples:
+    - increase efficiency
+    - reduce costs
+    - improve customer experience
+    - drive growth
+    - gain competitive advantage
+    - accelerate time to market
+    confidence_threshold: 0.65
+    match_policy_ref: defaults
+    aliases:
+    - goal
+    - driver
+    - aspiration
+    indicators:
+    - increase
+    - reduce
+    - improve
+    - drive
+    - accelerate
+    - achieve
+    - gain
+    - optimize
+    patterns:
+    - increase \w+
+    - reduce \w+
+    - improve \w+
+    - drive \w+
+    color: '#27ae60'
+    relates_to:
+    - target: call_to_action
+      relation: enables
+      weight: expected
+      description: "Audience motivators enable calls to action by framing the ask in the audience's own terms per Comprehensive Audience Analysis"
+      target_file: narrative_entities
+    - target: motivation_element
+      relation: specialises
+      weight: expected
+      description: "Audience motivators specialise pedagogical motivation elements for specific audience context per Comprehensive Audience Analysis"
+      target_file: pedagogical_frameworks_entities
+    - target: value_proposition
+      relation: supported_by
+      weight: expected
+      description: "Audience motivators are supported by value propositions — what drives the target audience (career growth, trust, thought leadership) must align with the brand's articulated unique value per Personal Branding Framework"
+      target_file: narrative_entities
+    - target: monroe_sequence_marker
+      relation: supports
+      weight: expected
+      description: "MMS's Visualization stage must be tailored to audience motivators — different learners value career advancement, personal growth, or team success per Monroe's Motivated Sequence research"
+      target_file: rhetorical_devices_entities
+    - target: pathos_appeal
+      relation: supported_by
+      weight: expected
+      description: "Audience motivators are activated by pathos appeal; warmth, Duchenne smiles, and emotional connection are the primary drivers of audience willingness to engage and trust per Anatomy of Presence research"
+      target_file: rhetorical_devices_entities
+  audience_kpi:
+    description: Key performance indicator relevant to the target audience
+    canonical_id: audience_kpi
+    entity_kind: audience_signal
+    family: audience_context
+    gliner_label: AUDIENCE_KPI
+    gliner_description: KPI metric measure performance indicator success criterion benchmark target goal outcome
+    examples:
+    - conversion rate
+    - customer satisfaction
+    - time to value
+    - ROI
+    - NPS
+    - revenue growth
+    - cost reduction
+    confidence_threshold: 0.7
+    validators:
+    - type: regex
+      ref: percentage
+    - type: regex
+      ref: money_usd
+    match_policy_ref: metric
+    aliases:
+    - metric
+    - measure
+    - indicator
+    indicators:
+    - KPI
+    - metric
+    - rate
+    - score
+    - index
+    - '%'
+    - ROI
+    - NPS
+    patterns:
+    - \w+ rate
+    - \w+ score
+    - \w+ index
+    color: '#3498db'
+    relates_to:
+    - target: marketing_leader
+      relation: enables
+      weight: expected
+      description: 'Marketing leaders evaluate solutions through KPI lenses: ROI, performance metrics, campaign metrics, brand
+        metrics'
+    - target: technology_executive
+      relation: enables
+      weight: expected
+      description: 'Technology leaders evaluate using technical KPIs: TCO, uptime/SLA metrics, security metrics, scalability,
+        compliance'
+    - target: audience_motivator
+      relation: bridges
+      weight: expected
+      description: KPIs serve as concrete measurable expressions of audience motivators linking abstract goals to quantified
+        targets
+    - target: outcome_statement
+      relation: supports
+      weight: expected
+      description: "Audience KPIs support outcome statements by providing measurable proof grounding outcomes in audience-relevant numbers per Comprehensive Audience Analysis"
+      target_file: narrative_entities
+    - target: kirkpatrick_level
+      relation: supports
+      weight: expected
+      description: "Audience KPIs support Kirkpatrick evaluation levels — business-relevant metrics like conversion rate, NPS, and ROI provide Level 4 Results evidence connecting training outcomes to organisational performance per Corporate Learning Assessment research"
+      target_file: assessment_entities
+    - target: learning_objective
+      relation: supported_by
+      weight: required
+      description: "Audience KPIs are supported by learning objectives — success criteria and KPI alignment with business goals are defined in Phase 1 and measured in Phase 4 evaluation per course-creation-flow"
+      target_file: pedagogical_frameworks_entities
+    - target: data_statistic
+      relation: supported_by
+      weight: required
+      description: "Audience KPIs must be supported by quantitative data and statistics to be credible — conversion rates, NPS scores, and ROI figures require hard numerical evidence per Comprehensive Audience Analysis"
+      target_file: evidence_types_entities
+    taxonomy_mapping:
+    - taxonomy: audience_taxonomy
+      dimension: audience_metrics
+      values:
+      - performance_indicator
+      - decision_metric
+      - evaluation_criteria
+      strength: primary
+gliner_config:
+  model: gliner-large-v2
+  batch_size: 32
+  use_hybrid_extraction: true
+  llm_fallback_for_types:
+  - audience_pain_point
+  - audience_objection
+  - audience_motivator
+  context_window: 50
+  default_confidence_threshold: 0.7
+domain_keywords:
+  buying_context:
+  - buyer
+  - decision maker
+  - budget
+  - purchase
+  - procurement
+  - stakeholder
+  - approval
+  - vendor
+  - evaluation
+  - ROI
+  - business case
+  learning_context:
+  - learner
+  - student
+  - participant
+  - trainee
+  - audience
+  - user
+  - employee
+  - practitioner
+  - professional
+  - skill
+  - competency
+  - training
+  - onboarding
+  - certification
+  presentation_context:
+  - audience
+  - attendee
+  - viewer
+  - listener
+  - reader
+  - stakeholder
+  - executive
+  - technical
+  - business
+  - presentation
+  - demo
+  - meeting
+  executive_context:
+  - C-suite
+  - executive
+  - leadership
+  - board
+  - strategic
+  - vision
+  - CEO
+  - Chief
+  - Officer
+  - SVP
+  marketing_context:
+  - marketing
+  - brand
+  - campaign
+  - demand generation
+  - content
+  - digital
+  - customer acquisition
+  - MQL
+  - pipeline
+  - conversion
+  technology_context:
+  - IT
+  - technology
+  - infrastructure
+  - security
+  - integration
+  - API
+  - architecture
+  - cloud
+  - data
+  - software
+  creative_context:
+  - creative
+  - design
+  - brand
+  - visual
+  - assets
+  - content
+  - graphics
+  - UX
+  - UI
+  - production
+  analytics_context:
+  - analytics
+  - data
+  - insights
+  - BI
+  - reporting
+  - dashboard
+  - metrics
+  - KPI
+  - attribution
+  - measurement
+  operations_context:
+  - operations
+  - workflow
+  - automation
+  - efficiency
+  - process
+  - MarTech
+  - integration
+  - CRM
+  - governance
+  project_context:
+  - project
+  - program
+  - delivery
+  - timeline
+  - milestone
+  - agile
+  - scrum
+  - sprint
+  - implementation
+canonical_personas:
+  cmo:
+    display_name: CMO
+    canonical_id: cmo
+    normalize_to: marketing_executive
+    entity_kind: abbreviation
+    family: executive_roles
+    gliner_label: MARKETING_EXECUTIVE
+    gliner_description: CMO Chief Marketing Officer marketing executive budget holder
+    abbreviation_rules:
+      uppercase_only: true
+      word_boundary: true
+      requires_anchors:
+      - b2b_marketing
+      - adobe_brand
+      anchors_min: 1
+      anchors_window_tokens: 18
+    confidence_threshold: 0.8
+  cfo:
+    display_name: CFO
+    canonical_id: cfo
+    normalize_to: finance_executive
+    entity_kind: abbreviation
+    family: executive_roles
+    gliner_label: FINANCE_EXECUTIVE
+    gliner_description: CFO Chief Financial Officer finance executive budget authority
+    abbreviation_rules:
+      uppercase_only: true
+      word_boundary: true
+      requires_anchors:
+      - b2b_marketing
+      anchors_min: 1
+      anchors_window_tokens: 18
+    confidence_threshold: 0.8
+  cto:
+    display_name: CTO
+    canonical_id: cto
+    normalize_to: technology_executive
+    entity_kind: abbreviation
+    family: executive_roles
+    gliner_label: TECHNOLOGY_EXECUTIVE
+    gliner_description: CTO Chief Technology Officer technology executive technical authority
+    abbreviation_rules:
+      uppercase_only: true
+      word_boundary: true
+      requires_anchors:
+      - tech_context
+      - b2b_marketing
+      anchors_min: 1
+      anchors_window_tokens: 18
+    confidence_threshold: 0.8
+  cio:
+    display_name: CIO
+    canonical_id: cio
+    normalize_to: technology_executive
+    entity_kind: abbreviation
+    family: executive_roles
+    gliner_label: TECHNOLOGY_EXECUTIVE
+    gliner_description: CIO Chief Information Officer IT executive technology decision maker
+    abbreviation_rules:
+      uppercase_only: true
+      word_boundary: true
+      requires_anchors:
+      - tech_context
+      - b2b_marketing
+      anchors_min: 1
+      anchors_window_tokens: 18
+    confidence_threshold: 0.8
+  cro:
+    display_name: CRO
+    canonical_id: cro
+    normalize_to: revenue_executive
+    entity_kind: abbreviation
+    family: executive_roles
+    gliner_label: REVENUE_EXECUTIVE
+    gliner_description: CRO Chief Revenue Officer sales executive revenue growth leader
+    anti_examples:
+    - CRO conversion rate optimization
+    abbreviation_rules:
+      uppercase_only: true
+      word_boundary: true
+      requires_anchors:
+      - b2b_marketing
+      anchors_min: 1
+      anchors_window_tokens: 18
+      denylist_ref: ambiguous_abbreviations
+    confidence_threshold: 0.8
+  cxo:
+    display_name: CXO
+    canonical_id: cxo
+    normalize_to: experience_executive
+    entity_kind: abbreviation
+    family: executive_roles
+    gliner_label: EXPERIENCE_EXECUTIVE
+    gliner_description: CXO Chief Experience Officer customer experience leader
+    abbreviation_rules:
+      uppercase_only: true
+      word_boundary: true
+      requires_anchors:
+      - b2b_marketing
+      - cx_context
+      anchors_min: 1
+      anchors_window_tokens: 18
+    confidence_threshold: 0.8
+  cco:
+    display_name: CCO
+    canonical_id: cco
+    normalize_to: creative_executive
+    entity_kind: abbreviation
+    family: executive_roles
+    gliner_label: CREATIVE_EXECUTIVE
+    gliner_description: CCO Chief Creative Officer creative design brand leader
+    anti_examples:
+    - CCO Chief Compliance Officer
+    - CCO Chief Communications Officer
+    abbreviation_rules:
+      uppercase_only: true
+      word_boundary: true
+      requires_anchors:
+      - creative_context
+      - adobe_brand
+      anchors_min: 1
+      anchors_window_tokens: 18
+      denylist_ref: ambiguous_abbreviations
+    confidence_threshold: 0.8
+  coo:
+    display_name: COO
+    canonical_id: coo
+    normalize_to: operations_executive
+    entity_kind: abbreviation
+    family: executive_roles
+    gliner_label: OPERATIONS_EXECUTIVE
+    gliner_description: COO Chief Operating Officer operations efficiency leader
+    abbreviation_rules:
+      uppercase_only: true
+      word_boundary: true
+      requires_anchors:
+      - b2b_marketing
+      anchors_min: 1
+      anchors_window_tokens: 18
+    confidence_threshold: 0.8
+  vp:
+    display_name: VP
+    canonical_id: vp
+    entity_kind: abbreviation
+    family: senior_leadership_roles
+    gliner_label: MARKETING_LEADER
+    gliner_description: VP Vice President senior leader executive marketing sales
+    abbreviation_rules:
+      uppercase_only: true
+      word_boundary: true
+      requires_anchors:
+      - b2b_marketing
+      - org_context
+      anchors_min: 1
+      anchors_window_tokens: 12
+    confidence_threshold: 0.75
+  sme:
+    display_name: SME
+    canonical_id: sme
+    normalize_to: subject_matter_expert
+    entity_kind: abbreviation
+    family: practitioner_roles
+    gliner_label: INFLUENCER
+    gliner_description: SME subject matter expert domain authority knowledge leader
+    anti_examples:
+    - SME business
+    - small medium enterprise
+    - SME segment
+    abbreviation_rules:
+      uppercase_only: true
+      word_boundary: true
+      requires_anchors:
+      - b2b_marketing
+      - tech_context
+      - learning_context
+      anchors_min: 1
+      anchors_window_tokens: 15
+      denylist_ref: ambiguous_abbreviations
+    confidence_threshold: 0.8
+  pm:
+    display_name: PM
+    canonical_id: pm
+    normalize_to: project_manager
+    entity_kind: abbreviation
+    family: practitioner_roles
+    gliner_label: PROJECT_MANAGER
+    gliner_description: PM project manager program manager delivery coordinator
+    anti_examples:
+    - PM product manager
+    - PM afternoon
+    abbreviation_rules:
+      uppercase_only: true
+      word_boundary: true
+      requires_anchors:
+      - project_context
+      anchors_min: 1
+      anchors_window_tokens: 12
+      denylist_ref: ambiguous_abbreviations
+    confidence_threshold: 0.75
+  bi:
+    display_name: BI
+    canonical_id: bi
+    normalize_to: business_intelligence
+    entity_kind: abbreviation
+    family: practitioner_roles
+    gliner_label: ANALYST_PRACTITIONER
+    gliner_description: BI business intelligence analytics reporting dashboards insights
+    abbreviation_rules:
+      uppercase_only: true
+      word_boundary: true
+      requires_anchors:
+      - analytics_context
+      - data_context
+      anchors_min: 1
+      anchors_window_tokens: 12
+    confidence_threshold: 0.75
+role_aliases:
+  Chief Marketing Officer: marketing_executive
+  Head of Marketing: marketing_executive
+  SVP Marketing: marketing_executive
+  Chief Financial Officer: finance_executive
+  Head of Finance: finance_executive
+  Chief Technology Officer: technology_executive
+  Chief Information Officer: technology_executive
+  Head of IT: technology_executive
+  Chief Revenue Officer: revenue_executive
+  Head of Revenue: revenue_executive
+  VP Sales: revenue_executive
+  Chief Experience Officer: experience_executive
+  Head of Experience: experience_executive
+  Customer Experience Officer: experience_executive
+  Chief Creative Officer: creative_executive
+  Head of Creative: creative_executive
+  Chief Design Officer: creative_executive
+  Chief Operating Officer: operations_executive
+  Head of Operations: operations_executive
+  VP Marketing: marketing_leader
+  Vice President Marketing: marketing_leader
+  Director of Marketing: marketing_leader
+  Head of Demand Gen: marketing_leader
+  Marketing Ops Director: marketing_ops_leader
+  Director MarTech: marketing_ops_leader
+  VP Marketing Operations: marketing_ops_leader
+  MarTech Lead: marketing_ops_leader
+  E-Commerce Director: ecommerce_leader
+  Head of Digital Commerce: ecommerce_leader
+  Director of E-Commerce: ecommerce_leader
+  Content Strategy Director: content_strategy_leader
+  Head of Content: content_strategy_leader
+  Director of Content Strategy: content_strategy_leader
+  Creative Ops Leader: content_strategy_leader
+  Analytics Director: analytics_leader
+  Head of BI: analytics_leader
+  Director of Data & Analytics: analytics_leader
+  IT Director: it_leader
+  Head of IT Operations: it_leader
+  Director of IT: it_leader
+  Creative Director: creative_director
+  Design Director: creative_director
+  Art Director: creative_director
+  Marketing Manager: marketing_practitioner
+  Campaign Manager: marketing_practitioner
+  Email Marketing Manager: marketing_practitioner
+  Digital Marketing Manager: marketing_practitioner
+  Content Creator: content_practitioner
+  Content Manager: content_practitioner
+  Copywriter: content_practitioner
+  Social Media Manager: content_practitioner
+  Graphic Designer: design_practitioner
+  Visual Designer: design_practitioner
+  UI Designer: design_practitioner
+  UX Designer: design_practitioner
+  Data Analyst: analyst_practitioner
+  Marketing Analyst: analyst_practitioner
+  Business Analyst: analyst_practitioner
+  Software Developer: developer_practitioner
+  Software Engineer: developer_practitioner
+  Frontend Developer: developer_practitioner
+  Backend Developer: developer_practitioner
+  Data Engineer: data_engineer_practitioner
+  ETL Developer: data_engineer_practitioner
+  Solutions Architect: solutions_architect
+  Enterprise Architect: solutions_architect
+  Technical Architect: solutions_architect
+  Project Manager: project_manager
+  Program Manager: project_manager
+  Delivery Manager: project_manager
+tier_hierarchy:
+  executive:
+    level: 1
+    description: C-Suite and equivalent executive leadership
+    roles:
+    - marketing_executive
+    - finance_executive
+    - technology_executive
+    - revenue_executive
+    - experience_executive
+    - creative_executive
+    - operations_executive
+    default_role: marketing_executive
+  senior_leadership:
+    level: 2
+    description: VPs, Directors, and senior leaders
+    roles:
+    - marketing_leader
+    - marketing_ops_leader
+    - ecommerce_leader
+    - content_strategy_leader
+    - analytics_leader
+    - it_leader
+    - creative_director
+    default_role: marketing_leader
+  practitioner:
+    level: 3
+    description: Managers, specialists, and individual contributors
+    roles:
+    - marketing_practitioner
+    - content_practitioner
+    - design_practitioner
+    - analyst_practitioner
+    - developer_practitioner
+    - data_engineer_practitioner
+    - solutions_architect
+    - project_manager
+    default_role: marketing_practitioner
+soar_stage_persona_alignment:
+  description: Maps key buyer personas to SOAR narrative stage emphasis — different personas engage at different depth levels
+    across the four stages
+  economic_buyer:
+    primary_engagement: RESULT
+    secondary_engagement: SITUATION
+    content_preference: ROI, validated outcomes, strategic business impact, cost of inaction
+    presentation_style: BLUF — lead with recommendation and business case; support with evidence
+    note: Economic buyers want the bottom line first; detail slides should be available but not led with
+  technical_buyer:
+    primary_engagement: ACTION
+    secondary_engagement: RESULT
+    content_preference: Architecture, integration, security, scalability, implementation path
+    presentation_style: Structured evidence — validation criteria, technical proof points, reference architectures
+    note: Technical buyers hold veto power; their objections must be pre-empted in the ACTION stage
+  user_buyer:
+    primary_engagement: OPPORTUNITY
+    secondary_engagement: ACTION
+    content_preference: Day-in-the-life improvement, friction removal, workflow transformation, time savings
+    presentation_style: Story-first — show before/after contrast from the user perspective; demo works well here
+    note: User buyers are emotionally engaged when the day-to-day pain is named accurately in the OPPORTUNITY stage
+  champion_persona:
+    primary_engagement: ALL STAGES
+    secondary_engagement: RESULT
+    content_preference: Internal business case ammunition, ROI calculator, stakeholder-specific messaging
+    presentation_style: All four SOAR stages — champion must be able to re-tell the story to internal stakeholders
+    note: The champion needs content they can share; leave-behind materials should cover all four SOAR stages at appropriate
+      depth
+quality_indicators:
+  audience_specificity:
+    generic: No audience entity detected — content not targeted; likely low resonance
+    single_tier: One tier detected (e.g., only ECONOMIC_BUYER) — targeted but may miss other stakeholders
+    multi_stakeholder: Two or more buyer types detected — content addresses multi-stakeholder reality
+  executive_calibration:
+    misaligned: ECONOMIC_BUYER detected but content opens with technical detail — BLUF format required
+    aligned: ECONOMIC_BUYER + BLUF_HOOK detected in opening — correct format for executive audience

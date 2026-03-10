@@ -1,0 +1,410 @@
+_meta:
+  id: style_guide_standards
+  title: Style Guide
+  description: Writing style guide with preferred/banned terms, persona vocabulary, industry terminology, and content quality rules
+  domain: writing
+  domain_type: cross_cutting
+  purpose: methodology
+  version: "1.1.0"
+  last_updated: '2026-03-01'
+  corpus_sources:
+    - "Corpus/Research/Best Practices for Writing Effective Corporate Learning Content.md"
+    - "Corpus/Research/Research - Comprehensive Audience Analysis.md"
+    - "Corpus/Research/Research - Corporate Learning Assessment- Strategies, Modalities, and Best Practices.md"
+
+
+  relationships:
+    - target: methodology/inclusion_standards.yaml
+      type: depends_on
+      description: "Overlapping writing scope: inclusive language is governed by style guide conventions"
+preferred_terms:
+  # Adobe product terminology
+  products:
+    - term: "Adobe Experience Platform"
+      avoid: ["AEP platform", "the AEP"]
+      context: "Use full name on first reference, AEP thereafter"
+
+    - term: "Adobe Real-Time CDP"
+      avoid: ["RTCDP", "Real-Time Customer Data Platform", "RT-CDP"]
+      context: "Use full name on first reference"
+
+    - term: "Adobe Journey Optimizer"
+      avoid: ["AJO", "Journey Optimizer"]
+      context: "Include 'Adobe' on first reference"
+
+    - term: "Adobe Experience Manager"
+      avoid: ["AEM platform", "Experience Manager"]
+      context: "Full name first, AEM thereafter"
+
+    - term: "GenStudio for Performance Marketing"
+      avoid: ["GenStudio", "GEN", "Gen Studio"]
+      context: "Use full product name"
+
+  # Value language
+  outcomes:
+    - term: "enables you to"
+      avoid: ["allows you to", "lets you"]
+      context: "Stronger action language"
+
+    - term: "so you can"
+      avoid: ["so that you can", "enabling you to"]
+      context: "Direct benefit connection"
+
+    - term: "resulting in"
+      avoid: ["which results in", "leading to"]
+      context: "Clear causation"
+
+    - term: "real-time"
+      avoid: ["near real-time", "real time", "realtime"]
+      context: "Hyphenated, no qualifiers"
+
+  # Business terminology
+  business:
+    - term: "customer experience"
+      avoid: ["CX", "customer journey experience"]
+      context: "Spell out for clarity"
+
+    - term: "personalisation"
+      avoid: ["personalization", "customization"]
+      context: "British spelling for Adobe style"
+
+    - term: "unified"
+      avoid: ["integrated", "combined", "consolidated"]
+      context: "Stronger platform message"
+
+    - term: "AI-powered"
+      avoid: ["AI-driven", "AI-enabled", "artificial intelligence-based"]
+      context: "Consistent AI terminology"
+
+    - term: "time to value"
+      avoid: ["time-to-value", "TTV"]
+      context: "No hyphen, spell out"
+
+# ==============================================================================
+# Global Banned Terms
+# ==============================================================================
+
+banned_terms:
+  # Overused superlatives
+  superlatives:
+    - term: "best-in-class"
+      reason: "Unsubstantiated claim, overused"
+      alternative: "Describe specific capability"
+
+    - term: "world-class"
+      reason: "Vague, overused"
+      alternative: "Describe specific achievement"
+
+    - term: "cutting-edge"
+      reason: "Cliché"
+      alternative: "Leading, innovative, or describe specifically"
+
+    - term: "revolutionary"
+      reason: "Overused, rarely accurate"
+      alternative: "Describe the specific innovation"
+
+    - term: "game-changing"
+      reason: "Cliché"
+      alternative: "Describe the specific impact"
+
+    - term: "best of breed"
+      reason: "Dated terminology"
+      alternative: "Purpose-built, specialized"
+
+  # Corporate jargon
+  jargon:
+    - term: "synergy"
+      reason: "Corporate cliché"
+      alternative: "Describe the specific benefit"
+
+    - term: "paradigm shift"
+      reason: "Overused, unclear"
+      alternative: "Describe the specific change"
+
+    - term: "leverage"
+      reason: "Overused verb"
+      alternative: "Use, apply, take advantage of"
+
+    - term: "ideate"
+      reason: "Jargon"
+      alternative: "Generate ideas, brainstorm"
+
+    - term: "solutioning"
+      reason: "Not a word"
+      alternative: "Problem-solving, creating solutions"
+
+    - term: "operationalize"
+      reason: "Jargon"
+      alternative: "Implement, put into practice"
+
+    - term: "productize"
+      reason: "Jargon"
+      alternative: "Develop as a product, commercialize"
+
+  # Vague claims
+  vague:
+    - term: "seamless"
+      reason: "Overused, rarely accurate"
+      alternative: "Describe the specific integration"
+
+    - term: "robust"
+      reason: "Vague"
+      alternative: "Describe specific capabilities"
+
+    - term: "comprehensive"
+      reason: "Vague, often false"
+      alternative: "Describe what's included"
+
+    - term: "enterprise-grade"
+      reason: "Vague without specifics"
+      alternative: "Describe specific enterprise features"
+
+    - term: "next-generation"
+      reason: "Vague"
+      alternative: "Describe specific improvements"
+
+    - term: "end-to-end"
+      reason: "Often overused"
+      alternative: "Describe the full scope specifically"
+
+  # Aggressive language
+  aggressive:
+    - term: "crush the competition"
+      reason: "Too aggressive"
+      alternative: "Differentiate, outperform"
+
+    - term: "kill"
+      reason: "Violent language"
+      alternative: "Replace, eliminate, end"
+
+    - term: "dominate"
+      reason: "Aggressive"
+      alternative: "Lead, excel"
+
+    - term: "attack"
+      reason: "Aggressive"
+      alternative: "Address, approach"
+
+  # Dated terminology
+  dated:
+    - term: "Big Data"
+      reason: "Dated"
+      alternative: "Large-scale data, enterprise data"
+
+    - term: "the cloud"
+      reason: "Dated phrasing"
+      alternative: "Cloud-native, cloud platform"
+
+    - term: "digital transformation"
+      reason: "Overused"
+      alternative: "Describe specific change or modernization"
+
+    - term: "omnichannel"
+      reason: "Becoming dated"
+      alternative: "Cross-channel, unified experience"
+
+# ==============================================================================
+# Persona-Specific Terminology
+# ==============================================================================
+
+persona_terms:
+  cmo:
+    preferred:
+      - "revenue impact"
+      - "customer experience"
+      - "brand consistency"
+      - "marketing ROI"
+      - "pipeline contribution"
+    avoid:
+      - "technical architecture"
+      - "API integration"
+      - "schema design"
+
+  cio:
+    preferred:
+      - "integration"
+      - "security"
+      - "governance"
+      - "API-first"
+      - "scalability"
+    avoid:
+      - "marketing fluff"
+      - "aspirational vision"
+      - "soft benefits"
+
+  cfo:
+    preferred:
+      - "ROI"
+      - "TCO"
+      - "payback period"
+      - "cost reduction"
+      - "operational efficiency"
+    avoid:
+      - "priceless"
+      - "strategic investment" # without ROI
+      - "nice to have"
+
+  practitioner:
+    preferred:
+      - "easy to use"
+      - "self-service"
+      - "templates"
+      - "drag and drop"
+      - "real-time"
+    avoid:
+      - "enterprise architecture"
+      - "governance framework"
+      - "strategic roadmap"
+
+# ==============================================================================
+# Industry-Specific Terminology
+# ==============================================================================
+
+industry_terms:
+  financial_services:
+    preferred:
+      - "client" # for wealth management
+      - "compliant"
+      - "governed"
+      - "secure"
+    avoid:
+      - "disrupt" # too aggressive for regulated
+      - "revolutionary"
+      - "AI-generated" # compliance concern
+
+  healthcare:
+    preferred:
+      - "patient" # for providers
+      - "member" # for payers
+      - "HIPAA-ready"
+      - "care journey"
+    avoid:
+      - "targeting patients"
+      - "marketing to patients"
+      - "AI diagnosis"
+
+  retail:
+    preferred:
+      - "customer"
+      - "shopper"
+      - "personalisation"
+      - "omnichannel"
+    avoid:
+      - "brick and mortar"
+      - "e-tail"
+      - "phygital"
+
+# ==============================================================================
+# Sales Stage Terminology
+# ==============================================================================
+
+stage_terms:
+  early_stage: # Stages 1-2
+    preferred:
+      - "vision"
+      - "transformation"
+      - "strategic priority"
+      - "industry trend"
+    avoid:
+      - "implementation timeline"
+      - "technical specifications"
+      - "pricing details"
+
+  mid_stage: # Stages 3-4
+    preferred:
+      - "solution approach"
+      - "use case"
+      - "capability"
+      - "proof point"
+    avoid:
+      - "aspirational vision" # without proof
+      - "conceptual"
+
+  late_stage: # Stages 5-7
+    preferred:
+      - "implementation"
+      - "deployment"
+      - "timeline"
+      - "success criteria"
+    avoid:
+      - "high-level vision"
+      - "theoretical benefits"
+
+# ==============================================================================
+# Acronym Definitions
+# ==============================================================================
+
+acronyms:
+  # Always define on first use
+  require_definition:
+    - AEM
+    - AEP
+    - CDP
+    - DAM
+    - DMP
+    - CMS
+    - PIM
+    - MDM
+
+  # Can use without definition (well-known)
+  no_definition_needed:
+    - AI
+    - API
+    - B2B
+    - B2C
+    - CRM
+    - ROI
+    - KPI
+    - SaaS
+    - URL
+
+  # Adobe-specific (define for external audiences)
+  adobe_acronyms:
+    AEM: "Adobe Experience Manager"
+    AEP: "Adobe Experience Platform"
+    AJO: "Adobe Journey Optimizer"
+    RTCDP: "Adobe Real-Time CDP"
+    CJA: "Customer Journey Analytics"
+    WF: "Workfront"
+
+# ==============================================================================
+# Writing Style Guidelines
+# ==============================================================================
+
+style_guidelines:
+  sentence_structure:
+    - guideline: "Active voice over passive"
+      example_good: "Adobe Real-Time CDP unifies customer profiles"
+      example_bad: "Customer profiles are unified by Adobe Real-Time CDP"
+
+    - guideline: "Short sentences for complex topics"
+      max_words: 25
+      target_words: 15-20
+
+    - guideline: "Lead with benefits, not features"
+      example_good: "Reduce campaign launch time by 50% with..."
+      example_bad: "Our platform has workflow automation that..."
+
+  formatting:
+    - guideline: "Use numerals for statistics"
+      example_good: "50% improvement"
+      example_bad: "fifty percent improvement"
+
+    - guideline: "Consistent capitalization"
+      example: "Customer Journey Analytics, not customer journey analytics"
+
+    - guideline: "Oxford comma"
+      example_good: "AEM, AJO, and RTCDP"
+      example_bad: "AEM, AJO and RTCDP"
+
+# ==============================================================================
+# Quality Check Configuration
+# ==============================================================================
+
+quality_config:
+  max_jargon_ratio: 0.15
+  min_you_we_ratio: 0.60
+  max_sentence_length: 30
+  require_first_use_acronym_definition: true
+  flag_banned_terms: true
+  suggest_preferred_terms: true

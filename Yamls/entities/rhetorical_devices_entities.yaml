@@ -1,0 +1,1606 @@
+_meta:
+  id: rhetorical_devices_entities
+  title: Rhetorical Devices Entities
+  description: GLiNER2 entity definitions for detecting rhetorical devices, figures of speech, and persuasive language patterns
+    in presentations and professional communication
+  domain: narrative
+  domain_type: cross_cutting
+  purpose: entity
+  version: 2.24.0
+  last_updated: '2026-03-09'
+  corpus_sources:
+  - 'Corpus/Research/The Architecture of Persuasion: A Deep Synthesis of Visual Communication and Narrative Storytelling.md'
+  - 'Corpus/Research/The Canonical Presentation Lifecycle: A Strategic Methodology for High-Stakes Communication.md'
+  - 'Corpus/Research/Structural Paradigms in Natural Language Processing: A Comprehensive Analysis of Narrative Orchestration,
+    Discourse Integration, and Latent Evaluation.md'
+  - Corpus/Research/Crafting Powerful Opening Plays.md
+  - Corpus/Research/Research - Comprehensive Audience Analysis.md
+  - Corpus/Research/Research - Elite Speaker Linguistic Analysis Taxonomy.md
+  - Corpus/Research/Research - Visual Communication and Storytelling.md
+  - Corpus/Research/Research - Researching Narrative and Discourse Analysis.md
+  - Corpus/Research/SOAR Narrative Mapping by Sales Stage.md
+  - Corpus/Research/Research - Canonical Presentation Methodology Research.md
+  - Corpus/Research/Research - Presentation Delivery_ Ethos and Physicality.md
+  - Corpus/Research/Research - Personal Branding Framework for Early.md
+  - Corpus/Research/Research - Using Monroes Motivated Sequence.md
+  - Corpus/Research/Research - Using SOAR Storytelling most effectively.md
+  - Corpus/Research/Research - Advanced Computational Discourse Analysis_ Operationalizing Rhetorical Structure Theory with
+    LLM.md
+  - Corpus/Research/Research - Analyzing Story for Business Communication.md
+  - Corpus/Research/Research - The Anatomy of Presence.md
+  - Corpus/Research/Research - Vocal Profiling for Executive Coaching.md
+  - Corpus/Research/Storytelling_for_Different_Business_Personas.md
+  - Corpus/Research/Research - The Architecture of Influence_ A Comprehensive Multimodal Taxonomy of Elite vs. Average Public
+    Speaking.md
+  - Corpus/Research/Research - Visual Analysis of Slide Decks.md
+  - Corpus/Research/36_audience_analysis_and_persuasion.md
+  - Corpus/Research/Research - Voice Coaching and Clinical Analysis.md
+  - Corpus/Research/audience_analysis_for_presentations__how_to_know_your_audience_a.md
+  - Corpus/Research/Best-Practice Elevator Pitches.md
+  - Corpus/Research/Best Practices for Writing Corporate Training Video Scripts for Adult Learners.md
+  - Corpus/Research/tone_of_voice_guide.md
+  - Corpus/Research/Research - World-Class_Public_Speaking_Research.md
+  - Corpus/Research/Research - Public_Speaking_research.md
+  - Corpus/Research/research_-_mastering_presentation_nerves.md
+  - Corpus/Research/Research - Slide Deck Design Playbook Research.md
+  - Corpus/Research/research_-_elite_speaker_linguistic_analysis_taxonomy.md
+  - Corpus/Research/research_-_comprehensive_audience_analysis.md
+  - Corpus/Research/research_-_the_architecture_of_influence__a_comprehensive_multim.md
+  - Corpus/Research/Research - Best Video Script Prompts.md
+  academic_sources:
+  - Aristotle - Rhetoric
+  - Corbett & Connors (1998) - Classical Rhetoric for the Modern Student
+  - Fahnestock (1999) - Rhetorical Figures in Science
+  - Monroe (1935) - Motivated Sequence
+  relationships:
+  - target: taxonomy/rhetorical_devices_taxonomy.yaml
+    type: depends_on
+    description: Rhetorical device classification for entity label validation
+entity_types:
+  anaphora:
+    label: ANAPHORA
+    field_description: Anaphora repetition beginning of successive clauses we will we can I believe this is
+    description: Repetition of the same word or phrase at the start of successive clauses for emphasis
+    entity_kind: repetition_device
+    family: figures_of_speech
+    examples:
+    - We will build. We will scale. We will win.
+    - I believe in our people. I believe in our mission.
+    - This is about courage. This is about commitment.
+    - We can do more. We can deliver more. We can achieve more.
+    - Every customer deserves better. Every team deserves better. Every leader deserves better.
+    - Not about the technology. Not about the budget. Not about the timeline.
+    confidence_threshold: 0.72
+    field: rhetoric
+    indicators:
+    - We will
+    - We can
+    - We must
+    - I believe
+    - This is
+    - It is time
+    patterns:
+    - (We will \w+[.,]\s*){2,}
+    - (We can \w+[.,]\s*){2,}
+    - (I believe \w+[.,]\s*){2,}
+    color: '#e74c3c'
+    relates_to:
+    - target: epistrophe
+      relation: contrasts_with
+      weight: expected
+      description: Anaphora (start repetition) vs epistrophe (end repetition) — opposing repetition strategies
+    - target: tricolon
+      relation: enables
+      weight: optional
+      description: Anaphoric repetition can structure tricolons for rhythmic emphasis
+    - target: call_to_action
+      relation: supports
+      weight: expected
+      description: Anaphora (repetition of words at the beginning of successive clauses) amplifies and reinforces a call-to-action
+        by creating rhythm, emphasis, and memorability around the desired action.
+      target_file: narrative_entities
+    - target: anaphora_marker
+      relation: supports
+      weight: required
+      description: The rhetorical device of anaphora (repetition at clause beginnings) creates the anaphora_marker discourse
+        phenomenon. Elite speakers deliberately construct anaphoric patterns to build rhythm and trigger audience response.
+      target_file: discourse_entities
+    - target: narrative_tension
+      relation: triggers
+      weight: expected
+      description: "Anaphora builds a prosodic crescendo signaling to the audience when the climax is reached and is a primary trigger for applause generation per Elite Speaker Linguistic Analysis"
+      target_file: narrative_entities
+    - target: pathos_appeal
+      relation: enables
+      weight: expected
+      description: "Anaphora creates liturgical rhythm and collective identity through repetition enabling emotional engagement via the Mere Exposure Effect per Elite Speaker Linguistic Analysis"
+    - target: performance_tier
+      relation: enables
+      weight: expected
+      description: "Anaphora usage frequency and structural mastery differentiates performance tiers; elite speakers build prosodic crescendos that train audience response and trigger applause per elite_speaker_taxonomy"
+      target_file: performance_entities
+    taxonomy_mapping:
+    - taxonomy: rhetorical_devices_taxonomy
+      dimension: device_family
+      values:
+      - repetition
+      strength: primary
+    - taxonomy: rhetorical_devices_taxonomy
+      dimension: aristotelian_appeal
+      values:
+      - pathos
+      strength: secondary
+  epistrophe:
+    label: EPISTROPHE
+    field_description: Epistrophe repetition same word end of successive clauses matters counts works succeeds
+    description: Repetition of the same word or phrase at the end of successive clauses
+    entity_kind: repetition_device
+    family: figures_of_speech
+    examples:
+    - Every customer matters. Every deal matters. Every person matters.
+    - Speed counts. Accuracy counts. Trust counts.
+    - For the customer. For the company. For the future.
+    confidence_threshold: 0.7
+    field: rhetoric
+    indicators:
+    - matters
+    - counts
+    - works
+    - succeeds
+    patterns:
+    - (\w+ \w+\.\s*){2,}\1
+    color: '#c0392b'
+    relates_to:
+    - target: anaphora
+      relation: contrasts_with
+      weight: expected
+      description: Epistrophe (end repetition) vs anaphora (start repetition)
+    - target: rhetorical_pattern
+      relation: supports
+      weight: optional
+      description: Epistrophe (repetition at clause ends) creates rhythmic closure and emphasis. When paired with anaphora,
+        it creates powerful symmetrical patterns that enhance memorability and persuasive impact.
+      target_file: performance_entities
+    - target: logos_appeal
+      relation: supports
+      weight: expected
+      description: "Epistrophe's repetitive end-position emphasis creates logical cumulation — each clause builds on the prior, reinforcing the rational argument structure per Ethos and Physicality research"
+    taxonomy_mapping:
+    - taxonomy: rhetorical_devices_taxonomy
+      dimension: device_family
+      values:
+      - repetition
+      strength: primary
+  tricolon:
+    label: TRICOLON
+    field_description: Tricolon rule of three three parallel words phrases clauses speed quality cost faster better cheaper
+    description: Three parallel words, phrases, or clauses creating rhythm and memorability
+    entity_kind: repetition_device
+    family: figures_of_speech
+    examples:
+    - speed, quality, and cost
+    - faster, better, cheaper
+    - plan, execute, and deliver
+    - people, process, and technology
+    - simple, scalable, and secure
+    - reduce costs, improve quality, and increase speed
+    - discover, design, and deploy
+    - connect, engage, and convert
+    confidence_threshold: 0.72
+    field: rhetoric
+    indicators:
+    - ', and'
+    - ', or'
+    patterns:
+    - \w+,\s+\w+,\s+and\s+\w+
+    - \w+,\s+\w+,\s+or\s+\w+
+    - \w+er,\s+\w+er,\s+\w+er
+    color: '#e67e22'
+    relates_to:
+    - target: anaphora
+      relation: supported_by
+      weight: optional
+      description: Tricolons are often structured with anaphoric repetition
+    - target: tricolon_marker
+      relation: supports
+      weight: required
+      description: The tricolon device (three parallel elements) creates the tricolon_marker discourse phenomenon. It satisfies
+        the brain's pattern recognition while respecting working memory limits. 'Government of the people, by the people,
+        for the people' exemplifies this device.
+      target_file: discourse_entities
+    - target: working_memory_marker
+      relation: supports
+      weight: required
+      description: "The Rule of Three satisfies the brain's desire for order without overwhelming working memory as three is the smallest number to create a pattern per Elite Speaker Linguistic Analysis"
+      target_file: cognitive_load_entities
+    - target: narrative_hook
+      relation: enables
+      weight: expected
+      description: "Tricolon meta-structure like Just three stories reduces audience cognitive load by providing a structural promise per Elite Speaker Linguistic Analysis"
+      target_file: narrative_entities
+    - target: pause_marker
+      relation: supported_by
+      weight: expected
+      description: "Tricolon delivery requires strategic pauses between each of the three elements to create rhythmic separation and audience processing time per Ethos and Physicality research"
+      target_file: performance_entities
+    - target: value_proposition
+      relation: supports
+      weight: expected
+      description: "Tricolon structures value propositions into memorable three-part packages — 'save time, cut costs, boost results' — creating rhythm that aids retention per Best-Practice Elevator Pitches"
+      target_file: narrative_entities
+    - target: layout_pattern
+      relation: supported_by
+      weight: optional
+      description: "Tricolon (rule of three) is visually supported by the 3-pillar layout pattern with equal-width columns for icons + labels + descriptions per Slide Deck Design Playbook"
+      target_file: visual_elements_entities
+    - target: performance_tier
+      relation: enables
+      weight: expected
+      description: "Tricolon mastery enables higher performance tiers through rhythmic persuasion; the Rule of Three creates a pattern that signals completeness and satisfies the brain's desire for order per elite_speaker_taxonomy"
+      target_file: performance_entities
+    taxonomy_mapping:
+    - taxonomy: rhetorical_devices_taxonomy
+      dimension: device_family
+      values:
+      - repetition
+      - balance
+      strength: primary
+    - taxonomy: rhetorical_devices_taxonomy
+      dimension: power_level
+      values:
+      - very_high
+      strength: primary
+  chiasmus:
+    label: CHIASMUS
+    field_description: Chiasmus reversed parallel grammatical structure A B B A crossing inverted mirror
+    description: Two phrases where the second reverses the grammatical structure of the first (A-B / B-A)
+    entity_kind: balance_device
+    family: figures_of_speech
+    examples:
+    - We don't sell products; products sell us.
+    - Ask not what the company can do for you, but what you can do for the company.
+    - When the going gets tough, the tough get going.
+    - Work to live, not live to work.
+    - Your customer doesn't buy technology; technology buys your customer's trust.
+    confidence_threshold: 0.65
+    field: rhetoric
+    indicators:
+    - not
+    - but
+    patterns:
+    - \w+ \w+ \w+; \w+ \w+ \w+
+    color: '#8e44ad'
+    relates_to:
+    - target: antithesis
+      relation: contrasts_with
+      weight: expected
+      description: Chiasmus (ABBA reversal) vs antithesis (opposing ideas) — different balance techniques
+    - target: ethos_appeal
+      relation: supports
+      weight: expected
+      description: "Chiasmus demonstrates intellectual sophistication and verbal mastery, directly reinforcing speaker credibility and ethos per Ethos and Physicality research"
+    taxonomy_mapping:
+    - taxonomy: rhetorical_devices_taxonomy
+      dimension: device_family
+      values:
+      - balance
+      strength: primary
+    - taxonomy: rhetorical_devices_taxonomy
+      dimension: power_level
+      values:
+      - very_high
+      strength: primary
+  antithesis:
+    label: ANTITHESIS
+    field_description: Antithesis contrasting opposing ideas side by side parallel not failure but success not cost but investment
+    description: Juxtaposition of contrasting ideas in parallel grammatical structure
+    entity_kind: balance_device
+    family: figures_of_speech
+    examples:
+    - Not a cost, but an investment.
+    - Not failure, but a learning opportunity.
+    - We don't manage change; we create it.
+    - Short-term pain, long-term gain.
+    - Risk is not the enemy; stagnation is.
+    - This isn't a question of if. It's a question of when.
+    - Not the status quo. A better path forward.
+    confidence_threshold: 0.7
+    field: rhetoric
+    indicators:
+    - Not a
+    - Not failure
+    - not the enemy
+    - but a
+    patterns:
+    - Not \w+, but \w+
+    - not \w+; \w+
+    - short-term \w+, long-term \w+
+    color: '#2980b9'
+    relates_to:
+    - target: chiasmus
+      relation: contrasts_with
+      weight: expected
+      description: Antithesis (opposing ideas) vs chiasmus (ABBA structure)
+    - target: contrast_marker
+      relation: specialises
+      weight: expected
+      description: Antithesis is a rhetorically refined form of discourse contrast
+      target_file: discourse_entities
+    - target: contrast_hook
+      relation: supports
+      weight: expected
+      description: "Antithesis directly supports contrast hooks by juxtaposing two opposing ideas to create tension per Analyzing Story for Business Communication"
+      target_file: opening_hooks_entities
+    taxonomy_mapping:
+    - taxonomy: rhetorical_devices_taxonomy
+      dimension: device_family
+      values:
+      - balance
+      strength: primary
+  rhetorical_question:
+    label: RHETORICAL_QUESTION
+    field_description: Rhetorical question asked for effect not answer what if why how imagine have you ever
+    description: Question posed for persuasive or stylistic effect, not expecting a direct answer
+    entity_kind: engagement_device
+    family: structural_persuasion
+    examples:
+    - What if we could cut costs in half?
+    - Why do 70% of transformations fail?
+    - How can we ignore this opportunity?
+    - Have you ever wondered why customers leave?
+    - Isn't it time we changed?
+    - Who wouldn't want faster results?
+    confidence_threshold: 0.75
+    field: rhetoric
+    indicators:
+    - What if
+    - Why do
+    - How can
+    - Have you ever
+    - Isn't it time
+    - Who wouldn't
+    - '?'
+    patterns:
+    - What if \w+\?
+    - Why do \w+\?
+    - How can \w+\?
+    - Have you ever \w+\?
+    color: '#f39c12'
+    relates_to:
+    - target: narrative_hook
+      relation: specialises
+      weight: optional
+      description: Rhetorical questions can function as narrative hooks
+      target_file: narrative_entities
+    - target: question_hook
+      relation: enables
+      weight: expected
+      description: Rhetorical questions are the device underlying question-based hooks
+      target_file: opening_hooks_entities
+    - target: engagement_cue
+      relation: supports
+      weight: required
+      description: Rhetorical questions engage audiences by forcing active cognitive participation. They create cognitive
+        engagement and prompt internal dialogue, increasing receptiveness to subsequent content.
+      target_file: delivery_entities
+    - target: narrative_tension
+      relation: triggers
+      weight: expected
+      description: Rhetorical questions trigger narrative tension by posing unresolved questions that create cognitive gaps the
+        audience must close per Crafting Powerful Opening Plays
+      target_file: narrative_entities
+    - target: monroe_sequence_marker
+      relation: supports
+      weight: optional
+      description: "Rhetorical questions serve as attention hooks in MMS's opening stage and as engagement devices throughout per Monroe's Motivated Sequence research"
+    - target: germane_load_marker
+      relation: triggers
+      weight: expected
+      description: "Rhetorical questions directly trigger germane cognitive processing by forcing learners to mentally formulate answers, switching from passive reception to active schema construction per Video Scripts Best Practices"
+      target_file: cognitive_load_entities
+    - target: authority_opener
+      relation: supports
+      weight: optional
+      description: "Rhetorical questions support authority openers — posing a compelling question within or before an authority opening creates cognitive engagement that amplifies the declarative impact (Mastering Presentation Nerves)"
+      target_file: performance_entities
+    - target: question_hook
+      relation: bridges
+      weight: optional
+      description: "Rhetorical questions serve dual duty as engagement devices and opening hook variants (Best Video Script Prompts)"
+      target_file: opening_hooks_entities
+    taxonomy_mapping:
+    - taxonomy: rhetorical_devices_taxonomy
+      dimension: device_family
+      values:
+      - engagement
+      strength: primary
+    - taxonomy: rhetorical_devices_taxonomy
+      dimension: aristotelian_appeal
+      values:
+      - pathos
+      strength: secondary
+  inclusive_we:
+    label: INCLUSIVE_WE
+    field_description: Inclusive we our us together collective audience speaker unity we can together we achieve
+    description: Use of 'we', 'our', 'us' to create shared identity between speaker and audience
+    entity_kind: engagement_device
+    family: structural_persuasion
+    examples:
+    - We are at a turning point.
+    - Our shared mission is growth.
+    - Together we can transform this market.
+    - This is our opportunity.
+    - We all know the challenge.
+    - Let us be clear about what's at stake.
+    confidence_threshold: 0.65
+    field: rhetoric
+    indicators:
+    - We are
+    - 'Our '
+    - Together we
+    - Let us
+    - All of us
+    patterns:
+    - We are \w+
+    - Our \w+ is
+    - Together we \w+
+    - Let us \w+
+    color: '#27ae60'
+    relates_to:
+    - target: customer_hero
+      relation: supports
+      weight: expected
+      description: The 'inclusive we' rhetorical device positions the speaker and audience as allies, supporting the narrative
+        of the customer as the hero with the vendor as a partner.
+      target_file: character_archetypes_entities
+    - target: facilitation_technique
+      relation: supports
+      weight: required
+      description: Inclusive 'we' pronouns facilitate audience connection by dissolving the barrier between speaker and audience.
+        They create shared identity and collective purpose, increasing buy-in and receptiveness.
+      target_file: delivery_entities
+    - target: pathos_appeal
+      relation: enables
+      weight: expected
+      description: "Replacing abstract 'one' or passive 'it' with inclusive 'we' or direct 'you' increases warmth and Linguistic Style Matching, enabling emotional connection per Architecture of Influence"
+    - target: mixed_audience
+      relation: enables
+      weight: expected
+      description: "Inclusive we enables cohesion in mixed audiences by tying diverse needs back to a common goal per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    - target: ethos_appeal
+      relation: supports
+      weight: expected
+      description: "Inclusive We dissolves the barrier between stage and audience signaling high warmth and shared identity creating trust per Elite Speaker Linguistic Analysis"
+    - target: engagement_cue
+      relation: enables
+      weight: expected
+      description: "Inclusive We enables audience engagement by simulating dialogue and shared participation creating shared mental space per Elite Speaker Linguistic Analysis"
+      target_file: delivery_entities
+    - target: engagement_marker
+      relation: triggers
+      weight: expected
+      description: "Inclusive 'we' triggers engagement markers — shared ownership framing (we explore, we'll discuss, your brand) creates collaborative participation per Personal Branding Framework"
+      target_file: stance_markers_entities
+    - target: monroe_sequence_marker
+      relation: supports
+      weight: optional
+      description: "Inclusive 'we' personalises the MMS narrative, positioning instructor as partner rather than lecturer, enhancing emotional connection per Monroe's Motivated Sequence research"
+    - target: audience_pain_point
+      relation: bridges
+      weight: optional
+      description: "Inclusive we bridges speaker to audience pain points through identification — highlighting shared concerns creates connection that surfaces mutual pain per Audience Analysis and Persuasion"
+      target_file: audience_entities
+    - target: engagement_marker
+      relation: supports
+      weight: expected
+      description: "Research prescribes changing abstract 'one' or passive 'it' to inclusive 'we' or direct 'you' to increase Linguistic Style Matching (LSM) and warmth signaling (Architecture of Influence, Part 2 Constraint #4)"
+      target_file: stance_markers_entities
+    taxonomy_mapping:
+    - taxonomy: rhetorical_devices_taxonomy
+      dimension: device_family
+      values:
+      - engagement
+      strength: primary
+    - taxonomy: rhetorical_devices_taxonomy
+      dimension: aristotelian_appeal
+      values:
+      - ethos
+      strength: secondary
+  hyperbole:
+    label: HYPERBOLE
+    field_description: Hyperbole deliberate exaggeration billions of customers thousands of hours transforming entire industry
+    description: Deliberate overstatement used for emphasis or dramatic effect
+    entity_kind: amplification_device
+    family: figures_of_speech
+    examples:
+    - This will transform the entire industry.
+    - We've saved thousands of hours.
+    - Customers love us more than ever.
+    - This is the biggest opportunity in a decade.
+    - Every single customer wants this.
+    confidence_threshold: 0.65
+    field: rhetoric
+    indicators:
+    - entire industry
+    - every single
+    - thousands of
+    - the biggest
+    - more than ever
+    - transform everything
+    patterns:
+    - entire \w+
+    - every single \w+
+    - the biggest \w+ in
+    - more than ever
+    color: '#e74c3c'
+    relates_to:
+    - target: claim
+      relation: limits
+      weight: optional
+      description: Hyperbolic framing can undermine claim credibility if overused
+      target_file: narrative_entities
+    - target: pathos_appeal
+      relation: enables
+      weight: optional
+      description: Hyperbole enables pathos appeals by amplifying emotional stakes through deliberate overstatement, making the
+        audience feel the magnitude of an issue per Crafting Powerful Opening Plays
+    taxonomy_mapping:
+    - taxonomy: rhetorical_devices_taxonomy
+      dimension: device_family
+      values:
+      - amplification
+      strength: primary
+    - taxonomy: rhetorical_devices_taxonomy
+      dimension: aristotelian_appeal
+      values:
+      - pathos
+      strength: primary
+  metaphor:
+    label: METAPHOR
+    field_description: Metaphor implicit comparison is a bridge journey foundation engine catalyst fuel ecosystem
+    description: Implicit comparison asserting one thing is another to illuminate meaning
+    entity_kind: comparison_device
+    family: figures_of_speech
+    examples:
+    - Data is the new oil.
+    - Our platform is a catalyst for growth.
+    - The roadmap is a bridge to the future.
+    - We are the engine of this transformation.
+    - Innovation is in our DNA.
+    - This is the foundation of our strategy.
+    confidence_threshold: 0.65
+    field: rhetoric
+    indicators:
+    - is the new
+    - is a catalyst
+    - is a bridge
+    - is in our DNA
+    - is the engine
+    - is the foundation
+    patterns:
+    - \w+ is the new \w+
+    - \w+ is a \w+ for
+    - is in our DNA
+    color: '#16a085'
+    relates_to:
+    - target: simile
+      relation: contrasts_with
+      weight: expected
+      description: Metaphor (implicit comparison) vs simile (explicit like/as comparison)
+    - target: analogy
+      relation: supported_by
+      weight: optional
+      description: Metaphors can be grounded by underlying analogical reasoning
+      target_file: evidence_types_entities
+    - target: visionary_bundle
+      relation: supports
+      weight: required
+      description: Metaphors are foundational to visionary rhetoric. They allow speakers to map inference structures from
+        known domains to abstract concepts, creating compelling frames. Metaphor density is significantly higher in elite
+        visionary speech (e.g., Jobs' 'bicycle for the mind').
+      target_file: discourse_entities
+    - target: story_hook
+      relation: supports
+      weight: expected
+      description: Metaphors support story hooks by providing vivid imagery that makes opening narratives more compelling and
+        memorable per Crafting Powerful Opening Plays
+      target_file: opening_hooks_entities
+    - target: claim
+      relation: supports
+      weight: expected
+      description: "Metaphors allow the speaker to export inference structure of a known domain to an unknown domain and by choosing the metaphor frame the debate per Elite Speaker Linguistic Analysis"
+      target_file: narrative_entities
+    - target: germane_load_marker
+      relation: supports
+      weight: expected
+      description: "Elite speakers use high metaphor density when explaining abstract concepts exporting known domain inference structures to support germane schema construction per Elite Speaker Linguistic Analysis"
+      target_file: cognitive_load_entities
+    - target: semiotic_arrangement
+      relation: supported_by
+      weight: expected
+      description: "Metaphors in visual storytelling rely on semiotic symbolic signs where meaning is culturally learned not logically connected per Visual Communication and Storytelling"
+      target_file: visual_elements_entities
+    - target: power_verb
+      relation: enables
+      weight: expected
+      description: "Metaphorical framing activates dynamic verbs (ignite, shatter, bridge) that carry the figurative meaning — metaphors enable power verb selection per Ethos and Physicality research"
+      target_file: performance_entities
+    - target: value_proposition
+      relation: supports
+      weight: expected
+      description: "Metaphors support value propositions — 'Brand You', 'personal brand is the steering wheel', 'product in perpetual beta' make abstract brand concepts tangible per Personal Branding Framework"
+      target_file: narrative_entities
+    - target: pathos_appeal
+      relation: supports
+      weight: expected
+      description: "Metaphors support pathos appeal; vivid metaphors ('auditory face' for the voice, 'cognitive fingerprint' for gait) create emotional resonance and understanding per Anatomy of Presence research"
+    - target: visual_narrative_element
+      relation: enables
+      weight: expected
+      description: "Visual metaphors enable visual narrative elements — bubble charts for market containment, flow diagrams for transformation arcs — creating meaning through semiotic visual representation per Visual Analysis of Slide Decks"
+      target_file: visual_elements_entities
+    - target: working_memory_marker
+      relation: supports
+      weight: expected
+      description: "Metaphors support working memory by mapping abstract concepts onto familiar concrete domains; exporting inference structure from a known source domain reduces cognitive processing demands per elite_speaker_taxonomy"
+      target_file: cognitive_load_entities
+    - target: performance_tier
+      relation: enables
+      weight: expected
+      description: "Metaphor density and originality are key markers differentiating performance tiers; elite speakers use significantly higher metaphor density when explaining abstract concepts per elite_speaker_taxonomy"
+      target_file: performance_entities
+    taxonomy_mapping:
+    - taxonomy: rhetorical_devices_taxonomy
+      dimension: device_family
+      values:
+      - comparison
+      strength: primary
+    - taxonomy: rhetorical_devices_taxonomy
+      dimension: power_level
+      values:
+      - high
+      strength: primary
+  simile:
+    label: SIMILE
+    field_description: Simile explicit comparison like as similar to think of it as works like acts like
+    description: Explicit comparison using 'like' or 'as' to aid understanding
+    entity_kind: comparison_device
+    family: figures_of_speech
+    examples:
+    - Think of it like a flywheel.
+    - It works like a GPS for your business.
+    - Our platform acts like a nervous system.
+    - As fast as flipping a switch.
+    - Like adding fuel to a fire.
+    confidence_threshold: 0.7
+    field: rhetoric
+    indicators:
+    - Think of it like
+    - works like
+    - acts like
+    - similar to
+    - like a
+    - as fast as
+    patterns:
+    - Think of it like \w+
+    - works like \w+
+    - acts like \w+
+    - like \w+ing \w+
+    color: '#1abc9c'
+    relates_to:
+    - target: metaphor
+      relation: contrasts_with
+      weight: expected
+      description: Simile (explicit like/as) vs metaphor (implicit comparison)
+    taxonomy_mapping:
+    - taxonomy: rhetorical_devices_taxonomy
+      dimension: device_family
+      values:
+      - comparison
+      strength: primary
+  logos_appeal:
+    label: LOGOS_APPEAL
+    field_description: Logos logical rational evidence appeal data shows research proves statistics indicate because therefore
+    description: Appeal to logic using data, evidence, reasoning, or statistics
+    entity_kind: appeal
+    family: aristotelian_appeals
+    examples:
+    - Data shows 80% of customers report faster results.
+    - Research proves that early adopters achieve 3x ROI.
+    - The numbers speak for themselves.
+    - By that logic, the risk outweighs the return.
+    - Because of these findings, we recommend...
+    - Therefore, the conclusion is clear.
+    confidence_threshold: 0.7
+    field: rhetoric
+    indicators:
+    - data shows
+    - research proves
+    - statistics indicate
+    - evidence suggests
+    - the numbers
+    - by that logic
+    - therefore
+    - consequently
+    patterns:
+    - data shows \w+
+    - research \w+ that
+    - the numbers \w+
+    - evidence \w+ that
+    color: '#2980b9'
+    relates_to:
+    - target: ethos_appeal
+      relation: contrasts_with
+      weight: expected
+      description: Logos (logic/evidence) vs ethos (credibility/authority) — different persuasion modes
+    - target: pathos_appeal
+      relation: contrasts_with
+      weight: expected
+      description: Logos (logic) vs pathos (emotion) — different persuasion modes
+    - target: evidence
+      relation: supported_by
+      weight: required
+      description: Logos appeals require evidence to function
+      target_file: narrative_entities
+    - target: data_statistic
+      relation: supported_by
+      weight: required
+      description: Logos appeals require logical evidence, typically data and statistics, to establish credibility and rational
+        support for claims.
+      target_file: evidence_types_entities
+    - target: clarity_dimension
+      relation: supports
+      weight: required
+      description: Logos (logical appeal) relies on clarity for effectiveness. Clear structure, explicit reasoning, and unambiguous
+        evidence are required for logical appeals to persuade. Low clarity undermines logos-based arguments.
+      target_file: scoring_entities
+    - target: statistic_hook
+      relation: supported_by
+      weight: expected
+      description: Logos appeals are supported by statistic hooks which provide the data-driven opening that establishes rational
+        credibility from the first moment per Crafting Powerful Opening Plays
+      target_file: opening_hooks_entities
+    - target: technical_audience
+      relation: enables
+      weight: expected
+      description: "Logos appeals enable persuasion of technical audiences who require central-route processing with detailed data and rigorous analysis per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    - target: chart_type
+      relation: supported_by
+      weight: expected
+      description: "Logos appeals in data storytelling are supported by chart types that transform raw data into interpretable visual evidence per Visual Communication and Storytelling"
+      target_file: visual_elements_entities
+    - target: cause_marker
+      relation: contains
+      weight: expected
+      description: "RSTformer RST relations show logos appeals structurally contain causal reasoning markers as their discourse-level realization per Researching Narrative and Discourse Analysis"
+      target_file: discourse_entities
+    - target: claim
+      relation: supports
+      weight: expected
+      description: "RST nucleus-satellite structure shows logos appeals provide logical support to claims per Researching Narrative and Discourse Analysis"
+      target_file: narrative_entities
+    - target: monroe_sequence_marker
+      relation: supports
+      weight: expected
+      description: "Logos grounds MMS: data validates Need, research citations support Satisfaction, and evidence-based projections strengthen Visualization per Monroe's Motivated Sequence research"
+    - target: nonverbal_cue
+      relation: supported_by
+      weight: expected
+      description: "Logos appeal is supported by nonverbal cues; biomechanical efficiency, symmetry of movement, and economy of gesture signal control and predictability per Anatomy of Presence research"
+      target_file: performance_entities
+    - target: audience_kpi
+      relation: supported_by
+      weight: expected
+      description: "Logos appeals for each persona are grounded in role-specific KPIs — ROI metrics for marketing leaders, TCO for IT leaders per Storytelling for Different Business Personas"
+      target_file: audience_entities
+    - target: audience_objection
+      relation: rebuts
+      weight: expected
+      description: "Strong logical reasons and evidence-based arguments rebut objections from hostile audiences who question claims and defend their views per audience_analysis_for_presentations"
+      target_file: audience_entities
+    - target: result_marker
+      relation: supports
+      weight: expected
+      description: "Logos appeals support result markers by providing logical evidence and data-driven proof of outcomes per SOAR Narrative Mapping by Sales Stage"
+      target_file: sales_entities
+    - target: pause_marker
+      relation: supported_by
+      weight: expected
+      description: "Logos appeal is enhanced by pause markers that allow audience to process evidence and follow logical structure of arguments per World-Class Public Speaking Research"
+      target_file: performance_entities
+    - target: claim
+      relation: contains
+      weight: required
+      description: "Logos appeal is composed of logical arguments — the Argument Track validates logos through claim-evidence graphs and Toulmin completeness per UNIFIED_NARRATIVE_METHODOLOGY_v2"
+      target_file: narrative_entities
+    - target: evidence
+      relation: contains
+      weight: required
+      description: "Logos appeal requires factual evidence as a structural component — Phase 5 validates logos = claim + evidence in rhetorical balance analysis per UNIFIED_NARRATIVE_METHODOLOGY_v2"
+      target_file: narrative_entities
+    - target: technical_buyer
+      relation: supports
+      weight: expected
+      description: "Logos appeals with data, evidence, and technical specifications directly support technical buyer evaluation criteria requiring rigorous proof-of-concept evidence per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    taxonomy_mapping:
+    - taxonomy: rhetorical_devices_taxonomy
+      dimension: aristotelian_appeal
+      values:
+      - logos
+      strength: primary
+  ethos_appeal:
+    label: ETHOS_APPEAL
+    field_description: Ethos credibility authority appeal trusted leader expert years experience industry-recognised proven
+      track record
+    description: Appeal to credibility, authority, or trustworthiness of speaker or source
+    entity_kind: appeal
+    family: aristotelian_appeals
+    examples:
+    - With 20 years in this industry...
+    - As the recognised leader in...
+    - Our track record speaks for itself.
+    - Trusted by over 10,000 customers.
+    - As experts in AI transformation...
+    - Industry analysts have confirmed...
+    confidence_threshold: 0.7
+    field: rhetoric
+    indicators:
+    - years of experience
+    - recognised leader
+    - track record
+    - trusted by
+    - as experts
+    - analysts have
+    - proven
+    patterns:
+    - \d+ years \w+ \w+
+    - trusted by \w+
+    - recognised leader in
+    - track record
+    color: '#8e44ad'
+    relates_to:
+    - target: logos_appeal
+      relation: contrasts_with
+      weight: expected
+      description: Ethos (credibility) vs logos (logic) — different persuasion modes
+    - target: pathos_appeal
+      relation: contrasts_with
+      weight: expected
+      description: Ethos (credibility) vs pathos (emotion) — different persuasion modes
+    - target: expert_testimony
+      relation: supported_by
+      weight: expected
+      description: Ethos appeals leverage credibility and authority, which require expert testimony, personal credibility
+        markers, or institutional validation as supporting evidence.
+      target_file: evidence_types_entities
+    - target: narrative_quality_dimension
+      relation: supports
+      weight: required
+      description: Ethos (credibility appeal) is built through narrative consistency, vulnerability disclosure, and demonstrated
+        expertise. The quality of narrative elements (story structure, evidence integration, voice authenticity) determines
+        ethos effectiveness.
+      target_file: scoring_entities
+    - target: customer_story
+      relation: supported_by
+      weight: expected
+      description: "Ethos appeals are supported by customer stories and peer testimonials that build trust through social proof per Comprehensive Audience Analysis"
+      target_file: evidence_types_entities
+    - target: position_marker
+      relation: supported_by
+      weight: expected
+      description: "Ethos appeals are supported by position markers — declarative brand statements asserting expertise and authority establish the speaker's credibility position per Personal Branding Framework"
+      target_file: stance_markers_entities
+    - target: nonverbal_cue
+      relation: supported_by
+      weight: expected
+      description: "Ethos credibility is physically embodied through posture, gesture, and eye contact — confident nonverbal cues directly reinforce perceived authority per Ethos and Physicality research"
+      target_file: performance_entities
+    - target: value_proposition
+      relation: supports
+      weight: expected
+      description: "Ethos (credibility) supports value propositions — demonstrating leadership and innovation elevates the story beyond a simple fix, building trust that validates the value offered per SOAR Storytelling research"
+      target_file: narrative_entities
+    - target: attribution_marker
+      relation: supports
+      weight: expected
+      description: Ethos appeal is supported by attribution markers — RST Attribution relation marks source credibility and
+        authority which is the mechanism through which ethos operates per Advanced Computational Discourse Analysis research
+      target_file: discourse_entities
+    - target: personal_anecdote
+      relation: supported_by
+      weight: expected
+      description: "Ethos appeals are supported by personal anecdotes which demonstrate the speaker's direct experience and credibility per Analyzing Story for Business Communication"
+      target_file: evidence_types_entities
+    - target: performance_tier
+      relation: supported_by
+      weight: expected
+      description: "Perceived credibility (ethos) is directly supported by vocal performance tier — charismatic vocal quality (wide F0 range, high Alpha Ratio, strategic pausing) correlates with leadership perception per Voice Coaching and Clinical Analysis"
+      target_file: performance_entities
+    - target: confidence_technique
+      relation: supported_by
+      weight: expected
+      description: "A confident speaker is perceived as more accurate, knowledgeable, and believable — confidence directly supports ethos/credibility per Public Speaking research"
+      target_file: delivery_entities
+    - target: power_verb
+      relation: supported_by
+      weight: expected
+      description: "Ethos appeal is supported by power verbs (spearheaded, ignited, transformed) that project authority and competence; dynamic verb usage primes audiences to view the speaker as an agent of change per elite_speaker_taxonomy"
+      target_file: performance_entities
+    - target: champion
+      relation: supports
+      weight: expected
+      description: "Ethos credibility directly supports champion advocacy — champions need to trust the vendor's authority and track record to stake their internal reputation on a recommendation per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    taxonomy_mapping:
+    - taxonomy: rhetorical_devices_taxonomy
+      dimension: aristotelian_appeal
+      values:
+      - ethos
+      strength: primary
+  pathos_appeal:
+    label: PATHOS_APPEAL
+    field_description: Pathos emotional resonance imagine picture yourself story of real person impact on lives pain fear
+      hope
+    description: Appeal to emotions through storytelling, imagery, or connection to human experience
+    entity_kind: appeal
+    family: aristotelian_appeals
+    examples:
+    - Imagine the impact on your team.
+    - Picture yourself six months from now.
+    - Let me tell you about one customer.
+    - Their fear was real. Ours can be too.
+    - This isn't just about cost. It's about people.
+    - Every day we wait, someone suffers.
+    confidence_threshold: 0.68
+    field: rhetoric
+    indicators:
+    - 'Imagine '
+    - Picture yourself
+    - Let me tell you about
+    - This isn't just about
+    - Every day we wait
+    - It's about people
+    patterns:
+    - Imagine \w+
+    - Picture yourself \w+
+    - Let me tell you about \w+
+    - This isn't just about
+    color: '#e74c3c'
+    relates_to:
+    - target: logos_appeal
+      relation: contrasts_with
+      weight: expected
+      description: Pathos (emotion) vs logos (logic) — different persuasion modes
+    - target: ethos_appeal
+      relation: contrasts_with
+      weight: expected
+      description: Pathos (emotion) vs ethos (credibility) — different persuasion modes
+    - target: customer_story
+      relation: supported_by
+      weight: expected
+      description: Pathos appeals create emotional connection and require human stories (customer stories, personal anecdotes)
+        as supporting evidence to activate empathy.
+      target_file: evidence_types_entities
+    - target: engagement_dimension
+      relation: supports
+      weight: required
+      description: Pathos (emotional appeal) directly drives engagement dimension scores. Stories, metaphors, and sensory
+        language that resonate emotionally increase audience attention and retention. High pathos creates high engagement.
+      target_file: scoring_entities
+    - target: story_hook
+      relation: supported_by
+      weight: expected
+      description: Pathos appeals are supported by story hooks which create emotional engagement through narrative openings that
+        activate empathy and personal connection per Crafting Powerful Opening Plays
+      target_file: opening_hooks_entities
+    - target: personal_anecdote
+      relation: supported_by
+      weight: expected
+      description: "Pathos appeals are supported by personal anecdotes using vulnerability and first-person experience for emotional connection per Comprehensive Audience Analysis"
+      target_file: evidence_types_entities
+    - target: novice_learner
+      relation: enables
+      weight: expected
+      description: "Pathos appeals enable engagement of novice learners through encouraging mentor-like tone and support assurances per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    - target: visual_narrative_element
+      relation: supported_by
+      weight: expected
+      description: "Pathos appeals are manufactured through synchronized visual and emotional arcs creating emotional resonance in audiences per Visual Communication and Storytelling"
+      target_file: visual_elements_entities
+    - target: narrative_tension
+      relation: supported_by
+      weight: expected
+      description: "Pathos emotional engagement is driven by narrative tension which triggers norepinephrine for focused attention per Visual Communication and Storytelling"
+      target_file: narrative_entities
+    - target: monroe_sequence_marker
+      relation: supports
+      weight: expected
+      description: "Pathos is woven throughout MMS — emotional language in Need creates urgency, vivid imagery in Visualization builds desire, and empathetic encouragement in Action drives follow-through per Monroe's Motivated Sequence research"
+    - target: nonverbal_cue
+      relation: supported_by
+      weight: required
+      description: "Pathos appeal is supported by nonverbal cues; facial expressions (Duchenne smile), open gestures, and vocal warmth create emotional connection and psychological safety per Anatomy of Presence research"
+      target_file: performance_entities
+    - target: engagement_marker
+      relation: triggers
+      weight: expected
+      description: "Pathos enthusiasm ('This is where the magic of storytelling kicks in') and encouragement ('You might not get it perfect the first time') directly trigger audience engagement per tone_of_voice_guide"
+      target_file: stance_markers_entities
+    - target: emphasis_marker
+      relation: supported_by
+      weight: expected
+      description: "Pathos appeal is supported by emphasis markers (intensity/pitch variability); the Steve Jobs Effect shows extreme dynamic range is the acoustic signature of passion per Vocal Profiling research"
+      target_file: performance_entities
+    - target: opportunity_marker
+      relation: supports
+      weight: optional
+      description: "Pathos appeals support opportunity markers by creating emotional resonance around the potential for positive change per SOAR Narrative Mapping by Sales Stage"
+      target_file: sales_entities
+    - target: narrative_hook
+      relation: supported_by
+      weight: expected
+      description: "Personal stories and vivid examples directly engage audience emotion — storytelling hooks support pathos per Public Speaking research"
+      target_file: narrative_entities
+    - target: audience_pain_point
+      relation: triggers
+      weight: expected
+      description: "Pathos appeals trigger audience pain point recognition — emotional storytelling activates empathy and makes abstract pain points feel personally relevant per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    taxonomy_mapping:
+    - taxonomy: rhetorical_devices_taxonomy
+      dimension: aristotelian_appeal
+      values:
+      - pathos
+      strength: primary
+  visionary_bundle:
+    label: VISIONARY_BUNDLE
+    field_description: Visionary engagement bundle I want to show let me tell you imagine if here is the thing what I want
+      to
+    description: 4-word formulaic phrase characteristic of engaging, visionary speakers
+    entity_kind: lexical_bundle
+    family: register_markers
+    examples:
+    - I want to show you something.
+    - Let me tell you a story.
+    - Imagine if you could...
+    - Picture this scenario.
+    - Here is the thing.
+    - What I want you to take away...
+    - This is why we do what we do.
+    confidence_threshold: 0.72
+    field: rhetoric
+    indicators:
+    - I want to show
+    - Let me tell
+    - Imagine if
+    - Picture this
+    - Here is the
+    - What I want
+    - This is why we
+    patterns:
+    - I want to (show|tell) you
+    - Let me (tell|show) you
+    - Imagine if \w+
+    - Picture this
+    - Here is the thing
+    color: '#27ae60'
+    relates_to:
+    - target: academic_bundle
+      relation: contrasts_with
+      weight: expected
+      description: Visionary (inspirational) vs academic (formal) register markers
+      target_file: discourse_entities
+    - target: progressive_disclosure_marker
+      relation: enables
+      weight: optional
+      description: "Visionary bundles ('I want to show you', 'Let me tell you') enable progressive disclosure by guiding audience attention sequentially through content per Architecture of Influence"
+      target_file: cognitive_load_entities
+    - target: opportunity_marker
+      relation: supports
+      weight: expected
+      description: "Visionary bundles support opportunity markers by articulating aspirational future-state language that frames the sales opportunity per SOAR Narrative Mapping by Sales Stage"
+      target_file: sales_entities
+    - target: lexical_bundle
+      relation: specialises
+      weight: required
+      description: "Visionary bundles are a specialised category of lexical bundles found in elite speakers; discourse organisers like 'I want to show you' and 'Let me tell you' dominate elite speech and contrast with academic stance bundles per elite_speaker_taxonomy"
+      target_file: performance_entities
+    - target: boost_marker
+      relation: supports
+      weight: expected
+      description: "Visionary bundles express certainty and forward motion ('We are going to...'), functioning as boost markers that signal high agency and commitment (Architecture of Influence, Section 1.3)"
+      target_file: stance_markers_entities
+    - target: germane_load_marker
+      relation: enables
+      weight: expected
+      description: "Visionary bundles guide audience attention with concrete navigation phrases, directing processing toward germane (meaning-making) load rather than extraneous processing (Architecture of Influence, Section 1.3)"
+      target_file: cognitive_load_entities
+    taxonomy_mapping:
+    - taxonomy: rhetorical_devices_taxonomy
+      dimension: device_family
+      values:
+      - structural
+      strength: secondary
+  academic_bundle:
+    label: ACADEMIC_BUNDLE
+    field_description: Academic formal distancing bundle in the context of on the other hand it is important to with respect
+      to
+    description: Formal 4-word phrase that creates distance between speaker and audience
+    entity_kind: lexical_bundle
+    family: register_markers
+    examples:
+    - In the context of digital transformation...
+    - On the other hand, we see...
+    - It is important to note that...
+    - With respect to the timeline...
+    - In the case of enterprise clients...
+    - To the extent that this applies...
+    confidence_threshold: 0.7
+    field: rhetoric
+    indicators:
+    - In the context of
+    - On the other hand
+    - It is important to
+    - With respect to
+    - In the case of
+    - To the extent that
+    patterns:
+    - In the context of
+    - It is important to \w+
+    - To the extent that
+    - In the case of \w+
+    color: '#7f8c8d'
+    relates_to:
+    - target: visionary_bundle
+      relation: contrasts_with
+      weight: expected
+      description: Academic (formal) vs visionary (inspirational) register markers
+      target_file: discourse_entities
+    - target: extraneous_load_marker
+      relation: triggers
+      weight: expected
+      description: "Academic bundles ('In the context of', 'It is important to') trigger extraneous cognitive load by creating processing distance and abstraction per Architecture of Influence"
+      target_file: cognitive_load_entities
+    - target: hedge_marker
+      relation: supports
+      weight: expected
+      description: "Academic bundles function as stance hedges — 'It is likely that...' signals uncertainty and qualifies claims rather than asserting them (Architecture of Influence, Section 1.3)"
+      target_file: stance_markers_entities
+    taxonomy_mapping:
+    - taxonomy: rhetorical_devices_taxonomy
+      dimension: device_family
+      values:
+      - structural
+      strength: secondary
+  call_to_action:
+    label: CALL_TO_ACTION
+    field_description: Call to action directive bundle take the next step reach out let's begin start today partner with us
+    description: Explicit directive phrase urging audience to take a specific action
+    entity_kind: directive_device
+    family: structural_persuasion
+    examples:
+    - Take the next step today.
+    - Reach out to your account team.
+    - Let's begin this journey together.
+    - Start your free trial.
+    - Partner with us to transform.
+    - Sign up now.
+    - Make the call.
+    - Don't wait. Act now.
+    confidence_threshold: 0.75
+    field: rhetoric
+    indicators:
+    - Take the next step
+    - Reach out
+    - Let's begin
+    - Start today
+    - Partner with us
+    - Sign up
+    - Act now
+    - Don't wait
+    patterns:
+    - Take the next \w+
+    - Reach out \w+
+    - Let's \w+ \w+
+    - Act now
+    - Don't wait
+    color: '#e74c3c'
+    relates_to:
+    - target: call_to_action
+      relation: specialises
+      weight: required
+      description: Rhetorical CTA device specialises the narrative CTA structure
+      target_file: narrative_entities
+    - target: outcome_statement
+      relation: precedes
+      weight: required
+      description: Calls to action typically follow and reinforce outcome statements. The outcome statement establishes the
+        desired future state; the call to action specifies what audiences must do to achieve it.
+      target_file: narrative_entities
+    - target: urgency_signal
+      relation: supported_by
+      weight: expected
+      description: Calls to action are supported by urgency signals which provide the time-pressure motivation that makes the
+        directive compelling per Crafting Powerful Opening Plays
+      target_file: sales_entities
+    - target: power_verb
+      relation: supported_by
+      weight: expected
+      description: "Calls to action are supported by power verbs which provide high verb dynamism and agentic language that strengthens the directive per Elite Speaker Linguistic Analysis"
+      target_file: performance_entities
+    - target: monroe_sequence_marker
+      relation: supported_by
+      weight: required
+      description: "MMS's Action stage provides the structural framework that makes calls-to-action concrete, feasible, and immediate in educational contexts per Monroe's Motivated Sequence research"
+    - target: resolution_signal
+      relation: supports
+      weight: expected
+      description: "Call to action supports the resolution by directing the audience toward the intended outcome — it operationalises the narrative resolution per UNIFIED_NARRATIVE_METHODOLOGY_v2"
+      target_file: narrative_entities
+    taxonomy_mapping:
+    - taxonomy: rhetorical_devices_taxonomy
+      dimension: device_family
+      values:
+      - structural
+      strength: primary
+  scqa_marker:
+    label: SCQA_MARKER
+    description: Signals of Minto's SCQA narrative structure — the Situation/Complication/Question/Answer rhetorical sequence
+      used in executive communication
+    field_description: SCQA structure situation complication question answer the challenge is so the question becomes here
+      is the answer here is our recommendation
+    entity_kind: structural_framework
+    family: argument_structure
+    examples:
+    - 'The situation is this: our market is growing at 15% annually. The complication is that our costs are growing faster.
+      So the question becomes: how do we maintain margin?'
+    - 'Currently, teams spend 40% of their time on manual tasks. The problem is this process cannot scale. The question is:
+      what changes now?'
+    - Here is the situation. Here is the problem. Here is what we recommend.
+    - The context is X. The challenge is Y. So what do we do? Here is the answer.
+    - We face three realities. Two create tension. One resolves it.
+    confidence_threshold: 0.7
+    field: rhetoric
+    indicators:
+    - the situation is
+    - the complication is
+    - so the question becomes
+    - here is the answer
+    - here is our recommendation
+    - the challenge is
+    - the context is
+    - so what do we do
+    patterns:
+    - the (situation|context) is (this:)? \w+
+    - the (complication|challenge|problem) is \w+
+    - so the question (becomes|is) \w+
+    - here is (the answer|our recommendation|what we recommend)
+    color: '#2980b9'
+    psychological_principle: Primacy + narrative transportation — SCQA front-loads tension (complication) before resolution
+      (answer), matching executive attention patterns
+    scoring_note: 'SCQA_MARKER detected in executive presentation: +5 points narrative quality; absence in executive deck:
+      -3 points (flat structure)'
+    relates_to:
+    - target: monroe_sequence_marker
+      relation: contrasts_with
+      weight: expected
+      description: SCQA (situation-complication-question-answer) vs Monroe's (attention-need-satisfaction-visualisation-action)
+        — different argument frameworks
+    - target: claim
+      relation: contains
+      weight: required
+      description: The SCQA framework (Situation-Complication-Question-Answer) contains and structures the core claim. The
+        Answer in SCQA is the explicit claim being presented to the audience.
+      target_file: narrative_entities
+    - target: narrative_hook
+      relation: supports
+      weight: required
+      description: SCQA (Situation-Complication-Question-Answer) structure creates compelling narrative hooks. The 'Question'
+        element establishes cognitive tension that the 'Answer' resolves, establishing narrative momentum.
+      target_file: narrative_entities
+    - target: problem_statement_hook
+      relation: contains
+      weight: expected
+      description: SCQA structure contains problem statement hooks within the Complication phase, where the core challenge is
+        named to create cognitive tension per Crafting Powerful Opening Plays
+      target_file: opening_hooks_entities
+    - target: narrative_tension
+      relation: triggers
+      weight: expected
+      description: "LitVISTA Impulse/Pause framework parallels SCQA with Complication triggering narrative tension requiring resolution per Researching Narrative and Discourse Analysis"
+      target_file: narrative_entities
+    - target: pain_point
+      relation: contains
+      weight: expected
+      description: "SCQA's Complication phase directly contains the pain point — the problem, opportunity, or threat that makes the status quo untenable and creates tension per Canonical Presentation Methodology"
+      target_file: narrative_entities
+    - target: situation_marker
+      relation: bridges
+      weight: expected
+      description: "SCQA's Situation component bridges to the SOAR situation marker — both establish the status quo context before introducing a disruption per Analyzing Story for Business Communication"
+      target_file: sales_entities
+    - target: logos_appeal
+      relation: supports
+      weight: expected
+      description: "SCQA supports logos appeal by starting with a Situation the audience already agrees with, instantly building logical credibility per Analyzing Story for Business Communication"
+    - target: resolution_signal
+      relation: contains
+      weight: required
+      description: "SCQA framework's Answer phase directly contains the resolution signal that resolves the complication per Slide Deck Design Playbook"
+      target_file: narrative_entities
+    - target: content_structure_marker
+      relation: supports
+      weight: expected
+      description: "SCQA provides the narrative backbone for content architecture, structuring slide progression as Situation-Complication-Question-Answer per Slide Deck Design Playbook"
+      target_file: content_architecture_entities
+    - target: narrative_tension
+      relation: triggers
+      weight: required
+      description: "SCQA's Complication component deliberately creates narrative tension as a necessary precondition for audience engagement before delivering the resolution (Canonical Presentation Methodology)"
+      target_file: narrative_entities
+    taxonomy_mapping:
+    - taxonomy: rhetorical_devices_taxonomy
+      dimension: structural_framework
+      values:
+      - scqa
+      strength: primary
+  kairos_marker:
+    label: KAIROS
+    description: Urgency and timeliness framing device — signals 'the right moment for action' using time pressure, window-of-opportunity,
+      or cost-of-delay language (Aristotle's kairos principle)
+    field_description: Kairos urgency timeliness the window is closing now is the moment time is running out act before the
+      opportunity passes cost of delay critical timing
+    entity_kind: urgency_device
+    family: structural_persuasion
+    examples:
+    - The window of opportunity is closing.
+    - Now is the moment to act.
+    - Time is running out on this advantage.
+    - Every month we delay costs us $500K.
+    - The competitors who act now will capture this market.
+    - This is the critical inflection point.
+    - We have a 90-day window to move.
+    - The cost of inaction is growing every quarter.
+    - Act before the window closes.
+    - First movers in this space will define the market.
+    confidence_threshold: 0.68
+    field: rhetoric
+    indicators:
+    - window of opportunity
+    - window is closing
+    - now is the moment
+    - time is running out
+    - cost of delay
+    - cost of inaction
+    - critical inflection
+    - first movers
+    - 90-day window
+    - act before
+    patterns:
+    - the window (is closing|closes|of opportunity)
+    - now is the (moment|time) (to|for)
+    - cost of (delay|inaction|waiting)
+    - (first|early) movers \w+
+    - \d+[- ]day window
+    - critical (inflection|moment|point)
+    - every (month|quarter|week) we (wait|delay)
+    color: '#e67e22'
+    psychological_principle: Kairos (Aristotle) — the right moment for speech; urgency framing increases decision speed by
+      anchoring cost of delay
+    soar_stage_mapping: OPPORTUNITY — kairos language creates the urgency signal that makes the opportunity stage actionable
+    scoring_note: 'KAIROS detected in opportunity/close sections: +3 points persuasion quality; KAIROS absent in close section
+      of executive deck: missed urgency signal'
+    relates_to:
+    - target: urgency_signal
+      relation: enables
+      weight: expected
+      description: Kairos (seizing the right moment) provides the rhetorical basis for urgency signals
+      target_file: sales_entities
+    - target: urgency_signal
+      relation: supports
+      weight: expected
+      description: Kairos (the opportune moment) is a rhetorical device that directly supports urgency signals by emphasizing
+        the timeliness and perfect conditions for action.
+      target_file: sales_entities
+    - target: narrative_hook
+      relation: supports
+      weight: required
+      description: Kairos (the opportune moment) markers establish timeliness and urgency in narratives. By framing content
+        as addressing a critical current moment, speakers increase salience and perceived relevance. Kairos strengthens narrative
+        hooks.
+      target_file: narrative_entities
+    - target: opportunity_marker
+      relation: supports
+      weight: expected
+      description: "Kairos markers support opportunity markers by establishing the timeliness and urgency that frames the sales opportunity per SOAR Narrative Mapping by Sales Stage"
+      target_file: sales_entities
+    taxonomy_mapping:
+    - taxonomy: rhetorical_devices_taxonomy
+      dimension: structural_framework
+      values:
+      - kairos
+      strength: primary
+    - taxonomy: narrative_taxonomy
+      dimension: emotional_tone
+      values:
+      - kairos
+      - urgent
+      strength: primary
+  monroe_sequence_marker:
+    label: MONROE_SEQUENCE
+    description: 'Signals of Monroe''s Motivated Sequence structure — the five-stage persuasive sequence: Attention → Need
+      → Satisfaction → Visualisation → Action'
+    field_description: Monroe motivated sequence attention need satisfaction visualisation action imagine if we did this here
+      is what it looks like here is how we get there
+    entity_kind: structural_framework
+    family: argument_structure
+    examples:
+    - Here is the problem we all face. (Need stage)
+    - Here is exactly how we solve it. (Satisfaction stage)
+    - Picture what success looks like. (Visualisation stage)
+    - Here is what we need from you today. (Action stage)
+    - This is why this moment matters. (Attention stage)
+    - The solution is already proven. Let me show you what it looks like in practice.
+    - Imagine a world where this problem is solved. Here is how we get there.
+    confidence_threshold: 0.67
+    field: rhetoric
+    indicators:
+    - here is the problem
+    - here is how we solve it
+    - picture what success looks like
+    - here is what we need from you
+    - this is why this moment matters
+    - the solution is already proven
+    - here is how we get there
+    patterns:
+    - here is the (problem|challenge|issue)
+    - here is (exactly )?how we (solve|address|fix)
+    - picture what (success|this) looks like
+    - here is what we need from you
+    - imagine (a world|what it looks like|success)
+    color: '#9b59b6'
+    five_stages:
+      attention: Hooks audience attention — curiosity gap, statistic, or story opening
+      need: Establishes the problem that demands resolution
+      satisfaction: Presents the solution in concrete terms
+      visualisation: Projects what success looks like when the solution is adopted
+      action: Issues a clear, specific call to action
+    scoring_note: 'Full Monroe sequence detected (all 5 stages): +8 points structure quality; partial sequence (3-4 stages):
+      +4 points; attention-only or action-only: no bonus'
+    relates_to:
+    - target: scqa_marker
+      relation: contrasts_with
+      weight: expected
+      description: Monroe's sequence vs SCQA — different persuasive argument structures
+    - target: pain_point
+      relation: supports
+      weight: expected
+      description: Monroe's Motivated Sequence identifies and articulates pain points (Need step) as a critical component
+        of persuasive structure, mirroring SOAR's Situation phase.
+      target_file: narrative_entities
+    - target: call_to_action
+      relation: contains
+      weight: required
+      description: Monroe's Motivated Sequence (Attention-Need-Satisfaction-Visualization-Action) is a framework that culminates
+        in call to action. The Action phase is the explicit call to action that follows all preparatory rhetorical work.
+      target_file: narrative_entities
+    - target: call_to_action
+      relation: contains
+      weight: required
+      description: Monroe's Motivated Sequence (Attention-Need-Satisfaction-Visualization-Action) is a framework that culminates
+        in call to action. The Action phase is the explicit call to action that follows all preparatory rhetorical work.
+    - target: pathos_appeal
+      relation: enables
+      weight: expected
+      description: "MMS systematically engages emotional arousal through Need (distress), Visualization (hope/excitement), and Action (empowerment) stages, leveraging pathos throughout per Monroe's Motivated Sequence research"
+    - target: logos_appeal
+      relation: enables
+      weight: expected
+      description: "MMS provides a logical problem-solution-outcome progression that mirrors natural cognitive problem-solving, appealing to reason through structured argumentation per Monroe's Motivated Sequence research"
+    - target: narrative_hook
+      relation: contains
+      weight: required
+      description: "The Attention stage of MMS requires opening with a hook — provocative question, surprising fact, relevant anecdote, or vivid scenario — to grab learners' focus per Monroe's Motivated Sequence research"
+      target_file: narrative_entities
+    taxonomy_mapping:
+    - taxonomy: rhetorical_devices_taxonomy
+      dimension: structural_framework
+      values:
+      - monroe_sequence
+      strength: primary
+    - taxonomy: presentation_structures_taxonomy
+      dimension: structural_framework
+      values:
+      - monroe_sequence
+      strength: primary
+gliner_config:
+  model: gliner-large-v2
+  batch_size: 32
+  default_confidence_threshold: 0.7
+  context_window: 512
+  entity_groups:
+    repetition_devices:
+    - ANAPHORA
+    - EPISTROPHE
+    - TRICOLON
+    - CHIASMUS
+    - ANTITHESIS
+    engagement_devices:
+    - RHETORICAL_QUESTION
+    - INCLUSIVE_WE
+    - CALL_TO_ACTION
+    amplification_devices:
+    - HYPERBOLE
+    comparison_devices:
+    - METAPHOR
+    - SIMILE
+    aristotelian_appeals:
+    - LOGOS_APPEAL
+    - ETHOS_APPEAL
+    - PATHOS_APPEAL
+    lexical_bundles:
+    - VISIONARY_BUNDLE
+    - ACADEMIC_BUNDLE
+    structural_frameworks:
+    - SCQA_MARKER
+    - KAIROS
+    - MONROE_SEQUENCE
+domain_keywords:
+  primary:
+  - rhetoric
+  - persuasion
+  - anaphora
+  - tricolon
+  - metaphor
+  - simile
+  - ethos
+  - logos
+  - pathos
+  - hyperbole
+  - antithesis
+  - chiasmus
+  - rhetorical question
+  - call to action
+  - scqa
+  - kairos
+  - monroe
+  - minto
+  secondary:
+  - figure of speech
+  - repetition
+  - parallel structure
+  - appeal to emotion
+  - appeal to authority
+  - appeal to logic
+  - rule of three
+  - inclusive we
+  - lexical bundle
+  - directive
+  - engagement
+  - urgency
+  - situation complication
+  - motivated sequence
+  - timeliness
+quality_indicators:
+  appeal_balance:
+    logos_heavy: '> 60% logos markers vs pathos/ethos'
+    balanced: Mixed logos, ethos, and pathos across content
+    pathos_heavy: '> 60% pathos markers vs logos/ethos'
+  device_density:
+    sparse: < 1 device per 500 words
+    adequate: 1-3 per 500 words
+    rich: '> 3 per 500 words'
+  engagement_signals:
+    low: < 2 engagement devices (rhetorical_question, inclusive_we) per section
+    good: 2-4 engagement devices per section
+    high: '> 4 engagement devices — check for over-engineering'
+  structural_framework_presence:
+    description: Checks for presence of structural argument frameworks in executive and sales decks
+    scqa_executive: 'SCQA_MARKER in executive deck: +5 points narrative quality'
+    kairos_close: 'KAIROS in close section: +3 points persuasion quality'
+    monroe_full: 'Full MONROE_SEQUENCE (5 stages): +8 points structure quality'
+    no_framework: 'No structural framework detected in full-length deck: -5 points (flat, undifferentiated structure)'

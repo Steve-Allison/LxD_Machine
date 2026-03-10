@@ -1,0 +1,391 @@
+_meta:
+  id: sales_taxonomy
+  purpose: taxonomy
+  version: "1.2.0"
+  last_updated: "2026-03-01"
+  description: "Classification of sales conversation signals and deal dynamics by signal type, deal stage, qualification framework, objection category, and engagement type."
+  domain: sales
+  domain_type: workflow
+  corpus_sources:
+    - "Corpus/Research/soar_mapping_by_sales_stage.md"
+    - "Corpus/Research/Storytelling_for_Different_Business_Personas.md"
+    - "Corpus/Research/Research - Using SOAR Storytelling most effectively.md"
+  academic_sources:
+    - "MEDDIC/MEDDPICC qualification framework"
+    - "SPIN Selling - Rackham (1988)"
+    - "Challenger Sale - Dixon & Adamson (2011)"
+    - "Adobe SOAR framework"
+  relationships:
+    - target: entities/sales_entities.yaml
+      type: depends_on
+      description: "Sales entity types for NER extraction of SOAR elements, buying signals, and objections"
+    - target: sales/sales_play_taxonomy.yaml
+      type: depends_on
+      description: "FY26 sales play hierarchy (L1-L4) for play-level classification"
+    - target: sales/soar_hierarchy_framework.yaml
+      type: depends_on
+      description: "SOAR narrative structure and hierarchy rules"
+# ==============================================================================
+# SIGNAL TYPES
+# ==============================================================================
+
+signal_types:
+  soar_element:
+    label: "SOAR Element"
+    description: "Content aligned to the Situation-Opportunity-Action-Result narrative structure"
+    narrative_arc:
+      beginning: "Situation and Opportunity — introduce setting and conflict"
+      middle: "Action — rising action describing how the challenge was overcome"
+      end: "Result — resolution, outcome, and value delivered"
+      principle: "Mirrors the classic setup/conflict/resolution structure; human brains are wired to engage with this pattern"
+    completeness_rule: "Each element plays a non-replaceable role. Situation = relevance. Opportunity = stakes. Action = credibility. Result = proof. Omitting any element causes story failure."
+    best_practices:
+      - "Audience-centric framing: customise the SOAR story per audience segment, mirroring their industry, role, and values"
+      - "Value-based framing: express benefits in the audience's terms (CFO: financial impact; CTO: technical reliability; COO: operational efficiency)"
+      - "Data + narrative pairing: embed KPIs in the story — data alone informs, story + data moves audiences both intellectually and emotionally"
+      - "Human protagonist: position the customer as the hero; the seller and product are the guide"
+      - "Emotional arc: include emotional beats (frustration before solution, relief after results) to trigger empathy and trust"
+      - "Authenticity: acknowledge challenges briefly to increase credibility; overly perfect stories read as canned"
+      - "Close the loop: the result must explicitly resolve the situation and opportunity raised at the start"
+    anti_patterns:
+      - "Skipping the situation: audience doesn't know why anything matters"
+      - "Jumping from situation to result (omitting action): audience wonders 'how did you do it?'"
+      - "Generic opportunity not tailored to the audience's role or values"
+      - "Making the vendor or product the hero instead of the customer"
+      - "Overloading with data without narrative context (purely analytical, no emotional engagement)"
+      - "Story without any data (engaging but not credible — fails the analytical buyer)"
+      - "Failing to differentiate results (what happened) from benefits (why it matters)"
+    sub_types:
+      situation:
+        description: "Description of current state, pain, or context"
+        narrative_position: opening
+        purpose: "Establish empathy and shared understanding of the problem"
+        narrative_function: "Sets scene and provides context — the who, when, and where. Orients listeners and sparks attention by connecting to something they care about."
+        usage_pattern: "Include only relevant details that matter to the audience. Add concrete specifics (year, company type, a hint of the problem) to make it vivid. Effective situations make the audience think: 'Yes, I've seen that scenario.'"
+        anti_pattern: "Do not skip establishing a clear starting context; do not assume the audience knows the background."
+        deal_stage_relevance: ["discovery", "evaluation"]
+      opportunity:
+        description: "Articulation of upside, growth potential, or unmet need"
+        narrative_position: bridge
+        purpose: "Reframe the problem as an opportunity worth pursuing"
+        narrative_function: "The inciting incident — the gap between current state and desired state. Can manifest as challenge, obstacle, or objective."
+        usage_pattern: "Frame in terms of the customer's perspective and values. Highlight stakes — what is the risk if nothing changes? Tailor opportunity to audience role: CFO = financial; tech buyer = scalability or security."
+        anti_pattern: "A generic problem that doesn't resonate with the audience's actual goals fails as an opportunity. Framing without stating stakes makes it ineffective."
+        deal_stage_relevance: ["discovery", "evaluation"]
+      action:
+        description: "Proposed solution, recommendation, or next step"
+        narrative_position: middle
+        purpose: "Present a clear path forward with the vendor's solution"
+        narrative_function: "The meat of the story's middle — key actions, decisions, and strategy that led from problem to outcome."
+        usage_pattern: "Outline as a logical progression (2-4 main steps). Highlight combination of hard work and skill so results don't seem accidental. Position the seller/product as the guide, not the hero — the customer is always the hero."
+        anti_pattern: "Turning the approach into an operations manual (too much detail). Making the company/product the hero. Failing to tie each action step back to the specific opportunity identified."
+        deal_stage_relevance: ["evaluation", "negotiation"]
+      result:
+        description: "Achieved outcome, proof of value, or ROI evidence"
+        narrative_position: closing
+        purpose: "Prove the solution works with concrete evidence"
+        narrative_function: "The satisfying resolution — reveals outcome AND broader benefits. Must close the loop: result should address the situation and opportunity set up at the start."
+        usage_pattern: "Quantify wherever possible (KPIs, percentages, time saved, revenue). Differentiate results (what was achieved) from benefits (why it matters). Include at least one human or emotional outcome alongside metrics. Crescendo rule: most significant benefit last."
+        anti_pattern: "Stating results without connecting them back to the original situation/opportunity. Sharing only metrics without the benefit/value translation. Including underwhelming results without reframing."
+        empirical: "54% of B2B buyers engage with case studies during their purchase process (Sopro Blog, cited in Using SOAR Storytelling most effectively). Stories are up to 22 times more memorable than facts alone."
+        deal_stage_relevance: ["evaluation", "negotiation", "closed_won"]
+
+  buying_signal:
+    label: "Buying Signal"
+    description: "Customer statement indicating positive purchase intent or readiness to advance"
+    sub_types:
+      interest:
+        description: "Explicit curiosity or request for more information"
+        examples: ["tell me more", "how does that work", "can you show us"]
+        deal_impact: positive
+      urgency:
+        description: "Time pressure, deadline, or compelling event driving action"
+        examples: ["we need this by Q3", "our board meeting is next month"]
+        deal_impact: strongly_positive
+      commitment:
+        description: "Statements signalling willingness to proceed"
+        examples: ["how do we get started", "what are the next steps"]
+        deal_impact: strongly_positive
+
+  objection:
+    label: "Objection"
+    description: "Customer statement signalling hesitation, concern, or a barrier to purchase"
+    sub_types:
+      budget:
+        description: "Cost, pricing, or ROI concerns"
+        handling_approach: "Quantify value, build business case, offer phased approach"
+      timing:
+        description: "Not-now, competing priorities, or readiness concerns"
+        handling_approach: "Identify compelling event, demonstrate cost of delay"
+      competitor:
+        description: "Consideration of alternative vendors or existing solutions"
+        handling_approach: "Differentiate on unique value, address switching costs"
+      authority:
+        description: "Decision-making power or stakeholder alignment concerns"
+        handling_approach: "Map the buying committee, enable the champion"
+      need:
+        description: "Questioning whether the solution is necessary or relevant"
+        handling_approach: "Reframe the problem, share peer stories, quantify the gap"
+      change_management:
+        description: "Concerns about organisational disruption, adoption effort, or employee resistance to change"
+        handling_approach: "Demonstrate change management support, share adoption playbooks, provide references from comparable transformation journeys"
+
+  qualification_marker:
+    label: "Qualification Marker"
+    description: "Signal identifying deal qualification status against MEDDPICC criteria"
+    sub_types:
+      champion:
+        description: "Internal advocate willing to sell on vendor's behalf"
+        meddpicc_element: "Champion"
+        importance: critical
+      decision_maker:
+        description: "Person with final approval authority"
+        meddpicc_element: "Economic Buyer"
+        importance: critical
+      pain:
+        description: "Identified problem the customer needs solved"
+        meddpicc_element: "Identified Pain"
+        importance: high
+      decision_criteria:
+        description: "Factors the customer will use to evaluate solutions"
+        meddpicc_element: "Decision Criteria"
+        importance: high
+      decision_process:
+        description: "Steps the customer follows to make a purchase decision"
+        meddpicc_element: "Decision Process"
+        importance: high
+
+  play_trigger:
+    label: "Play Trigger"
+    description: "Signal indicating a specific sales play or motion should be activated"
+    sub_types:
+      expansion:
+        description: "Cross-sell or upsell opportunity within existing account"
+        play_motion: "land and expand"
+      displacement:
+        description: "Customer dissatisfied with incumbent, open to switching"
+        play_motion: "competitive displacement"
+      greenfield:
+        description: "New logo opportunity with no existing relationship"
+        play_motion: "new business acquisition"
+      renewal:
+        description: "Contract renewal window creating re-evaluation opportunity"
+        play_motion: "retention and growth"
+
+# ==============================================================================
+# DEAL STAGES
+# ==============================================================================
+
+deal_stages:
+  prospecting:
+    label: "Prospecting"
+    description: "Identifying and qualifying potential opportunities"
+    key_activities: ["research", "outreach", "initial qualification", "ICP matching"]
+    exit_criteria: "Qualified lead with identified pain and interest"
+    dominant_signals: [play_trigger, qualification_marker]
+    dominant_soar_weight: "S+O (compressed SOAR — situation + opportunity in outreach to establish relevance and create a hook; action and result referenced briefly if at all)"
+
+  discovery:
+    label: "Discovery"
+    description: "Deep understanding of customer needs, pain, and decision process"
+    key_activities: ["needs analysis", "stakeholder mapping", "pain quantification"]
+    exit_criteria: "Clear SOAR narrative with confirmed decision criteria"
+    dominant_signals: [soar_element, qualification_marker]
+    dominant_soar_weight: "S+O dominant — the rep uses situation and opportunity to mirror the buyer's context and surface the gap/stakes. Action introduced to build credibility."
+
+  evaluation:
+    label: "Evaluation"
+    description: "Customer actively assessing the solution against alternatives"
+    key_activities: ["demo", "proof of concept", "reference calls", "technical validation"]
+    exit_criteria: "Technical win and champion confirmation"
+    dominant_signals: [buying_signal, objection, competitor]
+    dominant_soar_weight: "Full SOAR deployed — situation validates understanding, opportunity frames the competitive problem, action demonstrates fit, result provides proof"
+
+  negotiation:
+    label: "Negotiation"
+    description: "Commercial terms, procurement, and contract finalisation"
+    key_activities: ["proposal", "pricing", "legal review", "procurement"]
+    exit_criteria: "Agreed terms and signed contract"
+    dominant_signals: [objection, buying_signal, urgency]
+    dominant_soar_weight: "A+R dominant — action and result justify investment; result stories with quantified ROI anchor the business case"
+
+  closed_won:
+    label: "Closed Won"
+    description: "Deal signed and handed to implementation/success"
+    key_activities: ["onboarding", "implementation planning", "success criteria", "executive alignment"]
+    exit_criteria: "Customer live and achieving initial value"
+    dominant_signals: [result_marker]
+    dominant_soar_weight: "R focus — results data captured here becomes source material for future SOAR stories; feeds situation context for the next prospect's story"
+    post_close_phases:
+      launch_health:
+        description: "Early onboarding and adoption phase; tracking initial usage and resolving blockers"
+        typical_duration: "0-90 days post-close"
+        success_metrics: ["activation rate", "time to first value", "onboarding NPS"]
+      run_operate:
+        description: "Steady-state delivery phase; customer is live and using the product at scale"
+        typical_duration: "90 days to renewal"
+        success_metrics: ["adoption depth", "support ticket trend", "business outcome tracking"]
+      renewal_expand:
+        description: "Renewal and expansion window; opportunity to grow the account and capture result stories"
+        typical_duration: "90-60 days before renewal"
+        success_metrics: ["renewal rate", "expansion ARR", "customer advocacy (NPS, reference, case study)"]
+
+# ==============================================================================
+# QUALIFICATION FRAMEWORKS
+# ==============================================================================
+
+qualification_frameworks:
+  meddpicc:
+    label: "MEDDPICC"
+    description: "Enterprise deal qualification methodology"
+    elements:
+      M: { name: "Metrics", description: "Quantifiable measures of success the customer cares about" }
+      E: { name: "Economic Buyer", description: "Person with final approval and budget authority" }
+      D1: { name: "Decision Criteria", description: "Factors used to evaluate and select a solution" }
+      D2: { name: "Decision Process", description: "Steps and timeline for making the purchase decision" }
+      P1: { name: "Paper Process", description: "Procurement, legal, and contract workflows" }
+      I: { name: "Identified Pain", description: "Specific business problem the customer needs to solve" }
+      C1: { name: "Champion", description: "Internal advocate who sells on vendor's behalf" }
+      C2: { name: "Competition", description: "Alternative solutions being considered" }
+
+  spin:
+    label: "SPIN Selling"
+    description: "Consultative selling question framework"
+    elements:
+      S: { name: "Situation", description: "Questions about current state and context" }
+      P: { name: "Problem", description: "Questions about difficulties and dissatisfactions" }
+      I: { name: "Implication", description: "Questions about consequences of the problem" }
+      N: { name: "Need-Payoff", description: "Questions about the value of solving the problem" }
+
+  challenger:
+    label: "Challenger Sale"
+    description: "Teaching-based selling methodology"
+    elements:
+      teach: { name: "Teach", description: "Share unique insights the customer hasn't considered" }
+      tailor: { name: "Tailor", description: "Adapt the message to the customer's specific context" }
+      control: { name: "Take Control", description: "Lead the customer through the decision process" }
+
+  icp:
+    label: "Ideal Customer Profile (ICP)"
+    description: "A structured definition of the type of customer most likely to achieve success with the solution, used for prospect qualification and outreach prioritisation"
+    elements:
+      firmographics:
+        description: "Company-level characteristics defining the ideal account"
+        attributes: ["company_size", "industry_vertical", "geography", "revenue_range", "growth_stage"]
+      technographics:
+        description: "Technology landscape of the ideal account"
+        attributes: ["existing_tech_stack", "integration_requirements", "current_vendor_relationships"]
+      behavioral:
+        description: "Observable buying and engagement behaviours that signal ICP fit"
+        attributes: ["buying_pattern", "engagement_signals", "decision_making_speed", "content_consumption"]
+      pain_profile:
+        description: "Primary pain points and business challenges that the solution is designed to address"
+        attributes: ["primary_pain", "secondary_pain", "urgency_level", "previously_attempted_solutions"]
+
+# ==============================================================================
+# CLASSIFICATION DIMENSIONS
+# ==============================================================================
+
+classification_dimensions:
+  signal_type:
+    name: "Signal Type"
+    description: "The category of conversational signal detected"
+    values:
+      - soar_element
+      - buying_signal
+      - objection
+      - qualification_marker
+      - play_trigger
+
+  deal_stage:
+    name: "Deal Stage"
+    description: "The phase of the sales cycle the signal is most relevant to"
+    values:
+      - prospecting
+      - discovery
+      - evaluation
+      - negotiation
+      - closed_won
+
+  qualification_framework:
+    name: "Qualification Framework"
+    description: "The sales methodology the signal maps to"
+    values:
+      - meddpicc
+      - spin
+      - challenger
+      - icp
+
+  objection_category:
+    name: "Objection Category"
+    description: "The type of customer objection or concern"
+    values:
+      - budget
+      - timing
+      - competitor
+      - authority
+      - need
+      - change_management
+
+  engagement_type:
+    name: "Engagement Type"
+    description: "The type of sales motion or account engagement"
+    values:
+      - new_business
+      - expansion
+      - displacement
+      - renewal
+      - retention
+
+  buyer_persona_type:
+    name: "Buyer Persona Type"
+    description: "The functional role or persona of the primary buyer contact for Adobe solutions"
+    values:
+      - marketing_leader
+      - creative_leader
+      - marketing_ops
+      - it_technology_leader
+
+  buying_committee_role:
+    name: "Buying Committee Role"
+    description: "The role the contact plays in the buying decision, regardless of their functional title"
+    values:
+      - approver
+      - champion
+      - influencer
+      - user
+
+  narrative_tone:
+    name: "Narrative Tone"
+    description: "The dominant emotional register of the sales narrative appropriate for the buyer persona"
+    values:
+      - visionary
+      - pragmatic
+      - urgent
+      - confident
+      - technical
+
+  pitch_depth_level:
+    name: "Pitch Depth Level"
+    description: "The level of detail and specificity in the sales pitch, aligned to buyer role and stage"
+    values:
+      - L1
+      - L2
+      - L3
+      - L4
+
+  soar_narrative_completeness:
+    name: "SOAR Narrative Completeness"
+    description: "Whether all four SOAR elements are present and properly linked in a sales conversation or content asset"
+    values:
+      - complete
+      - partial
+      - fragmented
+
+  narrative_hero_framing:
+    name: "Narrative Hero Framing"
+    description: "Whether the customer is positioned as the hero of the SOAR story (recommended) or whether the vendor is positioned as the hero (anti-pattern)"
+    values:
+      - customer_as_hero
+      - vendor_as_hero
+      - no_protagonist

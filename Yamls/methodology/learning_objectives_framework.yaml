@@ -1,0 +1,988 @@
+# ==============================================================================
+# Learning Objectives Framework for Corporate Training
+# Comprehensive configuration for outcome-based instructional design.
+# ==============================================================================
+
+_meta:
+  id: learning_objectives_framework
+  title: "Learning Objectives Framework"
+  description: "Framework for creating Learning Gaps, Goals, Outcomes, and Objectives (GGOO)."
+  domain: pedagogical
+  domain_type: workflow
+  purpose: methodology
+  version: "1.3.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Writing Learning Objectives.md"
+    - "Corpus/Research/Research - Essential Inputs for Learning Objectives.md"
+    - "Corpus/Research/Learner Outcomes - Instructions v4.md"
+    - "Corpus/Research/theory_gagne_s_nine_events_of_instruction.md"
+
+  relationships:
+    - target: methodology/mayer_principles.yaml
+      type: depends_on
+      description: "Both pedagogical methodology; objectives define what Mayer principles help achieve"
+# ==============================================================================
+# GGOO MODEL: The Four Pillars of Outcome-Based Design
+# Gap → Goal → Objective → Outcome
+# ==============================================================================
+
+ggoo_model:
+  description: "Sequential framework connecting performance gaps to measurable outcomes."
+  mnemonic: "Find the problem, aim for change, train the skill, measure results."
+
+  flow_summary:
+    - "Gap identifies what's broken (The Diagnosis)"
+    - "Goal sets the vision for success (The Vision)"
+    - "Objective defines in-course skills enabling Outcome (The Training Plan)"
+    - "Outcome states post-training change (The Destination)"
+
+  inputs:
+    description: "Information gathered before authoring any GGOO components."
+    mandatory:
+      - "Course theme or title"
+      - "Clearly identified performance gap including baseline metric and target metric"
+    optional_recommended:
+      - "Target behavior or specific post-course actions learners should perform"
+      - "Existing GGOO elements (for revision or validation workflows)"
+      - "Audience and job context details"
+      - "Business or job KPIs and performance benchmarks"
+      - "Persona context: learner motivations, constraints, and prior knowledge"
+    source: "Learner Outcomes - Instructions v4.md, Section 2 — Inputs"
+
+  components:
+    learning_gap:
+      definition: "A clearly identified current performance shortfall requiring immediate intervention."
+      analogy: "The Diagnosis"
+      purpose: "Justifies the course by diagnosing the real-world issue."
+      key_elements:
+        - "Observable, underperformed action (use Action Mapping verbs)"
+        - "Current baseline metric and desired target"
+        - "Root cause analysis (Knowledge/Skill, Environment/Process, Motivation)"
+        - "Business impact if unresolved"
+        - "Data source and benchmark"
+      example:
+        gap_statement: "Current customer satisfaction score: 70% (target: 85%)"
+        root_cause: "Inadequate troubleshooting skills among support agents"
+        business_impact: "Risk of customer attrition and reduced revenue"
+
+    learning_goal:
+      definition: "A broad, strategic statement aligned with solving the Learning Gap."
+      analogy: "The Vision"
+      purpose: "Expresses the course's intent and overarching direction."
+      key_elements:
+        - "Links directly to performance need"
+        - "Aligns with Bloom's Taxonomy, Gagné's Nine Events of Instruction, and Action Mapping"
+        - "May reference the KPI identified in the Gap"
+      example: >
+        Equip customer support agents with advanced troubleshooting techniques
+        to increase customer satisfaction scores to 85% or higher within
+        three months post-training.
+
+    learning_objective:
+      definition: "Performance targets guiding instruction and assessment."
+      analogy: "The Training Plan"
+      purpose: "Drives instructional strategy and assessment planning."
+      key_elements:
+        - "Follows ABCD model (Audience, Behaviour, Condition, Degree)"
+        - "Meets SMART criteria"
+        - "Aligns with the Outcomes it supports"
+        - "Achieved immediately after training — focuses on capability demonstration in controlled or simulated settings"
+      communication_pattern:
+        formula: "By the end of this [lesson/module/course], you will be able to [behaviour]."
+        rationale: "Gagné's second instructional event specifies that objectives must be communicated to learners with clarity about what they will learn and why it is relevant to them. This formula anchors the objective to an observable behaviour and a defined endpoint."
+        source: "theory_gagne_s_nine_events_of_instruction (Event 2 — Inform Learners of Objectives)"
+      granularity:
+        course_level: "Define overarching capabilities (3-5 maximum)"
+        module_level: "Specify discrete performance expectations (2-3 per module)"
+        lesson_level: "Enable thorough coverage and practice (1-2 maximum)"
+      example:
+        objective: >
+          Given realistic customer scenarios (Condition), customer support agents
+          (Audience) will demonstrate effective troubleshooting skills (Behaviour)
+          correctly in at least 90% of simulated interactions (Degree).
+        instructional_activities:
+          - "Scenario role-play simulations"
+          - "Interactive case studies with immediate feedback"
+          - "Practical workshops"
+
+    learning_outcome:
+      definition: "Observable, measurable change in performance or behaviour after training."
+      analogy: "The Destination"
+      purpose: "Provides measurable proof of change in real-world settings."
+      key_elements:
+        - "Observable verb (Bloom/psychomotor/affective)"
+        - "KPI or frequency/quality target"
+        - "Authentic metric source (dashboard, manager feedback)"
+        - "Time window for validation"
+        - "Meets SMART criteria"
+        - "Measures behavior change over time — not immediately post-training"
+        - "Connects to organizational KPIs to demonstrate training ROI"
+      granularity:
+        topic_level: "Outcomes at topic level"
+        subtopic_level: "Outcomes at sub-topic level"
+      example: >
+        Within 30 days post-training, agents will increase troubleshooting accuracy,
+        elevating customer satisfaction from 70% to 85%, verified by dashboards
+        and manager reviews.
+
+# ==============================================================================
+# TERMINAL vs ENABLING OBJECTIVES
+# Hierarchical structure for complex learning goals
+# ==============================================================================
+
+objective_hierarchy:
+  description: "Terminal objectives define destinations; enabling objectives build the path."
+
+  terminal_objectives:
+    quantity: "5-9 per course"
+    definition: >
+      Final behavioral outcomes learners achieve by completing an entire course
+      or program. They describe integrated, complex performances that directly
+      align with job requirements.
+    characteristics:
+      - "Broad in scope"
+      - "Limited in number (typically 5-9 per course)"
+      - "Focus on what learners can do independently after training"
+      - "Use whole number references (1.0, 2.0)"
+      - "Target higher-order thinking skills"
+    linguistic_cues:
+      scope_words: ["overall", "comprehensive", "complete"]
+      integration_verbs: ["synthesize", "evaluate", "design"]
+      end_state_language: ["by completion", "final performance"]
+    example: "Managers will conduct effective performance reviews meeting company standards."
+
+  enabling_objectives:
+    quantity_per_terminal: "3-5 per terminal objective"
+    definition: >
+      Break down terminal objectives into manageable learning components—the
+      building blocks required for mastery. Multiple enabling objectives (often 3-5)
+      support each terminal objective.
+    characteristics:
+      - "Outline specific knowledge, skills, and behaviors"
+      - "Learned sequentially to achieve terminal performance"
+      - "Use decimal references (1.1, 1.2, 1.3)"
+      - "Focus on discrete skills at lower cognitive levels"
+    linguistic_cues:
+      component_words: ["identify", "describe", "explain"]
+      building_block_verbs: ["recognize", "recall", "apply"]
+      sequential_language: ["first", "before", "prerequisite"]
+    example_supporting_1_0:
+      - "1.1: Identify performance criteria"
+      - "1.2: Structure feedback conversations"
+      - "1.3: Document review outcomes"
+
+  parsing_framework:
+    description: "Steps to parse complex learning goals."
+    steps:
+      1: "Analyze the ultimate performance desired"
+      2: "Break down complex goals into component skills through subordinate skills analysis"
+      3: "Classify objectives as terminal (integrated performance) or enabling (component skills)"
+      4: "Map dependencies to establish logical learning sequences"
+    and_indicator: >
+      When learning goals contain "and," this often signals multiple components
+      requiring separate objectives. Each objective should target one particular
+      aspect of performance with a single action verb.
+    and_signal_types:
+      sequential_steps: "Steps that must be learned in order become enabling objectives under a single terminal objective"
+      parallel_competencies: "Concurrent, independent competencies become separate terminal objectives"
+    source: "Research - Writing Learning Objectives.md, Parsing complex learning goals"
+
+# ==============================================================================
+# ABCD MODEL: Four Components of Complete Objectives
+# ==============================================================================
+
+abcd_model:
+  description: "Framework ensuring complete, unambiguous objectives aligned with job requirements."
+
+  components:
+    audience:
+      definition: "Who performs the action"
+      questions:
+        - "Who are the learners?"
+        - "What is their role/job title?"
+        - "What is their current skill level?"
+      examples:
+        - "Customer support agents"
+        - "New hire sales representatives"
+        - "Senior project managers"
+
+    behaviour:
+      definition: "Observable verb and object - what learners will DO"
+      questions:
+        - "What specific action will demonstrate mastery?"
+        - "Is it observable and measurable?"
+        - "Does it use an action verb from Bloom's Taxonomy?"
+      examples:
+        - "demonstrate effective troubleshooting skills"
+        - "calculate return on investment"
+        - "conduct performance review conversations"
+
+    condition:
+      definition: "Tools, scenarios, or context for the performance"
+      questions:
+        - "Under what circumstances will the behavior be performed?"
+        - "What tools, resources, or references are available?"
+        - "What constraints or limitations apply?"
+      examples:
+        - "Given realistic customer scenarios"
+        - "Using the company CRM system"
+        - "Without reference materials"
+
+    degree:
+      definition: "Performance standard or accuracy level"
+      questions:
+        - "What level of performance is acceptable?"
+        - "How will success be measured?"
+        - "What is the minimum acceptable standard?"
+      examples:
+        - "correctly in at least 90% of simulated interactions"
+        - "within 5 minutes per calculation"
+        - "with zero critical errors"
+
+# ==============================================================================
+# SMART CRITERIA: Objective Quality Validation
+# ==============================================================================
+
+smart_criteria:
+  description: "Quality criteria for validating learning objectives."
+
+  criteria:
+    specific:
+      definition: "Objective clearly states what learner will do"
+      validation: "Can you visualize exactly what the learner is doing?"
+      poor_example: "Learners understand escalation"
+      good_example: "Learners identify escalation criteria correctly in 85% of practice scenarios"
+
+    measurable:
+      definition: "Performance can be objectively assessed"
+      validation: "Is there a clear way to determine if the objective was met?"
+      indicators:
+        - "Percentage accuracy"
+        - "Time to completion"
+        - "Number of errors"
+        - "Pass/fail criteria"
+
+    achievable:
+      definition: "Objective is realistic given constraints"
+      validation: "Can learners realistically achieve this in the available time?"
+      considerations:
+        - "Available training time"
+        - "Prerequisite knowledge"
+        - "Resource availability"
+        - "Cognitive load limits"
+
+    relevant:
+      definition: "Objective connects to job performance and business goals"
+      validation: "Does achieving this objective help close the performance gap?"
+      alignment_checks:
+        - "Links to learning gap"
+        - "Supports business KPI"
+        - "Applies to actual job tasks"
+
+    time_bound:
+      definition: "Clear timeframe for achievement"
+      validation: "When should this objective be achieved?"
+      examples:
+        - "By end of Module 1"
+        - "Within 30 days post-training"
+        - "During the simulation exercise"
+
+# ==============================================================================
+# MAGER'S FRAMEWORK: Three-Part Objective Structure
+# ==============================================================================
+
+magers_framework:
+  description: "Gold standard for corporate objectives - observable workplace behaviors."
+  industry_standing: "Gold standard for corporate objectives per ATD (Association for Talent Development) and ISPI (International Society for Performance Improvement) standards."
+
+  components:
+    performance:
+      definition: "What learners DO (observable action verb + object)"
+      requirement: "Must describe observable workplace behaviors, not internal mental states"
+      poor_verbs: ["understand", "know", "appreciate", "learn", "be aware of"]
+      strong_verbs: ["demonstrate", "calculate", "construct", "evaluate", "apply"]
+
+    conditions:
+      definition: "Circumstances and constraints under which performance occurs"
+      elements:
+        - "Tools and equipment available"
+        - "Reference materials permitted"
+        - "Environmental factors"
+        - "Time constraints"
+        - "Assistance allowed"
+
+    criteria:
+      definition: "Acceptable performance level"
+      types:
+        accuracy: "Percentage correct, error tolerance"
+        speed: "Time limits, efficiency standards"
+        quality: "Adherence to standards, completeness"
+        quantity: "Number of items, frequency"
+
+# ==============================================================================
+# PROFESSIONAL BODY STANDARDS
+# ==============================================================================
+
+industry_standards:
+  description: "Professional body guidance on learning objective design."
+  bodies:
+    atd:
+      full_name: "Association for Talent Development"
+      emphasis:
+        - "Systematic objective writing using established frameworks (ABCD, SMART, Bloom's)"
+        - "Hierarchical development approaches (terminal and enabling objectives)"
+        - "Clear alignment between objectives, instructional activities, and assessments"
+    ispi:
+      full_name: "International Society for Performance Improvement"
+      emphasis:
+        - "Stakeholder value alignment — objectives must serve the business, not just the course"
+        - "Measurable workplace impact as the primary criterion for objective validity"
+  source: "Research - Writing Learning Objectives.md, Modern frameworks emphasize performance over knowledge"
+
+# ==============================================================================
+# BLOOM'S TAXONOMY: Cognitive Levels and Action Verbs
+# ==============================================================================
+
+blooms_taxonomy:
+  description: "Cognitive progression from basic recall through creative application."
+
+  levels:
+    remember:
+      definition: "Recall or recognize information"
+      cognitive_processes: ["recognizing", "recalling"]
+      action_verbs:
+        - "define"
+        - "list"
+        - "recall"
+        - "identify"
+        - "name"
+        - "recognize"
+        - "state"
+        - "match"
+        - "label"
+      typical_assessments:
+        - "Multiple choice recognition"
+        - "Fill in the blank"
+        - "Matching exercises"
+      remediation_strategies:
+        - "Spaced repetition"
+        - "Flashcards"
+        - "Chunking information"
+        - "Mnemonic devices"
+
+    understand:
+      definition: "Demonstrate comprehension of meaning"
+      cognitive_processes: ["interpreting", "exemplifying", "classifying", "summarizing", "inferring", "comparing", "explaining"]
+      action_verbs:
+        - "explain"
+        - "describe"
+        - "interpret"
+        - "summarize"
+        - "paraphrase"
+        - "classify"
+        - "compare"
+        - "contrast"
+        - "discuss"
+      typical_assessments:
+        - "Short answer explanations"
+        - "Concept mapping"
+        - "Summarization tasks"
+      remediation_strategies:
+        - "Worked examples"
+        - "Analogies to prior knowledge"
+        - "Visual representations"
+        - "Discussion activities"
+
+    apply:
+      definition: "Use knowledge in new situations"
+      cognitive_processes: ["executing", "implementing"]
+      action_verbs:
+        - "apply"
+        - "demonstrate"
+        - "use"
+        - "solve"
+        - "implement"
+        - "execute"
+        - "perform"
+        - "operate"
+        - "calculate"
+      typical_assessments:
+        - "Problem-solving exercises"
+        - "Simulations"
+        - "Role-play scenarios"
+      remediation_strategies:
+        - "Guided practice"
+        - "Scaffolded exercises"
+        - "Case study walkthroughs"
+        - "Step-by-step demonstrations"
+
+    analyze:
+      definition: "Break down information into components"
+      cognitive_processes: ["differentiating", "organizing", "attributing"]
+      action_verbs:
+        - "analyze"
+        - "differentiate"
+        - "examine"
+        - "compare"
+        - "contrast"
+        - "investigate"
+        - "categorize"
+        - "distinguish"
+        - "deconstruct"
+      typical_assessments:
+        - "Case study analysis"
+        - "Root cause analysis"
+        - "Comparative analysis"
+      remediation_strategies:
+        - "Structured analysis frameworks"
+        - "Guided questioning"
+        - "Decomposition exercises"
+        - "Pattern recognition practice"
+
+    evaluate:
+      definition: "Make judgments based on criteria"
+      cognitive_processes: ["checking", "critiquing"]
+      action_verbs:
+        - "evaluate"
+        - "assess"
+        - "judge"
+        - "critique"
+        - "justify"
+        - "defend"
+        - "prioritize"
+        - "recommend"
+        - "appraise"
+      typical_assessments:
+        - "Peer review exercises"
+        - "Critique writing"
+        - "Decision-making scenarios"
+      remediation_strategies:
+        - "Rubric-based practice"
+        - "Criteria development exercises"
+        - "Comparative evaluation tasks"
+        - "Expert modeling of judgment"
+
+    create:
+      definition: "Produce new or original work"
+      cognitive_processes: ["generating", "planning", "producing"]
+      action_verbs:
+        - "create"
+        - "design"
+        - "develop"
+        - "construct"
+        - "produce"
+        - "formulate"
+        - "compose"
+        - "generate"
+        - "synthesize"
+      typical_assessments:
+        - "Project development"
+        - "Design challenges"
+        - "Original content creation"
+      remediation_strategies:
+        - "Template-guided creation"
+        - "Iterative design cycles"
+        - "Collaborative creation"
+        - "Constraint-based challenges"
+
+# ==============================================================================
+# COGNITIVE LOAD CONSIDERATIONS
+# ==============================================================================
+
+cognitive_load:
+  description: "Research-based limits for objective quantities."
+
+  working_memory_limits:
+    capacity: "5-9 chunks of information simultaneously"
+    duration: "15-30 seconds without rehearsal"
+    implication: "Exceeding limits causes incomplete learning and poor retention"
+    gagne_segmenting_link: "Gagné's Event 4 (Present the Content) operationalises cognitive load management by applying Mayer's Segmenting Principle: content should be delivered in small discrete chunks rather than as a continuous stream. Cross-reference: mayer_principles.segmenting_principle"
+
+  recommended_quantities:
+    course_level:
+      count: "3-5 maximum"
+      rationale: "Provides broad strategic direction without overwhelming scope"
+    module_level:
+      count: "2-3 per module"
+      rationale: "Allows focused learning while respecting cognitive limitations"
+    lesson_level:
+      count: "1-2 maximum"
+      rationale: "Enables thorough coverage and practice within adult attention spans"
+
+  variations_by_training_type:
+    compliance_training: "Fewer, more procedural objectives"
+    skills_training: "Slightly more objectives supporting practice"
+    leadership_development: "Can handle broader scope given strategic nature"
+
+# ==============================================================================
+# KIRKPATRICK MODEL: Linking Objectives to Outcomes
+# ==============================================================================
+
+kirkpatrick_model:
+  description: "Four-level framework for connecting objectives to outcomes."
+
+  levels:
+    level_1_reaction:
+      definition: "Participant satisfaction"
+      measures: "Engagement, relevance, perceived value"
+      assessment_methods:
+        - "End-of-course surveys"
+        - "Smile sheets"
+        - "Net Promoter Score"
+
+    level_2_learning:
+      definition: "Knowledge and skill acquisition"
+      measures: "Test scores, skill demonstrations"
+      assessment_methods:
+        - "Pre/post tests"
+        - "Skills assessments"
+        - "Certification exams"
+
+    level_3_behavior:
+      definition: "Workplace application"
+      measures: "Observable behavior change on the job"
+      assessment_methods:
+        - "Manager observations"
+        - "360-degree feedback"
+        - "Performance metrics"
+      transfer_mechanisms:
+        description: "Techniques that bridge the gap between training completion and on-the-job application (Gagné Event 9)."
+        methods:
+          job_aids: "Reference cards, summary sheets, and checklists available post-training"
+          peer_teaching: "Learners teach others, reinforcing their own encoding and transfer"
+          follow_up_activities: "Assignments requiring application in real work contexts (action plans, practice challenges)"
+        source: "theory_gagne_s_nine_events_of_instruction (Event 9 — Enhance Retention and Transfer)"
+
+    level_4_results:
+      definition: "Business impact"
+      measures: "KPIs, ROI, business outcomes"
+      assessment_methods:
+        - "Business metric tracking"
+        - "ROI calculations"
+        - "Cost-benefit analysis"
+
+  learning_analytics:
+    description: "Modern analytics types for sophisticated outcome tracking (Kirkpatrick Level 3-4)."
+    types:
+      descriptive: "What happened — retrospective performance data analysis"
+      predictive: "What will happen — forecasting future performance from leading indicators"
+      prescriptive: "What should happen — recommending targeted interventions"
+    business_impact:
+      revenue_increase: "Organizations using aligned measurement systems report 58% higher revenue vs. those without alignment"
+      profitability_increase: "72% higher profitability in organizations with aligned learning measurement"
+      source: "Research - Writing Learning Objectives.md"
+      citation_note: "No primary study citation in source document; treat as practitioner benchmark"
+
+# ==============================================================================
+# ACTION MAPPING PRINCIPLES (Cathy Moore)
+# ==============================================================================
+
+action_mapping:
+  description: "Pragmatic approach prioritizing business goals and required actions."
+
+  core_principles:
+    - "Start with measurable business goal, not learning objectives"
+    - "Identify what people need to DO (not know)"
+    - "Design activities that let people practice the doing"
+    - "Provide only the information they need to do the activity"
+
+  question_sequence:
+    1: "What business problem are we solving?"
+    2: "What do people need to DO to solve it?"
+    3: "Why aren't they doing it now? (Is training even the answer?)"
+    4: "What's the minimum they need to practice the behavior?"
+
+  root_cause_analysis:
+    knowledge_skill: "Training can help - they don't know how"
+    environment_process: "Training won't help - fix the system"
+    motivation: "Training won't help - address incentives/culture"
+
+  industry_examples:
+    description: "Well-formed action-mapped objectives from real sectors."
+    technology: "Developers will deploy cloud solutions using Azure within 30 days of training"
+    healthcare: "Pharmaceutical researchers will identify and report adverse events within 24 hours according to FDA guidelines"
+    financial_services: "Compliance officers will identify suspicious transactions and file SARs within regulatory timeframes"
+    manufacturing: "All factory workers will demonstrate proper lockout/tagout procedures with 100% compliance during quarterly assessments"
+    ibm_case: "IBM achieved 100% participant application rates using behavior-based objectives tied directly to performance reviews"
+    source: "Research - Writing Learning Objectives.md, Leading organizations section"
+
+  real_world_validation:
+    description: "Organizational evidence that behavior-first, goal-aligned training design produces measurable results."
+    examples:
+      - "Domino's Pizza achieved measurable performance improvements with focused, behavior-based training despite limited resources"
+      - "Cisco achieved measurable results using behavior-first, goal-aligned training design"
+    source: "Research - Essential Inputs for Learning Objectives.md"
+
+# ==============================================================================
+# QUALITY VALIDATION CHECKLIST
+# ==============================================================================
+
+validation_checklist:
+  description: "Quality assurance for objectives and outcomes."
+
+  gap_validation:
+    - "Is the gap clearly defined with baseline and target metrics?"
+    - "Is root cause analysis documented?"
+    - "Is business impact quantified?"
+    - "Is the data source credible?"
+    - "Are at least 90% of critical inputs available? (Proceed confident. 70-89%: proceed with explicit mitigation. Below 70%: delay or simplify.)"
+
+  goal_validation:
+    - "Does the goal link directly to the gap?"
+    - "Is it actionable and outcome-oriented?"
+    - "Does it specify a timeframe?"
+    - "Is KPI alignment explicit?"
+
+  objective_validation:
+    - "Does it follow ABCD model completely?"
+    - "Does it meet all SMART criteria?"
+    - "Is the verb observable and measurable?"
+    - "Is the Bloom's level appropriate?"
+    - "Does it align with supporting outcomes?"
+    - "Are all three frameworks applied? (ABCD model, SMART criteria, Bloom's Taxonomy level)"
+    - "Can it be stated as 'By the end of this [lesson/module], you will be able to...' in language a learner would understand?"
+
+  outcome_validation:
+    - "Is it measurable in real-world settings?"
+    - "Is the metric source authentic (dashboard, manager review)?"
+    - "Is the time window specified?"
+    - "Is it traceable to business impact?"
+    - "Is the outcome traceable to a specific assessment method (formative or summative)?"
+
+  common_pitfalls:
+    - "Using vague, unmeasurable language"
+    - "Writing compound objectives combining unrelated skills"
+    - "Describing instructional activities rather than learning outcomes"
+    - "Misalignment with actual job performance requirements"
+    - "Internal mental states instead of observable behaviors"
+    - "One-time training events without reinforcement mechanisms — learning decays rapidly without spaced practice"
+    - "Absence of manager engagement and post-training support (Kirkpatrick Level 3 failure mode)"
+    - "Objectives written only for instructional designers rather than communicated explicitly to learners (Gagné Event 2 violation)"
+    - "Writing objectives without designing the post-training transfer conditions (job aids, follow-up activities) needed for retention"
+
+  reviewer_audit:
+    description: "Structured reviewer and SME signoff workflow for GGOO compliance."
+    compliance_questions:
+      - "Is the performance gap clearly defined with baseline and target metrics?"
+      - "Are objectives measurable, observable, realistic, and aligned with Bloom's/ABCD/SMART frameworks?"
+      - "Are outcomes traceable to real-world impact and authenticated assessment methods?"
+      - "Does the full GGOO chain connect logically: Gap → Goal → Objective → Outcome?"
+    signoff_requirement: "Signature and date from both L&D lead and SME representative before course build begins"
+    sme_collaboration:
+      - "SME alignment workshops to validate technical accuracy before authoring"
+      - "Stakeholder feedback checkpoints at Gap/Goal stage and again at Objective/Outcome stage"
+    source: "Learner Outcomes - Instructions v4.md, Section 6 — Reviewer/Audit Tools"
+
+# ==============================================================================
+# MEASURABILITY INDICATORS
+# ==============================================================================
+
+measurability:
+  description: "Indicators for assessing objective measurability."
+
+  strong_indicators:
+    - "Specific percentage or number"
+    - "Time-bound criterion"
+    - "Observable action verb"
+    - "Clear success/failure boundary"
+    - "Authentic assessment method specified"
+
+  weak_indicators:
+    - "Words like 'understand,' 'know,' 'appreciate'"
+    - "No quantifiable standard"
+    - "Vague modifiers like 'effectively' without definition"
+    - "Missing conditions or context"
+
+  improvement_strategies:
+    vague_to_specific:
+      before: "Learners understand escalation"
+      after: "By end of Module 1, learners identify escalation criteria correctly in 85% of practice scenarios"
+
+    adding_conditions:
+      before: "Demonstrate troubleshooting skills"
+      after: "Given realistic customer scenarios, demonstrate troubleshooting skills"
+
+    adding_degree:
+      before: "Calculate ROI accurately"
+      after: "Calculate ROI with no more than 2% variance from actual figures"
+
+# ==============================================================================
+# NEEDS ASSESSMENT: MINIMUM VIABLE INPUTS
+# ==============================================================================
+
+needs_assessment:
+  description: "Pragmatic inputs for resource-constrained environments."
+
+  evidence:
+    empirical_foundation:
+      arthur_et_al:
+        finding: "Meta-analytic research found sample-weighted mean effect sizes of 0.60–0.63 across all training evaluation criteria when proper needs assessment was conducted."
+        source: "Research - Essential Inputs for Learning Objectives.md, Arthur et al."
+      competency_based_impact:
+        turnover_reduction: "Competency-based training developed through thorough needs analysis reduces employee turnover by up to 45%"
+        profitability_variance: "Accounts for 17% of business unit profitability variance"
+        source: "Research - Essential Inputs for Learning Objectives.md"
+    constraint_context:
+      budget_challenge: "65% of organizations identify limited budgets as their primary L&D challenge (2024 research)"
+      time_barrier: "33% of HR managers cite lack of time as the top barrier to effective needs assessment"
+      per_learner_spend: "Training budgets decreased from $954 to $774 per learner in 2024 — reinforcing the need for efficient minimal-viable-input approaches"
+
+  three_tiered_analysis:
+    description: "Structured framework for comprehensive needs identification at three organizational levels."
+    source: "Research - Essential Inputs for Learning Objectives.md, Three-tiered needs analysis"
+    organizational_analysis:
+      definition: "Examines strategic alignment and business goals to ensure training supports broader organizational outcomes"
+      focus_questions: ["What business problem requires training?", "How does this gap affect organizational performance?", "What KPIs will change post-training?"]
+    task_analysis:
+      definition: "Identifies specific competencies and skills required for job performance through systematic techniques"
+      methods: ["Job observation", "SME interviews", "Performance data review", "Work sample analysis"]
+    person_analysis:
+      definition: "Evaluates individual learner characteristics, prior knowledge, and learning preferences"
+      rapid_approach: "Assumption-based design with validation: create 2–3 key learner personas and test assumptions with small pilot groups before full rollout"
+      linguistic_note: "33% of US workforce does not speak English as a first language — cultural and linguistic considerations must be included in person analysis"
+
+  rapid_decision_framework:
+    description: "Decision-making protocol for proceeding with training design under incomplete input conditions."
+    source: "Research - Essential Inputs for Learning Objectives.md, Mitigating risks when inputs are incomplete"
+    steps:
+      recommend: "L&D teams recommend a course of action based on available data and explicit assumptions"
+      agree: "Stakeholders agree on feasibility and risk tolerance despite known input limitations"
+      perform: "Training teams implement with built-in adaptation mechanisms (pilot group, modular design)"
+      input: "Subject matter experts provide time-boxed input within project constraints (30-minute structured sessions)"
+      decide: "Leadership decides on resource allocation with full awareness of the risks of incomplete inputs"
+
+  moscow_prioritization:
+    description: "Scope management tool for learning design under constrained resources — prevents scope creep while ensuring critical content is protected."
+    source: "Research - Essential Inputs for Learning Objectives.md, Practical frameworks"
+    categories:
+      must_have: "Critical safety, compliance, or core business function content — non-negotiable for deployment"
+      should_have: "Content that improves performance but is not critical for initial deployment"
+      could_have: "Content that enhances the learning experience but can be deferred to a later version"
+      wont_have: "Explicitly excluded content — documenting exclusions prevents scope re-creep in future reviews"
+
+  risk_mitigation:
+    description: "Consequences of missing inputs and corresponding mitigation strategies."
+    source: "Research - Essential Inputs for Learning Objectives.md, Mitigating risks"
+    missing_input_consequences:
+      missing_performance_requirements: "Training becomes generic and academic — learners cannot transfer to real work"
+      inadequate_learner_analysis: "Mismatched delivery methods and inappropriate difficulty levels — learners disengage"
+      missing_business_goal_alignment: "Eliminates senior leadership support and makes ROI demonstration impossible"
+      insufficient_sme_validation: "Technical inaccuracies destroy credibility and learner trust in the program"
+      missing_baseline_data: "Prevents meaningful pre-post evaluation and continuous improvement"
+    mitigation_strategies:
+      - "Multi-source data collection (surveys, interviews, observations, performance data) to triangulate findings"
+      - "Assumption documentation and testing — be explicit about what is assumed vs. confirmed"
+      - "Iterative design methods with built-in flexibility for course corrections after pilot"
+
+  sme_engagement:
+    approach: "Structured 30-minute speed sessions using focused question templates"
+    goal: "Capture critical competencies and common performance errors — not exhaustive content coverage"
+    constraint: "Extensive SME engagement is often challenging due to expert availability and competing priorities"
+
+  must_have_inputs:
+    measurable_business_goals:
+      description: "Clear direction and success metrics"
+      minimum: "2-3 key metrics agreed with stakeholders"
+    observable_behaviors:
+      description: "Focus on what people need to DO"
+      minimum: "Critical tasks impacting business outcomes"
+    performance_barriers:
+      description: "Why people aren't currently performing"
+      minimum: "Quick root cause analysis (Knowledge/Environment/Motivation)"
+    success_metrics:
+      description: "Clear indicators of training effectiveness"
+      minimum: "Tied directly to business results"
+
+  rapid_assessment_approach:
+    traditional: "2-4 weeks comprehensive analysis"
+    pragmatic: "2-4 hours focused assessment"
+    key_difference: "Focus on critical tasks that directly impact business outcomes"
+
+  threshold_decision_making:
+    proceed_confident: "90%+ of critical inputs available"
+    proceed_caution: "70-89% of critical inputs (explicit mitigation strategies)"
+    delay_or_simplify: "Below 70% of critical inputs"
+
+# ==============================================================================
+# ASSESSMENT MAPPING
+# ==============================================================================
+
+assessment_mapping:
+  description: "Connecting objectives to appropriate assessments."
+
+  formative_assessments:
+    purpose: "Support learning objectives during instruction"
+    examples:
+      - "Practice exercises with feedback"
+      - "Knowledge checks"
+      - "Peer discussions"
+      - "Quizzes during modules"
+    gagnes_guidance:
+      principle: "Eliciting performance through interactive exercises (quizzes, case studies, role-play) rather than passive consumption reinforces learning and boosts retention. Learners must practice in real-world scenarios, not only observe."
+      source: "theory_gagne_s_nine_events_of_instruction (Event 6 — Elicit Performance)"
+
+  summative_assessments:
+    purpose: "Validate outcomes after training"
+    examples:
+      - "Final examinations"
+      - "Skills demonstrations"
+      - "Project submissions"
+      - "Performance evaluations"
+    gagnes_guidance:
+      principle: "Assessments should measure whether learners can apply knowledge independently, not merely recall it. Practical performance-based assessments (projects, functional builds, presentations) are preferred over purely written tests."
+      before_after_comparison: "Compare pre-training and post-training skill levels to measure growth against the original Gap baseline."
+      source: "theory_gagne_s_nine_events_of_instruction (Event 8 — Assess Performance)"
+
+  authentic_assessments:
+    purpose: "Measure real-world application"
+    examples:
+      - "On-the-job observations"
+      - "Dashboard metrics"
+      - "Manager feedback"
+      - "Customer satisfaction scores"
+
+# ==============================================================================
+# ADULT LEARNING DESIGN LENS
+# ==============================================================================
+
+adult_learning_principles:
+  description: "Considerations for corporate/adult learners."
+
+  principles:
+    self_directed: "Adults prefer autonomy in learning"
+    experiential: "Adults learn best from experience and practice"
+    relevant: "Adults need to see immediate applicability"
+    readiness: "Adults are ready to learn when they perceive a need"
+    motivated: "Adults are internally motivated by growth and achievement"
+    problem_centered: "Adults prefer problem-centered over content-centered learning"
+
+  design_implications:
+    - "Include real-world scenarios and problems"
+    - "Provide choices and autonomy where possible"
+    - "Connect learning to immediate job application"
+    - "Leverage existing experience as foundation"
+    - "Focus on practical skills over abstract knowledge"
+    - "Activate prior knowledge before presenting new content (Gagné Event 3): use questions, brief reviews, shared experience prompts, or concept maps to prime cognitive schemas and make new information easier to encode and retain"
+
+# ==============================================================================
+# ACCESSIBILITY CONSIDERATIONS
+# ==============================================================================
+
+accessibility:
+  description: "Ensuring inclusive learning objectives."
+
+  requirements:
+    language_level: "CEFR B2 readability level"
+    clarity: "Avoid jargon without definition"
+    inclusivity: "Consider diverse learner populations"
+    captions: "Closed captions and transcripts required for all audio and video content"
+    screen_reader: "All digital content and objective text must be screen-reader compatible"
+
+  considerations:
+    - "33% of US workforce doesn't speak English as first language"
+    - "Various learning styles and preferences"
+    - "Accessibility tools (screen readers, captions)"
+    - "Cultural context differences"
+
+# ==============================================================================
+# GAGNÉ'S NINE EVENTS OF INSTRUCTION
+# Instructional sequence framework complementing the GGOO model
+# ==============================================================================
+
+gagnes_nine_events:
+  description: >
+    Robert Gagné's Nine Events of Instruction is a cognitive learning theory-based
+    framework that structures lessons to maximise engagement, comprehension, and
+    retention. Events align with how learners process and retain information and
+    map directly onto modern e-learning, corporate training, and classroom instruction.
+    Each event provides the instructional context in which learning objectives operate.
+  source: "theory_gagne_s_nine_events_of_instruction.md"
+
+  events:
+    gain_attention:
+      number: 1
+      purpose: "Capture learners' interest to prepare them for learning"
+      rationale: "Attention is a prerequisite for learning; without engagement, learners will not process new material"
+      techniques:
+        - "Start with a compelling question, surprising fact, or real-world scenario"
+        - "Use storytelling or case studies to create an emotional connection"
+        - "Integrate multimedia elements (videos, animations, interactive elements)"
+      example: "A cybersecurity course starts with a live hacking demo to show the risks of weak passwords"
+
+    inform_objectives:
+      number: 2
+      purpose: "Tell learners what they will learn and how it applies to them"
+      rationale: "Clear objectives help focus attention and set learning goals — objectives written only for designers are a design failure"
+      techniques:
+        - "Present learning outcomes using 'By the end of this lesson, you will be able to...' formula"
+        - "Explain how the material is relevant to their work or role"
+      yaml_alignment: "ggoo_model.learning_objective, abcd_model"
+
+    stimulate_recall:
+      number: 3
+      purpose: "Connect new information with what learners already know"
+      rationale: "Learning is more effective when linked to existing knowledge schemas (Ausubel's Meaningful Learning Theory)"
+      techniques:
+        - "Use questions, discussions, or quick reviews of previous lessons"
+        - "Ask learners to share experiences related to the topic"
+        - "Use a concept map to visualize prior knowledge"
+      example: "In a sales training, ask learners to recall the last time a customer objection stumped them before introducing new techniques"
+
+    present_content:
+      number: 4
+      purpose: "Introduce new concepts in an engaging, structured way"
+      rationale: "Content must be clear, concise, and multimodal to maximise understanding without overloading working memory"
+      techniques:
+        - "Use multimedia (videos, images, simulations) to enhance learning"
+        - "Present small chunks of information to avoid cognitive overload (Mayer's Segmenting Principle)"
+        - "Use real-world examples to reinforce understanding"
+      yaml_alignment: "cognitive_load.working_memory_limits, mayer_principles.segmenting_principle"
+
+    provide_guidance:
+      number: 5
+      purpose: "Offer strategies and scaffolding to help learners grasp complex concepts"
+      rationale: "Guidance helps prevent misunderstandings and builds confidence before independent performance"
+      techniques:
+        - "Provide worked examples or step-by-step demonstrations"
+        - "Use mnemonics, analogies, and storytelling to reinforce concepts"
+        - "Allow guided practice before full independence"
+
+    elicit_performance:
+      number: 6
+      purpose: "Encourage learners to apply what they have learned"
+      rationale: "Hands-on practice reinforces learning and boosts retention — passive consumption is insufficient"
+      techniques:
+        - "Include quizzes, case studies, problem-solving tasks, or role-playing"
+        - "Use interactive exercises instead of passive content consumption"
+        - "Provide real-world scenarios for learners to apply skills"
+      yaml_alignment: "assessment_mapping.formative_assessments"
+
+    provide_feedback:
+      number: 7
+      purpose: "Ensure learners receive immediate, constructive feedback"
+      rationale: "Feedback helps learners correct mistakes and improve — delayed feedback reduces effectiveness"
+      techniques:
+        - "Use real-time feedback in quizzes or simulations"
+        - "Offer specific praise and corrective guidance (not just right/wrong)"
+        - "Use peer feedback for collaborative learning contexts"
+
+    assess_performance:
+      number: 8
+      purpose: "Measure whether learners have met the learning objectives"
+      rationale: "Assessment ensures learners can apply knowledge independently, not just recognise it in controlled conditions"
+      techniques:
+        - "Use tests, projects, presentations, or case studies"
+        - "Incorporate practical, performance-based assessments over purely written tests"
+        - "Compare pre-training and post-training skills to measure growth against the Gap baseline"
+      yaml_alignment: "assessment_mapping.summative_assessments, kirkpatrick_model.level_2_learning"
+
+    enhance_retention:
+      number: 9
+      purpose: "Help learners retain and apply knowledge beyond the training event"
+      rationale: "Learning must be transferable to real-world situations — training that doesn't transfer is waste"
+      techniques:
+        - "Provide job aids, summary sheets, and checklists for post-training reference"
+        - "Encourage learners to teach others (peer teaching reinforces encoding)"
+        - "Assign follow-up activities requiring application in real work contexts"
+      yaml_alignment: "kirkpatrick_model.level_3_behavior.transfer_mechanisms, kirkpatrick_model.level_4_results"

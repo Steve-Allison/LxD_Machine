@@ -1,0 +1,301 @@
+_meta:
+  id: accessibility_taxonomy
+  title: "Accessibility Taxonomy"
+  description: "Classification of accessibility requirements by WCAG conformance level, disability category, content modality, accommodation type, and audit severity"
+  domain: visual
+  domain_type: cross_cutting
+  purpose: taxonomy
+  version: "1.2.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Narrative Visualization, Sketchnoting, Accessibility.md"
+    - "Corpus/Research/Research - The Cognitive Interface - Operationalizing UxD for Documents and Reports.md"
+    - "Corpus/Research/universal_learning_design_framework.md"
+  academic_sources:
+    - "W3C (2018) - Web Content Accessibility Guidelines (WCAG) 2.1"
+    - "Section 508 Standards"
+    - "EN 301 549 (European Accessibility Standard)"
+  relationships:
+    - target: entities/accessibility_entities.yaml
+      type: depends_on
+      description: "Accessibility entity types for NER extraction"
+    - target: reference/accessibility_standards.yaml
+      type: depends_on
+      description: "Accessibility standards reference data"
+    - target: scoring/accessibility_rubric.yaml
+      type: depends_on
+      description: "Accessibility scoring rubric"
+# ==============================================================================
+# WCAG CONFORMANCE LEVELS
+# ==============================================================================
+
+wcag_conformance_levels:
+  level_a:
+    label: "Level A (Minimum)"
+    description: "Essential accessibility requirements — must be met or content is unusable for some users"
+    priority: critical
+    examples:
+      - "1.1.1 Non-text Content — alt text for images"
+      - "1.3.1 Info and Relationships — semantic markup"
+      - "1.4.1 Use of Color — not sole visual means"
+      - "2.1.1 Keyboard — all functionality keyboard-accessible"
+      - "2.4.2 Page Titled — descriptive page titles"
+
+  level_aa:
+    label: "Level AA (Standard)"
+    description: "Standard conformance target for most organisations and legal requirements"
+    priority: high
+    examples:
+      - "1.4.3 Contrast (Minimum) — 4.5:1 text contrast ratio"
+      - "1.4.5 Images of Text — real text preferred over images"
+      - "2.4.6 Headings and Labels — descriptive headings"
+      - "2.4.7 Focus Visible — visible keyboard focus indicator"
+      - "3.1.2 Language of Parts — language changes marked"
+
+  level_aaa:
+    label: "Level AAA (Enhanced)"
+    description: "Highest level of accessibility — aspirational for most content"
+    priority: aspirational
+    examples:
+      - "1.4.6 Contrast (Enhanced) — 7:1 text contrast ratio"
+      - "1.4.8 Visual Presentation — user-controlled text styling"
+      - "2.2.3 No Timing — no time limits"
+      - "3.1.5 Reading Level — supplementary content for complex text"
+
+# ==============================================================================
+# DISABILITY CATEGORIES
+# ==============================================================================
+
+disability_categories:
+  visual:
+    label: "Visual"
+    description: "Partial or total vision loss, colour vision deficiency"
+    sub_categories:
+      - blindness
+      - low_vision
+      - colour_blindness
+    assistive_technologies:
+      - "screen reader (JAWS, NVDA, VoiceOver)"
+      - "screen magnifier"
+      - "braille display"
+      - "high contrast mode"
+
+  auditory:
+    label: "Auditory"
+    description: "Partial or total hearing loss"
+    sub_categories:
+      - deafness
+      - hard_of_hearing
+    assistive_technologies:
+      - "captions (open/closed)"
+      - "transcripts"
+      - "sign language interpretation"
+      - "visual alerts"
+
+  motor:
+    label: "Motor / Physical"
+    description: "Limited fine or gross motor control"
+    sub_categories:
+      - limited_dexterity
+      - tremor
+      - paralysis
+      - repetitive_strain
+    assistive_technologies:
+      - "switch device"
+      - "eye tracking"
+      - "voice control"
+      - "head pointer"
+      - "keyboard-only navigation"
+
+  cognitive:
+    label: "Cognitive / Neurological"
+    description: "Learning differences, attention disorders, memory challenges"
+    sub_categories:
+      - dyslexia
+      - dyscalculia
+      - adhd
+      - autism_spectrum
+      - memory_impairment
+      - intellectual_disability
+    assistive_technologies:
+      - "text-to-speech"
+      - "reading rulers"
+      - "simplified interface"
+      - "extended time"
+      - "content chunking"
+
+  speech:
+    label: "Speech"
+    description: "Difficulty with speech production affecting voice-based interaction"
+    sub_categories:
+      - stammering
+      - dysarthria
+      - aphasia
+    assistive_technologies:
+      - "text-based alternatives to voice input"
+      - "AAC devices"
+
+# ==============================================================================
+# CONTENT MODALITY ACCESSIBILITY
+# ==============================================================================
+
+content_modality_accessibility:
+  text:
+    label: "Text Content"
+    key_requirements:
+      - "semantic headings (H1-H6)"
+      - "readable font size (min 16px body)"
+      - "sufficient contrast (4.5:1 minimum)"
+      - "plain language option"
+      - "logical reading order"
+
+  image:
+    label: "Image Content"
+    key_requirements:
+      - "meaningful alt text"
+      - "decorative images marked as such"
+      - "complex images have long description"
+      - "text not embedded in images"
+      - "colour not sole conveyor of meaning"
+
+  video:
+    label: "Video Content"
+    key_requirements:
+      - "closed captions (synchronised)"
+      - "audio description for visual-only content"
+      - "transcript available"
+      - "no autoplay"
+      - "pause/stop controls"
+
+  audio:
+    label: "Audio Content"
+    key_requirements:
+      - "transcript provided"
+      - "captions for live audio"
+      - "volume control"
+      - "no audio-only critical information"
+
+  interactive:
+    label: "Interactive Content"
+    key_requirements:
+      - "keyboard-accessible controls"
+      - "visible focus indicator"
+      - "sufficient target size (44x44px minimum)"
+      - "error identification and suggestion"
+      - "time limits adjustable"
+
+  document:
+    label: "Document Content"
+    key_requirements:
+      - "tagged PDF structure"
+      - "logical tab order"
+      - "bookmarks for navigation"
+      - "accessible tables with headers"
+      - "language specified"
+
+# ==============================================================================
+# ACCOMMODATION TYPES
+# ==============================================================================
+
+accommodation_types:
+  perceptual:
+    label: "Perceptual"
+    description: "Alternative ways to perceive content"
+    examples:
+      - "alt text"
+      - "captions"
+      - "audio description"
+      - "transcript"
+      - "high contrast"
+
+  navigational:
+    label: "Navigational"
+    description: "Alternative ways to navigate and interact"
+    examples:
+      - "keyboard access"
+      - "skip links"
+      - "headings structure"
+      - "focus management"
+      - "landmark regions"
+
+  temporal:
+    label: "Temporal"
+    description: "Adjustments to timing and pacing"
+    examples:
+      - "extended time"
+      - "pause controls"
+      - "no auto-advance"
+      - "self-paced option"
+
+  cognitive:
+    label: "Cognitive"
+    description: "Simplification and support for understanding"
+    examples:
+      - "plain language"
+      - "chunked content"
+      - "consistent layout"
+      - "progress indicators"
+      - "glossary"
+
+  input:
+    label: "Input"
+    description: "Alternative input methods"
+    examples:
+      - "voice control"
+      - "switch access"
+      - "large click targets"
+      - "gesture alternatives"
+
+# ==============================================================================
+# CLASSIFICATION DIMENSIONS
+# ==============================================================================
+
+classification_dimensions:
+  wcag_level:
+    name: "WCAG Conformance Level"
+    description: "The WCAG conformance level of the requirement"
+    values:
+      - level_a
+      - level_aa
+      - level_aaa
+
+  disability_category:
+    name: "Disability Category"
+    description: "The primary disability group affected"
+    values:
+      - visual
+      - auditory
+      - motor
+      - cognitive
+      - speech
+
+  content_modality:
+    name: "Content Modality"
+    description: "The type of content being assessed for accessibility"
+    values:
+      - text
+      - image
+      - video
+      - audio
+      - interactive
+      - document
+
+  accommodation_type:
+    name: "Accommodation Type"
+    description: "The category of accessibility accommodation"
+    values:
+      - perceptual
+      - navigational
+      - temporal
+      - cognitive
+      - input
+
+  audit_severity:
+    name: "Audit Severity"
+    description: "The severity of an identified accessibility issue"
+    values:
+      - blocker
+      - critical
+      - major
+      - minor
+      - advisory

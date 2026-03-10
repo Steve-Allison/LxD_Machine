@@ -1,0 +1,859 @@
+_meta:
+  id: content_architecture_entities
+  purpose: entity
+  version: 2.30.0
+  last_updated: '2026-03-09'
+  description: GLiNER entity definitions for detecting content architecture elements — planning artefacts, structural components,
+    pedagogical sequence markers, delivery modalities, interaction elements, and alignment references in instructional design
+    text.
+  domain: pedagogical
+  domain_type: workflow
+  corpus_sources:
+  - Corpus/Research/Research - Essential Inputs for Learning Objectives.md
+  - Corpus/Research/High-Level Planning Tools in Corporate Learning - Wireframes, Content Maps & Course Blueprints.md
+  - Corpus/Research/Instruction for Creating Content Maps.md
+  - Corpus/Research/Research - Wireframe Best Practices.md
+  - Corpus/Research/Content Map - Instructions v3.md
+  - Corpus/Research/Best Practices for Structuring Corporate Learning Content.md
+  - Corpus/Research/Research - Comprehensive Learning Design Framework.md
+  - Corpus/Research/Research - Comprehensive Audience Analysis.md
+  - Corpus/Research/Research - Merrills Instructional Design Theories Applied.md
+  - Corpus/Research/Research - Visual Communication and Storytelling.md
+  - Corpus/Research/theory_gagne_s_nine_events_of_instruction.md
+  - Corpus/Research/Research - Canonical Presentation Methodology Research.md
+  - Corpus/Research/Research - Case Study Excellence.md
+  - Corpus/Research/Research - Scenario-Based Training_ A Comprehensive Guide.md
+  - Corpus/Research/Research - Roleplay & Scenarios for Learning.md
+  - Corpus/Research/Research - Best Practices for Writing Effective Corporate Learning Content.md
+  - Corpus/Research/Research - Infographics.md
+  - Corpus/Research/slide_design_research_monograph.md
+  - Corpus/Research/map-it-the-hands-on-guide-to-strategic-training-design-cathy-moo.md
+  - Corpus/Research/universal_learning_design_framework.md
+  - Corpus/Research/core_knowledge_and_progress_measurement.md
+  - Corpus/Research/Essentials_Course_Gold_Structure_AI_Course_Playbook.md
+  - Corpus/Research/Applying_Learning_Theory_Practical_Checklist.md
+  - Corpus/Research/Research - ILT & VILT Best Practice.md
+  - Corpus/Research/mayers_15_principles.md
+  - Corpus/Research/Research - Storyboard Best Practices.md
+  - Corpus/Research/Research - Corporate Learning Assessment- Strategies, Modalities, and Best Practices.md
+  - Corpus/Research/Gold Standard Structure for Any Corporate-Learning Asset v3.md
+  - Corpus/Research/module-integration-strategy.md
+  - Corpus/Research/Methodology - How do we move from this research to a sequenced A.I. Enhanced Course Pipeline_.md
+  relationships:
+  - target: taxonomy/content_architecture_taxonomy.yaml
+    type: depends_on
+    description: Canonical content architecture classification dimensions
+  - target: methodology/pedagogical_patterns.yaml
+    type: depends_on
+    description: Pedagogical design pattern definitions
+  - target: taxonomy/activity_types_taxonomy.yaml
+    type: depends_on
+    description: Activity type classification for interaction elements
+gliner_config:
+  model: urchade/gliner_multi_pii-v1
+  batch_size: 8
+  context_window: 512
+  domain_keywords:
+    primary:
+    - wireframe
+    - storyboard
+    - content map
+    - course blueprint
+    - screenplan
+    - module
+    - segment
+    - learning objective
+    secondary:
+    - action mapping
+    - backward design
+    - hook
+    - advance organiser
+    - retrieval practice
+    - knowledge check
+    - interaction point
+    - scaffold
+entity_types:
+  planning_artefact_marker:
+    description: References to instructional design planning documents — wireframes, storyboards, content maps, course blueprints,
+      screenplans, and design documents
+    canonical_id: planning_artefact_marker
+    entity_kind: content_artefact
+    family: planning_artefacts
+    gliner_label: PLANNING_ARTEFACT
+    gliner_description: Planning artefact wireframe storyboard content map course blueprint screenplan script design document
+      action map outline specification
+    examples:
+    - the wireframe outlines the video structure
+    - refer to the content map for module alignment
+    - the course blueprint maps objectives to modules
+    - create a storyboard with scene-by-scene detail
+    - the screenplan specifies layout per screen
+    - use action mapping to connect goals to activities
+    anti_examples:
+    - the building blueprint
+    - the street map
+    - the wire fence
+    confidence_threshold: 0.7
+    aliases:
+    - planning document
+    - design document
+    - instructional specification
+    indicators:
+    - wireframe
+    - storyboard
+    - content map
+    - course blueprint
+    - screenplan
+    - screen plan
+    - shot list
+    - course map
+    - course outline
+    - design document
+    - action map
+    - action mapping
+    - instructional specification
+    - course canvas
+    patterns:
+    - (video|learning|course|content) wireframe
+    - (content|course|curriculum) map
+    - (course|curriculum|learning) blueprint
+    - (screen|scene)[- ]?plan
+    - story[- ]?board
+    - action map(ping)?
+    - (design|instructional|course) (document|specification|spec)
+    - (course|module|content) outline
+    color: '#2980b9'
+    relates_to:
+    - target: content_structure_marker
+      relation: precedes
+      weight: required
+      description: Phase 1 Analysis (needs assessment, learner characteristics, objectives, content audit) must precede Phase 2
+        Design (map module structure, assessment strategy) — planning artefacts precede content structure (Comprehensive Learning
+        Design Framework)
+    - target: scqa_marker
+      relation: supported_by
+      weight: expected
+      description: "Planning artefacts (storyboards, storylines) are structured using the SCQA framework — the Dot-Dash Storylining Method operationalizes SCQA into a text-based planning document before any slides are created per Canonical Presentation Methodology"
+      target_file: rhetorical_devices_entities
+    - target: scenario_activity
+      relation: supports
+      weight: expected
+      description: "Action mapping is prescribed as a planning technique for SBT that shifts focus from what people need to know to what people need to do, tying every element to business outcomes per SBT guide"
+      target_file: activity_types_entities
+    - target: instructional_event
+      relation: supported_by
+      weight: optional
+      description: "Gagné's Event 9 (Enhance Retention) recommends job aids, summary sheets, and checklists as planning artefacts to support long-term knowledge transfer per theory_gagne_s_nine_events_of_instruction"
+      target_file: pedagogical_frameworks_entities
+    - target: alignment_marker
+      relation: enables
+      weight: expected
+      description: "Action mapping project charters directly establish alignment between practice activities and measurable business goals, ensuring every activity traces to a performance metric per map-it Cathy Moore"
+    - target: content_structure_marker
+      relation: contains
+      weight: required
+      description: "High-level planning tools contain content structure decisions — they outline major topics, sequence them pedagogically, chunk content into modules, and define the hierarchy from general to specific concepts per High-Level Planning Tools research"
+    - target: pedagogical_sequence_marker
+      relation: contains
+      weight: required
+      description: "Course blueprints contain pedagogical sequencing — backward design and concept mapping both determine the order in which topics are presented, ensuring foundational concepts precede complex ones per High-Level Planning Tools research"
+    - target: delivery_modality_marker
+      relation: contains
+      weight: expected
+      description: "Planning artefacts specify delivery format and media for each module — whether online self-paced, live webinar, classroom workshop, video tutorial, or blended — as a standard structural component per High-Level Planning Tools research"
+    - target: interaction_element_marker
+      relation: contains
+      weight: expected
+      description: "Course wireframes include learning activities and methods for each topic — role-plays, simulations, group exercises, interactive case studies — as part of the blueprint's structural components per High-Level Planning Tools research"
+    - target: pedagogical_sequence_marker
+      relation: enables
+      weight: required
+      description: "Content Map ensures foundational knowledge appears before advanced content by laying out modules in logical sequence (Content Map Instructions v3)"
+    - target: learning_objective
+      relation: contains
+      weight: expected
+      description: "Planning artefacts contain learning objectives stated at the start of modules to set expectations and focus learner attention per Best Practices for Structuring Corporate Learning Content"
+      target_file: pedagogical_frameworks_entities
+    - target: pedagogical_sequence_marker
+      relation: precedes
+      weight: required
+      description: "Audience Roadmap and Dot-Dash Storyline are planning artefacts that must be approved before visualization phases"
+    - target: SOAR_NARRATIVE_QUALITY
+      relation: supports
+      weight: expected
+      description: "OPML outlines tagged with SOAR phases serve as planning artefact driving the design pipeline"
+      target_file: sales_entities
+  content_structure_marker:
+    description: References to hierarchical content units — courses, modules, topics, sections, segments, scenes, screens,
+      chunks
+    canonical_id: content_structure_marker
+    entity_kind: content_unit
+    family: content_structure
+    gliner_label: CONTENT_STRUCTURE
+    gliner_description: Content structure module topic section segment scene screen chunk unit course hierarchy
+    examples:
+    - divide the course into four modules
+    - each segment should be 5-10 minutes
+    - the scene transitions from demo to talking head
+    - chunk complex content into bite-sized units
+    - this screen shows the key terms
+    - the module covers three topics
+    anti_examples:
+    - a module of code
+    - the screen resolution
+    - a movie scene
+    confidence_threshold: 0.65
+    aliases:
+    - content unit
+    - learning unit
+    - content block
+    indicators:
+    - module
+    - topic
+    - section
+    - segment
+    - scene
+    - screen
+    - chunk
+    - unit
+    - lesson
+    - frame
+    - learning path
+    - microlearning
+    patterns:
+    - (learning|content|course|training) (module|unit|segment|section)
+    - (divide|break|split|chunk) (the|this|content|material) into
+    - (module|segment|section|topic) \d+
+    - (\d+[- ]minute|\d+ min) (segment|module|chunk|unit)
+    - (bite[- ]sized|micro[- ]?learning|nano[- ]?learning) (unit|module|content)
+    color: '#8e44ad'
+    relates_to:
+    - target: mayer_extraneous_principle
+      relation: supports
+      weight: required
+      description: Gold Standard structure enforces coherence principle by excluding extraneous information
+      target_file: cognitive_load_entities
+    - target: extraneous_load_marker
+      relation: resolves
+      weight: required
+      description: Modular segmentation organizes content into bite-sized pieces to manage cognitive load
+      target_file: cognitive_load_entities
+    - target: mayer_essential_principle
+      relation: supports
+      weight: required
+      description: Content structure applies signaling techniques to guide attention to important information
+      target_file: cognitive_load_entities
+    - target: delivery_mode
+      relation: enables
+      weight: required
+      description: Content structure supports multiple delivery modes (course, webinar, microlearning, video)
+      target_file: pedagogical_frameworks_entities
+    - target: pedagogical_sequence_marker
+      relation: contains
+      weight: required
+      description: Hierarchical content structure (Modules > Topics > Strips > Cards) contains pedagogical sequences at each level
+        (Comprehensive Learning Design Framework)
+    - target: layout_pattern
+      relation: supported_by
+      weight: expected
+      description: "Content structure is realized through layout patterns that use hierarchy balance and rhythm to organize information per Visual Communication and Storytelling"
+      target_file: visual_elements_entities
+    - target: claim
+      relation: contains
+      weight: required
+      description: "Content structure contains claims as Action Titles — each slide's Dot must be a complete declarative sentence summarizing the insight, not a topic label per Canonical Presentation Methodology"
+      target_file: narrative_entities
+    - target: progressive_disclosure_marker
+      relation: contains
+      weight: expected
+      description: "Content structure contains progressive disclosure as a chunking strategy — breaking complex information into bite-sized segments with headings and section breaks scaffolds learning per Infographics research"
+      target_file: cognitive_load_entities
+    - target: structural_slide
+      relation: enables
+      weight: expected
+      description: "Content structure markers enable proper structural slide classification by defining organisational boundaries per slide design research monograph"
+      target_file: slide_types_entities
+    - target: alignment_marker
+      relation: supports
+      weight: required
+      description: "Quality Assurance Checklist requires assessment aligns with strip objective and progressive skill building across strips — content structure supports alignment between objectives, activities, and assessments (Essentials_Course_Gold_Structure)"
+    - target: planning_artefact_marker
+      relation: supported_by
+      weight: expected
+      description: "Content structure markers are supported by planning artefact markers — module templates, half-day/full-day agendas, and facilitator guides are planning artefacts that define content structure per ILT&VILT Best Practice"
+    - target: intrinsic_load_marker
+      relation: resolves
+      weight: expected
+      description: "Information Mapping structures content into discrete blocks each answering one question, managing intrinsic load by controlling how complexity is ingested (Cognitive Interface, §1.1.1)"
+      target_file: cognitive_load_entities
+    - target: microlearning_format
+      relation: supports
+      weight: expected
+      description: "Content chunking strategies recognise 2-5 minutes as optimal duration for maintaining attention and facilitating retention in microlearning per AI Microlearning Guide"
+      target_file: content_format_entities
+    - target: structure_dimension
+      relation: supports
+      weight: expected
+      description: "Content structuring via Minto Pyramid and Information Mapping supports structural quality scoring"
+      target_file: scoring_entities
+    - target: delivery_modality_marker
+      relation: enables
+      weight: expected
+      description: "Content structures define hierarchy levels that enable modality-specific timing adjustments — ILT, VILT, eLearning, microlearning each require different pacing within the same structure per course_structure_hierarchy_corpus_research"
+    - target: delivery_modality_marker
+      relation: contains
+      weight: expected
+      description: "Content Map structure includes delivery methods and resource columns within each module (Content Map Instructions v3)"
+    - target: interaction_element_marker
+      relation: contains
+      weight: expected
+      description: "Content structures at Card level contain interaction elements; the research mandates interaction every 3 minutes in eLearning and every 15-20 minutes in synchronous delivery per course_structure_hierarchy_corpus_research"
+    - target: evidence
+      relation: contains
+      weight: required
+      description: "Content structure contains evidence as Dashes under each Dot; the hierarchical relationship requires Dashes to prove the Dot for logical validity (Canonical Presentation Methodology)"
+      target_file: narrative_entities
+    - target: layout_pattern
+      relation: enables
+      weight: expected
+      description: "OPML hierarchical structure enables algorithmic layout selection via indentation-to-container mapping"
+      target_file: visual_elements_entities
+  pedagogical_sequence_marker:
+    description: References to the pedagogical stages within a learning asset — hooks, advance organisers, pre-training, core
+      instruction, practice, summary, assessment, closure
+    canonical_id: pedagogical_sequence_marker
+    entity_kind: sequence_stage
+    family: pedagogical_sequence
+    gliner_label: PEDAGOGICAL_SEQUENCE
+    gliner_description: Pedagogical sequence hook opening advance organiser roadmap pre-training core content practice summary
+      reflection assessment closure next step
+    examples:
+    - open with a hook to grab attention
+    - provide an advance organiser before the main content
+    - pre-train learners on key terminology
+    - the core instruction segment covers the three models
+    - insert a retrieval practice check here
+    - close with a summary and next-step cue
+    anti_examples:
+    - hook the cable
+    - advance the slider
+    - open the file
+    confidence_threshold: 0.7
+    aliases:
+    - learning sequence
+    - instructional stage
+    - content flow
+    indicators:
+    - hook
+    - opening
+    - advance organiser
+    - advance organizer
+    - roadmap
+    - pre-training
+    - key terms
+    - core content
+    - core instruction
+    - instructional input
+    - practice activity
+    - retrieval practice
+    - knowledge check
+    - reflection
+    - summary
+    - recap
+    - assessment
+    - closure
+    - next-step cue
+    - wrap-up
+    patterns:
+    - (open|start|begin) with (a|an|the) (hook|question|scenario|story)
+    - advance organ(is|iz)er
+    - pre[- ]train(ing)? (on|for|with|learners)
+    - (core|main|primary) (content|instruction|input)
+    - (retrieval|recall) practice
+    - (knowledge|comprehension) check
+    - (summary|recap|wrap[- ]up|consolidat)
+    - (next[- ]step|follow[- ]up|call to action) (cue|prompt|direction)
+    - (close|end|conclude) (with|by)
+    color: '#27ae60'
+    relates_to:
+    - target: intrinsic_load_marker
+      relation: resolves
+      weight: required
+      description: Scaffolding through pedagogical sequencing manages intrinsic load by introducing complexity gradually
+      target_file: cognitive_load_entities
+    - target: intrinsic_load_marker
+      relation: limits
+      weight: expected
+      description: "Logical sequencing ensures foundational knowledge before advanced content managing intrinsic load (Content Map Instructions v3)"
+      target_file: cognitive_load_entities
+    - target: novice_learner
+      relation: supports
+      weight: required
+      description: Pre-training phases in pedagogical sequences support novice learners by introducing terminology and concepts
+      target_file: audience_entities
+    - target: mayer_generative_principle
+      relation: enables
+      weight: required
+      description: Pedagogical sequences embed activities that prompt learners to actively generate knowledge
+      target_file: cognitive_load_entities
+    - target: alignment_marker
+      relation: supported_by
+      weight: required
+      description: Pedagogical sequences require SMART learning objectives aligned to business metrics and job requirements
+        (Comprehensive Learning Design Framework)
+    - target: session_structure_marker
+      relation: bridges
+      weight: expected
+      description: "Pedagogical sequence markers bridge session structure markers as sequencing drives session structure with broadest common points first then drill-down per Comprehensive Audience Analysis"
+      target_file: delivery_entities
+    - target: instructional_event
+      relation: supports
+      weight: required
+      description: "FPI's five-phase cycle (Problem, Activate, Demonstrate, Apply, Integrate) defines the pedagogical sequence for effective instruction per Merrill"
+      target_file: pedagogical_frameworks_entities
+    - target: visual_narrative_element
+      relation: supported_by
+      weight: expected
+      description: "Pedagogical sequencing is supported by the three synchronized arcs narrative visual and emotional progression per Visual Communication and Storytelling"
+      target_file: visual_elements_entities
+    - target: narrative_tension
+      relation: triggers
+      weight: expected
+      description: "Pedagogical sequences trigger narrative tension through the SCQA Complication phase which creates cognitive tension as a precondition for audience engagement per Canonical Presentation Methodology"
+      target_file: narrative_entities
+    - target: content_structure_marker
+      relation: contains
+      weight: expected
+      description: "Case study pedagogical sequences contain structured content components: executive summaries, challenge definitions, solution architectures, and measurable results per Case Study Excellence"
+    - target: scenario_activity
+      relation: supports
+      weight: expected
+      description: "SBT follows a structured lifecycle sequence: Training Needs Analysis, scenario narrative design, delivery/facilitation, assessment, and structured debriefing per SBT guide"
+      target_file: activity_types_entities
+    - target: summative_assessment
+      relation: precedes
+      weight: expected
+      description: "Phased onboarding sequence (training weeks 1-2, practice weeks 3-4) establishes a pedagogical sequence that precedes end-of-month summative assessment (core_knowledge_and_progress_measurement)"
+      target_file: assessment_entities
+    - target: progressive_disclosure_marker
+      relation: contains
+      weight: expected
+      description: "Pedagogical sequencing includes progressive disclosure as the primary method for managing intrinsic load in instructional slides per Slide Deck Design Playbook"
+      target_file: cognitive_load_entities
+    - target: working_memory_marker
+      relation: supports
+      weight: expected
+      description: "Structured pedagogical sequencing supports working memory by chunking content into discrete stages (hook, organiser, core, practice, summary) that align with working memory capacity limits per Best Practices for Writing"
+      target_file: cognitive_load_entities
+    - target: content_structure_marker
+      relation: supports
+      weight: expected
+      description: "The Minto Pyramid and SCQA framework define pedagogical sequencing for documents — Assertion→Arguments→Data ordering and Situation→Complication→Question→Answer flow provide structural scaffolding (Cognitive Interface, §3.1)"
+    - target: progressive_disclosure_marker
+      relation: supported_by
+      weight: expected
+      description: "Pedagogical sequencing supported by progressive disclosure four-layer model from summary to detail"
+      target_file: cognitive_load_entities
+    - target: cognitive_level
+      relation: supported_by
+      weight: expected
+      description: "Bloom's Taxonomy guides cognitive progression from basic recall through creative application — pedagogical sequencing is directly structured by cognitive level progression per Essential Inputs for Learning Objectives"
+      target_file: pedagogical_frameworks_entities
+    - target: interaction_element_marker
+      relation: contains
+      weight: expected
+      description: "Each strip's pedagogical sequence contains interaction elements — Hook for attention, Practice for application, Test for verification — embedded within the sequence (Essentials_Course_Gold_Structure)"
+    - target: delivery_modality_marker
+      relation: enables
+      weight: expected
+      description: "Strip sequence enables multiple delivery modalities — asynchronous strips (Modules 1-6, 8) and synchronous workshop (Module 7), with micro/standard/extended format options (Essentials_Course_Gold_Structure)"
+    - target: alignment_marker
+      relation: supports
+      weight: expected
+      description: "Pedagogical sequencing supports alignment — the Engage-Educate-Apply arc and scaffolded activity progression ensure activities align with learning objectives at appropriate Bloom's levels per ILT&VILT Best Practice"
+    - target: mayer_essential_principle
+      relation: supported_by
+      weight: expected
+      description: "Pedagogical sequencing is supported by Mayer's essential processing principles — segmenting and pre-training principles directly inform how instructional stages are ordered and chunked to manage essential cognitive load per mayers_15_principles"
+      target_file: cognitive_load_entities
+    - target: storyboard_element
+      relation: supports
+      weight: expected
+      description: "Pedagogical sequences support storyboard design by providing the instructional framework (e.g. Gagné's Nine Events) that determines how learning beats are chronologically sequenced per Research - Storyboard Best Practices"
+      target_file: media_entities
+    - target: formative_assessment
+      relation: contains
+      weight: expected
+      description: "Pedagogical sequences contain formative assessment checkpoints — knowledge checks after core instruction, practice activities with embedded evaluation, and retrieval practice before summary ensure mastery at each stage per Corporate Learning Assessment research"
+      target_file: assessment_entities
+    - target: instructional_event
+      relation: supported_by
+      weight: expected
+      description: "Pedagogical sequencing markers are supported by Gagné's instructional events which define the canonical ordering from gaining attention through assessing performance (Best-Practice Learning Activities)"
+      target_file: pedagogical_frameworks_entities
+    - target: microlearning_format
+      relation: supports
+      weight: expected
+      description: "Linear sequences for procedural training and branching/adaptive paths for personalisation are key sequencing strategies; adaptive sequencing reduces overload by 20% per AI Microlearning Guide"
+      target_file: content_format_entities
+    - target: learning_objective
+      relation: supports
+      weight: required
+      description: "Pedagogical sequencing supports learning objectives — the transformational pipeline phases content mining, adult learning theory, assessment, and activities in a deliberate 9-phase sequence aligned to learning goals per module-integration-strategy"
+      target_file: pedagogical_frameworks_entities
+    - target: planning_artefact_marker
+      relation: supported_by
+      weight: expected
+      description: "The Dot-Dash storyline serves as a planning artefact that defines the pedagogical sequence; text-based iteration precedes visual design to enforce logical ordering (Canonical Presentation Methodology)"
+    - target: progressive_disclosure_marker
+      relation: contains
+      weight: expected
+      description: "Pedagogical sequences contain progressive disclosure to scaffold complexity for mixed audiences — broadest common points first then drill-down, calibrating depth to audience expertise levels per Comprehensive Audience Analysis"
+      target_file: cognitive_load_entities
+    - target: alignment_marker
+      relation: enables
+      weight: required
+      description: "SOAR orchestration chain sequences audience analysis then logic then visuals then review enabling alignment between narrative and visual output"
+    - target: SOAR_NARRATIVE_QUALITY
+      relation: supports
+      weight: expected
+      description: "SOAR sequencing enforces pedagogical progression preventing simultaneous context-switching"
+      target_file: sales_entities
+  delivery_modality_marker:
+    description: References to content delivery formats — talking head, narrated animation, screen recording, interactive
+      eLearning, live session, job aid, infographic
+    canonical_id: delivery_modality_marker
+    entity_kind: delivery_format
+    family: delivery_modalities
+    gliner_label: DELIVERY_MODALITY
+    gliner_description: Delivery modality talking head narrated animation screen recording screencast interactive eLearning
+      simulation job aid infographic live session microlearning
+    examples:
+    - use talking head for the introduction
+    - switch to narrated animation for the process
+    - include a screen recording of the software
+    - deliver as interactive eLearning with branching
+    - provide a job aid for quick reference
+    - the infographic summarises the key stats
+    anti_examples:
+    - head of department
+    - talking about the project
+    - screen the candidates
+    confidence_threshold: 0.7
+    aliases:
+    - delivery format
+    - content format
+    - media type
+    indicators:
+    - talking head
+    - narrated animation
+    - screen recording
+    - screencast
+    - interactive eLearning
+    - e-learning
+    - simulation
+    - job aid
+    - infographic
+    - live session
+    - microlearning
+    - live-action
+    - animated GIF
+    - b-roll
+    - breakout room
+    patterns:
+    - talking[- ]head
+    - narrated (animation|visual|slide|diagram)
+    - screen[- ]?(recording|cast|capture)
+    - (interactive|branching) (e[- ]?learning|module|course)
+    - job[- ]aid
+    - (live|instructor[- ]led|facilitated) (session|class|workshop|webinar)
+    - (micro|nano)[- ]?learning
+    - (live[- ]action|b[- ]roll) (video|footage|segment)
+    color: '#e67e22'
+    relates_to:
+    - target: interaction_element_marker
+      relation: enables
+      weight: expected
+      description: "Delivery modality enables specific interaction elements — the choice of format (eLearning, live workshop, simulation) determines which learning activities are feasible and appropriate for each module per High-Level Planning Tools research"
+    - target: mayer_essential_principle
+      relation: supported_by
+      weight: expected
+      description: "Delivery modality choices are supported by Mayer's essential processing principles — segmenting, pre-training, and modality principles guide format decisions to manage essential cognitive processing per mayers_15_principles"
+      target_file: cognitive_load_entities
+    - target: mayer_extraneous_principle
+      relation: supported_by
+      weight: expected
+      description: "Delivery modality design is supported by Mayer's extraneous processing principles — coherence, signaling, and spatial contiguity principles constrain how content is presented within each format to reduce extraneous load per mayers_15_principles"
+      target_file: cognitive_load_entities
+    - target: delivery_modality
+      relation: bridges
+      weight: expected
+      description: "Content architecture delivery modality markers bridge to performance delivery modalities, as all activities are explicitly categorised as synchronous or asynchronous (Best-Practice Learning Activities)"
+      target_file: delivery_entities
+    - target: content_structure_marker
+      relation: limits
+      weight: expected
+      description: "Delivery modality constrains content structure — vILT requires 15-20 min chunks with breakouts, microlearning demands 2-10 min single-focus units, e-learning uses 5-15 min segments per Best Practices for Structuring Corporate Learning Content"
+    - target: extraneous_load_marker
+      relation: triggers
+      weight: expected
+      description: "Wrong delivery modality (slide-ument hybrid) triggers extraneous load; decouple slides from documents"
+      target_file: cognitive_load_entities
+    - target: progressive_disclosure_marker
+      relation: enables
+      weight: expected
+      description: "Digital card-based delivery enables progressive disclosure through nested expandable content"
+      target_file: cognitive_load_entities
+  interaction_element_marker:
+    description: References to learner interaction and assessment elements — knowledge checks, quizzes, polls, scenarios,
+      drag-and-drop, branching paths, discussion prompts
+    canonical_id: interaction_element_marker
+    entity_kind: interaction_type
+    family: interaction_elements
+    gliner_label: INTERACTION_ELEMENT
+    gliner_description: Interaction element knowledge check quiz poll scenario drag and drop branching path discussion prompt
+      multiple choice reflection exercise
+    examples:
+    - insert a knowledge check after each segment
+    - add a poll to gauge understanding
+    - use a scenario-based challenge for application
+    - include drag-and-drop for sorting activities
+    - branching paths let learners choose their route
+    - end with a reflection prompt
+    anti_examples:
+    - check the settings
+    - poll the database
+    - branch of the company
+    confidence_threshold: 0.7
+    aliases:
+    - learner interaction
+    - engagement element
+    - activity type
+    indicators:
+    - knowledge check
+    - quiz
+    - poll
+    - scenario
+    - drag-and-drop
+    - drag and drop
+    - branching
+    - discussion prompt
+    - multiple choice
+    - true/false
+    - open response
+    - role play
+    - role-play
+    - word cloud
+    - interaction point
+    - practice exercise
+    patterns:
+    - knowledge (check|test|quiz)
+    - (scenario|case)[- ]based (challenge|question|exercise|activity)
+    - drag[- ]and[- ]drop
+    - (branching|decision) (path|point|scenario)
+    - (discussion|reflection) prompt
+    - (multiple[- ]choice|true[/\-]false|open[- ]response)
+    - (formative|summative|diagnostic) (assessment|evaluation|test)
+    - (role[- ]play|simulation) (exercise|activity|scenario)
+    - (poll|word[- ]cloud|chat[- ]response)
+    color: '#e74c3c'
+    relates_to:
+    - target: roleplay_activity
+      relation: supports
+      weight: expected
+      description: "Interaction elements support roleplay activities by embedding knowledge checks, branching paths, and scenario-based challenges within roleplay structures per roleplay research"
+      target_file: activity_types_entities
+    - target: scenario_activity
+      relation: supports
+      weight: expected
+      description: "Decision points within scenarios function as interaction elements requiring learner choice between realistic options with visible consequences per map-it action mapping"
+      target_file: activity_types_entities
+    - target: engagement_cue
+      relation: supports
+      weight: expected
+      description: "Hook Cards use engagement cues (stories, surprising statistics, provocative questions) as interaction elements to capture attention and establish relevance (Essentials_Course_Gold_Structure)"
+      target_file: delivery_entities
+    - target: germane_load_marker
+      relation: enables
+      weight: expected
+      description: "Interactive elements (pause-and-predict, drag-and-drop, self-explanation prompts) enable germane processing — Generative Activity principle requires learners to produce output rather than passively consume (Applying_Learning_Theory_Practical_Checklist)"
+      target_file: cognitive_load_entities
+    - target: engagement_cue
+      relation: specialises
+      weight: expected
+      description: "Interaction element markers specialise engagement cues in the content architecture context — polls, breakout tasks, chat storms, and whiteboard activities are structured interaction elements within the design per ILT&VILT Best Practice"
+      target_file: delivery_entities
+    - target: mayer_generative_principle
+      relation: supported_by
+      weight: expected
+      description: "Interaction elements are supported by Mayer's generative processing principles — self-explanation, drawing, and enactment principles provide the theoretical basis for active practice activities that promote deeper learning per mayers_15_principles"
+      target_file: cognitive_load_entities
+    - target: practice_activity
+      relation: contains
+      weight: expected
+      description: "Interaction element markers contain practice activities including embedded polls, quizzes, branching choices, and hands-on lab exercises within learning content (Best-Practice Learning Activities)"
+      target_file: activity_types_entities
+    - target: quiz_activity
+      relation: contains
+      weight: expected
+      description: "Interaction element markers contain quiz activities as embedded knowledge checks, reflection questions, and scenario decision points within learning content (Best-Practice Learning Activities)"
+      target_file: activity_types_entities
+    - target: pedagogical_sequence_marker
+      relation: supported_by
+      weight: expected
+      description: "Interaction elements are positioned within the pedagogical sequence at Practice and Test card positions; their frequency is governed by modality-specific rules per course_structure_hierarchy_corpus_research"
+    - target: content_structure_marker
+      relation: supported_by
+      weight: expected
+      description: "Interaction elements operate at the Card level of the content structure hierarchy and must appear at defined frequency intervals based on delivery modality per course_structure_hierarchy_corpus_research"
+    - target: formative_assessment
+      relation: triggers
+      weight: expected
+      description: "Interaction elements trigger formative assessment through frequent knowledge checks (MCQs, true/false, drag-and-drops) after each content segment per Best Practices for Structuring Corporate Learning Content"
+      target_file: assessment_entities
+    - target: collaborative_activity
+      relation: enables
+      weight: expected
+      description: "Interaction elements enable collaborative activities — the social learning architecture injects discussion prompts, peer review, gallery submissions, and help network features as interaction points per module-integration-strategy"
+      target_file: activity_types_entities
+    - target: engagement_marker
+      relation: triggers
+      weight: expected
+      description: "Interaction elements trigger engagement markers through participatory activities — polls, quizzes, branching scenarios, and discussion prompts create measurable audience engagement points per Comprehensive Audience Analysis"
+      target_file: stance_markers_entities
+  alignment_marker:
+    description: References to instructional alignment — learning objectives, business goals, backward design, outcome mapping,
+      objective-to-assessment alignment
+    canonical_id: alignment_marker
+    entity_kind: alignment_reference
+    family: instructional_alignment
+    gliner_label: ALIGNMENT
+    gliner_description: Alignment learning objective business goal backward design outcome mapping objective assessment alignment
+      constructive alignment action mapping
+    examples:
+    - align the activity to learning objective 2
+    - map each module to business outcomes
+    - use backward design to start with the assessment
+    - ensure constructive alignment across the module
+    - action mapping connects business goals to practice activities
+    - each knowledge check maps to a stated objective
+    anti_examples:
+    - alignment of the text
+    - wheel alignment
+    - political alignment
+    confidence_threshold: 0.7
+    aliases:
+    - instructional alignment
+    - outcome alignment
+    - objective mapping
+    indicators:
+    - learning objective
+    - learning outcome
+    - business goal
+    - business outcome
+    - backward design
+    - constructive alignment
+    - action mapping
+    - outcome mapping
+    - aligned to
+    - maps to
+    - mapped to objective
+    - objective-to-assessment
+    - assessment alignment
+    patterns:
+    - (learning|performance|behavioural) objective
+    - (business|organisational|performance) (goal|outcome|metric)
+    - backward[- ]design
+    - constructive[- ]alignment
+    - (align|map|link|connect)(ed|s|ing)? (to|with) (objective|outcome|goal)
+    - (objective|outcome)[- ]to[- ](assessment|activity|content)
+    - action[- ]map(ping)?
+    color: '#1abc9c'
+    relates_to:
+    - target: learning_objective
+      relation: bridges
+      weight: required
+      description: Assessment alignment ensures learning outcomes, instruction, and assessment are mutually reinforcing
+      target_file: pedagogical_frameworks_entities
+    - target: audience_kpi
+      relation: supported_by
+      weight: expected
+      description: "Alignment markers are supported by audience KPIs ensuring content objectives map to measurable audience-specific success criteria per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    - target: learning_objective
+      relation: supports
+      weight: required
+      description: "CDT Performance-Content Matrix ensures precise alignment between content type performance level and prescribed instructional components per Merrill"
+      target_file: pedagogical_frameworks_entities
+    - target: scenario_activity
+      relation: supports
+      weight: expected
+      description: "Alignment markers support scenario activities by ensuring scenario objectives map to target competencies and assessment criteria per roleplay research"
+      target_file: activity_types_entities
+    - target: kirkpatrick_level
+      relation: supported_by
+      weight: expected
+      description: "Backward design integrates Kirkpatrick L1-L4 evaluation at the design stage, with evaluation levels directly supporting alignment verification between learning objectives and business outcomes per universal_learning_design_framework"
+      target_file: assessment_entities
+    - target: planning_artefact_marker
+      relation: supported_by
+      weight: required
+      description: "Alignment is supported by the planning artefact — backward design ensures every course component traces back to a defined outcome and business goal; the wireframe makes this alignment explicit and reviewable per High-Level Planning Tools research"
+    - target: summative_assessment
+      relation: supports
+      weight: required
+      description: "Alignment markers support summative assessments — backward design requires learning objectives, activities, and end-of-course assessments to be mutually aligned, ensuring assessments measure intended outcomes (Gold Standard Structure)"
+      target_file: assessment_entities
+    - target: formative_assessment
+      relation: enables
+      weight: expected
+      description: "Alignment markers ensure assessment coverage at every hierarchy level — formative at module/topic, summative at course level — preventing the assessment-afterthought anti-pattern per course_structure_hierarchy_corpus_research"
+      target_file: assessment_entities
+    - target: summative_assessment
+      relation: enables
+      weight: expected
+      description: "Alignment column maps objectives to summative assessment methods (Content Map Instructions v3)"
+      target_file: assessment_entities
+    - target: clarity_dimension
+      relation: enables
+      weight: expected
+      description: "The Phase 2 Gate requires alignment between Action Titles and body content (Vertical Flow) to pass the logic audit, directly enabling clarity in the final presentation (Canonical Presentation Methodology)"
+      target_file: scoring_entities
+quality_indicators:
+  positive:
+  - planning artefacts referenced and used in design rationale
+  - clear hierarchical content structure with defined units
+  - gold-standard pedagogical sequence followed
+  - delivery modalities matched to content type and objective
+  - interaction elements embedded at appropriate intervals
+  - explicit alignment between objectives, activities, and assessments
+  negative:
+  - no planning artefact referenced — content appears unplanned
+  - flat content structure with no segmentation
+  - pedagogical sequence missing key stages (e.g., no hook, no practice)
+  - delivery modality mismatch (e.g., wall of text for procedural content)
+  - no interaction elements — passive consumption only
+  - alignment gaps between stated objectives and actual content
+domain_keywords:
+  primary:
+  - wireframe
+  - storyboard
+  - content map
+  - course blueprint
+  - screenplan
+  - module
+  - segment
+  - learning objective
+  - curriculum
+  - learning path
+  secondary:
+  - backward design
+  - constructive alignment
+  - sequencing
+  - ADDIE
+  - SAM
+  - instructional design
+  - scoping
+  - chunking
+  - scaffolding
+  - prerequisite

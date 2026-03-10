@@ -1,0 +1,1149 @@
+# =============================================================================
+# PERFORMANCE DELIVERY RUBRIC
+# Scoring rubric for presentation delivery quality across vocal, physical,
+# and engagement dimensions. Grounded in empirical thresholds from acoustic
+# phonetics, kinesics, proxemics, and psycholinguistics research.
+# =============================================================================
+
+_meta:
+  id: performance_delivery_rubric
+  title: "Performance Delivery Rubric"
+  description: "Scoring rubric for presentation delivery quality covering vocal dynamics, executive presence, physicality, pacing, filler management, and audience engagement"
+  domain: performance
+  domain_type: workflow
+  purpose: scoring
+  version: "1.1.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Unified Performance Framework.md"
+    - "Corpus/Research/Research - Voice Coaching and Clinical Analysis.md"
+    - "Corpus/Research/Research - The Architecture of Influence_ A Comprehensive Multimodal Taxonomy of Elite vs. Average Public Speaking.md"
+    - "Corpus/Research/Research - Presentation Delivery_ Ethos and Physicality.md"
+    - "Corpus/Research/Research - Elite Speaker Linguistic Analysis Taxonomy.md"
+    - "Corpus/Research/Research - Public_Speaking_research.md"
+  academic_sources:
+    - "Mehrabian (1971) - Nonverbal communication"
+    - "Zenger & Folkman (2014) - Executive presence research"
+    - "Toastmasters International - Competent Communicator standards"
+    - "Ohala (1984) - Frequency Code hypothesis for vocal authority"
+    - "Ekman & Friesen - Facial Action Coding System (FACS)"
+    - "Cuddy, Carney et al. - Power posing and expansive posture perception"
+    - "Hall, Edward T. - Proxemics and the four zones of interaction"
+    - "Paivio - Dual Coding Theory"
+    - "Alison Wood Brooks (Harvard) - Anxiety reappraisal in public speaking"
+    - "Andrew Huberman - Physiological sigh and autonomic reset"
+  relationships:
+    - target: ../entities/performance_entities.yaml
+      type: depends_on
+      description: "Entity types for performance marker extraction"
+    - target: narrative_quality_rubric.yaml
+      type: related_to
+      description: "Complementary rubric evaluating content quality"
+    - target: accessibility_rubric.yaml
+      type: related_to
+      description: "Multimedia accessibility standards for delivery"
+
+# =============================================================================
+# RUBRIC WEIGHTS
+# Decimal weights for each dimension. Must sum to 1.0.
+# Vocal quality is the primary carrier of authority signal (acoustic phonetics).
+# Source: Mehrabian (1971) - vocal accounts for 38% of leadership assessment.
+# =============================================================================
+
+rubric_weights:
+  vocal_quality: 0.25
+  executive_presence: 0.20
+  pacing_timing: 0.20
+  physical_delivery: 0.15
+  filler_management: 0.10
+  audience_engagement: 0.10
+
+# =============================================================================
+# DIMENSIONS
+# Each dimension has score levels 1-5. Criteria are grounded in empirical
+# thresholds from the Unified Performance Framework and Voice Coaching research.
+# =============================================================================
+
+dimensions:
+
+  # ---------------------------------------------------------------------------
+  # VOCAL QUALITY
+  # Pitch variation, volume projection, resonance, articulation, vocal energy.
+  # Source: Unified Performance Framework (UPF) Tables 1.1, 1.3;
+  #         Voice Coaching and Clinical Analysis (VCA) Sections 4.1, 4.2, 6.
+  # ---------------------------------------------------------------------------
+  vocal_quality:
+    name: "Vocal Quality"
+    description: >
+      Measures the acoustic properties of the voice including pitch stability,
+      resonance, volume projection, articulation clarity, and expressive range.
+      Authority is conveyed through F0 stability (low jitter/shimmer), sufficient
+      HNR, and meaningful pitch variation. A monotone or breathy voice fails to
+      hold audience attention or signal competence.
+    score_levels:
+      1:
+        label: "Poor"
+        description: >
+          Severe deficiencies distracting to the audience. Voice is monotone
+          (F0 SD < 2.0 semitones), breathy (HNR < 15 dB), or highly unstable
+          (jitter > 1.04%). May exhibit significant vocal fry, pressed phonation,
+          or creaky register throughout. Articulation is unclear with audible
+          mumbling or collapsed syllables. Volume is insufficient to fill the room
+          or swings erratically without purpose.
+      2:
+        label: "Below Average"
+        description: >
+          Noticeable vocal issues that reduce effectiveness. Limited pitch variation
+          (F0 SD 2.0-2.5 semitones) creates a near-monotone effect. Vocal quality
+          is inconsistent with periodic breathiness (HNR 15-18 dB) or instability.
+          Articulation is adequate but lacks precision; vowels may be centralized
+          under speed. Volume projection is weak or uncontrolled. Creaky voice
+          appears under stress or at sentence endings.
+      3:
+        label: "Adequate"
+        description: >
+          Meets basic standards with room for improvement. Pitch variation is
+          present but formulaic (F0 SD 2.5-3.0 semitones). Voice quality is
+          acceptable (HNR 18-20 dB) with minimal breathiness. Articulation is
+          clear in normal speech but may degrade at higher rates. Volume is
+          sufficient and mostly controlled. Occasional creaky voice or pressed
+          phonation without sustained impact.
+      4:
+        label: "Good"
+        description: >
+          Strong vocal performance with minor areas for growth. Meaningful pitch
+          variation (F0 SD 3.0-4.0 semitones) creates an engaging, expressive
+          delivery. Voice quality is clear and resonant (HNR > 20 dB) with high
+          spectral purity. Articulation is precise and consistent. Volume is
+          projected confidently with purposeful dynamic range. Rare lapses in
+          vocal fry or instability.
+      5:
+        label: "Excellent"
+        description: >
+          Elite-level vocal delivery demonstrating masterful control. Expressive
+          pitch range (F0 SD > 4.0 semitones) used strategically for emphasis and
+          emotional shaping. Voice is resonant and clear (HNR > 22 dB) with a high
+          Alpha Ratio indicating carrying power without shouting. Articulation is
+          crisp at all speech rates. Volume is dynamically purposeful, with spectral
+          energy ("speaker's formant" at 2-4 kHz via AES narrowing) enabling
+          projection without strain. Jitter consistently < 0.5% and shimmer < 2.0%.
+          Deliberate warm/hard sell oscillation is evident: speaker alternates
+          between warmth-signalling vocal modes (softer F0, slower pace, slightly
+          breathy quality for emotional moments) and competence-signalling modes
+          (lower F0, increased volume, sharper articulation for authority claims),
+          per Elite Speaker Linguistic Analysis four-tier Visionary vocal profile.
+
+  # ---------------------------------------------------------------------------
+  # EXECUTIVE PRESENCE
+  # Confidence, gravitas, authority, composure under pressure.
+  # Source: Presentation Delivery: Ethos and Physicality (Part VI);
+  #         Architecture of Influence (Part 1, Sections 1-3);
+  #         Unified Performance Framework (Section 2, 3.1).
+  # ---------------------------------------------------------------------------
+  executive_presence:
+    name: "Executive Presence"
+    description: >
+      Measures the speaker's projected authority, credibility, and gravitas.
+      Executive presence is the convergence of vocal, physical, and linguistic
+      signals that cause audiences to perceive the speaker as capable, decisive,
+      and trustworthy. Thin-slicing research confirms audiences form durably
+      stable judgments within the first seven seconds. The "7 C's" framework
+      (Composure, Connection, Confidence, Credibility, Character, Command,
+      Charisma) provides the evaluation scaffold.
+    score_levels:
+      1:
+        label: "Poor"
+        description: >
+          Speaker fails to project authority or credibility. Closed posture,
+          nervous fidgeting (adaptors > 5.5 per minute), avoidance of eye contact,
+          and high postural sway undermine presence before a word is spoken.
+          Vocal patterns include uptalk and vocal fry. No sense of gravitas or
+          command; speaker appears anxious, unprepared, or disengaged. Linguistic
+          patterns use passive voice and stative verbs ("is," "was") rather than
+          high-dynamism action verbs.
+      2:
+        label: "Below Average"
+        description: >
+          Presence is inconsistent. Speaker has moments of confidence that are
+          undercut by leakage signals: self-touching, weight-shifting, closed
+          shoulders, or searching eye movements. Verbal authority is undercut by
+          frequent hedging language or uptalk on key declarations. Composure
+          breaks under audience pressure or interruption. Limited command of space.
+      3:
+        label: "Adequate"
+        description: >
+          Baseline executive presence is established. Speaker projects competence
+          without memorable gravitas. Posture is generally open and stable.
+          Eye contact is maintained for acceptable duration. Language uses a mix
+          of action and stative verbs. Composure is maintained in routine
+          interactions but may waver under challenge. Meets Toastmasters
+          Competent Communicator standards for confidence.
+      4:
+        label: "Good"
+        description: >
+          Strong executive presence. Speaker projects authority through expansive
+          posture (elbow abduction > 30 degrees), stable center of mass, and
+          deliberate eye contact using the "One Thought, One Person" rule at
+          3-5 seconds per individual. Language employs high-agency verbs
+          (spearheaded, mobilized, generated). Composure is maintained under
+          normal audience pressure. Gravitas is visible: stillness is comfortable,
+          silence is used without filling. Declarative staircase intonation signals
+          certainty.
+      5:
+        label: "Excellent"
+        description: >
+          Elite executive presence. Speaker embodies gravitas — the room organizes
+          around their stillness. Multimodal congruence: body language reinforces
+          every verbal declaration; no leakage signals visible. Dominance head
+          tilt (~10 degrees downward with direct gaze) is natural, not performed.
+          Duchenne authenticity (AU6+AU12 simultaneous activation) builds
+          involuntary trust. Under hostile Q&A, speaker breaks aggressor gaze,
+          reduces volume, and repositions as the calm authority. All 7 C's
+          (Composure, Connection, Confidence, Credibility, Character, Command,
+          Charisma) are observable simultaneously. Lexical bundle profile is
+          TED-style discourse organizer ("I want to show you...", "Here is why
+          this matters...") rather than academic stance bundle ("It is important
+          to note...", "In the context of..."), which creates connection vs.
+          distance (Elite Speaker Linguistic Analysis). Pronoun strategy deploys
+          inclusive "we" for shared ownership and direct "you" for audience
+          activation. Upper failure boundary ("Hubris Curve"): a speaker who
+          purges ALL tentative language and projects excessive certainty erodes
+          trust; occasional calibrated hedging on genuinely uncertain claims
+          is the mark of a credible authority, not a weakness.
+
+  # ---------------------------------------------------------------------------
+  # PACING AND TIMING
+  # Speech rate (WPM), strategic pauses, rhythm variation.
+  # Source: Unified Performance Framework (Tables 1.2, Section 2.2);
+  #         Architecture of Influence (Section 4, "Paralinguistics");
+  #         Presentation Delivery: Ethos and Physicality (Part IV).
+  # ---------------------------------------------------------------------------
+  pacing_timing:
+    name: "Pacing and Timing"
+    description: >
+      Measures the temporal architecture of delivery: words per minute, pause
+      placement, duration, and function. Cognitive Load Theory establishes that
+      optimal speech rate (150-160 WPM for comprehension; 100-120 WPM for elite
+      rhetorical effect) governs retention. Strategic silence differentiates
+      expert speakers from novices. Pauses > 250 ms signal deliberate emphasis;
+      pauses > 1000 ms in non-boundary positions signal hesitation.
+    score_levels:
+      1:
+        label: "Poor"
+        description: >
+          Pacing is severely dysfunctional. Speaker is either rushing (> 190 WPM,
+          causing cognitive overload and retention drops of 17-25%), or speaking
+          so slowly that the audience disengages. Pauses are absent (leaving no
+          processing space) or entirely uncontrolled (occurring mid-phrase,
+          signaling lexical retrieval failure). Rate is uniform with no variation
+          to mark transitions or emphasis. Cluttering may be present (> 5.3
+          syllables per second), degrading intelligibility.
+      2:
+        label: "Below Average"
+        description: >
+          Pacing is noticeable and distracting. Rate exceeds 180 WPM for extended
+          stretches OR is consistently slow (< 100 WPM) without rhetorical intent.
+          Pauses are infrequent and poorly placed. Speaker does not use pause
+          duration to differentiate dramatic, sensory, and transition functions.
+          Rhythm is flat with minimal variation. Rushes through critical points
+          with no breathing room for the audience.
+      3:
+        label: "Adequate"
+        description: >
+          Pacing is acceptable and non-distracting. Speech rate falls within
+          acceptable range (130-180 WPM) for most of the presentation. Some pauses
+          are placed at sentence boundaries, providing minimal processing space.
+          Rate variation is present but not purposeful. Transitions are marked
+          by slight pausing but without full strategic use of silence as emphasis.
+      4:
+        label: "Good"
+        description: >
+          Pacing is controlled and audience-centered. Speech rate is purposefully
+          calibrated (100-160 WPM range) with deliberate variation: slower for
+          complex or emotional content, faster for high-energy narrative passages.
+          Emphatic pauses (500-600 ms) are used at key moments. Transition pauses
+          signal structural shifts clearly. Gesture-speech synchrony is present
+          with gestures leading words by 200-500 ms (natural growth point timing).
+      5:
+        label: "Excellent"
+        description: >
+          Elite temporal architecture. Speech rate is masterfully deployed in the
+          100-120 WPM elite rhetorical range with purposeful acceleration and
+          deceleration. Silent pauses (> 2 seconds) are used as rhetorical power
+          moves after key questions or revelations, never as hesitation. Silence
+          ratio is high: pauses serve dramatic, sensory, and transition functions
+          distinctly. Pause-to-speech ratio demonstrates charismatic control per
+          MFA analysis standards. No cluttering, no cognitive overload events.
+          Audience processing time is consistently built in. Strategic pause
+          placement is post-point (after a key revelation or completed thought)
+          — never mid-clause; mid-clause pauses > 1000 ms are a hesitation
+          signal indicating lexical retrieval failure, while post-point pauses
+          anchor the idea before the speaker moves forward (Elite Speaker
+          Linguistic Analysis pause placement taxonomy).
+
+  # ---------------------------------------------------------------------------
+  # PHYSICAL DELIVERY
+  # Eye contact, gestures, posture, movement, spatial awareness.
+  # Source: Presentation Delivery: Ethos and Physicality (Parts I, II, III);
+  #         Unified Performance Framework (Sections 3.1, 3.2, 4.1, 4.2).
+  # ---------------------------------------------------------------------------
+  physical_delivery:
+    name: "Physical Delivery"
+    description: >
+      Measures kinesic and proxemic elements: posture geometry, gestural
+      discipline, eye contact patterns, stage movement, and use of space.
+      Expansive posture (elbow abduction > 30 degrees) signals confidence.
+      Self-adaptor frequency (> 5.5/min) signals anxiety. Postural sway area
+      > 3.25 cm² indicates nervous instability. Elite presenters employ the
+      Power Box for gestures, spatial anchoring for narrative, and the
+      One-Thought-One-Person rule for ocular dynamics.
+    score_levels:
+      1:
+        label: "Poor"
+        description: >
+          Physical delivery actively undermines credibility. Posture is contracted
+          (elbow abduction < 10 degrees), slumped, or rigid. Postural sway is
+          visible and distracting (area > 3.25 cm²). Eye contact is avoided or
+          the "lawn sprinkler" effect dominates — eyes dart without connection.
+          Gestures are either absent or consist entirely of self-adaptors (> 5.5/min):
+          touching face, neck, hands, or manipulating objects. Movement on stage
+          is aimless or frozen. Closed arms or crossed posture throughout.
+      2:
+        label: "Below Average"
+        description: >
+          Physical signals are inconsistent and occasionally undermine the message.
+          Posture oscillates between open and closed. Eye contact is brief and
+          uneven — does not reach all sections of the room. Gestures are present
+          but lack discipline: some fall outside the Power Box (below waist or
+          wildly beyond shoulders). Self-adaptors appear under pressure. Stage
+          movement is tentative or absent. Facial expressions are misaligned with
+          verbal content (incongruence destroys Ethos per Dual Coding Theory).
+      3:
+        label: "Adequate"
+        description: >
+          Physical delivery meets baseline professional standards. Posture is
+          generally open with feet shoulder-width apart and arms uncrossed.
+          Eye contact is maintained with most sections of the room for acceptable
+          durations. Gestures are primarily illustrators with occasional adaptors.
+          Stage movement is controlled even if not strategic. Power Box is
+          generally respected. Facial expressions are broadly aligned with content.
+          The 90% eye contact target is partially met.
+      4:
+        label: "Good"
+        description: >
+          Physical delivery reinforces the verbal message consistently. Posture
+          is expansive and stable: elbow abduction > 30 degrees, center of mass
+          planted. Eye contact follows the One-Thought-One-Person rule at 3-5
+          seconds per individual, cycling through all quadrants. Gestures are
+          disciplined within the Power Box with semantic meaning: palm-up for
+          openness, palm-down for authority, steeple for intellectual evaluation.
+          Spatial anchoring is used to organize narrative (past left, present
+          center, future right). Adaptors are rare. 90% eye contact met.
+      5:
+        label: "Excellent"
+        description: >
+          Elite physical delivery. Body language is a force multiplier for the
+          verbal message — multimodal congruence is total. Gesture-speech
+          synchrony is natural: strokes lead the corresponding word by 200-500 ms
+          (confirming neurological authenticity via growth point theory). The full
+          gestural vocabulary is deployed with precision: Chop for emphasis,
+          Show for sincerity, palm orientation matched to rhetorical intent.
+          Stage space is owned: spatial anchoring orients the audience cognitively,
+          and controlled approach into social proxemic zone (4-12 feet) creates
+          intimacy at emotional peaks. Dominance head tilt (~10 degrees down)
+          combined with direct gaze signals authority without aggression.
+          Lower body is still; all emphasis energy channels through the upper body.
+
+  # ---------------------------------------------------------------------------
+  # FILLER MANAGEMENT
+  # Frequency and management of filler words (um, ah, like, you know).
+  # Source: Unified Performance Framework (Section 2.2, Table 1.2);
+  #         Architecture of Influence (Section 4, "Silence vs. Fillers");
+  #         Presentation Delivery: Ethos and Physicality (Part IV).
+  # ---------------------------------------------------------------------------
+  filler_management:
+    name: "Filler Management"
+    description: >
+      Measures the frequency and management of disfluencies including filled
+      pauses ("um," "uh," "er," "like," "you know," "so," "basically").
+      Fillers signal planning load and undermine perceived competence. Elite
+      speakers replace filled pauses with silent pauses (> 2 seconds) as
+      rhetorical power moves. Research threshold: > 2 fillers/minute signals
+      concern; > 5 fillers/minute is actively distracting.
+    score_levels:
+      1:
+        label: "Poor"
+        description: >
+          Fillers are pervasive and severely damage intelligibility and credibility.
+          Frequency exceeds 10 per minute. Multiple filler types are used
+          interchangeably ("um," "uh," "like," "you know," "so"). Audience attention
+          is diverted to counting fillers rather than processing content. Speaker
+          shows no awareness of the behavior. Filled pauses replace all silence,
+          indicating the speaker cannot tolerate silence or does not know how to
+          use it strategically.
+      2:
+        label: "Below Average"
+        description: >
+          Fillers are frequent (5-10 per minute) and noticeably reduce authority
+          and fluency. One or two filler types dominate. The habit is consistent
+          throughout the presentation rather than isolated to high-stress moments.
+          Audience is aware of the pattern. Filler words are used to hold the
+          floor during thinking pauses rather than employing silent pauses as
+          an alternative strategy.
+      3:
+        label: "Adequate"
+        description: >
+          Filler rate is acceptable but present (2-5 per minute). Usage is
+          concentrated in high-pressure moments (complex transitions, difficult
+          questions). Speaker demonstrates partial awareness and occasional
+          self-correction. Silent pauses are used sometimes but the habit of
+          filling silence has not been fully replaced. "Um" and "uh" are the
+          primary types, with minimal use of lexical fillers ("like," "you know").
+      4:
+        label: "Good"
+        description: >
+          Filler management is strong (< 2 per minute). Fillers are rare and
+          appear only in genuinely complex improvised responses (Q&A). Speaker
+          replaces the majority of planning pauses with deliberate silence.
+          No habitual lexical fillers ("like," "you know") used as discourse
+          markers. The audience is unaware of any disfluency pattern.
+      5:
+        label: "Excellent"
+        description: >
+          Elite filler management (< 0.5 per minute across the full presentation).
+          Silent pauses > 2 seconds are used as rhetorical devices in place of
+          any filled pause. The architectural distinction between "um" (signaling
+          a long upcoming delay) and "uh" (signaling a short one) is eliminated
+          entirely from the speaker's pattern. Silence is weaponized: after key
+          rhetorical questions, the speaker holds silence for 2-3 seconds as a
+          power move, per Architecture of Influence elite threshold specifications.
+
+  # ---------------------------------------------------------------------------
+  # AUDIENCE ENGAGEMENT
+  # Interaction techniques, reading the room, responsiveness.
+  # Source: Presentation Delivery: Ethos and Physicality (Parts III, VI);
+  #         Architecture of Influence (Part 1, Sections 3-5).
+  # ---------------------------------------------------------------------------
+  audience_engagement:
+    name: "Audience Engagement"
+    description: >
+      Measures the speaker's ability to activate, sustain, and respond to audience
+      attention and participation. Engagement is neurologically driven by variation
+      and inclusion. Elite speakers use questioning, direct address, spatial movement
+      toward the audience, and real-time responsiveness to maintain the audience as
+      active participants rather than passive recipients.
+    score_levels:
+      1:
+        label: "Poor"
+        description: >
+          Speaker delivers entirely in monologue mode with no audience acknowledgment.
+          No eye contact variations, no direct address, no rhetorical questions,
+          no polling or interactive moments. Speaker appears unaware of or
+          indifferent to audience reactions. Proxemic distance is maintained
+          rigidly (stays in public zone > 12 feet). Room is not read: the speaker
+          continues at the same pace and energy regardless of visible confusion,
+          disengagement, or restlessness in the audience.
+      2:
+        label: "Below Average"
+        description: >
+          Minimal engagement attempts are present but feel scripted or forced.
+          Rhetorical questions are asked without pausing for audience processing.
+          Direct address is occasional and uneven (favors one section of the room).
+          Speaker does not adapt to visible audience signals — continues scripted
+          content despite visible disengagement. Movement toward the audience
+          is absent or awkward. Interaction is transactional rather than connective.
+      3:
+        label: "Adequate"
+        description: >
+          Baseline engagement is maintained. Speaker makes periodic eye contact
+          across the room, uses some rhetorical questions, and occasionally
+          acknowledges audience reactions. Linguistic Style Matching (LSM) is
+          partial — speaker uses some inclusive "we" and "you" but defaults
+          to abstract third-person. Physical approach toward the audience occurs
+          at natural moments. Engagement is adequate for routine professional
+          contexts. PID (Propositional Idea Density) is around 0.5, providing
+          adequate cognitive breathing room.
+      4:
+        label: "Good"
+        description: >
+          Strong audience engagement throughout. Speaker uses multiple engagement
+          techniques: direct questions, inclusive pronouns, call-and-response,
+          and physical approach during emotional or narrative peaks. LSM score
+          is high (> 0.85) — language mirrors the audience's register. Audience
+          reactions (confusion, agreement, laughter) are visible and acknowledged
+          in real-time. PID is maintained below 0.50 (elite threshold) giving
+          the audience cognitive space. Speaker "breaks the plane" from public
+          to social proxemic zone (4-12 feet) during high-value connection moments.
+      5:
+        label: "Excellent"
+        description: >
+          Elite engagement: the audience feels co-authorship of the experience.
+          Speaker deploys the full engagement toolkit: direct calls by name or
+          quadrant, genuine polling ("how many of you have..."), call-and-response,
+          storytelling with direct second-person address ("You walk in. You see..."),
+          and physical movement that reads as purposeful connection rather than
+          performance. Room is continuously read: pacing, depth, and energy adapt
+          in real-time to audience signals. Warm-Competence balance is optimized —
+          inclusive pronouns ("we," "you") and dynamic verbs create authority
+          without coldness. PID < 0.45 sustained throughout. Surprisal oscillation
+          is deployed: low-surprisal anchoring statements are followed by
+          high-surprisal revelations in a deliberate anchor-spike pattern that
+          activates attention and prevents habituation (Elite Speaker Linguistic
+          Analysis). Eye contact operates as individuated mini-conversation —
+          speaker completes one full thought to one specific person before moving,
+          creating the experience of being spoken to personally rather than
+          addressed as part of a crowd (Public_Speaking_research).
+
+# =============================================================================
+# VOCAL DYNAMICS
+# Detailed acoustic criteria from Voice Coaching and Clinical Analysis research.
+# These parameters inform machine-readable scoring and human coaching feedback.
+# Source: UPF Tables 1.1-1.3; VCA Sections 4.1, 4.2, 6.
+# =============================================================================
+
+vocal_dynamics:
+  fundamental_frequency:
+    description: "Optimal F0 (Fundamental Frequency) ranges for perceived authority by gender"
+    note: "Per UPF: optimal F0 is not absolute but relative to 25th percentile of speaker's phonational range (Fairbanks/Pronovost method)"
+    male_optimal_hz: "115-133"
+    female_optimal_hz: "200-220"
+    creaky_voice_risk: "Forcing F0 below physiological floor causes vocal fry, perceived negatively on competence and charisma"
+  stability_metrics:
+    jitter:
+      measure: "Cycle-to-cycle variation in F0 period (frequency perturbation)"
+      elite_threshold: "< 0.50%"
+      concern_threshold: "> 1.04%"
+      perceptual_correlate: "Values > 1.04% indicate perceived nervousness, instability, roughness (GRBAS scale)"
+      measurement_condition: "Standardized at 85 dB at 10 cm distance to control for intensity confound"
+    shimmer:
+      measure: "Cycle-to-cycle variation in amplitude (loudness perturbation)"
+      elite_threshold: "< 2.0%"
+      concern_threshold: "> 3.81%"
+      perceptual_correlate: "Values > 3.81% correlate with hoarseness, breathiness, perceived lack of control"
+    harmonics_to_noise_ratio:
+      measure: "Ratio of periodic harmonic signal to aperiodic noise (HNR in dB)"
+      elite_threshold: "> 22 dB"
+      minimum_acceptable: "> 18 dB"
+      concern_threshold: "< 15 dB"
+      perceptual_correlate: "Low HNR = breathiness, intimacy signal, not authority. High HNR = clear, resonant, projective"
+    pressed_phonation:
+      measure: "H1-H2 amplitude difference (first harmonic vs second harmonic)"
+      modal_target: "H1-H2 approximately 10-13 dB"
+      pressed_risk: "< 10 dB indicates strained, aggressive quality"
+      breathy_risk: "> 14 dB indicates excessive air escape, submission signal"
+  pitch_variation:
+    measure: "Standard deviation of F0 in semitones (logarithmic pitch perception)"
+    monotone_threshold: "< 2.0 semitones SD — empirically categorized as flat affect"
+    adequate_range: "2.0-3.0 semitones SD"
+    expressive_range: "> 3.0-4.0 semitones SD — associated with charisma and engagement"
+    elite_range: "> 4.0 semitones SD — dynamic storytelling and high-status interaction"
+  spectral_quality:
+    alpha_ratio: "High Alpha Ratio (energy 1-5 kHz / 0-1 kHz) correlates with dominance and extroversion (OpenSMILE/GeMAPS)"
+    hammarberg_index: "Low Hammarberg Index indicates flat spectrum with high-frequency energy — authoritative, 'buzzy' quality"
+    speakers_formant: "Narrowing the Aryepiglottic Sphincter (AES/Twang) produces 10-15 dB boost at 2-4 kHz — projects without shouting"
+    cpps: "Cepstral Peak Prominence Smoothed (CPPS) is the premier metric for tracking clarity in continuous speech; increasing CPPS = clearer, more resonant voice"
+  intonation:
+    uptalk_risk: "Terminal F0 rise > 40% from phrase onset, or > 4-5 semitones, signals uncertainty or interrogative stance"
+    declarative_target: "Falling (negative slope) or flat terminal — staircase intonation confirms authority"
+    staircase_technique: "Begin at natural pitch, step up at first stressed syllable, descend in steps to low definitive close"
+
+# =============================================================================
+# PRESENCE FRAMEWORK
+# Executive presence and ethos signals grounded in Architecture of Influence
+# and Presentation Delivery: Ethos and Physicality research.
+# =============================================================================
+
+presence_framework:
+  gravitas_indicators:
+    description: "Gravitas is stillness under pressure — distinct from charisma (energy/warmth)"
+    behavioral_markers:
+      - stillness: "Absence of fidgeting; adaptors < 1 per minute during peak authority moments"
+      - silence_comfort: "Willingness to hold pauses > 2 seconds without filling; silence as rhetorical choice"
+      - decisiveness: "Palm-down gestures for declarative statements; no hedging language"
+      - composure: "Maintained under hostile Q&A; de-escalation via volume reduction and gaze shift"
+      - vocal_control: "Staircase intonation used consistently; no uptalk on declarations"
+  seven_cs_framework:
+    source: "Presentation Delivery: Ethos and Physicality, Part VI"
+    components:
+      composure: "Calm under fire; physiological self-regulation visible (no sway, no fidget)"
+      connection: "Authentic Duchenne expressions (AU6+AU12); genuine eye contact at 3-5 sec"
+      confidence: "Expansive posture (elbow abduction > 30 deg); stable center of mass"
+      credibility: "High-agency language (Verb-Agency Link); concrete claims with evidence"
+      character: "Values-consistent behavior; composure under pressure tests authenticity"
+      command: "Owns space; spatial anchoring and proxemic movement used purposefully"
+      charisma: "Pitch variation > 4.0 semitones; warm-competence balance; Linguistic Style Match"
+  authority_language:
+    source: "Architecture of Influence, Section 2 — Agency Protocol"
+    verb_dynamism: "Ratio of dynamic action verbs to stative (be/have) verbs — target > 0.70"
+    passive_voice: "Target < 5% passive sentences"
+    lexical_bundles: "Use TED-style discourse organizers ('I want to show you...', 'Here is the key...') vs. academic stance bundles"
+    propositional_density: "PID < 0.50 (< 1 idea per 2 words) — elite threshold per Architecture of Influence"
+  ethos_threats:
+    incongruence: "Body language contradicting words destroys Ethos (Dual Coding Theory mismatch)"
+    vocal_fry: "Perceived as low competence, submission, or disengagement in professional contexts"
+    uptalk: "Transforms declarations into questions; signals subconscious request for validation"
+    social_smile: "AU12 only (no AU6) is perceived as political or deceptive — reduces trust"
+    academic_hedging: "Stance bundles ('It is important to note...', 'In the context of...') create distance"
+    hubris_curve: "Upper failure boundary: purging ALL tentative language and projecting excessive certainty = hubris signal; erodes trust by eliminating calibration markers. Occasional hedging on genuinely uncertain claims is a credibility signal, not weakness (Elite Speaker Linguistic Analysis Taxonomy)"
+
+# =============================================================================
+# PHYSICALITY STANDARDS
+# Gesture types, eye contact patterns, proxemics, and postural geometry.
+# Source: Presentation Delivery: Ethos and Physicality (Parts I, II, III);
+#         Unified Performance Framework (Sections 3.1, 3.2, 4.1, 4.2).
+# =============================================================================
+
+physicality_standards:
+  posture:
+    expansive_posture:
+      elbow_abduction_target: "> 30 degrees from torso"
+      elbow_abduction_low_confidence: "0-10 degrees (turtling — minimizes visual footprint)"
+      perceptual_correlate: "Expansive posture (> 30 deg) = perceived confidence and high status"
+    shoulder_alignment: "Acromion process in line with ear; forward shoulder protraction > 50 degrees signals defensiveness"
+    feet_position: "Shoulder-width apart; feet stable and grounded — sway area target < 3.25 cm²"
+    head_tilt:
+      dominance: "~10 degrees downward combined with direct gaze — signals authority and command"
+      submission: "> 15-20 degrees upward combined with smile — signals appeasement"
+      neutral_engagement: "0-10 degrees upward — openness without submission"
+  gesture_discipline:
+    power_box: "Gestures confined within rectangle: top of shoulders, waist, body width — controlled and authoritative"
+    outside_box_risk: "Below-waist gestures signal chaotic energy; wild shoulder-extension signals emotional instability"
+    gesture_timing:
+      natural_lead: "Gesture stroke should precede corresponding word by 200-500 ms (neurological growth point synchrony)"
+      lag_risk: "Gestures occurring after the spoken word are perceived as rehearsed and artificial"
+      integration_window: "< 600 ms offset from speech — signals outside this window are processed as noise"
+    gesture_vocabulary:
+      palm_up: "Submission, openness, honesty — use when inviting collaboration or admitting uncertainty"
+      palm_down: "Authority, dominance, closure — use for definitive statements; overuse risks dictatorial perception"
+      vertical_palm: "Equality, precision — use during negotiations or separating distinct points"
+      steeple: "Intellectual dominance, evaluation — confident leaders evaluating; caution overuse signals arrogance"
+      hold_the_ball: "Mastery, control — cupped hands for introducing complex new concepts"
+      chop: "Downward swift motion — adds emphasis to specific word for hard truths or decisions"
+      show: "Hands to chest — signals heartfelt emotion and sincerity"
+    self_adaptors:
+      description: "Non-functional self-directed movements (face-touching, neck-touching, object manipulation)"
+      concern_threshold: "> 5.5 per minute — flags high anxiety or stress leakage"
+      coaching_note: "Self-adaptors are disproportionately elevated in anxious and deceptive states"
+  eye_contact:
+    one_thought_one_person_rule: "Direct one complete thought to one specific individual (3-5 seconds) before moving"
+    ninety_percent_rule: "Maintain eye contact 90% of presentation; 10% for notes or slides"
+    quadrant_strategy: "For large audiences, divide into quadrants (FL, FR, BL, BR) and cycle randomly"
+    lawn_sprinkler_risk: "Rapid darting eye movements signal anxiety; fails to create individual connection"
+    cultural_calibration: "Prolonged direct eye contact may be aggressive in some Asian, Middle Eastern, and Indigenous cultures — research audience demographics"
+  proxemics:
+    public_zone: "> 12 feet — standard for formal presentations"
+    social_zone: "4-12 feet — move into this zone for emotional peaks and connection moments"
+    intimate_zone: "0-18 inches — reserved for one-on-one rapport; inappropriate in most presentation contexts"
+    spatial_anchoring:
+      past_position: "Audience's left (stage right) — problems, history, 'where we came from'"
+      present_position: "Center stage — pivotal decision, current analysis, central conflict"
+      future_position: "Audience's right (stage left) — solutions, vision, the 'after' state"
+    hostile_qa_protocol: "Break gaze from aggressor; address wider audience; reduce volume; limit large gestures"
+  virtual_delivery:
+    camera_height: "Camera lens at eye level — low angle appears arrogant; high angle diminishes authority"
+    eye_contact_lens: "Look at the lens, not the faces on screen — looking at screen appears as gaze downward"
+    framing: "Chest-up framing allows Power Box gestures to be visible within screen frame"
+
+# =============================================================================
+# PACING STANDARDS
+# Pause types, rate variation, and rhythm. Source: UPF Section 2.2;
+# Architecture of Influence Section 4; Presentation Delivery Part IV.
+# =============================================================================
+
+pacing_standards:
+  speech_rate:
+    optimal_comprehension_range: "150-160 WPM — maximizes information retention and comprehension (UPF)"
+    elite_rhetorical_range: "100-120 WPM — elite presentation standard; significantly slower than conversational 150 WPM"
+    cognitive_overload_threshold: "> 180 WPM — retention drops 17-25% above this rate"
+    extreme_overload: "> 190 WPM — strongly correlated with reduced recall and mental fatigue"
+    cluttering_threshold: "> 5.3 syllables per second — intelligibility breakdown; articulators cannot maintain phoneme precision"
+    slow_end: "< 100 WPM without rhetorical purpose — perceived as unprepared or lethargic"
+  pause_types:
+    emphatic_pause:
+      duration: "500-600 ms — rated highest for naturalness and effectiveness in authoritative speech"
+      function: "Signals boundary or emphasis; provides audience processing space"
+      minimum_signal: "> 250 ms required to register as deliberate rather than articulatory"
+    dramatic_pause:
+      duration: "2-3 seconds"
+      function: "Builds suspense before key revelation or punchline; power move after rhetorical question"
+      placement: "Immediately before the payoff; holds audience in anticipatory attention"
+    sensory_pause:
+      duration: "1-2 seconds"
+      function: "Allows audience to 'digest' complex or emotional content; processing reset"
+      placement: "After delivering an emotionally resonant point or surprising statistic"
+    transition_pause:
+      duration: "1-2 seconds (longer than emphatic)"
+      function: "Signals structural shift from one section to another"
+      accompaniment: "Often paired with physical movement on the stage spatial anchor timeline"
+    hesitation_threshold:
+      duration: "> 1000 ms in non-boundary positions"
+      perceptual_correlate: "Perceived as lexical retrieval failure or uncertainty — not strategic"
+      coaching_fix: "Replace mid-phrase hesitations with pre-planned transition language or silent boundary pauses"
+  rhythm_variation:
+    rate_variation_principle: "Slower for complex/emotional content; faster for high-energy narrative or data listing"
+    monotone_pacing_risk: "Uniform rate across entire presentation signals lack of preparation and reduces engagement"
+    gesture_speech_window: "Natural illustrators lead speech by 200-500 ms; outside 600 ms window = perceived artificiality"
+
+# =============================================================================
+# FILLER ANALYSIS
+# Types, frequency thresholds, and reduction strategies.
+# Source: Architecture of Influence Section 4; UPF Section 2.2; Ethos Part IV.
+# =============================================================================
+
+filler_analysis:
+  filler_types:
+    vocalized_pauses:
+      examples: ["um", "uh", "er", "ah"]
+      mechanism: "'Um' signals upcoming long delay; 'Uh' signals upcoming short delay (psycholinguistic research)"
+      elite_target: "Eliminate both to increase perceived competence — replace with silent pauses"
+    lexical_fillers:
+      examples: ["like", "you know", "so", "basically", "right", "okay", "I mean"]
+      mechanism: "Discourse markers used as floor-holding signals; signal informal register inappropriate for authority contexts"
+      elite_target: "Zero tolerance for habitual lexical fillers in prepared presentations"
+    false_starts:
+      description: "Beginning a sentence, stopping, and restarting"
+      threshold: "> 2 per minute signals poor preparation or high cognitive load under stress"
+    retracing:
+      description: "Mid-utterance repetition of words or phrase fragments while self-correcting ('I went to the... to the store'; 'the key issue — the key issue here is')"
+      mechanism: "Distinct from false starts: speaker reaches mid-utterance and backs up to re-run the phrase rather than starting over. Signals mid-clause planning failure or excessive verbal processing load."
+      elite_target: "Eliminate habitual retracing in prepared content; some retracing in improvised Q&A is normal"
+      source: "Elite Speaker Linguistic Analysis Taxonomy — disfluency sub-classification"
+  frequency_thresholds:
+    elite: "< 0.5 per minute (virtually filler-free)"
+    good: "< 2 per minute (rare; confined to improvised Q&A)"
+    adequate: "2-5 per minute (present but acceptable)"
+    below_average: "5-10 per minute (noticeably reduces authority)"
+    poor: "> 10 per minute (distracts audience from content)"
+  reduction_strategies:
+    pause_substitution: "Replace every filled pause reflex with a deliberate silent pause — 'empty the um bucket'"
+    awareness_drilling: "Record and count fillers per session; self-monitoring activates conscious suppression"
+    preparation_depth: "High filler frequency in prepared sections indicates insufficient practice — fillers spike in unfamiliar territory"
+    tongue_twisters: "Daily articulation drills (e.g., 'Red leather, yellow leather') improve fluency automaticity"
+    breath_anchoring: "Physiological sigh before high-pressure sections resets autonomic arousal that drives filler behavior"
+
+# =============================================================================
+# ENGAGEMENT TECHNIQUES
+# Questioning, polling, call-and-response, reading the room.
+# Source: Presentation Delivery Ethos Part VI; Architecture of Influence Part 3.
+# =============================================================================
+
+engagement_techniques:
+  direct_questioning:
+    rhetorical_questions:
+      function: "Prime the audience to think before the answer is delivered — increases retention"
+      execution: "Pause 1-2 seconds after the question for audience to internally process before continuing"
+    genuine_questions:
+      function: "Invite real audience participation; signals speaker values audience intelligence"
+      execution: "Use for polling ('Raise your hand if...') or call-and-response in smaller groups"
+  inclusive_language:
+    lsm_target: "Linguistic Style Matching score > 0.85 — mirror the audience's register and vocabulary"
+    pronoun_strategy: "Replace abstract 'one' or passive 'it' with direct 'you' and inclusive 'we'"
+    pid_target: "Propositional Idea Density < 0.50 — unpack complex ideas into shorter declarative sentences"
+    second_person_immersion: "Storytelling in second person ('You walk in, you see...') activates sensory cortex and draws audience into narrative"
+  spatial_engagement:
+    proximity_shift: "Moving from public (> 12 feet) to social zone (4-12 feet) during emotional peaks forces deeper engagement"
+    movement_toward_questioner: "Walking toward the person asking a question signals active listening and confidence"
+    lectern_discipline: "Step away from lectern for stories and connection; return for data and notes only"
+  reading_the_room:
+    visual_feedback_signals:
+      - "Heads nodding — continue, accelerate slightly"
+      - "Furrowed brows — pause, restate, offer clarification"
+      - "Phone checking — accelerate or insert a high-energy engagement prompt"
+      - "Leaning back, crossed arms — lower energy required; increase proximity and warmth markers"
+      - "Eye widening or leaning forward — audience is primed; deliver key payoff"
+    adaptation_protocol: "Elite speakers continuously sample audience response and modulate pacing, volume, and depth accordingly"
+  warm_competence_balance:
+    source: "Architecture of Influence — Social Signaling, warmth-competence ratio"
+    warmth_markers: "Inclusive pronouns, genuine Duchenne smiles, direct personal address, vulnerability disclosure"
+    competence_markers: "Dynamic verb corpus, decisive palm-down gestures, specific quantified evidence, staircase intonation"
+    optimal_ratio: "Balance warmth and competence signals throughout — neither authoritative coldness nor warm incompetence"
+
+# =============================================================================
+# ANTI-PATTERNS
+# Common delivery failures with descriptions, perceptual impacts, and fixes.
+# =============================================================================
+
+anti_patterns:
+  lawn_sprinkler_eye_contact:
+    description: "Eyes dart rapidly across the room without locking on any individual"
+    impact: "Communicates anxiety, lack of connection; audience feels unseen"
+    fix: "Apply One-Thought-One-Person rule; hold gaze for full sentence (3-5 seconds) before moving"
+  uptalk_declarations:
+    description: "Declarative statements end with rising intonation, sounding like questions"
+    impact: "Signals uncertainty and subconscious request for validation; destroys authority"
+    fix: "Practice staircase intonation; record and review; every key declaration must close on a falling pitch"
+  monotone_pacing:
+    description: "Uniform speech rate and pitch throughout the entire presentation"
+    impact: "Auditory cortex habituates; audience disengages; speaker perceived as robotic or bored"
+    fix: "Map rate and pitch variation into script: identify slow-down points (complex data) and energy peaks (calls to action)"
+  filler_flooding:
+    description: "Habitual use of 'um,' 'uh,' 'like,' 'you know' at > 5 per minute"
+    impact: "Audience attention diverts to counting fillers; perceived competence drops sharply"
+    fix: "Record all rehearsals; count fillers per minute; replace every filler reflex with deliberate silent pause"
+  self_adaptor_leakage:
+    description: "Touching face, neck, or hair; clicking pen; adjusting clothing during presentation"
+    impact: "Signals anxiety and stress; undermines authority signals from upper body"
+    fix: "Practice with video review to identify habitual self-touch locations; lower body stillness exercise"
+  closed_posture:
+    description: "Arms crossed, shoulders rounded inward, elbows adducted (< 10 degrees), torso angled away"
+    impact: "Signals defensiveness, low confidence, low status — visually overrides vocal authority"
+    fix: "Rehearse in expansive posture; feet shoulder-width, chest open, arms ready in Power Box"
+  aimless_stage_wandering:
+    description: "Moving around the stage without spatial purpose or anchoring"
+    impact: "Distracts audience from content; signals nervous energy rather than command"
+    fix: "Apply spatial anchoring (past/present/future positions); move with intention or stay planted"
+  vocal_fry_pattern:
+    description: "Creaky, low-register phonation at sentence endings due to insufficient breath support"
+    impact: "Perceived as low competence, submission, or disengagement; particularly costly in professional contexts"
+    fix: "Breath support exercises; ensure phrases are completed on supported air; Estill Thick Folds technique"
+  lectern_hiding:
+    description: "Remaining behind the lectern for the entire presentation"
+    impact: "Creates physical and psychological barrier; restricts proxemic engagement; reduces perceived openness"
+    fix: "Use lectern for data references only; step to the side for all storytelling and connection moments"
+  incongruent_signals:
+    description: "Body language contradicts verbal content (e.g., shaking head while saying 'yes'; shrugging while making definitive statement)"
+    impact: "Audience believes body over words (Dual Coding Theory mismatch); destroys Ethos"
+    fix: "Video review to identify unconscious contradictions; anchor each key message to a congruent gesture"
+  slide_dependency:
+    description: "Speaker turns to face or read from slides, uses slides as a memory script, or cannot answer questions without referencing the deck"
+    impact: "Breaks eye contact with audience; signals under-rehearsal; reduces perceived authority and ownership of the content; forces audience to compete for the speaker's attention with the screen"
+    fix: "Know the content independently of the deck; practice without slides present; use slides as a visual aid for the audience, not a teleprompter for the speaker"
+    source: "Public_Speaking_research — slide-crutch identification"
+
+# =============================================================================
+# CHECKS
+# Validation rules for each dimension to support automated and human scoring.
+# =============================================================================
+
+checks:
+  vocal_quality:
+    - id: "VQ-01"
+      rule: "Pitch SD must be measured in semitones across the full performance, not a single sustained vowel"
+      threshold: "F0 SD < 2.0 semitones = monotone flag; > 4.0 = excellent"
+    - id: "VQ-02"
+      rule: "Jitter and Shimmer measurements must be taken at standardized intensity (85 dB at 10 cm) to remove confound"
+      threshold: "Jitter > 1.04% = nervousness flag; Shimmer > 3.81% = instability flag"
+    - id: "VQ-03"
+      rule: "HNR must be measured across connected speech using CPPS for reliability, not sustained /a/"
+      threshold: "HNR < 15 dB = breathiness flag requiring coaching intervention"
+    - id: "VQ-04"
+      rule: "Terminal intonation slope of declarative sentences must be negative (falling) for authority signal"
+      threshold: "Terminal F0 rise > 40% from phrase onset = uptalk flag"
+  executive_presence:
+    - id: "EP-01"
+      rule: "Self-adaptor frequency must be counted separately from illustrators (functional gestures)"
+      threshold: "> 5.5 self-adaptors per minute = anxiety leakage flag"
+    - id: "EP-02"
+      rule: "Verb-Agency ratio must be computed from transcript: action verbs / (action + stative verbs)"
+      threshold: "Verb-Agency Ratio < 0.70 = insufficient authority language signal"
+    - id: "EP-03"
+      rule: "Passive voice percentage must be computed across full transcript"
+      threshold: "> 5% passive sentences = authority language concern"
+    - id: "EP-04"
+      rule: "PID (Propositional Idea Density) must be measured: N_propositions / N_words"
+      threshold: "PID > 0.55 = cognitive overload risk for audience (academic density)"
+  pacing_timing:
+    - id: "PT-01"
+      rule: "WPM must be measured from audio using word count / duration in minutes across entire performance"
+      threshold: "> 180 WPM sustained = cognitive overload trigger; < 100 WPM = lethargy flag"
+    - id: "PT-02"
+      rule: "Pause duration distribution must be extracted; classify as emphatic (500-600 ms), dramatic (2-3 sec), or hesitant (> 1000 ms mid-phrase)"
+      threshold: "< 3 strategic pauses per 10 minutes = insufficient silence ratio for elite delivery"
+    - id: "PT-03"
+      rule: "Syllable rate during phonation must be checked for cluttering"
+      threshold: "> 5.3 syllables per second = intelligibility breakdown flag"
+  physical_delivery:
+    - id: "PD-01"
+      rule: "Postural sway area must be estimated from video; visible rocking triggers flag regardless of measurement"
+      threshold: "Visible sway area > 3.25 cm² = nervous instability flag"
+    - id: "PD-02"
+      rule: "Eye contact percentage must be estimated as proportion of time speaker is visibly engaging audience gaze"
+      threshold: "< 70% eye contact time = significant engagement failure"
+    - id: "PD-03"
+      rule: "Gesture-speech synchrony check: do gesture strokes precede or follow corresponding words?"
+      threshold: "Gestures consistently lagging > 0 ms after word = rehearsed/artificial flag"
+    - id: "PD-04"
+      rule: "Self-adaptor events must be logged separately from illustrators in behavioral coding"
+      threshold: "> 5.5 self-adaptors per minute = anxiety leakage"
+  filler_management:
+    - id: "FM-01"
+      rule: "Filler frequency must be counted from transcript or audio: 'um', 'uh', 'er', 'like', 'you know', 'so', 'basically'"
+      threshold: "> 2 fillers per minute = below average; > 5 per minute = poor"
+    - id: "FM-02"
+      rule: "False start frequency must be counted separately from vocalized pauses"
+      threshold: "> 2 false starts per minute = preparation or cognitive load flag"
+    - id: "FM-03"
+      rule: "Lexical fillers ('like', 'you know') used as discourse markers are counted separately from vocalized pauses"
+      threshold: "Any habitual use of lexical fillers in prepared sections = below-average flag"
+  audience_engagement:
+    - id: "AE-01"
+      rule: "Count engagement techniques deployed: rhetorical questions, polling, direct address, second-person narrative, call-and-response"
+      threshold: "< 2 engagement techniques per 10 minutes = monologue mode flag"
+    - id: "AE-02"
+      rule: "LSM (Linguistic Style Matching) score should be computed against audience register baseline if available"
+      threshold: "LSM < 0.80 = insufficient audience mirroring"
+    - id: "AE-03"
+      rule: "Check PID across engagement-critical passages (opening, transitions, closing)"
+      threshold: "PID > 0.55 in engagement passages = cognitive barrier to connection"
+
+# =============================================================================
+# THRESHOLDS
+# Numeric limits for machine-readable scoring and automated feedback.
+# Source: UPF Tables 1.1-1.3; VCA Section 4; Architecture of Influence.
+# =============================================================================
+
+thresholds:
+  speaking_rate:
+    elite_rhetorical_wpm_min: 100
+    elite_rhetorical_wpm_max: 120
+    comprehension_optimal_wpm_min: 150
+    comprehension_optimal_wpm_max: 160
+    cognitive_overload_wpm: 180
+    extreme_overload_wpm: 190
+    cluttering_syllables_per_second: 5.3
+  filler_frequency:
+    elite_per_minute: 0.5
+    good_per_minute: 2.0
+    adequate_per_minute: 5.0
+    poor_per_minute: 10.0
+  eye_contact:
+    elite_percentage: 95
+    good_percentage: 90
+    adequate_percentage: 70
+    minimum_acceptable_percentage: 50
+    one_thought_one_person_duration_seconds_min: 3
+    one_thought_one_person_duration_seconds_max: 5
+  pause_duration:
+    minimum_emphatic_ms: 250
+    optimal_emphatic_ms: 600
+    dramatic_pause_min_seconds: 2
+    dramatic_pause_max_seconds: 3
+    hesitation_threshold_ms: 1000
+  vocal_stability:
+    jitter_elite_pct: 0.50
+    jitter_concern_pct: 1.04
+    shimmer_elite_pct: 2.0
+    shimmer_concern_pct: 3.81
+    hnr_elite_db: 22
+    hnr_minimum_db: 18
+    hnr_concern_db: 15
+  pitch_variation:
+    monotone_threshold_semitones: 2.0
+    adequate_semitones: 3.0
+    expressive_semitones: 4.0
+    uptalk_terminal_rise_pct: 40
+    uptalk_terminal_semitones: 4
+  posture:
+    low_confidence_abduction_degrees: 10
+    confident_abduction_degrees: 30
+    dominance_head_tilt_degrees: -10
+    submission_head_tilt_degrees: 15
+    sway_area_concern_cm2: 3.25
+    self_adaptor_concern_per_minute: 5.5
+  gesture_timing:
+    natural_lead_ms_min: 200
+    natural_lead_ms_max: 500
+    integration_window_ms: 600
+  linguistic:
+    pid_elite_max: 0.45
+    pid_adequate_max: 0.50
+    pid_concern_threshold: 0.55
+    pid_jobs_benchmark: 0.43  # Steve Jobs keynote benchmark — elite floor for PID (Elite Speaker Linguistic Analysis)
+    verb_agency_ratio_min: 0.70
+    passive_voice_max_pct: 5
+    lsm_target: 0.85
+    mtld_elite_ted_min: 70    # Measure of Textual Lexical Diversity — elite TED speaker range
+    mtld_elite_ted_max: 80
+    mtld_academic_threshold: 90  # >90 = academic register (too dense for engagement contexts)
+    mtld_novice_threshold: 50    # <50 = limited vocabulary range; signals novice speaker profile
+    # Source: Elite Speaker Linguistic Analysis Taxonomy — MTLD benchmarks for speaker tier classification
+
+# =============================================================================
+# PENALTIES
+# Score deductions applied when specific delivery failures are detected.
+# Applied to the dimension score before weighting.
+# =============================================================================
+
+penalties:
+  - id: "PEN-01"
+    label: "Filler Flooding"
+    condition: "Filler frequency > 10 per minute"
+    deduction: 0.15
+    dimension: filler_management
+    rationale: "Pervasive fillers divert audience attention from content and signal inadequate preparation"
+  - id: "PEN-02"
+    label: "Cognitive Overload Rate"
+    condition: "Sustained speech rate > 190 WPM for > 60 seconds"
+    deduction: 0.12
+    dimension: pacing_timing
+    rationale: "Rates above 190 WPM cause significant retention drops (17-25%) per UPF cognitive load research"
+  - id: "PEN-03"
+    label: "Monotone Delivery"
+    condition: "F0 SD < 2.0 semitones throughout performance"
+    deduction: 0.12
+    dimension: vocal_quality
+    rationale: "Empirically categorized as flat affect; auditory cortex habituates and disengages"
+  - id: "PEN-04"
+    label: "Vocal Instability"
+    condition: "Jitter > 1.04% or Shimmer > 3.81% sustained"
+    deduction: 0.10
+    dimension: vocal_quality
+    rationale: "Exceeds clinical concern threshold; perceived as nervousness, roughness, or instability"
+  - id: "PEN-05"
+    label: "Uptalk Pattern"
+    condition: "Terminal F0 rise > 40% on > 20% of declarative sentences"
+    deduction: 0.10
+    dimension: executive_presence
+    rationale: "Uptalk transforms declarations into questions, signaling subconscious request for validation"
+  - id: "PEN-06"
+    label: "Anxiety Leakage"
+    condition: "Self-adaptor rate > 5.5 per minute (face, neck, object manipulation)"
+    deduction: 0.10
+    dimension: physical_delivery
+    rationale: "Self-adaptors signal stress; disproportionate in anxious/deceptive states per UPF kinesics data"
+  - id: "PEN-07"
+    label: "Multimodal Incongruence"
+    condition: "Body language consistently contradicts verbal content (head shaking on affirmation, shrug on declarative)"
+    deduction: 0.10
+    dimension: executive_presence
+    rationale: "Audience believes body over words (Dual Coding mismatch); destroys Ethos and trust"
+  - id: "PEN-08"
+    label: "Excessive Postural Sway"
+    condition: "Visible sway area estimated > 3.25 cm² or continuous weight-shifting throughout"
+    deduction: 0.08
+    dimension: physical_delivery
+    rationale: "Sway signals loss of fine motor control under anxiety; highly distracting to audience"
+  - id: "PEN-09"
+    label: "Lawn Sprinkler Eye Contact"
+    condition: "Eye contact < 50% or rapid darting without sustained individual connection"
+    deduction: 0.08
+    dimension: physical_delivery
+    rationale: "Darting gaze communicates anxiety; fails to create the individual connection that drives trust"
+  - id: "PEN-10"
+    label: "Closed Posture"
+    condition: "Elbow abduction < 10 degrees sustained; crossed arms or contracted torso"
+    deduction: 0.07
+    dimension: executive_presence
+    rationale: "Contractive posture signals low confidence and low status; overrides positive vocal signals"
+  - id: "PEN-11"
+    label: "Vocal Fry Pattern"
+    condition: "Habitual creaky phonation at sentence endings on > 30% of phrases"
+    deduction: 0.07
+    dimension: vocal_quality
+    rationale: "Vocal fry perceived as low competence or submission in professional contexts"
+  - id: "PEN-12"
+    label: "Cluttering"
+    condition: "Articulation rate > 5.3 syllables per second for extended passages"
+    deduction: 0.06
+    dimension: pacing_timing
+    rationale: "Exceeds intelligibility threshold; articulators cannot maintain phoneme precision"
+  - id: "PEN-13"
+    label: "Monologue Mode"
+    condition: "Zero engagement techniques used in any 10-minute segment"
+    deduction: 0.05
+    dimension: audience_engagement
+    rationale: "Absence of engagement techniques converts audience from active participants to passive recipients"
+  - id: "PEN-14"
+    label: "High Propositional Density"
+    condition: "PID > 0.55 sustained across presentation"
+    deduction: 0.04
+    dimension: audience_engagement
+    rationale: "Academic density exceeds cognitive processing capacity; audience fatigue and disengagement"
+  - id: "PEN-15"
+    label: "Breathy Phonation"
+    condition: "HNR < 15 dB sustained — excessive noise in vocal signal"
+    deduction: 0.03
+    dimension: vocal_quality
+    rationale: "Breathiness is a submission/intimacy signal, not an authority signal; reduces projection and perceived competence"
+  - id: "PEN-16"
+    label: "Slide Dependency"
+    condition: "Speaker turns to face slides on > 3 occasions OR reads directly from deck OR cannot respond to audience questions without referencing the slide"
+    deduction: 0.07
+    dimension: physical_delivery
+    rationale: "Slide-crutch behavior signals under-rehearsal and breaks eye contact; audience competes for speaker's attention with the screen (Public_Speaking_research)"
+
+# =============================================================================
+# BONUSES
+# Score additions for exceptional delivery elements that exceed rubric targets.
+# Applied after dimension scoring.
+# =============================================================================
+
+bonuses:
+  - id: "BON-01"
+    label: "Elite Silence Mastery"
+    condition: "Strategic silent pauses > 2 seconds used at least 3 times as rhetorical power moves (not hesitation)"
+    addition: 0.03
+    dimension: pacing_timing
+    rationale: "Elite use of silence as rhetorical device — top 5% speaker behavior per Architecture of Influence"
+  - id: "BON-02"
+    label: "Duchenne Authenticity"
+    condition: "Consistent AU6+AU12 simultaneous activation (genuine Duchenne smiles) throughout"
+    addition: 0.03
+    dimension: executive_presence
+    rationale: "Duchenne smiles elicit significantly higher trustworthiness ratings than social smiles; rare in professional contexts"
+  - id: "BON-03"
+    label: "Speaker's Formant Presence"
+    condition: "High Alpha Ratio — measurable spectral energy boost at 2-4 kHz indicating AES/Twang engagement"
+    addition: 0.02
+    dimension: vocal_quality
+    rationale: "Speaker's Formant enables projection without shouting; marks elite vocal athletes per Estill research"
+  - id: "BON-04"
+    label: "Gesture-Speech Naturalism"
+    condition: "Gesture strokes consistently precede corresponding words by 200-500 ms (neurological authenticity)"
+    addition: 0.02
+    dimension: physical_delivery
+    rationale: "Natural gesture lead time signals authentic cognitive integration — impossible to fake consistently"
+  - id: "BON-05"
+    label: "Spatial Anchoring Mastery"
+    condition: "Past/present/future spatial anchoring used consistently and audience returns to locations on revisit"
+    addition: 0.02
+    dimension: physical_delivery
+    rationale: "Spatial anchoring leverages hippocampal memory mapping to reinforce narrative without verbal repetition"
+  - id: "BON-06"
+    label: "Filler-Free Performance"
+    condition: "< 0.5 fillers per minute across entire performance including Q&A"
+    addition: 0.02
+    dimension: filler_management
+    rationale: "True filler mastery — silent pauses fully replace the filled pause reflex; top 5% speaker behavior"
+  - id: "BON-07"
+    label: "Real-Time Room Adaptation"
+    condition: "Visible in-session adaptation to audience signals: pacing, depth, or energy changed based on observable audience response"
+    addition: 0.02
+    dimension: audience_engagement
+    rationale: "Dynamic responsiveness transforms presentation from broadcast to genuine communication event"
+  - id: "BON-08"
+    label: "High Expressive Pitch Range"
+    condition: "F0 SD > 4.5 semitones — expressive vocal range significantly exceeding adequate threshold"
+    addition: 0.01
+    dimension: vocal_quality
+    rationale: "Exceptionally wide pitch range correlates strongly with charisma and audience engagement per OpenSMILE GeMAPS research"
+  - id: "BON-09"
+    label: "Anxiety Reappraisal Signal"
+    condition: "Speaker displays visible pre-performance reappraisal behavior and channels arousal as energy, not anxiety"
+    addition: 0.01
+    dimension: executive_presence
+    rationale: "Harvard/Brooks research: reframing anxiety as excitement produces measurably better performance outcomes"
+  - id: "BON-10"
+    label: "PID Elite Threshold Sustained"
+    condition: "PID < 0.45 maintained throughout, indicating mastery of cognitive load management for the audience"
+    addition: 0.01
+    dimension: audience_engagement
+    rationale: "PID < 0.45 is below elite threshold; disproportionately aids comprehension for non-native speakers and all audiences"
+  - id: "BON-11"
+    label: "Proxemic Intimacy Move"
+    condition: "Controlled, purposeful movement from public zone into social zone (4-12 feet) during emotional peak"
+    addition: 0.01
+    dimension: physical_delivery
+    rationale: "Physical zone reduction at emotional peaks forces audience into deeper engagement — advanced proxemics technique"
+  - id: "BON-12"
+    label: "Rhetorical Device Integration"
+    condition: "Deliberate use of at least two rhetorical structures (tricolon, anaphora, chiasmus, epistrophe) with congruent vocal delivery"
+    addition: 0.01
+    dimension: audience_engagement
+    rationale: "Rhetorical devices increase memorability and 'stickiness' of the message; congruent delivery amplifies cognitive impact"
+  - id: "BON-13"
+    label: "Warm/Hard Sell Vocal Oscillation"
+    condition: "Speaker demonstrably alternates between warmth-signalling vocal mode (softer, empathetic, narrative) and competence-signalling vocal mode (lower F0, sharper articulation, authoritative) within the same presentation"
+    addition: 0.02
+    dimension: vocal_quality
+    rationale: "Warm/hard sell oscillation achieves optimal warm-competence vocal balance; marks the Visionary tier speaker who can modulate trust and authority signals dynamically rather than holding a fixed vocal persona (Elite Speaker Linguistic Analysis Taxonomy)"

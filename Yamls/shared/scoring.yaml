@@ -1,0 +1,254 @@
+_meta:
+  id: scoring
+  description: "Unified scoring configuration for pedagogical analysis including score bands, severity levels, and dimension weights."
+  domain: ai
+  domain_type: meta
+  purpose: reference
+  version: "2.3.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Best Practices for Writing Effective Corporate Learning Content.md"
+    - "Corpus/Research/Research - Comprehensive Learning Design Framework.md"
+    - "Corpus/Research/Research - Corporate Learning Assessment- Strategies, Modalities, and Best Practices.md"
+    - "Corpus/Research/Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md"
+    - "Corpus/Research/Research - Using SOAR Storytelling most effectively.md"
+
+
+  relationships:
+    - target: shared/scoring_narrative.yaml
+      type: depends_on
+      description: "Domain-specific fragment; narrative scoring config extends the base scoring spec"
+    - target: shared/scoring_visual.yaml
+      type: depends_on
+      description: "Domain-specific fragment; visual scoring config extends the base scoring spec"
+# =============================================================================
+# SCORE BANDS
+# =============================================================================
+# 6-tier scale for pedagogical quality (finer granularity than other lenses
+# because learning effectiveness requires more nuanced assessment)
+
+score_bands:
+  exemplary:
+    range: [90, 100]
+    label: "Exemplary"
+    description: "Comprehensive application of learning principles, clear evidence of instructional design excellence"
+    color: "#22c55e"  # green
+    pass: true
+
+  strong:
+    range: [80, 89]
+    label: "Strong"
+    description: "Most principles applied effectively, minor gaps that don't impact learning"
+    color: "#84cc16"  # lime
+    pass: true
+
+  adequate:
+    range: [70, 79]
+    label: "Adequate"
+    description: "Core principles present, opportunities for enhancement"
+    color: "#a3e635"  # light green
+    pass: true
+
+  developing:
+    range: [60, 69]
+    label: "Developing"
+    description: "Several gaps impacting learning effectiveness"
+    color: "#eab308"  # yellow
+    pass: false
+
+  weak:
+    range: [50, 59]
+    label: "Weak"
+    description: "Significant gaps requiring substantial revision"
+    color: "#f97316"  # orange
+    pass: false
+
+  critical:
+    range: [0, 49]
+    label: "Critical"
+    description: "Fundamental redesign needed, missing core instructional components"
+    color: "#ef4444"  # red
+    pass: false
+
+# =============================================================================
+# SEVERITY LEVELS
+# =============================================================================
+# How to classify issues found during pedagogical analysis
+
+severity_levels:
+  critical:
+    score_impact: -20
+    label: "Critical"
+    description: "Fundamental instructional flaw that prevents learning"
+    requires_action: true
+    examples:
+      - "No learning objectives (explicit or inferable)"
+      - "Content sequence prevents understanding (prerequisites after application)"
+      - "Cognitive overload with no scaffolding"
+
+  high:
+    score_impact: -10
+    label: "High"
+    description: "Significant issue affecting learning effectiveness"
+    requires_action: true
+    examples:
+      - "Mismatch between stated objectives and content"
+      - "Missing practice opportunities for skill-based objectives"
+      - "No feedback mechanisms for learner self-assessment"
+
+  medium:
+    score_impact: -5
+    label: "Medium"
+    description: "Notable issue that should be addressed"
+    requires_action: false
+    examples:
+      - "Bloom's level mismatch (teaching 'remember', testing 'evaluate')"
+      - "Weak worked examples"
+      - "Limited scaffolding for complex concepts"
+
+  low:
+    score_impact: -2
+    label: "Low"
+    description: "Minor issue, nice to fix but not essential"
+    requires_action: false
+    examples:
+      - "Could benefit from additional examples"
+      - "Engagement opportunities could be enhanced"
+      - "Minor Mayer principle violations"
+
+# =============================================================================
+# DIMENSION WEIGHTS
+# =============================================================================
+# How different pedagogical dimensions contribute to overall score
+
+dimension_weights:
+  # Learning objectives alignment
+  objectives:
+    weight: 0.25
+    description: "Clear objectives, ABCD/SMART compliance, Bloom's alignment"
+
+  # Instructional sequence
+  sequence:
+    weight: 0.20
+    description: "Logical flow, prerequisite ordering, scaffolding progression"
+
+  # Cognitive load management
+  cognitive_load:
+    weight: 0.20
+    description: "Mayer's principles, CLT compliance, chunking"
+
+  # Active learning
+  engagement:
+    weight: 0.15
+    description: "Practice activities, worked examples, interactivity"
+
+  # Assessment alignment
+  assessment:
+    weight: 0.10
+    description: "Knowledge checks, feedback loops, objective-assessment match"
+
+  # Multimedia integration
+  multimedia:
+    weight: 0.10
+    description: "Dual coding, modality principle, visual-verbal balance"
+
+# =============================================================================
+# THRESHOLDS
+# =============================================================================
+# Numeric thresholds used across pedagogical analysis
+
+thresholds:
+  # Learning objectives
+  objectives_per_module_max: 5        # Avoid objective overload
+  objectives_per_module_min: 1        # Must have at least one
+  bloom_level_match_tolerance: 1      # Allow ±1 level between objective and assessment
+
+  # Cognitive load (Mayer's principles)
+  max_concepts_per_chunk: 4           # Working memory limit
+  max_new_terms_per_section: 7        # Miller's Law
+  worked_example_ratio: 0.30          # At least 30% examples for procedural content
+
+  # Practice and engagement
+  practice_ratio_minimum: 0.20        # At least 20% of content should be practice
+  feedback_delay_max_seconds: 0       # Immediate feedback preferred
+
+  # Content density
+  words_per_minute_narration: 150     # Optimal narration pace
+  reading_level_maximum: 12           # Grade level (Flesch-Kincaid)
+
+  # Multimedia
+  redundancy_tolerance: 0.15          # Max 15% redundant text+audio
+  spatial_contiguity_max_distance: 100  # Pixels between related text and visual
+
+# =============================================================================
+# BLOOM'S TAXONOMY MAPPING
+# =============================================================================
+# Standard cognitive levels with action verb indicators
+
+blooms_levels:
+  remember:
+    level: 1
+    verbs: ["define", "list", "recall", "identify", "name", "state", "describe"]
+    assessment_types: ["multiple_choice", "matching", "fill_in_blank"]
+
+  understand:
+    level: 2
+    verbs: ["explain", "summarize", "interpret", "classify", "compare", "contrast"]
+    assessment_types: ["short_answer", "explanation", "paraphrase"]
+
+  apply:
+    level: 3
+    verbs: ["apply", "demonstrate", "use", "execute", "implement", "solve"]
+    assessment_types: ["scenario", "simulation", "hands_on"]
+
+  analyze:
+    level: 4
+    verbs: ["analyze", "differentiate", "organize", "attribute", "deconstruct"]
+    assessment_types: ["case_study", "comparison", "root_cause"]
+
+  evaluate:
+    level: 5
+    verbs: ["evaluate", "critique", "judge", "justify", "defend", "assess"]
+    assessment_types: ["rubric_assessment", "peer_review", "debate"]
+
+  create:
+    level: 6
+    verbs: ["create", "design", "develop", "produce", "construct", "generate"]
+    assessment_types: ["project", "portfolio", "original_work"]
+
+# =============================================================================
+# NARRATIVE INTEGRATION BONUSES
+# Pedagogical score adjustments when SOAR narrative elements are present
+# Source: Research - Using SOAR Storytelling most effectively.md
+# =============================================================================
+
+narrative_integration_bonuses:
+  purpose: "Score adjustments applied to pedagogical scoring when SOAR-aligned narrative elements are detected"
+  source: "Research - Using SOAR Storytelling most effectively.md; Applying Mayer's Principles & Contemporary Theory"
+
+  bonuses:
+    soar_arc_complete:
+      score_impact: +5
+      condition: "All 4 SOAR stages present with appropriate weighting"
+      rationale: "Complete narrative arc improves information retention by 22% (Universal Narrative Methodology)"
+
+    situation_activates_prior_knowledge:
+      score_impact: +3
+      condition: "Situation stage includes explicit prior knowledge activation (advance organizer or context-setting)"
+      rationale: "Advance organizers improve retention (d≈0.5, Mayer Multimedia Principle)"
+
+    result_includes_assessment_evidence:
+      score_impact: +3
+      condition: "Result stage includes knowledge check, quiz, or reflection that maps to learning objective"
+      rationale: "Testing effect: retrieval practice improves long-term retention by 50% over re-reading"
+
+  penalties:
+    soar_arc_missing_result:
+      score_impact: -8
+      condition: "No Result stage detected — content ends without evidence of learning"
+      rationale: "Missing Result = no assessment alignment; Kirkpatrick L2 not satisfied"
+
+    action_stage_cognitive_overload:
+      score_impact: -5
+      condition: "Action stage contains >7 elements or >4 new concepts without scaffolding"
+      rationale: "CLT: extraneous load exceeds working memory during primary content delivery"

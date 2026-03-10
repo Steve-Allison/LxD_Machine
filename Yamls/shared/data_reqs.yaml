@@ -1,0 +1,95 @@
+_meta:
+  id: data_reqs
+  description: "Shared data requirements for pedagogical analysis defining required/optional instructional inputs with fallback rules."
+  domain: ai
+  domain_type: meta
+  purpose: reference
+  version: "1.3.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Learner Outcomes - Instructions v4.md"
+    - "Corpus/Research/Research - Comprehensive Audience Analysis.md"
+    - "Corpus/Research/Research - Comprehensive Learning Design Framework.md"
+    - "Corpus/Research/Research - Using SOAR Storytelling most effectively.md"
+    - "Corpus/Research/Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md"
+
+
+  relationships:
+    - target: shared/data_reqs_narrative.yaml
+      type: depends_on
+      description: "Domain-specific fragment; narrative data requirements extend the base spec"
+    - target: shared/data_reqs_visual.yaml
+      type: depends_on
+      description: "Domain-specific fragment; visual data requirements extend the base spec"
+# Pedagogical Analysis Data Requirements
+# Defines what inputs the pedagogical lens needs to evaluate content
+
+instructional_content:
+  required:
+    - "Learning objectives (explicit or inferred)"
+    - "Content body text"
+    - "Content sequence/structure"
+  optional:
+    - "Stated audience/learner level"
+    - "Prerequisites or prior knowledge assumptions"
+    - "Assessment items or knowledge checks"
+    - "Practice activities or exercises"
+  fallback:
+    rule: "If objectives missing, infer from content. Flag as 'implicit objectives' with lower confidence."
+
+cognitive_markers:
+  required:
+    - "Action verbs in content (for Bloom's classification)"
+  optional:
+    - "Explicit cognitive level tags"
+    - "Scaffolding indicators"
+    - "Worked examples"
+  fallback:
+    rule: "If cognitive markers sparse, rely on verb analysis and content complexity."
+
+engagement_indicators:
+  required: []
+  optional:
+    - "Questions embedded in content"
+    - "Interactive elements"
+    - "Reflection prompts"
+    - "Real-world examples or scenarios"
+  fallback:
+    rule: "If engagement indicators missing, score engagement dimension as 'unknown' rather than penalizing."
+
+multimedia_elements:
+  required: []
+  optional:
+    - "Visual aids (diagrams, charts, images)"
+    - "Audio/video components"
+    - "Animations or simulations"
+  fallback:
+    rule: "If multimedia absent, evaluate as text-only content. Note opportunity for multimedia enhancement."
+
+# Minimum viable input
+minimum_requirements:
+  description: "The absolute minimum needed to run pedagogical analysis"
+  fields:
+    - "Content body text (≥100 words)"
+    - "Some form of sequencing (slides, sections, or paragraphs)"
+  confidence_when_minimal: 0.6
+  note: "Analysis possible but limited; flag results as 'low confidence' in output"
+
+# Narrative-informed pedagogical data requirements
+# Source: Research - Using SOAR Storytelling most effectively.md
+narrative_soar:
+  description: "Additional data requirements when evaluating pedagogical content through a SOAR narrative lens"
+  required:
+    - "SOAR stage labels or classification (if pre-tagged)"
+    - "Learning objective verbs (for Bloom's / SOAR Result stage alignment)"
+  optional:
+    - "Slide position metadata (to assess SOAR arc completeness across sequence)"
+    - "Audience persona tags (for SOAR weight calibration)"
+    - "Assessment alignment data (Result stage requires evidence of learning)"
+  fallback:
+    rule: "If SOAR tags absent, infer from keyword signals using soar_mapping_reference.yaml classification rules"
+  soar_pedagogy_alignment:
+    situation: "Maps to 'Activation' in instructional design — prior knowledge activation"
+    opportunity: "Maps to 'Need' — creates cognitive dissonance or learning gap"
+    action: "Maps to 'Content Delivery' — Mayer's principles apply most strongly here"
+    result: "Maps to 'Assessment and Transfer' — evidence of learning mastery required"

@@ -1,0 +1,1102 @@
+_meta:
+  id: activity_types_entities
+  purpose: entity
+  version: 1.32.1
+  last_updated: '2026-03-09'
+  description: GLiNER entity definitions for detecting learning activity type references in instructional content including
+    synchronous, asynchronous, and blended activity mentions.
+  domain: pedagogical
+  domain_type: workflow
+  corpus_sources:
+  - Corpus/Research/Activities - Research + Instructions v4.md
+  - Corpus/Research/Research - Discussion-based Learning.md
+  - Corpus/Research/Research - Roleplay & Scenarios for Learning.md
+  - Corpus/Research/Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md
+  - Corpus/Research/Research - Scenario-Based Training_ A Comprehensive Guide.md
+  - Corpus/Research/Research - ILT & VILT Best Practice.md
+  - Corpus/Research/Research - Comprehensive Learning Design Framework.md
+  - Corpus/Research/Research - Merrills Instructional Design Theories Applied.md
+  - Corpus/Research/Research - Learner Persona Research and Development.md
+  - Corpus/Research/Learning Experience Design - Donald Clark - Combined.md
+  - Corpus/Research/donald_clarks_100_tips_for_effective_learning_design.md
+  - Corpus/Research/theory_gagne_s_nine_events_of_instruction.md
+  - Corpus/Research/recommended-training-effectiveness-questions-for-postcourse-eval.md
+  - Corpus/Research/map-it-the-hands-on-guide-to-strategic-training-design-cathy-moo.md
+  - Corpus/Research/High-Level Planning Tools in Corporate Learning - Wireframes, Content Maps & Course Blueprints.md
+  - Corpus/Research/Essentials_Course_Gold_Structure_AI_Course_Playbook.md
+  - Corpus/Research/Applying_Learning_Theory_Practical_Checklist.md
+  - Corpus/Research/Research - Corporate Learning Assessment- Strategies, Modalities, and Best Practices.md
+  - Corpus/Research/Gold Standard Structure for Any Corporate-Learning Asset v3.md
+  - Corpus/Research/course_structure_hierarchy_corpus_research.md
+  - Corpus/Research/Research - Slide Deck Design Playbook Research.md
+  - Corpus/Research/research_-_comprehensive_audience_analysis.md
+  - Corpus/Research/Content Map - Instructions v3.md
+  - Corpus/Research/Methodology - How do we move from this research to a sequenced A.I. Enhanced Course Pipeline_.md
+  relationships:
+  - target: taxonomy/activity_types_taxonomy.yaml
+    type: depends_on
+    description: Canonical activity type definitions and classification
+  - target: methodology/activity_design_patterns.yaml
+    type: depends_on
+    description: Activity design pattern guidance
+gliner_config:
+  model: urchade/gliner_multi_pii-v1
+  batch_size: 8
+  context_window: 512
+  domain_keywords:
+    primary:
+    - activity
+    - exercise
+    - discussion
+    - roleplay
+    - quiz
+    - simulation
+    - workshop
+    - practice
+    secondary:
+    - breakout
+    - brainstorm
+    - debrief
+    - case study
+    - demonstration
+    - peer review
+    - jigsaw
+entity_types:
+  discussion_activity:
+    description: References to facilitated discussion activities in learning content
+    canonical_id: discussion_activity
+    entity_kind: learning_activity
+    family: synchronous
+    gliner_label: DISCUSSION_ACTIVITY
+    gliner_description: Discussion activity facilitated discussion think-pair-share fishbowl panel Socratic seminar group
+      discussion
+    examples:
+    - facilitated discussion on best practices
+    - think-pair-share activity
+    - fishbowl discussion
+    - panel discussion with SMEs
+    - Socratic seminar
+    - table group discussion
+    anti_examples:
+    - discussion board post
+    - the discussion continues
+    confidence_threshold: 0.7
+    aliases:
+    - group discussion
+    - class discussion
+    - facilitated dialogue
+    indicators:
+    - facilitated discussion
+    - think-pair-share
+    - fishbowl
+    - panel discussion
+    - Socratic
+    - group discussion
+    - table discussion
+    - whole-class discussion
+    patterns:
+    - (facilitated|group|table|whole-class|panel) discussion
+    - think[- ]pair[- ]share
+    - (fishbowl|Socratic) (discussion|seminar|dialogue)
+    color: '#3498db'
+    relates_to:
+    - target: quiz_activity
+      relation: contrasts_with
+      weight: optional
+      description: Synchronous (discussion) vs asynchronous (quiz) activity modes
+    - target: reflection_activity
+      relation: enables
+      weight: expected
+      description: Discussions generate insights that feed reflection activities for deeper metacognitive processing
+    - target: collaborative_activity
+      relation: bridges
+      weight: expected
+      description: Discussion serves as connective mechanism between individual and collaborative learning modes
+    - target: analyze_verb
+      relation: supports
+      weight: expected
+      description: Discussion activities support analysis-level learning objectives requiring critical evaluation of ideas
+      target_file: learning_objectives_entities
+    - target: instructional_strategy
+      relation: supported_by
+      weight: expected
+      description: Discussion activities are grounded in pedagogical instructional strategies such as Socratic questioning
+      target_file: pedagogical_frameworks_entities
+    - target: facilitation_technique
+      relation: supported_by
+      weight: expected
+      description: Effective discussions depend on facilitation techniques for managing participation and depth
+      target_file: delivery_entities
+    - target: germane_load_marker
+      relation: enables
+      weight: expected
+      description: "Structured discussions activate multiple learning networks enhancing retention to 70% vs 5% for passive learning, directly engaging germane cognitive load processing per Discussion-based Learning research"
+      target_file: cognitive_load_entities
+    - target: formative_assessment
+      relation: enables
+      weight: expected
+      description: "Formative assessment during discussions uses observable behavior indicators and participation rubrics to evaluate real-time learning per Discussion-based Learning research"
+      target_file: assessment_entities
+    - target: scenario_activity
+      relation: supported_by
+      weight: expected
+      description: "Tabletop exercises use discussion-based sessions to validate plans, clarify roles, and identify coordination gaps within scenario frameworks per SBT guide"
+    - target: instructional_event
+      relation: supports
+      weight: expected
+      description: "Gagné's Event 3 (Stimulate Recall) explicitly uses discussions and questions to activate prior knowledge before introducing new content per theory_gagne_s_nine_events_of_instruction"
+      target_file: pedagogical_frameworks_entities
+    - target: adult_learner
+      relation: supports
+      weight: expected
+      description: "Discussion forums and reflective dialogues leverage adult learners' experience and self-direction by connecting learning to personal workplace contexts (Best-Practice Learning Activities)"
+      target_file: audience_entities
+    - target: evaluate_verb
+      relation: enables
+      weight: optional
+      description: "Discussion activities enable evaluate-level learning objectives — structured debates and peer critiques require learners to make judgments and defend positions using evaluation criteria (Best-Practice Learning Activities)"
+      target_file: learning_objectives_entities
+    - target: understand_verb
+      relation: supports
+      weight: expected
+      description: "Discussion activities support understand-level learning objectives — collaborative discourse requires learners to explain, interpret, and summarise concepts through peer dialogue per course structure hierarchy research"
+      target_file: learning_objectives_entities
+    - target: interaction_element_marker
+      relation: specialises
+      weight: expected
+      description: "Group discussions are a specific learning activity type within Content Map activity planning (Content Map Instructions v3)"
+      target_file: content_architecture_entities
+    - target: alignment_marker
+      relation: supported_by
+      weight: expected
+      description: "Group discussions mapped as learning activities aligned to specific objectives within Content Map"
+      target_file: content_architecture_entities
+    taxonomy_mapping:
+    - taxonomy: content_format_taxonomy
+      dimension: delivery_mode
+      values:
+      - ilt
+      - virtual_ilt
+      strength: primary
+  roleplay_activity:
+    description: References to roleplay, simulation, and scenario-based practice activities
+    canonical_id: roleplay_activity
+    entity_kind: learning_activity
+    family: synchronous
+    gliner_label: ROLEPLAY_ACTIVITY
+    gliner_description: Roleplay activity simulation scenario practice sales roleplay customer scenario objection handling
+      mock call
+    examples:
+    - sales roleplay exercise
+    - customer scenario simulation
+    - objection handling drill
+    - mock discovery call
+    - role-based simulation
+    - practice pitch session
+    anti_examples:
+    - role of the manager
+    - play a role in
+    confidence_threshold: 0.75
+    aliases:
+    - simulation
+    - scenario practice
+    - mock exercise
+    indicators:
+    - roleplay
+    - role-play
+    - simulation
+    - scenario
+    - mock call
+    - mock pitch
+    - objection handling
+    - practice session
+    - drill
+    patterns:
+    - (sales|customer|discovery|objection) (roleplay|role-play|simulation|drill)
+    - mock (call|pitch|presentation|meeting)
+    - (role-based|scenario-based) (simulation|practice|exercise)
+    color: '#e74c3c'
+    relates_to:
+    - target: quiz_activity
+      relation: contrasts_with
+      weight: optional
+      description: Synchronous (roleplay) vs asynchronous (quiz) activity modes
+    - target: discussion_activity
+      relation: bridges
+      weight: expected
+      description: Roleplay debriefs bridge into discussion activities for processing experiences and extracting insights
+    - target: scenario_activity
+      relation: specialises
+      weight: expected
+      description: Roleplay is a specialised form of scenario-based learning with interpersonal and performative focus
+    - target: apply_verb
+      relation: supports
+      weight: expected
+      description: Roleplay supports application-level Bloom's objectives through enacted real-world skill practice
+      target_file: learning_objectives_entities
+    - target: formative_assessment
+      relation: enables
+      weight: expected
+      description: Roleplay enables formative assessment through observable performance and in-the-moment feedback
+      target_file: assessment_entities
+    - target: feedback_modality
+      relation: triggers
+      weight: required
+      description: Roleplay performance triggers feedback modalities for immediate learner improvement and coaching
+      target_file: assessment_entities
+    - target: practice_activity
+      relation: specialises
+      weight: expected
+      description: Practice Cards include simulations and role-plays as a specific type of practice activity (Comprehensive
+        Learning Design Framework)
+    - target: demonstration_activity
+      relation: supported_by
+      weight: expected
+      description: "FPI sales training example shows expert role-play demonstrations preceding learner role-play practice per Merrill"
+    - target: reflection_activity
+      relation: triggers
+      weight: required
+      description: "Roleplay activities trigger structured debriefing and reflection for learners to process and internalise enacted experiences per roleplay research"
+    - target: collaborative_activity
+      relation: enables
+      weight: expected
+      description: "Roleplay enables collaborative activities through paired and group-based interpersonal practice formats per roleplay research"
+    - target: facilitation_technique
+      relation: supported_by
+      weight: required
+      description: "Roleplay requires skilled facilitation techniques for scenario setup, observation, and debrief management per roleplay research"
+      target_file: delivery_entities
+    - target: novice_learner
+      relation: supports
+      weight: expected
+      description: "Role-play Third Spaces specifically address novice Gen Z soft skills deficits in conflict resolution and face-to-face communication per Learner Persona Research"
+      target_file: audience_entities
+    - target: instructional_event
+      relation: supports
+      weight: expected
+      description: "Gagné's Event 6 (Elicit Performance) explicitly cites role-playing as a technique for learners to practice and apply knowledge per theory_gagne_s_nine_events_of_instruction"
+      target_file: pedagogical_frameworks_entities
+    - target: instructional_strategy
+      relation: supported_by
+      weight: expected
+      description: "Role-play activities are supported by instructional strategy — action mapping recommends designing realistic practice scenarios including role-plays that mirror on-the-job tasks to develop target behaviours per High-Level Planning Tools research"
+      target_file: pedagogical_frameworks_entities
+    - target: audience_objection
+      relation: enables
+      weight: expected
+      description: "Roleplay activities enable practice handling audience objections in simulated scenarios — learners rehearse responses to anticipated pushback in psychologically safe environments per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    taxonomy_mapping:
+    - taxonomy: content_format_taxonomy
+      dimension: delivery_mode
+      values:
+      - ilt
+      - virtual_ilt
+      strength: primary
+  collaborative_activity:
+    description: References to group-based collaborative learning activities
+    canonical_id: collaborative_activity
+    entity_kind: learning_activity
+    family: synchronous
+    gliner_label: COLLABORATIVE_ACTIVITY
+    gliner_description: Collaborative activity group work case study analysis problem solving design sprint hackathon workshop
+      breakout
+    examples:
+    - case study analysis in groups
+    - collaborative problem-solving exercise
+    - design sprint
+    - hackathon session
+    - breakout room activity
+    - jigsaw activity
+    anti_examples:
+    - collaboration tool
+    - case study document
+    confidence_threshold: 0.7
+    aliases:
+    - group activity
+    - team exercise
+    - collaborative exercise
+    indicators:
+    - case study analysis
+    - problem-solving
+    - design sprint
+    - hackathon
+    - breakout
+    - jigsaw
+    - group work
+    - team activity
+    - collaborative
+    - brainstorm
+    patterns:
+    - (case study|problem[- ]solving|design sprint|hackathon) (activity|exercise|session)
+    - (breakout|jigsaw|group|team|collaborative) (activity|exercise|work)
+    - (brainstorm|brainstorming|mind[- ]mapping) (session|activity)
+    color: '#2ecc71'
+    relates_to:
+    - target: quiz_activity
+      relation: contrasts_with
+      weight: optional
+      description: Synchronous (collaborative) vs asynchronous (quiz) activity modes
+    - target: discussion_activity
+      relation: contains
+      weight: expected
+      description: Collaborative activities often contain discussion components for idea exchange and consensus building
+    - target: analyze_verb
+      relation: supports
+      weight: expected
+      description: Collaborative activities support analysis-level Bloom's objectives through group evaluation of problems
+      target_file: learning_objectives_entities
+    - target: create_verb
+      relation: supports
+      weight: required
+      description: Collaborative activities support creation-level Bloom's objectives through joint artifact production
+      target_file: learning_objectives_entities
+    - target: delivery_modality
+      relation: supported_by
+      weight: expected
+      description: Collaborative activities depend on delivery modality configuration for synchronous group interaction
+      target_file: delivery_entities
+    - target: instructional_strategy
+      relation: supported_by
+      weight: expected
+      description: Collaborative activities are grounded in cooperative learning instructional strategies
+      target_file: pedagogical_frameworks_entities
+    - target: summative_assessment
+      relation: enables
+      weight: expected
+      description: Collaborative project outputs can serve as summative assessment evidence of applied competence
+      target_file: assessment_entities
+    - target: motivation_element
+      relation: supports
+      weight: expected
+      description: "FPI Activation phase uses group discussions where learners share prior experience insights activating engagement and motivation per Merrill"
+      target_file: pedagogical_frameworks_entities
+    - target: adult_learner
+      relation: supports
+      weight: expected
+      description: "Millennials over-index on peer-validated cohort-based learning where they share best practices with others in similar roles per Learner Persona Research"
+      target_file: audience_entities
+    - target: reflection_activity
+      relation: supports
+      weight: optional
+      description: "Reflect & Transfer Cards use collaborative elements — 'Share with peer', 'Share on collaborative board', 'Practice partner assignments' — collaborative activity supports reflection through social learning (Essentials_Course_Gold_Structure)"
+    - target: germane_load_marker
+      relation: enables
+      weight: optional
+      description: "Collaborative generative tasks (peer instruction, joint concept mapping, wiki creation) enable germane processing through Interactive-level ICAP engagement, the highest cognitive engagement level (Chi & Wylie, 2014; Applying_Learning_Theory_Practical_Checklist)"
+      target_file: cognitive_load_entities
+    - target: evaluate_verb
+      relation: supports
+      weight: expected
+      description: "Collaborative activities like group case studies and team projects support Bloom's Evaluate level — teams must assess approaches, critique solutions, and present findings per ILT&VILT Best Practice"
+      target_file: learning_objectives_entities
+    - target: demonstration_activity
+      relation: enables
+      weight: optional
+      description: "Collaborative activities enable group demonstrations such as team presentations and group teaching sessions where teams present findings to peers (Best-Practice Learning Activities)"
+    - target: formative_assessment
+      relation: supports
+      weight: expected
+      description: "Collaborative activities like hackathons, action learning projects, and group case studies support formative assessment through peer review and team deliverables (Best-Practice Learning Activities)"
+      target_file: assessment_entities
+    - target: facilitation_technique
+      relation: supported_by
+      weight: expected
+      description: "Collaborative activities are supported by facilitation techniques — think-pair-share, breakout room management, circulating to coach, and structured debrief require skilled facilitation to produce effective collaborative outcomes (Gold Standard Structure)"
+      target_file: delivery_entities
+    - target: engagement_cue
+      relation: triggers
+      weight: expected
+      description: "Collaborative activities (breakout rooms, cohort forums, peer discussions) trigger engagement cues that reduce isolation and increase social presence in virtual settings per Best Practices for Structuring Corporate Learning Content"
+      target_file: delivery_entities
+    - target: mayer_generative_principle
+      relation: supported_by
+      weight: expected
+      description: "Peer teaching in collaborative activities is a powerful generative strategy per Applying Mayer's Principles Practical Checklist"
+      target_file: cognitive_load_entities
+    taxonomy_mapping:
+    - taxonomy: content_format_taxonomy
+      dimension: delivery_mode
+      values:
+      - ilt
+      - virtual_ilt
+      strength: primary
+  demonstration_activity:
+    description: References to instructor demonstration and modelling activities
+    canonical_id: demonstration_activity
+    entity_kind: learning_activity
+    family: synchronous
+    gliner_label: DEMONSTRATION_ACTIVITY
+    gliner_description: Demonstration activity live demo product demo worked example think-aloud modelling walkthrough show
+      how
+    examples:
+    - live product demonstration
+    - worked example walkthrough
+    - think-aloud demonstration
+    - instructor modelling
+    - software walkthrough
+    - step-by-step demo
+    anti_examples:
+    - demonstrate knowledge
+    - product demonstration video
+    confidence_threshold: 0.7
+    aliases:
+    - demo
+    - live demo
+    - modelling
+    indicators:
+    - live demo
+    - demonstration
+    - worked example
+    - think-aloud
+    - modelling
+    - walkthrough
+    - show how
+    - step-by-step
+    patterns:
+    - (live|product|software|instructor) (demo|demonstration|walkthrough)
+    - worked example
+    - think[- ]aloud (demonstration|modelling)
+    color: '#9b59b6'
+    relates_to:
+    - target: quiz_activity
+      relation: contrasts_with
+      weight: optional
+      description: Synchronous (demonstration) vs asynchronous (quiz) activity modes
+    - target: practice_activity
+      relation: precedes
+      weight: required
+      description: Demonstration precedes practice in the I-Do-We-Do-You-Do instructional sequence
+    - target: roleplay_activity
+      relation: precedes
+      weight: expected
+      description: Demonstration of target behaviours precedes roleplay for modelling correct performance
+    - target: understand_verb
+      relation: supports
+      weight: expected
+      description: Demonstrations support comprehension-level Bloom's objectives through expert modelling
+      target_file: learning_objectives_entities
+    - target: germane_load_marker
+      relation: enables
+      weight: expected
+      description: Worked examples in demonstrations enable germane cognitive load by building mental schemas
+      target_file: cognitive_load_entities
+    - target: instructional_strategy
+      relation: supported_by
+      weight: required
+      description: Demonstrations implement direct instruction and modelling instructional strategies
+      target_file: pedagogical_frameworks_entities
+    - target: engagement_cue
+      relation: triggers
+      weight: expected
+      description: Live demonstrations trigger engagement cues through interactive show-and-tell dynamics
+      target_file: delivery_entities
+    - target: expert_testimony
+      relation: supported_by
+      weight: expected
+      description: "FPI Demonstration phase prescribes expert modeling where real or virtual experts perform tasks and explain reasoning per Merrill"
+      target_file: evidence_types_entities
+    - target: scenario_activity
+      relation: supported_by
+      weight: optional
+      description: "Virtual simulations for technical skills provide demonstration through cost-effective repetition in scenario-based formats per SBT guide"
+    - target: instructional_event
+      relation: supports
+      weight: expected
+      description: "Gagné's Event 5 (Provide Guidance) explicitly cites step-by-step demonstrations and worked examples as scaffolding techniques per theory_gagne_s_nine_events_of_instruction"
+      target_file: pedagogical_frameworks_entities
+    - target: visual_demonstration
+      relation: supports
+      weight: expected
+      description: "Teach Cards use visual demonstrations — screen recordings of expert navigation patterns, guided tours of features with try-it-now moments, interactive ecosystem maps (Essentials_Course_Gold_Structure)"
+      target_file: evidence_types_entities
+    - target: remember_verb
+      relation: supports
+      weight: expected
+      description: "Guided demonstrations support Bloom's Remember/Understand levels — lecturettes and demonstrations introduce new concepts at foundational cognitive levels per ILT&VILT Best Practice"
+      target_file: learning_objectives_entities
+    - target: feedback_modality
+      relation: triggers
+      weight: expected
+      description: "Demonstration activities trigger structured feedback through observation checklists, peer critique, and instructor debrief after demo performances (Best-Practice Learning Activities)"
+      target_file: assessment_entities
+    - target: formative_assessment
+      relation: enables
+      weight: expected
+      description: "Demonstration activities enable formative assessment through observation checklists and live performance evaluation that provide immediate diagnostic feedback (Best-Practice Learning Activities)"
+      target_file: assessment_entities
+    - target: evaluate_verb
+      relation: enables
+      weight: expected
+      description: "Demonstration activities enable evaluate-level objectives by requiring learners to assess demonstration quality, identify errors, and compare approaches against standards (Best-Practice Learning Activities)"
+      target_file: learning_objectives_entities
+    - target: intrinsic_load_marker
+      relation: resolves
+      weight: expected
+      description: "Worked example demonstrations reduce intrinsic load by showing step-by-step solutions before requiring learner practice per Slide Deck Design Playbook CDT Section 4.0"
+      target_file: cognitive_load_entities
+    taxonomy_mapping:
+    - taxonomy: content_format_taxonomy
+      dimension: delivery_mode
+      values:
+      - ilt
+      - virtual_ilt
+      strength: primary
+  quiz_activity:
+    description: References to quiz, knowledge check, and test activities
+    canonical_id: quiz_activity
+    entity_kind: learning_activity
+    family: asynchronous
+    gliner_label: QUIZ_ACTIVITY
+    gliner_description: Quiz activity knowledge check practice quiz multiple choice assessment test exam comprehension check
+    examples:
+    - end-of-module quiz
+    - knowledge check
+    - practice quiz
+    - comprehension check
+    - quick assessment
+    - review questions
+    anti_examples:
+    - quiz show
+    - quiz night
+    confidence_threshold: 0.8
+    aliases:
+    - knowledge check
+    - test
+    - assessment quiz
+    indicators:
+    - quiz
+    - knowledge check
+    - practice test
+    - comprehension check
+    - review questions
+    - check your understanding
+    - self-test
+    patterns:
+    - (end-of-module|practice|review|comprehension|knowledge) (quiz|check|test)
+    - check your (understanding|knowledge|learning)
+    - self[- ](test|assessment|check)
+    color: '#f39c12'
+    relates_to:
+    - target: discussion_activity
+      relation: contrasts_with
+      weight: optional
+      description: Asynchronous (quiz) vs synchronous (discussion) activity modes
+    - target: formative_assessment
+      relation: specialises
+      weight: required
+      description: Quiz activities are a specialised form of formative assessment for knowledge verification
+      target_file: assessment_entities
+    - target: remember_verb
+      relation: supports
+      weight: expected
+      description: Quiz activities support recall-level Bloom's objectives through knowledge retrieval practice
+      target_file: learning_objectives_entities
+    - target: practice_activity
+      relation: precedes
+      weight: optional
+      description: Knowledge checks via quiz can precede hands-on practice to verify foundational readiness
+    - target: scenario_activity
+      relation: precedes
+      weight: expected
+      description: Quiz-based knowledge verification precedes more complex scenario-based application activities
+    - target: instructional_event
+      relation: supports
+      weight: expected
+      description: "Gagné's Event 6 (Elicit Performance) lists quizzes as a key technique for encouraging learners to apply what they've learned per theory_gagne_s_nine_events_of_instruction"
+      target_file: pedagogical_frameworks_entities
+    - target: reflection_activity
+      relation: precedes
+      weight: expected
+      description: "Independent Test Cards consistently precede Reflect & Transfer Cards in the strip sequence — quiz/assessment precedes reflection (Essentials_Course_Gold_Structure)"
+    - target: summative_assessment
+      relation: supports
+      weight: optional
+      description: "Quiz activities can support summative assessment when requiring passing scores for certification or module completion gating (Best-Practice Learning Activities)"
+      target_file: assessment_entities
+    - target: understand_verb
+      relation: enables
+      weight: expected
+      description: "Quiz activities enable understand-level learning objectives — multiple-choice and matching formats test recall and comprehension of key concepts and terminology (Best-Practice Learning Activities)"
+      target_file: learning_objectives_entities
+    - target: feedback_modality
+      relation: triggers
+      weight: required
+      description: "Quiz activities trigger immediate feedback modalities — correct/incorrect responses with explanations are essential for learning reinforcement and error correction (Best-Practice Learning Activities)"
+      target_file: assessment_entities
+    - target: microlearning_format
+      relation: supported_by
+      weight: optional
+      description: "Quiz activities are supported by microlearning format — short spaced-repetition quizzes embedded in bite-sized modules improve retention through distributed practice (Best-Practice Learning Activities)"
+      target_file: content_format_entities
+    - target: mayer_generative_principle
+      relation: supported_by
+      weight: expected
+      description: "Quiz activities are supported by Mayer's generative principle — the testing effect demonstrates that retrieval practice through frequent low-stakes quizzes substantially boosts long-term retention compared to re-reading (Gold Standard Structure)"
+      target_file: cognitive_load_entities
+    - target: novice_learner
+      relation: supports
+      weight: expected
+      description: "Quiz activities support novice learners by providing formative assessment checkpoints — low-stakes knowledge checks confirm understanding before advancing to complex material per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    - target: alignment_marker
+      relation: supported_by
+      weight: expected
+      description: "Quizzes mapped as assessment activities within Content Map alignment (Content Map Instructions v3)"
+      target_file: content_architecture_entities
+    taxonomy_mapping:
+    - taxonomy: content_format_taxonomy
+      dimension: delivery_mode
+      values:
+      - elearning
+      - self_directed
+      strength: primary
+  scenario_activity:
+    description: References to scenario-based and branching learning activities
+    canonical_id: scenario_activity
+    entity_kind: learning_activity
+    family: asynchronous
+    gliner_label: SCENARIO_ACTIVITY
+    gliner_description: Scenario activity branching scenario decision tree situational judgement what would you do choose
+      your path
+    examples:
+    - branching scenario exercise
+    - decision tree activity
+    - situational judgement test
+    - what-would-you-do scenario
+    - choose-your-own-path activity
+    anti_examples:
+    - worst-case scenario
+    - scenario planning meeting
+    confidence_threshold: 0.7
+    aliases:
+    - branching exercise
+    - decision-making activity
+    indicators:
+    - branching scenario
+    - decision tree
+    - situational judgement
+    - what would you do
+    - choose your path
+    - scenario-based
+    - interactive scenario
+    patterns:
+    - (branching|interactive|decision) (scenario|tree|exercise)
+    - situational (judgement|judgment) (test|exercise)
+    - what[- ]would[- ]you[- ]do
+    color: '#1abc9c'
+    relates_to:
+    - target: discussion_activity
+      relation: contrasts_with
+      weight: optional
+      description: Asynchronous (scenario) vs synchronous (discussion) activity modes
+    - target: roleplay_activity
+      relation: enables
+      weight: expected
+      description: Scenario activities enable roleplay by providing situational context for enacted practice
+    - target: reflection_activity
+      relation: triggers
+      weight: expected
+      description: Scenario outcomes trigger reflection activities for learners to evaluate their decision paths
+    - target: evaluate_verb
+      relation: supports
+      weight: expected
+      description: Scenario activities support evaluation-level Bloom's objectives through decision-making under constraints
+      target_file: learning_objectives_entities
+    - target: instructional_strategy
+      relation: supported_by
+      weight: required
+      description: Scenario activities implement problem-based and case-based instructional strategies
+      target_file: pedagogical_frameworks_entities
+    - target: intrinsic_load_marker
+      relation: triggers
+      weight: expected
+      description: Complex branching scenarios trigger intrinsic cognitive load through multi-variable decision-making
+      target_file: cognitive_load_entities
+    - target: practice_activity
+      relation: specialises
+      weight: expected
+      description: "Branching scenarios are prescribed by FPI as the gold-standard practice activity for both software and soft-skill Application phases per Merrill"
+    - target: collaborative_activity
+      relation: contains
+      weight: expected
+      description: "SBT learning is an inherently social activity where meaning is negotiated through collaborative problem-solving per Scenario-Based Training guide"
+    - target: formative_assessment
+      relation: supports
+      weight: expected
+      description: "The Superagency assessment model uses project-based simulations where learners use AI tools to solve complex problems graded on output quality per Learner Persona Research"
+      target_file: assessment_entities
+    - target: customer_story
+      relation: supported_by
+      weight: expected
+      description: "Scenario activities use customer stories as source material — 'Real customers describing their challenges', 'How we won against Competitor X - real deal story' (Essentials_Course_Gold_Structure)"
+      target_file: evidence_types_entities
+    - target: summative_assessment
+      relation: supports
+      weight: expected
+      description: "Scenario-based assessments in simulated environments support summative evaluation at Kirkpatrick L2 (scenario quiz) and L3 (workplace task checklist) levels (Applying_Learning_Theory_Practical_Checklist)"
+      target_file: assessment_entities
+    - target: analyze_verb
+      relation: supports
+      weight: expected
+      description: "Case study and problem-solving scenarios support Bloom's Analyze/Evaluate/Create levels — presenting realistic workplace problems requires learners to integrate and apply knowledge per ILT&VILT Best Practice"
+      target_file: learning_objectives_entities
+    - target: apply_verb
+      relation: enables
+      weight: expected
+      description: "Scenario activities enable apply-level learning objectives — branching simulations and case studies require learners to use knowledge in realistic workplace contexts (Best-Practice Learning Activities)"
+      target_file: learning_objectives_entities
+    - target: course_format
+      relation: supported_by
+      weight: optional
+      description: "Scenario activities are supported by course format structure — multi-module courses provide the narrative arc and progressive complexity needed for extended scenario sequences (Best-Practice Learning Activities)"
+      target_file: content_format_entities
+    - target: audience_pain_point
+      relation: enables
+      weight: expected
+      description: "Scenario activities enable exploration of audience pain points in realistic contexts — branching scenarios model real customer challenges so learners experience and address actual pain points per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    - target: interaction_element_marker
+      relation: specialises
+      weight: expected
+      description: "Scenario-based challenges are specific learning activities within Content Map (Content Map Instructions v3)"
+      target_file: content_architecture_entities
+    - target: prompt_technique
+      relation: supported_by
+      weight: optional
+      description: "Audience Simulator step uses role-based scenario prompting as structured scenario activity for audience analysis"
+      target_file: ai_systems_entities
+    - target: alignment_marker
+      relation: supported_by
+      weight: expected
+      description: "Scenario-based challenges listed as learning activities aligned to objectives in Content Map"
+      target_file: content_architecture_entities
+    taxonomy_mapping:
+    - taxonomy: content_format_taxonomy
+      dimension: delivery_mode
+      values:
+      - elearning
+      - self_directed
+      strength: primary
+  reflection_activity:
+    description: References to reflection, journaling, and metacognitive activities
+    canonical_id: reflection_activity
+    entity_kind: learning_activity
+    family: asynchronous
+    gliner_label: REFLECTION_ACTIVITY
+    gliner_description: Reflection activity journal self-assessment reflection prompt learning log think about what you learned
+      metacognition
+    examples:
+    - reflection journal entry
+    - self-assessment activity
+    - guided reflection prompt
+    - learning log
+    - post-activity reflection
+    - metacognitive exercise
+    anti_examples:
+    - reflective surface
+    - self-assessment tax form
+    confidence_threshold: 0.7
+    aliases:
+    - journaling
+    - self-reflection
+    - metacognitive exercise
+    indicators:
+    - reflection
+    - journal
+    - self-assessment
+    - learning log
+    - what did you learn
+    - reflect on
+    - metacognition
+    - think about what
+    patterns:
+    - (reflection|reflective) (journal|prompt|exercise|activity)
+    - self[- ]assessment (activity|exercise)
+    - (learning|reflection) log
+    - (guided|post-activity|metacognitive) reflection
+    color: '#e67e22'
+    relates_to:
+    - target: practice_activity
+      relation: supported_by
+      weight: expected
+      description: Reflection is supported by prior practice activities that provide concrete experiences to reflect upon
+    - target: evaluate_verb
+      relation: supports
+      weight: expected
+      description: Reflection activities support evaluation-level Bloom's objectives through self-assessment and critique
+      target_file: learning_objectives_entities
+    - target: formative_assessment
+      relation: enables
+      weight: expected
+      description: Reflective self-assessment enables formative assessment through learner-generated performance insights
+      target_file: assessment_entities
+    - target: germane_load_marker
+      relation: enables
+      weight: expected
+      description: Reflection enables germane cognitive load by consolidating learning into durable mental schemas
+      target_file: cognitive_load_entities
+    - target: learning_objective
+      relation: supports
+      weight: expected
+      description: "FPI Integration phase uses reflection activities (teach-backs, action plans) to transfer learning to real-world performance per Merrill"
+      target_file: pedagogical_frameworks_entities
+    - target: scenario_activity
+      relation: supported_by
+      weight: required
+      description: "Structured debriefing is a guided reflection where facilitators help learners make sense of scenario experiences and connect them to future practice per SBT guide"
+    - target: roleplay_activity
+      relation: supported_by
+      weight: expected
+      description: "Reflection activities are supported by roleplay experiences that provide rich interpersonal encounters for metacognitive processing per roleplay research"
+    - target: learner_characteristic
+      relation: supports
+      weight: optional
+      description: "Resilience training and psychological tools for stressed managers require reflective practice to internalise coping strategies per Learner Persona Research"
+      target_file: pedagogical_frameworks_entities
+    - target: feedback_modality
+      relation: supported_by
+      weight: expected
+      description: "Reflective journaling is paired with feedback modalities — reflection activities depend on structured feedback for metacognitive processing per Activities Research v4"
+      target_file: assessment_entities
+    - target: working_memory_marker
+      relation: resolves
+      weight: expected
+      description: "Note-taking during audio/video learning increases retention by 30% by offloading working memory to external storage while maintaining hands-free attention per Clark 100 Tips"
+      target_file: cognitive_load_entities
+    - target: instructional_event
+      relation: supports
+      weight: optional
+      description: "Gagné's Event 3 (Stimulate Recall) uses reflection on previous lessons and learner experiences to connect new information with existing knowledge per theory_gagne_s_nine_events_of_instruction"
+      target_file: pedagogical_frameworks_entities
+    - target: summative_assessment
+      relation: supports
+      weight: expected
+      description: "Retrospective pre/post design requires learners to reflect on their knowledge state before and after training — reflection supports summative assessment by enabling self-evaluation of learning gain per recommended-training-effectiveness-questions"
+      target_file: assessment_entities
+    - target: kirkpatrick_level
+      relation: supports
+      weight: optional
+      description: "Reflection activities support Kirkpatrick evaluation — action plan reflections and service pledge cards directly connect to Level 3 (behavior transfer) assessment per ILT&VILT Best Practice"
+      target_file: assessment_entities
+    - target: discussion_activity
+      relation: supported_by
+      weight: expected
+      description: "Reflection activities are supported by discussion formats including reflective dialogues and asynchronous forums that prompt self-analysis and experience sharing (Best-Practice Learning Activities)"
+    - target: adult_learner
+      relation: supports
+      weight: expected
+      description: "Reflection activities directly support adult learners by connecting learning to personal experience and enabling self-directed meaning-making per Knowles' adult learning theory (Best-Practice Learning Activities)"
+      target_file: audience_entities
+    - target: analyze_verb
+      relation: enables
+      weight: expected
+      description: "Reflection activities enable analyze-level learning objectives — structured reflective journaling and self-evaluation require learners to break down experiences and identify patterns (Best-Practice Learning Activities)"
+      target_file: learning_objectives_entities
+    - target: pedagogical_sequence_marker
+      relation: supported_by
+      weight: expected
+      description: "Reflection activities depend on pedagogical sequencing — structured reflection points must be placed after content delivery and practice to enable meaningful self-assessment per course structure hierarchy research"
+      target_file: content_architecture_entities
+    - target: interaction_element_marker
+      relation: specialises
+      weight: expected
+      description: "Reflective journals are specific learning activities within Content Map (Content Map Instructions v3)"
+      target_file: content_architecture_entities
+    - target: alignment_marker
+      relation: supported_by
+      weight: expected
+      description: "Reflective journals listed as Content Map learning activities tied to specific objectives"
+      target_file: content_architecture_entities
+    - target: mayer_generative_principle
+      relation: supported_by
+      weight: required
+      description: "Self-summarising exemplifies Mayer's generative activity principle for deeper learning per Applying Mayer's Principles Practical Checklist"
+      target_file: cognitive_load_entities
+    taxonomy_mapping:
+    - taxonomy: content_format_taxonomy
+      dimension: delivery_mode
+      values:
+      - elearning
+      - self_directed
+      strength: primary
+  practice_activity:
+    description: References to hands-on practice, application, and skill-building exercises
+    canonical_id: practice_activity
+    entity_kind: learning_activity
+    family: asynchronous
+    gliner_label: PRACTICE_ACTIVITY
+    gliner_description: Practice activity hands-on exercise guided practice skill drill application task try it yourself lab
+      sandbox
+    examples:
+    - guided practice exercise
+    - hands-on lab
+    - sandbox activity
+    - try-it-yourself task
+    - skill drill
+    - application exercise
+    anti_examples:
+    - practice makes perfect
+    - best practice
+    confidence_threshold: 0.7
+    aliases:
+    - hands-on exercise
+    - practice exercise
+    - lab activity
+    indicators:
+    - guided practice
+    - hands-on
+    - lab
+    - sandbox
+    - try it yourself
+    - skill drill
+    - application exercise
+    - practice exercise
+    patterns:
+    - (guided|independent|hands-on) (practice|exercise|lab)
+    - (sandbox|lab|skill drill) (activity|exercise|session)
+    - try[- ]it[- ]yourself
+    - application (exercise|task|activity)
+    color: '#27ae60'
+    relates_to:
+    - target: discussion_activity
+      relation: contrasts_with
+      weight: optional
+      description: Asynchronous (practice) vs synchronous (discussion) activity modes
+    - target: demonstration_activity
+      relation: supported_by
+      weight: required
+      description: Practice activities are supported by prior demonstration that models correct performance
+    - target: reflection_activity
+      relation: precedes
+      weight: expected
+      description: Practice activities precede reflection to provide concrete experiences for metacognitive processing
+    - target: apply_verb
+      relation: supports
+      weight: required
+      description: Practice activities directly support application-level Bloom's objectives through hands-on skill use
+      target_file: learning_objectives_entities
+    - target: formative_assessment
+      relation: enables
+      weight: expected
+      description: Practice performance enables formative assessment through observable skill demonstration
+      target_file: assessment_entities
+    - target: engagement_cue
+      relation: triggers
+      weight: optional
+      description: Hands-on practice activities trigger engagement cues through active learner participation
+      target_file: delivery_entities
+    - target: scenario_activity
+      relation: contains
+      weight: expected
+      description: Practice Cards contain simulations and role-plays, case study analysis, and problem-solving exercises as core
+        components (Comprehensive Learning Design Framework)
+    - target: feedback_modality
+      relation: supported_by
+      weight: required
+      description: "FPI Application phase requires immediate constructive feedback during or after practice to guide learners toward mastery per Merrill"
+      target_file: assessment_entities
+    - target: roleplay_activity
+      relation: supported_by
+      weight: expected
+      description: "Practice activities are supported by roleplay as an applied interpersonal practice format for skill rehearsal per roleplay research"
+    - target: expert_learner
+      relation: supports
+      weight: expected
+      description: "Sandbox practice environments directly support expert technical learners who reject passive video content and learn exclusively by doing per Learner Persona Research"
+      target_file: audience_entities
+    - target: germane_load_marker
+      relation: triggers
+      weight: expected
+      description: "Repeated deliberate practice triggers germane cognitive processing through effortful retrieval and reinforcement in long-term memory per Clark LxD"
+      target_file: cognitive_load_entities
+    - target: instructional_event
+      relation: supports
+      weight: expected
+      description: "Gagné's Event 5 (Provide Guidance) calls for guided practice before full independence, and Event 9 assigns follow-up activities for continued practice per theory_gagne_s_nine_events_of_instruction"
+      target_file: pedagogical_frameworks_entities
+    - target: job_aid_format
+      relation: supported_by
+      weight: expected
+      description: "Action mapping prescribes that practice activities directly link to real job aids as optional reference help during decision-making, allowing learners to pull information as needed per map-it Cathy Moore"
+      target_file: content_format_entities
+    - target: cognitive_level
+      relation: supports
+      weight: expected
+      description: "Practice activities support progression through cognitive levels — guided→independent practice maps to Apply level, generative tasks like teaching map to Create level (Applying_Learning_Theory_Practical_Checklist)"
+      target_file: pedagogical_frameworks_entities
+    - target: working_memory_marker
+      relation: resolves
+      weight: expected
+      description: "Spaced practice activities resolve working memory limitations — periodic rehearsal and practice help encode information to long-term memory, combating the Ebbinghaus forgetting curve per ILT&VILT Best Practice"
+      target_file: cognitive_load_entities
+    - target: proficiency_level
+      relation: triggers
+      weight: expected
+      description: "Repeated practice activities trigger proficiency level progression — deliberate practice with feedback moves learners from novice through competent to proficient as observable skill benchmarks are achieved per Corporate Learning Assessment research"
+      target_file: assessment_entities
+    - target: progressive_disclosure_marker
+      relation: supported_by
+      weight: expected
+      description: "Practice activities are supported by progressive disclosure — scaffolding fades from maximum support in early modules to independent practice in later modules, ensuring appropriate challenge level as learner expertise grows (Gold Standard Structure)"
+      target_file: cognitive_load_entities
+    - target: remember_verb
+      relation: supports
+      weight: expected
+      description: "Retrieval practice activities directly support remember-level learning objectives — frequent knowledge checks strengthen memory and combat forgetting per Best Practices for Structuring Corporate Learning Content"
+      target_file: learning_objectives_entities
+    - target: pedagogical_sequence_marker
+      relation: supported_by
+      weight: expected
+      description: "Practice activities depend on pedagogical sequencing — guided practice must follow instructional presentation and precede independent application per course structure hierarchy research"
+      target_file: content_architecture_entities
+    - target: mayer_generative_principle
+      relation: supported_by
+      weight: required
+      description: "Practice requiring learner output aligns with generative principle; producers retain more per Applying Mayer's Principles Practical Checklist"
+      target_file: cognitive_load_entities
+    taxonomy_mapping:
+    - taxonomy: content_format_taxonomy
+      dimension: delivery_mode
+      values:
+      - elearning
+      - self_directed
+      strength: primary
+quality_indicators:
+  positive:
+  - clear activity instructions
+  - aligned to learning objective
+  - appropriate Bloom's level
+  - defined duration and format
+  - debrief or feedback included
+  negative:
+  - activity-objective misalignment
+  - missing instructions
+  - no time allocation
+  - no debrief mechanism
+  - passive activity labelled as active
+domain_keywords:
+  primary:
+  - activity
+  - exercise
+  - discussion
+  - roleplay
+  - quiz
+  - simulation
+  - workshop
+  - practice
+  - game
+  - scenario
+  - case study
+  - group work
+  secondary:
+  - collaborative
+  - synchronous
+  - asynchronous
+  - active learning
+  - peer review
+  - reflection
+  - debrief
+  - facilitated
+  - breakout
+  - problem-based

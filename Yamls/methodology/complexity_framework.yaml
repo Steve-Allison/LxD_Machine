@@ -1,0 +1,576 @@
+# Sentence Complexity and Simplification Rules
+# Based on: DATS (Discourse-Aware Text Simplification) framework
+# Source: Niklaus et al. 2023 - Complexity detection and decomposition strategies
+
+_meta:
+  id: complexity_framework
+  title: "Complexity Rules"
+  description: "Sentence complexity detection and simplification rules based on the DATS framework, identifying syntactic constructs requiring decomposition. Operationalized for discourse-aware text simplification and narrative topology analysis across VISTA dimensions (Impulse/Resonance/Pause). Aligned with Mayer's cognitive load theory and corporate training pedagogical guidance."
+  domain: narrative
+  domain_type: cross_cutting
+  purpose: methodology
+  version: "1.2.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Operationalizing Discourse-Aware Text Simplification: A Neuro-Symbolic Methodology Using IBM's Prompt Declaration Language.md"
+    - "Corpus/Research/The Universal Narrative Methodology: A Framework for Crafting and Improving Stories.md"
+    - "Corpus/Research/The Narrative Deconstruction Methodology: A Strategic Guide to Analyzing and Enhancing Stories in Leadership, Business, and Learning.md"
+    - "Corpus/Research/Structural Paradigms in Natural Language Processing: A Comprehensive Analysis of Narrative Orchestration, Discourse Integration, and Latent Evaluation.md"
+    - "Corpus/Research/Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md"
+
+
+# ==============================================================================
+# RHETORICAL RELATIONS THEORY (RST)
+# ==============================================================================
+
+rhetorical_relations:
+  description: "Explicit semantic relationships between nucleus-satellite pairs derived from Rhetorical Structure Theory (RST) and discourse simplification research. Seven core relations account for ~95% of discourse instances in RST Discourse Treebank."
+  source: "Niklaus et al. 2023; RST discourse structure analysis; Discourse-Aware Text Simplification empirical corpus"
+
+  relation_types:
+    elaboration:
+      frequency_percent: 25.65
+      definition: "Satellite provides additional detail, context, specification, or example about the nucleus"
+      nucleus_satellite: true  # Nucleus: central claim; Satellite: supporting detail
+      examples:
+        - nucleus: "The CEO announced retirement"
+          satellite: "The CEO founded the company"
+        - nucleus: "We succeeded"
+          satellite: "We achieved profitability and expanded globally"
+      typical_extraction_contexts:
+        - "Relative clause extraction (who-clauses, which-clauses)"
+        - "Appositive phrase extraction (explanatory appositives)"
+        - "Participial phrase extraction (descriptive modifiers)"
+      source_connector_phrases: ["in fact,", "specifically,", "for example,", "which means"]
+      pedagogical_note: "Most frequently used relation; extensive elaboration improves comprehension for novice audiences"
+
+    joint:
+      frequency_percent: 23.78
+      definition: "Two nuclei present independent but semantically related information with no subordination. Both units are equally important."
+      nucleus_satellite: false  # Both are nuclei
+      examples:
+        - "Revenue increased and costs decreased"
+        - "We improved speed, reduced costs, and increased quality"
+        - "The product launched successfully. Customer adoption exceeded expectations."
+      typical_extraction_contexts:
+        - "Coordinate clauses split (AND/OR chains at sentence level)"
+        - "Coordinate noun phrase lists (A, B, C) decomposed into separate propositions"
+        - "Sequential independent sentences"
+      source_connector_phrases: ["and", "or", ";", "also"]
+      pedagogical_note: "Used when splitting coordinate clauses; indicates parallelism and equal importance. Common in bullet lists."
+
+    cause:
+      frequency_percent: 13.42
+      definition: "Satellite presents cause/reason that causes or enables the nucleus (the result/effect)"
+      nucleus_satellite: true
+      examples:
+        - nucleus: "We succeeded"
+          satellite: "We invested heavily in R&D"
+        - nucleus: "The product failed"
+          satellite: "We missed the market window"
+      typical_extraction_contexts:
+        - "Causal adverbial clauses (because, since, as)"
+        - "Causal prepositional phrases (due to, because of)"
+      source_connector_phrases: ["because", "since", "as", "due to", "caused by"]
+      pedagogical_note: "Critical for explaining 'Why?' in training content. Helps learners build mental models of causality."
+
+    temporal:
+      frequency_percent: 10.75
+      definition: "Satellite presents event/state that precedes, follows, or co-occurs with the nucleus in time. Establishes temporal sequence."
+      nucleus_satellite: true
+      examples:
+        - nucleus: "Demand surged"
+          satellite: "After we launched"
+        - nucleus: "We completed the project"
+          satellite: "While the team worked overtime"
+      typical_extraction_contexts:
+        - "Temporal adverbial clauses (when, after, before, while, until)"
+        - "Temporal prepositional phrases (during, after, before)"
+      source_connector_phrases: ["when", "after", "before", "while", "until", "during", "then"]
+      pedagogical_note: "Essential for procedure/process training. Maintains sequence clarity in step-by-step instructions."
+
+    condition:
+      frequency_percent: 8.34
+      definition: "Satellite presents condition/prerequisite that enables or constrains the nucleus (the main outcome)"
+      nucleus_satellite: true
+      examples:
+        - nucleus: "We will succeed"
+          satellite: "If we invest now"
+        - nucleus: "The product will fail"
+          satellite: "Unless we address customer feedback"
+      typical_extraction_contexts:
+        - "Conditional clauses (if, unless, provided that)"
+        - "Conditional prepositional phrases"
+      source_connector_phrases: ["if", "unless", "provided that", "assuming", "as long as"]
+      pedagogical_note: "Important for decision-making and scenario-based training. Clarifies prerequisites and constraints."
+
+    contrast:
+      frequency_percent: 8.12
+      definition: "Both nucleus and satellite are presented as contradictory, opposed, or unexpectedly different. Highlights tension or surprise."
+      nucleus_satellite: false  # Both nuclei when contrasting; satellite when concessive
+      examples:
+        - "The product was expensive, yet it succeeded"
+        - "Although expensive, the product succeeded (concessive variant)"
+      typical_extraction_contexts:
+        - "Concessive clauses (although, though, even though, despite)"
+        - "Contrast connectives (but, yet, however)"
+      source_connector_phrases: ["although", "though", "even though", "despite", "but", "yet", "however"]
+      pedagogical_note: "Useful for addressing misconceptions or highlighting counterintuitive insights. Builds critical thinking."
+
+    background:
+      frequency_percent: 5.14
+      definition: "Satellite provides contextual background, setting, or foundational information for understanding the nucleus"
+      nucleus_satellite: true
+      examples:
+        - nucleus: "The CEO announced retirement"
+          satellite: "After decades of leadership"
+        - nucleus: "We launched the new product"
+          satellite: "Against fierce market competition"
+      typical_extraction_contexts:
+        - "Introductory context clauses"
+        - "Setting descriptors"
+      source_connector_phrases: ["after", "given", "in the context of", "with"]
+      pedagogical_note: "Sets scene and context for learners. Helps establish relevance and situational awareness."
+
+    evaluation:
+      frequency_percent: 4.80
+      definition: "Satellite provides assessment, judgment, or evaluation of the nucleus"
+      nucleus_satellite: true
+      examples:
+        - nucleus: "We achieved this outcome"
+          satellite: "Remarkably quickly"
+        - nucleus: "The product launched"
+          satellite: "With unexpected success"
+      typical_extraction_contexts:
+        - "Evaluative adverbials (remarkably, surprisingly, unfortunately)"
+        - "Assessment phrases (to our benefit, unexpectedly)"
+      source_connector_phrases: ["remarkably", "unfortunately", "surprisingly", "to our benefit"]
+      pedagogical_note: "Adds perspective and emotional dimension. Use sparingly in technical content; more in narrative-driven training."
+
+  implementation_guidance:
+    decomposition_rule: "When decomposing complex sentences, identify and explicitly label rhetorical relations. This preserves logical connections even when splitting propositions."
+    verification_step: "Each decomposed proposition should have a labeled relation to its parent or related propositions. Absence of relation labels = incomplete decomposition."
+    source: "Niklaus et al. 2023; Discourse-Aware Text Simplification methodology"
+
+# ==============================================================================
+# VISTA TOPOLOGY FOR NARRATIVE COMPLEXITY
+# ==============================================================================
+
+vista_topology:
+  description: "Three-dimensional narrative decomposition framework for analyzing narrative and discourse complexity. VISTA represents three orthogonal dimensions: Impulse (chronological forward motion), Resonance (lateral elaboration/context), and Pause (vertical reflection/depth)."
+  source: "The Universal Narrative Methodology; LitVISTA: A Benchmark for Narrative Orchestration in Literary Text (arXiv:2601.06445)"
+
+  dimensions:
+    impulse:
+      axis: "X (Chronological)"
+      definition: "Forward progression; events that transition system state from τ to τ+1. Actions, plot advancement, state changes."
+      state_rule: "Increment τ (time); Reset δ (depth)"
+      narrative_units: ["actions", "verbs", "plot advancement", "state changes", "events", "decisions"]
+      example: "The CEO announced retirement"
+      complexity_implication: "High impulse density = fast-paced, action-driven narrative. Can feel rushed if not balanced with resonance."
+
+    resonance:
+      axis: "Y (Lateral/Descriptive)"
+      definition: "Lateral expansion without advancing time; descriptions that broaden understanding of current state τ. World-building, context, sensory detail, atmosphere."
+      state_rule: "Increment δ (depth); Hold τ (time constant)"
+      narrative_units: ["description", "world-building", "context", "sensory detail", "atmosphere", "elaboration", "characterization"]
+      example: "The CEO, who founded the company decades ago, ..."
+      complexity_implication: "High resonance density = rich context, better comprehension for novices. Can feel verbose if not balanced with impulse."
+
+    pause:
+      axis: "Z (Vertical/Reflective)"
+      definition: "Vertical depth through suspension of external time; high intensity, introspection, static tension. Reflection, emotional processing, suspension of action."
+      state_rule: "Hold τ and δ; Increase Intensity"
+      narrative_units: ["introspection", "reflection", "emotional processing", "suspense", "internal conflict", "philosophical musing"]
+      example: "In that moment, she realized everything had changed"
+      complexity_implication: "Pause nodes create emotional depth and allow processing time. Critical for retention and emotional engagement."
+
+  vista_ratios:
+    principle: "Narrative balance requires appropriate distribution across VISTA dimensions. Ratios vary by audience expertise and learning objective."
+    measurement: "Calculate percentage of nodes (propositions/sentences) in each dimension"
+    balanced_ratio: "Impulse 40%, Resonance 45%, Pause 15% (general professional communication)"
+    novice_audience: "Impulse 35%, Resonance 50%, Pause 15% (more explanation and context needed)"
+    expert_audience: "Impulse 50%, Resonance 30%, Pause 20% (less explanation, more action and reflection)"
+    minimum_pause_constraint: "At least 10% of nodes must be Pauses (Z-axis minimum); prevents rushed feeling"
+    source: "VISTA topology research; LitVISTA benchmark studies"
+
+  topological_constraints:
+    attachment_rule: "Resonances (Y-axis descriptions) must attach to Impulses (X-axis actions). Pauses can attach to either Impulses or Resonances."
+    rhythm_rule: "Alternate between Impulse and Resonance whenever possible; avoid back-to-back impulses without elaboration"
+    depth_rule: "At least one Pause (reflection moment) for every 3 Impulses (action beats)"
+    implementation_note: "Violating these constraints causes 'rushed,' 'flat,' or 'disjointed' perception"
+
+# Complexity Indicators
+complexity_indicators:
+  syntactic_complexity:
+    coordinate_clauses:
+      definition: "Independent clauses joined by coordinating conjunctions (and, or, but)"
+      complexity_score: 2.0
+      detection_pattern: "CLAUSE [CC] CLAUSE"
+      coordinating_conjunctions: ["and", "or", "but", "nor", "yet", "so"]
+      example: "We improved speed and we reduced costs"
+      simplification_strategy: "Split into separate sentences maintaining Joint relation"
+
+    subordinate_clauses:
+      definition: "Dependent clauses introduced by subordinating conjunctions"
+      complexity_score: 3.0
+      detection_pattern: "SBAR < (IN < /because|although|since|.../) "
+      subordinators: ["because", "although", "since", "while", "if", "when", "after", "before"]
+      example: "Because we invested in R&D, we achieved innovation"
+      simplification_strategy: "Disembed subordinate clause, convert to independent sentence, maintain rhetorical relation"
+
+    relative_clauses:
+      definition: "Clauses modifying nouns using relative pronouns (who, which, that)"
+      complexity_score: 3.5
+      detection_pattern: "NP < (SBAR < WHNP)"
+      types:
+        restrictive: "Defines/identifies the noun (no commas)"
+        non_restrictive: "Adds extra information (uses commas)"
+      relative_pronouns: ["who", "whom", "whose", "which", "that"]
+      example: "The CEO, who founded the company, announced retirement"
+      simplification_strategy: "Extract relative clause, restore antecedent as subject, mark as Elaboration"
+
+    appositions:
+      definition: "Noun phrases that rename or describe another noun"
+      complexity_score: 2.5
+      detection_pattern: "NP < (NP $.. (, | --) NP)"
+      example: "Jane Smith, our CEO, announced the strategy"
+      simplification_strategy: "Extract appositive phrase as separate sentence, maintain Elaboration relation"
+
+    parentheticals:
+      definition: "Interruptive phrases or clauses set off by punctuation"
+      complexity_score: 2.0
+      detection_pattern: "Phrase enclosed by commas, dashes, or parentheses"
+      punctuation: ["()", "--", ",,"]
+      example: "The product (excluding beta features) launched successfully"
+      simplification_strategy: "Extract parenthetical content, convert to separate sentence, mark as Elaboration or Attribution"
+
+  semantic_complexity:
+    propositional_density:
+      definition: "Number of distinct propositions per sentence"
+      thresholds:
+        low: 1.0  # Single proposition
+        medium: 2.0  # Two propositions
+        high: 3.0  # Three+ propositions
+      measurement: "Count of verb phrases and embedded clauses"
+      example_high: "We developed the product, launched it globally, and achieved profitability"
+      simplification_strategy: "Decompose into atomic propositions, link with Joint or Temporal relations"
+
+    lexical_density:
+      definition: "Ratio of content words (nouns, verbs, adjectives) to total words"
+      thresholds:
+        low: 0.4  # Conversational
+        medium: 0.5  # Standard business
+        high: 0.6  # Dense technical prose
+      measurement: "(content_words / total_words)"
+      example_high: "Enterprise cloud infrastructure modernization initiatives accelerate digital transformation"
+      simplification_strategy: "Substitute complex nominalizations with verbal forms, add functional words"
+
+    nested_dependencies:
+      definition: "Depth of syntactic tree; deeply nested structures"
+      complexity_score: "depth * 1.5"
+      detection: "Parse tree depth > 6 levels"
+      example: "The strategy that the team which we hired last year developed succeeded"
+      simplification_strategy: "Flatten nested structures by extracting innermost embeddings first (recursive decomposition)"
+
+# Transformation Rules (35 DisSim rules grouped into meta-categories)
+transformation_rules:
+  coordination_splitting:
+    rule_id: "T1-T5"
+    source: "DisSim Coordinate Clause rules"
+    description: "Split sentences joined by coordinating conjunctions into independent clauses"
+
+    coordinate_independent_clauses:
+      pattern: "S < (S=c1 $.. (CC $.. S=c2))"
+      example: "Revenue increased and costs decreased"
+      decomposition:
+        nucleus_1: "Revenue increased"
+        nucleus_2: "Costs decreased"
+        relation: "joint"
+
+    coordinate_with_shared_subject:
+      pattern: "S < (NP=subj $.. (VP=v1 $.. (CC $.. VP=v2)))"
+      example: "We improved speed and reduced costs"
+      decomposition:
+        nucleus_1: "We improved speed"
+        nucleus_2: "We reduced costs"
+        relation: "joint"
+        subject_restoration: "Restore shared subject in second clause"
+
+  subordination_disembedding:
+    rule_id: "T6-T15"
+    source: "DisSim Adverbial Clause rules"
+    description: "Extract subordinate clauses and convert to independent sentences"
+
+    causal_subordination:
+      pattern: "SBAR < (IN < /because|since/) < S"
+      subordinators: ["because", "since", "as"]
+      example: "Because we invested, we succeeded"
+      decomposition:
+        satellite: "We invested"
+        nucleus: "We succeeded"
+        relation: "cause"
+        rephrasing: "Convert subordinate to independent sentence with proper tense"
+
+    temporal_subordination:
+      pattern: "SBAR < (IN < /when|after|before|while/) < S"
+      subordinators: ["when", "after", "before", "while", "until", "during"]
+      example: "After we launched, demand surged"
+      decomposition:
+        satellite: "We launched"
+        nucleus: "Demand surged"
+        relation: "temporal"
+        rephrasing: "Maintain temporal reference in independent form"
+
+    conditional_subordination:
+      pattern: "SBAR < (IN < /if|unless/) < S"
+      subordinators: ["if", "unless", "provided that", "assuming"]
+      example: "If we invest, we will succeed"
+      decomposition:
+        satellite: "We invest"
+        nucleus: "We will succeed"
+        relation: "condition"
+        rephrasing: "Convert conditional to declarative with modal verb"
+
+    concessive_subordination:
+      pattern: "SBAR < (IN < /although|though|even though/) < S"
+      subordinators: ["although", "though", "even though", "despite"]
+      example: "Although expensive, the product succeeded"
+      decomposition:
+        satellite: "The product was expensive"
+        nucleus: "The product succeeded"
+        relation: "contrast"
+        rephrasing: "Convert concessive to independent contrastive statement"
+
+  relative_clause_extraction:
+    rule_id: "T16-T22"
+    source: "DisSim Relative Clause rules"
+    description: "Extract relative clauses modifying nouns"
+
+    subject_relative_restrictive:
+      pattern: "NP < (SBAR < (WHNP < who|which|that) < (S < VP))"
+      example: "The CEO who founded the company announced retirement"
+      decomposition:
+        nucleus: "The CEO announced retirement"
+        satellite: "The CEO founded the company"
+        relation: "elaboration"
+        antecedent_restoration: "Replace 'who' with 'The CEO'"
+
+    object_relative:
+      pattern: "NP < (SBAR < (WHNP < whom|which|that) < (S < NP < VP))"
+      example: "The product which we launched succeeded"
+      decomposition:
+        nucleus: "The product succeeded"
+        satellite: "We launched the product"
+        relation: "elaboration"
+        object_repositioning: "Move relative pronoun referent to object position"
+
+    non_restrictive_relative:
+      pattern: "NP < (, SBAR < (WHNP < who|which) < S ,)"
+      example: "Jane Smith, who is our CEO, announced the strategy"
+      decomposition:
+        nucleus: "Jane Smith announced the strategy"
+        satellite: "Jane Smith is our CEO"
+        relation: "elaboration"
+        note: "Non-restrictive clauses are always satellite (elaboration)"
+
+  apposition_extraction:
+    rule_id: "T23-T27"
+    source: "DisSim Apposition rules"
+    description: "Extract appositive noun phrases"
+
+    simple_apposition:
+      pattern: "NP < (NP $.. (, NP ,))"
+      example: "Jane Smith, our CEO, announced the strategy"
+      decomposition:
+        nucleus: "Jane Smith announced the strategy"
+        satellite: "Jane Smith is our CEO"
+        relation: "elaboration"
+        copula_insertion: "Insert 'is' to form complete sentence from appositive"
+
+    title_apposition:
+      pattern: "NP < (NP=title NP=name)"
+      example: "CEO Jane Smith announced the strategy"
+      decomposition:
+        nucleus: "Jane Smith announced the strategy"
+        satellite: "Jane Smith is the CEO"
+        relation: "attribution"
+
+  participial_phrase_extraction:
+    rule_id: "T28-T31"
+    source: "DisSim Participial rules"
+    description: "Extract participial modifiers"
+
+    present_participial:
+      pattern: "NP < (VP < VBG)"
+      example: "The product, increasing revenue by 20%, succeeded"
+      decomposition:
+        nucleus: "The product succeeded"
+        satellite: "The product increased revenue by 20%"
+        relation: "elaboration"
+        verb_conversion: "Convert present participle to finite verb form"
+
+    past_participial:
+      pattern: "NP < (VP < VBN)"
+      example: "The strategy, developed by our team, succeeded"
+      decomposition:
+        nucleus: "The strategy succeeded"
+        satellite: "Our team developed the strategy"
+        relation: "elaboration"
+        passive_to_active: "Convert passive participle to active voice"
+
+# Minimality Principle
+minimality_constraints:
+  definition: "A proposition is minimal if it cannot be further decomposed without losing meaning"
+
+  atomic_proposition_criteria:
+    single_verb_phrase: "Contains exactly one main verb"
+    self_contained: "Can stand alone as grammatically complete sentence"
+    no_embedded_clauses: "Contains no subordinate or relative clauses"
+    clear_subject: "Has explicit subject (no dangling modifiers)"
+
+  examples:
+    minimal_1: "We succeeded"
+    minimal_2: "The product launched successfully"
+    non_minimal_1: "We succeeded because we invested"  # Contains causal clause
+    non_minimal_2: "The product, which we developed, launched"  # Contains relative clause
+
+# Simplification Quality Metrics
+quality_metrics:
+  grammaticality:
+    definition: "Output must be grammatically correct standalone sentences"
+    validation: "Check for subject-verb agreement, proper tense, complete clauses"
+
+  information_preservation:
+    definition: "No content from original should be lost or hallucinated"
+    validation: "Verify all propositions in original are represented in simplified output"
+
+  coherence:
+    definition: "Rhetorical relations must be explicit and accurate"
+    validation: "Each satellite must have labeled relation to nucleus"
+
+  readability_improvement:
+    definition: "Simplified output should reduce cognitive load"
+    metrics:
+      - "Average sentence length: <20 words"
+      - "Propositional density: ≤2.0"
+      - "Syntactic depth: ≤4 levels"
+
+# Presentation-Specific Complexity Patterns
+presentation_complexity:
+  common_patterns:
+    multi_clause_bullets:
+      example: "We improved speed, reduced costs, and increased quality"
+      issue: "Single bullet contains three distinct propositions"
+      recommendation: "Split into three bullets linked by Joint relation"
+
+    nested_subclauses:
+      example: "Our platform, which was developed by the team that we hired last year, launched successfully"
+      issue: "Nested relative clauses create cognitive overload"
+      recommendation: "Extract innermost clause first (recursive decomposition): 1) We hired the team last year, 2) The team developed our platform, 3) Our platform launched successfully"
+
+    dense_speaker_notes:
+      example: "After extensive market research, which validated our hypothesis that customers need better integration, we developed a solution that addresses the gap identified by analysts"
+      issue: "Multiple embedded clauses in single sentence"
+      recommendation: "Decompose into minimal propositions maintaining temporal and causal relations"
+
+# Recursive Decomposition Algorithm
+decomposition_algorithm:
+  iterative_disembedding:
+    description: "Peel off one layer of complexity at a time"
+    steps:
+      - step: 1
+        action: "Analyze current sentence for target constructs (coordination, subordination, apposition)"
+      - step: 2
+        action: "Select most prominent construct (highest in parse tree)"
+      - step: 3
+        action: "Split into Core (Nucleus) and Fragment (Satellite)"
+      - step: 4
+        action: "Rephrase Fragment as standalone sentence (provisional)"
+      - step: 5
+        action: "Recurse on both Core and Fragment until minimal propositions reached"
+
+  priority_order:
+    - priority: 1
+      construct: "Coordinate clauses"
+      rationale: "Highest level in syntax tree; split first to reduce sentence length"
+    - priority: 2
+      construct: "Subordinate clauses (adverbial)"
+      rationale: "Second-level embedding; extract before relative clauses"
+    - priority: 3
+      construct: "Relative clauses"
+      rationale: "Noun-level embedding; extract after clause-level splits"
+    - priority: 4
+      construct: "Appositions and participials"
+      rationale: "Phrase-level modifiers; extract last to maintain noun phrase integrity"
+
+# ==============================================================================
+# COGNITIVE LOAD THEORY INTEGRATION
+# ==============================================================================
+
+cognitive_load_theory:
+  principle: "Sentence decomposition and complexity reduction directly reduce extraneous cognitive load (Mayer, 2009; Sweller, 1988). Parsing complex syntax consumes working memory that should be devoted to meaningful learning (germane processing)."
+  source: "Cognitive Load Theory; Mayer's Multimedia Learning Principles; Discourse-Aware Text Simplification research"
+
+  extraneous_load_reduction:
+    problem: "Syntactically complex sentences (nested clauses, ambiguous pronouns, coordinate structures) force learners to expend working memory on parsing syntax rather than understanding content."
+    solution: "Decompose complex sentences into minimal atomic propositions. Each proposition = single chunk (respects Miller's Law: 4±1 items in working memory)."
+    outcome: "Learners retain significantly more information from simplified text because working memory is freed for semantic processing (Niklaus et al., 2023)"
+
+  germane_load_enhancement:
+    mechanism: "When extraneous load decreases (clearer syntax), germane load increases naturally. Explicit rhetorical relations (cause, temporal, elaboration) guide comprehension."
+    evidence: "Decomposed text with labeled relations improves comprehension more than simplified text without relations (Discourse-Aware TS research)"
+
+  vista_balance_impact:
+    imbalanced_narrative: "All Impulse (action) + no Resonance (explanation) = perceived as 'rushed'; low retention. All Resonance + no Impulse = perceived as 'flat'; disengaging."
+    balanced_narrative: "Impulse 40%, Resonance 45%, Pause 15% optimizes for comprehension AND emotional engagement (LitVISTA benchmark findings)"
+    pedagogical_effect: "Balanced VISTA ratios lead to higher retention and transfer of learning compared to action-only or description-only content"
+    source: "VISTA topology research; LitVISTA benchmark studies on frontier language models"
+
+# Pedagogical Guidance
+pedagogical_applications:
+  learner_accessibility:
+    novice_audience: "Apply aggressive simplification: <15 words per sentence, <2 propositions per sentence. Increase Resonance ratio (50%+) for extensive explanation and context. Use explicit rhetorical connectives (because, therefore, although). High elaboration relations to support schema building."
+    intermediate_audience: "Apply balanced simplification: <18 words per sentence, <2.5 propositions per sentence. Balanced VISTA ratios (40% Impulse, 45% Resonance, 15% Pause). Include moderate Pause nodes for reflection and consolidation."
+    expert_audience: "Apply selective simplification: preserve domain terminology and complex ideas. Higher Impulse ratio (50%+), lower Resonance (30%). Minimize explanatory elaboration; assume background knowledge. Focus on clarity of logical relations rather than context."
+    source: "Pedagogical progression from Universal Narrative Methodology (L1 Portfolio, L2 Strategic, L3 Product, L4 Vertical)"
+
+  slide_design_implications:
+    bullet_atomicity: "Each bullet = one minimal proposition: single verb phrase, no embedded clauses, <12 words. Respects cognitive load constraints (Miller's Law: 4±1 chunks per working memory load)."
+    relation_visualization: "Use indentation and connectives (because, therefore, although, after) to explicitly show relations between bullets. Add rhetorical relation labels where possible for clarity."
+    speaker_notes_structure: "Structure notes as linked minimal propositions, NOT dense paragraphs. Apply recursive decomposition: extract highest-level clauses first, then recurse on dependencies."
+    vista_application: "Balance slide content across VISTA dimensions: action (Impulse, 40%) + context/elaboration (Resonance, 45%) + reflection moments (Pause, 15%). Avoid all-action bullet lists (perceived as rushed); avoid all-description (perceived as flat)."
+    rhetorical_clarity: "Label or imply rhetorical relations between bullets. Example: 'Because [reason], we [action].' Or: 'First [temporal], then [sequential].' Explicit relations improve comprehension significantly."
+    source: "Discourse-Aware Text Simplification principles; VISTA topology constraints"
+
+  complexity_management_by_content_type:
+    procedures_and_processes:
+      vista_profile: "High Impulse ratio (55%+); sequential temporal relations linking each step"
+      strategy: "Each step = single action (minimal atomic action). No elaboration within steps. Minimal Resonance (reserve explanation for context before/after procedure). Insert Pause nodes after groups of 3-5 steps for processing."
+      example: "Step 1: Click 'New Project.' Step 2: Enter name. [PAUSE: 'How would you describe your project?'] Step 3: Select template."
+      source: "VISTA topology applied to procedural content"
+
+    conceptual_learning:
+      vista_profile: "Balanced Impulse/Resonance (40/45) with multiple Pause nodes"
+      strategy: "Define concept (Impulse) + provide multiple elaborations with examples (Resonance, high ratio). Ask reflection questions (Pause) before moving to next concept."
+      example: "[Concept definition] Because [example 1], we see [consequence]. Additionally [example 2], which demonstrates [attribute]. [PAUSE: 'How does this apply to your context?'] Building on this..."
+      source: "Cognitive Load Theory + VISTA balance"
+
+    narrative_case_studies:
+      vista_profile: "Balanced/high Resonance (45-50%) for immersion; multiple Pause nodes for emotional processing"
+      strategy: "Set context extensively (high Resonance for immersion). Introduce protagonist challenges (Impulse + Pause for tension). Develop consequences with elaboration (Resonance). Include reflection moments (Pause) for emotional/thematic processing."
+      source: "VISTA topology applied to narrative-driven corporate training"
+
+    decision_scenarios:
+      vista_profile: "Moderate Impulse with high condition/contrast relations; Pause before decision points"
+      strategy: "Present problem (Resonance/context). Outline options with IF-THEN framing (condition relations). [PAUSE: 'Which path would you choose?'] Reveal consequences (contrast/result relations)."
+      source: "VISTA topology applied to scenario-based learning"
+
+# Ideal Complexity Distribution (for scoring discourse balance)
+ideal_distribution:
+  simple_sentence: 0.30  # 30% simple sentences (clarity baseline)
+  compound_sentence: 0.25  # 25% compound sentences (coordinate complexity)
+  complex_sentence: 0.30  # 30% complex sentences (subordinate sophistication)
+  compound_complex_sentence: 0.15  # 15% compound-complex (advanced argumentation)
+# Distribution based on professional business communication research
+# Balances clarity (simple) with sophistication (complex)

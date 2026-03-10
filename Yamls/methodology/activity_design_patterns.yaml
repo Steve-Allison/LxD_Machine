@@ -1,0 +1,557 @@
+# ==============================================================================
+# Activity Design Patterns
+# Taxonomy of learning activities with group sizing, duration, and Bloom mapping
+# ==============================================================================
+
+_meta:
+  id: activity_design_patterns
+  title: "Activity Design Patterns"
+  description: "Taxonomy of 34 synchronous and asynchronous learning activities with group sizes, duration guidelines, Gagné event mapping, Bloom's level, and assessment types for corporate training."
+  domain: pedagogical
+  domain_type: workflow
+  purpose: methodology
+  version: "1.3.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+  relationships:
+# ==============================================================================
+# CORE PRINCIPLES FOR ACTIVITY DESIGN
+# ==============================================================================
+
+core_principles:
+  immediacy_of_feedback:
+    description: "All interactive activities must provide prompt feedback from facilitators, peers, or systems. Immediate feedback reinforces learning and corrects misunderstandings on the spot."
+    applies_to: ["All synchronous activities", "Quizzes", "Branching scenarios", "Virtual labs", "Recorded presentations with peer review"]
+    evidence: "Immediate feedback from facilitators and peers is woven into nearly all activities. When absent, learners lack opportunity to adjust and improve."
+    source: "Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+  authenticity_and_real_world_relevance:
+    description: "Scenarios and cases must reflect actual workplace challenges, industry context, and realistic client needs. Adult learners require training immediately applicable to their work."
+    applies_to: ["Simulations", "Case studies", "Scenario role-plays", "Written case studies with demo plans"]
+    evidence: "Case studies are described as detailed, relevant to industry, and drawn from real workplace challenges. Learner engagement and transfer improve when scenarios mirror actual conditions."
+    source: "Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+  peer_learning_and_teaching:
+    description: "Structuring activities so learners teach and learn from each other. Peer instruction turns learners into teachers, reinforcing their own understanding while others benefit from colleague perspectives."
+    applies_to: ["Peer instruction", "Fishbowl observation", "Group presentations", "Peer review activities", "Discussion forums"]
+    evidence: "Peer teaching benefits both presenter (reinforces knowledge) and audience (learns from relatable explanation). Peer feedback surfaces diverse viewpoints and strengthens critiquing skills."
+    source: "Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+  iteration_and_refinement:
+    description: "Allow learners multiple attempts to practice, refine, and polish skills. Iteration through feedback cycles builds confidence and mastery."
+    applies_to: ["Recorded presentations", "Action learning projects", "Virtual labs", "Demo recording analysis", "Role-plays"]
+    evidence: "Repeating scenarios and tasks, informed by prior feedback, incrementally improves performance. Virtual labs explicitly allow repeat until mastery. Weekly check-ins in action learning enable adjustment."
+    source: "Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+  cognitive_load_management:
+    description: "Design activities and materials to prevent overwhelming learners. Use segmentation, short modules, and frequent breaks to manage cognitive processing capacity."
+    applies_to: ["E-learning modules", "Microlearning nuggets", "Video libraries"]
+    evidence: "E-learning modules use segmented, short lessons mixing text, images, and videos. Microlearning targets single concepts in 3-10 minutes. Mayer's Multimedia Principles support this approach."
+    source: "Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+  spaced_repetition_and_reinforcement:
+    description: "Distribute learning over time and reinforce concepts across multiple exposures. Spaced repetition combats forgetting and strengthens memory retention."
+    applies_to: ["Microlearning nuggets", "Discussion forums", "Video libraries", "Knowledge quizzes", "Communities of practice"]
+    evidence: "Microlearning explicitly uses spaced, regular reinforcement to combat forgetting. Embedded knowledge checks after each section reinforce understanding. Communities of practice extend learning asynchronously."
+    source: "Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+  low_stakes_practice_before_summative_assessment:
+    description: "Provide formative, low-stakes practice activities before high-stakes summative assessments. This gives learners confidence and opportunity to refine skills in a safe environment."
+    applies_to: ["Role-plays", "Impromptu drills", "Fishbowl", "Simulations", "Virtual labs"]
+    evidence: "Synchronous and asynchronous practice activities are explicitly low-stakes and fun (role-plays, fishbowl, impromptu drills). Summative assessments (hackathons, capstone simulations, case studies) come after extensive practice."
+    source: "Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+  blended_synchronous_asynchronous_design:
+    description: "Combine real-time interactive sessions with self-paced learning. Asynchronous modules (prep) free up synchronous time for practice and application."
+    applies_to: ["E-learning modules + live workshops", "Video libraries + role-plays", "Action learning projects"]
+    evidence: "Action learning projects explicitly blend asynchronous team work with periodic synchronous check-ins. E-learning modules and recorded presentations serve as prep; live sessions are for applied practice."
+    source: "Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+# ==============================================================================
+# SYNCHRONOUS ACTIVITIES (16 types)
+# ==============================================================================
+
+synchronous_activities:
+  live_demonstrations:
+    name: "Live Demonstrations & Q&A"
+    skills: ["Product technical knowledge"]
+    group_size: "Individual or group"
+    gagne_events: ["present_content", "stimulate_recall"]
+    bloom_levels: ["remember", "understand"]
+    assessment_type: "formative"
+    duration_notes: "15-30 minutes with Q&A"
+
+  hands_on_workshops:
+    name: "Interactive Hands-On Workshops"
+    description: "Learners work in small teams on problems or tasks during the session, leveraging peer scaffolding (Vygotsky's Zone of Proximal Development). Facilitators guide breakout-room collaboration, enabling problem-solving on tasks slightly beyond solo ability. Immediate feedback from facilitators and peers reinforces learning."
+    skills: ["Technical knowledge", "Teamwork"]
+    group_size:
+      min: 3
+      max: 5
+      label: "Small teams"
+    gagne_events: ["elicit_performance", "provide_feedback"]
+    bloom_levels: ["apply", "analyze"]
+    assessment_type: "formative"
+    duration_notes: "45-90 minutes"
+    best_practice: "Learners learn-by-doing with immediate feedback from facilitators and peers; facilitator-led breakout rooms enable collaborative problem-solving on tasks slightly beyond solo ability."
+    observable_success: "Learners demonstrating ability to apply knowledge to new problems with peer support; active discussion and question-asking within teams."
+    source: "Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+  hackathons:
+    name: "Technical Hackathons"
+    skills: ["Technical knowledge", "Problem-solving", "Collaboration"]
+    group_size:
+      min: 3
+      max: 6
+      label: "Teams"
+    gagne_events: ["elicit_performance", "assess_performance"]
+    bloom_levels: ["apply", "analyze", "evaluate", "create"]
+    assessment_type: "summative"
+    duration_notes: "2-8 hours"
+
+  peer_instruction:
+    name: "Peer Instruction Sessions"
+    skills: ["Knowledge sharing", "Communication"]
+    group_size: "Pairs or small groups"
+    gagne_events: ["stimulate_recall"]
+    bloom_levels: ["understand", "analyze"]
+    assessment_type: "formative"
+    duration_notes: "20-30 minutes"
+
+  group_brainstorming:
+    name: "Group Brainstorming"
+    skills: ["Creativity", "Product knowledge"]
+    group_size:
+      min: 4
+      max: 6
+      label: "Small groups"
+    gagne_events: ["gain_attention"]
+    bloom_levels: ["create"]
+    assessment_type: "formative"
+    duration_notes: "15-30 minutes"
+
+  roleplay_presentations:
+    name: "Role-Play Presentations"
+    description: "Learners practice presentations in simulated conditions with peer and instructor feedback. Simulates real presentation conditions (including handling nerves and Q&A) in a safe environment. Instant feedback and iteration opportunity build confidence and polish technique. Recorded video allows playback and analysis."
+    skills: ["Presentation skills", "Empathy"]
+    group_size: "Pairs or triads"
+    gagne_events: ["provide_feedback"]
+    bloom_levels: ["apply", "evaluate"]
+    assessment_type: "formative"
+    duration_notes: "15-45 minutes per round"
+    best_practice: "Use breakout rooms for parallel practice; record for playback and analysis. Peers and instructor provide constructive critiques on both content and delivery."
+    observable_success: "Presenter demonstrates growing confidence and polish with each iteration. Peers provide specific, actionable feedback. Improved clarity and delivery visible in successive rounds."
+    source: "Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+  impromptu_speaking:
+    name: "Impromptu Speaking Drills"
+    skills: ["Communication", "Quick thinking"]
+    group_size: "Individual (1 min each)"
+    gagne_events: ["gain_attention"]
+    bloom_levels: ["apply"]
+    assessment_type: "formative"
+    duration_notes: "1-2 minutes per person"
+
+  group_presentations:
+    name: "Group Presentations"
+    skills: ["Presentation", "Teamwork"]
+    group_size:
+      min: 3
+      max: 4
+      label: "Teams"
+    gagne_events: ["elicit_performance"]
+    bloom_levels: ["apply", "create"]
+    assessment_type: "formative_summative"
+    duration_notes: "10-15 minutes per team"
+
+  storytelling_simulations:
+    name: "Live Storytelling Simulations"
+    skills: ["Storytelling", "Communication"]
+    group_size: "Individual or pairs"
+    gagne_events: ["elicit_performance", "stimulate_recall"]
+    bloom_levels: ["apply", "evaluate"]
+    assessment_type: "formative"
+    duration_notes: "10-20 minutes"
+
+  client_demo_roleplays:
+    name: "Simulated Client Demo Role-Plays"
+    description: "Pairs of learners; one acts as presenter, the other as client with defined persona and specific needs or objections. Realistic exercise builds demo delivery skills by allowing practice in handling customer interactions, questions, and objections in real time. After each role-play, group debriefs; peers and instructors provide feedback on presenter's demo technique and handling of client concerns."
+    skills: ["Demo delivery", "Soft skills", "Objection handling", "Client communication"]
+    group_size: "Pairs (1 presenter, 1 client); group observes and provides feedback"
+    gagne_events: ["elicit_performance", "provide_feedback"]
+    bloom_levels: ["apply", "analyze"]
+    assessment_type: "formative"
+    duration_notes: "15-30 minutes per pair"
+    best_practice: "Provide client personas with defined needs and potential objections. Use structured feedback form (demo flow clarity, feature explanation, handling objections). Rotate roles so all practice presenting."
+    observable_success: "Presenter handles client questions confidently. Demonstrates knowledge of product features. Responds thoughtfully to objections rather than dismissing them. Uses effective pacing and storytelling to highlight features."
+    source: "Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+  fishbowl:
+    name: "Fishbowl Observation"
+    description: "A small subset performs activity while everyone else observes; roles rotate progressively. Example: two learners in center (one performs brief demo, other acts as audience asking questions); rest observe silently, then observers provide feedback before next pair takes turn. Every learner learns from both doing AND critiquing others, fostering a reflective, collaborative learning culture."
+    skills: ["Demo skills", "Peer learning", "Critical observation"]
+    group_size: "2 in center + observers (typical group size 6-12)"
+    gagne_events: ["present_content", "provide_feedback"]
+    bloom_levels: ["analyze", "evaluate"]
+    assessment_type: "formative"
+    duration_notes: "20-30 minutes per round (rotate every 5-10 minutes)"
+    best_practice: "Structured rotation ensures all learners participate in both performing and observing. Debrief after each round to discuss what worked and why. Build psychological safety so feedback is constructive."
+    observable_success: "Observers offer specific, actionable feedback. Performers incorporate previous feedback into subsequent rounds. Participants reference what they learned from watching peers."
+    principle_alignment: "Leverage peer learning, low-stakes practice, and immediate feedback. Applies Gagné's Provide Feedback event. Bloom's Evaluate level."
+    source: "Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+  polls_objection_handling:
+    name: "Real-Time Polls & Objection Handling"
+    skills: ["Demo methodology", "Quick response"]
+    group_size: "Individual or group"
+    gagne_events: ["elicit_performance", "provide_feedback"]
+    bloom_levels: ["apply"]
+    assessment_type: "formative"
+    duration_notes: "10-15 minutes"
+
+  instructor_led_simulations:
+    name: "Instructor-Led Live Simulations"
+    description: "Complex simulation with entire group engaged. Instructor manages role assignments and scenario progression. Instructor plays customer role, 'cold-calls' on different learners to handle various parts of demo or answer questions in turn. Scenario progresses as continuous story, requiring everyone to stay alert. Difficulty ramps up with each turn. Intensive, memorable exercise often used as final performance test of demo skills. Comprehensive post-simulation debrief allows team to reflect and extract lessons."
+    skills: ["Demo methodology", "Integration", "Pressure management", "Quick thinking"]
+    group_size: "Whole group (instructor manages pacing and difficulty escalation)"
+    gagne_events: ["present_content", "elicit_performance", "assess_performance"]
+    bloom_levels: ["apply", "evaluate"]
+    assessment_type: "summative"
+    duration_notes: "30-60 minutes including debrief"
+    best_practice: "Design scenario with escalating complexity (simple features → technical questions → objection handling). Use script or cue cards. Ensure all learners participate. Debrief thoroughly to extract lessons and connect to learning objectives."
+    observable_success: "Learners handle increasing complexity with composure. Demonstrate integrated demo flow. Use feedback from previous turns to improve responses. Debrief shows learners connecting experience to principles learned."
+    principle_alignment: "Summative capstone assessment. Authenticity (realistic scenario progression). Immediate feedback during simulation. Summative rather than formative, so learners are aware of performance stakes."
+    source: "Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+  scenario_roleplay_leadership:
+    name: "Scenario-Based Role-Playing (Leadership)"
+    skills: ["Leadership", "Emotional intelligence"]
+    group_size: "Pairs or triads"
+    gagne_events: ["elicit_performance", "provide_feedback"]
+    bloom_levels: ["analyze", "evaluate", "create"]
+    assessment_type: "formative_summative"
+    duration_notes: "20-45 minutes"
+
+  dialogic_discussions:
+    name: "Dialogic Group Discussions"
+    description: "Facilitator-led open discussion where participants collectively reflect on experiences and insights. Not about right/wrong answers but surfacing diverse viewpoints. Facilitator poses thought-provoking questions; invites everyone to contribute perspectives; participants share stories connecting new skills to familiar contexts. Through storytelling and idea exchange, learners connect concepts to real scenarios, stimulate recall of past lessons, and gain new understanding from peers. Leverages experience of adult learners; helps solidify lessons in way directly meaningful to their work contexts."
+    skills: ["Leadership", "Reflection", "Communication", "Active listening"]
+    group_size:
+      min: 5
+      max: 8
+      label: "Small groups"
+    gagne_events: ["stimulate_recall", "enhance_transfer"]
+    bloom_levels: ["analyze", "evaluate"]
+    assessment_type: "formative"
+    duration_notes: "30-45 minutes"
+    best_practice: "Prepare 3-5 open-ended questions that invite story-sharing and reflection. Create psychological safety so all voices valued. Capture key insights on flip chart or shared doc. Connect emerging themes back to learning objectives."
+    observable_success: "Multiple participants share perspectives. Stories reference real work situations. Connections made between peer experiences and course concepts. Discussion reveals depth of understanding."
+    principle_alignment: "Peer learning and adult experience. Stimulate Recall and Enhance Transfer (Gagné). Leverages Adult Learning Theory (Knowles)."
+    source: "Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+  action_learning_projects:
+    name: "Action Learning Projects"
+    description: "Long-term project-based learning (weeks). Teams tackle real-world problem; periodic live sessions (weekly cadence suggested) to review progress, discuss challenges, receive feedback, and plan next steps. Each check-in is learning loop: teams recall previous feedback, present new findings, get coaching, plan next steps; iterative cycle continues until final solution delivered and evaluated. Asynchronous team work between sessions; synchronous check-ins ensure accountability and guidance throughout. Enables application of leadership and technical skills to meaningful, authentic challenges."
+    skills: ["Project management", "Leadership", "Problem-solving", "Teamwork", "Iteration"]
+    group_size:
+      min: 4
+      max: 6
+      label: "Teams"
+    gagne_events: ["full_instructional_cycle"]
+    bloom_levels: ["apply", "evaluate", "create"]
+    assessment_type: "summative"
+    duration_notes: "Multi-session over weeks; weekly 30-60 minute check-ins"
+    best_practice: "Design real-world problem aligned to learners' roles (e.g., process improvement, customer challenge solution). Provide clear success criteria upfront. Structure check-ins with agenda (progress review, obstacle discussion, coaching, next steps). Document iterations to show thinking process."
+    observable_success: "Teams demonstrate progress toward solution. Ability to adapt approach based on feedback. Evidence of applying learned frameworks to problem. Final solution addresses real business need. Reflection on learning and application process."
+    principle_alignment: "Authenticity and real-world relevance. Iteration and refinement. Blended sync-async design. Exemplifies Experiential Learning (Kolb's cycle). Applies Gagné's full instructional cycle."
+    source: "Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+# ==============================================================================
+# ASYNCHRONOUS ACTIVITIES (18 types)
+# ==============================================================================
+
+asynchronous_activities:
+  self_paced_elearning:
+    name: "Self-Paced E-learning Modules"
+    description: "Composed of short lessons mixing text, images, videos, and interactive exercises (slideshows, screen simulations, scenario-based quizzes). Frequent knowledge checks with automated feedback embedded to reinforce understanding (quiz after each section with explanations for why answers are correct). Learners can revisit sections as needed. Applies Mayer's Multimedia Principles (segmenting content to manage cognitive load). Built with tools like Articulate 360 or Adobe Captivate."
+    skills: ["Product knowledge", "Foundational concepts"]
+    duration_guidance: "5-7 minute segments recommended; final completion quiz to verify knowledge acquisition"
+    gagne_events: ["present_content", "provide_feedback"]
+    bloom_levels: ["remember", "understand", "apply"]
+    assessment_type: "formative"
+    cognitive_principle: "Segmentation reduces cognitive load; frequent knowledge checks provide feedback and reinforce learning through retrieval practice."
+    observable_success: "Learners complete segments. Demonstrate understanding on embedded quizzes. Can explain concepts to others. Ready to apply in practice activities."
+    source: "Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+  microlearning_nuggets:
+    name: "Microlearning Nuggets"
+    description: "Very short, focused learning units—typically 3-10 minutes—targeting a single concept or skill. Daily tips or FAQs about a product, each delivered via quick video or interactive snippet followed by one or two questions. Fits into busy schedules; keeps learners engaged with bite-sized content. Spaced out regular reinforcement combats forgetting. Learners appreciate brevity and specificity. Enables ongoing formative checkpoints for managers tracking completion."
+    skills: ["Specific facts", "Procedures", "Quick reference learning"]
+    duration_guidance: "3-10 minutes per unit (ideal: 5-7 minutes)"
+    gagne_events: ["gain_attention", "present_content"]
+    bloom_levels: ["remember", "understand"]
+    assessment_type: "formative"
+    platform_support: "Mobile learning platforms (e.g., Axonify, EdApp) push daily/weekly mini-lessons or quizzes; LMS with microlearning library."
+    benefit_evidence: "Spaced, regular reinforcement combats forgetting. Each nugget is digestible; learners complete without fatigue. Completion tracking supports ongoing formative assessment."
+    principle_alignment: "Cognitive Load Management. Spaced Repetition and Reinforcement."
+    source: "Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+  video_libraries:
+    name: "Video Libraries & Screencasts"
+    skills: ["Technical procedures", "Visual learning"]
+    duration_guidance: "5 minutes recommended per video"
+    gagne_events: ["present_content"]
+    bloom_levels: ["remember", "understand"]
+    assessment_type: "formative"
+
+  documentation_treasure_hunt:
+    name: "Online Documentation Treasure Hunt"
+    skills: ["Resource navigation", "Self-directed learning"]
+    duration_guidance: "Variable (20-40 minutes)"
+    gagne_events: ["elicit_performance"]
+    bloom_levels: ["analyze"]
+    assessment_type: "formative"
+
+  virtual_labs:
+    name: "Virtual Labs & Sandboxes"
+    description: "Safe, hands-on environments where learners experiment with systems/software without affecting real production data. Provisioned sandbox application or virtual machine. Learners follow lab guide steps and can usually validate work via automated system or by comparing to provided solution. Example: configure setting X, import dataset Y, then verify it generates Z report. Learners learn by doing at own pace; can repeat tasks until correct (builds true competence). Many technical training programs require completing certain lab exercises (with logs/screenshots as proof)."
+    skills: ["Hands-on technical practice", "Systems thinking", "Troubleshooting"]
+    duration_guidance: "Variable (learners can repeat until mastery; typical completion 30-90 minutes depending on complexity)"
+    gagne_events: ["elicit_performance", "provide_feedback"]
+    bloom_levels: ["apply", "analyze"]
+    assessment_type: "formative"
+    repeatable: true
+    automated_feedback: "Automated system checks validate completion. Learners can compare output to provided solution."
+    observable_success: "Learner completes lab steps without errors. Validates solution matches expected output. Can articulate what each step accomplished."
+    principle_alignment: "Low-stakes, repeated practice. Immediate feedback (automated validation). Learner paces own progress toward mastery."
+    source: "Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+  recorded_presentations:
+    name: "Recorded Video Presentations"
+    description: "Learners record themselves delivering presentation and share video for others to review. Each person uploads (e.g., 5-minute presentation on given topic) by deadline. Peers assigned or encouraged to watch colleagues' videos and provide feedback, often guided by rubric/prompt ('Was message clear/well-structured? Suggest one improvement'). Presenter gets wealth of feedback and different perspectives on performance. Reviewers observe diverse styles and common pitfalls, sharpening their own skills."
+    skills: ["Presentation skills", "Self-evaluation", "Peer feedback", "Video communication"]
+    duration_guidance: "5-10 minutes per recording; plus 10-15 minutes for reviewing peer videos and writing feedback"
+    gagne_events: ["elicit_performance", "provide_feedback"]
+    bloom_levels: ["apply", "create", "evaluate"]
+    assessment_type: "formative"
+    platform_support: "Video recording tools (Zoom, OBS); learning platforms or forums allowing video uploads and commenting (Flipgrid, Panopto, LMS with peer review enabled)."
+    best_practice: "Provide presentation rubric to guide peer feedback (clarity, structure, delivery, engagement). Set specific deadline for submission and review windows. Encourage reviewers to be constructive and specific."
+    observable_success: "Presenter receives diverse feedback perspectives. Shows growth in delivery and clarity across multiple recordings. Peers identify specific techniques to adopt."
+    principle_alignment: "Iteration and refinement (multiple recording opportunities). Peer learning (reviewing and learning from others' presentations). Low-stakes practice environment."
+    source: "Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+  discussion_forums:
+    name: "Asynchronous Discussion Forums"
+    description: "Online forum where learners engage in discussions outside real-time meetings. Instructor posts prompts (e.g., 'Watch this TED talk on effective presentations and share one technique you could apply in your own work' or 'What do you find most challenging about remote presentations?'). Learners respond in writing at their convenience and reply to each other's posts. Thoughtful reflection—participants can take time to compose insights or research answers. Leverages peer wisdom: learners share tips, personal experiences, solutions with each other. Creates sense of community and ongoing dialogue."
+    skills: ["Analysis", "Reflection", "Writing", "Communication", "Peer learning"]
+    duration_guidance: "Ongoing (initial post + 2 replies typical; 15-30 minutes per learner per prompt)"
+    gagne_events: ["stimulate_recall", "enhance_transfer"]
+    bloom_levels: ["analyze", "evaluate"]
+    assessment_type: "formative"
+    platform_support: "Discussion board platforms (LMS forums, enterprise social networks like Yammer/Workplace, tools like Discourse)."
+    best_practice: "Seed discussions with clear prompts. Moderate to ensure respectful dialogue. Highlight insightful contributions. Count participation toward engagement credit to encourage responses."
+    observable_success: "Multiple learners respond to prompts. Posts reference real work situations and peer responses. Discussion surfaces practical tips and diverse perspectives."
+    principle_alignment: "Peer learning. Stimulate Recall and Enhance Transfer. Constructivism (co-construction of knowledge)."
+    source: "Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+  slide_deck_creation:
+    name: "Slide Deck Creation Task"
+    skills: ["Visual design", "Content application"]
+    duration_guidance: "Variable (1-3 hours)"
+    gagne_events: ["elicit_performance"]
+    bloom_levels: ["apply", "create"]
+    assessment_type: "portfolio"
+
+  knowledge_quizzes:
+    name: "Quizzes on Presentation Knowledge"
+    skills: ["Knowledge reinforcement"]
+    duration_guidance: "5-10 minutes"
+    gagne_events: ["assess_performance"]
+    bloom_levels: ["remember", "understand", "apply"]
+    assessment_type: "formative_summative"
+
+  branching_scenarios:
+    name: "Interactive Branching Scenarios"
+    description: "Self-paced scenario-based exercise where learners placed in virtual role and must make decisions at key points (like choose-your-own-adventure). Learner plays role (e.g., sales engineer conducting client demo); program presents scenario narrative with branching choices ('Client asks technical question you're unsure about—do you (A) attempt answer anyway, (B) admit you'll follow up later, or (C) pivot to different feature?'). Learner's choice leads to consequence path (video clip or text outcome showing client's reaction) and more decisions down the line. Throughout, simulation provides feedback on choices (why certain response might win trust or backfire). Immersive practice letting learners apply knowledge and practice soft skills in safe environment where mistakes are learning opportunities. Branching scenarios keep learners engaged and mimic flow of real interactions, helping build judgment and adaptability."
+    skills: ["Decision-making", "Critical thinking", "Soft skills application", "Adaptability"]
+    duration_guidance: "10-20 minutes per full scenario (repeatable; learners often replay different paths)"
+    gagne_events: ["elicit_performance", "provide_feedback"]
+    bloom_levels: ["apply", "analyze"]
+    assessment_type: "formative"
+    platform_support: "E-learning authoring tools supporting branching logic (Articulate Storyline, Adobe Captivate) or scenario platforms (Twine for text-based branches)."
+    observable_success: "Learner makes decisions informed by course concepts. Reflects on consequences of choices. Replays scenario exploring alternative paths. Can articulate why certain choices led to better outcomes."
+    principle_alignment: "Low-stakes practice. Iteration (replaying with different choices). Authenticity (realistic scenario progression). Immediate feedback on decisions."
+    source: "Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+  written_case_study:
+    name: "Written Case Study with Demo Plan"
+    description: "Scenario-based assignment where learners formulate plan for product demonstration in writing. Given rich description of client's context and needs (document or video brief). Task is design demo approach tailored to scenario. Example: 'Client XYZ is healthcare company struggling with data management, considering your software. Write demo gameplan: which features showcase, in what order, what questions anticipate and prepare for?' Learners produce written demo plan or slide outline; requires deep understanding of product and client's perspective plus ability to communicate strategy clearly. Plans reviewed by instructor or swapped among peers for feedback (peers comment on whether plan seems convincing and comprehensive). Crafting and refining plan helps learners cement ability to translate product knowledge into persuasive presentation structure."
+    skills: ["Analysis", "Planning", "Writing", "Client insight", "Strategic thinking"]
+    duration_guidance: "1-2 hours for initial plan; 30 minutes for peer review feedback"
+    gagne_events: ["assess_performance"]
+    bloom_levels: ["apply", "analyze", "create"]
+    assessment_type: "summative"
+    rubric: "Graded against criteria: relevance to client context, feature selection logic, completeness, creativity of approach, clarity of communication."
+    deliverable: "Written demo plan (outline or prose format) or slide deck showing demo flow and rationale for feature choices."
+    observable_success: "Plan demonstrates understanding of product features AND client needs. Rationale for feature selection is clear and compelling. Plan anticipates potential objections or questions."
+    principle_alignment: "Authenticity (realistic client context). Application and analysis of knowledge. Summative assessment of higher-order thinking."
+    source: "Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+  demo_recording_analysis:
+    name: "Demo Recording Analysis"
+    skills: ["Self-evaluation", "Critical thinking"]
+    duration_guidance: "30-60 minutes"
+    gagne_events: ["provide_feedback", "enhance_transfer"]
+    bloom_levels: ["evaluate"]
+    assessment_type: "formative"
+
+  community_of_practice:
+    name: "Community of Practice"
+    skills: ["Continuous learning", "Collaboration", "Knowledge sharing"]
+    duration_guidance: "Ongoing"
+    gagne_events: ["enhance_transfer"]
+    bloom_levels: ["variable"]
+    assessment_type: "informal"
+
+  reflective_journaling:
+    name: "Scenario-Based Reflections (Journaling)"
+    description: "Reflective writing practice where learners individually ponder scenario questions/prompts related to leadership and write thoughts. Example: weekly prompts like 'Describe how you would handle hypothetical leadership situation' or 'Write about time you had to lead change. What went well, what did you learn?' Typically done in private journal format; sometimes learners share key insights with mentor or in small group. Act of writing helps slow down and critically analyze own beliefs/choices, linking course concepts to real life. Aligns with adult learners' need for relevance and personalization. Mentor or instructor might read and provide comments, guiding learner's thinking."
+    skills: ["Self-reflection", "Metacognition", "Self-awareness", "Critical analysis"]
+    duration_guidance: "Weekly (15-20 minutes per entry); optional mentor feedback adds 5-10 minutes"
+    gagne_events: ["stimulate_recall", "enhance_transfer"]
+    bloom_levels: ["analyze", "evaluate"]
+    assessment_type: "formative"
+    coaching_element: "Mentor or instructor reads entries and provides comments, guiding learner's thinking without grading."
+    platform_support: "Online journaling tools or e-portfolio in LMS; could also be shared blog or private document; optional forum if sharing intended."
+    observable_success: "Journal entries show deepening reflection. Connections made between personal experience and course concepts. Evidence of metacognitive awareness (analyzing own thinking and decisions)."
+    principle_alignment: "Adult Learning (Knowles—relevance and personal experience). Bloom's Evaluate level. Gagné's Enhance Transfer."
+    source: "Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+  leadership_elearning:
+    name: "Leadership E-Learning Modules"
+    skills: ["Leadership concepts", "Self-awareness"]
+    duration_guidance: "Modular (15-30 minutes)"
+    gagne_events: ["present_content", "elicit_performance"]
+    bloom_levels: ["understand", "apply"]
+    assessment_type: "formative"
+
+  online_case_analysis:
+    name: "Online Case Analysis"
+    description: "Take-home style assignment where learners must analyze detailed leadership case study and provide solutions/recommendations. Example: given scenario narrative about team in crisis after project failure, including data and character backgrounds; task like 'Identify core issues leader faces and propose concrete action plan to improve situation, with justification for each step.' Learners work individually or in designated small teams to formulate response, submitted as written report or slide deck. Exercises ability to apply theoretical models to messy, realistic problems and to make decisions as leader would. Because asynchronous, learners have time to research, deliberate, and iterate on solutions. Graded against criteria (depth of analysis, practicality of recommendations, linkage to leadership concepts)."
+    skills: ["Leadership decision-making", "Critical analysis", "Problem solving", "Written communication"]
+    duration_guidance: "1-2 hours for analysis and solution formulation; 30 minutes if group collaboration required"
+    gagne_events: ["assess_performance"]
+    bloom_levels: ["analyze", "evaluate", "create"]
+    assessment_type: "summative"
+    format: "Written report (3-5 pages) or slide deck (8-12 slides); can be individual or small team assignment"
+    rubric: "Graded against: depth of analysis (identifies core issues), practicality of recommendations (actionable, realistic), theoretical linkage (uses course concepts), clarity and completeness."
+    follow_up: "Facilitator can share expert analysis or actual outcome of case (if based on true story) so learners can compare and discuss in follow-up, adding learning moment even in assessment."
+    observable_success: "Analysis identifies root causes, not just symptoms. Recommendations grounded in theory and practical wisdom. Learner articulates trade-offs and rationale for chosen approach."
+    principle_alignment: "Authenticity (realistic, complex problem). Application of theory to practice. Summative assessment of higher-order thinking (Bloom's Evaluate/Create). Problem-Based Learning."
+    source: "Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+  remote_mentoring:
+    name: "Remote Mentoring & Coaching"
+    skills: ["Personal development", "Goal setting"]
+    duration_guidance: "Ongoing (weekly cadence suggested)"
+    gagne_events: ["provide_feedback", "enhance_transfer"]
+    bloom_levels: ["variable"]
+    assessment_type: "formative"
+
+  peer_review:
+    name: "Peer Review Activities"
+    skills: ["Critical evaluation", "Communication"]
+    duration_guidance: "30-60 minutes per review"
+    gagne_events: ["provide_feedback", "assess_performance"]
+    bloom_levels: ["evaluate"]
+    assessment_type: "formative"
+
+# ==============================================================================
+# DURATION GUIDELINES BY FORMAT
+# ==============================================================================
+
+duration_guidelines:
+  microlearning_unit:
+    min_minutes: 3
+    max_minutes: 10
+    note: "Optimal range: 5-7 minutes. Targets single concept or skill. Spaced over time for reinforcement."
+    evidence_source: "Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+  e_learning_segment:
+    min_minutes: 5
+    max_minutes: 7
+    note: "Segmented lessons prevent cognitive overload. Knowledge checks after each segment."
+    principle: "Mayer's Multimedia Principles (Segmentation)"
+    evidence_source: "Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+  video_segment:
+    max_minutes: 5
+    note: "Attention drops sharply after 5 minutes. Learners can pause, rewind, replay as needed."
+    evidence_source: "Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+  ilt_lecture_segment:
+    max_minutes: 15
+    note: "Maximum before requiring learner interaction. Beyond 15 minutes, switch to Q&A, polling, or hands-on activity."
+    evidence_source: "Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+  discussion_session:
+    min_minutes: 20
+    max_minutes: 45
+    note: "Sufficient time for multiple contributors to share and engage. Optimal for 5-8 participants."
+    evidence_source: "Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+  roleplay_round:
+    min_minutes: 15
+    max_minutes: 45
+    note: "Includes practice time, debrief, feedback. Can run multiple shorter rounds (15 min each) or fewer longer rounds (30-45 min)."
+    evidence_source: "Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+  lightning_talk:
+    min_minutes: 1
+    max_minutes: 2
+    note: "For impromptu speaking drills or rapid-fire presentations. Builds quick-thinking and brevity skills."
+    evidence_source: "Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+  game_or_challenge:
+    min_minutes: 15
+    max_minutes: 20
+    note: "Examples: Marshmallow Challenge (18 minutes), Start-Stop-Continue brainstorm. Fun, energizing activities often used as icebreakers or mid-session energizers."
+    evidence_source: "Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+  case_study_analysis:
+    min_minutes: 30
+    max_minutes: 120
+    note: "Depends on complexity. Individual analysis (30-60 min); group analysis (1-2 hours). Graded summative assessment."
+    evidence_source: "Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+  action_learning_project:
+    duration: "Multi-session (weeks)"
+    check_in_frequency: "Weekly (30-60 minutes per session)"
+    note: "Long-term project with periodic synchronous check-ins. Asynchronous work between sessions."
+    evidence_source: "Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md"
+
+# ==============================================================================
+# ACTIVITY SELECTION MATRIX
+# ==============================================================================
+
+selection_matrix:
+  by_skill_type:
+    technical_knowledge:
+      recommended: ["hands_on_workshops", "virtual_labs", "self_paced_elearning", "live_demonstrations"]
+    presentation_skills:
+      recommended: ["roleplay_presentations", "impromptu_speaking", "recorded_presentations", "fishbowl"]
+    leadership:
+      recommended: ["scenario_roleplay_leadership", "dialogic_discussions", "action_learning_projects"]
+    demo_delivery:
+      recommended: ["client_demo_roleplays", "instructor_led_simulations", "branching_scenarios"]
+    collaboration:
+      recommended: ["hackathons", "group_presentations", "community_of_practice"]
+
+  by_bloom_level:
+    remember: ["self_paced_elearning", "microlearning_nuggets", "video_libraries", "knowledge_quizzes"]
+    understand: ["peer_instruction", "video_libraries", "leadership_elearning"]
+    apply: ["hands_on_workshops", "virtual_labs", "roleplay_presentations", "branching_scenarios"]
+    analyze: ["fishbowl", "dialogic_discussions", "documentation_treasure_hunt", "online_case_analysis"]
+    evaluate: ["demo_recording_analysis", "peer_review", "scenario_roleplay_leadership"]
+    create: ["hackathons", "slide_deck_creation", "action_learning_projects", "written_case_study"]

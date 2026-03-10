@@ -1,0 +1,924 @@
+_meta:
+  id: Descriptive_RST_entities
+  purpose: entity
+  version: 2.5.0
+  last_updated: '2026-03-08'
+  description: 'GLiNER2 entity definitions for RST discourse parsing: semantic coherence signals, EDU boundary markers, nuclearity
+    indicators, coreference chains, and tree structure elements.'
+  domain: narrative
+  domain_type: cross_cutting
+  corpus_sources:
+  - Corpus/Research/Research - Advanced Computational Discourse Analysis_ Operationalizing Rhetorical Structure Theory with
+    LLM.md
+  - Corpus/Research/Research - Analyzing Story for Business Communication.md
+  - Corpus/Research/THEORETICAL_FRAMEWORKS_INTEGRATION_ANALYSIS.md
+  academic_sources:
+  - Mann & Thompson (1988) - Rhetorical Structure Theory
+  - RST Discourse Treebank (Carlson et al. 2001)
+  - RST Signalling Corpus (Taboada & Das 2013)
+  - Entity-Based Approaches to Local Coherence (Barzilay & Lapata 2008)
+  - eRST - Enhanced Rhetorical Structure Theory (Zeldes 2024)
+  relationships:
+  - target: taxonomy/Descriptive_RST_taxonomy.yaml
+    type: depends_on
+    description: Relation classes and signal typology definitions consumed by these entity types
+  - target: entities/discourse_entities.yaml
+    type: related_to
+    description: Complementary lexical discourse marker entities — this file covers implicit/structural signals while discourse_entities
+      covers explicit connective markers
+  - target: corpus/Descriptive_RST_corpus.yaml
+    type: related_to
+    description: Best practices and principles governing RST parsing pipelines
+entity_types:
+  coreference_chain:
+    label: COREFERENCE_CHAIN
+    field_description: Pronominal anaphora coreference he she it they this that these those the former the latter
+    description: Pronominal or nominal expression referring back to an antecedent entity across EDU boundaries, establishing
+      a continuous discourse edge
+    entity_kind: semantic_signal
+    family: entity_coherence
+    examples:
+    - The CEO announced growth. She outlined the strategy.
+    - Our platform launched in Q3. It exceeded all targets.
+    - Three teams collaborated. They delivered ahead of schedule.
+    - We proposed a new approach. This gained executive support.
+    - The pilot succeeded. That prompted a full rollout.
+    - Revenue and margins improved. Both exceeded forecasts.
+    - The product and the service evolved. The former scaled globally.
+    - Adobe and Salesforce partnered. The latter integrated first.
+    - Results were strong. These confirmed our hypothesis.
+    confidence_threshold: 0.65
+    field: entity_coherence
+    indicators:
+    - he
+    - she
+    - it
+    - they
+    - this
+    - that
+    - these
+    - those
+    - the former
+    - the latter
+    - both
+    - each
+    - the same
+    patterns:
+    - \. [HSIT]\w+ \w+
+    - \. This \w+
+    - \. That \w+
+    - \. These \w+
+    - \. They \w+
+    - the former
+    - the latter
+    color: '#3498db'
+    notes: Semantic signals, primarily lexical chains and coreferential expressions, account for 41.7% of all signal anchoring
+      tokens in discourse parsing.
+    relates_to:
+    - target: lexical_chain
+      relation: bridges
+      weight: expected
+      description: Coreference chains link pronouns and nominals across EDU spans forming semantic signal for rhetorical relation
+        detection
+    - target: anaphora_marker
+      relation: supports
+      weight: expected
+      description: Coreference continuity tracked via pronouns and anaphoric references across discourse tree spans
+      target_file: discourse_entities
+    - target: meronymy_link
+      relation: bridges
+      weight: expected
+      description: Coreference resolution bridges to meronymy detection — when a newly introduced entity is a meronym of a preceding
+        entity this serves as a semantic discourse signal to predict elaboration relations per Advanced Computational Discourse
+        Analysis research
+    - target: elaboration_marker
+      relation: triggers
+      weight: expected
+      description: Coreference chains tracking entity continuity across spans trigger elaboration relations in RST discourse parsing
+        per Advanced Computational Discourse Analysis research
+      target_file: discourse_entities
+    - target: topic_shift_marker
+      relation: limits
+      weight: expected
+      description: "Maintained coreference chains limit unintended topic shifts by preserving entity consistency across slides — coreference failures signal structural coherence breaks per Theoretical Frameworks Integration Analysis"
+      target_file: discourse_entities
+    taxonomy_mapping:
+    - taxonomy: Descriptive_RST_taxonomy
+      dimension: semantic_signals
+      values:
+      - coreference
+      - anaphora
+      - pronominal_tracking
+      strength: primary
+  meronymy_link:
+    label: MERONYMY_LINK
+    field_description: Part-whole relationship entity meronym part of component element division segment arm branch unit
+    description: Entity in a satellite EDU that is a part-of (meronym) an entity in a nucleus EDU, providing computational
+      proof for Elaboration relations
+    entity_kind: semantic_signal
+    family: entity_coherence
+    examples:
+    - The company grew. Cloud sales drove the increase.
+    - The platform is modular. The API layer handles integrations.
+    - Our portfolio expanded. The enterprise segment led growth.
+    - The report was positive. The executive summary highlighted gains.
+    - The organisation restructured. The EMEA division scaled first.
+    - The system has three tiers. The data layer processes events.
+    - Training covered five modules. Module 3 addressed advanced topics.
+    - The stack includes four components. The ingestion service routes data.
+    confidence_threshold: 0.6
+    field: entity_coherence
+    indicators:
+    - division
+    - segment
+    - department
+    - component
+    - module
+    - layer
+    - branch
+    - arm
+    - unit
+    - tier
+    - part
+    - section
+    - element
+    - aspect
+    patterns:
+    - \w+ (division|segment|department|branch)
+    - the \w+ (layer|tier|component|module)
+    - \w+ (arm|unit|section) of
+    color: '#2ecc71'
+    notes: When a newly introduced entity is a meronym of a preceding entity, this provides computational proof to assign
+      an Elaboration or Cause relation.
+    relates_to:
+    - target: lexical_chain
+      relation: specialises
+      weight: expected
+      description: Meronymy (part-whole relations) signals structural continuity in discourse as part of semantic signal category
+    - target: elaboration_marker
+      relation: triggers
+      weight: expected
+      description: Meronymic part-whole relationships between entities across EDUs serve as semantic discourse signals that predict
+        elaboration relations per Advanced Computational Discourse Analysis research
+      target_file: discourse_entities
+    - target: synonymy_signal
+      relation: bridges
+      weight: optional
+      description: Meronymy and synonymy are both semantic signal types within the discourse signal taxonomy and co-occur as indicators
+        of topic continuity across text spans per Advanced Computational Discourse Analysis research
+    taxonomy_mapping:
+    - taxonomy: Descriptive_RST_taxonomy
+      dimension: semantic_signals
+      values:
+      - meronymy
+      - part_whole
+      - composition
+      strength: primary
+    parent_entity: lexical_chain
+  synonymy_signal:
+    label: SYNONYMY_SIGNAL
+    field_description: Synonym near-synonym lexical substitution growth expansion increase decline reduction decrease
+    description: Use of synonymous or near-synonymous terms across EDU boundaries maintaining referential continuity without
+      explicit coreference
+    entity_kind: semantic_signal
+    family: entity_coherence
+    examples:
+    - Revenue grew significantly. This expansion exceeded projections.
+    - Costs declined sharply. The reduction improved margins.
+    - The platform launched. The system went live in Q3.
+    - Customer churn decreased. Attrition dropped to historic lows.
+    - We accelerated delivery. The speed improvement was measurable.
+    - The approach was innovative. This novel methodology scaled.
+    - Adoption increased across regions. Uptake was strongest in EMEA.
+    confidence_threshold: 0.55
+    field: entity_coherence
+    indicators: []
+    patterns: []
+    color: '#1abc9c'
+    notes: Detection requires embedding-based similarity or knowledge graph lookups rather than pattern matching. High recall
+      requires semantic similarity > 0.8 threshold.
+    relates_to:
+    - target: lexical_chain
+      relation: specialises
+      weight: expected
+      description: Synonymy signals (substitute terms, paraphrases) enable continuity within lexical chains for discourse
+        relation marking
+    taxonomy_mapping:
+    - taxonomy: Descriptive_RST_taxonomy
+      dimension: semantic_signals
+      values:
+      - synonymy
+      - paraphrase
+      - lexical_substitution
+      strength: primary
+    parent_entity: lexical_chain
+  lexical_chain:
+    label: LEXICAL_CHAIN
+    field_description: Lexical chain topical continuity repeated domain term recurring concept thread revenue profit income
+    description: Sequence of semantically related domain terms spanning multiple EDUs maintaining topical coherence and signalling
+      implicit elaboration or joint relations
+    entity_kind: semantic_signal
+    family: entity_coherence
+    examples:
+    - revenue → sales → income → profit (financial chain)
+    - customer → client → buyer → user (stakeholder chain)
+    - launched → deployed → rolled out → scaled (action chain)
+    - AI → machine learning → deep learning → neural networks (technology chain)
+    - training → workshop → session → module (pedagogical chain)
+    - threat → vulnerability → risk → exposure (security chain)
+    confidence_threshold: 0.6
+    field: entity_coherence
+    indicators: []
+    patterns: []
+    color: '#9b59b6'
+    notes: Lexical chains span entire documents. Detection requires tracking semantic relatedness across all EDU boundaries.
+      Chain breaks signal topic_change relations.
+    relates_to:
+    - target: synonymy_signal
+      relation: contains
+      weight: expected
+      description: Lexical chains (synonymy, meronymy, general word usage) constitute approximately 41% of semantic signals
+        for RST
+    - target: elaboration_marker
+      relation: triggers
+      weight: expected
+      description: Lexical chains tracking subject continuity across multiple text spans without explicit conjunctions serve as
+        semantic discourse signals that predict elaboration relations per Advanced Computational Discourse Analysis research
+      target_file: discourse_entities
+    taxonomy_mapping:
+    - taxonomy: Descriptive_RST_taxonomy
+      dimension: semantic_signals
+      values:
+      - lexical_chain
+      - synonymy
+      - meronymy
+      - lexical_continuity
+      strength: primary
+  general_word_signal:
+    label: GENERAL_WORD_SIGNAL
+    field_description: General word superordinate hypernym this approach such challenges these results that strategy the issue
+    description: Superordinate or hypernymic term that subsumes more specific preceding references, signalling elaboration
+      or summary relations
+    entity_kind: semantic_signal
+    family: entity_coherence
+    examples:
+    - We redesigned the pipeline. This approach reduced latency.
+    - Costs rose and timelines slipped. Such challenges required intervention.
+    - Revenue grew 40% and NPS hit 72. These results exceeded expectations.
+    - We invested in AI and automation. That strategy paid off.
+    - Migration caused downtime. The issue was resolved in 48 hours.
+    - Three teams piloted the tool. This initiative expanded company-wide.
+    confidence_threshold: 0.65
+    field: entity_coherence
+    indicators:
+    - this approach
+    - this strategy
+    - this initiative
+    - such challenges
+    - such issues
+    - these results
+    - these findings
+    - that strategy
+    - the issue
+    - the problem
+    - the approach
+    - the method
+    - this process
+    patterns:
+    - (This|That|The) (approach|strategy|initiative|method|process|technique)
+    - (Such|These|Those) (challenges|issues|results|findings|outcomes|factors)
+    color: '#e67e22'
+    relates_to:
+    - target: lexical_chain
+      relation: specialises
+      weight: optional
+      description: General word signals (hypernym/hyponym relations) track semantic continuity as part of semantic signal
+        indicators
+    taxonomy_mapping:
+    - taxonomy: Descriptive_RST_taxonomy
+      dimension: semantic_signals
+      values:
+      - hypernym
+      - hyponym
+      - general_word
+      strength: secondary
+    parent_entity: lexical_chain
+  edu_clause_boundary:
+    label: EDU_CLAUSE_BOUNDARY
+    field_description: EDU boundary clause break segmentation point sentence boundary clause separator coordinating subordinating
+    description: Syntactic or punctuation marker indicating a boundary between Elementary Discourse Units — the fundamental
+      segmentation signal
+    entity_kind: segmentation_marker
+    family: edu_structure
+    examples:
+    - Revenue grew, | and margins improved.
+    - We invested in AI | because costs were rising.
+    - The team delivered | although timelines were tight.
+    - Results exceeded targets. | The board approved expansion.
+    - The platform launched; | adoption was immediate.
+    - Having completed the pilot, | we scaled the solution.
+    confidence_threshold: 0.7
+    field: segmentation
+    indicators:
+    - .
+    - ;
+    - ','
+    - because
+    - although
+    - when
+    - while
+    - if
+    - and
+    - but
+    - or
+    patterns:
+    - '[.;] [A-Z]'
+    - ', (and|but|or|because|although|when|while|if|since) '
+    color: '#e74c3c'
+    notes: EDU segmentation excludes nested restrictive relative clauses (which modify a noun without creating a separate
+      discourse unit). Only non-restrictive clauses create EDU breaks.
+    relates_to:
+    - target: coreference_chain
+      relation: enables
+      weight: expected
+      description: EDU boundaries mark discrete propositions enabling tracking of coreference and continuity across units
+    - target: joint_marker
+      relation: contains
+      weight: expected
+      description: EDU boundaries mark discrete propositions that link through rhetorical relations including joint relations
+      target_file: discourse_entities
+    - target: nucleus_indicator
+      relation: precedes
+      weight: required
+      description: EDU segmentation into clause-level units must occur before nuclearity assignment — text is decomposed into
+        EDUs which are then hierarchically linked with nucleus-satellite structure per Advanced Computational Discourse Analysis
+        research
+    - target: satellite_indicator
+      relation: precedes
+      weight: required
+      description: EDU segmentation precedes satellite identification — discourse units must be segmented before nuclearity and
+        relational roles can be assigned per Advanced Computational Discourse Analysis research
+    - target: claim
+      relation: enables
+      weight: optional
+      description: "EDU clause boundaries enable argument mining by segmenting text into minimal discourse units from which claims are extracted per UNIFIED_NARRATIVE_METHODOLOGY_v2"
+      target_file: narrative_entities
+    taxonomy_mapping:
+    - taxonomy: Descriptive_RST_taxonomy
+      dimension: segmentation
+      values:
+      - elementary_discourse_unit
+      - clause
+      - proposition
+      strength: primary
+  embedded_clause_marker:
+    label: EMBEDDED_CLAUSE_MARKER
+    field_description: Embedded parenthetical appositive non-restrictive relative clause dash parenthesis which who interruption
+    description: Marker of an embedded clause or parenthetical that interrupts a logical unit, creating a Same-Unit relation
+      when the surrounding spans are rejoined
+    entity_kind: segmentation_marker
+    family: edu_structure
+    examples:
+    - The product, which launched last quarter, exceeded expectations.
+    - Our strategy—developed over months of research—proved effective.
+    - Revenue (as shown in Figure 1) increased 40%.
+    - The CEO, a former engineer, understood the technical debt.
+    - Results, though preliminary, are very promising.
+    - The team, led by Sarah Chen, delivered on schedule.
+    confidence_threshold: 0.7
+    field: segmentation
+    indicators:
+    - ', which'
+    - ', who'
+    - —
+    - ' ('
+    - ') '
+    - ', led by'
+    - ', known as'
+    - ', a '
+    - ', though'
+    patterns:
+    - ', which \w+'
+    - ', who \w+'
+    - —[^—]+—
+    - \([^)]+\)
+    - ', (though|although) \w+,'
+    color: '#95a5a6'
+    notes: Creates a Same-Unit relation. The parser must rejoin the surrounding spans after processing the embedded content.
+    relates_to:
+    - target: edu_clause_boundary
+      relation: specialises
+      weight: expected
+      description: Embedded clauses represent subordinated discourse units nested within larger EDU spans per RST hierarchical
+        decomposition
+    - target: subordination_marker
+      relation: supports
+      weight: expected
+      description: RST embeddings correspond to syntactic subordination relations in discourse structure
+      target_file: discourse_entities
+    - target: extraneous_load_marker
+      relation: triggers
+      weight: expected
+      description: "Embedded clauses (parentheticals, appositives, non-restrictive relative clauses) trigger extraneous cognitive load by interrupting sentence flow — disembedding is critical for slide readability per Theoretical Frameworks Integration Analysis"
+      target_file: cognitive_load_entities
+    taxonomy_mapping:
+    - taxonomy: Descriptive_RST_taxonomy
+      dimension: syntactic_signals
+      values:
+      - embedded_clause
+      - subordination
+      - nesting
+      strength: primary
+    parent_entity: edu_clause_boundary
+  nucleus_indicator:
+    label: NUCLEUS_INDICATOR
+    field_description: Nucleus core thesis main point central claim primary assertion key finding conclusion recommendation
+    description: Linguistic signal indicating that a span carries the core communicative intent — the proposition that could
+      stand alone and convey the primary message
+    entity_kind: nuclearity_signal
+    family: tree_structure
+    examples:
+    - The key finding is that adoption increased 300%.
+    - Our recommendation is to proceed with Phase 2.
+    - 'The main conclusion: AI-driven parsing outperforms rule-based systems.'
+    - In summary, the platform delivers measurable ROI.
+    - The critical insight is that implicit signals dominate.
+    - We conclude that discourse structure drives coherence.
+    confidence_threshold: 0.7
+    field: nuclearity
+    indicators:
+    - the key finding
+    - our recommendation
+    - the main conclusion
+    - the critical insight
+    - the primary result
+    - in summary
+    - we conclude
+    - the bottom line
+    - most importantly
+    - the central
+    - the core
+    patterns:
+    - (The|Our) (key|main|primary|central|critical|core) (finding|conclusion|insight|recommendation|result|point)
+    - we (conclude|recommend|find) that
+    - (in summary|the bottom line|most importantly)
+    color: '#e74c3c'
+    relates_to:
+    - target: satellite_indicator
+      relation: contrasts_with
+      weight: required
+      description: RST distinguishes nucleus (core communicative intent) from satellite (ancillary support) per Mann and Thompson
+        framework
+    - target: elaboration_marker
+      relation: supports
+      weight: expected
+      description: Nucleus represents central proposition supported by satellite elaboration relations within discourse trees
+      target_file: discourse_entities
+    - target: claim
+      relation: bridges
+      weight: expected
+      description: "RST nucleus indicators bridge to claims as both represent the core assertion in a discourse unit per Analyzing Story for Business Communication"
+      target_file: narrative_entities
+    taxonomy_mapping:
+    - taxonomy: Descriptive_RST_taxonomy
+      dimension: rhetorical_structure
+      values:
+      - nucleus
+      - satellite
+      - nuclearity
+      strength: primary
+  satellite_indicator:
+    label: SATELLITE_INDICATOR
+    field_description: Satellite supporting ancillary background context additional detail minor elaboration parenthetical
+      note
+    description: Linguistic signal indicating that a span provides ancillary, supporting, contextualising, or interpretive
+      information subordinate to a nucleus
+    entity_kind: nuclearity_signal
+    family: tree_structure
+    examples:
+    - For context, the market had been declining for three quarters.
+    - It is worth noting that this was a pilot programme.
+    - As background, the team had previously attempted two alternatives.
+    - Incidentally, the same pattern was observed in EMEA.
+    - As a side note, the original timeline was six months.
+    - To provide context, annual budgets had been frozen.
+    confidence_threshold: 0.65
+    field: nuclearity
+    indicators:
+    - for context
+    - for background
+    - as background
+    - it is worth noting
+    - incidentally
+    - as a side note
+    - parenthetically
+    - to provide context
+    - as an aside
+    - by way of background
+    - for reference
+    patterns:
+    - (For|As) (context|background|reference)
+    - it is worth noting
+    - (incidentally|parenthetically|as a side note)
+    - by way of (background|context)
+    color: '#7f8c8d'
+    relates_to:
+    - target: nucleus_indicator
+      relation: supported_by
+      weight: required
+      description: Satellite provides ancillary contextualising information supporting nuclear proposition in RST framework
+    - target: elaboration_marker
+      relation: enables
+      weight: expected
+      description: Satellite markers signal supporting discourse relations that contextualise and expand nucleus
+      target_file: discourse_entities
+    - target: evidence
+      relation: bridges
+      weight: expected
+      description: "RST satellite indicators bridge to evidence as both provide supporting material for the core assertion per Analyzing Story for Business Communication"
+      target_file: narrative_entities
+    taxonomy_mapping:
+    - taxonomy: Descriptive_RST_taxonomy
+      dimension: rhetorical_structure
+      values:
+      - satellite
+      - elaboration
+      - background
+      - evidence
+      strength: primary
+  organisational_entity:
+    label: ORGANISATIONAL_ENTITY
+    field_description: Organisation company corporation division brand product name SC SA Ltd Inc GmbH
+    description: Named entity identifying a specific organisation, company, division, or product — distinct from discourse
+      markers, these bound the actors and subjects the discourse is about
+    entity_kind: domain_entity
+    family: entity_reference
+    examples:
+    - Adobe Experience Platform
+    - SC Company SA
+    - the EMEA division
+    - our Cloud Services unit
+    - IBM Granite
+    - the Product Engineering team
+    - McKinsey & Company
+    - the Customer Success organisation
+    confidence_threshold: 0.75
+    field: domain
+    indicators:
+    - Inc
+    - Ltd
+    - GmbH
+    - SA
+    - SC
+    - Corp
+    - Corporation
+    - Group
+    - Platform
+    - Division
+    patterns:
+    - '[A-Z][a-z]+ [A-Z][a-z]+ (Inc|Ltd|Corp|SA|GmbH|Group)'
+    - (the|our) [A-Z][a-z]+ (division|unit|team|organisation|platform)
+    color: '#2980b9'
+    notes: Entity markers explain WHO or WHAT the sentences are about, while discourse markers explain WHY two sentences are
+      adjacent. Both must be integrated for robust parsing.
+    relates_to:
+    - target: domain_nomenclature
+      relation: bridges
+      weight: optional
+      description: Organisational entities mark domain-specific terminology and nomenclature within discourse structures
+    - target: coreference_chain
+      relation: enables
+      weight: expected
+      description: Organisational entity markers enable coreference chain resolution — entity markers identify who or what sentences
+        are about enabling systems to resolve coreference across distant branches of the discourse tree per Advanced Computational
+        Discourse Analysis research
+    taxonomy_mapping:
+    - taxonomy: Descriptive_RST_taxonomy
+      dimension: semantic_signals
+      values:
+      - domain_entity
+      - organisation
+      - nomenclature
+      strength: secondary
+  domain_nomenclature:
+    label: DOMAIN_NOMENCLATURE
+    field_description: Domain-specific term technical nomenclature specialised vocabulary jargon acronym RST EDU NLP API NER
+    description: Specialised domain terminology or acronym whose consistent usage across EDUs provides semantic continuity
+      signals for relation detection
+    entity_kind: domain_entity
+    family: entity_reference
+    examples:
+    - Elementary Discourse Unit (EDU)
+    - Rhetorical Structure Theory (RST)
+    - Natural Language Processing (NLP)
+    - Named Entity Recognition (NER)
+    - Retrieval-Augmented Generation (RAG)
+    - Parameter-Efficient Fine-Tuning (PEFT)
+    - shift-reduce parsing
+    - discourse tree
+    confidence_threshold: 0.7
+    field: domain
+    indicators:
+    - RST
+    - EDU
+    - NLP
+    - NER
+    - RAG
+    - LLM
+    - API
+    - PEFT
+    patterns:
+    - '[A-Z]{2,5}'
+    - '[A-Z][a-z]+ [A-Z][a-z]+ [A-Z][a-z]+ \([A-Z]+\)'
+    color: '#8e44ad'
+    notes: Consistent domain terminology usage across distant EDUs provides lexical chain signals. Acronym introduction followed
+      by acronym-only usage is a common elaboration signal.
+    relates_to:
+    - target: organisational_entity
+      relation: supports
+      weight: optional
+      description: Domain-specific naming conventions establish semantic anchors for rhetorical relation identification in
+        specialised discourse
+    taxonomy_mapping:
+    - taxonomy: Descriptive_RST_taxonomy
+      dimension: semantic_signals
+      values:
+      - domain_term
+      - nomenclature
+      - technical_label
+      strength: secondary
+    parent_entity: null
+  shift_action:
+    label: SHIFT_ACTION
+    field_description: Shift action parser push queue stack advance next unit new element incoming
+    description: Parse action that pops the next element from the input queue and pushes it onto the working stack — used
+      in bottom-up LLM-driven shift-reduce discourse parsing
+    entity_kind: parse_action
+    family: parsing_pipeline
+    examples:
+    - 'Shift: Move EDU_5 from queue to stack'
+    - 'Action: Shift (new element not yet ready for merge)'
+    - Shift — the queue item introduces a new topic unrelated to the stack top
+    confidence_threshold: 0.85
+    field: parsing
+    indicators:
+    - Shift
+    - SHIFT
+    - push
+    - advance
+    patterns:
+    - (Shift|SHIFT)
+    - shift the \w+ item
+    color: '#27ae60'
+    relates_to:
+    - target: reduce_action
+      relation: contrasts_with
+      weight: required
+      description: 'Shift/Reduce operations in bottom-up RST parsing: Shift pops queue to stack, Reduce merges stack tops
+        with nuclearity label'
+    taxonomy_mapping:
+    - taxonomy: Descriptive_RST_taxonomy
+      dimension: parsing_algorithm
+      values:
+      - shift
+      - shift_reduce
+      - parser_action
+      strength: primary
+  reduce_action:
+    label: REDUCE_ACTION
+    field_description: Reduce action parser merge combine stack top two elements subtree relation nuclearity
+    description: Parse action that merges the top two elements on the working stack into a single subtree node with assigned
+      nuclearity and rhetorical relation — used in bottom-up LLM-driven shift-reduce discourse parsing
+    entity_kind: parse_action
+    family: parsing_pipeline
+    examples:
+    - 'Reduce: Merge stack items with Nucleus-Satellite: Elaboration'
+    - 'Action: Reduce (Nucleus-Nucleus: Joint)'
+    - Reduce — the two stack items form a causal relationship
+    confidence_threshold: 0.85
+    field: parsing
+    indicators:
+    - Reduce
+    - REDUCE
+    - merge
+    - combine
+    patterns:
+    - (Reduce|REDUCE)
+    - merge (the|stack|top)
+    - reduce.*:(\s)?(Elaboration|Contrast|Cause|Joint|Attribution|Temporal|Background|Condition)
+    color: '#c0392b'
+    relates_to:
+    - target: shift_action
+      relation: contrasts_with
+      weight: required
+      description: Reduce action merges top two stack items assigning nuclearity structure and rhetorical relation label in
+        parsing algorithm
+    - target: nucleus_indicator
+      relation: enables
+      weight: required
+      description: Reduce predicts both nuclearity assignment and rhetorical relation label for merged discourse spans
+    - target: satellite_indicator
+      relation: triggers
+      weight: required
+      description: A reduce action in bottom-up parsing triggers satellite identification — merging two discourse spans requires
+        determining which is the satellite providing supporting information per Advanced Computational Discourse Analysis research
+    taxonomy_mapping:
+    - taxonomy: Descriptive_RST_taxonomy
+      dimension: parsing_algorithm
+      values:
+      - reduce
+      - merge
+      - nuclearity_labeling
+      strength: primary
+  combined_signal_anchor:
+    label: COMBINED_SIGNAL_ANCHOR
+    field_description: Combined signal tandem semantic syntactic co-occurring reinforcing anchor multi-dimensional dual
+    description: Two or more signal types from different typologies co-occurring to indicate the same relation, significantly
+      increasing detection confidence
+    entity_kind: signal_strength
+    family: signal_detection
+    examples:
+    - The analyst stated [cognitive verb = semantic] that growth will continue [subordinate clause = syntactic] → Attribution
+      (tandem semantic-syntactic)
+    - Revenue grew; furthermore [graphical + discourse marker] → Joint (tandem graphical-lexical)
+    - Despite challenges [discourse marker], the opposite occurred [antonymous pair = semantic] → Contrast (tandem lexical-semantic)
+    - Previously [morphological tense shift], we had tried [tense shift] a different approach [lexical chain = semantic] →
+      Background (tandem morphological-semantic)
+    confidence_threshold: 0.8
+    field: signal_detection
+    indicators: []
+    patterns: []
+    color: '#f39c12'
+    notes: Attribution is frequently marked by combined semantic and syntactic signals. Relations detected by tandem signals
+      warrant higher confidence scores than single-signal detections.
+    relates_to:
+    - target: coreference_chain
+      relation: contains
+      weight: expected
+      description: Combined signals anchor multiple marker types (syntactic and semantic) for robust rhetorical relation prediction
+    - target: joint_marker
+      relation: enables
+      weight: expected
+      description: Combined signal anchors trigger multi-relational patterns where syntactic and semantic signals converge
+        on relation type
+      target_file: discourse_entities
+    - target: attribution_marker
+      relation: supports
+      weight: expected
+      description: Attribution relations are frequently marked by combined semantic-syntactic signals operating in tandem such
+        as cognitive verb plus subordinate clause structure per Advanced Computational Discourse Analysis research
+      target_file: discourse_entities
+    taxonomy_mapping:
+    - taxonomy: Descriptive_RST_taxonomy
+      dimension: signal_integration
+      values:
+      - combined_signal
+      - multi_marker
+      - signal_convergence
+      strength: secondary
+  ambiguous_signal:
+    label: AMBIGUOUS_SIGNAL
+    field_description: Ambiguous signal overlapping uncertain concession condition shared marker interpretive difficulty
+    description: Signal set that maps to multiple possible relations, requiring broader contextual reasoning to disambiguate
+      — particularly common between concession and condition
+    entity_kind: signal_strength
+    family: signal_detection
+    examples:
+    - '''although'' → could signal Contrast OR Concession'
+    - '''while'' → could signal Temporal OR Contrast OR Condition'
+    - '''since'' → could signal Cause OR Temporal'
+    - '''as'' → could signal Cause OR Temporal OR Manner'
+    - '''if'' + evaluative content → Condition OR Concession'
+    confidence_threshold: 0.5
+    field: signal_detection
+    indicators:
+    - although
+    - while
+    - since
+    - as
+    - even if
+    - even though
+    patterns:
+    - (although|while|since|as|even if) \w+
+    color: '#e74c3c'
+    notes: Concession and condition often share identical, overlapping signal sets in written text. Disambiguation requires
+      LLMs capable of evaluating broad contextual meaning rather than rigid rule-based matching.
+    relates_to:
+    - target: combined_signal_anchor
+      relation: contrasts_with
+      weight: optional
+      description: Ambiguous signals lack sufficient marker convergence requiring LLM reasoning or context to resolve relation
+        type
+    - target: concession_marker
+      relation: limits
+      weight: expected
+      description: Ambiguous signals directly limit reliable identification of concession relations — concession and condition
+        share identical overlapping signal sets creating interpretive ambiguity per Advanced Computational Discourse Analysis
+        research
+      target_file: discourse_entities
+    - target: condition_marker
+      relation: limits
+      weight: expected
+      description: Ambiguous signals limit reliable identification of condition relations — condition and concession share overlapping
+        signal sets creating ambiguity for parsers per Advanced Computational Discourse Analysis research
+      target_file: discourse_entities
+    taxonomy_mapping:
+    - taxonomy: Descriptive_RST_taxonomy
+      dimension: signal_reliability
+      values:
+      - ambiguity
+      - signal_conflict
+      - multi_interpretation
+      strength: secondary
+gliner_config:
+  model: gliner-large-v2
+  batch_size: 32
+  default_confidence_threshold: 0.65
+  context_window: 512
+  entity_groups:
+    semantic_signals:
+    - COREFERENCE_CHAIN
+    - MERONYMY_LINK
+    - SYNONYMY_SIGNAL
+    - LEXICAL_CHAIN
+    - GENERAL_WORD_SIGNAL
+    segmentation_markers:
+    - EDU_CLAUSE_BOUNDARY
+    - EMBEDDED_CLAUSE_MARKER
+    nuclearity_signals:
+    - NUCLEUS_INDICATOR
+    - SATELLITE_INDICATOR
+    domain_entities:
+    - ORGANISATIONAL_ENTITY
+    - DOMAIN_NOMENCLATURE
+    parse_actions:
+    - SHIFT_ACTION
+    - REDUCE_ACTION
+    signal_strength:
+    - COMBINED_SIGNAL_ANCHOR
+    - AMBIGUOUS_SIGNAL
+domain_keywords:
+  primary:
+  - discourse
+  - RST
+  - rhetorical
+  - EDU
+  - nuclearity
+  - nucleus
+  - satellite
+  - coreference
+  - coherence
+  - segmentation
+  - parsing
+  - relation
+  - tree
+  - span
+  secondary:
+  - meronymy
+  - synonymy
+  - lexical chain
+  - anaphora
+  - shift-reduce
+  - top-down
+  - bottom-up
+  - elaboration
+  - attribution
+  - contrast
+  - cause
+  - joint
+  - temporal
+  - condition
+  - background
+  - treebank
+expected_distributions:
+  signal_typology:
+    semantic: 0.41
+    discourse_marker: 0.21
+    syntactic: 0.18
+    graphical: 0.12
+    morphological: 0.08
+  entity_coherence_types:
+    coreference: 0.35
+    lexical_chain: 0.25
+    meronymy: 0.15
+    synonymy: 0.15
+    general_word: 0.1
+quality_indicators:
+  entity_coherence_density:
+    sparse: < 2 entity coherence signals per 500 words
+    adequate: 2-5 per 500 words
+    rich: '> 5 per 500 words'
+  coreference_resolution_rate:
+    low: < 60% of pronouns resolved to antecedents
+    good: 60-85% resolution rate
+    excellent: '> 85% resolution rate'
+  signal_diversity:
+    low: < 2 signal typologies detected
+    good: 3-4 signal typologies detected
+    excellent: All 5 signal typologies represented
+  segmentation_accuracy:
+    threshold: F1 > 91 on RST-DT benchmark for raw segmentation
+    notes: DISRPT 2025 shared task benchmark — highest-performing systems exceed this threshold
+  nuclearity_classification:
+    threshold: ~71% accuracy for complex relation classification
+    notes: DISRPT 2025 benchmark for relation classification with nuclearity

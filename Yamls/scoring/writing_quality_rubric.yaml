@@ -1,0 +1,815 @@
+_meta:
+  id: writing_quality_rubric
+  title: "Writing Quality Rubric"
+  description: "Scoring rubric for written content quality covering readability, sentence structure, jargon management, tone consistency, active voice usage, and conciseness"
+  domain: writing
+  domain_type: cross_cutting
+  purpose: scoring
+  version: "1.0.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Research - Best Practices for Writing Effective Corporate Learning Content.md"
+    - "Corpus/Research/tone_of_voice_guide.md"
+    - "Corpus/Research/Research - The Cognitive Interface - Operationalizing UxD for Documents and Reports.md"
+    - "Corpus/Research/Best Practices for Writing Corporate Training Video Scripts for Adult Learners.md"
+  academic_sources:
+    - "Flesch (1948) - Readability Formula"
+    - "Kincaid et al. (1975) - Flesch-Kincaid Grade Level"
+    - "Gunning (1952) - Fog Index"
+    - "Plain Language Action and Information Network (PLAIN)"
+    - "ISO 24495-1:2023 - Plain Language Standard"
+  relationships:
+    - target: ../methodology/editorial_standards.yaml
+      type: derived_from
+      description: "Editorial standards framework informing writing criteria"
+    - target: ../methodology/style_guide_standards.yaml
+      type: derived_from
+      description: "Style guide standards for tone and voice"
+    - target: cognitive_load_rubric.yaml
+      type: related_to
+      description: "Cognitive load implications of text density and readability"
+    - target: accessibility_rubric.yaml
+      type: related_to
+      description: "Language readability accessibility standards"
+
+# ==============================================================================
+# RUBRIC WEIGHTS
+# ==============================================================================
+
+rubric_weights:
+  readability: 0.25       # Flesch-Kincaid grade level, sentence length, syllable density
+  sentence_structure: 0.20 # Variety, complexity, clause balance, parallelism
+  jargon_management: 0.15  # Technical term density, definition presence, audience calibration
+  tone_consistency: 0.15   # Voice stability, brand alignment, register appropriateness
+  active_voice: 0.15       # Active vs passive ratio, agency clarity, directness
+  conciseness: 0.10        # Word economy, redundancy elimination, information density
+
+# ==============================================================================
+# QUALITY DIMENSIONS
+# ==============================================================================
+
+dimensions:
+  readability:
+    name: "Readability"
+    description: >
+      Measures how easily a reader can decode and comprehend the text. Grounded in
+      Flesch-Kincaid Grade Level targets: FK Grade 8-10 for general corporate audiences
+      and FK Grade 12 for technical or specialist content. The average adult reading level
+      in the US is approximately 8th grade regardless of educational attainment — writing
+      below this target 'dumbs down' nothing; it makes complex ideas accessible to all.
+      Source: Research - Best Practices for Writing Effective Corporate Learning Content.md;
+      Research - The Cognitive Interface - Operationalizing UxD for Documents and Reports.md
+    score_levels:
+      1:
+        label: "Poor"
+        description: "FK Grade >14 or <5. Sentences routinely exceed 30 words. Three-syllable words dominate. Reader cannot decode without re-reading. High regression rate expected."
+      2:
+        label: "Below Standard"
+        description: "FK Grade 12-14 or <6. Average sentence length 25-30 words. Syllable complexity strains working memory. Reader must slow significantly."
+      3:
+        label: "Acceptable"
+        description: "FK Grade 10-12. Average sentence length 18-25 words. Occasional complex vocabulary without scaffolding. Readable but not optimised."
+      4:
+        label: "Good"
+        description: "FK Grade 8-10. Average sentence length 15-18 words. Plain vocabulary used consistently except for necessary technical terms. Smooth read."
+      5:
+        label: "Excellent"
+        description: "FK Grade 6-9. Average sentence length 12-17 words. Every word chosen for clarity. Technical terms scaffolded with plain-language companions. Reader gains information without conscious decoding effort."
+
+  sentence_structure:
+    name: "Sentence Structure"
+    description: >
+      Evaluates variety, complexity management, clause balance, and parallelism.
+      Rhythm comes from mixing short declarative sentences with longer, structured ones.
+      Excessive subordination strains working memory. Parallel structure reduces extraneous
+      cognitive load by creating predictable syntactic patterns.
+      Source: tone_of_voice_guide.md; Research - Best Practices for Writing Effective
+      Corporate Learning Content.md
+    score_levels:
+      1:
+        label: "Poor"
+        description: "Monotonous sentence length throughout (all short or all long). Multiple embedded subordinate clauses in most sentences. No parallel structure in lists or series. Reader cannot establish a reading rhythm."
+      2:
+        label: "Below Standard"
+        description: "Limited variety. Overuse of one sentence type. Parallelism inconsistent — lists mix noun phrases, verb phrases, and full clauses. Some run-on sentences."
+      3:
+        label: "Acceptable"
+        description: "Some sentence variety. Subordinate clauses generally manageable (1-2 per sentence). Lists use parallel structure most of the time. Occasional rhythm breaks."
+      4:
+        label: "Good"
+        description: "Consistent variety mixing short and long sentences for rhythm (Tone of Voice Guide: 'Mix short and long sentences for rhythm'). Subordination limited to one dependent clause per sentence. Lists fully parallel."
+      5:
+        label: "Excellent"
+        description: "Masterful rhythm — short punchy sentences alternate with longer structured ones to create momentum. Zero run-ons. All lists and series grammatically parallel. Syntactic variety serves meaning without drawing attention to itself."
+
+  jargon_management:
+    name: "Jargon Management"
+    description: >
+      Assesses technical term density, definition presence at first use, and calibration
+      to the target audience. Jargon ratio is measured as jargon tokens / total tokens.
+      Orwell's first rule (also codified in the Tone of Voice Guide): 'Never use jargon
+      when plain English will do.' First-use definition is mandatory for any term outside
+      the audience's expected vocabulary.
+      Source: tone_of_voice_guide.md; Research - Best Practices for Writing Effective
+      Corporate Learning Content.md; narrative_quality_rubric.yaml jargon checks
+    score_levels:
+      1:
+        label: "Poor"
+        description: "Jargon ratio >0.25. Technical acronyms and domain terms used without definition. Audience calibration absent — same jargon load for all reader tiers. Reader excluded by vocabulary barriers."
+      2:
+        label: "Below Standard"
+        description: "Jargon ratio 0.18-0.25. Definitions appear inconsistently — some terms defined, others assumed. Audience tier partially considered but not systematically applied."
+      3:
+        label: "Acceptable"
+        description: "Jargon ratio 0.12-0.18. Most technical terms defined at first use. Audience tier consulted but edge cases missed. Plain alternatives used for most common jargon."
+      4:
+        label: "Good"
+        description: "Jargon ratio 0.08-0.12. All technical terms defined at first use with plain-language companion. Audience tier actively calibrated — executive content strips jargon that appears in technical versions. 'Use' preferred over 'utilise' throughout."
+      5:
+        label: "Excellent"
+        description: "Jargon ratio <0.08. Systematic allowlist/denylist applied by audience tier. Every technical term either defined inline, scaffolded in a glossary, or replaced by a plain equivalent. No reader requires domain knowledge to access core meaning."
+
+  tone_consistency:
+    name: "Tone Consistency"
+    description: >
+      Measures voice stability across sections, brand alignment, and register
+      appropriateness. The Tone of Voice Guide defines six core voice characteristics:
+      Professional, Approachable, Witty (British understated), Informed & Enthusiastic,
+      Clear & Succinct, and Economist-like Precision. All six must be present and
+      consistent throughout — not just in the opening.
+      Source: tone_of_voice_guide.md
+    score_levels:
+      1:
+        label: "Poor"
+        description: "Tone shifts dramatically between sections — formal in one paragraph, colloquial in the next. Register does not match audience or purpose. Voice is either stuffy/academic or flippant. No recognisable authorial presence."
+      2:
+        label: "Below Standard"
+        description: "General tone present but inconsistent application. Some sections drift into passive, impersonal register. Enthusiasm appears in places but absent elsewhere. Wit attempted awkwardly or inappropriately."
+      3:
+        label: "Acceptable"
+        description: "Consistent general tone but not fully calibrated to all six voice characteristics. Approachable and professional present; informed enthusiasm variable. Some clichés."
+      4:
+        label: "Good"
+        description: "Five of six voice characteristics consistently applied. Rare clichés or idioms. Register appropriate to audience throughout. Dry wit used sparingly as seasoning. 'Economist-like precision' evident — every word earns its place."
+      5:
+        label: "Excellent"
+        description: "All six voice characteristics fully realised and stable across the entire document. Reads like a 'confident, seasoned educator who loves their subject' (Tone of Voice Guide). No clichés. Inclusive language — no idioms or regionalism that do not travel globally. Authorial confidence without stuffiness."
+
+  active_voice:
+    name: "Active Voice"
+    description: >
+      Evaluates the ratio of active to passive voice constructions, clarity of agency,
+      and directness. Orwell's third rule (Tone of Voice Guide): 'Use active voice
+      whenever possible — "We recommend" is better than "It is recommended."' Mayer's
+      Personalization Principle confirms active voice improves comprehension.
+      Passive voice is acceptable in specific scientific, diplomatic, or technical
+      contexts where the agent is unknown or irrelevant.
+      Source: tone_of_voice_guide.md; cognitive_load_rubric.yaml mayer_principles
+    score_levels:
+      1:
+        label: "Poor"
+        description: "Passive voice >50% of verb constructions. Agency systematically obscured. Nominalised verbs dominant ('the implementation of', 'the achievement of'). Reader cannot determine who does what."
+      2:
+        label: "Below Standard"
+        description: "Passive voice 35-50%. Active voice appears but passive is the default. Some sentences use passive where an agent exists and could have been named. Nominalisations frequent."
+      3:
+        label: "Acceptable"
+        description: "Passive voice 20-35%. Active voice is the general default. Passive used when agent is genuinely unknown or irrelevant. Some nominalisations remain."
+      4:
+        label: "Good"
+        description: "Passive voice 10-20%. Active voice default with passive reserved for scientifically or diplomatically appropriate contexts. Actors named clearly. Nominalisations largely eliminated."
+      5:
+        label: "Excellent"
+        description: "Passive voice <10%. Every sentence has a clear grammatical subject performing the action. Exceptions are contextually justified. No unnecessary nominalisations. Writing is direct, immediate, and energetic."
+
+  conciseness:
+    name: "Conciseness"
+    description: >
+      Measures word economy, redundancy elimination, and information-to-word ratio.
+      Orwell's second rule (Tone of Voice Guide): 'Cut any word you can do without —
+      "It is important to note that..." becomes nothing at all.' The Cognitive Interface
+      research establishes the Minimum Effective Dose principle: provide exactly enough
+      information to support comprehension and no more. Ruthless pruning of redundant
+      text reduces extraneous cognitive load.
+      Source: tone_of_voice_guide.md; Research - The Cognitive Interface - Operationalizing
+      UxD for Documents and Reports.md
+    score_levels:
+      1:
+        label: "Poor"
+        description: "Excessive padding — filler phrases ('It is important to note that', 'In terms of', 'At the end of the day') throughout. Nominalisation heavy. Ideas stated, restated, and summarised redundantly within the same section. Information-to-word ratio <0.4."
+      2:
+        label: "Below Standard"
+        description: "Regular filler phrases. Repetition of ideas without additive meaning. Paragraphs could be cut by 30% without losing content. Information-to-word ratio 0.4-0.55."
+      3:
+        label: "Acceptable"
+        description: "Occasional filler phrases. Some redundancy but generally purposeful. Could tighten by 15-20%. Information-to-word ratio 0.55-0.70."
+      4:
+        label: "Good"
+        description: "Minimal filler. Each sentence adds new information or advances the argument. Paragraphs appropriately tight. Information-to-word ratio 0.70-0.85."
+      5:
+        label: "Excellent"
+        description: "Every word earns its place (Tone of Voice Guide: 'Economist-like Precision'). No filler phrases, no redundant restatements. Where brevity is not possible, length is justified by complexity. Information-to-word ratio >0.85. Orwell's second rule fully enacted."
+
+# ==============================================================================
+# READABILITY METRICS
+# ==============================================================================
+
+readability_metrics:
+  description: >
+    Quantitative readability formulas operationalise the qualitative scoring
+    dimensions above. All metrics should be used in combination — no single formula
+    captures all aspects of readability. FK Grade Level is the primary metric;
+    Gunning Fog and SMOG are secondary validation tools.
+    Source: Research - The Cognitive Interface; Research - Best Practices for Writing
+    Effective Corporate Learning Content.md
+
+  flesch_kincaid_grade_level:
+    description: "Kincaid et al. (1975). Primary metric. Combines words per sentence and syllables per word."
+    formula: "0.39 × (words/sentences) + 11.8 × (syllables/words) − 15.59"
+    target_ranges:
+      general_corporate_audience:
+        min_grade: 6
+        max_grade: 9
+        ideal_grade: 8
+        rationale: "Average adult reading level is approximately grade 8 regardless of education level. Source: Best Practices for Writing Effective Corporate Learning Content.md"
+      technical_specialist_audience:
+        min_grade: 10
+        max_grade: 12
+        ideal_grade: 11
+        rationale: "Technical and regulatory content may use domain-specific vocabulary — connective language must remain plain even when terminology is specialist."
+      executive_summary:
+        min_grade: 6
+        max_grade: 8
+        ideal_grade: 7
+        rationale: "Executive audiences are time-poor and skim; simpler language enables faster comprehension. Source: The Cognitive Interface."
+      learning_content:
+        min_grade: 6
+        max_grade: 9
+        ideal_grade: 8
+        rationale: "Corporate learning content targets broad staff populations including non-native speakers. Source: Best Practices for Writing Effective Corporate Learning Content.md"
+    improvement_mechanism: "If score is too high: shorten sentences (reduce words per sentence) and simplify vocabulary (reduce syllables per word). Do not simplify industry-standard technical terms — simplify the connective language around them."
+
+  gunning_fog_index:
+    description: "Gunning (1952). Secondary metric. Focuses on polysyllabic word density."
+    formula: "0.4 × ((words/sentences) + 100 × (complex_words/words))"
+    complex_word_definition: "Words with 3 or more syllables, excluding proper nouns, compound words, and verb suffixes (-es, -ed, -ing)"
+    target_ranges:
+      general_corporate: { max: 12, ideal: 10 }
+      technical_content: { max: 14, ideal: 12 }
+      learning_content: { max: 12, ideal: 9 }
+    note: "Fog Index >17 is considered virtually unreadable by most adults."
+
+  smog_index:
+    description: "McLaughlin (1969). Simple Measure of Gobbledygook. Robust for health and regulatory content."
+    formula: "3 + √(polysyllabic_words_in_30_sentences)"
+    target_ranges:
+      general_corporate: { max: 12 }
+      learning_content: { max: 10 }
+    use_case: "Particularly valuable for compliance, regulatory, or health and safety content where miscomprehension has consequences."
+
+  coleman_liau_index:
+    description: "Coleman & Liau (1975). Character-based formula — robust to OCR and parsed text."
+    formula: "0.0588 × L − 0.296 × S − 15.8"
+    variables:
+      L: "Average number of letters per 100 words"
+      S: "Average number of sentences per 100 words"
+    target_ranges:
+      general_corporate: { max_grade: 10 }
+    use_case: "Alternative to FK when syllable counting is unreliable (e.g., extracted or transcribed text)."
+
+# ==============================================================================
+# SENTENCE ANALYSIS
+# ==============================================================================
+
+sentence_analysis:
+  description: >
+    Quantitative standards for sentence length, variety, and subordination.
+    Short sentences reduce extraneous cognitive load; variety prevents monotony
+    and creates reading rhythm. Source: tone_of_voice_guide.md;
+    Research - Best Practices for Writing Effective Corporate Learning Content.md
+
+  sentence_length:
+    optimal_words_per_sentence:
+      min: 12
+      max: 20
+      ideal: 16
+    maximum_words_per_sentence: 30
+    rule: "Convey one thought per sentence where possible. Source: Best Practices for Writing Effective Corporate Learning Content.md"
+    short_sentence_minimum_words: 5
+    note: "Short sentences (5-10 words) create punch; long sentences (21-30 words) carry complex argument. The ratio defines rhythm."
+
+  sentence_variety:
+    min_variety_ratio: 0.30
+    description: "At least 30% of sentences should differ substantially from the modal sentence length by ±8 words or more"
+    target: "Mix of short declarative (5-12 words), medium structured (12-20 words), and longer complex (20-30 words) sentences in approximate ratio 25:50:25"
+
+  subordinate_clause_limit:
+    max_embedded_clauses_per_sentence: 2
+    preferred_max: 1
+    rationale: "Each embedded subordinate clause adds one cognitive processing unit to working memory. Exceeding two embedded clauses in one sentence consistently spikes extraneous load."
+
+  parallelism:
+    rule: "All items in a list or series must share the same grammatical form (all noun phrases, all verb phrases, or all full clauses)"
+    test: "Can you substitute the first list item for any other item in the same syntactic position without a grammatical violation?"
+    failure_example: "We need to: increase revenue, reducing costs, and better customer service"
+    pass_example: "We need to: increase revenue, reduce costs, and improve customer service"
+
+# ==============================================================================
+# JARGON FRAMEWORK
+# ==============================================================================
+
+jargon_framework:
+  description: >
+    Systematic approach to technical term management using allowlist/denylist logic
+    calibrated by audience tier. Derived from Orwell's first rule (Tone of Voice Guide)
+    and the pre-training principle (define terms before use) from Mayer/CLT research.
+
+  jargon_ratio_targets:
+    executive_audience:
+      max_ratio: 0.08
+      description: "Executives need decisions, not domain literacy. Strip all jargon replaceable by plain alternatives."
+    general_corporate_audience:
+      max_ratio: 0.12
+      description: "Standard corporate learning content. Industry-standard acronyms acceptable after first-use definition."
+    technical_specialist_audience:
+      max_ratio: 0.20
+      description: "Domain practitioners expect specialist vocabulary. Definition required only for cross-domain terms."
+    mixed_audience:
+      max_ratio: 0.10
+      description: "When audience tier is unknown or mixed, apply the lower bound."
+
+  first_use_definition_rule:
+    requirement: "Every technical term, acronym, or domain-specific expression must be defined or expanded at its first occurrence in the document"
+    format_options:
+      inline: "Write out the full term followed by the acronym in parentheses: 'Flesch-Kincaid Grade Level (FKGL)'"
+      parenthetical_definition: "Use the term followed by a brief plain-language gloss: 'extraneous cognitive load (unnecessary mental effort caused by poor design)'"
+      footnote: "Acceptable for specialist documents when inline definition would disrupt flow"
+    exceptions:
+      - "Universally recognised abbreviations: CEO, ROI, HR, IT"
+      - "Terms the audience has explicitly been taught earlier in the same programme"
+
+  plain_english_substitutions:
+    description: "Preferred substitutions per Orwell's first rule and the Tone of Voice Guide"
+    substitutions:
+      utilise: "use"
+      commence: "start"
+      leverage: "use"
+      facilitate: "help"
+      endeavour: "try"
+      implement: "do / carry out"
+      synergise: "work together"
+      paradigm: "model / approach"
+      holistic: "whole / complete"
+      proactive: "active / ahead of time"
+      robust: "strong / reliable"
+      scalable: "able to grow"
+      best_in_class: "leading / top-performing"
+      going_forward: "from now on"
+      at_this_point_in_time: "now"
+      in_terms_of: "on / for / about"
+
+  audience_tier_calibration:
+    description: "Jargon that is appropriate at one audience tier is a barrier at another. Apply tier-specific denylist before final review."
+    executive_denylist:
+      - "API / SDK / webhook"
+      - "implementation overhead"
+      - "technical debt"
+      - "architecture diagram"
+      - "migration pathway"
+    creative_professional_denylist:
+      - "TCO (total cost of ownership)"
+      - "compliance matrix"
+      - "SLA"
+      - "infrastructure"
+    learning_content_denylist:
+      - "paradigm shift"
+      - "operationalise"
+      - "leverage as a verb for use"
+      - "synergies"
+
+# ==============================================================================
+# TONE OF VOICE
+# ==============================================================================
+
+tone_of_voice:
+  description: >
+    Brand voice specification and consistency measurement framework derived from the
+    Tone of Voice Guide. The guide models the voice on George Orwell's clarity
+    principles and The Economist's editorial standards: 'Think Orwell's clarity,
+    The Economist's wit, and your favourite teacher's enthusiasm.'
+    Source: tone_of_voice_guide.md
+
+  core_voice_characteristics:
+    professional:
+      description: "Uses precise, business-appropriate language without jargon or academic pretension"
+      test: "Would this read comfortably in a boardroom? Does it avoid both stuffiness and slang?"
+    approachable:
+      description: "Friendly and human — reads like a conversation with an expert who cares if you understand"
+      test: "Does the reader feel addressed as an intelligent equal, not lectured at?"
+    witty:
+      description: "Light, dry humour. British understatement. Wit is a seasoning, not the meal — deployed sparingly"
+      caution: "Never jokes for the sake of it. Humour must serve clarity or warmth, not performance"
+      example: "No one ever inspired a team with a 94-slide deck. (Tone of Voice Guide)"
+    informed_and_enthusiastic:
+      description: "The writer knows their topic and wants to make you love it too"
+      test: "Does the text convey genuine subject-matter command and authentic interest?"
+    clear_and_succinct:
+      description: "Guided by Orwell's clarity: no clichés, no unnecessary words, meaning above all"
+      test: "Can any word be removed without losing meaning? If yes, remove it."
+    economist_precision:
+      description: "Concise, confident, unpadded. Every word earns its place. 'Be precise — don't say many if you mean seven.'"
+      test: "Are all quantitative claims specific rather than vague? ('Many' → 'seven'; 'soon' → 'by Friday')"
+
+  tone_levers:
+    formality:
+      do: "'Let's explore how this applies in your work.'"
+      avoid: "'Yo! Here's what you need to know.'"
+    enthusiasm:
+      do: "'This is where the magic of storytelling kicks in.'"
+      avoid: "'It is important to note that…'"
+    wit:
+      do: "'No one ever inspired a team with a 94-slide deck.'"
+      avoid: "Humourless instruction or forced comedy"
+    clarity:
+      do: "'What does this mean in practice?'"
+      avoid: "'The aforementioned paradigm is applicable…'"
+    credibility:
+      do: "'Research shows…' or 'In over 20 years of training…'"
+      avoid: "'Some people say…' or 'You may or may not agree…'"
+
+  consistency_measurement:
+    minimum_sections_checked: "All major sections must be checked — tone in the introduction does not excuse drift in body or conclusion"
+    register_drift_detection:
+      description: "Flag sections where formality level, pronoun use, or sentence register shifts from the established voice"
+      signals:
+        - "Sudden shift from second-person ('you') to third-person ('one')"
+        - "Introduction of passive impersonal register in a section that was previously direct"
+        - "Unexplained increase in nominalisation density mid-document"
+    cliche_prohibition:
+      rule: "If a phrase has been said a thousand times, say it differently (Tone of Voice Guide)"
+      common_cliches_to_flag:
+        - "at the end of the day"
+        - "thinking outside the box"
+        - "low-hanging fruit"
+        - "move the needle"
+        - "game changer"
+        - "circle back"
+        - "deep dive"
+        - "bandwidth"
+    inclusive_language:
+      rule: "Avoid idioms or references that do not travel across cultures or languages"
+      examples:
+        - "Avoid sports metaphors (cricket, baseball) without international equivalents"
+        - "Avoid calendar references that assume local holidays"
+
+# ==============================================================================
+# ACTIVE VOICE STANDARDS
+# ==============================================================================
+
+active_voice_standards:
+  description: >
+    Standards for active voice usage, passive voice detection, and acceptable exceptions.
+    Active voice reduces extraneous cognitive load: the subject-verb-object structure
+    mirrors how humans naturally process agency and causality. Mayer's Personalization
+    Principle (effect size 0.79) confirms active, conversational style improves
+    comprehension. Source: tone_of_voice_guide.md; cognitive_load_rubric.yaml
+
+  ratio_targets:
+    general_corporate_content:
+      max_passive_ratio: 0.15
+      target_passive_ratio: 0.10
+    technical_documentation:
+      max_passive_ratio: 0.25
+      target_passive_ratio: 0.18
+      rationale: "Technical documentation describing systems or processes may legitimately use passive when the agent is the system itself or is unknown"
+    learning_content:
+      max_passive_ratio: 0.15
+      target_passive_ratio: 0.10
+      rationale: "Instructional content benefits most from direct active voice — 'you will learn' not 'learning will take place'"
+
+  passive_voice_detection_patterns:
+    description: "Linguistic patterns that signal passive voice construction"
+    verb_to_be_plus_past_participle:
+      - "is/are/was/were/been/being + [past participle]"
+      - "Examples: 'is recommended', 'were developed', 'has been implemented'"
+    impersonal_constructions:
+      - "'It is important to…' → 'You must…' or 'This matters because…'"
+      - "'There is a need to…' → 'You need to…' or 'This requires…'"
+      - "'One should consider…' → 'Consider…'"
+      - "'It has been determined that…' → 'We found that…'"
+    nominalisation_as_passive_proxy:
+      description: "Nominalisations often mask passive agency — the verb is turned into a noun, hiding who acts"
+      examples:
+        - "'The implementation of the solution' → 'Implementing the solution'"
+        - "'Achievement of the target' → 'Achieving the target'"
+        - "'The provision of training' → 'Providing training'"
+
+  acceptable_passive_exceptions:
+    scientific_writing:
+      description: "When describing experimental or analytical methods where the agent (researcher) is conventionally omitted"
+      example: "'The data were collected between January and March 2025'"
+    diplomatic_or_legal:
+      description: "When deliberately omitting the agent to avoid blame or maintain neutrality"
+      example: "'Errors were made in the original report'"
+    genuinely_unknown_agent:
+      description: "When it is impossible or irrelevant to identify who performed the action"
+      example: "'The building was constructed in 1923'"
+
+# ==============================================================================
+# CONCISENESS STANDARDS
+# ==============================================================================
+
+conciseness_standards:
+  description: >
+    Operationalises word economy using the Minimum Effective Dose principle from
+    The Cognitive Interface research: provide exactly enough information to support
+    comprehension and no more — ruthlessly prune redundant streams. The Tone of Voice
+    Guide codifies this as Economist-like Precision.
+    Source: Research - The Cognitive Interface; tone_of_voice_guide.md
+
+  information_to_word_ratio:
+    description: "Proportion of words that carry new, non-redundant information"
+    scoring_targets:
+      excellent: { min_ratio: 0.85 }
+      good: { min_ratio: 0.70, max_ratio: 0.85 }
+      acceptable: { min_ratio: 0.55, max_ratio: 0.70 }
+      below_standard: { min_ratio: 0.40, max_ratio: 0.55 }
+      poor: { max_ratio: 0.40 }
+    measurement_proxy: "Count of filler phrases, redundant restatements, and content-free hedging per 100 words"
+
+  nominalisation_detection:
+    description: "Nominalisations inflate word count and obscure agency — convert back to verb form"
+    patterns_to_flag:
+      - "the achievement of → achieving"
+      - "the implementation of → implementing"
+      - "the provision of → providing"
+      - "make a decision → decide"
+      - "give consideration to → consider"
+      - "perform an analysis of → analyse"
+      - "conduct a review of → review"
+      - "have a discussion about → discuss"
+      - "provide assistance to → help"
+      - "make an assumption → assume"
+
+  filler_phrase_elimination:
+    description: "Content-free phrases that consume words without adding meaning. Flag and delete."
+    fillers:
+      - "It is important to note that"
+      - "It should be noted that"
+      - "As mentioned previously"
+      - "In terms of"
+      - "With respect to"
+      - "At the end of the day"
+      - "Needless to say"
+      - "It goes without saying that"
+      - "As a matter of fact"
+      - "In light of the foregoing"
+      - "Pursuant to"
+      - "It is worth mentioning that"
+
+  redundancy_types:
+    direct_repetition:
+      description: "Same idea stated in adjacent sentences without additional meaning"
+      fix: "Delete the second instance or merge into one stronger sentence"
+    synonymous_pairs:
+      description: "Paired words that mean the same thing: 'null and void', 'cease and desist', 'each and every'"
+      fix: "Use one word only"
+    table_prose_redundancy:
+      description: "Body prose that re-states the data points visible in an adjacent table verbatim — forces cross-referencing that consumes working memory without adding understanding"
+      fix: "Prose should state the insight drawn from the table; the table supplies the evidence"
+      source: "Research - The Cognitive Interface - Operationalizing UxD for Documents and Reports.md"
+
+# ==============================================================================
+# PLAIN LANGUAGE COMPLIANCE
+# ==============================================================================
+
+plain_language_compliance:
+  description: >
+    ISO 24495-1:2023 operationalises 'clarity' into four governing principles for plain
+    language. All written content must satisfy all four principles to pass compliance.
+    Source: Research - The Cognitive Interface - Operationalizing UxD for Documents and Reports.md
+
+  iso_24495_1_2023:
+    name: "ISO 24495-1:2023 Plain Language Standard"
+    principles:
+      relevant:
+        description: "The reader gets what they need and nothing else"
+        test: "Does every section serve the reader's decision or learning need? Is any content included for the writer's benefit rather than the reader's?"
+        compliance_check: "Remove any content that does not contribute to reader understanding or action"
+        mayer_mapping: "Coherence Principle — exclude extraneous material"
+      findable:
+        description: "The reader can easily locate the information they need"
+        test: "Can a reader scanning only headings and bold text reconstruct the full structure? Is navigation infrastructure present (headings, labels, bold topic sentences)?"
+        compliance_check: "Insert headings every 200-300 words in long-form content; bold the core insight in each paragraph's topic sentence"
+        mayer_mapping: "Signaling Principle — highlight essential material"
+      understandable:
+        description: "The reader can grasp the meaning on first reading"
+        test: "FK Grade Level within target range? Technical terms defined at first use? Active voice default?"
+        compliance_check: "Run readability audit; verify jargon ratio within target; check passive voice ratio"
+        mayer_mapping: "Redundancy + Contiguity Principles"
+      usable:
+        description: "The reader can act on the information"
+        test: "Are instructions written as numbered steps in active voice? Do data visualisations use action captions (not topic titles)? Is the call to action explicit?"
+        compliance_check: "Verify all process descriptions use numbered, active-voice steps; verify chart titles state conclusions"
+        mayer_mapping: "Germane Load — cognitive resources freed for action"
+    scoring:
+      method: "Score each principle 0–1 (0 = fails, 0.5 = partial, 1 = fully met)"
+      pass_threshold: 3.0
+      excellent_threshold: 3.5
+      note: "All four principles must score >0 — a zero on any principle is a critical failure regardless of total score"
+
+# ==============================================================================
+# ANTI-PATTERNS
+# ==============================================================================
+
+anti_patterns:
+  description: "Writing patterns that degrade quality, comprehension, or cognitive efficiency. All carry penalty weight."
+
+  wall_of_paragraphs:
+    description: "Long, unbroken paragraphs (10+ lines) with no subheadings, no visual relief, and no bold anchoring"
+    cognitive_impact: "Eliminates visual resting points; forces F-Pattern scanning failure; reader skips content embedded in the right half of paragraphs. Source: The Cognitive Interface."
+    fix: "Break paragraphs at 5-6 lines. Insert H2/H3 subheading every 200-300 words. Bold core insight in first sentence of each paragraph."
+    penalty_key: excessive_paragraph_length
+
+  filler_opening:
+    description: "Beginning sentences or documents with content-free phrases: 'It is important to note that…', 'As we can see from the above…', 'In terms of…'"
+    cognitive_impact: "Delays information delivery; trains reader to skip openings; accumulates extraneous word count reducing information density"
+    fix: "Delete the filler phrase entirely. The sentence almost always works better without it."
+    penalty_key: filler_phrase_density
+
+  passive_voice_default:
+    description: "Using passive voice as the default construction when an active alternative exists and the agent is known"
+    cognitive_impact: "Obscures causality and agency; requires additional parsing step to identify who acts; reduces directness and impact. Mayer Personalization Principle violation."
+    fix: "Identify the agent (who/what performs the action) and make them the grammatical subject"
+    penalty_key: passive_voice_excess
+
+  jargon_barrier:
+    description: "Technical acronyms and domain terms used without definition, calibrated to an audience that does not share that domain"
+    cognitive_impact: "Creates hard comprehension failure for non-specialist readers; signals exclusion; may mask weak reasoning (jargon as authority substitute)"
+    fix: "Apply first-use definition rule; run audience-tier denylist check; substitute plain alternatives where available"
+    penalty_key: undefined_jargon
+
+  nominalisation_creep:
+    description: "Converting strong active verbs into noun phrases ('the implementation of', 'achievement of', 'conduct a review of')"
+    cognitive_impact: "Inflates word count; obscures agency; strains sentence parsing; reduces information density"
+    fix: "Convert back to verb form: 'implementing', 'achieving', 'reviewing'"
+    penalty_key: nominalisation_excess
+
+  tone_drift:
+    description: "Register or voice shifting unexpectedly between sections — formal opening, colloquial body, academic conclusion"
+    cognitive_impact: "Disorients reader; signals lack of editorial control; undermines credibility; forces reader to recalibrate voice expectations mid-document"
+    fix: "Read entire document aloud for tonal consistency; align all sections to the six voice characteristics in the Tone of Voice Guide"
+    penalty_key: tone_inconsistency
+
+  cliche_dependency:
+    description: "Using overused expressions as shortcuts: 'at the end of the day', 'moving the needle', 'low-hanging fruit', 'thinking outside the box'"
+    cognitive_impact: "Reader perception of laziness and lack of precision; clichés carry no concrete meaning and act as filler; may not translate across cultures"
+    fix: "Say the actual thing the cliché gestures at. If the cliché means 'the simplest tasks to complete first', write that."
+    penalty_key: cliche_density
+
+  causal_bullet_masking:
+    description: "Using bullet lists to present causally-related ideas without explicit connective language — listing 'Revenue declined' and 'New competitor entered market' as separate bullets without stating the causal relationship"
+    cognitive_impact: "Reader must infer the causal connection; masks weak logic; prevents the author from noticing logical gaps. Source: The Cognitive Interface (Amazon 6-Pager principle)."
+    fix: "Use prose for causal chains: 'Revenue declined because a new competitor entered the market.' Reserve bullets for genuinely independent, list-appropriate items."
+    penalty_key: causal_bullet_masking
+
+  false_precision:
+    description: "Reporting figures with unnecessary decimal places or false specificity: '$1,234,567.89', '12.453%', 'we have seen improvements'"
+    cognitive_impact: "High extraneous load processing irrelevant digits; erodes trust by implying impossible accuracy in forecasts; vague qualitative claims provide no information. Source: The Cognitive Interface."
+    fix: "Round to significant figures: '$1.2M', '12.5%'. Replace vague qualitative claims with concrete specifics: 'seven teams' not 'many teams'."
+    penalty_key: false_precision
+
+  redundant_restatement:
+    description: "Restating the same idea in adjacent sentences or in prose that duplicates a table or figure"
+    cognitive_impact: "The redundancy effect (CLT): processing identical information streams consumes working memory without adding understanding. Source: The Cognitive Interface."
+    fix: "Prose adjacent to a table or figure should state the insight, not re-describe the data. One statement of each idea is sufficient."
+    penalty_key: content_redundancy
+
+# ==============================================================================
+# QUALITY CHECKS
+# ==============================================================================
+
+checks:
+  readability_check:
+    metric: "Flesch-Kincaid Grade Level"
+    tool_options: ["Microsoft Word Readability Statistics", "Hemingway App", "Readable.io"]
+    target_by_audience:
+      general_corporate: { min: 6, max: 10, ideal: 8 }
+      technical: { min: 10, max: 12, ideal: 11 }
+      executive: { min: 6, max: 8, ideal: 7 }
+      learning_content: { min: 6, max: 9, ideal: 8 }
+    failure_threshold:
+      below: 5
+      above: 14
+
+  sentence_length_check:
+    max_words_per_sentence: 30
+    target_average_words: 16
+    variety_minimum: 0.30
+
+  passive_voice_check:
+    max_passive_ratio_general: 0.15
+    max_passive_ratio_technical: 0.25
+    detection: "Flag all 'to be + past participle' constructions for manual review of agent availability"
+
+  jargon_ratio_check:
+    max_ratio_general: 0.12
+    max_ratio_executive: 0.08
+    max_ratio_technical: 0.20
+    first_use_definition: "Verify all technical terms, acronyms, and domain expressions defined at first occurrence"
+
+  filler_phrase_check:
+    threshold_per_500_words: 2
+    critical_threshold_per_500_words: 5
+    scan_for: ["It is important to note", "It should be noted", "In terms of", "With respect to", "At the end of the day", "Needless to say"]
+
+  cliche_check:
+    threshold_per_500_words: 1
+    scan_for: ["at the end of the day", "thinking outside the box", "low-hanging fruit", "move the needle", "game changer", "circle back", "deep dive", "bandwidth", "paradigm shift"]
+
+  tone_consistency_check:
+    method: "Read aloud full document; flag any section where voice, register, or pronoun use departs from the established character"
+    six_characteristics: ["professional", "approachable", "witty", "informed_and_enthusiastic", "clear_and_succinct", "economist_precision"]
+
+  iso_24495_1_check:
+    score_each_principle: true
+    pass_threshold: 3.0
+    principles: ["relevant", "findable", "understandable", "usable"]
+
+  parallelism_check:
+    rule: "All items in lists and series must share the same grammatical form"
+    flag_mixed_forms: true
+
+# ==============================================================================
+# THRESHOLDS
+# ==============================================================================
+
+thresholds:
+  fk_grade_max_general: 10
+  fk_grade_max_technical: 12
+  fk_grade_max_executive: 8
+  fk_grade_min_all: 5
+  gunning_fog_max_general: 12
+  gunning_fog_max_technical: 14
+  sentence_length_max_words: 30
+  sentence_length_target_avg: 16
+  sentence_length_min_words: 5
+  passive_voice_max_ratio_general: 0.15
+  passive_voice_max_ratio_technical: 0.25
+  passive_voice_target_ratio: 0.10
+  jargon_max_ratio_general: 0.12
+  jargon_max_ratio_executive: 0.08
+  jargon_max_ratio_technical: 0.20
+  jargon_max_ratio_mixed_audience: 0.10
+  filler_phrases_max_per_500_words: 2
+  cliches_max_per_500_words: 1
+  information_to_word_ratio_min: 0.55
+  information_to_word_ratio_excellent: 0.85
+  paragraph_max_lines: 6
+  heading_frequency_max_words: 300
+  iso_compliance_pass_score: 3.0
+  iso_compliance_excellent_score: 3.5
+  sentence_variety_min_ratio: 0.30
+  subordinate_clause_max_per_sentence: 2
+  line_length_optimal_cpl: 66
+  line_length_max_cpl: 75
+
+# ==============================================================================
+# PENALTIES
+# ==============================================================================
+
+penalties:
+  fk_grade_above_threshold: 0.12        # FK Grade above audience ceiling (e.g., >10 for general audience)
+  passive_voice_excess: 0.10            # Passive voice ratio >20% where agent exists and active is possible
+  undefined_jargon: 0.10                # Technical terms used without first-use definition
+  jargon_ratio_exceeded: 0.08           # Jargon ratio exceeds audience-tier maximum
+  excessive_paragraph_length: 0.07      # Paragraphs >6 lines without visual break or heading
+  content_redundancy: 0.07              # Same idea restated without additive meaning (redundancy effect violation)
+  tone_inconsistency: 0.06              # Register or voice drifts mid-document
+  causal_bullet_masking: 0.06           # Bullets used for causally-related items without explicit connectives
+  nominalisation_excess: 0.06           # Nominalisations used where active verb form available
+  filler_phrase_density: 0.05           # >2 filler phrases per 500 words
+  cliche_density: 0.05                  # >1 cliché per 500 words
+  false_precision: 0.04                 # Unnecessary decimal places in figures or vague qualitative claims
+  missing_parallelism: 0.04             # Lists and series with mixed grammatical forms
+  sentence_length_violation: 0.04       # Average sentence length >25 words
+  heading_gap_violation: 0.03           # >300 words between headings in long-form content
+  iso_compliance_failure: 0.08          # ISO 24495-1 total score <3.0
+
+# ==============================================================================
+# BONUSES
+# ==============================================================================
+
+bonuses:
+  fk_grade_excellent: 0.03              # FK Grade at or below ideal for audience tier
+  active_voice_exemplary: 0.02          # Passive voice ratio <8% with contextually justified exceptions
+  jargon_mastery: 0.02                  # Jargon ratio well below target with all terms defined and plain alternatives used
+  zero_fillers: 0.02                    # No filler phrases detected across full document
+  sentence_variety_excellent: 0.02      # Sentence variety ratio >0.40 — strong rhythmic range
+  parallelism_consistent: 0.01          # Every list and series uses parallel grammatical form throughout
+  tone_fully_realised: 0.02             # All six voice characteristics present and stable across the full document
+  economist_precision: 0.02             # All quantitative claims specific; no vague qualitative hedging; information-to-word ratio >0.85
+  iso_compliance_excellent: 0.02        # ISO 24495-1 total score ≥3.5
+  plain_english_exemplary: 0.02         # Systematic use of plain English substitutions; no jargon replaceable by simpler alternative
+  causal_logic_explicit: 0.01           # Causal relationships in prose stated with explicit connective language throughout
+  first_use_definitions_complete: 0.01  # Every technical term, acronym, and domain expression defined at first use without exception

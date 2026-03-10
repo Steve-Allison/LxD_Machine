@@ -1,0 +1,859 @@
+_meta:
+  id: cognitive_load_rubric
+  title: Cognitive Load Rubric
+  description: Cognitive load assessment rubric based on CLT (Sweller), Mayer's 15 Principles, reading physiology, typographic standards, and document design for corporate presentations and learning materials.
+  domain: pedagogical
+  domain_type: workflow
+  purpose: scoring
+  version: "1.4.0"
+  last_updated: "2026-03-01"
+  corpus_sources:
+    - "Corpus/Research/Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md"
+    - "Corpus/Research/Best Practices for Writing Effective Corporate Learning Content.md"
+    - "Corpus/Research/Research - Comprehensive Learning Design Framework.md"
+    - "Corpus/Research/The Cognitive Interface: Operationalizing User Experience Design for Documents and Reports.md"
+
+  relationships:
+    - target: scoring/visual_design_rubric.yaml
+      type: related_to
+    - target: scoring/presentation_profiles_rubric.yaml
+      type: related_to
+
+dimensions:
+  - name: intrinsic_load_management
+    description: "Management of inherent content complexity through sequencing, chunking, and element count control"
+    score_levels:
+      - score: 0
+        label: overloaded
+        description: "Element count exceeds 7±2 threshold; no chunking strategy applied"
+      - score: 1
+        label: high
+        description: "Element count near threshold; partial chunking applied inconsistently"
+      - score: 2
+        label: managed
+        description: "Elements within Miller/Cowan limits; logical chunking evident"
+      - score: 3
+        label: optimised
+        description: "Minimal element count with progressive disclosure; cognitive pacing throughout"
+  - name: extraneous_load_reduction
+    description: "Reduction of unnecessary cognitive effort via text density, typography, and reading physiology standards"
+    score_levels:
+      - score: 0
+        label: high_extraneous
+        description: "Dense text, poor typography, no visual scanning patterns — maximises unnecessary load"
+      - score: 1
+        label: elevated
+        description: "Some text density or typography issues creating friction"
+      - score: 2
+        label: acceptable
+        description: "Text density and typography meet standards; scanning patterns supported"
+      - score: 3
+        label: minimal
+        description: "Exemplary text discipline; typography optimises saccade and fixation patterns"
+  - name: germane_load_facilitation
+    description: "Active schema formation supported by Mayer's multimedia principles and progressive disclosure"
+    score_levels:
+      - score: 0
+        label: none
+        description: "No multimedia learning principles applied; no progressive disclosure"
+      - score: 1
+        label: partial
+        description: "Some Mayer principles applied; limited schema-building support"
+      - score: 2
+        label: adequate
+        description: "Majority of applicable Mayer principles met; disclosure layering present"
+      - score: 3
+        label: exemplary
+        description: "Full Mayer principle compliance; systematic progressive disclosure throughout"
+  - name: visual_organisation
+    description: "Gestalt principles, information architecture, and structural affordances applied to reduce cognitive effort"
+    score_levels:
+      - score: 0
+        label: disorganised
+        description: "No evident gestalt grouping or visual hierarchy"
+      - score: 1
+        label: partial
+        description: "Some grouping and hierarchy but inconsistent"
+      - score: 2
+        label: organised
+        description: "Clear gestalt application and Minto/SCQA information architecture"
+      - score: 3
+        label: exemplary
+        description: "Optimal information architecture with consistent gestalt and structural affordances"
+  - name: compliance_and_checks
+    description: "Adherence to ISO 24495-1 plain language standard and quantitative threshold compliance"
+    score_levels:
+      - score: 0
+        label: non_compliant
+        description: "Fails plain language thresholds; multiple quantitative violations"
+      - score: 1
+        label: partial
+        description: "Some threshold violations; plain language partially applied"
+      - score: 2
+        label: compliant
+        description: "Meets quantitative thresholds and plain language standard"
+      - score: 3
+        label: exemplary
+        description: "All thresholds met with bonuses; ISO 24495-1 fully applied"
+
+load_types:
+  intrinsic:
+    description: "Inherent difficulty of content (cannot eliminate, only manage)"
+    management_strategies:
+      - segmenting: "Break complex content into chunks"
+      - sequencing: "Simple → Complex progression"
+      - pre_training: "Teach components before integrated task"
+      - information_mapping:
+          description: "Horn's Information Mapping — assign each block to one of six information types; each block answers exactly one question and carries a label (heading) for scanning without reading"
+          six_types:
+            - "Procedure — steps to perform a task"
+            - "Process — how a system works or an event flows"
+            - "Principle — rules, policies, or axioms"
+            - "Concept — definitions and examples of a class of things"
+            - "Structure — physical or logical parts of an object"
+            - "Fact — verifiable data statements without temporal sequence"
+          cognitive_benefit: "Scanning labels allows navigation without processing content — reduces intrinsic load during the search phase"
+          research_basis: "The Cognitive Interface: Operationalizing User Experience Design for Documents and Reports"
+    measurement: "Based on content complexity and learner prior knowledge; Bloom's level serves as a proxy (higher Bloom level = higher intrinsic load requiring more aggressive segmentation)"
+
+  extraneous:
+    description: "Unnecessary effort from poor design (MUST eliminate)"
+    sources:
+      - decorative_images: "Clip art, irrelevant graphics"
+      - redundant_text: "Reading slides verbatim"
+      - split_attention: "Text separated from relevant graphic"
+      - complex_backgrounds: "Patterns, textures, gradients"
+      - excessive_animation: "Movement without purpose"
+      - god_table:
+          description: "Massive spreadsheet pasted into a slide/document with 20+ columns and 50+ rows — often in 6pt font to 'make it fit'"
+          cognitive_impact: "Intrinsic load exceeds the medium's capacity; reader cannot discern pattern or insight"
+          fix_protocol: "Abstract-and-Link — create summary table with key aggregated metrics in body; move full dataset to appendix or linked file"
+          research_basis: "The Cognitive Interface: Operationalizing User Experience Design for Documents and Reports"
+      - excessive_precision:
+          description: "Reporting projections or metrics with unnecessary decimal places (e.g., '$1,234,567.89' or '12.453%')"
+          cognitive_impact: "High extraneous load processing irrelevant digits; erodes trust by implying accuracy that does not exist in forecasts"
+          fix: "Round to significant figures — '$1.2M' or '12.5%'; use narrative text for variance or confidence intervals"
+          research_basis: "The Cognitive Interface: Operationalizing User Experience Design for Documents and Reports"
+      - causal_bullet_masking:
+          description: "Using bullet lists to present causally-related ideas without making the relationship explicit (e.g., listing 'Revenue down' and 'New competitor' as separate bullets without stating the causal link)"
+          cognitive_impact: "Reader must infer relationships not provided — generates unnecessary extraneous processing"
+          fix: "Use prose for causal chains: 'Revenue is down because a new competitor launched.' Reserve bullets strictly for genuine lists of items."
+          reference: "Amazon 6-Pager principle prohibits PowerPoint bullets for complex decisions"
+          research_basis: "The Cognitive Interface: Operationalizing User Experience Design for Documents and Reports"
+      - slidument:
+          description: "A PowerPoint deck designed to be both read like a document (dense text) and projected like a slide"
+          cognitive_impact: "Too small to read on screen; too disjointed to read as a report — fails at both tasks"
+          fix: "Decouple: (1) visual slide deck for the presentation — low text, high visual; (2) proper Word/PDF document for read-ahead or leave-behind"
+          research_basis: "The Cognitive Interface: Operationalizing User Experience Design for Documents and Reports"
+    measurement: "Violations of Mayer's principles"
+
+  germane:
+    description: "Productive effort for learning (maximize)"
+    generators:
+      - worked_examples: "Show solution steps"
+      - self_explanation: "Prompt why/how questions"
+      - retrieval_practice: "Quizzes, pair-share"
+      - elaborative_interrogation: "What if scenarios"
+    measurement: "Presence of active learning elements"
+
+# ==============================================================================
+# ELEMENT COUNT STANDARDS (Miller's 7±2 Rule)
+# ==============================================================================
+
+element_count:
+  description: "Maximum distinct visual elements per slide"
+  research_basis: "Miller (1956): Working memory holds 7±2 chunks"
+
+  standards:
+    ideal: { min: 5, max: 7 }
+    acceptable: { min: 3, max: 9 }
+    warning: { min: 10, max: 12 }
+    violation: { min: 13 }
+
+  element_types:
+    text_blocks:
+      - headline: "Counts as 1 element"
+      - bullet_list: "Entire list = 1 element if <5 items, else each item = 1 element"
+      - text_box: "Each independent text box = 1 element"
+
+    visuals:
+      - image: "Each image = 1 element"
+      - chart: "Chart + axis labels = 1 element (if direct labeled)"
+      - chart_with_legend: "Chart + legend = 2 elements"
+      - diagram: "Connected diagram = 1 element; disconnected = n elements"
+      - icon: "Each icon = 1 element (unless grouped < 5)"
+
+    decorative:
+      - logo: "Company logo = 0 elements (expected)"
+      - background_pattern: "1 element (extraneous load)"
+      - clip_art: "1 element per image (extraneous load)"
+
+  calculation_method: "Count each distinct item competing for attention"
+
+  by_presentation_type:
+    executive: { max: 7 }      # Information-dense, but must be scannable
+    training: { max: 7 }        # Instructional clarity critical
+    sales: { max: 7 }           # Professional, focused
+    thought_leadership: { max: 5 }  # Minimal for impact
+
+# ==============================================================================
+# TEXT DENSITY STANDARDS
+# ==============================================================================
+
+text_density:
+  description: "Maximum text per slide to prevent cognitive overload"
+
+  rules:
+    "6x6":
+      name: "Standard 6×6 Rule"
+      max_words_per_line: 6
+      max_lines_per_slide: 6
+      max_total_words: 36
+      applies_to: ["sales", "training"]
+
+    "4x4":
+      name: "Executive 4×4 Rule"
+      max_words_per_line: 4
+      max_lines_per_slide: 4
+      max_total_words: 16
+      applies_to: ["executive"]
+
+    "3x3":
+      name: "Thought Leadership 3×3 Rule"
+      max_words_per_line: 3
+      max_lines_per_slide: 3
+      max_total_words: 9
+      applies_to: ["thought_leadership"]
+
+  exemptions:
+    - quote_slides: "Long quotes allowed if visually distinct (large font, attribution)"
+    - data_tables: "Tables allowed if <5 rows × 5 columns"
+    - code_samples: "Code allowed if teaching programming (with highlighting)"
+
+  warnings:
+    wall_of_text:
+      threshold_words: 50
+      threshold_paragraph_lines: 6
+      heading_frequency: "Insert H2/H3 subheadings every 200-300 words; absence of headings in long-form content triggers F-Pattern failure mode"
+      message: "Exceeds maximum — split into multiple slides or insert subheading"
+      cognitive_mechanism: "Wall of Text causes figure-ground failure (content dominates whitespace completely), eliminating visual resting points that separate section boundaries"
+      research_basis: "The Cognitive Interface: Operationalizing User Experience Design for Documents and Reports"
+
+    bullet_hell:
+      threshold: 8
+      message: "Too many bullets — use progressive disclosure or multiple slides"
+      causal_logic_failure:
+        description: "Bullets that list causally-related ideas without explicit connective language mask weak reasoning"
+        detection: "If adjacent bullets describe events that could be connected by 'because', 'therefore', or 'as a result', the causal structure is masked"
+        fix: "Rewrite as prose sentences with explicit causal connectives; reserve bullets for genuine lists of independent items"
+      research_basis: "The Cognitive Interface: Operationalizing User Experience Design for Documents and Reports"
+
+    slidument:
+      description: "Slide deck used simultaneously as a presentation aid AND a standalone document"
+      detection: ">50 words AND designed for projection (not a handout)"
+      fix: "Decouple into separate slide deck + document artifacts"
+
+# ==============================================================================
+# READING PHYSIOLOGY
+# ==============================================================================
+
+reading_physiology:
+  description: "Physiological basis for why layout and typographic design choices succeed or fail"
+  saccade_fixation_mechanics:
+    saccade_duration_ms: "20-35"
+    fixation_duration_ms: "200-250"
+    mechanism: "Brain suppresses visual processing during saccades; information intake occurs only during fixations"
+    foveal_acuity: "During each fixation, only ~2 degrees of visual field (~3-6 letters) are seen clearly; remainder is peripheral blur"
+    regression_saccades:
+      description: "Readers frequently move eyes backward to re-read text when comprehension fails"
+      triggers: "Complex sentence structure, poor line wrapping, or excessive line length"
+      design_implication: "A high regression rate is a primary indicator of failed slide or document design"
+    layout_privilege:
+      description: "Elements placed in the right half of a slide in body zones have lower scan probability during F-Pattern scanning"
+      rule: "Left-side anchoring is physiologically privileged; key information belongs on the left margin"
+    research_basis: "The Cognitive Interface: Operationalizing User Experience Design for Documents and Reports"
+
+  scanning_patterns:
+    f_pattern:
+      description: "Failure-mode scanning: user scans top headline, drops to left margin, scans a shorter horizontal line (subhead or bullet), then hugs left margin vertically"
+      trigger: "Text-heavy slides with no visual anchors, weak heading hierarchy, or wall-of-text format"
+      consequence: "Content placed in the right 40% of text blocks during the middle of a page has lowest scan probability — effectively invisible to skimmers"
+      detection: "No visible heading hierarchy; paragraphs >5 lines without visual breaks; no bold anchoring"
+    layer_cake_pattern:
+      description: "Desired scanning: user fixates on headings and subheadings, skipping body text until a relevant section is found — rapid, efficient navigation"
+      trigger: "Strong heading hierarchy (H1/H2/H3), bolded topic sentences, visual anchors (icons, callout boxes)"
+      design_implication: "Deliberately engineer the Layer-Cake pattern by providing navigation infrastructure (headings, bold, whitespace)"
+    bold_text_as_anchor:
+      description: "Bold text arrests saccades and invites fixations — it affords skimming behavior over linear reading"
+      rule: "Bold text must signal genuinely important content; decorative or excessive bolding eliminates the scanning cue"
+    research_basis: "The Cognitive Interface: Operationalizing User Experience Design for Documents and Reports"
+
+# ==============================================================================
+# TYPOGRAPHY STANDARDS
+# ==============================================================================
+
+typography_standards:
+  description: "Typographic constraints that reduce extraneous cognitive load and enable Layer-Cake scanning"
+  line_length:
+    optimal_cpl: 66
+    acceptable_range_cpl:
+      min: 50
+      max: 75
+    failure_threshold_cpl:
+      wide: 80
+      note: "Lines >80-90 CPL cause return-sweep saccade failure — the eye lands on the wrong line, creating regressions and forcing re-reading"
+    short_failure_cpl:
+      max: 35
+      note: "Lines <35 CPL interrupt phrase parsing; reader cannot buffer complete thoughts in working memory before the line wraps"
+    alignment_rule:
+      required: "Left-aligned (ragged right)"
+      prohibited: "Fully justified text creates variable word spacing ('rivers of white') that disrupts eye tracking"
+    research_basis: "The Cognitive Interface: Operationalizing User Experience Design for Documents and Reports"
+
+  heading_hierarchy:
+    h1_title_pt:
+      min: 24
+      max: 30
+      role: "Primary importance signal"
+    h2_section_pt:
+      min: 18
+      max: 20
+      weight: "Bold"
+      role: "Signals major topic shifts"
+    h3_subsection_pt:
+      min: 14
+      max: 16
+      weight: "Semi-bold"
+      role: "Connects to paragraph clusters"
+    body_pt:
+      min: 10
+      max: 12
+      role: "Sustained reading comfort"
+    max_heading_depth: 3
+    depth_violation_note: "A 4th heading level indicates structure is too deep — promote content or move to an appendix"
+    consistency_rule: "All headings at the same level must be visually identical; inconsistency creates false semantic distinctions generating extraneous cognitive load"
+    research_basis: "The Cognitive Interface: Operationalizing User Experience Design for Documents and Reports"
+
+  bold_topic_sentence_pattern:
+    description: "Bold the core insight within the first sentence of each paragraph, creating a secondary reading path through the document"
+    effect: "A reader scanning only bolded text can reconstruct the full narrative arc without reading supporting sentences"
+    rule: "Bold must mark the insight, not random phrases — overly frequent bolding destroys the scanning cue"
+    research_basis: "The Cognitive Interface: Operationalizing User Experience Design for Documents and Reports"
+
+  heading_frequency:
+    max_words_between_headings: 300
+    min_words_between_headings: 200
+    note: "Frequency constraint (not just size constraint) — enables Layer-Cake scanning pattern and prevents F-Pattern failure"
+    applies_to: "Long-form content: documents, speaker notes, handouts"
+    research_basis: "The Cognitive Interface: Operationalizing User Experience Design for Documents and Reports"
+
+# ==============================================================================
+# GESTALT PRINCIPLES
+# ==============================================================================
+
+gestalt_principles:
+  description: "Perceptual organization principles that, when violated, generate extraneous cognitive load"
+  proximity:
+    rule: "Space above a heading must be significantly larger than space below it"
+    mechanism: "Equal above/below spacing creates ambiguity about which content block the heading governs — reader must search for the right association"
+    bullet_rule: "Bullet items must be visually closer to their own text than to adjacent bullets — small vertical gaps cause items to merge into a single perceptual shape"
+    research_basis: "The Cognitive Interface: Operationalizing User Experience Design for Documents and Reports"
+  similarity:
+    rule: "All headings at the same hierarchical level must look identical"
+    mechanism: "Font-style inconsistency between same-level headings creates false semantic distinctions — the brain searches for a meaning that does not exist, generating extraneous load"
+    application: "Consistent color for hyperlinks and callout boxes teaches users a visual vocabulary (one-time cognitive cost; ongoing retrieval benefit)"
+    research_basis: "The Cognitive Interface: Operationalizing User Experience Design for Documents and Reports"
+  closure_figure_ground:
+    whitespace_principle: "Whitespace is not empty — it is an active design element defining the 'ground'; content is the 'figure'; adequate margins and padding frame content and provide visual resting points"
+    wall_of_text_failure: "Figure dominates ground completely, eliminating resting points needed for the eye to distinguish section boundaries — triggers F-Pattern"
+    research_basis: "The Cognitive Interface: Operationalizing User Experience Design for Documents and Reports"
+
+# ==============================================================================
+# MAYER'S 15 MULTIMEDIA PRINCIPLES
+# ==============================================================================
+
+mayer_principles:
+  description: "Evidence-based principles for multimedia learning"
+
+  # ---------------------------------------------------------------------------
+  # Category 1: Reduce Extraneous Processing
+  # ---------------------------------------------------------------------------
+  reduce_extraneous:
+    coherence:
+      principle: "Exclude extraneous words, graphics, and sounds"
+      effect_size: 0.86
+      violations:
+        - decorative_clipart: "Images not relevant to content"
+        - background_music: "Audio without instructional purpose"
+        - irrelevant_stories: "Tangents unrelated to message"
+      validation: "Every element must serve instructional purpose"
+
+    signaling:
+      principle: "Highlight essential material with cues (bold, color, arrows)"
+      effect_size: 0.41
+      violations:
+        - no_emphasis: "Wall of uniform text without highlighting"
+        - excessive_highlighting: "Everything bold = nothing stands out"
+      validation: "Key terms/concepts visually emphasized"
+
+    redundancy:
+      principle: "Use graphics + narration, not graphics + narration + on-screen text"
+      effect_size: 0.72
+      violations:
+        - reading_slides_verbatim: "Speaker reads bullet points on screen"
+        - identical_text_and_audio: "Narration duplicates on-screen text exactly"
+        - table_prose_redundancy: "Body prose that re-states a table's data points verbatim — forces cross-referencing that consumes working memory without adding understanding"
+        - redundant_action_caption: "Action caption that fully repeats what is already visible in the chart"
+      minimum_effective_dose:
+        description: "Provide exactly enough information to support comprehension and no more — ruthlessly prune redundant streams"
+        applies_to: "Text, audio, visual, and caption content simultaneously present"
+      validation: "Slides complement speech; prose adds meaning not present in adjacent visual"
+      research_basis: "The Cognitive Interface: Operationalizing User Experience Design for Documents and Reports"
+
+    spatial_contiguity:
+      principle: "Place text next to corresponding graphic"
+      effect_size: 0.82
+      violations:
+        - separated_caption: "Image on left, text box on right"
+        - legend_far_from_chart: "Chart and legend on opposite sides"
+      validation: "Text labels integrated into visuals"
+
+    temporal_contiguity:
+      principle: "Present corresponding narration and graphics simultaneously"
+      effect_size: 1.30
+      violations:
+        - narration_before_visual: "Describe chart before showing it"
+        - visual_then_explanation: "Show diagram, explain 2 slides later"
+      validation: "Visual and explanation synchronized"
+
+  # ---------------------------------------------------------------------------
+  # Category 2: Manage Essential Processing
+  # ---------------------------------------------------------------------------
+  manage_essential:
+    segmenting:
+      principle: "Break lesson into learner-paced segments"
+      effect_size: 0.76
+      violations:
+        - monolithic_content: "45-minute continuous lecture"
+        - no_breaks: "Dense content without breathing room"
+      validation: "Content chunked into 10-15 minute segments"
+
+    pre_training:
+      principle: "Teach key concepts/terms before complex procedures"
+      effect_size: 0.85
+      violations:
+        - jargon_without_definition: "Use term before explaining"
+        - complex_before_simple: "Integrated task before components"
+      validation: "Terminology defined before usage"
+
+    modality:
+      principle: "Use spoken words + graphics (not on-screen text + graphics)"
+      effect_size: 1.02
+      violations:
+        - text_heavy_slides: "Paragraph text with diagram"
+        - reading_required: "Complex text user must read while viewing visual"
+      validation: "Narration over text for visual content"
+
+  # ---------------------------------------------------------------------------
+  # Category 3: Foster Generative Processing
+  # ---------------------------------------------------------------------------
+  foster_generative:
+    multimedia:
+      principle: "Use words + graphics together (not words alone)"
+      effect_size: 1.67
+      violations:
+        - text_only_slides: "Bullet points without visuals"
+        - no_diagrams: "Complex process described in text"
+      validation: "Every slide combines text + visual"
+
+    personalization:
+      principle: "Use conversational style (not formal)"
+      effect_size: 0.79
+      violations:
+        - passive_voice: "It has been determined that..."
+        - third_person: "One should consider..."
+      validation: "Active voice, 'you/we' language"
+
+    voice:
+      principle: "Use human voice (not machine)"
+      effect_size: 0.78
+      applies_to: "Video presentations, voiceover slides"
+      validation: "Human narration, not text-to-speech"
+
+    image:
+      principle: "Adding instructor image can help (if gestures/facial cues relevant)"
+      effect_size: 0.22
+      applies_to: "Video presentations, talking head segments"
+      caveat: "Small effect - only use if adds value"
+
+    embodiment:
+      principle: "Use human-like gestures and movements in agents/avatars"
+      effect_size: 0.37
+      applies_to: "Animated explanations, avatar presenters"
+
+    immersion:
+      principle: "Immersive VR can enhance engagement"
+      effect_size: 0.35
+      applies_to: "VR training simulations"
+      caveat: "Context-dependent effectiveness"
+
+    generativity:
+      principle: "Prompt learners to generate content (not just receive)"
+      effect_size: 0.72
+      violations:
+        - passive_consumption: "No questions, no activities"
+        - no_retrieval_practice: "No checks for understanding"
+      validation: "Prompts for application, questions, self-explanation"
+
+# ==============================================================================
+# DATA VISUALIZATION
+# ==============================================================================
+
+data_visualization:
+  description: "Cognitive design standards for charts, tables, and data displays"
+  action_caption_standard:
+    definition: "Chart titles that state the conclusion drawn from the data (not just the data topic)"
+    anti_pattern:
+      name: "Topic Title"
+      example: "Figure 1: Revenue by Region 2023"
+      cognitive_cost: "Forces reader to analyze bars, do mental arithmetic, and independently deduce the conclusion — reader must solve the puzzle"
+    best_practice:
+      name: "Action Caption"
+      example: "Figure 1: Revenue in the West region dropped 15% due to supply chain failure"
+      cognitive_benefit: "States meaning immediately; chart serves as evidence to verify the claim — reader confirms rather than discovers"
+    research_basis: "The Cognitive Interface: Operationalizing User Experience Design for Documents and Reports"
+
+  cognitive_fit:
+    description: "Cognitive Fit Theory — representation format must match user's task type to minimize cognitive load"
+    task_format_map:
+      extract_specific_value:
+        format: "Table"
+        mechanism: "Symbolic lookup — precise, indexical retrieval"
+      compare_values:
+        format: "Bar chart"
+        mechanism: "Spatial magnitude comparison — height comparison requires less cognitive load than mental subtraction"
+      identify_trend:
+        format: "Line chart"
+        mechanism: "Slope and rate-of-change visible instantly; calculating from a table is slow and extraneous"
+      understand_composition:
+        format: "Stacked bar or Treemap"
+        mechanism: "Part-to-whole relationships visible spatially — avoid pie charts (the brain cannot accurately compare areas)"
+    research_basis: "The Cognitive Interface: Operationalizing User Experience Design for Documents and Reports"
+
+  data_ink_ratio:
+    description: "Tufte's Data-Ink Ratio — proportion of ink used to convey data vs. total ink used in the graphic"
+    formula: "Data-Ink Ratio = Data-Ink / Total Ink"
+    target: "Maximize toward 1.0"
+    elements_to_remove:
+      - "Gridlines"
+      - "Background colors on charts"
+      - "3D effects"
+      - "Decorative borders"
+      - "Redundant axis labels"
+    design_principle: "Good visualizations allow an immediate macro reading (the trend) and a detailed micro reading (the specific data point) on closer inspection — no decorative ink required"
+    research_basis: "Tufte; The Cognitive Interface: Operationalizing User Experience Design for Documents and Reports"
+
+# ==============================================================================
+# INFORMATION ARCHITECTURE
+# ==============================================================================
+
+information_architecture:
+  description: "Structural frameworks for sequencing information to minimize cognitive load for the target audience"
+  minto_pyramid:
+    description: "Inverted academic structure for executive audiences — conclusion first, supporting arguments second, evidence last"
+    structure:
+      assertion: "Single governing thought, recommendation, or conclusion — BLUF (Bottom Line Up Front); must appear in the first paragraph or slide"
+      arguments: "3–5 key arguments supporting the assertion"
+      evidence: "Data, analysis, and facts supporting the arguments"
+    scqa_introduction_pattern:
+      name: "SCQA (Situation / Complication / Question / Answer)"
+      steps:
+        - "Situation — non-controversial status quo the audience accepts"
+        - "Complication — the problem or trigger requiring action"
+        - "Question — the pivotal question raised by the complication"
+        - "Answer — the recommendation (the Pyramid top)"
+    research_basis: "Minto (1987); The Cognitive Interface: Operationalizing User Experience Design for Documents and Reports"
+
+# ==============================================================================
+# SLIDE-SPECIFIC STANDARDS
+# ==============================================================================
+
+slide_types:
+  title_slide:
+    max_elements: 5
+    required: ["title", "context_or_subtitle"]
+    optional: ["date", "presenter", "logos"]
+    text_limit: 20  # words total
+
+  content_slide:
+    max_elements: 7
+    max_bullets: 6
+    max_words: 36
+    required: ["headline"]
+    violations:
+      - wall_of_text: ">50 words"
+      - bullet_hell: ">8 bullets"
+
+  data_slide:
+    max_elements: 5
+    required: ["headline", "chart_or_table"]
+    violations:
+      - chart_with_legend: "Use direct labeling instead"
+      - unlabeled_axes: "All axes must be labeled"
+      - no_insight_in_title: "Title should state insight, not just topic"
+      - topic_title_not_action_caption: "Chart title is a label ('Revenue by Region 2023') rather than an action caption stating the conclusion ('West region revenue dropped 15% due to supply chain failure')"
+      - god_table: "Table with >10 columns or >20 rows — exceeds readable density; apply Abstract-and-Link fix (summary table in body, full data in appendix)"
+      - low_data_ink_ratio: "Chart contains gridlines, 3D effects, decorative borders, or background colors that add no data information"
+      - cognitive_fit_mismatch: "Chart type does not match the reader's analytical task (e.g., pie chart for comparison, table for trend)"
+
+  visual_slide:
+    max_elements: 3
+    required: ["image"]
+    max_text_overlay: 9  # words
+    violations:
+      - text_obscuring_image: "Text blocks covering key visual area"
+      - low_contrast_overlay: "White text on white background"
+
+  quote_slide:
+    max_elements: 4
+    required: ["quote_text", "attribution"]
+    max_quote_words: 50
+    violations:
+      - missing_attribution: "No source cited"
+      - quote_too_long: ">75 words (split to multiple slides)"
+
+  section_divider:
+    max_elements: 3
+    required: ["section_name"]
+    max_words: 10
+    purpose: "Transition, breathing room, signposting"
+
+# ==============================================================================
+# PROGRESSIVE DISCLOSURE
+# ==============================================================================
+
+progressive_disclosure:
+  description: "Reveal information incrementally to manage cognitive load"
+
+  when_to_use:
+    - complex_process: "Multi-step procedures (>5 steps)"
+    - long_list: "More than 7 items"
+    - before_after: "Comparison where showing both simultaneously overwhelms"
+
+  techniques:
+    build_slides:
+      description: "Add one element at a time (animation or separate slides)"
+      pros: "Focused attention, controlled pacing"
+      cons: "Increases slide count"
+      best_for: "Training, complex concepts"
+
+    layered_diagrams:
+      description: "Start simple, add complexity in stages"
+      pros: "Scaffolding, schema building"
+      best_for: "Architecture, process flows"
+
+    click_to_reveal:
+      description: "Interactive elements expand on click"
+      pros: "User-controlled pacing"
+      cons: "Requires interactive platform (Gamma, web)"
+      best_for: "Self-paced learning"
+
+  four_layer_model:
+    description: "Structured disclosure model for multi-audience presentations and long-form documents"
+    layer_1_billboard:
+      content: "Title, executive summary, key headings"
+      requirement: "A reader who reads only this layer must walk away with the core message and recommendation"
+    layer_2_skim:
+      content: "Topic sentences, bolded keywords, data visualizations, pull quotes, sidebar summaries"
+      requirement: "Enables validation of arguments without reading dense prose"
+    layer_3_deep_dive:
+      content: "Body paragraphs with nuance, the 'how', and causal reasoning"
+      audience: "Readers who need to be convinced or must implement the recommendation"
+    layer_4_repository:
+      content: "Appendices, data tables, methodology notes, raw data links"
+      audience: "Technical auditors who must verify the work"
+    success_criterion: "If a reader can complete their decision task using only Layer 1 or Layer 2, the document has succeeded"
+    research_basis: "The Cognitive Interface: Operationalizing User Experience Design for Documents and Reports"
+
+  anti_patterns:
+    reveal_overuse:
+      description: "Every bullet animates in one at a time"
+      problem: "Slows pacing, annoys audience"
+      fix: "Use for complex content only, not every slide"
+
+# ==============================================================================
+# STRUCTURAL AFFORDANCES
+# ==============================================================================
+
+structural_affordances:
+  description: "Layout properties that invite specific reading behaviors without explicit instruction — design the reading path before writing the content"
+  sidebars:
+    description: "Placing technical details in a shaded sidebar visually signals 'you can skip this'"
+    affordance: "Empowers readers to self-manage cognitive load; advanced readers find technical depth; general readers skip without penalty"
+    research_basis: "The Cognitive Interface: Operationalizing User Experience Design for Documents and Reports"
+  bold_text:
+    description: "Bold text acts as a visual anchor that arrests saccades and invites fixations"
+    affordance: "Affords skimming behavior over linear reading — reader reconstructs narrative from bold phrases alone"
+    caution: "Decorative or excessive bolding eliminates the scanning cue"
+    research_basis: "The Cognitive Interface: Operationalizing User Experience Design for Documents and Reports"
+  callout_boxes:
+    description: "A distinct border or icon (e.g., 'Warning') affords 'stop and study' behavior"
+    affordance: "Overrides the natural tendency to scan; signals content that requires full attention"
+    research_basis: "The Cognitive Interface: Operationalizing User Experience Design for Documents and Reports"
+
+# ==============================================================================
+# CHUNKING STRATEGIES
+# ==============================================================================
+
+chunking:
+  description: "Group related information to reduce cognitive load"
+
+  strategies:
+    rule_of_3:
+      description: "Group content in sets of 3 (or 5 max)"
+      examples:
+        - "3 key benefits"
+        - "5 implementation phases"
+        - "3 customer success stories"
+      research: "Optimal for memory retention"
+
+    categorical:
+      description: "Group by category or theme"
+      example: "Group features by user role (Admin, User, Manager)"
+
+    hierarchical:
+      description: "Parent categories with sub-items"
+      example: "Benefits → Financial + Operational + Strategic"
+      limit: "Max 2 levels deep per slide"
+
+    temporal:
+      description: "Group by time sequence"
+      example: "Before → During → After implementation"
+
+    spatial:
+      description: "Group by location or physical arrangement"
+      example: "On-premise + Cloud + Edge components"
+
+# ==============================================================================
+# COMPLIANCE STANDARDS
+# ==============================================================================
+
+compliance_standards:
+  iso_24495_1_2023:
+    name: "ISO 24495-1:2023 Plain Language Standard"
+    description: "International standard operationalizing clarity into four governing principles"
+    principles:
+      relevant: "The reader gets what they need and nothing else — Coherence Principle mapping"
+      findable: "The reader can easily locate information via navigation, hierarchy, and structural affordances — Signaling Principle mapping"
+      understandable: "The reader can grasp meaning via plain language and clear visuals — Redundancy + Contiguity Principle mapping"
+      usable: "The reader can act on the information via clear instructions and action captions — Germane Load mapping"
+    compliance_check: "Score each principle 0-1; total ≥ 3.0/4.0 = pass"
+    research_basis: "The Cognitive Interface: Operationalizing User Experience Design for Documents and Reports"
+
+# ==============================================================================
+# QUALITY CHECKS
+# ==============================================================================
+
+checks:
+  element_count_check:
+    ideal: { min: 5, max: 7 }
+    acceptable: { min: 3, max: 9 }
+    violation: { min: 10 }
+
+  text_density_check:
+    by_type:
+      executive: { max_words: 16 }
+      training: { max_words: 36 }
+      sales: { max_words: 36 }
+      thought_leadership: { max_words: 9 }
+
+  mayer_principles_check:
+    critical_principles:  # Must pass
+      - coherence: "No decorative elements"
+      - multimedia: "Words + graphics on every slide"
+      - spatial_contiguity: "Text next to visuals"
+
+    recommended_principles:  # Should pass
+      - signaling: "Key concepts highlighted"
+      - segmenting: "Content chunked"
+      - personalization: "Conversational tone"
+
+  readability_check:
+    tool: "Flesch-Kincaid Grade Level"
+    target_general_business: "Grade 8-10"
+    target_technical_content: "Grade 12"
+    mechanism: "High score → shorten sentences (reduce words per sentence) and simplify vocabulary (reduce syllables per word); do not simplify industry-standard technical terms"
+    research_basis: "The Cognitive Interface: Operationalizing User Experience Design for Documents and Reports"
+
+  action_caption_check:
+    requirement: "All chart titles must state conclusions, not topics"
+    failure: "Topic-title chart title (label without insight)"
+
+  scanning_pattern_check:
+    requirement: "Design must engineer Layer-Cake scanning pattern"
+    indicators:
+      - "Visible H1/H2/H3 heading hierarchy"
+      - "Bold topic sentences in paragraphs"
+      - "Heading every 200-300 words in long-form content"
+      - "No wall-of-text blocks (>6 continuous lines without visual break)"
+
+  compliance_check:
+    iso_24495_1: "Score all four principles (Relevant, Findable, Understandable, Usable)"
+
+# ==============================================================================
+# THRESHOLDS
+# ==============================================================================
+
+thresholds:
+  max_elements_per_slide: 7
+  max_words_per_slide: 36  # default (varies by type)
+  max_bullets_per_slide: 6
+  min_mayer_principles_met: 8  # out of 15
+  min_critical_principles_met: 3  # out of 3
+  line_length_optimal_cpl: 66
+  line_length_max_cpl: 75
+  line_length_failure_cpl: 80
+  paragraph_max_lines: 6
+  heading_frequency_max_words: 300
+  max_heading_depth: 3
+  wall_of_text_word_threshold: 50
+  bullet_hell_threshold: 8
+  table_max_columns: 10
+  table_max_rows: 20
+
+# ==============================================================================
+# PENALTIES
+# ==============================================================================
+
+penalties:
+  excessive_elements: 0.10          # >9 elements per slide
+  wall_of_text: 0.08                # >50 words on slide
+  bullet_hell: 0.06                 # >8 bullets
+  decorative_elements: 0.05         # Coherence principle violation
+  split_attention: 0.07             # Spatial contiguity violation
+  redundancy_violation: 0.06        # Reading slides verbatim
+  no_visual: 0.08                   # Text-only slide (multimedia violation)
+  false_precision: 0.04             # Unnecessary decimal places in data labels (e.g., 12.453%)
+  low_data_ink_ratio: 0.05          # Gridlines, 3D effects, decorative borders on charts
+  god_table: 0.07                   # Table >10 columns or >20 rows without Abstract-and-Link treatment
+  topic_title_charts: 0.05          # Chart titles that label rather than conclude
+  slidument: 0.08                   # Dense text slide designed for simultaneous projection and reading
+  causal_bullet_masking: 0.04       # Bullets that mask causal logic requiring explicit connectives
+  line_length_failure: 0.04         # Lines >80 CPL in body text
+  heading_depth_violation: 0.03     # Heading hierarchy >3 levels deep
+
+# ==============================================================================
+# BONUSES
+# ==============================================================================
+
+bonuses:
+  optimal_elements: 0.02            # 5-7 elements consistently
+  text_minimal: 0.02                # Stricter than rule (e.g., 3×3 when 6×6 allowed)
+  mayer_exemplary: 0.03             # 12+ principles applied
+  progressive_disclosure: 0.02      # Used appropriately for complex content
+  chunking_effective: 0.02          # Rule of 3 applied throughout
+  action_captions: 0.02             # All chart titles state conclusions (not labels)
+  cognitive_fit_match: 0.02         # Chart type matches reader's analytical task
+  high_data_ink_ratio: 0.02         # Clean charts with minimal non-data ink
+  iso_compliance: 0.02              # ISO 24495-1 all four principles met
+  layer_cake_pattern: 0.02          # Strong heading hierarchy enabling Layer-Cake scanning

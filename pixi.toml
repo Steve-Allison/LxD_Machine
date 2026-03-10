@@ -1,0 +1,51 @@
+[workspace]
+name = "lxd-machine"
+version = "0.1.0"
+description = "LxD domain knowledge system — fast local SoT"
+channels = ["conda-forge"]
+platforms = ["osx-arm64"]
+
+[system-requirements]
+macos = "15.0"
+
+[dependencies]
+python = ">=3.11,<3.12"
+
+[pypi-dependencies]
+lxd-machine       = { path = ".", editable = true }
+lancedb           = ">=0.21"
+docling           = ">=2.0"
+docling-core      = ">=2.0"
+semchunk          = ">=3.2"
+tree-sitter       = ">=0.24"
+tree-sitter-c     = ">=0.24"
+tree-sitter-javascript = ">=0.25"
+tree-sitter-python = ">=0.23"
+tree-sitter-typescript = ">=0.23"
+tree-sitter-java-orchard = ">=0.0.10"
+tiktoken          = ">=0.9"
+transformers      = ">=4.50"
+httpx             = ">=0.28"
+pydantic          = ">=2.12"
+pyyaml            = ">=6.0"
+networkx          = ">=3.4"
+fastmcp           = ">=2.0"
+typer             = ">=0.15"
+rich              = ">=14.0"
+structlog         = ">=24.4"
+pyahocorasick     = ">=2.0"
+blake3            = ">=1.0"
+ruff              = ">=0.9"
+pyright           = ">=1.1"
+pytest            = ">=8.3"
+pytest-asyncio    = ">=0.25"
+
+[tasks]
+ingest    = "python -m lxd.cli ingest"
+status    = "python -m lxd.cli status"
+mcp       = "python -m lxd.mcp.server"
+eval      = "python -m lxd.cli eval"
+test      = "pytest -q"
+lint      = "ruff check src tests"
+fmt       = "ruff format src tests"
+typecheck = "pyright src"

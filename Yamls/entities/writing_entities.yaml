@@ -1,0 +1,852 @@
+_meta:
+  id: writing_entities
+  purpose: entity
+  version: 1.25.0
+  last_updated: '2026-03-09'
+  description: GLiNER entity definitions for content writing analysis including tone registers, editorial markers, script
+    format cues, readability indicators, and style pattern detection.
+  domain: writing
+  domain_type: cross_cutting
+  corpus_sources:
+  - Corpus/Research/tone_of_voice_guide.md
+  - Corpus/Research/Research - Best Practices for Writing Effective Corporate Learning Content.md
+  - Corpus/Research/Best Practices for Writing Corporate Training Video Scripts for Adult Learners.md
+  - Corpus/Research/Research - Best Practice Prompt writing for text.md
+  - Corpus/Research/Research - Best Video Script Prompts.md
+  - Corpus/Research/Research - The Cognitive Interface - Operationalizing UxD for Documents and Reports.md
+  - Corpus/Research/Content_Outline_Generator.md
+  - Corpus/Research/Best-Practice Product Descriptions.md
+  - Corpus/Research/donald_clarks_100_tips_for_effective_learning_design.md
+  - Corpus/Research/Research - Elite Speaker Linguistic Analysis Taxonomy.md
+  - Corpus/Research/Research - Presentation Delivery_ Ethos and Physicality.md
+  - Corpus/Research/Research - Personal Branding Framework for Early.md
+  - Corpus/Research/RESEARCH-BASED_ENHANCEMENTS FOR VOICE.md
+  - Corpus/Research/36_audience_analysis_and_persuasion.md
+  - Corpus/Research/Learning Experience Design - Donald Clark - Combined.md
+  - Corpus/Research/a-guide-to-good-reasoning-cultivating-intellectual-virtues-16112.md
+  - Corpus/Research/research_-_slide_deck_design_playbook_research.md
+  - Corpus/Research/Research - Slide Deck Design Playbook Research.md
+  - Corpus/Research/course-creation-flow.md
+  - Corpus/Research/research_-_canonical_presentation_methodology_research.md
+  - Corpus/Research/research_-_comprehensive_audience_analysis.md
+  relationships:
+  - target: methodology/editorial_standards.yaml
+    type: depends_on
+    description: Editorial rules and style conventions
+  - target: methodology/style_guide_standards.yaml
+    type: depends_on
+    description: Tone and voice standards
+gliner_config:
+  model: urchade/gliner_multi_pii-v1
+  batch_size: 8
+  context_window: 512
+  domain_keywords:
+    primary:
+    - tone
+    - voice
+    - style
+    - writing
+    - editorial
+    - copy
+    - script
+    - readability
+    secondary:
+    - passive voice
+    - jargon
+    - cliché
+    - nominalisation
+    - hedge
+    - clarity
+    - concision
+entity_types:
+  formal_register:
+    description: Language markers indicating formal or academic tone in corporate writing
+    canonical_id: formal_register
+    entity_kind: tone_marker
+    family: register
+    gliner_label: FORMAL_REGISTER
+    gliner_description: Formal academic register furthermore moreover notwithstanding henceforth pursuant accordingly
+    examples:
+    - furthermore, the analysis demonstrates
+    - pursuant to our agreement
+    - notwithstanding the challenges
+    - it is incumbent upon
+    - henceforth all submissions
+    anti_examples:
+    - furthermore is a long word
+    - moreover brand name
+    confidence_threshold: 0.7
+    aliases:
+    - academic tone
+    - formal language
+    indicators:
+    - furthermore
+    - moreover
+    - notwithstanding
+    - henceforth
+    - pursuant to
+    - accordingly
+    - hereby
+    - whereas
+    - it is incumbent
+    - with respect to
+    - in accordance with
+    patterns:
+    - (furthermore|moreover|notwithstanding|henceforth|hereby|accordingly)
+    - pursuant to
+    - it is (incumbent|imperative|essential) (upon|that)
+    - in accordance with
+    color: '#2c3e50'
+    relates_to:
+    - target: conversational_register
+      relation: contrasts_with
+      weight: required
+      description: Formal vs conversational register — opposing style choices
+    - target: conversational_register
+      relation: bridges
+      weight: expected
+      description: "The tone guide prescribes a voice that is 'formal but never stuffy' and 'reads like a conversation with an expert' — directly bridging formal and conversational registers per tone_of_voice_guide"
+    - target: jargon_marker
+      relation: contrasts_with
+      weight: required
+      description: "Orwell Rule 1 'Never use jargon when plain English will do' — formal register must actively avoid jargon to maintain clarity per tone_of_voice_guide"
+    - target: academic_bundle
+      relation: supports
+      weight: optional
+      description: "Formal register supports academic bundles — formal language patterns correlate with stance bundles and hedging that characterize academic/Technocrat speech (elite_speaker_taxonomy)"
+      target_file: discourse_entities
+    - target: executive_audience
+      relation: supports
+      weight: expected
+      description: "Formal register supports executive audience expectations for professional communication — senior leaders expect polished, authoritative language that conveys credibility and strategic focus per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    - target: jargon_marker
+      relation: contains
+      weight: optional
+      description: "Formal register contains industry-standard technical terms but connective language must remain plain per ISO 24495-1"
+    - target: mayer_generative_principle
+      relation: limits
+      weight: optional
+      description: "Formal impersonal style reduces social engagement and deeper processing per personalization principle per Applying Mayer's Principles Practical Checklist"
+      target_file: cognitive_load_entities
+  conversational_register:
+    description: Informal or conversational language patterns in corporate content
+    canonical_id: conversational_register
+    entity_kind: tone_marker
+    family: register
+    gliner_label: CONVERSATIONAL_REGISTER
+    gliner_description: Conversational informal tone okay so let's check this out here's the deal you know what
+    examples:
+    - okay, so let's dive in
+    - here's the deal
+    - check this out
+    - you know what works?
+    - let's be real
+    - the thing is
+    anti_examples:
+    - deal closed
+    - check the box
+    confidence_threshold: 0.65
+    aliases:
+    - informal tone
+    - casual style
+    indicators:
+    - let's
+    - here's the deal
+    - okay so
+    - check this out
+    - you know what
+    - the thing is
+    - let's be real
+    - guess what
+    - right?
+    - honestly
+    patterns:
+    - (okay|alright),? so
+    - here's (the deal|the thing|what)
+    - let's (dive in|be real|get started|break this down)
+    - you know what
+    color: '#3498db'
+    relates_to:
+    - target: formal_register
+      relation: contrasts_with
+      weight: required
+      description: Conversational vs formal register
+    - target: inclusive_we
+      relation: contains
+      weight: expected
+      description: "Conversational register naturally incorporates inclusive 'we' language (let's, we're, our) as part of its informal, audience-bridging style per Ethos and Physicality research"
+      target_file: rhetorical_devices_entities
+    - target: narrative_hook
+      relation: enables
+      weight: expected
+      description: "Conversational tone enables effective video hooks by making openings feel like natural speech (Best Video Script Prompts)"
+      target_file: narrative_entities
+    - target: engagement_cue
+      relation: enables
+      weight: expected
+      description: "Conversational register directly enables audience engagement cues — informal language patterns (contractions, rhetorical questions, direct address) create participatory tone per Best Practices for Writing"
+      target_file: delivery_entities
+    - target: visionary_bundle
+      relation: supports
+      weight: expected
+      description: "Conversational register supports visionary bundles — elite speakers use participant-oriented bundles ('Let me tell you') that simulate casual dialogue (elite_speaker_taxonomy)"
+      target_file: rhetorical_devices_entities
+    - target: novice_learner
+      relation: supports
+      weight: expected
+      description: "Conversational register supports novice learners by reducing perceived complexity — informal tone with plain language and accessible phrasing lowers cognitive barriers for beginners per Comprehensive Audience Analysis"
+      target_file: audience_entities
+    - target: mayer_generative_principle
+      relation: enables
+      weight: expected
+      description: "Personalization principle shows conversational style activates social responses for deeper processing per Applying Mayer's Principles Practical Checklist"
+      target_file: cognitive_load_entities
+  passive_voice_marker:
+    description: Passive voice constructions that may reduce clarity and directness
+    canonical_id: passive_voice_marker
+    entity_kind: style_issue
+    family: editorial
+    gliner_label: PASSIVE_VOICE
+    gliner_description: Passive voice construction was done by were completed is being considered has been decided
+    examples:
+    - the report was completed by the team
+    - mistakes were made
+    - the decision has been reached
+    - it was determined that
+    - is being considered
+    anti_examples:
+    - the team was large
+    - she was happy
+    confidence_threshold: 0.75
+    aliases:
+    - passive construction
+    - passive phrasing
+    indicators:
+    - was done
+    - were made
+    - has been
+    - is being
+    - was completed
+    - were identified
+    - it was determined
+    - was approved
+    - are edited
+    - is used to
+    - are provided by
+    patterns:
+    - (was|were|been|being) (done|made|completed|identified|determined|approved|decided|considered|reviewed)
+    - it was \w+ed that
+    - has been \w+ed
+    - \w+ (is|are) \w+ed (using|by)
+    color: '#e74c3c'
+    relates_to:
+    - target: performance_tier
+      relation: limits
+      weight: expected
+      description: Passive auxiliary verbs are negatively correlated with leadership perception and novice speakers show low verb dynamism through passive voice per Elite Speaker Linguistic Analysis
+      target_file: performance_entities
+    - target: extraneous_load_marker
+      relation: triggers
+      weight: optional
+      description: "Vague passive constructions ('improvements were made') increase cognitive processing effort compared to active declarative titles per Slide Deck Design Playbook"
+      target_file: cognitive_load_entities
+    - target: readability_flag
+      relation: triggers
+      weight: expected
+      description: "Passive voice constructions trigger readability flags — passive phrasing increases sentence complexity and reduces directness per Best Practices for Writing"
+    - target: conversational_register
+      relation: contrasts_with
+      weight: expected
+      description: "Passive voice contrasts with conversational register — active voice is more natural, tighter, and concise; learning designers should default to active per Clark LxD"
+    - target: claim
+      relation: limits
+      weight: expected
+      description: "Passive voice weakens claim directness — 'improvements were made' lacks the authority of 'we improved X by Y%'; action titles require active declarative language per slide deck design playbook"
+      target_file: narrative_entities
+    - target: claim
+      relation: limits
+      weight: expected
+      description: "The Phase 2 Gate requires Action Titles to use active verbs; passive voice limits claim effectiveness by weakening the declarative force of the insight statement (Canonical Presentation Methodology)"
+      target_file: narrative_entities
+    - target: power_verb
+      relation: contrasts_with
+      weight: expected
+      description: "Passive voice contrasts with power verbs — passive auxiliary verbs (was/were) correlate negatively with leadership perception while dynamic verbs signal agency (elite_speaker_taxonomy)"
+      target_file: performance_entities
+    - target: ethos_appeal
+      relation: limits
+      weight: expected
+      description: "Passive voice limits ethos — it erases the agent and is negatively correlated with leadership perception and can signal passivity (elite_speaker_taxonomy)"
+      target_file: rhetorical_devices_entities
+  nominalisation_marker:
+    description: Verbs converted to nouns that add unnecessary abstraction and reduce readability
+    canonical_id: nominalisation_marker
+    entity_kind: style_issue
+    family: editorial
+    gliner_label: NOMINALISATION
+    gliner_description: Nominalisation verb-to-noun utilisation implementation facilitation optimisation determination
+    examples:
+    - the utilisation of resources
+    - the implementation of the strategy
+    - facilitation of the meeting
+    - the optimisation of workflows
+    - the determination of outcomes
+    anti_examples:
+    - implementation details
+    - API utilisation metrics
+    confidence_threshold: 0.7
+    aliases:
+    - zombie noun
+    - abstract noun
+    indicators:
+    - utilisation
+    - implementation
+    - facilitation
+    - optimisation
+    - determination
+    - establishment
+    - prioritisation
+    - conceptualisation
+    - operationalisation
+    - maximisation
+    patterns:
+    - the (\w+isation|\w+tion|\w+ment) of
+    - (utilisation|implementation|facilitation|optimisation|determination)
+    color: '#e67e22'
+    relates_to:
+    - target: nominalisation
+      relation: specialises
+      weight: expected
+      description: Writing-level nominalisation marker specialises discourse-level nominalisation
+      target_file: discourse_entities
+    - target: extraneous_load_marker
+      relation: triggers
+      weight: expected
+      description: "Nominalisations increase extraneous load by adding syllables and obscuring action; ISO 24495-1 'Understandable' principle requires plain language that nominalisations violate (Cognitive Interface, §5.1)"
+      target_file: cognitive_load_entities
+  jargon_marker:
+    description: Industry jargon, buzzwords, or unnecessarily complex terminology
+    canonical_id: jargon_marker
+    entity_kind: style_issue
+    family: editorial
+    gliner_label: JARGON_MARKER
+    gliner_description: Corporate jargon buzzword synergy leverage paradigm shift ideation deep dive circle back
+    examples:
+    - leverage our synergies
+    - paradigm shift in the market
+    - let's ideate on this
+    - move the needle
+    - boil the ocean
+    - circle back on this
+    - take this offline
+    anti_examples:
+    - leverage the crane
+    - ocean temperature
+    confidence_threshold: 0.65
+    aliases:
+    - buzzword
+    - corporate speak
+    - business jargon
+    indicators:
+    - synergy
+    - leverage
+    - paradigm shift
+    - ideate
+    - deep dive
+    - move the needle
+    - boil the ocean
+    - circle back
+    - take offline
+    - low-hanging fruit
+    - bandwidth
+    - value-add
+    - net-net
+    - action item
+    - innovative
+    - optimize
+    - optimise
+    - scalable
+    - scalable solution
+    - leading
+    - revolutionary
+    - powerful
+    - streamline
+    - cutting-edge
+    patterns:
+    - (leverage|synergy|synergies|paradigm shift|ideate|ideation)
+    - (move the needle|boil the ocean|circle back|take.+offline)
+    - (low-hanging fruit|value-add|net-net)
+    - (innovative|revolutionary|cutting-edge|scalable|streamline)
+    color: '#9b59b6'
+    relates_to:
+    - target: extraneous_load_marker
+      relation: triggers
+      weight: expected
+      description: Jargon increases extraneous cognitive load for non-expert audiences
+      target_file: cognitive_load_entities
+    - target: extraneous_load_marker
+      relation: enables
+      weight: required
+      description: Constant jargon and novel syntax cause predictive error too high leading to cognitive overload per Elite Speaker Linguistic Analysis
+      target_file: cognitive_load_entities
+    - target: ethos_appeal
+      relation: limits
+      weight: expected
+      description: "Excessive jargon undermines speaker credibility with non-specialist audiences by creating comprehension barriers that erode perceived trustworthiness per Ethos and Physicality research"
+      target_file: rhetorical_devices_entities
+    - target: novice_learner
+      relation: limits
+      weight: expected
+      description: "Jargon limits novice learners — personal brand communication must simplify technical jargon when addressing non-technical stakeholders, demonstrating communication agility per Personal Branding Framework"
+      target_file: audience_entities
+    - target: mixed_audience
+      relation: limits
+      weight: expected
+      description: "Occupation-specific jargon limits mixed audiences — audiences without extensive training in specialist terminology face comprehension barriers across diverse professional backgrounds per Audience Analysis and Persuasion"
+      target_file: audience_entities
+    - target: readability_flag
+      relation: limits
+      weight: required
+      description: "Orwell Rule 1 'Never use jargon when plain English will do' — jargon directly limits readability by replacing accessible terms with specialised ones per tone_of_voice_guide"
+    - target: claim
+      relation: limits
+      weight: optional
+      description: "Technical terminology can cause semantic ambiguity and equivocation — terms that shift meaning between premises undermine argument clarity per a-guide-to-good-reasoning"
+      target_file: narrative_entities
+    - target: performance_tier
+      relation: limits
+      weight: expected
+      description: "Jargon limits performance tier — the Technocrat tier is characterized by high surprisal jargon that creates high cognitive load for the audience (elite_speaker_taxonomy)"
+      target_file: performance_entities
+  cliche_marker:
+    description: Overused phrases and clichés that weaken impact in professional writing
+    canonical_id: cliche_marker
+    entity_kind: style_issue
+    family: editorial
+    gliner_label: CLICHE_MARKER
+    gliner_description: Cliché overused phrase at the end of the day thinking outside the box going forward game changer
+    examples:
+    - at the end of the day
+    - think outside the box
+    - going forward
+    - game changer
+    - best in class
+    - cutting edge
+    - it goes without saying
+    anti_examples:
+    - end of the day shift
+    - outside the box dimensions
+    confidence_threshold: 0.7
+    aliases:
+    - overused phrase
+    - stock phrase
+    indicators:
+    - at the end of the day
+    - think outside the box
+    - going forward
+    - game changer
+    - best in class
+    - cutting edge
+    - it goes without saying
+    - touch base
+    - run it up the flagpole
+    - hit the ground running
+    - on the same page
+    - raise the bar
+    - best-in-class
+    - world's leading
+    - world-leading
+    - Introduction to
+    - The history of
+    - Background to
+    patterns:
+    - at the end of the day
+    - (think|thinking) outside the box
+    - going forward
+    - (game|life) changer
+    - (best|world) in class
+    - it goes without saying
+    - (Introduction to|The history of|Background to) \w
+    color: '#f39c12'
+    relates_to:
+    - target: readability_flag
+      relation: limits
+      weight: expected
+      description: "Clichés limit effective communication by dulling impact — 'If it's been said a thousand times, say it differently' per tone_of_voice_guide"
+  script_direction:
+    description: Stage directions, speaker notes, or production cues embedded in script content
+    canonical_id: script_direction
+    entity_kind: format_marker
+    family: script
+    gliner_label: SCRIPT_DIRECTION
+    gliner_description: Script direction speaker note stage direction cut to fade in show graphic display slide cue
+    examples:
+    - '[CUT TO: product demo]'
+    - '[SHOW GRAPHIC: comparison chart]'
+    - (pause for emphasis)
+    - '[B-ROLL: office footage]'
+    - '[LOWER THIRD: Speaker Name]'
+    - '[MUSIC: upbeat transition]'
+    anti_examples:
+    - cut the budget
+    - show me the data
+    confidence_threshold: 0.85
+    aliases:
+    - stage direction
+    - production cue
+    - speaker note
+    indicators:
+    - '[CUT TO'
+    - '[SHOW'
+    - '[B-ROLL'
+    - '[LOWER THIRD'
+    - '[MUSIC'
+    - '[SFX'
+    - (pause
+    - '[GRAPHIC'
+    - '[SLIDE'
+    - '[TRANSITION'
+    patterns:
+    - \[(CUT TO|SHOW|B-ROLL|LOWER THIRD|MUSIC|SFX|GRAPHIC|SLIDE|TRANSITION)
+    - \(pause[^)]*\)
+    - '\[\w+:'
+    color: '#1abc9c'
+    relates_to:
+    - target: pause_marker
+      relation: contains
+      weight: expected
+      description: "Script directions directly contain pause marker notations that guide vocal delivery timing per voice enhancements research"
+      target_file: performance_entities
+    - target: emphasis_marker
+      relation: contains
+      weight: expected
+      description: "Script directions directly contain emphasis marker notations that guide vocal stress placement per voice enhancements research"
+      target_file: performance_entities
+    - target: delivery_modality
+      relation: supports
+      weight: expected
+      description: "Script directions provide narrative cues ('[dry smile]', '[pause]', '[reflective tone]') that directly support delivery execution across modalities per tone_of_voice_guide"
+      target_file: delivery_entities
+    - target: storyboard_element
+      relation: bridges
+      weight: expected
+      description: "Script directions bridge narration to visual planning by specifying what appears on screen alongside spoken content (Best Video Script Prompts)"
+      target_file: media_entities
+    - target: video_shot_type
+      relation: triggers
+      weight: optional
+      description: "Script directions trigger specific shot type selections like screen recordings or B-roll (Best Video Script Prompts)"
+      target_file: media_entities
+    - target: storyboard_element
+      relation: supported_by
+      weight: required
+      description: "Script directions are supported by storyboard elements — storyboards contain full on-screen text, voice-over scripts, navigation instructions, and developer guidance notes per course-creation-flow"
+      target_file: media_entities
+  readability_flag:
+    description: Indicators of readability issues including long sentences, complex words, and dense paragraphs
+    canonical_id: readability_flag
+    entity_kind: quality_indicator
+    family: editorial
+    gliner_label: READABILITY_FLAG
+    gliner_description: Readability issue long sentence complex word dense paragraph Flesch grade level comprehension barrier
+    examples:
+    - sentence exceeding 30 words with multiple subordinate clauses
+    - polysyllabic terminology without definition
+    - paragraph exceeding 150 words without visual break
+    anti_examples:
+    - readable font size
+    - flag the issue
+    confidence_threshold: 0.6
+    aliases:
+    - readability issue
+    - comprehension barrier
+    - complexity flag
+    indicators:
+    - long sentence
+    - complex word
+    - dense paragraph
+    - grade level
+    - Flesch score
+    - readability
+    - comprehension
+    - overlong
+    - padding
+    - unnecessary words
+    - repetitive phrasing
+    patterns:
+    - (readability|Flesch|grade level|comprehension)
+    - (overlong|padding|repetitive phrasing|unnecessary words)
+    color: '#95a5a6'
+    relates_to:
+    - target: working_memory_marker
+      relation: triggers
+      weight: optional
+      description: Poor readability can overload working memory
+      target_file: cognitive_load_entities
+    - target: value_proposition
+      relation: enables
+      weight: expected
+      description: "Readability enables value proposition clarity — personal brand statements must use concrete, jargon-free language that anyone outside the field could understand per Personal Branding Framework"
+      target_file: narrative_entities
+    - target: extraneous_load_marker
+      relation: limits
+      weight: expected
+      description: "Readability improvements (shorter sentences, simpler vocabulary, chunked paragraphs) directly limit extraneous cognitive load by reducing processing demands per Best Practices for Writing"
+      target_file: cognitive_load_entities
+    - target: claim
+      relation: limits
+      weight: optional
+      description: "Argument clarity is prerequisite for evaluation — wordiness, slanted language, and ambiguity reduce readability and must be eliminated before assessing soundness per a-guide-to-good-reasoning"
+      target_file: narrative_entities
+    - target: clarity_dimension
+      relation: supports
+      weight: expected
+      description: "Readability flags directly inform clarity scoring by detecting language complexity in scripts meant to be spoken aloud (Best Video Script Prompts)"
+      target_file: scoring_entities
+    - target: conversational_register
+      relation: supported_by
+      weight: expected
+      description: "Reading scripts aloud to check flow links readability directly to maintaining conversational register (Best Video Script Prompts)"
+    - target: typography_element
+      relation: supported_by
+      weight: expected
+      description: "Readability assessment depends on typography choices — font size, line spacing, and typeface selection directly affect text legibility and reading comprehension per slide deck design playbook"
+      target_file: visual_elements_entities
+    - target: extraneous_load_marker
+      relation: triggers
+      weight: expected
+      description: "Poor readability from low contrast or misaligned elements triggers extraneous cognitive load"
+      target_file: cognitive_load_entities
+  transition_phrase:
+    description: Phrases that signal structural transitions between content sections
+    canonical_id: transition_phrase
+    entity_kind: structural_marker
+    family: content_flow
+    gliner_label: TRANSITION_PHRASE
+    gliner_description: Content transition phrase in summary next let's now that we've with that in mind moving on
+    examples:
+    - in summary
+    - now let's look at
+    - now that we've covered
+    - with that in mind
+    - moving on to
+    - building on this
+    - to wrap up
+    anti_examples:
+    - summary report
+    - moving furniture
+    confidence_threshold: 0.7
+    aliases:
+    - section bridge
+    - flow marker
+    indicators:
+    - in summary
+    - to summarise
+    - now let's
+    - moving on
+    - building on
+    - with that in mind
+    - to wrap up
+    - in conclusion
+    - next up
+    - turning to
+    patterns:
+    - (in summary|to summarise|in conclusion|to wrap up)
+    - (now let's|moving on|turning to|building on)
+    - now that we've \w+
+    - with that in mind
+    color: '#2ecc71'
+    relates_to:
+    - target: transition_marker
+      relation: supports
+      weight: required
+      description: "Transition phrases provide the linguistic surface form that realises narrative transition markers between script sections (Best Video Script Prompts)"
+      target_file: narrative_entities
+    - target: session_structure_marker
+      relation: bridges
+      weight: optional
+      description: "Transition phrases bridge between session structure segments connecting intro to body to conclusion (Best Video Script Prompts)"
+      target_file: delivery_entities
+    - target: transition_marker
+      relation: specialises
+      weight: expected
+      description: Writing transition phrases specialise narrative transition markers
+      target_file: narrative_entities
+    - target: content_structure_marker
+      relation: supports
+      weight: expected
+      description: "Transition phrases support content structure by signalling logical progression between sections — explicit flow markers (in summary, moving on, building on this) reinforce structural coherence per Best Practices for Writing"
+      target_file: content_architecture_entities
+    - target: cause_marker
+      relation: supports
+      weight: expected
+      description: "Transition phrases include inference indicators ('since', 'therefore', 'so', 'because') that signal premise-conclusion relationships in written arguments per a-guide-to-good-reasoning"
+      target_file: discourse_entities
+    - target: readability_flag
+      relation: supports
+      weight: expected
+      description: "Scannable structure with short paragraphs, bullets, headings, and sentence variety — mix short and long sentences for rhythm — transitions support readability flow per tone_of_voice_guide"
+  call_to_action:
+    description: Direct instructions or invitations prompting the reader to take a specific action
+    canonical_id: call_to_action
+    entity_kind: persuasion_marker
+    family: content_flow
+    gliner_label: CALL_TO_ACTION
+    gliner_description: Call to action CTA click here sign up download learn more get started contact us try now
+    examples:
+    - click here to learn more
+    - sign up for a free trial
+    - download the whitepaper
+    - get started today
+    - contact us to find out more
+    - schedule a demo
+    anti_examples:
+    - click the submit button
+    - contact information
+    confidence_threshold: 0.75
+    aliases:
+    - CTA
+    - action prompt
+    indicators:
+    - click here
+    - sign up
+    - download
+    - learn more
+    - get started
+    - contact us
+    - try now
+    - schedule
+    - register
+    - subscribe
+    patterns:
+    - (click here|sign up|get started|learn more|contact us|try now)
+    - (download|register|subscribe|schedule) (the|a|now|today|for)
+    color: '#e74c3c'
+    relates_to:
+    - target: call_to_action
+      relation: bridges
+      weight: expected
+      description: "Writing-domain CTA captures textual form that bridges to narrative-domain CTA as persuasive discourse move (Best Video Script Prompts)"
+      target_file: narrative_entities
+    - target: call_to_action
+      relation: specialises
+      weight: required
+      description: Writing-level CTA specialises the narrative CTA structure
+      target_file: narrative_entities
+    - target: engagement_cue
+      relation: enables
+      weight: expected
+      description: "Written CTAs enable engagement cues — directive language (click, download, schedule) paired with benefit framing creates actionable engagement moments per Best Practices for Writing"
+      target_file: delivery_entities
+    - target: readability_flag
+      relation: supported_by
+      weight: expected
+      description: "Clear, readable language is prerequisite for effective calls to action — the guide's clarity principle 'What does this mean in practice?' models how CTAs depend on readable prose per tone_of_voice_guide"
+    - target: value_proposition
+      relation: supported_by
+      weight: required
+      description: "Written calls to action must be supported by established value propositions — customer-centric headlines focus on buyer pain points not product features per Slide Deck Design Playbook"
+      target_file: narrative_entities
+  marketing_superlative:
+    description: Evaluative claims or superlative adjectives used to imply exceptional quality without factual substantiation
+      — typical of marketing copy and hype writing
+    canonical_id: marketing_superlative
+    entity_kind: style_issue
+    family: editorial
+    gliner_label: MARKETING_SUPERLATIVE
+    gliner_description: Marketing superlative hype claim best-in-class world-leading revolutionary industry-leading unparalleled
+      most powerful next-generation
+    examples:
+    - best-in-class analytics platform
+    - world-leading enterprise solution
+    - revolutionary approach to learning
+    - industry-leading performance
+    - our most powerful tool yet
+    - next-generation content creation
+    anti_examples:
+    - supports a wide range of formats
+    - allows users to retouch digital images
+    - rated highest by G2 users in 2024
+    confidence_threshold: 0.75
+    aliases:
+    - hype term
+    - superlative claim
+    - marketing puffery
+    indicators:
+    - best-in-class
+    - world-leading
+    - world's leading
+    - revolutionary
+    - industry-leading
+    - most advanced
+    - unparalleled
+    - unrivalled
+    - best-ever
+    - most powerful
+    - next-generation
+    - innovative solution
+    - market-leading
+    patterns:
+    - (world(-| )leading|industry(-| )leading|market(-| )leading)
+    - (most advanced|most powerful|best-in-class|best-ever)
+    - (unparalleled|unrivalled|next-generation|innovative solution)
+    color: '#c0392b'
+    relates_to:
+    - target: hyperbole
+      relation: specialises
+      weight: expected
+      description: Marketing superlatives are a commercial form of hyperbole
+      target_file: rhetorical_devices_entities
+    - target: readability_flag
+      relation: limits
+      weight: expected
+      description: "Marketing superlatives undermine credibility and clarity without adding informational value, directly limiting readability (Best-Practice Product Descriptions)"
+quality_indicators:
+  positive:
+  - active voice
+  - short sentences
+  - plain language
+  - clear transitions
+  - consistent tone
+  - scannable formatting
+  - benefit-led framing
+  - present tense constructions
+  negative:
+  - excessive passive voice
+  - jargon overload
+  - cliché density
+  - inconsistent register
+  - wall of text
+  - missing transitions
+  - superlative density
+  - formulaic prefatory headings
+domain_keywords:
+  primary:
+  - tone
+  - voice
+  - style
+  - writing
+  - editorial
+  - copy
+  - script
+  - readability
+  - register
+  - plain language
+  - clarity
+  secondary:
+  - active voice
+  - passive voice
+  - jargon
+  - cliche
+  - grammar
+  - punctuation
+  - heading
+  - paragraph
+  - bullet
+  - inclusive language
+  - sentence structure
+  - transition
+  - marketing copy
+  - superlatives
+  - benefit-led
