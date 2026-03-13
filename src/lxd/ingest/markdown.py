@@ -20,7 +20,12 @@ class ExtractedDocument:
     docling_document: Any | None = None
 
 
-def load_markdown_document(path: Path, source_rel_path: str) -> ExtractedDocument:
+def load_markdown_document(
+    path: Path,
+    source_rel_path: str,
+    *,
+    source_type: str = "markdown",
+) -> ExtractedDocument:
     text = path.read_text(encoding="utf-8")
     converter = DocumentConverter()
     document = converter.convert_string(
@@ -28,7 +33,7 @@ def load_markdown_document(path: Path, source_rel_path: str) -> ExtractedDocumen
     ).document
     return ExtractedDocument(
         source_rel_path=source_rel_path,
-        source_type="markdown",
+        source_type=source_type,
         citation_label=make_citation_label(source_rel_path),
         text_blocks=[],
         docling_document=document,

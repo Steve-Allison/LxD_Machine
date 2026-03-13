@@ -420,6 +420,7 @@ def _current_ingest_config(config: RuntimeConfig) -> dict[str, str]:
         "chunking.tokenizer_backend": config.chunking.tokenizer_backend,
         "chunking.tokenizer_name": config.chunking.tokenizer_name,
         "models.embed": config.models.embed,
+        "models.embed_backend": config.models.embed_backend,
         "models.embed_dims": str(config.models.embed_dims),
     }
 

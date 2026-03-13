@@ -46,3 +46,24 @@ def test_load_markdown_document_uses_docling_and_native_chunking(tmp_path) -> No
     assert chunks
     assert chunks[0].metadata_json
     assert "Title" in chunks[0].text
+
+
+def test_load_markdown_document_respects_source_type_override(tmp_path) -> None:
+    source_path = tmp_path / "example.docling.md"
+    source_path.write_text("# Title\n\nContent.\n", encoding="utf-8")
+
+    document = load_markdown_document(
+        source_path, "Guides/example.docling.md", source_type="docling_md"
+    )
+
+    assert document.source_type == "docling_md"
+    assert document.docling_document is not None
+
+
+def test_load_markdown_document_defaults_to_markdown_source_type(tmp_path) -> None:
+    source_path = tmp_path / "notes.md"
+    source_path.write_text("# Notes\n\nSome content.\n", encoding="utf-8")
+
+    document = load_markdown_document(source_path, "notes.md")
+
+    assert document.source_type == "markdown"

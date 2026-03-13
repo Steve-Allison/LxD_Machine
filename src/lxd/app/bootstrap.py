@@ -3,6 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 from lxd.observability.logging import configure_logging
 from lxd.settings.loader import load_runtime_config, resolve_repo_root
 from lxd.settings.models import RuntimeConfig
@@ -22,6 +24,7 @@ def bootstrap_app(
     config_path: Path | None = None,
 ) -> AppContext:
     repo_root = resolve_repo_root(cwd)
+    load_dotenv(repo_root / ".env", override=False)
     config, resolved_config_path = load_runtime_config(
         repo_root,
         profile=profile,

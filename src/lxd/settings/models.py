@@ -17,6 +17,7 @@ class ModelsConfig(BaseModel):
 
     embed: str
     embed_dims: int
+    embed_backend: Literal["ollama", "openai"] = "ollama"
     llm: str
     rerank: str
     llm_no_think: bool = False
@@ -39,6 +40,17 @@ class EmbeddingConfig(BaseModel):
     timeout_secs: int
     retry_attempts: int
     retry_backoff: list[int]
+    query_instruction: str | None = None
+
+
+class OpenAIEmbeddingConfig(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    api_key_env: str = "OPENAI_API_KEY"
+    model: str = "text-embedding-3-small"
+    dims: int = 1536
+    batch_size: int = 512
+    max_workers: int = 8
 
 
 class CorpusConfig(BaseModel):
@@ -170,3 +182,12 @@ class RuntimeConfig(BaseModel):
     synthesis: SynthesisConfig
     mcp: MCPConfig
     logging: LoggingConfig
+    openai: OpenAIEmbeddingConfig | None = None
+
+    @model_validator(mode="after")
+    def _validate_openai_backend(self) -> RuntimeConfig:
+        if self.models.embed_backend == "openai" and self.openai is None:
+            raise ValueError(
+                "models.embed_backend=openai requires an [openai] config section."
+            )
+        return self

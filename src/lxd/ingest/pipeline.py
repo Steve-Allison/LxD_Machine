@@ -570,8 +570,12 @@ def _build_source_records(
 
 
 def _load_extracted_document(scanned: ScannedCorpusFile):
-    if scanned.source_type == "markdown":
-        return load_markdown_document(scanned.absolute_path, scanned.relative_path)
+    if scanned.source_type in ("markdown", "docling_md"):
+        return load_markdown_document(
+            scanned.absolute_path,
+            scanned.relative_path,
+            source_type=scanned.source_type,
+        )
     return load_docling_document(scanned.absolute_path, scanned.relative_path)
 
 
@@ -790,6 +794,7 @@ def _config_snapshot_records(config: RuntimeConfig) -> list[IngestConfigSnapshot
         "paths.ontology_path": str(config.paths.ontology_path),
         "paths.data_path": str(config.paths.data_path),
         "models.embed": config.models.embed,
+        "models.embed_backend": config.models.embed_backend,
         "models.embed_dims": str(config.models.embed_dims),
         "chunking.strategy": config.chunking.strategy,
         "chunking.chunk_size": str(config.chunking.chunk_size),

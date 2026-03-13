@@ -46,7 +46,11 @@ def classify_source_type(
 ) -> str | None:
     path_text = path.name
     if any(path_text.endswith(ext) for ext in text_extensions):
-        return "docling_json" if path_text.endswith(".docling.json") else "markdown"
+        if path_text.endswith(".docling.json"):
+            return "docling_json"
+        if path_text.endswith(".docling.md"):
+            return "docling_md"
+        return "markdown"
     if any(path_text.endswith(ext) for ext in asset_extensions):
         return "image_png"
     return None

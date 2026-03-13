@@ -90,6 +90,7 @@ def test_current_ingest_config_excludes_query_time_reranker_settings() -> None:
         models=SimpleNamespace(
             embed="nomic-embed-text",
             embed_dims=768,
+            embed_backend="ollama",
             rerank="dengcao/Qwen3-Reranker-4B:Q4_K_M",
         ),
         reranker=SimpleNamespace(
