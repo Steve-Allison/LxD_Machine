@@ -11,6 +11,7 @@ from lxd.stores.models import (
     AssetLinkRecord,
     ChunkRecord,
     CorpusStatusSummary,
+    EntityMentionResult,
     IngestConfigSnapshotRecord,
     ManifestRecord,
     MentionRecord,
@@ -817,6 +818,67 @@ def load_mentions_for_source(
         )
         grouped[record.chunk_id].append(record)
     return dict(grouped)
+
+
+def find_chunks_by_entity_mentions(
+    connection: sqlite3.Connection,
+    entity_ids: list[str],
+    *,
+    limit: int = 50,
+) -> list[EntityMentionResult]:
+    if not entity_ids:
+        return []
+    placeholders = ",".join("?" * len(entity_ids))
+    rows = connection.execute(
+        f"""
+        WITH matched AS (
+            SELECT chunk_id, COUNT(DISTINCT entity_id) AS entity_match_count
+            FROM mention_rows
+            WHERE entity_id IN ({placeholders})
+            GROUP BY chunk_id
+        )
+        SELECT
+            c.chunk_id,
+            c.document_id,
+            c.source_rel_path,
+            c.citation_label,
+            c.chunk_index,
+            c.text,
+            c.score_hint,
+            c.metadata_json,
+            m.entity_match_count
+        FROM chunk_rows c
+        JOIN matched m ON c.chunk_id = m.chunk_id
+        ORDER BY m.entity_match_count DESC, c.chunk_index ASC
+        LIMIT ?
+        """,
+        (*entity_ids, limit * 4),
+    ).fetchall()
+    total = len(entity_ids)
+    seen_sources: set[str] = set()
+    results: list[EntityMentionResult] = []
+    for row in rows:
+        source_rel_path = str(row["source_rel_path"])
+        if source_rel_path in seen_sources:
+            continue
+        seen_sources.add(source_rel_path)
+        results.append(
+            EntityMentionResult(
+                chunk_id=str(row["chunk_id"]),
+                document_id=str(row["document_id"]),
+                source_rel_path=source_rel_path,
+                citation_label=str(row["citation_label"]),
+                chunk_index=int(row["chunk_index"]),
+                text=str(row["text"]),
+                score_hint=str(row["score_hint"]),
+                metadata_json=str(row["metadata_json"]),
+                entity_match_count=int(row["entity_match_count"]),
+                total_entity_ids=total,
+            )
+        )
+        if len(results) >= limit:
+            break
+    return results
 
 
 def summarize_store(

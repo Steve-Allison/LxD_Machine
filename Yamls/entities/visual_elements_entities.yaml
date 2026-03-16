@@ -435,7 +435,7 @@ entity_types:
       relation: supported_by
       weight: expected
       description: "Color choices are governed by design principles (contrast for readability, repetition for consistency, proximity for grouping) per Visualisation Techniques research"
-    - target: low_contrast_ratio
+    - target: low_contrast_text
       relation: triggers
       weight: required
       description: "Color references with insufficient contrast ratios directly trigger low contrast accessibility violations per slide design research monograph"
@@ -512,7 +512,7 @@ entity_types:
       weight: expected
       description: "Typography choices directly trigger readability flags when font size, weight or spacing violate legibility thresholds per slide design research monograph"
       target_file: writing_entities
-    - target: small_font_size
+    - target: text_size_violation
       relation: triggers
       weight: required
       description: "Typography elements below minimum size thresholds directly trigger small font size accessibility violations per slide design research monograph"
@@ -680,87 +680,6 @@ entity_types:
       relation: contains
       weight: expected
       description: "Mayer's spatial contiguity requires layout patterns with labels adjacent to diagram elements per Applying Mayer's Principles Practical Checklist"
-  animation_type:
-    description: Motion and transition types
-    canonical_id: animation_type
-    entity_kind: visual_component
-    family: motion_design
-    gliner_label: ANIMATION_TYPE
-    gliner_description: Animation transition motion fade slide zoom morph wipe dissolve ease parallax effect
-    examples:
-    - fade in
-    - slide in
-    - zoom
-    - morph
-    - wipe
-    - dissolve
-    - bounce
-    - ease in
-    - ease out
-    - parallax
-    confidence_threshold: 0.75
-    match_policy_ref: defaults
-    aliases:
-    - animation
-    - transition
-    - motion
-    - effect
-    indicators:
-    - animation
-    - transition
-    - motion
-    - fade
-    - slide
-    - zoom
-    - morph
-    - ease
-    patterns:
-    - fade \w+
-    - slide \w+
-    - \w+ transition
-    - \w+ animation
-    color: '#8e44ad'
-    relates_to:
-    - target: slide_type
-      relation: supports
-      weight: optional
-      description: Animation types (reveal animations, motion graphics, transitions) should reinforce slide type function.
-        Data proof slides may use progressive reveal; narrative slides use transitions to signal scene shifts. Animation choice
-        depends on slide purpose.
-    - target: extraneous_load_marker
-      relation: limits
-      weight: expected
-      description: Animation principles mimicking real-world physics reduce cognitive load by making motion feel familiar and
-        intuitive per Visual Communication and Storytelling
-      target_file: cognitive_load_entities
-    - target: brand_element
-      relation: supports
-      weight: expected
-      description: Animation personality principles (anticipation, exaggeration, appeal) anthropomorphize interfaces to match
-        brand voice per Visual Communication and Storytelling
-    - target: progressive_disclosure_marker
-      relation: enables
-      weight: expected
-      description: "Build animations and staged reveals enable progressive disclosure by controlling information flow rate to manage cognitive load per Visualisation Techniques research"
-      target_file: cognitive_load_entities
-    - target: accessibility_feature
-      relation: limits
-      weight: expected
-      description: "Animation types must be constrained by accessibility requirements — motion-sensitive users need reduced-motion alternatives and essential content must remain accessible without animation per slide design research monograph part 4"
-    - target: visual_narrative_element
-      relation: supports
-      weight: expected
-      description: "Animation types (flow particles, path-pulse animation, ghosting past values) serve as narrative devices that make temporal dynamics and system behavior visible in interactive visualizations per Narrative Visualization research"
-    - target: keyboard_inaccessibility
-      relation: triggers
-      weight: optional
-      description: "Animation-driven narratives that require mouse-hover or slider interaction create keyboard inaccessibility barriers for users who cannot operate mouse-dependent controls per Narrative Visualization research"
-      target_file: accessibility_entities
-    - target: video_edit_transition
-      relation: bridges
-      weight: expected
-      description: "Animation types bridge with video edit transitions as coordinated visual movement elements — animated chart overlays appear alongside camera cuts during topic shifts per Visual Best Practices for Corporate Learning Videos"
-      target_file: media_entities
   slide_type:
     description: Common presentation slide categories
     canonical_id: slide_type

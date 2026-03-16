@@ -127,6 +127,24 @@ class IngestConfigSnapshotRecord:
 
 
 @dataclass(frozen=True)
+class EntityMentionResult:
+    chunk_id: str
+    document_id: str
+    source_rel_path: str
+    citation_label: str
+    chunk_index: int
+    text: str
+    score_hint: str
+    metadata_json: str
+    entity_match_count: int
+    total_entity_ids: int
+
+    @property
+    def score(self) -> float:
+        return self.entity_match_count / self.total_entity_ids if self.total_entity_ids > 0 else 0.0
+
+
+@dataclass(frozen=True)
 class VectorSearchRecord:
     chunk_id: str
     document_id: str

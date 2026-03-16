@@ -687,67 +687,6 @@ entity_types:
       relation: supports
       weight: expected
       description: "Scannable structure with short paragraphs, bullets, headings, and sentence variety — mix short and long sentences for rhythm — transitions support readability flow per tone_of_voice_guide"
-  call_to_action:
-    description: Direct instructions or invitations prompting the reader to take a specific action
-    canonical_id: call_to_action
-    entity_kind: persuasion_marker
-    family: content_flow
-    gliner_label: CALL_TO_ACTION
-    gliner_description: Call to action CTA click here sign up download learn more get started contact us try now
-    examples:
-    - click here to learn more
-    - sign up for a free trial
-    - download the whitepaper
-    - get started today
-    - contact us to find out more
-    - schedule a demo
-    anti_examples:
-    - click the submit button
-    - contact information
-    confidence_threshold: 0.75
-    aliases:
-    - CTA
-    - action prompt
-    indicators:
-    - click here
-    - sign up
-    - download
-    - learn more
-    - get started
-    - contact us
-    - try now
-    - schedule
-    - register
-    - subscribe
-    patterns:
-    - (click here|sign up|get started|learn more|contact us|try now)
-    - (download|register|subscribe|schedule) (the|a|now|today|for)
-    color: '#e74c3c'
-    relates_to:
-    - target: call_to_action
-      relation: bridges
-      weight: expected
-      description: "Writing-domain CTA captures textual form that bridges to narrative-domain CTA as persuasive discourse move (Best Video Script Prompts)"
-      target_file: narrative_entities
-    - target: call_to_action
-      relation: specialises
-      weight: required
-      description: Writing-level CTA specialises the narrative CTA structure
-      target_file: narrative_entities
-    - target: engagement_cue
-      relation: enables
-      weight: expected
-      description: "Written CTAs enable engagement cues — directive language (click, download, schedule) paired with benefit framing creates actionable engagement moments per Best Practices for Writing"
-      target_file: delivery_entities
-    - target: readability_flag
-      relation: supported_by
-      weight: expected
-      description: "Clear, readable language is prerequisite for effective calls to action — the guide's clarity principle 'What does this mean in practice?' models how CTAs depend on readable prose per tone_of_voice_guide"
-    - target: value_proposition
-      relation: supported_by
-      weight: required
-      description: "Written calls to action must be supported by established value propositions — customer-centric headlines focus on buyer pain points not product features per Slide Deck Design Playbook"
-      target_file: narrative_entities
   marketing_superlative:
     description: Evaluative claims or superlative adjectives used to imply exceptional quality without factual substantiation
       — typical of marketing copy and hype writing

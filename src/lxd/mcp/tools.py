@@ -2,17 +2,18 @@ from __future__ import annotations
 
 import json
 import sqlite3
-from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
 from lxd.app.bootstrap import AppContext, bootstrap_app
 from lxd.ingest.pipeline import IngestPlan, build_ingest_plan
 from lxd.ontology.graph import direct_neighbors
-from lxd.retrieval.query_pipeline import answer_question, search_chunks
+from lxd.retrieval.expansion import expand_entity_ids
+from lxd.retrieval.query_pipeline import search_chunks
 from lxd.stores.sqlite import (
     build_store_paths,
     connect_sqlite,
+    find_chunks_by_entity_mentions,
     initialize_schema,
     load_ingest_config_snapshot,
     load_ontology_snapshot,
@@ -175,10 +176,44 @@ def search_corpus_tool(terms: str, domain: str | None, limit: int) -> list[dict[
     ]
 
 
-def query_lxd_tool(question: str) -> dict[str, Any]:
+def find_documents_for_concept_tool(
+    entity_id: str,
+    hops: int = 1,
+    limit: int = 10,
+) -> list[dict[str, Any]]:
+    _validate_non_empty(entity_id, "entity_id")
+    plan = _plan()
+    if entity_id not in plan.ontology.graph:
+        return []
+    related_ids = expand_entity_ids(
+        plan.ontology.graph,
+        [entity_id],
+        hops=hops,
+        max_entities=50,
+    )
+    all_entity_ids = list({entity_id, *related_ids})
     context = _context()
-    answer = answer_question(question, context.config)
-    return asdict(answer)
+    store_paths = build_store_paths(context.config.paths.data_path)
+    connection = connect_sqlite(store_paths.sqlite_path)
+    try:
+        initialize_schema(connection)
+        results = find_chunks_by_entity_mentions(connection, all_entity_ids, limit=limit)
+    finally:
+        connection.close()
+    return [
+        {
+            "chunk_id": item.chunk_id,
+            "document_id": item.document_id,
+            "citation_label": item.citation_label,
+            "source_rel_path": item.source_rel_path,
+            "score": item.score,
+            "entity_match_count": item.entity_match_count,
+            "matched_from_total": item.total_entity_ids,
+            "text": item.text,
+            "metadata_json": item.metadata_json,
+        }
+        for item in results
+    ]
 
 
 def _context() -> AppContext:

@@ -7,10 +7,10 @@ from fastmcp import FastMCP
 
 from lxd.mcp.tools import (
     corpus_status_tool,
+    find_documents_for_concept_tool,
     get_entity_types_tool,
     get_related_concepts_tool,
     initialize_tools,
-    query_lxd_tool,
     search_corpus_tool,
 )
 
@@ -40,8 +40,10 @@ def search_corpus(
 
 
 @mcp.tool()
-def query_lxd(question: str) -> dict[str, object]:
-    return query_lxd_tool(question)
+def find_documents_for_concept(
+    entity_id: str, hops: int = 1, limit: int = 10
+) -> list[dict[str, object]]:
+    return find_documents_for_concept_tool(entity_id, hops, limit)
 
 
 def main() -> None:

@@ -27,6 +27,17 @@ class _OntologyRuntime:
     entity_by_id: dict[str, dict[str, object]]
 
 
+def expand_entity_ids(
+    graph: OntologyGraph,
+    seed_entity_ids: list[str],
+    *,
+    hops: int = 1,
+    max_entities: int = 50,
+) -> list[str]:
+    """Return related entity IDs reachable within `hops` from `seed_entity_ids`."""
+    return _expand_entity_ids(graph, seed_entity_ids, hops=hops, max_entities=max_entities)
+
+
 def expand_question(question: str, config: RuntimeConfig) -> ExpansionOutcome:
     if not config.expansion.enabled:
         return ExpansionOutcome(

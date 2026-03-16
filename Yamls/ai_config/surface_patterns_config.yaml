@@ -27,43 +27,6 @@ entity_types:
   # PERSUASION PATTERNS
   # ---------------------------------------------------------------------------
 
-  call_to_action:
-    description: "Explicit call-to-action phrases indicating desired audience response"
-    canonical_id: "call_to_action"
-    entity_kind: "cta"
-    family: "persuasion_patterns"
-    label: "CALL_TO_ACTION"
-    field_description: "CTA action contact learn more get started sign up book demo request trial download"
-    examples:
-      - "Contact us today"
-      - "Learn more"
-      - "Get started"
-      - "Book a demo"
-      - "Sign up free"
-      - "Request a trial"
-      - "Download now"
-      - "Start your free trial"
-    anti_examples:
-      - "learning experience"
-      - "getting started guide"
-    confidence_threshold: 0.75
-    patterns:
-      - "(?:Contact|Call|Email|Reach)\\s+(?:us|me|the team)"
-      - "(?:Learn|Find out|Discover)\\s+more"
-      - "(?:Get|Start|Begin)\\s+(?:started|now|today)"
-      - "(?:Book|Schedule|Request)\\s+(?:a\\s+)?(?:demo|call|meeting|trial)"
-      - "(?:Sign|Register)\\s+(?:up|now)"
-      - "(?:Download|Try|Access)\\s+(?:now|free|today)"
-    indicators:
-      - "contact us"
-      - "learn more"
-      - "get started"
-      - "book a demo"
-      - "sign up"
-      - "free trial"
-      - "download"
-    story_role: "Narrative resolution - directs audience to next step"
-
   social_proof:
     description: "Social proof and trust markers demonstrating credibility"
     canonical_id: "social_proof"
@@ -134,40 +97,6 @@ entity_types:
   # ---------------------------------------------------------------------------
   # EVIDENCE PATTERNS
   # ---------------------------------------------------------------------------
-
-  attribution_marker:
-    description: "Source attribution and citation markers for evidence credibility"
-    canonical_id: "attribution_marker"
-    entity_kind: "attribution"
-    family: "evidence_patterns"
-    label: "ATTRIBUTION"
-    field_description: "Attribution source according to research shows study finds analysts report Gartner IDC Forrester"
-    examples:
-      - "According to Gartner"
-      - "Research shows"
-      - "Studies indicate"
-      - "Analysts report"
-      - "Source: IDC"
-      - "per Forrester"
-    anti_examples:
-      - "show and tell"
-      - "research department"
-    confidence_threshold: 0.75
-    patterns:
-      - "(?:According|Per)\\s+to\\s+(?:Gartner|Forrester|IDC|McKinsey|\\w+)"
-      - "(?:Research|Studies|Data|Analysts?)\\s+(?:shows?|indicates?|suggests?|reports?)"
-      - "Source:\\s*\\w+"
-    indicators:
-      - "according to"
-      - "research shows"
-      - "studies indicate"
-      - "analysts report"
-      - "source:"
-      - "Gartner"
-      - "Forrester"
-      - "IDC"
-      - "McKinsey"
-    story_role: "Evidence sourcing - establishes credibility (Ethos in Toulmin)"
 
   testimonial_marker:
     description: "Testimonial and quote attribution from customers or experts"
@@ -373,37 +302,6 @@ entity_types:
       - "Step"
       - "Phase"
     story_role: "Narrative sequence - Gagné's instructional events"
-
-  summary_marker:
-    description: "Summary and conclusion markers indicating narrative closure"
-    canonical_id: "summary_marker"
-    entity_kind: "structure"
-    family: "structural_patterns"
-    label: "SUMMARY_MARKER"
-    field_description: "Summary conclusion in summary to conclude key takeaways recap bottom line overall"
-    examples:
-      - "In summary"
-      - "To conclude"
-      - "Key takeaways"
-      - "In conclusion"
-      - "Bottom line"
-      - "To recap"
-    anti_examples:
-      - "summary report"
-      - "takeaway food"
-    confidence_threshold: 0.75
-    patterns:
-      - "(?:In|To)\\s+(?:summary|conclusion|conclude|recap)"
-      - "(?:Key|Main)\\s+(?:takeaways?|points?|findings?)"
-      - "(?:Bottom|End)\\s+line"
-      - "(?:Overall|Ultimately)"
-    indicators:
-      - "in summary"
-      - "to conclude"
-      - "key takeaways"
-      - "bottom line"
-      - "to recap"
-    story_role: "Narrative closure - resolution phase"
 
   # ---------------------------------------------------------------------------
   # FEATURE PATTERNS

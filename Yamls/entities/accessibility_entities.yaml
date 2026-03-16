@@ -479,6 +479,37 @@ entity_types:
       description: "On-screen text in storyboard frames must reserve accessibility zones to avoid baked-text violations — caption and interpreter spaces must be planned from the start per Research - Storyboard Best Practices"
       target_file: media_entities
     parent_entity: null
+  keyboard_inaccessibility:
+    label: KEYBOARD_INACCESSIBILITY
+    entity_kind: accessibility_violation
+    family: wcag_violations
+    field_description: Keyboard inaccessibility mouse-only interaction drag and drop hover-to-reveal animation-driven interaction
+      screen reader cannot navigate keyboard-only user cannot operate
+    description: Interaction patterns that require mouse or pointer input, excluding keyboard users (WCAG 2.1.1 violation)
+    examples:
+    - mouse-only interaction
+    - drag and drop required
+    - hover to reveal
+    - slider interaction required
+    - animation requires mouse control
+    confidence_threshold: 0.7
+    indicators:
+    - hover, drag, slider, mouse-only language
+    - animation-driven navigation requirements
+    wcag_criterion: 2.1.1 Keyboard
+    severity: Level A
+    impact: Users relying on keyboard navigation cannot access or operate the interface
+    remediation:
+    - Provide keyboard equivalents for all pointer interactions
+    - Ensure all interactive elements are focusable and operable via keyboard
+    - Add ARIA roles and keyboard event handlers
+    relates_to:
+    - target: animation_only_carrier
+      relation: supported_by
+      weight: optional
+      description: "Animation-driven narratives requiring mouse-hover or slider interaction create keyboard inaccessibility barriers"
+      target_file: accessibility_entities
+    parent_entity: null
 text_based_indicators:
   heading_structure_issues:
     patterns:

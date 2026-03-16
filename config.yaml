@@ -1,18 +1,25 @@
 paths:
   corpus_path: Knowledge_Base
   ontology_path: Yamls
-  data_path: data
+  data_path: data/openai
 
 ollama:
   url: http://localhost:11434
 
 models:
-  embed: qwen3-embedding:4b
-  embed_dims: 2048
-  embed_backend: ollama
+  embed: text-embedding-3-small
+  embed_dims: 1536
+  embed_backend: openai
   llm: mistral-small3.1
-  rerank: dengcao/Qwen3-Reranker-4B:Q4_K_M
+  rerank: qwen3-reranker:0.6b
   llm_no_think: true
+
+openai:
+  api_key_env: OPENAI_API_KEY
+  model: text-embedding-3-small
+  dims: 1536
+  batch_size: 512
+  max_workers: 8
 
 chunking:
   strategy: hybrid_docling
@@ -23,13 +30,13 @@ chunking:
   tokenizer_name: cl100k_base
 
 embedding:
-  timeout_secs: 180
+  timeout_secs: 60
   retry_attempts: 3
   retry_backoff:
+    - 1
     - 2
     - 4
-    - 8
-  query_instruction: "Instruct: Represent this sentence for retrieval.\nQuery: "
+  query_instruction: null
 
 corpus:
   text_extensions:
@@ -72,7 +79,7 @@ reranker:
     extra_args: []
 
 expansion:
-  enabled: false
+  enabled: true
   hops: 1
   max_terms: 12
 

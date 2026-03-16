@@ -99,11 +99,11 @@ entity_types:
       weight: expected
       description: "Situation markers capture persona-specific pain points and daily challenges as opening context for SOAR-structured narratives per Storytelling for Different Business Personas"
       target_file: audience_entities
-    - target: situation
+    - target: situation_marker
       relation: specialises
       weight: expected
       description: "The SOAR Situation phase maps directly to the sales situation marker; both audit the current state and audience reality before proposing solutions (Canonical Presentation Methodology)"
-      target_file: character_archetypes_entities
+      target_file: sales_entities
     - target: layout_pattern
       relation: triggers
       weight: expected
@@ -202,11 +202,11 @@ entity_types:
       weight: expected
       description: "The opportunity marker bridges to pain_point — SOAR's Obstacle is the problem or challenge faced per Analyzing Story for Business Communication"
       target_file: narrative_entities
-    - target: opportunity
+    - target: opportunity_marker
       relation: specialises
       weight: expected
       description: "The SOAR Opportunity phase maps directly to the sales opportunity marker; both define the strategic gap and logical architecture needed to bridge it (Canonical Presentation Methodology)"
-      target_file: character_archetypes_entities
+      target_file: sales_entities
     - target: layout_pattern
       relation: triggers
       weight: expected
@@ -490,10 +490,11 @@ entity_types:
       description: Urgency signals support problem statement hooks by adding time-pressure context that makes the named problem
         feel immediate and demanding of action per Crafting Powerful Opening Plays
       target_file: opening_hooks_entities
-    - target: pain_point_sales
+    - target: pain_point
       relation: supported_by
       weight: expected
       description: "Urgency signals are supported by quantified sales pain points — specific metrics like conversion rate declines and campaign shortfalls create time-sensitive motivation per Case Study Excellence"
+      target_file: narrative_entities
     - target: monroe_sequence_marker
       relation: supported_by
       weight: expected

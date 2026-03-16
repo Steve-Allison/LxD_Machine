@@ -339,6 +339,23 @@ file_relationships:
       - "Entity file derived from multiple methodology source files"
       - "Taxonomy synthesised from several research-backed frameworks"
 
+  downstream_dependency:
+    owl_type: "owl:ObjectProperty"
+    direction: directed
+    inverse: upstream_dependency
+    description: "Source file produces output that the target file consumes or depends upon."
+    examples:
+      - "Entity extraction config feeds downstream scoring rubric"
+      - "Corpus entry set is consumed downstream by methodology guide"
+
+  upstream_dependency:
+    owl_type: "owl:ObjectProperty"
+    direction: directed
+    inverse: downstream_dependency
+    description: "Source file depends on output produced by the target file."
+    examples:
+      - "Scoring rubric depends upstream on entity extraction config"
+
 # =============================================================================
 # ENTITY RELATIONSHIP TYPES
 # =============================================================================
