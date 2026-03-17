@@ -5,8 +5,13 @@ import logging
 import structlog
 
 
-def configure_logging(level: str) -> None:
+def configure_logging(level: str, output_format: str = "json") -> None:
     numeric_level = logging.getLevelNamesMapping().get(level.upper(), logging.INFO)
+    renderer: structlog.types.Processor
+    if output_format == "console":
+        renderer = structlog.dev.ConsoleRenderer()
+    else:
+        renderer = structlog.processors.JSONRenderer()
 
     logging.basicConfig(
         level=numeric_level,
@@ -16,7 +21,7 @@ def configure_logging(level: str) -> None:
         processors=[
             structlog.processors.add_log_level,
             structlog.processors.TimeStamper(fmt="iso"),
-            structlog.processors.JSONRenderer(),
+            renderer,
         ],
         wrapper_class=structlog.make_filtering_bound_logger(numeric_level),
         logger_factory=structlog.PrintLoggerFactory(),

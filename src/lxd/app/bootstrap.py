@@ -30,5 +30,5 @@ def bootstrap_app(
         profile=profile,
         config_path=config_path,
     )
-    configure_logging(config.logging.level)
+    configure_logging(config.logging.level, config.logging.format)
     return AppContext(repo_root=repo_root, config=config, config_path=resolved_config_path)

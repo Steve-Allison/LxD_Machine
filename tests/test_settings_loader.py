@@ -12,7 +12,7 @@ def test_load_runtime_config_uses_default_config_yaml() -> None:
     assert config_path == repo_root / "config.yaml"
     assert config.paths.corpus_path == repo_root / "Knowledge_Base"
     assert config.paths.ontology_path == repo_root / "Yamls"
-    assert config.paths.data_path == repo_root / "data"
+    assert config.paths.data_path == repo_root / "data" / "openai"
 
 
 def test_load_runtime_config_resolves_relative_paths_from_selected_file(tmp_path) -> None:

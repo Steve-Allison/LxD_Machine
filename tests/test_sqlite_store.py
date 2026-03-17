@@ -96,6 +96,7 @@ def test_sqlite_store_round_trip(tmp_path) -> None:
     assert loaded_chunks[0].vector == [0.1, 0.2, 0.3]
     assert list(loaded_mentions) == ["chunk-1"]
     assert len(loaded_mentions["chunk-1"]) == 1
+    assert loaded_mentions["chunk-1"][0].term_source == "alias"
     assert summary.corpus_file_count == 1
     assert summary.text_file_count == 1
     assert summary.asset_file_count == 0

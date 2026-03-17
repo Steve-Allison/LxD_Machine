@@ -3,9 +3,9 @@ from __future__ import annotations
 from pathlib import Path
 from types import SimpleNamespace
 
+from lxd.app.status import current_ingest_config
 from lxd.retrieval.query_pipeline import (
     RankedChunk,
-    _current_ingest_config,
     _lexical_signal_score,
     _merge_ranked_prefix,
     _unique_source_prefix,
@@ -101,7 +101,7 @@ def test_current_ingest_config_excludes_query_time_reranker_settings() -> None:
         ),
     )
 
-    snapshot = _current_ingest_config(config)
+    snapshot = current_ingest_config(config)
 
     assert "models.rerank" not in snapshot
     assert "reranker.enabled" not in snapshot

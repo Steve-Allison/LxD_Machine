@@ -99,6 +99,7 @@ def initialize_schema(connection: sqlite3.Connection) -> None:
             CREATE TABLE IF NOT EXISTS mention_rows (
                 mention_id TEXT PRIMARY KEY,
                 entity_id TEXT NOT NULL,
+                term_source TEXT NOT NULL,
                 source_domain TEXT NOT NULL,
                 source_path TEXT NOT NULL,
                 source_filename TEXT NOT NULL,
@@ -728,6 +729,7 @@ def replace_source_chunks(
                 INSERT INTO mention_rows (
                     mention_id,
                     entity_id,
+                    term_source,
                     source_domain,
                     source_path,
                     source_filename,
@@ -736,12 +738,13 @@ def replace_source_chunks(
                     start_char,
                     end_char
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 [
                     (
                         _mention_id(record),
                         record.entity_id,
+                        record.term_source,
                         source_domain,
                         absolute_source_path,
                         source_filename,
@@ -797,6 +800,7 @@ def load_mentions_for_source(
         SELECT
             chunk_id,
             entity_id,
+            term_source,
             surface_form,
             start_char,
             end_char
@@ -811,7 +815,7 @@ def load_mentions_for_source(
         record = MentionRecord(
             chunk_id=str(row["chunk_id"]),
             entity_id=str(row["entity_id"]),
-            term_source="matched_term",
+            term_source=str(row["term_source"]),
             surface_form=str(row["surface_form"]),
             start_char=int(row["start_char"]),
             end_char=int(row["end_char"]),
@@ -1247,7 +1251,8 @@ def _migrate_legacy_mention_rows(connection: sqlite3.Connection) -> None:
     if not _table_exists(connection, "mention_rows"):
         return
     columns = _table_columns(connection, "mention_rows")
-    if "mention_id" in columns and "source_path" in columns and "source_domain" in columns:
+    required_columns = {"mention_id", "term_source", "source_path", "source_domain"}
+    if required_columns.issubset(columns):
         return
 
     legacy_rows = connection.execute(
@@ -1281,6 +1286,7 @@ def _migrate_legacy_mention_rows(connection: sqlite3.Connection) -> None:
         CREATE TABLE mention_rows (
             mention_id TEXT PRIMARY KEY,
             entity_id TEXT NOT NULL,
+            term_source TEXT NOT NULL,
             source_domain TEXT NOT NULL,
             source_path TEXT NOT NULL,
             source_filename TEXT NOT NULL,
@@ -1298,6 +1304,7 @@ def _migrate_legacy_mention_rows(connection: sqlite3.Connection) -> None:
         INSERT INTO mention_rows (
             mention_id,
             entity_id,
+            term_source,
             source_domain,
             source_path,
             source_filename,
@@ -1312,6 +1319,7 @@ def _migrate_legacy_mention_rows(connection: sqlite3.Connection) -> None:
             (
                 blake3_hex(str(row["entity_id"]), str(row["chunk_id"]), str(row["start_char"])),
                 str(row["entity_id"]),
+                str(row["term_source"]),
                 str(chunk_by_id[str(row["chunk_id"])]["source_domain"]),
                 str(chunk_by_id[str(row["chunk_id"])]["source_path"]),
                 str(chunk_by_id[str(row["chunk_id"])]["source_filename"]),

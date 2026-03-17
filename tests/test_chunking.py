@@ -54,3 +54,24 @@ def test_split_chunk_for_context_uses_text_boundaries() -> None:
     assert len(split_chunks) == 2
     assert split_chunks[0].text == "First paragraph.\n\nSecond paragraph has more content."
     assert split_chunks[1].text == "Third paragraph finishes the example."
+
+
+def test_split_chunk_for_context_uses_supplied_token_counter() -> None:
+    chunk = TextChunk(
+        chunk_id="chunk-1",
+        document_id="doc-1",
+        source_rel_path="Guides/example.md",
+        source_type="markdown",
+        citation_label="Guides/example.md",
+        chunk_index=0,
+        chunk_occurrence=0,
+        token_count=12,
+        text="Alpha beta.\n\nGamma delta epsilon.",
+        chunk_hash="hash-1",
+        score_hint="Alpha beta.",
+        metadata_json="{}",
+    )
+
+    split_chunks = split_chunk_for_context(chunk, token_counter=lambda text: len(text))
+
+    assert [item.token_count for item in split_chunks] == [11, 20]

@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import re
-import sqlite3
 from dataclasses import dataclass
 
+from lxd.app.status import config_drift_warnings
 from lxd.retrieval.dense import embed_query
 from lxd.retrieval.expansion import expand_question
 from lxd.retrieval.rerank import rerank_chunks
@@ -15,7 +15,6 @@ from lxd.stores.sqlite import (
     connect_sqlite,
     initialize_schema,
     list_allowed_domains,
-    load_ingest_config_snapshot,
     summarize_store,
 )
 from lxd.synthesis.answering import (
@@ -107,14 +106,14 @@ def search_chunks(
         initialize_schema(connection)
         allowed_domains = list_allowed_domains(connection)
         _validate_domain(domain, allowed_domains)
-        config_drift_warnings = _config_drift_warnings(connection, config)
+        drift_warnings = config_drift_warnings(connection, config)
         store_summary = summarize_store(
             connection,
             ontology_file_count=0,
             matcher_term_count=0,
             matcher_termset_hash=None,
             ontology_snapshot_hash=None,
-            config_drift_warnings=config_drift_warnings,
+            config_drift_warnings=drift_warnings,
         )
     finally:
         connection.close()
@@ -127,7 +126,7 @@ def search_chunks(
             expansion_applied=False,
             matched_entity_ids=[],
             expansion_terms=[],
-            config_drift_warnings=config_drift_warnings,
+            config_drift_warnings=drift_warnings,
         )
 
     expansion = expand_question(question.strip(), config)
@@ -166,7 +165,7 @@ def search_chunks(
         expansion_applied=bool(expansion.added_terms),
         matched_entity_ids=expansion.matched_entity_ids,
         expansion_terms=expansion.added_terms,
-        config_drift_warnings=config_drift_warnings,
+        config_drift_warnings=drift_warnings,
     )
 
 
@@ -390,39 +389,6 @@ def _contains_rank_term(normalized_text: str, term: str) -> bool:
 
 def _rrf_score(rank: int) -> float:
     return 1.0 / (_RRF_K + rank)
-
-
-def _config_drift_warnings(connection: sqlite3.Connection, config: RuntimeConfig) -> list[str]:
-    stored = load_ingest_config_snapshot(connection)
-    if not stored:
-        return []
-    current = _current_ingest_config(config)
-    warnings: list[str] = []
-    for key, current_value in current.items():
-        stored_value = stored.get(key)
-        if stored_value is None:
-            warnings.append(f"Committed ingest config is missing '{key}'.")
-            continue
-        if stored_value != current_value:
-            warnings.append(f"Config drift: {key} stored={stored_value} current={current_value}.")
-    return warnings
-
-
-def _current_ingest_config(config: RuntimeConfig) -> dict[str, str]:
-    return {
-        "paths.corpus_path": str(config.paths.corpus_path),
-        "paths.ontology_path": str(config.paths.ontology_path),
-        "paths.data_path": str(config.paths.data_path),
-        "chunking.chunk_overlap": str(config.chunking.chunk_overlap),
-        "chunking.chunk_size": str(config.chunking.chunk_size),
-        "chunking.min_tokens": str(config.chunking.min_tokens),
-        "chunking.strategy": config.chunking.strategy,
-        "chunking.tokenizer_backend": config.chunking.tokenizer_backend,
-        "chunking.tokenizer_name": config.chunking.tokenizer_name,
-        "models.embed": config.models.embed,
-        "models.embed_backend": config.models.embed_backend,
-        "models.embed_dims": str(config.models.embed_dims),
-    }
 
 
 def _insufficient_evidence(evidence: list[EvidenceChunk]) -> bool:

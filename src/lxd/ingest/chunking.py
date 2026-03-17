@@ -11,6 +11,7 @@ from docling_core.transforms.chunker.hierarchical_chunker import HierarchicalChu
 from docling_core.transforms.chunker.hybrid_chunker import HybridChunker
 from docling_core.transforms.chunker.tokenizer.openai import OpenAITokenizer
 
+from lxd.domain.citations import make_citation_label
 from lxd.domain.ids import blake3_hex, make_chunk_id
 from lxd.ingest.markdown import ExtractedDocument
 
@@ -60,7 +61,7 @@ def chunk_document(
             strategy=strategy,
         )
 
-    tokenizer = _build_tokenizer(tokenizer_backend, tokenizer_name)
+    tokenizer = build_tokenizer(tokenizer_backend, tokenizer_name)
     full_text = "\n\n".join(
         block.strip() for block in document.text_blocks if block.strip()
     ).strip()
@@ -106,7 +107,11 @@ def chunk_document(
     return chunks
 
 
-def split_chunk_for_context(chunk: TextChunk) -> list[TextChunk]:
+def split_chunk_for_context(
+    chunk: TextChunk,
+    *,
+    token_counter: Callable[[str], int] | None = None,
+) -> list[TextChunk]:
     normalized_text = chunk.text.strip()
     if not normalized_text:
         return [chunk]
@@ -122,7 +127,7 @@ def split_chunk_for_context(chunk: TextChunk) -> list[TextChunk]:
             document_id=chunk.document_id,
             chunk_index=index,
             chunk_occurrence=index,
-            token_count=_token_count_for_text(text),
+            token_count=(token_counter or _token_count_for_text)(text),
             text=text,
             metadata_json=chunk.metadata_json,
         )
@@ -152,7 +157,7 @@ def _chunk_docling_document(
     else:
         raise ValueError(f"Unsupported chunking strategy: {strategy}")
 
-    configured_tokenizer = _build_tokenizer(tokenizer_backend, tokenizer_name)
+    configured_tokenizer = build_tokenizer(tokenizer_backend, tokenizer_name)
     chunks: list[TextChunk] = []
     occurrences: dict[str, int] = {}
     for native_chunk in chunker.chunk(document.docling_document):
@@ -261,7 +266,7 @@ class _Tokenizer:
     decode: Callable[[list[int]], str]
 
 
-def _build_tokenizer(tokenizer_backend: str, tokenizer_name: str) -> _Tokenizer:
+def build_tokenizer(tokenizer_backend: str, tokenizer_name: str) -> _Tokenizer:
     if tokenizer_backend != "tiktoken":
         raise ValueError(f"Unsupported tokenizer backend: {tokenizer_backend}")
     encoding = tiktoken.get_encoding(tokenizer_name)
@@ -289,7 +294,7 @@ def _citation_label_for_chunk(source_rel_path: str, metadata_json: str) -> str:
     page_no = _find_page_no(metadata)
     if page_no is None:
         return source_rel_path
-    return f"{source_rel_path}#page={page_no}"
+    return make_citation_label(source_rel_path, page_no)
 
 
 def _find_page_no(value: Any) -> int | None:
@@ -314,6 +319,15 @@ def _token_count_for_text(text: str) -> int:
     if not normalized:
         return 0
     return len(normalized.split(" "))
+
+
+def token_count_with_tokenizer(
+    tokenizer: _Tokenizer,
+) -> Callable[[str], int]:
+    def count(text: str) -> int:
+        return len(tokenizer.encode(text))
+
+    return count
 
 
 def _split_text_at_best_boundary(text: str) -> tuple[str, str]:

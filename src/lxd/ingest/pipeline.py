@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import sqlite3
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -10,10 +11,16 @@ from lxd.domain.citations import make_citation_label
 from lxd.domain.ids import blake3_hex, make_chunk_id
 from lxd.domain.status import LifecycleStatus, RetrievalStatus
 from lxd.ingest.assets import infer_asset_parent
-from lxd.ingest.chunking import TextChunk, chunk_document, split_chunk_for_context
+from lxd.ingest.chunking import (
+    TextChunk,
+    build_tokenizer,
+    chunk_document,
+    split_chunk_for_context,
+    token_count_with_tokenizer,
+)
 from lxd.ingest.docling import load_docling_document
 from lxd.ingest.embedder import EmbeddingContextError, embed_chunk_text, probe_embedder
-from lxd.ingest.markdown import load_markdown_document
+from lxd.ingest.markdown import ExtractedDocument, load_markdown_document
 from lxd.ingest.mentions import detect_mentions
 from lxd.ingest.scanner import ScannedCorpusFile, scan_corpus
 from lxd.ontology.loader import OntologyLoadResult, load_ontology
@@ -569,7 +576,7 @@ def _build_source_records(
     return chunk_records, mention_records
 
 
-def _load_extracted_document(scanned: ScannedCorpusFile):
+def _load_extracted_document(scanned: ScannedCorpusFile) -> ExtractedDocument:
     if scanned.source_type in ("markdown", "docling_md"):
         return load_markdown_document(
             scanned.absolute_path,
@@ -584,11 +591,18 @@ def _embed_with_context_refinement(
     document_id: str,
     config: RuntimeConfig,
 ) -> tuple[list[TextChunk], list[list[float]]]:
+    token_counter = token_count_with_tokenizer(
+        build_tokenizer(config.chunking.tokenizer_backend, config.chunking.tokenizer_name)
+    )
     resolved_chunks: list[TextChunk] = []
     vectors: list[list[float]] = []
 
     for chunk in chunks:
-        refined_chunks, refined_vectors = _embed_chunk_recursively(chunk, config)
+        refined_chunks, refined_vectors = _embed_chunk_recursively(
+            chunk,
+            config,
+            token_counter=token_counter,
+        )
         resolved_chunks.extend(refined_chunks)
         vectors.extend(refined_vectors)
 
@@ -597,18 +611,25 @@ def _embed_with_context_refinement(
 
 
 def _embed_chunk_recursively(
-    chunk: TextChunk, config: RuntimeConfig
+    chunk: TextChunk,
+    config: RuntimeConfig,
+    *,
+    token_counter: Callable[[str], int],
 ) -> tuple[list[TextChunk], list[list[float]]]:
     try:
         return [chunk], [embed_chunk_text(config, chunk.text)]
     except EmbeddingContextError:
-        split_chunks = split_chunk_for_context(chunk)
+        split_chunks = split_chunk_for_context(chunk, token_counter=token_counter)
         if len(split_chunks) == 1 and split_chunks[0].text == chunk.text:
             raise
         resolved_chunks: list[TextChunk] = []
         vectors: list[list[float]] = []
         for split_chunk in split_chunks:
-            nested_chunks, nested_vectors = _embed_chunk_recursively(split_chunk, config)
+            nested_chunks, nested_vectors = _embed_chunk_recursively(
+                split_chunk,
+                config,
+                token_counter=token_counter,
+            )
             resolved_chunks.extend(nested_chunks)
             vectors.extend(nested_vectors)
         return resolved_chunks, vectors

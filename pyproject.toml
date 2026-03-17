@@ -34,7 +34,7 @@ packages = ["src/lxd"]
 
 [tool.ruff]
 line-length    = 100
-target-version = "py311"
+target-version = "py314"
 
 [tool.ruff.lint]
 select  = ["E", "F", "I", "UP", "B", "SIM", "TCH"]
@@ -47,6 +47,8 @@ ignore  = [
 
 [tool.pyright]
 pythonVersion                = "3.14"
+venvPath                     = ".pixi/envs"
+venv                         = "default"
 typeCheckingMode             = "strict"
 include                      = ["src"]
 reportMissingImports         = true
@@ -56,6 +58,7 @@ reportUnknownMemberType      = false  # untyped C extension method calls
 reportUnknownArgumentType    = false  # passing untyped objects to typed functions
 reportUnknownParameterType   = false  # parameters typed by untyped libraries
 reportMissingTypeArgument    = false  # networkx DiGraph[NodeType, EdgeType] — not required here
+reportUntypedFunctionDecorator = false  # FastMCP decorators are currently untyped
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

@@ -15,6 +15,13 @@ class ModelProbeResult:
     warning: str | None = None
 
 
+@dataclass(frozen=True)
+class _EmbeddingRuntimeSettings:
+    timeout_secs: int = 120
+    retry_attempts: int = 1
+    retry_backoff: tuple[int, ...] = ()
+
+
 class EmbeddingContextError(RuntimeError):
     pass
 
@@ -22,7 +29,7 @@ class EmbeddingContextError(RuntimeError):
 def probe_embedder(config: RuntimeConfig) -> ModelProbeResult:
     try:
         embeddings = embed_texts(config, ["lxd ingest embed probe"])
-    except Exception as exc:
+    except (EmbeddingContextError, ImportError, OSError, RuntimeError, ValueError) as exc:
         return ModelProbeResult(ok=False, warning=str(exc))
     if not embeddings or len(embeddings[0]) != config.models.embed_dims:
         return ModelProbeResult(
@@ -54,8 +61,9 @@ def _ollama_embed_texts(config: RuntimeConfig, texts: list[str]) -> list[list[fl
 
 
 def _ollama_embed_single(config: RuntimeConfig, text: str) -> list[float]:
-    attempts = max(1, int(getattr(getattr(config, "embedding", None), "retry_attempts", 1)))
-    backoff = list(getattr(getattr(config, "embedding", None), "retry_backoff", []))
+    runtime = _embedding_runtime_settings(config)
+    attempts = runtime.retry_attempts
+    backoff = runtime.retry_backoff
     last_error: Exception | None = None
     for attempt in range(attempts):
         try:
@@ -81,8 +89,8 @@ def _ollama_embed_single(config: RuntimeConfig, text: str) -> list[float]:
 
 
 def _ollama_client(config: RuntimeConfig) -> ollama.Client:
-    timeout_secs = float(getattr(getattr(config, "embedding", None), "timeout_secs", 120))
-    return ollama.Client(host=str(config.ollama.url), timeout=timeout_secs)
+    runtime = _embedding_runtime_settings(config)
+    return ollama.Client(host=str(config.ollama.url), timeout=float(runtime.timeout_secs))
 
 
 # ---------------------------------------------------------------------------
@@ -95,7 +103,8 @@ def _openai_embed_texts(config: RuntimeConfig, texts: list[str]) -> list[list[fl
     import openai as _openai  # lazy import — only needed for openai backend
 
     cfg = config.openai
-    assert cfg is not None, "openai config required when embed_backend=openai"
+    if cfg is None:
+        raise RuntimeError("openai config required when embed_backend=openai")
     api_key = os.environ.get(cfg.api_key_env)
     if not api_key:
         raise RuntimeError(
@@ -114,7 +123,7 @@ def _openai_embed_texts(config: RuntimeConfig, texts: list[str]) -> list[list[fl
         )
         return idx, [
             item.embedding
-            for item in sorted(response.data, key=lambda x: x.index)
+            for item in sorted(response.data, key=lambda item: item.index)
         ]
 
     with ThreadPoolExecutor(max_workers=cfg.max_workers) as executor:
@@ -131,3 +140,14 @@ def _openai_embed_texts(config: RuntimeConfig, texts: list[str]) -> list[list[fl
         assert batch_result is not None
         flat.extend(batch_result)
     return flat
+
+
+def _embedding_runtime_settings(config: RuntimeConfig) -> _EmbeddingRuntimeSettings:
+    embedding_config = getattr(config, "embedding", None)
+    if embedding_config is None:
+        return _EmbeddingRuntimeSettings()
+    return _EmbeddingRuntimeSettings(
+        timeout_secs=int(embedding_config.timeout_secs),
+        retry_attempts=int(embedding_config.retry_attempts),
+        retry_backoff=tuple(int(value) for value in embedding_config.retry_backoff),
+    )

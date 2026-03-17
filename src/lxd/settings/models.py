@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, HttpUrl, model_validator
+from pydantic import BaseModel, ConfigDict, Field, HttpUrl, model_validator
 
 
 class OllamaConfig(BaseModel):
@@ -16,7 +16,7 @@ class ModelsConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     embed: str
-    embed_dims: int
+    embed_dims: int = Field(gt=0)
     embed_backend: Literal["ollama", "openai"] = "ollama"
     llm: str
     rerank: str
@@ -27,9 +27,9 @@ class ChunkingConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     strategy: str
-    chunk_size: int
-    chunk_overlap: int
-    min_tokens: int
+    chunk_size: int = Field(gt=0)
+    chunk_overlap: int = Field(ge=0)
+    min_tokens: int = Field(ge=0)
     tokenizer_backend: str
     tokenizer_name: str
 
@@ -37,9 +37,9 @@ class ChunkingConfig(BaseModel):
 class EmbeddingConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    timeout_secs: int
-    retry_attempts: int
-    retry_backoff: list[int]
+    timeout_secs: int = Field(gt=0)
+    retry_attempts: int = Field(gt=0)
+    retry_backoff: list[int] = Field(default_factory=list)
     query_instruction: str | None = None
 
 
@@ -48,9 +48,9 @@ class OpenAIEmbeddingConfig(BaseModel):
 
     api_key_env: str = "OPENAI_API_KEY"
     model: str = "text-embedding-3-small"
-    dims: int = 1536
-    batch_size: int = 512
-    max_workers: int = 8
+    dims: int = Field(default=1536, gt=0)
+    batch_size: int = Field(default=512, gt=0)
+    max_workers: int = Field(default=8, gt=0)
 
 
 class CorpusConfig(BaseModel):
@@ -59,7 +59,7 @@ class CorpusConfig(BaseModel):
     text_extensions: list[str]
     asset_extensions: list[str]
     ignore_names: list[str]
-    min_text_file_bytes: int
+    min_text_file_bytes: int = Field(ge=0)
 
 
 class AssetsConfig(BaseModel):
@@ -79,9 +79,9 @@ class OntologyConfig(BaseModel):
 class RetrievalConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    dense_top_k: int
-    rerank_top_k: int
-    lexical_fusion_weight: float = 2.0
+    dense_top_k: int = Field(gt=0)
+    rerank_top_k: int = Field(gt=0)
+    lexical_fusion_weight: float = Field(default=2.0, ge=0.0)
 
 
 class RerankerConfig(BaseModel):
@@ -91,7 +91,7 @@ class RerankerConfig(BaseModel):
     backend: Literal["llama_cpp", "none"]
     url: HttpUrl | None = None
     endpoint: str = "/v1/rerank"
-    timeout_secs: int = 30
+    timeout_secs: int = Field(default=30, gt=0)
     launch: RerankerLaunchConfig | None = None
 
     @model_validator(mode="after")
@@ -121,26 +121,26 @@ class RerankerLaunchConfig(BaseModel):
     model_source: Literal["ollama_blob", "model_path"] = "ollama_blob"
     model_path: Path | None = None
     host: str = "127.0.0.1"
-    port: int = 8012
-    startup_timeout_secs: int = 120
-    extra_args: list[str] = []
+    port: int = Field(default=8012, gt=0, le=65535)
+    startup_timeout_secs: int = Field(default=120, gt=0)
+    extra_args: list[str] = Field(default_factory=list)
 
 
 class ExpansionConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     enabled: bool
-    hops: int
-    max_terms: int
+    hops: int = Field(ge=0)
+    max_terms: int = Field(gt=0)
 
 
 class SynthesisConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    max_chunks: int
-    timeout_secs: int
-    temperature: float
-    max_tokens: int
+    max_chunks: int = Field(gt=0)
+    timeout_secs: int = Field(gt=0)
+    temperature: float = Field(ge=0.0)
+    max_tokens: int = Field(gt=0)
 
 
 class MCPConfig(BaseModel):
@@ -154,7 +154,7 @@ class LoggingConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     level: str
-    format: str
+    format: Literal["json", "console"] = "json"
 
 
 class PathsConfig(BaseModel):

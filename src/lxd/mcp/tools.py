@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-import json
-import sqlite3
 from pathlib import Path
 from typing import Any
 
 from lxd.app.bootstrap import AppContext, bootstrap_app
+from lxd.app.status import load_committed_status
 from lxd.ingest.pipeline import IngestPlan, build_ingest_plan
 from lxd.ontology.graph import direct_neighbors
 from lxd.retrieval.expansion import expand_entity_ids
@@ -15,10 +14,6 @@ from lxd.stores.sqlite import (
     connect_sqlite,
     find_chunks_by_entity_mentions,
     initialize_schema,
-    load_ingest_config_snapshot,
-    load_ontology_snapshot,
-    store_has_committed_state,
-    summarize_store,
 )
 
 _app_context: AppContext | None = None
@@ -43,58 +38,15 @@ def corpus_status_tool() -> dict[str, object]:
         connection = connect_sqlite(store_paths.sqlite_path)
         try:
             initialize_schema(connection)
-            if store_has_committed_state(connection):
-                ontology_snapshot = load_ontology_snapshot(connection)
-                if _needs_live_ontology_fallback(ontology_snapshot):
-                    plan = _plan()
-                    summary = summarize_store(
-                        connection,
-                        ontology_file_count=len(plan.ontology.sources),
-                        matcher_term_count=len(plan.ontology.matcher_records),
-                        matcher_termset_hash=plan.ontology.matcher_termset_hash,
-                        ontology_snapshot_hash=plan.ontology.snapshot_hash,
-                        ontology_coverage_path_count=plan.ontology.coverage_report.discovered_path_count,
-                        ontology_graph_relation_count=len(plan.ontology.relation_records),
-                        ontology_validation_issue_count=len(plan.ontology.validation_issues),
-                        ontology_validation_issue_samples=[
-                            issue.message for issue in plan.ontology.validation_issues[:10]
-                        ],
-                        config_drift_warnings=_config_drift_warnings(connection, context),
-                    )
-                    ontology_snapshot = None
-                else:
-                    summary = summarize_store(
-                        connection,
-                        ontology_file_count=ontology_snapshot.source_file_count if ontology_snapshot else 0,
-                        matcher_term_count=ontology_snapshot.matcher_term_count if ontology_snapshot else 0,
-                        matcher_termset_hash=(
-                            ontology_snapshot.matcher_termset_hash if ontology_snapshot else None
-                        ),
-                        ontology_snapshot_hash=(
-                            ontology_snapshot.snapshot_hash if ontology_snapshot else None
-                        ),
-                        ontology_coverage_path_count=(
-                            ontology_snapshot.coverage_path_count if ontology_snapshot else 0
-                        ),
-                        ontology_graph_relation_count=(
-                            ontology_snapshot.graph_relation_count if ontology_snapshot else 0
-                        ),
-                        ontology_validation_issue_count=(
-                            ontology_snapshot.validation_issue_count if ontology_snapshot else 0
-                        ),
-                        ontology_validation_issue_samples=(
-                            json.loads(ontology_snapshot.validation_issues_json)
-                            if ontology_snapshot is not None
-                            else []
-                        ),
-                        config_drift_warnings=_config_drift_warnings(connection, context),
-                    )
-            else:
-                summary = None
-                ontology_snapshot = None
+            status_snapshot = load_committed_status(
+                connection,
+                config=context.config,
+                plan_provider=_plan,
+            )
         finally:
             connection.close()
-        if summary is not None:
+        if status_snapshot is not None:
+            summary = status_snapshot.summary
             return {
                 "corpus_counts": {
                     "total": summary.corpus_file_count,
@@ -105,7 +57,7 @@ def corpus_status_tool() -> dict[str, object]:
                 "chunk_count": summary.chunk_count,
                 "mention_count": summary.mention_count,
                 "ontology_file_count": summary.ontology_file_count,
-                "entity_count": ontology_snapshot.entity_count if ontology_snapshot else 0,
+                "entity_count": status_snapshot.entity_count,
                 "matcher_term_count": summary.matcher_term_count,
                 "ontology_snapshot_hash": summary.ontology_snapshot_hash,
                 "matcher_termset_hash": summary.matcher_termset_hash,
@@ -235,41 +187,3 @@ def _plan() -> IngestPlan:
 def _validate_non_empty(value: str, field_name: str) -> None:
     if not value.strip():
         raise ValueError(f"{field_name} must be non-empty.")
-
-
-def _config_drift_warnings(connection: sqlite3.Connection, context: AppContext) -> list[str]:
-    stored = load_ingest_config_snapshot(connection)
-    if not stored:
-        return []
-    current = {
-        "paths.corpus_path": str(context.config.paths.corpus_path),
-        "paths.ontology_path": str(context.config.paths.ontology_path),
-        "paths.data_path": str(context.config.paths.data_path),
-        "chunking.chunk_overlap": str(context.config.chunking.chunk_overlap),
-        "chunking.chunk_size": str(context.config.chunking.chunk_size),
-        "chunking.min_tokens": str(context.config.chunking.min_tokens),
-        "chunking.strategy": context.config.chunking.strategy,
-        "chunking.tokenizer_backend": context.config.chunking.tokenizer_backend,
-        "chunking.tokenizer_name": context.config.chunking.tokenizer_name,
-        "models.embed": context.config.models.embed,
-        "models.embed_dims": str(context.config.models.embed_dims),
-    }
-    warnings: list[str] = []
-    for key, current_value in current.items():
-        stored_value = stored.get(key)
-        if stored_value is None:
-            warnings.append(f"Committed ingest config is missing '{key}'.")
-            continue
-        if stored_value != current_value:
-            warnings.append(f"Config drift: {key} stored={stored_value} current={current_value}.")
-    return warnings
-
-
-def _needs_live_ontology_fallback(ontology_snapshot: object) -> bool:
-    if ontology_snapshot is None:
-        return False
-    return (
-        getattr(ontology_snapshot, "source_file_count", 0) > 0
-        and getattr(ontology_snapshot, "coverage_path_count", 0) == 0
-        and getattr(ontology_snapshot, "graph_relation_count", 0) == 0
-    )

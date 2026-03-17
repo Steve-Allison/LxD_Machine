@@ -52,7 +52,7 @@ def _resolve_config_path(
 
 
 def _require_existing_config(config_path: Path) -> Path:
-    if not config_path.exists():
+    if not config_path.is_file():
         raise FileNotFoundError(f"Missing runtime config file: {config_path}")
     return config_path
 
