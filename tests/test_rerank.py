@@ -258,3 +258,76 @@ def test_probe_reranker_autostarts_llama_server_from_ollama_blob(
     ]
     pid_files = list((tmp_path / "runtime").glob("reranker-llama-server-*.json"))
     assert len(pid_files) == 1
+
+
+def test_apply_rerank_payload_orders_by_descending_relevance() -> None:
+    candidates = [
+        Candidate(
+            chunk_id="a",
+            document_id="doc",
+            citation_label="A",
+            source_rel_path="a.md",
+            source_path="/tmp/a.md",
+            source_filename="a.md",
+            source_type="markdown",
+            source_domain="guides",
+            source_hash="hash-a",
+            chunk_index=0,
+            chunk_occurrence=0,
+            token_count=10,
+            text="alpha",
+            score_hint="alpha",
+            metadata_json="{}",
+            score=0.1,
+        ),
+        Candidate(
+            chunk_id="b",
+            document_id="doc",
+            citation_label="B",
+            source_rel_path="b.md",
+            source_path="/tmp/b.md",
+            source_filename="b.md",
+            source_type="markdown",
+            source_domain="guides",
+            source_hash="hash-b",
+            chunk_index=1,
+            chunk_occurrence=0,
+            token_count=10,
+            text="beta",
+            score_hint="beta",
+            metadata_json="{}",
+            score=0.2,
+        ),
+        Candidate(
+            chunk_id="c",
+            document_id="doc",
+            citation_label="C",
+            source_rel_path="c.md",
+            source_path="/tmp/c.md",
+            source_filename="c.md",
+            source_type="markdown",
+            source_domain="guides",
+            source_hash="hash-c",
+            chunk_index=2,
+            chunk_occurrence=0,
+            token_count=10,
+            text="gamma",
+            score_hint="gamma",
+            metadata_json="{}",
+            score=0.3,
+        ),
+    ]
+
+    reranked = rerank._apply_rerank_payload(
+        candidates,
+        {
+            "results": [
+                {"index": 2, "relevance_score": 0.1},
+                {"index": 0, "relevance_score": 0.9},
+                {"index": 1, "relevance_score": 0.4},
+            ]
+        },
+    )
+
+    assert reranked is not None
+    assert [item.chunk_id for item in reranked] == ["a", "b", "c"]

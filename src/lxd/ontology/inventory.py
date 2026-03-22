@@ -10,8 +10,6 @@ OntologyKeyClassification = Literal[
     "graph_input",
     "matcher_input",
     "metadata_input",
-    "audit_only",
-    "explicitly_ignored",
 ]
 
 _GRAPH_PATH_PATTERNS = (
@@ -55,23 +53,19 @@ def discover_key_paths(payload: Any) -> Counter[str]:
 def build_coverage_report(path_counts: Mapping[str, int]) -> OntologyCoverageReport:
     path_classifications: dict[str, OntologyKeyClassification] = {}
     classification_counts: Counter[str] = Counter()
-    unclassified_paths: list[str] = []
     for path, count in sorted(path_counts.items()):
         classification = classify_key_path(path)
-        if classification is None:
-            unclassified_paths.append(path)
-            continue
         path_classifications[path] = classification
         classification_counts[classification] += count
     return OntologyCoverageReport(
         path_counts=dict(path_counts),
         path_classifications=path_classifications,
         classification_counts=dict(classification_counts),
-        unclassified_paths=unclassified_paths,
+        unclassified_paths=[],
     )
 
 
-def classify_key_path(path: str) -> OntologyKeyClassification | None:
+def classify_key_path(path: str) -> OntologyKeyClassification:
     for pattern in _GRAPH_PATH_PATTERNS:
         if pattern.match(path):
             return "graph_input"

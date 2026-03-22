@@ -95,7 +95,9 @@ def load_committed_status(
         )
 
     validation_issue_samples = (
-        json.loads(ontology_snapshot.validation_issues_json) if ontology_snapshot is not None else []
+        _parse_validation_issues_json(ontology_snapshot.validation_issues_json)
+        if ontology_snapshot is not None
+        else []
     )
     return StatusSnapshot(
         summary=summarize_store(
@@ -112,3 +114,13 @@ def load_committed_status(
         ),
         entity_count=ontology_snapshot.entity_count if ontology_snapshot is not None else 0,
     )
+
+
+def _parse_validation_issues_json(payload: str) -> list[str]:
+    try:
+        decoded = json.loads(payload)
+    except ValueError:
+        return []
+    if not isinstance(decoded, list):
+        return []
+    return [str(item) for item in decoded]

@@ -71,6 +71,14 @@ from lxd.stores.sqlite import (
     replace_source_chunks as replace_sqlite_source_chunks,
 )
 
+_RECOVERABLE_SOURCE_ERRORS = (
+    FileNotFoundError,
+    OSError,
+    RuntimeError,
+    ValueError,
+    sqlite3.Error,
+)
+
 
 @dataclass(frozen=True)
 class IngestPlan:
@@ -367,7 +375,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                     files_completed += 1
                     searchable_files_rebuilt += 1
                     chunks_written += len(chunk_records)
-                except Exception as exc:
+                except _RECOVERABLE_SOURCE_ERRORS as exc:
                     failed_manifest = _manifest_record(
                         scanned=scanned,
                         document_id=document_id,
@@ -435,7 +443,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                 reused_move_sources=reused_move_sources,
                 snapshot_path=snapshot_path,
             )
-        except Exception as exc:
+        except _RECOVERABLE_SOURCE_ERRORS as exc:
             failure_notes = [*warnings, f"fatal: {exc}"]
             finish_ingest_run(
                 sqlite_connection,

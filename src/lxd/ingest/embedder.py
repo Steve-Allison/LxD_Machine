@@ -62,7 +62,7 @@ def _ollama_embed_texts(config: RuntimeConfig, texts: list[str]) -> list[list[fl
 
 def _ollama_embed_single(config: RuntimeConfig, text: str) -> list[float]:
     runtime = _embedding_runtime_settings(config)
-    attempts = runtime.retry_attempts
+    attempts = max(1, runtime.retry_attempts)
     backoff = runtime.retry_backoff
     last_error: Exception | None = None
     for attempt in range(attempts):
@@ -135,10 +135,12 @@ def _openai_embed_texts(config: RuntimeConfig, texts: list[str]) -> list[list[fl
             idx, vectors = future.result()
             results[idx] = vectors
 
+    if any(batch_result is None for batch_result in results):
+        raise RuntimeError("OpenAI embedding results were incomplete.")
     flat: list[list[float]] = []
     for batch_result in results:
-        assert batch_result is not None
-        flat.extend(batch_result)
+        if batch_result is not None:
+            flat.extend(batch_result)
     return flat
 
 

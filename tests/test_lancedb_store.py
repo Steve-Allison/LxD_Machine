@@ -66,3 +66,26 @@ def test_lancedb_search_and_domain_filter(tmp_path) -> None:
 
     assert [item.chunk_id for item in guides_hits] == ["chunk-guides"]
     assert [item.chunk_id for item in theory_hits] == ["chunk-theories"]
+
+
+def test_reset_chunk_table_ignores_missing_table() -> None:
+    class FakeDatabase:
+        def __init__(self) -> None:
+            self.drop_calls: list[str] = []
+            self.create_calls: list[tuple[str, str]] = []
+
+        def drop_table(self, table_name: str) -> None:
+            self.drop_calls.append(table_name)
+            raise ValueError(f"Table '{table_name}' was not found")
+
+        def create_table(self, table_name: str, *, schema, mode: str):
+            self.create_calls.append((table_name, mode))
+            return {"name": table_name, "mode": mode, "schema": schema}
+
+    fake_database = FakeDatabase()
+
+    table = reset_chunk_table(fake_database, vector_size=3)
+
+    assert fake_database.drop_calls == ["chunk_vectors"]
+    assert fake_database.create_calls == [("chunk_vectors", "create")]
+    assert table["name"] == "chunk_vectors"

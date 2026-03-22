@@ -89,11 +89,6 @@ def load_ontology(
 ) -> OntologyLoadResult:
     sources = _load_sources(root, include_globs, ignore_names)
     coverage_report = _coverage_report_for_sources(sources)
-    if coverage_report.unclassified_paths:
-        raise ValueError(
-            "Unclassified ontology key paths detected: "
-            + ", ".join(coverage_report.unclassified_paths[:10])
-        )
     entity_definitions = _extract_entity_definitions(sources)
     matcher_records = canonical_matcher_term_records(entity_definitions)
     snapshot_hash = _snapshot_hash(sources)

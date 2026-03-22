@@ -42,6 +42,12 @@ class EmbeddingConfig(BaseModel):
     retry_backoff: list[int] = Field(default_factory=list)
     query_instruction: str | None = None
 
+    @model_validator(mode="after")
+    def _normalize_query_instruction(self) -> EmbeddingConfig:
+        if self.query_instruction is not None and not self.query_instruction.strip():
+            self.query_instruction = None
+        return self
+
 
 class OpenAIEmbeddingConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -189,5 +195,13 @@ class RuntimeConfig(BaseModel):
         if self.models.embed_backend == "openai" and self.openai is None:
             raise ValueError(
                 "models.embed_backend=openai requires an [openai] config section."
+            )
+        if (
+            self.models.embed_backend == "openai"
+            and self.openai is not None
+            and self.models.embed_dims != self.openai.dims
+        ):
+            raise ValueError(
+                "models.embed_dims must match openai.dims when models.embed_backend=openai."
             )
         return self

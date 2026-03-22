@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from contextlib import suppress
 from pathlib import Path
 from typing import Any
 
@@ -30,8 +29,13 @@ def open_chunk_table(database: Any, *, vector_size: int) -> Any:
 
 
 def reset_chunk_table(database: Any, *, vector_size: int) -> Any:
-    with suppress(Exception):
+    try:
         database.drop_table(_TABLE_NAME)
+    except FileNotFoundError:
+        pass
+    except ValueError as exc:
+        if not _is_missing_table_error(exc):
+            raise
     return database.create_table(
         _TABLE_NAME,
         schema=_chunk_table_schema(vector_size),
@@ -136,3 +140,7 @@ def _chunk_record_to_row(record: ChunkRecord) -> dict[str, object]:
 
 def _escape_string_literal(value: str) -> str:
     return value.replace("'", "''")
+
+
+def _is_missing_table_error(error: ValueError) -> bool:
+    return "was not found" in str(error)

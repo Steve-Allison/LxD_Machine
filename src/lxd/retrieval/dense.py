@@ -18,6 +18,6 @@ __all__ = [
 
 
 def embed_query(config: RuntimeConfig, text: str) -> list[float]:
-    instruction = getattr(config.embedding, "query_instruction", None)
+    instruction = config.embedding.query_instruction
     prefixed = f"{instruction}{text}" if instruction else text
     return embed_texts(config, [prefixed])[0]
