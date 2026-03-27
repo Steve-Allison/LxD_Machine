@@ -66,17 +66,20 @@ def extract_relations_for_chunk(
 
     raw = _call_with_fallback(chunk_text, entity_ids, valid_predicates, config)
     if not raw:
+        _LOG.debug("chunk=%s entities=%d raw_relations=0 stored=0", chunk_id[:8], len(entity_ids))
         return []
 
     timestamp = datetime.now(UTC).isoformat()
     entity_id_set = set(entity_ids)
     model_name = _active_model(config)
     records: list[ExtractedRelationRecord] = []
+    dropped_predicate: list[str] = []
 
     for rel in raw[: cfg.max_relations_per_chunk]:
         if rel.subject not in entity_id_set or rel.object_ not in entity_id_set:
             continue
         if rel.predicate not in valid_predicates:
+            dropped_predicate.append(rel.predicate)
             continue
         if rel.subject == rel.object_:
             continue
@@ -95,6 +98,16 @@ def extract_relations_for_chunk(
             )
         )
 
+    if dropped_predicate:
+        _LOG.debug(
+            "chunk=%s dropped predicates not in ontology: %s",
+            chunk_id[:8],
+            sorted(set(dropped_predicate)),
+        )
+    _LOG.debug(
+        "chunk=%s entities=%d raw=%d stored=%d dropped_pred=%d",
+        chunk_id[:8], len(entity_ids), len(raw), len(records), len(dropped_predicate),
+    )
     return records
 
 
