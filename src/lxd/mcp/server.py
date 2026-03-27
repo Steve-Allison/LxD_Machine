@@ -1,3 +1,5 @@
+"""Launch the MCP server process for corpus tools."""
+
 from __future__ import annotations
 
 import argparse
@@ -223,6 +225,8 @@ def create_server(
 
 
 def main() -> None:
+    """Run the module entrypoint.
+    """
     parser = argparse.ArgumentParser(description="LxD Machine MCP server (stdio transport).")
     parser.add_argument("--profile", help="Named config profile to load.")
     parser.add_argument("--config", help="Explicit path to a config YAML file.")

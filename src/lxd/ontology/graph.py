@@ -1,3 +1,5 @@
+"""Build and query lightweight ontology graph relationships."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -10,6 +12,7 @@ from lxd.domain.ids import make_graph_edge_key
 
 @dataclass(frozen=True)
 class OntologyNodeRecord:
+    """Graph node metadata derived from ontology sources."""
     node_id: str
     node_type: str
     source_file_rel_path: str | None
@@ -20,6 +23,7 @@ class OntologyNodeRecord:
 
 @dataclass(frozen=True)
 class RelationRecord:
+    """Directed ontology relation edge with provenance metadata."""
     relation_type: str
     origin_kind: str
     origin_path: str
@@ -41,6 +45,15 @@ def build_graph(
     nodes: list[OntologyNodeRecord],
     relations: list[RelationRecord],
 ) -> OntologyGraph:
+    """Build an ontology graph from nodes and relations.
+
+    Args:
+        nodes: Ontology node records to add to the graph.
+        relations: Ontology relation records to add to the graph.
+
+    Returns:
+        Ontology graph populated with nodes and edges.
+    """
     graph = nx.MultiDiGraph()
     for node in nodes:
         graph.add_node(
@@ -98,6 +111,15 @@ def build_graph(
 
 
 def direct_neighbors(graph: OntologyGraph, entity_id: str) -> list[dict[str, Any]]:
+    """Return direct incoming and outgoing neighbors for an entity node.
+
+    Args:
+        graph: Ontology graph to query.
+        entity_id: Canonical ontology entity identifier.
+
+    Returns:
+        Neighbor relation records for the entity node.
+    """
     neighbors: list[dict[str, Any]] = []
     for _, target, key, data in graph.out_edges(entity_id, keys=True, data=True):
         neighbor_attrs = graph.nodes[target]

@@ -1,3 +1,5 @@
+"""Define strongly typed runtime configuration models."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -7,12 +9,14 @@ from pydantic import BaseModel, ConfigDict, Field, HttpUrl, model_validator
 
 
 class OllamaConfig(BaseModel):
+    """Configuration for connecting to the Ollama API."""
     model_config = ConfigDict(extra="forbid")
 
     url: HttpUrl
 
 
 class ModelsConfig(BaseModel):
+    """Model identifiers and embedding/rerank model settings."""
     model_config = ConfigDict(extra="forbid")
 
     embed: str
@@ -24,6 +28,7 @@ class ModelsConfig(BaseModel):
 
 
 class ChunkingConfig(BaseModel):
+    """Document chunking strategy and tokenizer settings."""
     model_config = ConfigDict(extra="forbid")
 
     strategy: str
@@ -35,6 +40,7 @@ class ChunkingConfig(BaseModel):
 
 
 class EmbeddingConfig(BaseModel):
+    """Embedding client timeout, retry, and instruction settings."""
     model_config = ConfigDict(extra="forbid")
 
     timeout_secs: int = Field(gt=0)
@@ -50,6 +56,7 @@ class EmbeddingConfig(BaseModel):
 
 
 class OpenAIEmbeddingConfig(BaseModel):
+    """OpenAI embedding backend credentials and model options."""
     model_config = ConfigDict(extra="forbid")
 
     api_key_env: str = "OPENAI_API_KEY"
@@ -60,6 +67,7 @@ class OpenAIEmbeddingConfig(BaseModel):
 
 
 class CorpusConfig(BaseModel):
+    """Corpus file extension and scanning filters."""
     model_config = ConfigDict(extra="forbid")
 
     text_extensions: list[str]
@@ -69,6 +77,7 @@ class CorpusConfig(BaseModel):
 
 
 class AssetsConfig(BaseModel):
+    """Asset ingestion toggles for registration and parent inference."""
     model_config = ConfigDict(extra="forbid")
 
     register_png: bool
@@ -76,6 +85,7 @@ class AssetsConfig(BaseModel):
 
 
 class OntologyConfig(BaseModel):
+    """Ontology file inclusion and ignore filters."""
     model_config = ConfigDict(extra="forbid")
 
     include_globs: list[str]
@@ -83,6 +93,7 @@ class OntologyConfig(BaseModel):
 
 
 class RetrievalConfig(BaseModel):
+    """Dense retrieval and fusion weighting parameters."""
     model_config = ConfigDict(extra="forbid")
 
     dense_top_k: int = Field(gt=0)
@@ -92,6 +103,7 @@ class RetrievalConfig(BaseModel):
 
 
 class RerankerConfig(BaseModel):
+    """Reranker backend connectivity and launch settings."""
     model_config = ConfigDict(extra="forbid")
 
     enabled: bool
@@ -121,6 +133,7 @@ class RerankerConfig(BaseModel):
 
 
 class RerankerLaunchConfig(BaseModel):
+    """Auto-start settings for llama.cpp reranker service."""
     model_config = ConfigDict(extra="forbid")
 
     auto_start: bool = False
@@ -134,6 +147,7 @@ class RerankerLaunchConfig(BaseModel):
 
 
 class ExpansionConfig(BaseModel):
+    """Ontology-based query expansion behavior."""
     model_config = ConfigDict(extra="forbid")
 
     enabled: bool
@@ -142,6 +156,7 @@ class ExpansionConfig(BaseModel):
 
 
 class RelationExtractionConfig(BaseModel):
+    """Relation extraction backend and generation controls."""
     model_config = ConfigDict(extra="forbid")
 
     enabled: bool = False
@@ -156,6 +171,7 @@ class RelationExtractionConfig(BaseModel):
 
 
 class SynthesisConfig(BaseModel):
+    """Answer synthesis limits and generation settings."""
     model_config = ConfigDict(extra="forbid")
 
     max_chunks: int = Field(gt=0)
@@ -165,6 +181,7 @@ class SynthesisConfig(BaseModel):
 
 
 class MCPConfig(BaseModel):
+    """MCP server identity configuration."""
     model_config = ConfigDict(extra="forbid")
 
     server_name: str
@@ -172,6 +189,7 @@ class MCPConfig(BaseModel):
 
 
 class LoggingConfig(BaseModel):
+    """Runtime logging level and output format."""
     model_config = ConfigDict(extra="forbid")
 
     level: str
@@ -179,6 +197,7 @@ class LoggingConfig(BaseModel):
 
 
 class PathsConfig(BaseModel):
+    """Filesystem paths for corpus, ontology, and data."""
     model_config = ConfigDict(extra="forbid")
 
     corpus_path: Path
@@ -187,6 +206,7 @@ class PathsConfig(BaseModel):
 
 
 class RuntimeConfig(BaseModel):
+    """Top-level runtime configuration for the application."""
     model_config = ConfigDict(extra="forbid")
 
     paths: PathsConfig

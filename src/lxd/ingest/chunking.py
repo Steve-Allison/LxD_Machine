@@ -1,3 +1,5 @@
+"""Chunk normalized documents into retrieval-ready text segments."""
+
 from __future__ import annotations
 
 import json
@@ -18,6 +20,7 @@ from lxd.ingest.markdown import ExtractedDocument
 
 @dataclass(frozen=True)
 class TextChunk:
+    """Retrieval-ready chunk derived from source text."""
     chunk_id: str
     document_id: str
     source_rel_path: str
@@ -43,6 +46,21 @@ def chunk_document(
     tokenizer_name: str,
     strategy: str = "hybrid_docling",
 ) -> list[TextChunk]:
+    """Chunk an extracted document into retrieval segments.
+
+    Args:
+        document: Extracted document to chunk.
+        document_id: Stable document identifier.
+        chunk_size: Maximum token target per chunk.
+        chunk_overlap: Token overlap between adjacent chunks.
+        min_tokens: Minimum token count required for a chunk.
+        tokenizer_backend: Tokenizer implementation backend.
+        tokenizer_name: Tokenizer encoding name.
+        strategy: Chunking strategy name.
+
+    Returns:
+        Generated text chunks for retrieval indexing.
+    """
     if chunk_size <= 0:
         raise ValueError("chunk_size must be positive")
     if chunk_overlap < 0:
@@ -112,6 +130,15 @@ def split_chunk_for_context(
     *,
     token_counter: Callable[[str], int] | None = None,
 ) -> list[TextChunk]:
+    """Split a chunk into smaller context-safe chunks.
+
+    Args:
+        chunk: Chunk to split for context-size constraints.
+        token_counter: Callable that counts tokens for text.
+
+    Returns:
+        One or more context-safe chunk splits.
+    """
     normalized_text = chunk.text.strip()
     if not normalized_text:
         return [chunk]
@@ -267,6 +294,15 @@ class _Tokenizer:
 
 
 def build_tokenizer(tokenizer_backend: str, tokenizer_name: str) -> _Tokenizer:
+    """Build a tokenizer wrapper for chunking operations.
+
+    Args:
+        tokenizer_backend: Tokenizer implementation backend.
+        tokenizer_name: Tokenizer encoding name.
+
+    Returns:
+        Tokenizer wrapper exposing `encode` and `decode`.
+    """
     if tokenizer_backend != "tiktoken":
         raise ValueError(f"Unsupported tokenizer backend: {tokenizer_backend}")
     encoding = tiktoken.get_encoding(tokenizer_name)
@@ -324,6 +360,14 @@ def _token_count_for_text(text: str) -> int:
 def token_count_with_tokenizer(
     tokenizer: _Tokenizer,
 ) -> Callable[[str], int]:
+    """Build a token-counting callable from a tokenizer.
+
+    Args:
+        tokenizer: Tokenizer wrapper used to count tokens.
+
+    Returns:
+        Callable that counts tokens for input text.
+    """
     def count(text: str) -> int:
         return len(tokenizer.encode(text))
 

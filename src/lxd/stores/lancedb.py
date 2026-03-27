@@ -1,3 +1,5 @@
+"""Persist and query vector chunk records in LanceDB."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -11,6 +13,14 @@ _TABLE_NAME = "chunk_vectors"
 
 
 def connect_lancedb(path: Path) -> Any:
+    """Open (and create if needed) the LanceDB database directory.
+
+    Args:
+        path: Path to the source file or storage location.
+
+    Returns:
+        Connected LanceDB database handle.
+    """
     import lancedb
 
     path.mkdir(parents=True, exist_ok=True)
@@ -18,6 +28,15 @@ def connect_lancedb(path: Path) -> Any:
 
 
 def open_chunk_table(database: Any, *, vector_size: int) -> Any:
+    """Open the chunk vector table, creating it when missing.
+
+    Args:
+        database: Open LanceDB database handle.
+        vector_size: Embedding vector length for schema creation.
+
+    Returns:
+        Opened or newly created chunk table.
+    """
     try:
         return database.open_table(_TABLE_NAME)
     except FileNotFoundError:
@@ -29,6 +48,15 @@ def open_chunk_table(database: Any, *, vector_size: int) -> Any:
 
 
 def reset_chunk_table(database: Any, *, vector_size: int) -> Any:
+    """Drop and recreate the chunk vector table schema.
+
+    Args:
+        database: Open LanceDB database handle.
+        vector_size: Embedding vector length for schema creation.
+
+    Returns:
+        Newly created empty chunk table.
+    """
     try:
         database.drop_table(_TABLE_NAME)
     except FileNotFoundError:
@@ -46,12 +74,25 @@ def reset_chunk_table(database: Any, *, vector_size: int) -> Any:
 def replace_source_chunks(
     table: Any, source_rel_path: str, chunk_records: list[ChunkRecord]
 ) -> None:
+    """Replace all vector chunks for one source path.
+
+    Args:
+        table: LanceDB table storing chunk vectors.
+        source_rel_path: Corpus-relative source path.
+        chunk_records: Chunk rows to persist for a source.
+    """
     delete_source(table, source_rel_path)
     if chunk_records:
         table.add([_chunk_record_to_row(record) for record in chunk_records])
 
 
 def delete_source(table: Any, source_rel_path: str) -> None:
+    """Apply the requested persistence operation.
+
+    Args:
+        table: LanceDB table storing chunk vectors.
+        source_rel_path: Corpus-relative source path.
+    """
     table.delete(f"source_rel_path = '{_escape_string_literal(source_rel_path)}'")
 
 
@@ -62,6 +103,17 @@ def search_chunks(
     domain: str | None,
     limit: int,
 ) -> list[VectorSearchRecord]:
+    """Run dense retrieval, optional rerank, and fusion.
+
+    Args:
+        table: LanceDB table storing chunk vectors.
+        query_vector: Embedded query vector for nearest-neighbor search.
+        domain: Optional source domain filter.
+        limit: Maximum number of records to return.
+
+    Returns:
+        Vector search matches ordered by similarity.
+    """
     query = table.search(query_vector, vector_column_name="vector").metric("cosine")
     if domain is not None:
         query = query.where(f"source_domain = '{_escape_string_literal(domain)}'")

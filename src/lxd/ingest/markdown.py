@@ -1,3 +1,5 @@
+"""Parse markdown sources into normalized text documents."""
+
 from __future__ import annotations
 
 import re
@@ -13,6 +15,7 @@ from lxd.domain.citations import make_citation_label
 
 @dataclass(frozen=True)
 class ExtractedDocument:
+    """Normalized extracted source document for chunking."""
     source_rel_path: str
     source_type: str
     citation_label: str
@@ -26,6 +29,16 @@ def load_markdown_document(
     *,
     source_type: str = "markdown",
 ) -> ExtractedDocument:
+    """Load markdown content into an extracted document wrapper.
+
+    Args:
+        path: Path to the source file.
+        source_rel_path: Corpus-relative source path.
+        source_type: Detected source type label.
+
+    Returns:
+        Extracted document for the markdown source.
+    """
     text = path.read_text(encoding="utf-8")
     converter = DocumentConverter()
     document = converter.convert_string(
@@ -41,6 +54,14 @@ def load_markdown_document(
 
 
 def extract_text_blocks(text: str) -> list[str]:
+    """Split normalized markdown text into paragraph blocks.
+
+    Args:
+        text: Input text to process.
+
+    Returns:
+        Normalized non-empty text blocks.
+    """
     normalized = text.replace("\r\n", "\n").replace("\r", "\n")
     lines = [_normalize_line(line) for line in normalized.split("\n")]
     blocks: list[str] = []

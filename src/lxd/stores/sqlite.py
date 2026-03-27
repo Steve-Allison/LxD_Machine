@@ -1,3 +1,5 @@
+"""Persist ingest state, manifests, and ontology snapshots in SQLite."""
+
 from __future__ import annotations
 
 import json
@@ -25,6 +27,14 @@ _SQLITE_FILENAME = "lxd.sqlite3"
 
 
 def connect_sqlite(path: Path) -> sqlite3.Connection:
+    """Open SQLite storage and apply connection settings.
+
+    Args:
+        path: Path to the source file or storage location.
+
+    Returns:
+        Configured SQLite connection.
+    """
     path.parent.mkdir(parents=True, exist_ok=True)
     connection = sqlite3.connect(path)
     connection.row_factory = sqlite3.Row
@@ -34,10 +44,23 @@ def connect_sqlite(path: Path) -> sqlite3.Connection:
 
 
 def build_store_paths(data_path: Path) -> StorePaths:
+    """Resolve SQLite and LanceDB paths under the data directory.
+
+    Args:
+        data_path: Root data directory for local stores.
+
+    Returns:
+        Resolved SQLite and LanceDB store paths.
+    """
     return StorePaths(sqlite_path=data_path / _SQLITE_FILENAME, lancedb_path=data_path / "lancedb")
 
 
 def initialize_schema(connection: sqlite3.Connection) -> None:
+    """Create and migrate required SQLite tables.
+
+    Args:
+        connection: Open SQLite connection.
+    """
     with connection:
         connection.executescript(
             """
@@ -185,6 +208,11 @@ def initialize_schema(connection: sqlite3.Connection) -> None:
 
 
 def reset_store(connection: sqlite3.Connection) -> None:
+    """Delete persisted ingest data across managed tables.
+
+    Args:
+        connection: Open SQLite connection.
+    """
     with connection:
         connection.execute("DELETE FROM asset_links")
         connection.execute("DELETE FROM ontology_sources")
@@ -204,6 +232,15 @@ def begin_ingest_run(
     mode: str,
     files_total: int,
 ) -> None:
+    """Insert the initial ingest run row.
+
+    Args:
+        connection: Open SQLite connection.
+        run_id: Ingest run identifier.
+        started_at: UTC timestamp when the run started.
+        mode: Ingest mode label (for example, full or incremental).
+        files_total: Number of files planned for this run.
+    """
     with connection:
         connection.execute(
             """
@@ -242,6 +279,21 @@ def finish_ingest_run(
     chunks_written: int,
     notes: list[str],
 ) -> None:
+    """Finalize ingest run status and counters.
+
+    Args:
+        connection: Open SQLite connection.
+        run_id: Ingest run identifier.
+        finished_at: UTC timestamp when the run finished.
+        status: Final ingest run status label.
+        files_completed: Number of files processed so far.
+        searchable_files_rebuilt: Count of searchable sources rebuilt.
+        asset_files_processed: Count of asset-only files processed.
+        unchanged_files_skipped: Count of unchanged files skipped.
+        failed_files: Count of files that failed processing.
+        chunks_written: Count of chunks written in this run.
+        notes: Progress or warning notes to persist.
+    """
     with connection:
         connection.execute(
             """
@@ -284,6 +336,19 @@ def update_ingest_run_progress(
     chunks_written: int,
     notes: list[str],
 ) -> None:
+    """Persist incremental ingest progress counters.
+
+    Args:
+        connection: Open SQLite connection.
+        run_id: Ingest run identifier.
+        files_completed: Number of files processed so far.
+        searchable_files_rebuilt: Count of searchable sources rebuilt.
+        asset_files_processed: Count of asset-only files processed.
+        unchanged_files_skipped: Count of unchanged files skipped.
+        failed_files: Count of files that failed processing.
+        chunks_written: Count of chunks written in this run.
+        notes: Progress or warning notes to persist.
+    """
     with connection:
         connection.execute(
             """
@@ -311,6 +376,14 @@ def update_ingest_run_progress(
 
 
 def load_manifest_index(connection: sqlite3.Connection) -> dict[str, ManifestRecord]:
+    """Load manifest records keyed by relative path.
+
+    Args:
+        connection: Open SQLite connection.
+
+    Returns:
+        Manifest records keyed by relative source path.
+    """
     rows = connection.execute(
         """
         SELECT
@@ -338,6 +411,14 @@ def load_manifest_index(connection: sqlite3.Connection) -> dict[str, ManifestRec
 def load_manifest_by_content_hash(
     connection: sqlite3.Connection,
 ) -> dict[str, list[ManifestRecord]]:
+    """Load manifest records grouped by content hash.
+
+    Args:
+        connection: Open SQLite connection.
+
+    Returns:
+        Manifest records grouped by content hash.
+    """
     rows = connection.execute(
         """
         SELECT
@@ -370,6 +451,15 @@ def load_manifest_by_content_hash(
 def load_manifest_by_absolute_path(
     connection: sqlite3.Connection, absolute_path: str
 ) -> ManifestRecord | None:
+    """Load one manifest record by absolute path.
+
+    Args:
+        connection: Open SQLite connection.
+        absolute_path: Absolute source file path.
+
+    Returns:
+        Matching manifest record, if present.
+    """
     row = connection.execute(
         """
         SELECT
@@ -399,6 +489,12 @@ def load_manifest_by_absolute_path(
 
 
 def upsert_manifest_record(connection: sqlite3.Connection, record: ManifestRecord) -> None:
+    """Insert or update a corpus manifest record.
+
+    Args:
+        connection: Open SQLite connection.
+        record: Record instance to persist.
+    """
     with connection:
         connection.execute(
             """
@@ -459,6 +555,13 @@ def upsert_manifest_record(connection: sqlite3.Connection, record: ManifestRecor
 def upsert_asset_link(
     connection: sqlite3.Connection, absolute_asset_path: str, record: AssetLinkRecord
 ) -> None:
+    """Insert or update an asset-to-parent linkage record.
+
+    Args:
+        connection: Open SQLite connection.
+        absolute_asset_path: Absolute asset file path.
+        record: Record instance to persist.
+    """
     with connection:
         connection.execute(
             """
@@ -507,6 +610,12 @@ def upsert_asset_link(
 def replace_ontology_sources(
     connection: sqlite3.Connection, records: list[OntologySourceRecord]
 ) -> None:
+    """Replace persisted ontology source records.
+
+    Args:
+        connection: Open SQLite connection.
+        records: Records to replace in the target table.
+    """
     with connection:
         connection.execute("DELETE FROM ontology_sources")
         if records:
@@ -530,6 +639,12 @@ def replace_ontology_sources(
 def replace_ontology_snapshot(
     connection: sqlite3.Connection, record: OntologySnapshotRecord
 ) -> None:
+    """Replace the persisted ontology snapshot row.
+
+    Args:
+        connection: Open SQLite connection.
+        record: Record instance to persist.
+    """
     with connection:
         connection.execute("DELETE FROM ontology_snapshot")
         connection.execute(
@@ -572,6 +687,12 @@ def replace_ontology_snapshot(
 def replace_ingest_config_snapshot(
     connection: sqlite3.Connection, records: list[IngestConfigSnapshotRecord]
 ) -> None:
+    """Replace persisted ingest config key-value rows.
+
+    Args:
+        connection: Open SQLite connection.
+        records: Records to replace in the target table.
+    """
     with connection:
         connection.execute("DELETE FROM ingest_config")
         if records:
@@ -582,6 +703,14 @@ def replace_ingest_config_snapshot(
 
 
 def list_allowed_domains(connection: sqlite3.Connection) -> set[str]:
+    """List available source domains from committed manifest rows.
+
+    Args:
+        connection: Open SQLite connection.
+
+    Returns:
+        Distinct searchable source domains.
+    """
     rows = connection.execute(
         """
         SELECT DISTINCT source_domain
@@ -594,11 +723,27 @@ def list_allowed_domains(connection: sqlite3.Connection) -> set[str]:
 
 
 def load_ingest_config_snapshot(connection: sqlite3.Connection) -> dict[str, str]:
+    """Load persisted ingest config key-value rows.
+
+    Args:
+        connection: Open SQLite connection.
+
+    Returns:
+        Persisted ingest config key-value mapping.
+    """
     rows = connection.execute("SELECT key, value FROM ingest_config ORDER BY key").fetchall()
     return {str(row["key"]): str(row["value"]) for row in rows}
 
 
 def load_ontology_snapshot(connection: sqlite3.Connection) -> OntologySnapshotRecord | None:
+    """Load the persisted ontology snapshot record.
+
+    Args:
+        connection: Open SQLite connection.
+
+    Returns:
+        Persisted ontology snapshot, if available.
+    """
     row = connection.execute(
         """
         SELECT
@@ -639,6 +784,14 @@ def load_ontology_snapshot(connection: sqlite3.Connection) -> OntologySnapshotRe
 
 
 def store_has_committed_state(connection: sqlite3.Connection) -> bool:
+    """Return whether committed corpus state exists.
+
+    Args:
+        connection: Open SQLite connection.
+
+    Returns:
+        `True` when committed searchable corpus state exists.
+    """
     ontology_snapshot = load_ontology_snapshot(connection)
     if ontology_snapshot is not None:
         return True
@@ -658,6 +811,12 @@ def store_has_committed_state(connection: sqlite3.Connection) -> bool:
 
 
 def delete_source(connection: sqlite3.Connection, absolute_path: str) -> None:
+    """Apply the requested persistence operation.
+
+    Args:
+        connection: Open SQLite connection.
+        absolute_path: Absolute source file path.
+    """
     with connection:
         connection.execute(
             """
@@ -681,6 +840,15 @@ def replace_source_chunks(
     mention_records: list[MentionRecord],
     relation_records: list[ExtractedRelationRecord] | None = None,
 ) -> None:
+    """Replace all vector chunks for one source path.
+
+    Args:
+        connection: Open SQLite connection.
+        absolute_source_path: Absolute source file path for chunk data.
+        chunk_records: Chunk rows to persist for a source.
+        mention_records: Mention rows to persist for the source.
+        relation_records: Extracted relation rows to persist for the source.
+    """
     with connection:
         connection.execute("DELETE FROM chunk_rows WHERE source_path = ?", (absolute_source_path,))
         connection.execute(
@@ -817,6 +985,15 @@ def replace_source_chunks(
 def load_chunk_records_for_source(
     connection: sqlite3.Connection, absolute_source_path: str
 ) -> list[ChunkRecord]:
+    """Load persisted chunk records for a source path.
+
+    Args:
+        connection: Open SQLite connection.
+        absolute_source_path: Absolute source file path for chunk data.
+
+    Returns:
+        Chunk records for the source path.
+    """
     rows = connection.execute(
         """
         SELECT
@@ -851,6 +1028,15 @@ def load_chunk_records_for_source(
 def load_mentions_for_source(
     connection: sqlite3.Connection, absolute_source_path: str
 ) -> dict[str, list[MentionRecord]]:
+    """Load persisted mentions grouped by chunk ID for a source.
+
+    Args:
+        connection: Open SQLite connection.
+        absolute_source_path: Absolute source file path for chunk data.
+
+    Returns:
+        Mentions grouped by chunk ID for the source.
+    """
     rows = connection.execute(
         """
         SELECT
@@ -886,6 +1072,16 @@ def find_chunks_by_entity_mentions(
     *,
     limit: int = 50,
 ) -> list[EntityMentionResult]:
+    """Find chunks matching one or more entity mentions.
+
+    Args:
+        connection: Open SQLite connection.
+        entity_ids: Entity identifiers used for relation-aware search.
+        limit: Maximum number of records to return.
+
+    Returns:
+        Top chunk matches with entity mention counts.
+    """
     if not entity_ids:
         return []
     placeholders = ",".join("?" * len(entity_ids))
@@ -1045,6 +1241,23 @@ def summarize_store(
     ontology_validation_issue_samples: list[str] | None = None,
     config_drift_warnings: list[str] | None = None,
 ) -> CorpusStatusSummary:
+    """Compute corpus, ontology, and retrieval status counters.
+
+    Args:
+        connection: Open SQLite connection.
+        ontology_file_count: Number of ontology source files.
+        matcher_term_count: Number of matcher terms loaded.
+        matcher_termset_hash: Hash of the matcher term set.
+        ontology_snapshot_hash: Hash of the ontology snapshot.
+        ontology_coverage_path_count: Count of coverage paths discovered.
+        ontology_graph_relation_count: Count of ontology graph relations.
+        ontology_validation_issue_count: Count of ontology validation issues.
+        ontology_validation_issue_samples: Sample ontology validation issue messages.
+        config_drift_warnings: Configuration drift warnings to include.
+
+    Returns:
+        Current corpus and ontology summary counts.
+    """
     manifest_row = connection.execute(
         """
         SELECT

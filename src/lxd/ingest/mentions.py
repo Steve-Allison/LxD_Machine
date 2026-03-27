@@ -1,3 +1,5 @@
+"""Detect ontology mentions in chunk text spans."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -8,6 +10,7 @@ from lxd.ontology.normalization import normalize_match_text
 
 @dataclass(frozen=True)
 class Mention:
+    """Detected mention span for an ontology term."""
     entity_id: str
     term_source: str
     surface_form: str
@@ -16,6 +19,15 @@ class Mention:
 
 
 def detect_mentions(text: str, automaton: Any) -> list[Mention]:
+    """Detect ontology term mentions in text.
+
+    Args:
+        text: Input text to process.
+        automaton: Aho-Corasick automaton built from matcher terms.
+
+    Returns:
+        Non-overlapping mention spans sorted by position.
+    """
     normalized = normalize_match_text(text)
     matches: list[Mention] = []
     for end_index, payload in automaton.iter(normalized):

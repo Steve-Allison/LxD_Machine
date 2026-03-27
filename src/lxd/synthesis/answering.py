@@ -1,3 +1,5 @@
+"""Generate final answer envelopes from ranked evidence chunks."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -10,6 +12,7 @@ from lxd.settings.models import RuntimeConfig
 
 @dataclass(frozen=True)
 class EvidenceChunk:
+    """Evidence snippet and score used for synthesis."""
     citation_label: str
     text: str
     score: float
@@ -17,6 +20,7 @@ class EvidenceChunk:
 
 @dataclass(frozen=True)
 class AnswerEnvelope:
+    """Final answer payload including citations and warnings."""
     answer_status: QueryAnswerStatus
     answer_text: str
     citations: list[str]
@@ -25,6 +29,11 @@ class AnswerEnvelope:
 
 
 def no_results_answer() -> AnswerEnvelope:
+    """Build a no-results answer envelope.
+
+    Returns:
+        Answer envelope with `no_results` status.
+    """
     return AnswerEnvelope(
         answer_status=QueryAnswerStatus.NO_RESULTS,
         answer_text="No matching evidence was found in the current store.",
@@ -39,6 +48,16 @@ def synthesize_answer(
     evidence: list[EvidenceChunk],
     config: RuntimeConfig,
 ) -> AnswerEnvelope:
+    """Synthesize an answer from retrieved evidence chunks.
+
+    Args:
+        question: User question text.
+        evidence: Evidence chunks used for synthesis.
+        config: Runtime configuration object.
+
+    Returns:
+        Answer envelope from synthesis or fallback.
+    """
     citations = [chunk.citation_label for chunk in evidence]
     prompt = _build_prompt(question, evidence)
     try:
@@ -69,6 +88,15 @@ def synthesize_answer(
 
 
 def synthesis_unavailable_answer(citations: list[str], warning: str) -> AnswerEnvelope:
+    """Build an answer envelope for synthesis failures.
+
+    Args:
+        citations: Citation labels to include in the envelope.
+        warning: Warning message to return with fallback answers.
+
+    Returns:
+        Answer envelope for synthesis-unavailable status.
+    """
     return AnswerEnvelope(
         answer_status=QueryAnswerStatus.SYNTHESIS_UNAVAILABLE,
         answer_text="Evidence was retrieved, but the configured synthesis model is unavailable.",
@@ -79,6 +107,14 @@ def synthesis_unavailable_answer(citations: list[str], warning: str) -> AnswerEn
 
 
 def probe_synthesis_model(config: RuntimeConfig) -> tuple[bool, str | None]:
+    """Probe backend availability and return probe metadata.
+
+    Args:
+        config: Runtime configuration object.
+
+    Returns:
+        Tuple of `(supported, warning)` for synthesis backend.
+    """
     try:
         response = _client(config).generate(
             model=config.models.llm,
@@ -120,6 +156,11 @@ def _client(config: RuntimeConfig) -> ollama.Client:
 
 
 def insufficient_evidence_answer() -> AnswerEnvelope:
+    """Build an insufficient-evidence answer envelope.
+
+    Returns:
+        Answer envelope with `insufficient_evidence` status.
+    """
     return AnswerEnvelope(
         answer_status=QueryAnswerStatus.INSUFFICIENT_EVIDENCE,
         answer_text="Evidence was retrieved, but it is not sufficient to ground a reliable answer.",

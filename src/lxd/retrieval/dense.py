@@ -1,3 +1,5 @@
+"""Generate dense query embeddings for vector retrieval."""
+
 from __future__ import annotations
 
 from lxd.ingest.embedder import (
@@ -18,6 +20,15 @@ __all__ = [
 
 
 def embed_query(config: RuntimeConfig, text: str) -> list[float]:
+    """Embed a query string for dense retrieval.
+
+    Args:
+        config: Runtime configuration object.
+        text: Input text to process.
+
+    Returns:
+        Query embedding vector.
+    """
     instruction = config.embedding.query_instruction
     prefixed = f"{instruction}{text}" if instruction else text
     return embed_texts(config, [prefixed])[0]

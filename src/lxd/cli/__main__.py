@@ -1,3 +1,5 @@
+"""Expose the top-level CLI entrypoint."""
+
 from __future__ import annotations
 
 import typer
@@ -13,6 +15,7 @@ app.command("eval")(eval_command)
 
 
 def main() -> None:
+    """Execute the Typer application entrypoint."""
     app()
 
 

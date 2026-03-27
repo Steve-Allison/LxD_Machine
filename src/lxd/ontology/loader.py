@@ -1,3 +1,5 @@
+"""Load ontology data and validate source metadata."""
+
 from __future__ import annotations
 
 import json
@@ -21,6 +23,7 @@ from lxd.ontology.matcher import (
 
 @dataclass(frozen=True)
 class OntologySource:
+    """Loaded ontology source file and parsed payload."""
     file_path: Path
     file_rel_path: str
     blake3_hash: str
@@ -29,6 +32,7 @@ class OntologySource:
 
 @dataclass(frozen=True)
 class OntologyMetadataRecord:
+    """Ontology metadata row derived from file or entity payload."""
     record_kind: str
     source_file_rel_path: str
     entity_id: str | None
@@ -37,6 +41,7 @@ class OntologyMetadataRecord:
 
 @dataclass(frozen=True)
 class OntologyValidationIssue:
+    """Validation issue found during ontology loading."""
     issue_kind: str
     source_file_rel_path: str
     path: str
@@ -45,6 +50,7 @@ class OntologyValidationIssue:
 
 @dataclass(frozen=True)
 class OntologyLoadResult:
+    """All artifacts produced by ontology loading."""
     sources: list[OntologySource]
     entity_definitions: list[dict[str, Any]]
     matcher_records: list[MatcherTermRecord]
@@ -87,6 +93,16 @@ _IncludeLoader.add_constructor("!include", _include_constructor)
 def load_ontology(
     root: Path, include_globs: list[str], ignore_names: list[str]
 ) -> OntologyLoadResult:
+    """Load ontology sources and derive runtime artifacts.
+
+    Args:
+        root: Ontology root directory.
+        include_globs: Glob patterns selecting ontology files.
+        ignore_names: Filenames to ignore while loading.
+
+    Returns:
+        Loaded ontology artifacts and derived indexes.
+    """
     sources = _load_sources(root, include_globs, ignore_names)
     coverage_report = _coverage_report_for_sources(sources)
     entity_definitions = _extract_entity_definitions(sources)

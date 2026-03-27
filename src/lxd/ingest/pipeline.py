@@ -1,3 +1,5 @@
+"""Plan and execute end-to-end ingestion and persistence steps."""
+
 from __future__ import annotations
 
 import json
@@ -84,12 +86,14 @@ _RECOVERABLE_SOURCE_ERRORS = (
 
 @dataclass(frozen=True)
 class IngestPlan:
+    """Resolved scan and ontology inputs for an ingest run."""
     scanned_files: list[ScannedCorpusFile]
     ontology: OntologyLoadResult
 
 
 @dataclass(frozen=True)
 class IngestRunResult:
+    """Outcome details and counters from an ingest run."""
     run_id: str
     summary: CorpusStatusSummary
     entity_count: int
@@ -100,6 +104,11 @@ class IngestRunResult:
 
 
 def validate_project_paths(config: RuntimeConfig) -> None:
+    """Validate configuration and apply runtime settings.
+
+    Args:
+        config: Runtime configuration object.
+    """
     if not config.paths.corpus_path.exists():
         raise FileNotFoundError(f"Missing corpus path: {config.paths.corpus_path}")
     if not config.paths.ontology_path.exists():
@@ -108,6 +117,14 @@ def validate_project_paths(config: RuntimeConfig) -> None:
 
 
 def build_ingest_plan(config: RuntimeConfig) -> IngestPlan:
+    """Build an ingest plan from corpus scan and ontology load.
+
+    Args:
+        config: Runtime configuration object.
+
+    Returns:
+        Planned corpus scan and ontology snapshot.
+    """
     validate_project_paths(config)
     scanned_files = scan_corpus(
         corpus_root=config.paths.corpus_path,
@@ -124,6 +141,15 @@ def build_ingest_plan(config: RuntimeConfig) -> IngestPlan:
 
 
 def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRunResult:
+    """Execute the ingestion pipeline and persist results.
+
+    Args:
+        config: Runtime configuration object.
+        full_rebuild: Whether to rebuild stores from scratch.
+
+    Returns:
+        Completed ingest run summary and diagnostics.
+    """
     plan = build_ingest_plan(config)
     _validate_ingest_dependencies(config)
 
@@ -500,6 +526,16 @@ def persist_ingest_snapshot(
     summary: CorpusStatusSummary,
     entity_count: int,
 ) -> Path:
+    """Write the latest ingest summary snapshot JSON.
+
+    Args:
+        config: Runtime configuration object.
+        summary: Current corpus status summary.
+        entity_count: Total ontology entity count.
+
+    Returns:
+        Path to the written ingest snapshot JSON.
+    """
     config.paths.data_path.mkdir(parents=True, exist_ok=True)
     output_path = config.paths.data_path / "ingest_snapshot.json"
     payload = {

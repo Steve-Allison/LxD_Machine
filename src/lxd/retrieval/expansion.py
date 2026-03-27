@@ -1,3 +1,5 @@
+"""Expand user questions with ontology-aware rewrite terms."""
+
 from __future__ import annotations
 
 from collections import deque
@@ -20,6 +22,7 @@ _ONTOLOGY_CACHE: dict[tuple[str, tuple[str, ...], tuple[str, ...]], _OntologyRun
 
 @dataclass(frozen=True)
 class ExpansionOutcome:
+    """Query expansion text plus matched ontology entities."""
     expanded_question: str
     matched_entity_ids: list[str]
     added_terms: list[str]
@@ -44,6 +47,15 @@ def expand_entity_ids(
 
 
 def expand_question(question: str, config: RuntimeConfig) -> ExpansionOutcome:
+    """Expand a question with ontology-related concept terms.
+
+    Args:
+        question: User question text.
+        config: Runtime configuration object.
+
+    Returns:
+        Expanded query text and added ontology terms.
+    """
     if not config.expansion.enabled:
         return ExpansionOutcome(
             expanded_question=question,

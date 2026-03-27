@@ -1,3 +1,5 @@
+"""Probe embedding backends and encode corpus or query text."""
+
 from __future__ import annotations
 
 import time
@@ -11,6 +13,7 @@ from lxd.settings.models import RuntimeConfig
 
 @dataclass(frozen=True)
 class ModelProbeResult:
+    """Embedding probe status and optional warning."""
     ok: bool
     warning: str | None = None
 
@@ -23,10 +26,19 @@ class _EmbeddingRuntimeSettings:
 
 
 class EmbeddingContextError(RuntimeError):
+    """Raised when input text exceeds embedding model context limits."""
     pass
 
 
 def probe_embedder(config: RuntimeConfig) -> ModelProbeResult:
+    """Probe backend availability and return probe metadata.
+
+    Args:
+        config: Runtime configuration object.
+
+    Returns:
+        Embedding probe status.
+    """
     try:
         embeddings = embed_texts(config, ["lxd ingest embed probe"])
     except (EmbeddingContextError, ImportError, OSError, RuntimeError, ValueError) as exc:
@@ -43,12 +55,30 @@ def probe_embedder(config: RuntimeConfig) -> ModelProbeResult:
 
 
 def embed_texts(config: RuntimeConfig, texts: list[str]) -> list[list[float]]:
+    """Embed a list of input texts.
+
+    Args:
+        config: Runtime configuration object.
+        texts: Texts to embed.
+
+    Returns:
+        Embedding vectors for each input text.
+    """
     if config.models.embed_backend == "openai":
         return _openai_embed_texts(config, texts)
     return _ollama_embed_texts(config, texts)
 
 
 def embed_chunk_text(config: RuntimeConfig, text: str) -> list[float]:
+    """Embed one chunk of text.
+
+    Args:
+        config: Runtime configuration object.
+        text: Input text to process.
+
+    Returns:
+        Embedding vector for the chunk text.
+    """
     return embed_texts(config, [text])[0]
 
 

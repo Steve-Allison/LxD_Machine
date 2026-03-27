@@ -1,3 +1,5 @@
+"""Compute and load persisted status information for CLI and MCP usage."""
+
 from __future__ import annotations
 
 import json
@@ -18,11 +20,20 @@ from lxd.stores.sqlite import (
 
 @dataclass(frozen=True)
 class StatusSnapshot:
+    """Bundle persisted corpus summary and ontology entity count."""
     summary: CorpusStatusSummary
     entity_count: int
 
 
 def current_ingest_config(config: RuntimeConfig) -> dict[str, str]:
+    """Project runtime config into the persisted ingest-config key/value shape.
+
+    Args:
+        config: Validated runtime configuration.
+
+    Returns:
+        Flat string mapping used for drift detection against committed ingest state.
+    """
     return {
         "paths.corpus_path": str(config.paths.corpus_path),
         "paths.ontology_path": str(config.paths.ontology_path),
@@ -40,6 +51,18 @@ def current_ingest_config(config: RuntimeConfig) -> dict[str, str]:
 
 
 def config_drift_warnings(connection: sqlite3.Connection, config: RuntimeConfig) -> list[str]:
+    """Compare current ingest config with committed snapshot values.
+
+    Args:
+        connection: SQLite connection to the metadata store.
+        config: Current validated runtime configuration.
+
+    Returns:
+        Human-readable drift warnings for missing or changed config keys.
+
+    Side Effects:
+        Reads ingest-config snapshot rows from SQLite.
+    """
     stored = load_ingest_config_snapshot(connection)
     if not stored:
         return []
@@ -55,6 +78,14 @@ def config_drift_warnings(connection: sqlite3.Connection, config: RuntimeConfig)
 
 
 def needs_live_ontology_fallback(ontology_snapshot: OntologySnapshotRecord | None) -> bool:
+    """Decide whether persisted ontology metrics are incomplete.
+
+    Args:
+        ontology_snapshot: Persisted ontology snapshot, if present.
+
+    Returns:
+        `True` when a snapshot exists but coverage and relation metrics are both zero.
+    """
     return (
         ontology_snapshot is not None
         and ontology_snapshot.source_file_count > 0
@@ -69,6 +100,19 @@ def load_committed_status(
     config: RuntimeConfig,
     plan_provider: Callable[[], IngestPlan],
 ) -> StatusSnapshot | None:
+    """Load a committed status snapshot, with live ontology fallback when needed.
+
+    Args:
+        connection: SQLite connection to the metadata store.
+        config: Current validated runtime configuration for drift checks.
+        plan_provider: Callable that builds a live ingest plan when fallback is required.
+
+    Returns:
+        Committed status snapshot, or `None` when no committed state exists.
+
+    Side Effects:
+        Reads committed status rows from SQLite and may build a full live ingest plan.
+    """
     if not store_has_committed_state(connection):
         return None
 

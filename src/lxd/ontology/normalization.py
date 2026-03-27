@@ -1,3 +1,5 @@
+"""Normalize ontology and query text for matching."""
+
 from __future__ import annotations
 
 import re
@@ -21,5 +23,13 @@ _QUOTE_TRANSLATION = str.maketrans(
 
 
 def normalize_match_text(text: str) -> str:
+    """Normalize text for robust matcher lookups.
+
+    Args:
+        text: Text to normalize for matching.
+
+    Returns:
+        Casefolded, de-quoted, single-spaced text.
+    """
     normalized = text.casefold().translate(_QUOTE_TRANSLATION)
     return _WHITESPACE_RE.sub(" ", normalized).strip()

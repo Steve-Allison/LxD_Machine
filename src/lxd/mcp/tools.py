@@ -1,3 +1,5 @@
+"""Define MCP tools that expose corpus and ontology operations."""
+
 from __future__ import annotations
 
 from typing import Any
@@ -18,6 +20,15 @@ from lxd.stores.sqlite import (
 
 
 def corpus_status_tool(app_context: AppContext, plan: IngestPlan) -> dict[str, object]:
+    """Return corpus and ontology status for MCP clients.
+
+    Args:
+        app_context: Application context that provides runtime configuration.
+        plan: Precomputed ingest plan and ontology snapshot.
+
+    Returns:
+        Corpus and ontology status payload for MCP responses.
+    """
     store_paths = build_store_paths(app_context.config.paths.data_path)
     if store_paths.sqlite_path.exists():
         connection = connect_sqlite(store_paths.sqlite_path)
@@ -78,10 +89,27 @@ def corpus_status_tool(app_context: AppContext, plan: IngestPlan) -> dict[str, o
 
 
 def get_entity_types_tool(plan: IngestPlan) -> list[str]:
+    """List canonical ontology entity IDs.
+
+    Args:
+        plan: Precomputed ingest plan and ontology snapshot.
+
+    Returns:
+        Sorted canonical ontology entity IDs.
+    """
     return sorted(entity["canonical_id"] for entity in plan.ontology.entity_definitions)
 
 
 def get_related_concepts_tool(plan: IngestPlan, entity_id: str) -> list[dict[str, Any]]:
+    """Return direct ontology neighbors for an entity.
+
+    Args:
+        plan: Precomputed ingest plan and ontology snapshot.
+        entity_id: Canonical ontology entity identifier.
+
+    Returns:
+        Direct ontology neighbor entries for the entity.
+    """
     _require_non_empty(entity_id, "entity_id")
     if entity_id not in plan.ontology.graph:
         return []
@@ -94,6 +122,17 @@ def search_corpus_tool(
     domain: str | None,
     limit: int,
 ) -> list[dict[str, Any]]:
+    """Search indexed chunks for query terms.
+
+    Args:
+        app_context: Application context that provides runtime configuration.
+        terms: User query string to search for.
+        domain: Optional source domain filter.
+        limit: Maximum number of records to return.
+
+    Returns:
+        Matching chunk records formatted for MCP.
+    """
     outcome = search_chunks(
         question=terms,
         config=app_context.config,
@@ -121,6 +160,18 @@ def find_documents_for_concept_tool(
     hops: int = 1,
     limit: int = 10,
 ) -> list[dict[str, Any]]:
+    """Find chunks mentioning an entity and related concepts.
+
+    Args:
+        app_context: Application context that provides runtime configuration.
+        plan: Precomputed ingest plan and ontology snapshot.
+        entity_id: Canonical ontology entity identifier.
+        hops: Graph expansion depth from the seed entity.
+        limit: Maximum number of records to return.
+
+    Returns:
+        Matching chunks for the entity expansion set.
+    """
     _require_non_empty(entity_id, "entity_id")
     if entity_id not in plan.ontology.graph:
         return []
@@ -159,6 +210,16 @@ def get_corpus_relations_tool(
     entity_id: str,
     limit: int = 50,
 ) -> list[dict[str, Any]]:
+    """Load extracted corpus relations for an entity.
+
+    Args:
+        app_context: Application context that provides runtime configuration.
+        entity_id: Canonical ontology entity identifier.
+        limit: Maximum number of records to return.
+
+    Returns:
+        Relation rows involving the requested entity.
+    """
     _require_non_empty(entity_id, "entity_id")
     store_paths = build_store_paths(app_context.config.paths.data_path)
     if not store_paths.sqlite_path.exists():

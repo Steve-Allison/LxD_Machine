@@ -1,3 +1,5 @@
+"""Resolve repository paths and load runtime configuration."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -9,6 +11,14 @@ from lxd.settings.models import RuntimeConfig
 
 
 def resolve_repo_root(cwd: Path | None = None) -> Path:
+    """Resolve the repository root from the current path.
+
+    Args:
+        cwd: Current working directory to resolve from.
+
+    Returns:
+        Resolved repository root path.
+    """
     current = (cwd or Path.cwd()).resolve()
     for candidate in [current, *current.parents]:
         if (candidate / "pixi.toml").exists() and (candidate / "Plans").exists():
@@ -22,6 +32,16 @@ def load_runtime_config(
     profile: str | None = None,
     config_path: Path | None = None,
 ) -> tuple[RuntimeConfig, Path]:
+    """Load and validate runtime config and return its path.
+
+    Args:
+        repo_root: Repository root path.
+        profile: Optional named config profile.
+        config_path: Optional explicit config file path.
+
+    Returns:
+        Tuple of `(runtime_config, resolved_config_path)`.
+    """
     resolved_config_path = _resolve_config_path(
         repo_root=repo_root,
         profile=profile,

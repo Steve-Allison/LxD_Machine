@@ -1,3 +1,5 @@
+"""Implement the CLI command for corpus ingestion."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -18,6 +20,16 @@ def ingest_command(
     profile: str | None = PROFILE_OPTION,
     config: Path | None = CONFIG_OPTION,
 ) -> None:
+    """Run corpus ingestion and print committed ingest statistics.
+
+    Args:
+        full: When `True`, force a full rescan before snapshot commit.
+        profile: Optional config profile name (`config.<profile>.yaml`).
+        config: Optional explicit config file path.
+
+    Side Effects:
+        Executes ingestion pipeline, writes store state, and prints summary lines to stdout.
+    """
     context = bootstrap_app(Path.cwd(), profile=profile, config_path=config)
     result = run_ingest(context.config, full_rebuild=full)
     typer.echo(f"Ingest run: {result.run_id}")

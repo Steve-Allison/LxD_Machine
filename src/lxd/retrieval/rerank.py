@@ -1,3 +1,5 @@
+"""Rerank retrieved chunks with cross-encoder or API models."""
+
 from __future__ import annotations
 
 import json
@@ -23,12 +25,21 @@ _RUNTIME_DIRNAME = "runtime"
 
 @dataclass(frozen=True)
 class RerankOutcome:
+    """Reranked chunk list and reranker execution status."""
     ranked: list[RankedChunk]
     warnings: list[str]
     applied: bool
 
 
 def probe_reranker(config: RuntimeConfig) -> tuple[bool, str | None]:
+    """Probe backend availability and return probe metadata.
+
+    Args:
+        config: Runtime configuration object.
+
+    Returns:
+        Tuple of `(supported, warning)` for reranker readiness.
+    """
     cache_key = _cache_key(config)
     cached = _probe_cache.get(cache_key)
     if cached is not None:
@@ -49,6 +60,16 @@ def rerank_chunks(
     candidates: list[RankedChunk],
     config: RuntimeConfig,
 ) -> RerankOutcome:
+    """Rerank candidate chunks for a question.
+
+    Args:
+        question: User question text.
+        candidates: Candidate chunks to rerank.
+        config: Runtime configuration object.
+
+    Returns:
+        Reranked chunk candidates and rerank status.
+    """
     if not candidates:
         return RerankOutcome(ranked=[], warnings=[], applied=False)
     supported, warning = probe_reranker(config)

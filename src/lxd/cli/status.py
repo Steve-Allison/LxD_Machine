@@ -1,3 +1,5 @@
+"""Implement the CLI command for status reporting."""
+
 from __future__ import annotations
 
 import json
@@ -22,6 +24,15 @@ def status_command(
     profile: str | None = PROFILE_OPTION,
     config: Path | None = CONFIG_OPTION,
 ) -> None:
+    """Print committed corpus status, snapshot status, or live plan status.
+
+    Args:
+        profile: Optional config profile name (`config.<profile>.yaml`).
+        config: Optional explicit config file path.
+
+    Side Effects:
+        Reads SQLite and/or JSON snapshot state from disk and prints status lines to stdout.
+    """
     context = bootstrap_app(Path.cwd(), profile=profile, config_path=config)
     store_paths = build_store_paths(context.config.paths.data_path)
     if store_paths.sqlite_path.exists():

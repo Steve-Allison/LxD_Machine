@@ -1,3 +1,5 @@
+"""Run retrieval and answer synthesis orchestration pipelines."""
+
 from __future__ import annotations
 
 import re
@@ -62,6 +64,7 @@ _GENERIC_QUERY_TERMS = {
 
 @dataclass(frozen=True)
 class RankedChunk:
+    """Retrieval chunk with metadata and ranking score."""
     chunk_id: str
     document_id: str
     citation_label: str
@@ -82,6 +85,7 @@ class RankedChunk:
 
 @dataclass(frozen=True)
 class SearchOutcome:
+    """Search results plus expansion/rerank diagnostics."""
     ranked: list[RankedChunk]
     warnings: list[str]
     reranking_applied: bool
@@ -97,6 +101,17 @@ def search_chunks(
     domain: str | None = None,
     limit: int | None = None,
 ) -> SearchOutcome:
+    """Run dense retrieval, optional rerank, and fusion.
+
+    Args:
+        question: User question text.
+        config: Runtime configuration object.
+        domain: Optional source domain filter.
+        limit: Maximum number of records to return.
+
+    Returns:
+        Vector search matches ordered by similarity.
+    """
     _validate_question(question)
     requested_limit = config.retrieval.dense_top_k if limit is None else limit
     _validate_limit(requested_limit)
@@ -178,6 +193,16 @@ def answer_question(
     config: RuntimeConfig,
     domain: str | None = None,
 ) -> AnswerEnvelope:
+    """Generate an answer envelope from retrieval evidence.
+
+    Args:
+        question: User question text.
+        config: Runtime configuration object.
+        domain: Optional source domain filter.
+
+    Returns:
+        Synthesized answer with citations and metadata.
+    """
     outcome = search_chunks(question=question, config=config, domain=domain)
     metadata: dict[str, object] = {
         "reranking_applied": outcome.reranking_applied,

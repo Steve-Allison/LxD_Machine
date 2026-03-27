@@ -1,3 +1,5 @@
+"""Infer and model asset-to-parent relationships during ingestion."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -6,12 +8,21 @@ from pathlib import Path
 
 @dataclass(frozen=True)
 class AssetParentLink:
+    """Resolved parent-link metadata for an ingested asset."""
     parent_rel_path: str | None
     link_method: str
     page_no: int | None
 
 
 def infer_asset_parent(asset_rel_path: str) -> AssetParentLink:
+    """Infer a parent source link for an asset path.
+
+    Args:
+        asset_rel_path: Corpus-relative asset path.
+
+    Returns:
+        Inferred asset-to-parent linkage metadata.
+    """
     asset_path = Path(asset_rel_path)
     stem = asset_path.stem
     page_no = _extract_page_number(stem)

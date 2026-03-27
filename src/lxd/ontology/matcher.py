@@ -1,3 +1,5 @@
+"""Build matcher terms and automata from ontology entries."""
+
 from __future__ import annotations
 
 import json
@@ -13,6 +15,7 @@ from lxd.ontology.normalization import normalize_match_text
 
 @dataclass(frozen=True, order=True)
 class MatcherTermRecord:
+    """Normalized matcher term mapped to an entity ID."""
     normalized_term: str
     entity_id: str
     term_source: str
@@ -21,6 +24,14 @@ class MatcherTermRecord:
 def canonical_matcher_term_records(
     entity_definitions: Iterable[dict[str, Any]],
 ) -> list[MatcherTermRecord]:
+    """Build canonical matcher terms from ontology entities.
+
+    Args:
+        entity_definitions: Ontology entity definitions to index.
+
+    Returns:
+        Sorted unique matcher term records.
+    """
     records: set[MatcherTermRecord] = set()
     for entity in entity_definitions:
         canonical_id = _coerce_required_str(entity, "canonical_id")
@@ -43,6 +54,14 @@ def canonical_matcher_term_records(
 
 
 def matcher_termset_hash(records: Iterable[MatcherTermRecord]) -> str:
+    """Compute a stable hash for matcher term records.
+
+    Args:
+        records: Record collection to hash or index.
+
+    Returns:
+        Stable hash for the matcher term set.
+    """
     lines = [
         json.dumps(
             {
@@ -61,6 +80,14 @@ def matcher_termset_hash(records: Iterable[MatcherTermRecord]) -> str:
 def build_automaton(
     records: Iterable[MatcherTermRecord],
 ) -> ahocorasick.Automaton:  # type: ignore[type-arg]
+    """Build an Aho-Corasick automaton for mention matching.
+
+    Args:
+        records: Record collection to hash or index.
+
+    Returns:
+        Configured automaton ready for mention detection.
+    """
     automaton = ahocorasick.Automaton(ahocorasick.STORE_ANY, ahocorasick.KEY_STRING)
     for record in records:
         payload = {

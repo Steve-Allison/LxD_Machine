@@ -1,3 +1,5 @@
+"""Compute ontology key-path coverage and classification reports."""
+
 from __future__ import annotations
 
 import re
@@ -34,6 +36,7 @@ _MATCHER_PATH_PATTERNS = (
 
 @dataclass(frozen=True)
 class OntologyCoverageReport:
+    """Coverage report for discovered ontology key paths."""
     path_counts: dict[str, int]
     path_classifications: dict[str, OntologyKeyClassification]
     classification_counts: dict[str, int]
@@ -41,16 +44,37 @@ class OntologyCoverageReport:
 
     @property
     def discovered_path_count(self) -> int:
+        """Return the computed result for this operation.
+
+        Returns:
+            Number of distinct discovered key paths.
+        """
         return len(self.path_counts)
 
 
 def discover_key_paths(payload: Any) -> Counter[str]:
+    """Discover and count all key paths in a payload.
+
+    Args:
+        payload: Ontology payload to traverse.
+
+    Returns:
+        Counter of discovered key paths.
+    """
     path_counts: Counter[str] = Counter()
     _walk_value(payload, prefix="", path_counts=path_counts)
     return path_counts
 
 
 def build_coverage_report(path_counts: Mapping[str, int]) -> OntologyCoverageReport:
+    """Build a key-path coverage report.
+
+    Args:
+        path_counts: Discovered key-path frequency counts.
+
+    Returns:
+        Coverage report with classifications and counts.
+    """
     path_classifications: dict[str, OntologyKeyClassification] = {}
     classification_counts: Counter[str] = Counter()
     for path, count in sorted(path_counts.items()):
@@ -66,6 +90,14 @@ def build_coverage_report(path_counts: Mapping[str, int]) -> OntologyCoverageRep
 
 
 def classify_key_path(path: str) -> OntologyKeyClassification:
+    """Classify an ontology key path by usage type.
+
+    Args:
+        path: Path to the source file.
+
+    Returns:
+        Classification label for the key path.
+    """
     for pattern in _GRAPH_PATH_PATTERNS:
         if pattern.match(path):
             return "graph_input"

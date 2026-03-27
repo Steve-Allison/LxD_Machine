@@ -1,3 +1,5 @@
+"""Define typed store-layer records used across persistence boundaries."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -6,12 +8,14 @@ from pathlib import Path
 
 @dataclass(frozen=True)
 class StorePaths:
+    """Filesystem paths for SQLite and LanceDB stores."""
     sqlite_path: Path
     lancedb_path: Path
 
 
 @dataclass(frozen=True)
 class CorpusStatusSummary:
+    """Aggregate corpus and ontology status counters."""
     corpus_file_count: int
     text_file_count: int
     asset_file_count: int
@@ -31,6 +35,7 @@ class CorpusStatusSummary:
 
 @dataclass(frozen=True)
 class ManifestRecord:
+    """Manifest row describing ingest state for one source."""
     source_rel_path: str
     absolute_path: str
     source_type: str
@@ -50,6 +55,7 @@ class ManifestRecord:
 
 @dataclass(frozen=True)
 class ChunkRecord:
+    """Persisted chunk row with embedding and source metadata."""
     chunk_id: str
     document_id: str
     source_rel_path: str
@@ -73,6 +79,7 @@ class ChunkRecord:
 
 @dataclass(frozen=True)
 class MentionRecord:
+    """Entity mention span detected in a chunk."""
     chunk_id: str
     entity_id: str
     term_source: str
@@ -83,6 +90,7 @@ class MentionRecord:
 
 @dataclass(frozen=True)
 class AssetLinkRecord:
+    """Resolved asset-to-parent link metadata."""
     asset_rel_path: str
     asset_filename: str
     source_domain: str
@@ -97,6 +105,7 @@ class AssetLinkRecord:
 
 @dataclass(frozen=True)
 class OntologySourceRecord:
+    """Persisted ontology source file metadata."""
     file_path: str
     file_rel_path: str
     blake3_hash: str
@@ -105,6 +114,7 @@ class OntologySourceRecord:
 
 @dataclass(frozen=True)
 class OntologySnapshotRecord:
+    """Persisted ontology snapshot metadata and hashes."""
     snapshot_id: str
     ontology_root: str
     snapshot_hash: str
@@ -122,12 +132,14 @@ class OntologySnapshotRecord:
 
 @dataclass(frozen=True)
 class IngestConfigSnapshotRecord:
+    """Persisted ingest config key-value entry."""
     key: str
     value: str
 
 
 @dataclass(frozen=True)
 class EntityMentionResult:
+    """Chunk match summary for entity mention queries."""
     chunk_id: str
     document_id: str
     source_rel_path: str
@@ -141,11 +153,17 @@ class EntityMentionResult:
 
     @property
     def score(self) -> float:
+        """Return the computed result for this operation.
+
+        Returns:
+            Entity match ratio for this result.
+        """
         return self.entity_match_count / self.total_entity_ids if self.total_entity_ids > 0 else 0.0
 
 
 @dataclass(frozen=True)
 class ExtractedRelationRecord:
+    """Relation extracted from chunk text."""
     relation_id: str
     chunk_id: str
     document_id: str
@@ -160,6 +178,7 @@ class ExtractedRelationRecord:
 
 @dataclass(frozen=True)
 class VectorSearchRecord:
+    """Vector search hit with source metadata."""
     chunk_id: str
     document_id: str
     source_rel_path: str

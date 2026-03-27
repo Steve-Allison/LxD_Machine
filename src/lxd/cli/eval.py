@@ -1,3 +1,5 @@
+"""Implement the CLI command for retrieval evaluation."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -15,6 +17,18 @@ def eval_command(
     profile: str | None = PROFILE_OPTION,
     config: Path | None = CONFIG_OPTION,
 ) -> None:
+    """Run retrieval evaluation against the configured corpus.
+
+    Args:
+        profile: Optional config profile name (`config.<profile>.yaml`).
+        config: Optional explicit config file path.
+
+    Raises:
+        typer.BadParameter: If the evaluation set file is missing.
+
+    Side Effects:
+        Reads config and eval-set files, executes retrieval evaluation, and writes results to stdout.
+    """
     context = bootstrap_app(Path.cwd(), profile=profile, config_path=config)
     eval_set = Path.cwd() / "tests" / "eval" / "eval_set.json"
     if not eval_set.exists():

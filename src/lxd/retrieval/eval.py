@@ -1,3 +1,5 @@
+"""Evaluate retrieval performance against labeled benchmark cases."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -10,6 +12,7 @@ from lxd.stores.sqlite import build_store_paths, connect_sqlite, initialize_sche
 
 @dataclass(frozen=True)
 class EvalCase:
+    """Single labeled retrieval evaluation case."""
     question: str
     expected_source_files: list[str]
     domain: str | None
@@ -17,6 +20,7 @@ class EvalCase:
 
 @dataclass(frozen=True)
 class EvalCaseResult:
+    """Per-question retrieval metrics and ranked outputs."""
     question: str
     recall_at_10: float
     mrr_at_10: float
@@ -27,6 +31,7 @@ class EvalCaseResult:
 
 @dataclass(frozen=True)
 class EvalSummary:
+    """Aggregate retrieval evaluation metrics across cases."""
     question_count: int
     mean_recall_at_10: float
     mean_mrr_at_10: float
@@ -34,6 +39,16 @@ class EvalSummary:
 
 
 def recall_at_k(expected: set[str], ranked: list[str], k: int) -> float:
+    """Compute recall@k for expected versus ranked sources.
+
+    Args:
+        expected: Expected relevant source paths.
+        ranked: Ranked source paths from retrieval.
+        k: Top-k cutoff.
+
+    Returns:
+        Recall score at cutoff `k`.
+    """
     if not expected:
         return 0.0
     top_k = set(ranked[:k])
@@ -41,6 +56,16 @@ def recall_at_k(expected: set[str], ranked: list[str], k: int) -> float:
 
 
 def mrr_at_k(expected: set[str], ranked: list[str], k: int) -> float:
+    """Compute MRR@k for expected versus ranked sources.
+
+    Args:
+        expected: Expected relevant source paths.
+        ranked: Ranked source paths from retrieval.
+        k: Top-k cutoff.
+
+    Returns:
+        MRR score at cutoff `k`.
+    """
     for index, item in enumerate(ranked[:k], start=1):
         if item in expected:
             return 1.0 / index
@@ -48,6 +73,14 @@ def mrr_at_k(expected: set[str], ranked: list[str], k: int) -> float:
 
 
 def load_eval_cases(path: Path) -> list[EvalCase]:
+    """Load evaluation cases from a JSON file.
+
+    Args:
+        path: Path to the source file or storage location.
+
+    Returns:
+        Validated evaluation cases from disk.
+    """
     import json
 
     payload = json.loads(path.read_text(encoding="utf-8"))
@@ -83,6 +116,15 @@ def run_eval(
     *,
     config: RuntimeConfig,
 ) -> EvalSummary:
+    """Execute retrieval evaluation and aggregate metrics.
+
+    Args:
+        cases: Evaluation cases to execute.
+        config: Runtime configuration object.
+
+    Returns:
+        Aggregate retrieval evaluation summary.
+    """
     searchable_paths = _searchable_source_rel_paths(config)
     results: list[EvalCaseResult] = []
     for case in cases:

@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "plansDirectory": ".claude/plans",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_response.filePath // .tool_input.file_path' | { read -r f; echo \"$f\" | grep -qE '\\.py$' && pixi run ruff check --fix \"$f\" && pixi run ruff format \"$f\"; } 2>/dev/null || true",
+            "statusMessage": "Running ruff lint + format..."
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_response.filePath // .tool_input.file_path' | { read -r f; echo \"$f\" | grep -qE '\\.py$' && pixi run pyright \"$f\"; } 2>/dev/null || true",
+            "statusMessage": "Running pyright type-check..."
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "Before compacting, summarise: (1) the current task and its status, (2) any design decisions made, (3) files modified and why, (4) any open questions or blockers. Include this in the compaction summary."
+          }
+        ]
+      }
+    ]
+  }
+}
