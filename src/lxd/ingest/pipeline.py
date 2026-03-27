@@ -32,7 +32,6 @@ from lxd.settings.models import RuntimeConfig
 from lxd.stores.lancedb import (
     connect_lancedb,
     open_chunk_table,
-    reset_chunk_table,
 )
 from lxd.stores.lancedb import delete_source as delete_vector_source
 from lxd.stores.lancedb import (
@@ -62,7 +61,6 @@ from lxd.stores.sqlite import (
     replace_ingest_config_snapshot,
     replace_ontology_snapshot,
     replace_ontology_sources,
-    reset_store,
     summarize_store,
     update_ingest_run_progress,
     upsert_asset_link,
@@ -87,6 +85,7 @@ _RECOVERABLE_SOURCE_ERRORS = (
 @dataclass(frozen=True)
 class IngestPlan:
     """Resolved scan and ontology inputs for an ingest run."""
+
     scanned_files: list[ScannedCorpusFile]
     ontology: OntologyLoadResult
 
@@ -94,6 +93,7 @@ class IngestPlan:
 @dataclass(frozen=True)
 class IngestRunResult:
     """Outcome details and counters from an ingest run."""
+
     run_id: str
     summary: CorpusStatusSummary
     entity_count: int
@@ -161,13 +161,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
     try:
         initialize_schema(sqlite_connection)
         vector_db = connect_lancedb(store_paths.lancedb_path)
-        vector_table = (
-            reset_chunk_table(vector_db, vector_size=config.models.embed_dims)
-            if full_rebuild
-            else open_chunk_table(vector_db, vector_size=config.models.embed_dims)
-        )
-        if full_rebuild:
-            reset_store(sqlite_connection)
+        vector_table = open_chunk_table(vector_db, vector_size=config.models.embed_dims)
 
         run_id = f"ingest-{datetime.now(UTC).strftime('%Y%m%d-%H%M%S')}"
         timestamp = _utc_now()
@@ -213,16 +207,18 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
             ),
         )
 
-        existing_by_path = {} if full_rebuild else load_manifest_index(sqlite_connection)
+        # Always load the manifest so we can clean up deleted sources.
+        # For full rebuild, skip hash lookups so every file is force-reprocessed.
+        current_manifest = load_manifest_index(sqlite_connection)
+        existing_by_path = {} if full_rebuild else current_manifest
         existing_by_hash = {} if full_rebuild else load_manifest_by_content_hash(sqlite_connection)
         manifest_by_rel_path = dict(existing_by_path)
         scanned_rel_paths = {item.relative_path for item in plan.scanned_files}
 
-        if not full_rebuild:
-            for missing_rel_path in sorted(set(existing_by_path) - scanned_rel_paths):
-                missing_manifest = existing_by_path[missing_rel_path]
-                delete_sqlite_source(sqlite_connection, missing_manifest.absolute_path)
-                delete_vector_source(vector_table, missing_manifest.source_rel_path)
+        for missing_rel_path in sorted(set(current_manifest) - scanned_rel_paths):
+            missing_manifest = current_manifest[missing_rel_path]
+            delete_sqlite_source(sqlite_connection, missing_manifest.absolute_path)
+            delete_vector_source(vector_table, missing_manifest.source_rel_path)
 
         reembedded_text_sources = 0
         reused_move_sources = 0
@@ -284,7 +280,9 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                         document_id=manifest_record.document_id,
                         file_size_bytes=manifest_record.file_size_bytes,
                         content_hash=manifest_record.content_hash,
-                        parent_source_path=parent_manifest.absolute_path if parent_manifest else None,
+                        parent_source_path=parent_manifest.absolute_path
+                        if parent_manifest
+                        else None,
                         chunk_count=manifest_record.chunk_count,
                         last_seen_at=manifest_record.last_seen_at,
                         last_processed_at=timestamp,
@@ -336,7 +334,9 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                     if full_rebuild
                     else _find_move_source(scanned, existing_by_hash, scanned_rel_paths)
                 )
-                document_id = _resolve_document_id(scanned, previous_manifest, move_source, timestamp)
+                document_id = _resolve_document_id(
+                    scanned, previous_manifest, move_source, timestamp
+                )
                 processing_manifest = _manifest_record(
                     scanned=scanned,
                     document_id=document_id,
