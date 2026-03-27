@@ -23,9 +23,9 @@ Rules:
 - predicate must be from the provided list of valid predicates
 - confidence: 0.7–1.0 for relationships explicitly stated in the text, 0.4–0.69 for clearly implied relationships
 - Only extract relationships supported by the text — do not infer beyond what is written
-- Return {"relations": [...]} only — no explanation, no markdown fences
+- Respond with JSON only — no explanation, no markdown fences
 
-Output format:
+JSON output format:
 {"relations": [{"subject": "entity_id", "predicate": "predicate", "object": "entity_id", "confidence": 0.85}]}
 
 Return {"relations": []} if no clear relationships exist between the provided entities."""
