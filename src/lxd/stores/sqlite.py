@@ -12,6 +12,7 @@ from lxd.stores.models import (
     ChunkRecord,
     CorpusStatusSummary,
     EntityMentionResult,
+    ExtractedRelationRecord,
     IngestConfigSnapshotRecord,
     ManifestRecord,
     MentionRecord,
@@ -137,6 +138,26 @@ def initialize_schema(connection: sqlite3.Connection) -> None:
                 last_loaded_at TEXT NOT NULL
             );
 
+            CREATE TABLE IF NOT EXISTS extracted_relations (
+                relation_id TEXT PRIMARY KEY,
+                chunk_id TEXT NOT NULL,
+                document_id TEXT NOT NULL,
+                source_rel_path TEXT NOT NULL,
+                subject_entity_id TEXT NOT NULL,
+                predicate TEXT NOT NULL,
+                object_entity_id TEXT NOT NULL,
+                confidence REAL NOT NULL,
+                extraction_model TEXT NOT NULL,
+                extracted_at TEXT NOT NULL,
+                FOREIGN KEY(chunk_id) REFERENCES chunk_rows(chunk_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_extracted_relations_subject
+            ON extracted_relations(subject_entity_id);
+
+            CREATE INDEX IF NOT EXISTS idx_extracted_relations_object
+            ON extracted_relations(object_entity_id);
+
             CREATE TABLE IF NOT EXISTS ingest_config (
                 key TEXT PRIMARY KEY,
                 value TEXT NOT NULL
@@ -169,6 +190,7 @@ def reset_store(connection: sqlite3.Connection) -> None:
         connection.execute("DELETE FROM ontology_sources")
         connection.execute("DELETE FROM ontology_snapshot")
         connection.execute("DELETE FROM ingest_config")
+        connection.execute("DELETE FROM extracted_relations")
         connection.execute("DELETE FROM mention_rows")
         connection.execute("DELETE FROM chunk_rows")
         connection.execute("DELETE FROM corpus_manifest")
@@ -657,6 +679,7 @@ def replace_source_chunks(
     absolute_source_path: str,
     chunk_records: list[ChunkRecord],
     mention_records: list[MentionRecord],
+    relation_records: list[ExtractedRelationRecord] | None = None,
 ) -> None:
     with connection:
         connection.execute("DELETE FROM chunk_rows WHERE source_path = ?", (absolute_source_path,))
@@ -754,6 +777,39 @@ def replace_source_chunks(
                         record.end_char,
                     )
                     for record in mention_records
+                ],
+            )
+        if relation_records:
+            connection.executemany(
+                """
+                INSERT OR IGNORE INTO extracted_relations (
+                    relation_id,
+                    chunk_id,
+                    document_id,
+                    source_rel_path,
+                    subject_entity_id,
+                    predicate,
+                    object_entity_id,
+                    confidence,
+                    extraction_model,
+                    extracted_at
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                [
+                    (
+                        record.relation_id,
+                        record.chunk_id,
+                        record.document_id,
+                        record.source_rel_path,
+                        record.subject_entity_id,
+                        record.predicate,
+                        record.object_entity_id,
+                        record.confidence,
+                        record.extraction_model,
+                        record.extracted_at,
+                    )
+                    for record in relation_records
                 ],
             )
 

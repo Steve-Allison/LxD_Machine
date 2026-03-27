@@ -10,7 +10,7 @@ models:
   embed: text-embedding-3-small
   embed_dims: 1536
   embed_backend: openai
-  llm: mistral-small3.1
+  llm: qwen3:14b
   rerank: qwen3-reranker:0.6b
   llm_no_think: true
 
@@ -82,6 +82,17 @@ expansion:
   enabled: true
   hops: 1
   max_terms: 12
+
+relation_extraction:
+  enabled: false
+  backend: openai
+  fallback_backend: ollama
+  openai_model: gpt-4o-mini
+  ollama_model: qwen3:14b
+  min_entity_mentions: 2
+  max_relations_per_chunk: 15
+  temperature: 0.0
+  timeout_secs: 30
 
 synthesis:
   max_chunks: 8

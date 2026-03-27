@@ -22,6 +22,7 @@ from lxd.ingest.docling import load_docling_document
 from lxd.ingest.embedder import EmbeddingContextError, embed_chunk_text, probe_embedder
 from lxd.ingest.markdown import ExtractedDocument, load_markdown_document
 from lxd.ingest.mentions import detect_mentions
+from lxd.ingest.relations import build_valid_predicates, extract_relations_for_chunk
 from lxd.ingest.scanner import ScannedCorpusFile, scan_corpus
 from lxd.ontology.loader import OntologyLoadResult, load_ontology
 from lxd.ontology.matcher import build_automaton
@@ -39,6 +40,7 @@ from lxd.stores.models import (
     AssetLinkRecord,
     ChunkRecord,
     CorpusStatusSummary,
+    ExtractedRelationRecord,
     IngestConfigSnapshotRecord,
     ManifestRecord,
     MentionRecord,
@@ -127,6 +129,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
 
     warnings: list[str] = []
     automaton = build_automaton(plan.ontology.matcher_records)
+    valid_predicates = build_valid_predicates(plan.ontology.relation_records)
     store_paths = build_store_paths(config.paths.data_path)
     sqlite_connection = connect_sqlite(store_paths.sqlite_path)
     try:
@@ -335,6 +338,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                             absolute_source_path=scanned.absolute_path.as_posix(),
                             chunk_records=cloned_chunks,
                             mention_records=cloned_mentions,
+                            relation_records=[],
                         )
                         replace_vector_source_chunks(
                             vector_table, scanned.relative_path, cloned_chunks
@@ -343,17 +347,19 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                         mention_records = cloned_mentions
                         reused_move_sources += 1
                     else:
-                        chunk_records, mention_records = _build_source_records(
+                        chunk_records, mention_records, relation_records = _build_source_records(
                             scanned=scanned,
                             document_id=document_id,
                             config=config,
                             automaton=automaton,
+                            valid_predicates=valid_predicates,
                         )
                         replace_sqlite_source_chunks(
                             sqlite_connection,
                             absolute_source_path=scanned.absolute_path.as_posix(),
                             chunk_records=chunk_records,
                             mention_records=mention_records,
+                            relation_records=relation_records,
                         )
                         replace_vector_source_chunks(
                             vector_table, scanned.relative_path, chunk_records
@@ -532,7 +538,8 @@ def _build_source_records(
     document_id: str,
     config: RuntimeConfig,
     automaton: object,
-) -> tuple[list[ChunkRecord], list[MentionRecord]]:
+    valid_predicates: frozenset[str],
+) -> tuple[list[ChunkRecord], list[MentionRecord], list[ExtractedRelationRecord]]:
     extracted_document = _load_extracted_document(scanned)
     initial_chunks = chunk_document(
         extracted_document,
@@ -547,6 +554,7 @@ def _build_source_records(
     text_chunks, embeddings = _embed_with_context_refinement(initial_chunks, document_id, config)
     chunk_records: list[ChunkRecord] = []
     mention_records: list[MentionRecord] = []
+    relation_records: list[ExtractedRelationRecord] = []
     for chunk, vector in zip(text_chunks, embeddings, strict=True):
         chunk_record = ChunkRecord(
             chunk_id=chunk.chunk_id,
@@ -570,7 +578,7 @@ def _build_source_records(
             embedding_dims=config.models.embed_dims,
         )
         chunk_records.append(chunk_record)
-        mention_records.extend(
+        chunk_mentions = list(
             MentionRecord(
                 chunk_id=chunk_record.chunk_id,
                 entity_id=mention.entity_id,
@@ -581,7 +589,19 @@ def _build_source_records(
             )
             for mention in detect_mentions(chunk.text, automaton)
         )
-    return chunk_records, mention_records
+        mention_records.extend(chunk_mentions)
+        relation_records.extend(
+            extract_relations_for_chunk(
+                chunk_id=chunk_record.chunk_id,
+                document_id=document_id,
+                source_rel_path=chunk_record.source_rel_path,
+                chunk_text=chunk.text,
+                mention_records=chunk_mentions,
+                valid_predicates=valid_predicates,
+                config=config,
+            )
+        )
+    return chunk_records, mention_records, relation_records
 
 
 def _load_extracted_document(scanned: ScannedCorpusFile) -> ExtractedDocument:

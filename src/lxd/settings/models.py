@@ -140,6 +140,20 @@ class ExpansionConfig(BaseModel):
     max_terms: int = Field(gt=0)
 
 
+class RelationExtractionConfig(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    enabled: bool = False
+    backend: Literal["openai", "ollama", "none"] = "none"
+    fallback_backend: Literal["ollama", "none"] = "none"
+    openai_model: str = "gpt-4o-mini"
+    ollama_model: str = "qwen3:14b"
+    min_entity_mentions: int = Field(default=2, ge=1)
+    max_relations_per_chunk: int = Field(default=15, gt=0)
+    temperature: float = Field(default=0.0, ge=0.0)
+    timeout_secs: int = Field(default=30, gt=0)
+
+
 class SynthesisConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -185,6 +199,9 @@ class RuntimeConfig(BaseModel):
     retrieval: RetrievalConfig
     reranker: RerankerConfig
     expansion: ExpansionConfig
+    relation_extraction: RelationExtractionConfig = Field(
+        default_factory=RelationExtractionConfig
+    )
     synthesis: SynthesisConfig
     mcp: MCPConfig
     logging: LoggingConfig

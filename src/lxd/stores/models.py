@@ -145,6 +145,20 @@ class EntityMentionResult:
 
 
 @dataclass(frozen=True)
+class ExtractedRelationRecord:
+    relation_id: str
+    chunk_id: str
+    document_id: str
+    source_rel_path: str
+    subject_entity_id: str
+    predicate: str
+    object_entity_id: str
+    confidence: float
+    extraction_model: str
+    extracted_at: str
+
+
+@dataclass(frozen=True)
 class VectorSearchRecord:
     chunk_id: str
     document_id: str
