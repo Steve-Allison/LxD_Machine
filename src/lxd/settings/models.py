@@ -88,6 +88,7 @@ class RetrievalConfig(BaseModel):
     dense_top_k: int = Field(gt=0)
     rerank_top_k: int = Field(gt=0)
     lexical_fusion_weight: float = Field(default=2.0, ge=0.0)
+    relation_fusion_weight: float = Field(default=1.0, ge=0.0)
 
 
 class RerankerConfig(BaseModel):

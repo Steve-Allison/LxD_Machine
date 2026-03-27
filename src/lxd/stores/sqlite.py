@@ -941,6 +941,97 @@ def find_chunks_by_entity_mentions(
     return results
 
 
+def load_corpus_related_entity_ids(
+    connection: sqlite3.Connection,
+    entity_ids: list[str],
+    *,
+    min_confidence: float = 0.5,
+    max_results: int = 20,
+) -> list[str]:
+    """Return entity IDs strongly related to `entity_ids` via extracted corpus relations.
+
+    Returns the *other* end of any relation where one of `entity_ids` appears as subject
+    or object, filtered by confidence and de-duplicated. Used to augment query expansion
+    with corpus-derived rather than ontology-derived edges.
+    """
+    if not entity_ids:
+        return []
+    placeholders = ",".join("?" * len(entity_ids))
+    rows = connection.execute(
+        f"""
+        SELECT subject_entity_id, object_entity_id, confidence
+        FROM extracted_relations
+        WHERE (subject_entity_id IN ({placeholders}) OR object_entity_id IN ({placeholders}))
+          AND confidence >= ?
+        ORDER BY confidence DESC
+        LIMIT ?
+        """,
+        [*entity_ids, *entity_ids, min_confidence, max_results * 4],
+    ).fetchall()
+    seed_set = set(entity_ids)
+    related: list[str] = []
+    seen: set[str] = set()
+    for row in rows:
+        for candidate in (str(row["subject_entity_id"]), str(row["object_entity_id"])):
+            if candidate not in seed_set and candidate not in seen:
+                seen.add(candidate)
+                related.append(candidate)
+                if len(related) >= max_results:
+                    return related
+    return related
+
+
+def load_corpus_relations_for_entity(
+    connection: sqlite3.Connection,
+    entity_id: str,
+    *,
+    limit: int = 50,
+) -> list[dict[str, Any]]:
+    """Return extracted corpus relations where `entity_id` appears as subject or object."""
+    rows = connection.execute(
+        """
+        SELECT subject_entity_id, predicate, object_entity_id, confidence,
+               extraction_model, source_rel_path, chunk_id
+        FROM extracted_relations
+        WHERE subject_entity_id = ? OR object_entity_id = ?
+        ORDER BY confidence DESC
+        LIMIT ?
+        """,
+        (entity_id, entity_id, limit),
+    ).fetchall()
+    return [
+        {
+            "subject": str(row["subject_entity_id"]),
+            "predicate": str(row["predicate"]),
+            "object": str(row["object_entity_id"]),
+            "confidence": float(row["confidence"]),
+            "source_rel_path": str(row["source_rel_path"]),
+            "chunk_id": str(row["chunk_id"]),
+        }
+        for row in rows
+    ]
+
+
+def load_relation_chunk_ids(
+    connection: sqlite3.Connection,
+    entity_ids: list[str],
+) -> set[str]:
+    """Return chunk IDs that contain an extracted relation involving any of `entity_ids`."""
+    if not entity_ids:
+        return set()
+    placeholders = ",".join("?" * len(entity_ids))
+    rows = connection.execute(
+        f"""
+        SELECT DISTINCT chunk_id
+        FROM extracted_relations
+        WHERE subject_entity_id IN ({placeholders})
+           OR object_entity_id IN ({placeholders})
+        """,
+        [*entity_ids, *entity_ids],
+    ).fetchall()
+    return {str(row["chunk_id"]) for row in rows}
+
+
 def summarize_store(
     connection: sqlite3.Connection,
     *,

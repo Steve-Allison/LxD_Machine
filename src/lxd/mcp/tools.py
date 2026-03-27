@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-from pathlib import Path
 from typing import Any
 
-from lxd.app.bootstrap import AppContext, bootstrap_app
+from lxd.app.bootstrap import AppContext
 from lxd.app.status import load_committed_status
-from lxd.ingest.pipeline import IngestPlan, build_ingest_plan
+from lxd.ingest.pipeline import IngestPlan
 from lxd.ontology.graph import direct_neighbors
 from lxd.retrieval.expansion import expand_entity_ids
 from lxd.retrieval.query_pipeline import search_chunks
@@ -14,34 +13,20 @@ from lxd.stores.sqlite import (
     connect_sqlite,
     find_chunks_by_entity_mentions,
     initialize_schema,
+    load_corpus_relations_for_entity,
 )
 
-_app_context: AppContext | None = None
-_ingest_plan: IngestPlan | None = None
 
-
-def initialize_tools(
-    cwd: Path | None = None,
-    *,
-    profile: str | None = None,
-    config_path: Path | None = None,
-) -> None:
-    global _app_context, _ingest_plan
-    _app_context = bootstrap_app(cwd or Path.cwd(), profile=profile, config_path=config_path)
-    _ingest_plan = None
-
-
-def corpus_status_tool() -> dict[str, object]:
-    context = _context()
-    store_paths = build_store_paths(context.config.paths.data_path)
+def corpus_status_tool(app_context: AppContext, plan: IngestPlan) -> dict[str, object]:
+    store_paths = build_store_paths(app_context.config.paths.data_path)
     if store_paths.sqlite_path.exists():
         connection = connect_sqlite(store_paths.sqlite_path)
         try:
             initialize_schema(connection)
             status_snapshot = load_committed_status(
                 connection,
-                config=context.config,
-                plan_provider=_plan,
+                config=app_context.config,
+                plan_provider=lambda: plan,
             )
         finally:
             connection.close()
@@ -67,7 +52,6 @@ def corpus_status_tool() -> dict[str, object]:
                 "ontology_validation_issue_samples": summary.ontology_validation_issue_samples,
                 "config_drift_warnings": summary.config_drift_warnings,
             }
-    plan = _plan()
     asset_count = sum(1 for item in plan.scanned_files if item.source_type == "image_png")
     return {
         "corpus_counts": {
@@ -93,24 +77,26 @@ def corpus_status_tool() -> dict[str, object]:
     }
 
 
-def get_entity_types_tool() -> list[str]:
-    plan = _plan()
+def get_entity_types_tool(plan: IngestPlan) -> list[str]:
     return sorted(entity["canonical_id"] for entity in plan.ontology.entity_definitions)
 
 
-def get_related_concepts_tool(entity_id: str) -> list[dict[str, Any]]:
-    plan = _plan()
-    _validate_non_empty(entity_id, "entity_id")
+def get_related_concepts_tool(plan: IngestPlan, entity_id: str) -> list[dict[str, Any]]:
+    _require_non_empty(entity_id, "entity_id")
     if entity_id not in plan.ontology.graph:
         return []
     return direct_neighbors(plan.ontology.graph, entity_id)
 
 
-def search_corpus_tool(terms: str, domain: str | None, limit: int) -> list[dict[str, Any]]:
-    context = _context()
+def search_corpus_tool(
+    app_context: AppContext,
+    terms: str,
+    domain: str | None,
+    limit: int,
+) -> list[dict[str, Any]]:
     outcome = search_chunks(
         question=terms,
-        config=context.config,
+        config=app_context.config,
         domain=domain,
         limit=limit,
     )
@@ -129,12 +115,13 @@ def search_corpus_tool(terms: str, domain: str | None, limit: int) -> list[dict[
 
 
 def find_documents_for_concept_tool(
+    app_context: AppContext,
+    plan: IngestPlan,
     entity_id: str,
     hops: int = 1,
     limit: int = 10,
 ) -> list[dict[str, Any]]:
-    _validate_non_empty(entity_id, "entity_id")
-    plan = _plan()
+    _require_non_empty(entity_id, "entity_id")
     if entity_id not in plan.ontology.graph:
         return []
     related_ids = expand_entity_ids(
@@ -144,8 +131,7 @@ def find_documents_for_concept_tool(
         max_entities=50,
     )
     all_entity_ids = list({entity_id, *related_ids})
-    context = _context()
-    store_paths = build_store_paths(context.config.paths.data_path)
+    store_paths = build_store_paths(app_context.config.paths.data_path)
     connection = connect_sqlite(store_paths.sqlite_path)
     try:
         initialize_schema(connection)
@@ -168,22 +154,23 @@ def find_documents_for_concept_tool(
     ]
 
 
-def _context() -> AppContext:
-    if _app_context is None:
-        initialize_tools(Path.cwd())
-    if _app_context is None:
-        raise RuntimeError("MCP tool context failed to initialize.")
-    return _app_context
+def get_corpus_relations_tool(
+    app_context: AppContext,
+    entity_id: str,
+    limit: int = 50,
+) -> list[dict[str, Any]]:
+    _require_non_empty(entity_id, "entity_id")
+    store_paths = build_store_paths(app_context.config.paths.data_path)
+    if not store_paths.sqlite_path.exists():
+        return []
+    connection = connect_sqlite(store_paths.sqlite_path)
+    try:
+        initialize_schema(connection)
+        return load_corpus_relations_for_entity(connection, entity_id, limit=limit)
+    finally:
+        connection.close()
 
 
-def _plan() -> IngestPlan:
-    global _ingest_plan
-    context = _context()
-    if _ingest_plan is None:
-        _ingest_plan = build_ingest_plan(context.config)
-    return _ingest_plan
-
-
-def _validate_non_empty(value: str, field_name: str) -> None:
+def _require_non_empty(value: str, field_name: str) -> None:
     if not value.strip():
         raise ValueError(f"{field_name} must be non-empty.")

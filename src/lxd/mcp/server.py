@@ -1,61 +1,234 @@
 from __future__ import annotations
 
 import argparse
+from collections.abc import AsyncGenerator
+from contextlib import asynccontextmanager
+from dataclasses import dataclass
 from pathlib import Path
+from typing import Annotated
 
-from fastmcp import FastMCP
+from fastmcp import Context, FastMCP
+from pydantic import Field
 
+from lxd.app.bootstrap import AppContext, bootstrap_app
+from lxd.ingest.pipeline import IngestPlan, build_ingest_plan
 from lxd.mcp.tools import (
     corpus_status_tool,
     find_documents_for_concept_tool,
+    get_corpus_relations_tool,
     get_entity_types_tool,
     get_related_concepts_tool,
-    initialize_tools,
     search_corpus_tool,
 )
 
-mcp = FastMCP("lxd-machine")
+_READ_ONLY = {"readOnlyHint": True}
+_LIFESPAN_KEY = "lxd"
 
 
-@mcp.tool()
-def corpus_status() -> dict[str, object]:
-    return corpus_status_tool()
+@dataclass(frozen=True)
+class _LxDLifespan:
+    """Immutable bundle of server-scoped resources, initialised once at startup."""
+
+    app_context: AppContext
+    ingest_plan: IngestPlan
 
 
-@mcp.tool()
-def get_entity_types() -> list[str]:
-    return get_entity_types_tool()
+def _make_lifespan(cwd: Path, profile: str | None, config_path: Path | None):
+    @asynccontextmanager
+    async def lifespan(server: FastMCP) -> AsyncGenerator[dict[str, _LxDLifespan], None]:
+        app_context = bootstrap_app(cwd, profile=profile, config_path=config_path)
+        ingest_plan = build_ingest_plan(app_context.config)
+        yield {_LIFESPAN_KEY: _LxDLifespan(app_context=app_context, ingest_plan=ingest_plan)}
+
+    return lifespan
 
 
-@mcp.tool()
-def get_related_concepts(entity_id: str) -> list[dict[str, object]]:
-    return get_related_concepts_tool(entity_id)
+def _lxd(ctx: Context) -> _LxDLifespan:
+    """Extract the typed lifespan bundle from the request context."""
+    lxd = ctx.lifespan_context.get(_LIFESPAN_KEY)
+    if not isinstance(lxd, _LxDLifespan):
+        raise RuntimeError(
+            "LxD lifespan context is not available. "
+            "Ensure the server was started via create_server() or main()."
+        )
+    return lxd
 
 
-@mcp.tool()
-def search_corpus(
-    terms: str, domain: str | None = None, limit: int = 10
-) -> list[dict[str, object]]:
-    return search_corpus_tool(terms, domain, limit)
+def create_server(
+    cwd: Path | None = None,
+    profile: str | None = None,
+    config_path: Path | None = None,
+) -> FastMCP:
+    """Create and return a fully configured LxD MCP server instance.
 
+    Bootstraps the app context and ingest plan eagerly during the lifespan
+    startup phase, so any misconfiguration fails immediately at launch rather
+    than on the first tool call.
 
-@mcp.tool()
-def find_documents_for_concept(
-    entity_id: str, hops: int = 1, limit: int = 10
-) -> list[dict[str, object]]:
-    return find_documents_for_concept_tool(entity_id, hops, limit)
+    This is the single construction entry point. ``main()`` calls it at
+    startup; tests can call it with a custom ``cwd`` / ``config_path`` to get
+    an isolated server without touching any global state.
+    """
+    mcp = FastMCP(
+        "lxd-machine",
+        lifespan=_make_lifespan(cwd or Path.cwd(), profile, config_path),
+    )
+
+    @mcp.tool(annotations=_READ_ONLY)
+    def corpus_status(ctx: Context) -> dict[str, object]:
+        """Return a health snapshot of the LxD corpus and ontology.
+
+        Reports document counts (total, text, asset), chunk and entity-mention
+        counts, ontology file and entity counts, matcher term counts, hash
+        fingerprints for drift detection, and any validation or config-drift
+        warnings. Use this first to confirm the corpus is ingested and healthy
+        before running searches.
+        """
+        lxd = _lxd(ctx)
+        return corpus_status_tool(lxd.app_context, lxd.ingest_plan)
+
+    @mcp.tool(annotations=_READ_ONLY)
+    def get_entity_types(ctx: Context) -> list[str]:
+        """Return a sorted list of all canonical entity IDs defined in the ontology.
+
+        Use the returned IDs as valid values for the ``entity_id`` parameter of
+        ``get_related_concepts`` and ``find_documents_for_concept``.
+        """
+        return get_entity_types_tool(_lxd(ctx).ingest_plan)
+
+    @mcp.tool(annotations=_READ_ONLY)
+    def get_related_concepts(
+        entity_id: Annotated[
+            str,
+            Field(
+                description=(
+                    "Canonical entity ID to look up (e.g. 'bloom_remember'). "
+                    "Must be non-empty. Call get_entity_types to list valid IDs."
+                )
+            ),
+        ],
+        ctx: Context,
+    ) -> list[dict[str, object]]:
+        """Return the direct neighbours of an entity in the ontology graph.
+
+        Each result dict contains ``entity_id``, ``relation``, and ``direction``
+        keys describing a single edge. Returns an empty list if the entity is
+        not found in the graph.
+        """
+        return get_related_concepts_tool(_lxd(ctx).ingest_plan, entity_id)
+
+    @mcp.tool(annotations=_READ_ONLY)
+    def search_corpus(
+        terms: Annotated[
+            str,
+            Field(description="Natural-language query or keywords to search for in the corpus."),
+        ],
+        ctx: Context,
+        domain: Annotated[
+            str | None,
+            Field(
+                description=(
+                    "Optional domain filter (e.g. 'cognitive_load'). "
+                    "Pass null to search across all domains."
+                )
+            ),
+        ] = None,
+        limit: Annotated[
+            int,
+            Field(description="Maximum number of ranked chunks to return.", ge=1, le=100),
+        ] = 10,
+    ) -> list[dict[str, object]]:
+        """Search the corpus using semantic similarity and return ranked text chunks.
+
+        Performs a vector search over ingested document chunks. Each result
+        includes ``chunk_id``, ``document_id``, ``citation_label``,
+        ``source_rel_path``, ``score``, ``text``, and ``metadata_json``.
+        Results are ordered highest-score first.
+        """
+        return search_corpus_tool(_lxd(ctx).app_context, terms, domain, limit)
+
+    @mcp.tool(annotations=_READ_ONLY)
+    def find_documents_for_concept(
+        entity_id: Annotated[
+            str,
+            Field(
+                description=(
+                    "Canonical entity ID to find documents for (e.g. 'bloom_apply'). "
+                    "Must be non-empty. Call get_entity_types to list valid IDs."
+                )
+            ),
+        ],
+        ctx: Context,
+        hops: Annotated[
+            int,
+            Field(
+                description=(
+                    "Number of graph hops to expand from the entity before searching. "
+                    "1 = direct neighbours only."
+                ),
+                ge=1,
+                le=5,
+            ),
+        ] = 1,
+        limit: Annotated[
+            int,
+            Field(description="Maximum number of document chunks to return.", ge=1, le=100),
+        ] = 10,
+    ) -> list[dict[str, object]]:
+        """Find document chunks that mention a concept or its graph neighbours.
+
+        Expands ``entity_id`` outward by ``hops`` edges in the ontology graph,
+        then retrieves corpus chunks that contain entity-mention annotations for
+        any of the resulting entity IDs. Each result includes ``chunk_id``,
+        ``document_id``, ``citation_label``, ``source_rel_path``, ``score``,
+        ``entity_match_count``, ``matched_from_total``, ``text``, and
+        ``metadata_json``. Returns an empty list if the entity is not in the
+        graph.
+        """
+        lxd = _lxd(ctx)
+        return find_documents_for_concept_tool(
+            lxd.app_context, lxd.ingest_plan, entity_id, hops, limit
+        )
+
+    @mcp.tool(annotations=_READ_ONLY)
+    def get_corpus_relations(
+        entity_id: Annotated[
+            str,
+            Field(
+                description=(
+                    "Canonical entity ID to find corpus-extracted relations for "
+                    "(e.g. 'bloom_apply'). Call get_entity_types to list valid IDs."
+                )
+            ),
+        ],
+        ctx: Context,
+        limit: Annotated[
+            int,
+            Field(description="Maximum number of relations to return.", ge=1, le=200),
+        ] = 50,
+    ) -> list[dict[str, object]]:
+        """Return semantic relations extracted from the corpus for an entity.
+
+        Unlike ``get_related_concepts`` (which returns hand-coded ontology edges),
+        this tool returns relations learned from document text during ingest —
+        e.g. ``(bloom_apply) → [requires] → (cognitive_load)`` as stated in a
+        specific chunk. Each result includes ``subject``, ``predicate``, ``object``,
+        ``confidence``, ``source_rel_path``, and ``chunk_id``.
+
+        Returns an empty list if relation extraction has not been run yet.
+        """
+        return get_corpus_relations_tool(_lxd(ctx).app_context, entity_id, limit)
+
+    return mcp
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--profile")
-    parser.add_argument("--config")
+    parser = argparse.ArgumentParser(description="LxD Machine MCP server (stdio transport).")
+    parser.add_argument("--profile", help="Named config profile to load.")
+    parser.add_argument("--config", help="Explicit path to a config YAML file.")
     args = parser.parse_args()
-    initialize_tools(
-        Path.cwd(),
-        profile=args.profile,
-        config_path=Path(args.config).resolve() if args.config else None,
-    )
+    config_path = Path(args.config).resolve() if args.config else None
+    mcp = create_server(profile=args.profile, config_path=config_path)
     mcp.run()
 
 

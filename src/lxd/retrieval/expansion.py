@@ -9,6 +9,11 @@ from lxd.ontology.graph import OntologyGraph
 from lxd.ontology.loader import OntologyLoadResult, load_ontology
 from lxd.ontology.matcher import build_automaton
 from lxd.settings.models import RuntimeConfig
+from lxd.stores.sqlite import (
+    build_store_paths,
+    connect_sqlite,
+    load_corpus_related_entity_ids,
+)
 
 _ONTOLOGY_CACHE: dict[tuple[str, tuple[str, ...], tuple[str, ...]], _OntologyRuntime] = {}
 
@@ -60,9 +65,11 @@ def expand_question(question: str, config: RuntimeConfig) -> ExpansionOutcome:
         hops=config.expansion.hops,
         max_entities=config.expansion.max_terms,
     )
+    corpus_related_ids = _expand_from_corpus(config, matched_entity_ids)
+    all_related_ids = _dedupe([*related_entity_ids, *corpus_related_ids])
     added_terms = _terms_for_entities(
         runtime.entity_by_id,
-        entity_ids=[*related_entity_ids, *matched_entity_ids],
+        entity_ids=[*all_related_ids, *matched_entity_ids],
         question=question,
         max_terms=config.expansion.max_terms,
     )
@@ -77,6 +84,32 @@ def expand_question(question: str, config: RuntimeConfig) -> ExpansionOutcome:
         matched_entity_ids=matched_entity_ids,
         added_terms=added_terms,
     )
+
+
+def _expand_from_corpus(config: RuntimeConfig, entity_ids: list[str]) -> list[str]:
+    """Return entity IDs related to `entity_ids` via extracted corpus relations.
+
+    Returns an empty list silently if the store doesn't exist yet or relation
+    extraction is disabled.
+    """
+    relation_cfg = getattr(config, "relation_extraction", None)
+    if relation_cfg is None or not relation_cfg.enabled:
+        return []
+    store_paths = build_store_paths(config.paths.data_path)
+    if not store_paths.sqlite_path.exists():
+        return []
+    try:
+        connection = connect_sqlite(store_paths.sqlite_path)
+        try:
+            return load_corpus_related_entity_ids(
+                connection,
+                entity_ids,
+                max_results=config.expansion.max_terms,
+            )
+        finally:
+            connection.close()
+    except Exception:
+        return []
 
 
 def _ontology_runtime(config: RuntimeConfig) -> _OntologyRuntime:

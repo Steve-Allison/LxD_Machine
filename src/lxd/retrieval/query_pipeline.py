@@ -15,6 +15,7 @@ from lxd.stores.sqlite import (
     connect_sqlite,
     initialize_schema,
     list_allowed_domains,
+    load_relation_chunk_ids,
     summarize_store,
 )
 from lxd.synthesis.answering import (
@@ -151,11 +152,14 @@ def search_chunks(
     rerank_limit = min(len(representative_candidates), config.retrieval.rerank_top_k)
     rerank_inputs = representative_candidates[:rerank_limit]
     reranked = rerank_chunks(question, rerank_inputs, config)
+    relation_chunk_ids = _load_relation_chunk_ids(store_paths, expansion.matched_entity_ids)
     fused_prefix = _fuse_ranked_prefix(
         question=question,
         dense_prefix=rerank_inputs,
         reranked_prefix=reranked.ranked,
         lexical_fusion_weight=config.retrieval.lexical_fusion_weight,
+        relation_fusion_weight=config.retrieval.relation_fusion_weight,
+        relation_chunk_ids=relation_chunk_ids,
     )
     merged_ranked = _merge_ranked_prefix(ranked, fused_prefix)[:requested_limit]
     return SearchOutcome(
@@ -289,6 +293,27 @@ def _dense_ranked_candidates(
         raw_limit = min(_MAX_LIMIT, raw_limit + max(1, rerank_top_k))
 
 
+def _load_relation_chunk_ids(store_paths: object, entity_ids: list[str]) -> set[str]:
+    """Load chunk IDs that have extracted relations for any of the queried entities.
+
+    Returns an empty set silently if the store doesn't exist or the query fails.
+    """
+    from lxd.stores.sqlite import StorePaths  # avoid circular at module level
+    if not entity_ids or not isinstance(store_paths, StorePaths):
+        return set()
+    sqlite_path = store_paths.sqlite_path
+    if not sqlite_path.exists():
+        return set()
+    try:
+        connection = connect_sqlite(sqlite_path)
+        try:
+            return load_relation_chunk_ids(connection, entity_ids)
+        finally:
+            connection.close()
+    except Exception:
+        return set()
+
+
 def _merge_ranked_prefix(
     ranked: list[RankedChunk],
     ranked_prefix: list[RankedChunk],
@@ -316,15 +341,24 @@ def _fuse_ranked_prefix(
     dense_prefix: list[RankedChunk],
     reranked_prefix: list[RankedChunk],
     lexical_fusion_weight: float,
+    relation_fusion_weight: float = 0.0,
+    relation_chunk_ids: set[str] | None = None,
 ) -> list[RankedChunk]:
     if not dense_prefix:
         return []
+    _relation_chunk_ids = relation_chunk_ids or set()
     dense_rank = {item.chunk_id: index for index, item in enumerate(dense_prefix, start=1)}
     rerank_rank = {item.chunk_id: index for index, item in enumerate(reranked_prefix, start=1)}
     lexical_rank = {
         item.chunk_id: index
         for index, item in enumerate(_lexically_ranked(question, dense_prefix), start=1)
     }
+    # Relation signal: chunks containing extracted relations for queried entities rank first
+    relation_ranked = sorted(
+        dense_prefix,
+        key=lambda c: (0 if c.chunk_id in _relation_chunk_ids else 1, dense_rank[c.chunk_id]),
+    )
+    relation_rank = {item.chunk_id: index for index, item in enumerate(relation_ranked, start=1)}
     return sorted(
         dense_prefix,
         key=lambda item: (
@@ -332,6 +366,7 @@ def _fuse_ranked_prefix(
                 _rrf_score(dense_rank[item.chunk_id])
                 + (lexical_fusion_weight * _rrf_score(lexical_rank[item.chunk_id]))
                 + _rrf_score(rerank_rank.get(item.chunk_id, len(dense_prefix) + 1))
+                + (relation_fusion_weight * _rrf_score(relation_rank[item.chunk_id]))
             ),
             dense_rank[item.chunk_id],
         ),
