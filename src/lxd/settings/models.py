@@ -172,9 +172,8 @@ class RelationExtractionConfig(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    enabled: bool = False
-    backend: Literal["openai", "ollama", "none"] = "none"
-    fallback_backend: Literal["ollama", "none"] = "none"
+    backend: Literal["openai", "ollama"] = "openai"
+    fallback_backend: Literal["ollama", "none"] = "ollama"
     openai_model: str = "gpt-4o-mini"
     ollama_model: str = "qwen3:14b"
     min_entity_mentions: int = Field(default=2, ge=1)
@@ -199,7 +198,6 @@ class KnowledgeGraphConfig(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    enabled: bool = False
     min_relation_confidence: float = Field(default=0.5, ge=0.0, le=1.0)
 
     # Community detection
@@ -212,7 +210,7 @@ class KnowledgeGraphConfig(BaseModel):
     entity_embedding_min_mentions: int = Field(default=3, ge=1)
 
     # Claim extraction
-    claim_extraction_backend: Literal["openai", "ollama", "none"] = "openai"
+    claim_extraction_backend: Literal["openai", "ollama"] = "openai"
     claim_extraction_model: str = "gpt-4o-mini"
     claim_extraction_fallback_model: str = "qwen3:14b"
     claim_extraction_min_mentions: int = Field(default=1, ge=1)
@@ -220,9 +218,8 @@ class KnowledgeGraphConfig(BaseModel):
     claim_extraction_timeout_secs: int = Field(default=90, gt=0)
     claim_extraction_temperature: float = Field(default=0.0, ge=0.0)
 
-    # Optional LLM enrichment
-    llm_enrichment: bool = False
-    llm_enrichment_backend: Literal["openai", "ollama", "none"] = "openai"
+    # LLM enrichment
+    llm_enrichment_backend: Literal["openai", "ollama"] = "openai"
     llm_enrichment_model: str = "gpt-4o-mini"
     llm_enrichment_fallback_model: str = "qwen3:14b"
     llm_enrichment_temperature: float = Field(default=0.1, ge=0.0)

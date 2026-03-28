@@ -39,7 +39,7 @@ def build_graph_context(
     Graph context is additive — it frames chunk evidence, it does not replace it.
     """
     kg_cfg = config.knowledge_graph
-    if not kg_cfg.enabled or not matched_entity_ids:
+    if not matched_entity_ids:
         return GraphContext(
             level="none",
             entity_profiles=[],

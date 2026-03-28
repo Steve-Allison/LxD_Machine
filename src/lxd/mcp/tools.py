@@ -706,7 +706,6 @@ def get_graph_overview_tool(app_context: AppContext) -> dict[str, Any]:
     store_paths = build_store_paths(app_context.config.paths.data_path)
     if not store_paths.sqlite_path.exists():
         return {
-            "knowledge_graph_enabled": app_context.config.knowledge_graph.enabled,
             "graph_version": 0,
             "entity_profiles": 0,
             "communities": 0,
@@ -730,7 +729,6 @@ def get_graph_overview_tool(app_context: AppContext) -> dict[str, Any]:
 
         metadata = load_graph_metadata(connection)
         return {
-            "knowledge_graph_enabled": app_context.config.knowledge_graph.enabled,
             "graph_version": int(metadata.get("graph_version", "0")),
             "last_build_at": metadata.get("last_build_at", "never"),
             "community_algorithm": metadata.get(

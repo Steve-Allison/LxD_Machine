@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from pathlib import Path
 from types import SimpleNamespace
 
 import networkx as nx
@@ -65,7 +66,10 @@ def test_expand_question_uses_query_mentions_and_entity_neighbors(monkeypatch) -
         ],
     )
 
-    config = SimpleNamespace(expansion=SimpleNamespace(enabled=True, hops=2, max_terms=4))
+    config = SimpleNamespace(
+        expansion=SimpleNamespace(enabled=True, hops=2, max_terms=4),
+        paths=SimpleNamespace(data_path=Path("/nonexistent")),
+    )
 
     outcome = expansion.expand_question("What is Mayer's principle?", config)
 

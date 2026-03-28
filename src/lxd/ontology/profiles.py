@@ -298,11 +298,6 @@ def enrich_entity_profiles_with_llm(
     Returns:
         Number of summaries generated.
     """
-    kg_cfg = config.knowledge_graph
-    if not kg_cfg.llm_enrichment or kg_cfg.llm_enrichment_backend == "none":
-        _log.info("LLM enrichment disabled")
-        return 0
-
     from lxd.stores.sqlite import load_all_community_reports, load_all_entity_profiles
 
     enriched = 0

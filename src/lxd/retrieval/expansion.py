@@ -23,6 +23,7 @@ _ONTOLOGY_CACHE: dict[tuple[str, tuple[str, ...], tuple[str, ...]], _OntologyRun
 @dataclass(frozen=True)
 class ExpansionOutcome:
     """Query expansion text plus matched ontology entities."""
+
     expanded_question: str
     matched_entity_ids: list[str]
     added_terms: list[str]
@@ -101,12 +102,8 @@ def expand_question(question: str, config: RuntimeConfig) -> ExpansionOutcome:
 def _expand_from_corpus(config: RuntimeConfig, entity_ids: list[str]) -> list[str]:
     """Return entity IDs related to `entity_ids` via extracted corpus relations.
 
-    Returns an empty list silently if the store doesn't exist yet or relation
-    extraction is disabled.
+    Returns an empty list silently if the store doesn't exist yet.
     """
-    relation_cfg = getattr(config, "relation_extraction", None)
-    if relation_cfg is None or not relation_cfg.enabled:
-        return []
     store_paths = build_store_paths(config.paths.data_path)
     if not store_paths.sqlite_path.exists():
         return []

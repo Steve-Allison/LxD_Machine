@@ -52,9 +52,6 @@ def extract_claims_for_chunks(
         Number of claims extracted.
     """
     kg_cfg = config.knowledge_graph
-    if kg_cfg.claim_extraction_backend == "none":
-        _log.info("claim extraction disabled (backend=none)")
-        return 0
 
     # Find qualifying chunks: those with enough entity mentions
     min_mentions = kg_cfg.claim_extraction_min_mentions

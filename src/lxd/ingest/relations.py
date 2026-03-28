@@ -50,12 +50,9 @@ def extract_relations_for_chunk(
 ) -> list[ExtractedRelationRecord]:
     """Extract semantic relations from a chunk using LLM (OpenAI with Ollama fallback).
 
-    Returns an empty list if extraction is disabled, if the chunk has too few entity
-    mentions, or if all backends fail.
+    Returns an empty list if the chunk has too few entity mentions or if all backends fail.
     """
     cfg = config.relation_extraction
-    if not cfg.enabled or cfg.backend == "none":
-        return []
 
     entity_ids = sorted({m.entity_id for m in mention_records})
     if len(entity_ids) < cfg.min_entity_mentions:
@@ -106,31 +103,30 @@ def extract_relations_for_chunk(
         )
     _LOG.debug(
         "chunk=%s entities=%d raw=%d stored=%d dropped_pred=%d",
-        chunk_id[:8], len(entity_ids), len(raw), len(records), len(dropped_predicate),
+        chunk_id[:8],
+        len(entity_ids),
+        len(raw),
+        len(records),
+        len(dropped_predicate),
     )
     return records
 
 
 def build_valid_predicates(relation_records: list) -> frozenset[str]:
     """Derive the set of entity-to-entity predicate types from the loaded ontology."""
-    return frozenset(
-        r.relation_type
-        for r in relation_records
-        if r.origin_kind == "entity"
-    )
+    return frozenset(r.relation_type for r in relation_records if r.origin_kind == "entity")
 
 
 # ---------------------------------------------------------------------------
 # Internal helpers
 # ---------------------------------------------------------------------------
 
+
 def _active_model(config: RuntimeConfig) -> str:
     cfg = config.relation_extraction
     if cfg.backend == "openai":
         return cfg.openai_model
-    if cfg.backend == "ollama":
-        return cfg.ollama_model
-    return "none"
+    return cfg.ollama_model
 
 
 def _build_user_prompt(
@@ -159,15 +155,21 @@ def _parse_response(raw_text: str) -> list[_RawRelation]:
             predicate = item.get("predicate")
             object_ = item.get("object")
             confidence = item.get("confidence", 0.5)
-            if not (isinstance(subject, str) and isinstance(predicate, str) and isinstance(object_, str)):
+            if not (
+                isinstance(subject, str) and isinstance(predicate, str) and isinstance(object_, str)
+            ):
                 continue
             try:
                 confidence = float(confidence)
-            except (TypeError, ValueError):
+            except TypeError, ValueError:
                 confidence = 0.5
-            results.append(_RawRelation(subject=subject, predicate=predicate, object_=object_, confidence=confidence))
+            results.append(
+                _RawRelation(
+                    subject=subject, predicate=predicate, object_=object_, confidence=confidence
+                )
+            )
         return results
-    except (json.JSONDecodeError, AttributeError):
+    except json.JSONDecodeError, AttributeError:
         return []
 
 
@@ -221,7 +223,10 @@ def _call_openai(
         model=cfg.openai_model,
         messages=[
             {"role": "system", "content": _SYSTEM_PROMPT},
-            {"role": "user", "content": _build_user_prompt(chunk_text, entity_ids, valid_predicates)},
+            {
+                "role": "user",
+                "content": _build_user_prompt(chunk_text, entity_ids, valid_predicates),
+            },
         ],
         temperature=cfg.temperature,
         response_format={"type": "json_object"},
@@ -245,10 +250,15 @@ def _call_ollama(
         model=cfg.ollama_model,
         messages=[
             {"role": "system", "content": _SYSTEM_PROMPT},
-            {"role": "user", "content": _build_user_prompt(chunk_text, entity_ids, valid_predicates)},
+            {
+                "role": "user",
+                "content": _build_user_prompt(chunk_text, entity_ids, valid_predicates),
+            },
         ],
         options={"temperature": cfg.temperature},
         format="json",
     )
-    content = response["message"]["content"] if isinstance(response, dict) else response.message.content
+    content = (
+        response["message"]["content"] if isinstance(response, dict) else response.message.content
+    )
     return _parse_response(content or "")

@@ -267,7 +267,7 @@ def _build_graph_context_prompt(config: RuntimeConfig, matched_entity_ids: list[
 
     Returns empty string if KG is disabled, no entities matched, or on any error.
     """
-    if not config.knowledge_graph.enabled or not matched_entity_ids:
+    if not matched_entity_ids:
         return ""
     store_paths = build_store_paths(config.paths.data_path)
     if not store_paths.sqlite_path.exists():
