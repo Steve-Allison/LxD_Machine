@@ -1,0 +1,7 @@
+- [LxD Machine overview](project_lxd_overview.md) — ontology-first knowledge retrieval system; tech stack, scale, architecture
+- [Embedding migration to OpenAI](project_embedding_migration.md) — moved from Ollama/nomic to OpenAI text-embedding-3-small; dual-backend support
+- [MCP server status](project_mcp_server.md) — FastMCP 3.0, 20 read-only tools (6 corpus + 11 KG + 3 full-pipeline), updated 2026-03-28
+- [Relation extraction](project_relation_extraction.md) — LLM-based relation extraction via OpenAI, enabled by default since 2026-03-27
+- [Knowledge Graph Phase 5](project_knowledge_graph.md) — Phase 5 implemented 2026-03-28; Louvain communities, 5 centrality metrics, graph-augmented synthesis
+- [KG features are mandatory](feedback_mandatory_features.md) — never add enabled toggles for core KG features; relation extraction, claims, enrichment are mandatory
+- [API keys in .env](feedback_env_file.md) — always test env vars through bootstrap path, not bare Python; .env loaded by app/bootstrap.py
