@@ -31,6 +31,7 @@ Key directories outside `src/`:
 - `Plans/` — architecture and design specs
 - `tests/` — pytest suite
 - `data/` — SQLite + LanceDB stores (gitignored, rebuildable)
+- `.env` — API keys (OPENAI_API_KEY, etc.). Loaded by `app/bootstrap.py` via `python-dotenv` at startup. Never commit.
 
 ## Common Commands
 
@@ -70,7 +71,7 @@ The knowledge graph pipeline builds on top of ingested corpus data:
 6. **Community reports** — deterministic summaries per community, optional LLM enrichment
 7. **Graph-augmented synthesis** — entity profiles, community reports, and claims prepended to synthesis prompt when entities match the query
 
-The graph build is a resumable state machine (`pixi run build-graph`). Graph context is additive — when KG is disabled or no entities match, the pipeline behaves identically to the pre-Phase-5 baseline.
+The graph build is a resumable state machine (`pixi run build-graph`). Graph context is additive — when the graph is not yet built or no entities match a query, the pipeline degrades gracefully to the pre-Phase-5 baseline.
 
 ## Design Principles
 
@@ -78,7 +79,7 @@ The graph build is a resumable state machine (`pixi run build-graph`). Graph con
 - **Rebuildable**: all stores can be rebuilt from source via `pixi run ingest --full` and `pixi run build-graph --full`.
 - **Explicit provenance**: every chunk traces back to source document, page, and extraction method. Every claim and relation traces to source chunk.
 - **Ontology-first**: entity recognition uses Aho-Corasick automaton built from YAML definitions; relations extracted via LLM.
-- **Graceful degradation**: the system remains usable when the knowledge graph is not built, the reranker is unavailable, or LLM enrichment is disabled.
+- **Graceful degradation**: the system remains usable when the knowledge graph is not yet built or the reranker service is unavailable.
 
 ## Key Patterns
 
