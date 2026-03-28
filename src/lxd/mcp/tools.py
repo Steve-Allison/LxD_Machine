@@ -611,6 +611,143 @@ def get_entity_graph_stats_tool(app_context: AppContext) -> dict[str, Any]:
         connection.close()
 
 
+def search_knowledge_tool(
+    app_context: AppContext,
+    question: str,
+    domain: str | None = None,
+) -> dict[str, Any]:
+    """Run the full answer pipeline with graph-augmented synthesis."""
+    _require_non_empty(question, "question")
+    from lxd.retrieval.query_pipeline import answer_question
+
+    envelope = answer_question(question=question, config=app_context.config, domain=domain)
+    return {
+        "answer_status": envelope.answer_status.value,
+        "answer_text": envelope.answer_text,
+        "citations": envelope.citations,
+        "warnings": envelope.warnings,
+        "metadata": envelope.metadata,
+    }
+
+
+def search_knowledge_deep_tool(
+    app_context: AppContext,
+    question: str,
+    domain: str | None = None,
+) -> dict[str, Any]:
+    """Run the full answer pipeline with graph context data returned alongside the answer."""
+    _require_non_empty(question, "question")
+    from lxd.retrieval.query_pipeline import answer_question
+
+    envelope = answer_question(question=question, config=app_context.config, domain=domain)
+
+    # Also load graph context data for the matched entities
+    matched_entity_ids = envelope.metadata.get("matched_entity_ids", [])
+    graph_data: dict[str, Any] = {"level": "none", "entity_profiles": [], "claims": []}
+
+    if isinstance(matched_entity_ids, list) and matched_entity_ids:
+        store_paths = build_store_paths(app_context.config.paths.data_path)
+        if store_paths.sqlite_path.exists():
+            connection = connect_sqlite(store_paths.sqlite_path)
+            try:
+                initialize_schema(connection)
+                from lxd.retrieval.graph_routing import build_graph_context
+
+                context = build_graph_context(connection, matched_entity_ids, app_context.config)
+                graph_data = {
+                    "level": context.level,
+                    "entity_profiles": [
+                        {
+                            "entity_id": p.entity_id,
+                            "label": p.label,
+                            "entity_type": p.entity_type,
+                            "deterministic_summary": p.deterministic_summary,
+                            "llm_summary": p.llm_summary,
+                            "pagerank": p.pagerank,
+                            "community_id": p.community_id,
+                        }
+                        for p in context.entity_profiles
+                    ],
+                    "community_reports": [
+                        {
+                            "community_id": r.community_id,
+                            "member_count": r.member_count,
+                            "deterministic_summary": r.deterministic_summary,
+                            "llm_summary": r.llm_summary,
+                        }
+                        for r in context.community_reports
+                    ],
+                    "claims": [
+                        {
+                            "claim_text": c.claim_text,
+                            "claim_type": c.claim_type,
+                            "confidence": c.confidence,
+                            "subject_entity_id": c.subject_entity_id,
+                            "object_entity_id": c.object_entity_id,
+                        }
+                        for c in context.claims
+                    ],
+                }
+            finally:
+                connection.close()
+
+    return {
+        "answer_status": envelope.answer_status.value,
+        "answer_text": envelope.answer_text,
+        "citations": envelope.citations,
+        "warnings": envelope.warnings,
+        "metadata": envelope.metadata,
+        "graph_context": graph_data,
+    }
+
+
+def get_graph_overview_tool(app_context: AppContext) -> dict[str, Any]:
+    """Return knowledge graph overview including stats and build state."""
+    store_paths = build_store_paths(app_context.config.paths.data_path)
+    if not store_paths.sqlite_path.exists():
+        return {
+            "knowledge_graph_enabled": app_context.config.knowledge_graph.enabled,
+            "graph_version": 0,
+            "entity_profiles": 0,
+            "communities": 0,
+            "community_reports": 0,
+            "canonical_relations": 0,
+            "relation_evidence": 0,
+            "claims": 0,
+        }
+    connection = connect_sqlite(store_paths.sqlite_path)
+    try:
+        initialize_schema(connection)
+        from lxd.stores.sqlite import (
+            count_canonical_relations,
+            count_claims,
+            count_communities,
+            count_community_reports,
+            count_entity_profiles,
+            count_relation_evidence,
+            load_graph_metadata,
+        )
+
+        metadata = load_graph_metadata(connection)
+        return {
+            "knowledge_graph_enabled": app_context.config.knowledge_graph.enabled,
+            "graph_version": int(metadata.get("graph_version", "0")),
+            "last_build_at": metadata.get("last_build_at", "never"),
+            "community_algorithm": metadata.get(
+                "community_algorithm",
+                app_context.config.knowledge_graph.community_algorithm,
+            ),
+            "entity_profiles": count_entity_profiles(connection),
+            "communities": count_communities(connection),
+            "community_reports": count_community_reports(connection),
+            "canonical_relations": count_canonical_relations(connection),
+            "relation_evidence": count_relation_evidence(connection),
+            "claims": count_claims(connection),
+        }
+    finally:
+        connection.close()
+
+
 def _require_non_empty(value: str, field_name: str) -> None:
     if not value.strip():
         raise ValueError(f"{field_name} must be non-empty.")

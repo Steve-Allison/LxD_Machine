@@ -5,6 +5,8 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
+import structlog
+
 from lxd.app.status import config_drift_warnings
 from lxd.retrieval.dense import embed_query
 from lxd.retrieval.expansion import expand_question
@@ -27,6 +29,8 @@ from lxd.synthesis.answering import (
     no_results_answer,
     synthesize_answer,
 )
+
+_log = structlog.get_logger(__name__)
 
 _MAX_LIMIT = 50
 _MIN_EVIDENCE_CHUNKS = 2
@@ -65,6 +69,7 @@ _GENERIC_QUERY_TERMS = {
 @dataclass(frozen=True)
 class RankedChunk:
     """Retrieval chunk with metadata and ranking score."""
+
     chunk_id: str
     document_id: str
     citation_label: str
@@ -86,6 +91,7 @@ class RankedChunk:
 @dataclass(frozen=True)
 class SearchOutcome:
     """Search results plus expansion/rerank diagnostics."""
+
     ranked: list[RankedChunk]
     warnings: list[str]
     reranking_applied: bool
@@ -204,12 +210,17 @@ def answer_question(
         Synthesized answer with citations and metadata.
     """
     outcome = search_chunks(question=question, config=config, domain=domain)
+
+    # Build graph context from matched entities (graceful degradation)
+    graph_context_prompt = _build_graph_context_prompt(config, outcome.matched_entity_ids)
+
     metadata: dict[str, object] = {
         "reranking_applied": outcome.reranking_applied,
         "expansion_applied": outcome.expansion_applied,
         "matched_entity_ids": outcome.matched_entity_ids,
         "expansion_terms": outcome.expansion_terms,
         "result_count": len(outcome.ranked),
+        "graph_context_applied": bool(graph_context_prompt),
     }
     if not outcome.ranked:
         answer = no_results_answer()
@@ -238,7 +249,9 @@ def answer_question(
             warnings=[*outcome.warnings, *outcome.config_drift_warnings],
             metadata=metadata,
         )
-    answer = synthesize_answer(question, evidence, config)
+    answer = synthesize_answer(
+        question, evidence, config, graph_context_prompt=graph_context_prompt
+    )
     warnings = [*outcome.warnings, *outcome.config_drift_warnings, *answer.warnings]
     return AnswerEnvelope(
         answer_status=answer.answer_status,
@@ -247,6 +260,39 @@ def answer_question(
         warnings=warnings,
         metadata=metadata,
     )
+
+
+def _build_graph_context_prompt(config: RuntimeConfig, matched_entity_ids: list[str]) -> str:
+    """Build graph context prompt from matched entity IDs.
+
+    Returns empty string if KG is disabled, no entities matched, or on any error.
+    """
+    if not config.knowledge_graph.enabled or not matched_entity_ids:
+        return ""
+    store_paths = build_store_paths(config.paths.data_path)
+    if not store_paths.sqlite_path.exists():
+        return ""
+    try:
+        connection = connect_sqlite(store_paths.sqlite_path)
+        try:
+            from lxd.retrieval.graph_routing import build_graph_context, format_graph_context_prompt
+
+            context = build_graph_context(connection, matched_entity_ids, config)
+            prompt = format_graph_context_prompt(context)
+            if prompt:
+                _log.info(
+                    "graph context added to synthesis",
+                    level=context.level,
+                    entity_profiles=len(context.entity_profiles),
+                    community_reports=len(context.community_reports),
+                    claims=len(context.claims),
+                )
+            return prompt
+        finally:
+            connection.close()
+    except Exception as exc:
+        _log.warning("graph context building failed, proceeding without: %s", exc)
+        return ""
 
 
 def _validate_question(question: str) -> None:
@@ -324,6 +370,7 @@ def _load_relation_chunk_ids(store_paths: object, entity_ids: list[str]) -> set[
     Returns an empty set silently if the store doesn't exist or the query fails.
     """
     from lxd.stores.sqlite import StorePaths  # avoid circular at module level
+
     if not entity_ids or not isinstance(store_paths, StorePaths):
         return set()
     sqlite_path = store_paths.sqlite_path

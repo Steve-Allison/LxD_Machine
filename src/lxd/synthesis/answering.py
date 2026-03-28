@@ -13,6 +13,7 @@ from lxd.settings.models import RuntimeConfig
 @dataclass(frozen=True)
 class EvidenceChunk:
     """Evidence snippet and score used for synthesis."""
+
     citation_label: str
     text: str
     score: float
@@ -21,6 +22,7 @@ class EvidenceChunk:
 @dataclass(frozen=True)
 class AnswerEnvelope:
     """Final answer payload including citations and warnings."""
+
     answer_status: QueryAnswerStatus
     answer_text: str
     citations: list[str]
@@ -47,6 +49,8 @@ def synthesize_answer(
     question: str,
     evidence: list[EvidenceChunk],
     config: RuntimeConfig,
+    *,
+    graph_context_prompt: str = "",
 ) -> AnswerEnvelope:
     """Synthesize an answer from retrieved evidence chunks.
 
@@ -54,12 +58,13 @@ def synthesize_answer(
         question: User question text.
         evidence: Evidence chunks used for synthesis.
         config: Runtime configuration object.
+        graph_context_prompt: Optional graph context to prepend to the prompt.
 
     Returns:
         Answer envelope from synthesis or fallback.
     """
     citations = [chunk.citation_label for chunk in evidence]
-    prompt = _build_prompt(question, evidence)
+    prompt = _build_prompt(question, evidence, graph_context_prompt=graph_context_prompt)
     try:
         response = _client(config).generate(
             model=config.models.llm,
@@ -129,15 +134,27 @@ def probe_synthesis_model(config: RuntimeConfig) -> tuple[bool, str | None]:
     return True, None
 
 
-def _build_prompt(question: str, evidence: list[EvidenceChunk]) -> str:
+def _build_prompt(
+    question: str, evidence: list[EvidenceChunk], *, graph_context_prompt: str = ""
+) -> str:
     evidence_block = "\n\n".join(f"[{item.citation_label}]\n{item.text}" for item in evidence)
-    return (
+    preamble = (
         "Answer the question using only the evidence below.\n"
         "If the evidence is insufficient, say so plainly.\n"
-        "Do not invent facts.\n\n"
-        f"Question:\n{question}\n\n"
-        f"Evidence:\n{evidence_block}\n"
+        "Do not invent facts.\n"
     )
+    if graph_context_prompt:
+        preamble += (
+            "\nThe graph context below provides structured knowledge about entities,\n"
+            "communities, and claims relevant to the question. Use it to frame your\n"
+            "answer but ground all facts in the source evidence.\n"
+        )
+    sections = [preamble]
+    if graph_context_prompt:
+        sections.append(graph_context_prompt)
+    sections.append(f"Question:\n{question}\n")
+    sections.append(f"Evidence:\n{evidence_block}\n")
+    return "\n".join(sections)
 
 
 def _strip_thinking(text: str) -> str:

@@ -350,6 +350,71 @@ def create_server(
 
         return get_entity_graph_stats_tool(_lxd(ctx).app_context)
 
+    # -----------------------------------------------------------------------
+    # Full answer pipeline tools
+    # -----------------------------------------------------------------------
+
+    @mcp.tool(annotations=_READ_ONLY)
+    def search_knowledge(
+        question: Annotated[
+            str,
+            Field(description="Natural-language question to answer using the knowledge base."),
+        ],
+        ctx: Context,
+        domain: Annotated[
+            str | None,
+            Field(description="Optional domain filter. Pass null to search all domains."),
+        ] = None,
+    ) -> dict[str, object]:
+        """Answer a question using semantic retrieval with graph-augmented synthesis.
+
+        Performs dense vector search, reranking, ontology expansion, and
+        graph context augmentation (entity profiles, community reports, claims)
+        before synthesising an answer via LLM. Returns ``answer_status``
+        (``answered``, ``no_results``, ``insufficient_evidence``, or
+        ``synthesis_unavailable``), ``answer_text``, ``citations``, and
+        query ``metadata`` including matched entities and expansion terms.
+        """
+        from lxd.mcp.tools import search_knowledge_tool
+
+        return search_knowledge_tool(_lxd(ctx).app_context, question, domain)
+
+    @mcp.tool(annotations=_READ_ONLY)
+    def search_knowledge_deep(
+        question: Annotated[
+            str,
+            Field(description="Complex question requiring deep graph context."),
+        ],
+        ctx: Context,
+        domain: Annotated[
+            str | None,
+            Field(description="Optional domain filter. Pass null to search all domains."),
+        ] = None,
+    ) -> dict[str, object]:
+        """Answer a question with full graph context returned alongside the answer.
+
+        Like ``search_knowledge`` but also returns structured ``graph_context``
+        data: entity profiles with centrality scores, community reports, and
+        claims for matched entities. Use this for complex queries where the
+        caller needs to inspect the graph evidence behind the answer.
+        """
+        from lxd.mcp.tools import search_knowledge_deep_tool
+
+        return search_knowledge_deep_tool(_lxd(ctx).app_context, question, domain)
+
+    @mcp.tool(annotations=_READ_ONLY)
+    def get_graph_overview(ctx: Context) -> dict[str, object]:
+        """Return a high-level overview of the knowledge graph.
+
+        Reports whether the graph is enabled, its version, build timestamp,
+        community algorithm, and counts for entity profiles, communities,
+        community reports, canonical relations, relation evidence, and claims.
+        Use this to check graph health before running graph-dependent queries.
+        """
+        from lxd.mcp.tools import get_graph_overview_tool
+
+        return get_graph_overview_tool(_lxd(ctx).app_context)
+
     return mcp
 
 
