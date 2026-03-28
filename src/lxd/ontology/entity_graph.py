@@ -102,7 +102,7 @@ def build_combined_entity_graph(
 
 
 def _compute_centrality(graph: nx.MultiDiGraph) -> dict[str, CentralityScores]:
-    """Compute all 5 centrality metrics on the directed MultiDiGraph."""
+    """Compute all 6 centrality metrics on the directed MultiDiGraph."""
     if graph.number_of_nodes() == 0:
         return {}
 

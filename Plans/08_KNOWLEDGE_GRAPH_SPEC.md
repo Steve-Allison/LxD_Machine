@@ -119,7 +119,7 @@ CREATE TABLE IF NOT EXISTS entity_profiles (
 
 - `entity_type`, `domain`: Persisted from the ontology YAML at profile-build time. Avoids MCP tools needing to join the ontology on every call.
 - `deterministic_summary`: Always generated from graph structure. No LLM. Reproducible and auditable.
-- `llm_summary`: Optional GPT-4o-mini enrichment. NULL if not generated or not enabled.
+- `llm_summary`: GPT-4o-mini enrichment via `--enrich` flag. NULL if not yet generated.
 - `community_id`: Denormalised from `entity_communities` for convenience. `entity_communities` is the authoritative source; this column is updated whenever community detection runs.
 - `in_degree` / `out_degree`: Raw degree counts (not normalised `degree_centrality()` which can exceed 1.0 on MultiDiGraph).
 - `doc_count`: `COUNT(DISTINCT source_rel_path)` across chunks that mention this entity (joined via `mention_rows`).
@@ -362,7 +362,7 @@ Merge ontology edges + corpus relations into one weighted `NetworkX.MultiDiGraph
 
 - Combined graph loads successfully; benchmark load time (Rule Zero — no hard gate until measured)
 - All 325 entities present as nodes
-- All 5 centrality metrics computed and stored
+- All 6 centrality metrics computed and stored
 - Benchmark centrality computation time on the real graph (Rule Zero — no hard gate until measured)
 - Eigenvector centrality uses `_numpy` variant — verify convergence on the real graph
 
@@ -581,8 +581,7 @@ The synthesis module (`src/lxd/synthesis/answering.py`) is updated to accept and
 - Queries with 0 entity matches behave identically to Phase 4
 - Graph context is additive (chunks always present as primary evidence)
 - Benchmark latency overhead of graph lookups (Rule Zero — target <100ms, all reads are SQLite/LanceDB with no LLM calls at query time)
-- No regression on eval set when graph routing is enabled
-- Disabled by default (`knowledge_graph.enabled = false`)
+- No regression on eval set with graph routing active
 - Eval set extended with 10 graph-specific questions to validate graph routing quality
 
 **Dependencies:** Phases 5.0–5.4.
@@ -724,12 +723,11 @@ class KnowledgeGraphConfig(BaseModel):
     """Knowledge graph build and query settings."""
     model_config = ConfigDict(extra="forbid")
 
-    enabled: bool = False
     min_relation_confidence: float = Field(default=0.5, ge=0.0, le=1.0)
 
     # Community detection
     community_resolution: float = Field(default=1.0, gt=0.0)
-    community_algorithm: Literal["leiden", "louvain"] = "leiden"
+    community_algorithm: Literal["leiden", "louvain"] = "louvain"
     community_seed: int = Field(default=42)
 
     # Entity profiles
@@ -737,7 +735,7 @@ class KnowledgeGraphConfig(BaseModel):
     entity_embedding_min_mentions: int = Field(default=3, ge=1)
 
     # Claim extraction
-    claim_extraction_backend: Literal["openai", "ollama", "none"] = "openai"
+    claim_extraction_backend: Literal["openai", "ollama"] = "openai"
     claim_extraction_model: str = "gpt-4o-mini"
     claim_extraction_fallback_model: str = "qwen3:14b"
     claim_extraction_min_mentions: int = Field(default=1, ge=1)
@@ -745,9 +743,8 @@ class KnowledgeGraphConfig(BaseModel):
     claim_extraction_timeout_secs: int = Field(default=90, gt=0)
     claim_extraction_temperature: float = Field(default=0.0, ge=0.0)
 
-    # Optional LLM enrichment
-    llm_enrichment: bool = False
-    llm_enrichment_backend: Literal["openai", "ollama", "none"] = "openai"
+    # LLM enrichment
+    llm_enrichment_backend: Literal["openai", "ollama"] = "openai"
     llm_enrichment_model: str = "gpt-4o-mini"
     llm_enrichment_fallback_model: str = "qwen3:14b"
     llm_enrichment_temperature: float = Field(default=0.1, ge=0.0)

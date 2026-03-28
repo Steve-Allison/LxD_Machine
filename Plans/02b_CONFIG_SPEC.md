@@ -66,7 +66,6 @@ Relative paths are resolved from the directory containing the selected config fi
 
 ```yaml
 reranker:
-  enabled: true
   backend: llama_cpp
   url: http://127.0.0.1:8012
   endpoint: /v1/rerank
@@ -193,7 +192,6 @@ retrieval:
   lexical_fusion_weight: 2.0
 
 reranker:
-  enabled: true
   backend: llama_cpp
   url: http://127.0.0.1:8012
   endpoint: /v1/rerank
@@ -208,7 +206,6 @@ reranker:
     extra_args: []
 
 expansion:
-  enabled: false
   hops: 1
   max_terms: 12
 
@@ -280,7 +277,6 @@ retrieval:
   lexical_fusion_weight: 2.0
 
 reranker:
-  enabled: true
   backend: llama_cpp
   url: http://127.0.0.1:8012
   endpoint: /v1/rerank
@@ -295,7 +291,6 @@ reranker:
     extra_args: []
 
 expansion:
-  enabled: false
   hops: 1
   max_terms: 12
 

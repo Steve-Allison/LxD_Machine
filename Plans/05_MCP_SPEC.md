@@ -55,7 +55,7 @@ Implementation choice:
 |---|---|---|
 | `search_knowledge(question, domain?)` | question: str, domain: str \| None | Graph-augmented answer synthesis |
 | `search_knowledge_deep(question, domain?)` | question: str, domain: str \| None | Same + structured graph context returned |
-| `get_graph_overview()` | — | KG health: enabled, version, all counts |
+| `get_graph_overview()` | — | KG health: version, build timestamp, all counts |
 
 ### Return shapes
 

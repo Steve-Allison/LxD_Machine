@@ -114,15 +114,25 @@ LanceDB holds only text-bearing chunk rows.
 
 Used for:
 
-- `corpus_manifest`
-- `asset_links`
-- `ontology_sources`
-- `ontology_snapshot`
-- `mentions`
-- `ingest_config`
-- `ingest_runs`
+- `corpus_manifest` — document metadata and content hashes
+- `chunk_rows` — chunked text with embeddings and provenance
+- `mention_rows` — entity mentions detected per chunk
+- `extracted_relations` — LLM-extracted relations per chunk
+- `asset_links` — PNG/asset registration and parent inference
+- `ontology_sources` — ontology file tracking
+- `ontology_snapshot` — ontology state hash for drift detection
+- `ingest_config` — persisted ingest config snapshot
+- `ingest_runs` — ingest run history
+- `relations` — canonical deduplicated relations (KG Phase 5)
+- `relation_evidence` — provenance linking canonical relations to source chunks (KG Phase 5)
+- `claims` — LLM-extracted factual claims per chunk (KG Phase 5)
+- `entity_profiles` — deterministic entity summaries with centrality (KG Phase 5)
+- `entity_communities` — community assignments per entity (KG Phase 5)
+- `community_reports` — deterministic community summaries (KG Phase 5)
+- `graph_metadata` — KG version and build timestamps (KG Phase 5)
+- `graph_build_state` — resumable build state machine (KG Phase 5)
 
-SQLite is the source of truth for ingest state, recovery, asset registration, and ontology snapshot tracking.
+SQLite is the source of truth for ingest state, recovery, asset registration, ontology snapshot tracking, and the full knowledge graph.
 
 WAL mode is mandatory because ingest writes and MCP reads are expected to overlap.
 
@@ -195,7 +205,7 @@ The minimal working query path is:
 
 1. validate input
 2. retrieve dense candidates from searchable chunk rows
-3. optionally expand or rerank if enabled
+3. expand query with ontology terms and rerank candidates
 4. synthesize from chunk evidence if requested
 
 Citation rules:

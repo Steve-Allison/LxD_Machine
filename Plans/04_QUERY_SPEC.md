@@ -37,7 +37,7 @@ If expansion is weak, noisy, or unproven, query must still work without it.
 
 Implementation rule:
 
-- query-time expansion, when enabled, must use the ontology matcher over the question text, then expand only over the in-memory ontology graph with `config.expansion.hops` and `config.expansion.max_terms`
+- query-time expansion uses the ontology matcher over the question text, then expands over the in-memory ontology graph with `config.expansion.hops` and `config.expansion.max_terms`
 - expansion terms must be surfaced in query metadata so retrieval changes are auditable
 
 ### Stage 3 — Retrieve

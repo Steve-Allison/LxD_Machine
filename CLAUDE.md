@@ -1,6 +1,8 @@
 # LxD Machine
 
-A local-only, single-user knowledge system for instructional design content. Ingests a mixed-format corpus (Markdown, Docling JSON, PNGs), builds a searchable index with ontology-driven entity recognition, constructs a knowledge graph with community detection and centrality analysis, and exposes retrieval via MCP tools.
+An **Instructional Designer / Learning Experience Designer in RAG format**. The corpus encodes how to teach — pedagogical and delivery best practice grounded in academic theory and industry evidence. Instructional design frameworks, cognitive load theory, assessment design, modality selection, delivery formats — everything needed to design effective learning for any topic in any modality.
+
+Built for Adobe field enablement. The system ingests a mixed-format corpus (Markdown, Docling JSON, PNGs), builds an ontology-driven knowledge graph with entity recognition, relation extraction, community detection, and centrality analysis, and exposes retrieval and graph-augmented synthesis via 20 MCP tools. Everything runs locally; MCP is the only external interface.
 
 ## Architecture
 
@@ -12,7 +14,7 @@ src/lxd/
 ├── ingest/       # Corpus pipeline: scan → chunk → embed → mention → relation → persist
 │   └── claims.py # Claim extraction from chunks (Phase 5)
 ├── ontology/     # YAML ontology loading, graph building, Aho-Corasick matching
-│   ├── entity_graph.py  # Combined entity graph + 5 centrality metrics
+│   ├── entity_graph.py  # Combined entity graph + 6 centrality metrics
 │   ├── communities.py   # Louvain community detection (Leiden optional)
 │   ├── evidence.py      # Canonical relation deduplication + evidence provenance
 │   └── profiles.py      # Entity profiles, community reports, LLM enrichment
@@ -65,7 +67,7 @@ The knowledge graph pipeline builds on top of ingested corpus data:
 
 1. **Claim extraction** — LLM-based extraction of assertions, definitions, comparisons, causal, and procedural claims from chunks
 2. **Entity graph** — combined graph from ontology edges + corpus-extracted relations
-3. **Centrality** — PageRank, betweenness (unweighted), closeness, in/out degree (raw), eigenvector (numpy)
+3. **Centrality** — 6 metrics: PageRank, betweenness, closeness, in-degree, out-degree, eigenvector
 4. **Community detection** — Louvain via NetworkX (Leiden available via optional graspologic)
 5. **Entity profiles** — deterministic summaries with centrality scores, optional LLM enrichment
 6. **Community reports** — deterministic summaries per community, optional LLM enrichment
@@ -95,6 +97,12 @@ Detailed specifications live in `Plans/`:
 - `00_PURPOSE_AND_BACKGROUND.md` — scope, outcomes, constraints
 - `01_ARCHITECTURE.md` — system architecture and store design
 - `01b_CODEBASE_STRUCTURE.md` — module boundaries
+- `02_DATA_SCHEMA.md` — SQLite and LanceDB schema definitions
+- `02b_CONFIG_SPEC.md` — YAML configuration specification
+- `02c_ENTITY_EXTRACTION.md` — ontology entity extraction design
 - `03_INGEST_SPEC.md` — ingestion pipeline detail
-- `05_MCP_SPEC.md` — MCP interface specification (Phase 0–4 baseline; see `08_KNOWLEDGE_GRAPH_SPEC.md` for Phase 5+)
+- `04_QUERY_SPEC.md` — query and retrieval pipeline
+- `05_MCP_SPEC.md` — MCP tool interface specification (20 tools)
+- `06_BUILD_PLAN.md` — phased build plan
+- `07_USER_GUIDE.md` — end-user operation guide
 - `08_KNOWLEDGE_GRAPH_SPEC.md` — knowledge graph pipeline specification (Phase 5)
