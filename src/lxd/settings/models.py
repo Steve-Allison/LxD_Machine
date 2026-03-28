@@ -176,6 +176,8 @@ class RelationExtractionConfig(BaseModel):
     max_relations_per_chunk: int = Field(default=15, gt=0)
     temperature: float = Field(default=0.0, ge=0.0)
     timeout_secs: int = Field(default=30, gt=0)
+    max_concurrent: int = Field(default=50, gt=0)
+    sub_batch_size: int = Field(default=500, gt=0)
 
 
 class SynthesisConfig(BaseModel):
@@ -213,6 +215,8 @@ class KnowledgeGraphConfig(BaseModel):
     claim_max_per_chunk: int = Field(default=10, gt=0)
     claim_extraction_timeout_secs: int = Field(default=90, gt=0)
     claim_extraction_temperature: float = Field(default=0.0, ge=0.0)
+    claim_extraction_max_concurrent: int = Field(default=50, gt=0)
+    claim_extraction_sub_batch_size: int = Field(default=500, gt=0)
 
     # LLM enrichment
     llm_enrichment_backend: Literal["openai", "ollama"] = "openai"

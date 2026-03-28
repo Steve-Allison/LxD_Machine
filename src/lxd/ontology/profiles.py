@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import os
 import sqlite3
 from datetime import UTC, datetime
 from typing import Any
@@ -293,143 +292,145 @@ def enrich_entity_profiles_with_llm(
     *,
     force: bool = False,
 ) -> int:
-    """Generate LLM prose summaries for entities and communities.
+    """Generate LLM prose summaries for entities and communities (async concurrent).
 
     Returns:
         Number of summaries generated.
     """
+    import asyncio
+
+    return asyncio.run(_enrich_async(connection, config, force=force))
+
+
+_ENRICHMENT_SYSTEM_PROMPT = (
+    "You are an expert in instructional design and learning science. "
+    "Write clear, informative summaries."
+)
+
+
+async def _enrich_async(
+    connection: sqlite3.Connection,
+    config: RuntimeConfig,
+    *,
+    force: bool = False,
+) -> int:
+    """Async concurrent enrichment of profiles and community reports."""
+    from lxd.ingest.llm_client import call_with_fallback_async, run_concurrent_extraction
     from lxd.stores.sqlite import load_all_community_reports, load_all_entity_profiles
 
+    kg_cfg = config.knowledge_graph
+    api_key_env = config.openai.api_key_env if config.openai else "OPENAI_API_KEY"
+    ollama_host = str(config.ollama.url)
     enriched = 0
 
-    # Enrich entity profiles
+    # --- Entity profiles ---
     profiles = load_all_entity_profiles(connection)
-    for profile in profiles:
-        if profile.llm_summary is not None and not force:
-            continue
+    profiles_to_enrich = [p for p in profiles if force or p.llm_summary is None]
 
-        prompt = (
-            f"Write a 150–300 word prose summary of this entity for instructional design professionals.\n\n"
-            f"Entity: {profile.label}\n"
-            f"Type: {profile.entity_type}\n"
-            f"Domain: {profile.domain}\n\n"
-            f"Context:\n{profile.deterministic_summary}\n\n"
-            f"Top predicates: {profile.top_predicates_json}\n"
-            f"Top claims: {profile.top_claims_json}\n"
+    if profiles_to_enrich:
+
+        async def _enrich_profile(profile: EntityProfileRecord) -> tuple[str, str | None]:
+            prompt = (
+                f"Write a 150–300 word prose summary of this entity "
+                f"for instructional design professionals.\n\n"
+                f"Entity: {profile.label}\n"
+                f"Type: {profile.entity_type}\n"
+                f"Domain: {profile.domain}\n\n"
+                f"Context:\n{profile.deterministic_summary}\n\n"
+                f"Top predicates: {profile.top_predicates_json}\n"
+                f"Top claims: {profile.top_claims_json}\n"
+            )
+            raw = await call_with_fallback_async(
+                system_prompt=_ENRICHMENT_SYSTEM_PROMPT,
+                user_prompt=prompt,
+                primary_backend=kg_cfg.llm_enrichment_backend,
+                openai_model=kg_cfg.llm_enrichment_model,
+                ollama_model=kg_cfg.llm_enrichment_fallback_model,
+                temperature=kg_cfg.llm_enrichment_temperature,
+                openai_timeout=float(kg_cfg.llm_enrichment_timeout_secs),
+                ollama_timeout=float(kg_cfg.llm_enrichment_timeout_secs),
+                max_tokens=500,
+                api_key_env=api_key_env,
+                ollama_host=ollama_host,
+                ollama_format=None,
+            )
+            summary = raw.strip() if raw else None
+            return (profile.entity_id, summary)
+
+        def _commit_profiles(results: list[tuple[str, str | None]]) -> None:
+            nonlocal enriched
+            for entity_id, summary in results:
+                if summary:
+                    connection.execute(
+                        "UPDATE entity_profiles SET llm_summary = ? WHERE entity_id = ?",
+                        (summary, entity_id),
+                    )
+                    enriched += 1
+            connection.commit()
+
+        await run_concurrent_extraction(
+            profiles_to_enrich,
+            _enrich_profile,
+            max_concurrent=kg_cfg.claim_extraction_max_concurrent,
+            sub_batch_size=kg_cfg.claim_extraction_sub_batch_size,
+            commit_fn=_commit_profiles,
+            label="profile_enrichment",
         )
 
-        llm_summary = _call_llm_enrichment(prompt, config)
-        if llm_summary:
-            connection.execute(
-                "UPDATE entity_profiles SET llm_summary = ? WHERE entity_id = ?",
-                (llm_summary, profile.entity_id),
-            )
-            connection.commit()
-            enriched += 1
-
-    # Enrich community reports
+    # --- Community reports ---
     reports = load_all_community_reports(connection)
-    for report in reports:
-        if report.llm_summary is not None and not force:
-            continue
+    reports_to_enrich = [r for r in reports if force or r.llm_summary is None]
 
-        prompt = (
-            f"Write a 200–400 word narrative summary of this entity community "
-            f"for instructional design professionals.\n\n"
-            f"Community {report.community_id} ({report.member_count} members)\n\n"
-            f"Context:\n{report.deterministic_summary}\n\n"
-            f"Top entities: {report.top_entities_json}\n"
-            f"Top claims: {report.top_claims_json}\n"
-        )
+    if reports_to_enrich:
 
-        llm_summary = _call_llm_enrichment(prompt, config)
-        if llm_summary:
-            connection.execute(
-                "UPDATE community_reports SET llm_summary = ? WHERE community_id = ?",
-                (llm_summary, report.community_id),
+        async def _enrich_report(report: CommunityReportRecord) -> tuple[int, str | None]:
+            prompt = (
+                f"Write a 200–400 word narrative summary of this entity community "
+                f"for instructional design professionals.\n\n"
+                f"Community {report.community_id} ({report.member_count} members)\n\n"
+                f"Context:\n{report.deterministic_summary}\n\n"
+                f"Top entities: {report.top_entities_json}\n"
+                f"Top claims: {report.top_claims_json}\n"
             )
+            raw = await call_with_fallback_async(
+                system_prompt=_ENRICHMENT_SYSTEM_PROMPT,
+                user_prompt=prompt,
+                primary_backend=kg_cfg.llm_enrichment_backend,
+                openai_model=kg_cfg.llm_enrichment_model,
+                ollama_model=kg_cfg.llm_enrichment_fallback_model,
+                temperature=kg_cfg.llm_enrichment_temperature,
+                openai_timeout=float(kg_cfg.llm_enrichment_timeout_secs),
+                ollama_timeout=float(kg_cfg.llm_enrichment_timeout_secs),
+                max_tokens=600,
+                api_key_env=api_key_env,
+                ollama_host=ollama_host,
+                ollama_format=None,
+            )
+            summary = raw.strip() if raw else None
+            return (report.community_id, summary)
+
+        def _commit_reports(results: list[tuple[int, str | None]]) -> None:
+            nonlocal enriched
+            for community_id, summary in results:
+                if summary:
+                    connection.execute(
+                        "UPDATE community_reports SET llm_summary = ? WHERE community_id = ?",
+                        (summary, community_id),
+                    )
+                    enriched += 1
             connection.commit()
-            enriched += 1
+
+        await run_concurrent_extraction(
+            reports_to_enrich,
+            _enrich_report,
+            max_concurrent=kg_cfg.claim_extraction_max_concurrent,
+            sub_batch_size=kg_cfg.claim_extraction_sub_batch_size,
+            commit_fn=_commit_reports,
+            label="community_enrichment",
+        )
 
     _log.info("LLM enrichment complete", enriched=enriched)
     return enriched
-
-
-def _call_llm_enrichment(prompt: str, config: RuntimeConfig) -> str | None:
-    """Call LLM for enrichment summary."""
-    kg_cfg = config.knowledge_graph
-
-    if kg_cfg.llm_enrichment_backend == "openai":
-        try:
-            return _call_openai_enrichment(prompt, config)
-        except Exception as exc:
-            _log.warning("OpenAI enrichment failed, trying fallback: %s", exc)
-            try:
-                return _call_ollama_enrichment(prompt, config)
-            except Exception as fallback_exc:
-                _log.warning("Ollama enrichment fallback failed: %s", fallback_exc)
-            return None
-
-    if kg_cfg.llm_enrichment_backend == "ollama":
-        try:
-            return _call_ollama_enrichment(prompt, config)
-        except Exception as exc:
-            _log.warning("Ollama enrichment failed: %s", exc)
-            return None
-
-    return None
-
-
-def _call_openai_enrichment(prompt: str, config: RuntimeConfig) -> str | None:
-    import openai
-
-    kg_cfg = config.knowledge_graph
-    openai_cfg = config.openai
-    api_key_env = openai_cfg.api_key_env if openai_cfg else "OPENAI_API_KEY"
-    api_key = os.environ.get(api_key_env)
-    if not api_key:
-        return None
-
-    client = openai.OpenAI(api_key=api_key, timeout=float(kg_cfg.llm_enrichment_timeout_secs))
-    response = client.chat.completions.create(
-        model=kg_cfg.llm_enrichment_model,
-        messages=[
-            {
-                "role": "system",
-                "content": "You are an expert in instructional design and learning science. Write clear, informative summaries.",
-            },
-            {"role": "user", "content": prompt},
-        ],
-        temperature=kg_cfg.llm_enrichment_temperature,
-        max_tokens=500,
-    )
-    content = response.choices[0].message.content
-    return content.strip() if content else None
-
-
-def _call_ollama_enrichment(prompt: str, config: RuntimeConfig) -> str | None:
-    import ollama
-
-    kg_cfg = config.knowledge_graph
-    client = ollama.Client(
-        host=str(config.ollama.url),
-        timeout=float(kg_cfg.llm_enrichment_timeout_secs),
-    )
-    response = client.chat(
-        model=kg_cfg.llm_enrichment_fallback_model,
-        messages=[
-            {
-                "role": "system",
-                "content": "You are an expert in instructional design and learning science. Write clear, informative summaries.",
-            },
-            {"role": "user", "content": prompt},
-        ],
-        options={"temperature": kg_cfg.llm_enrichment_temperature},
-    )
-    content = (
-        response["message"]["content"] if isinstance(response, dict) else response.message.content
-    )
-    return content.strip() if content else None
 
 
 def _rank_position(

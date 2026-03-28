@@ -15,7 +15,9 @@ from rich.console import Console
 from rich.table import Table
 
 from lxd.app.bootstrap import bootstrap_app
-from lxd.ingest.claims import extract_claims_for_chunks
+from lxd.ingest.claims import (
+    extract_claims_for_chunks,
+)
 from lxd.ontology.communities import detect_communities, persist_community_assignments
 from lxd.ontology.entity_graph import build_combined_entity_graph
 from lxd.ontology.evidence import consolidate_relations
@@ -73,6 +75,9 @@ _LLM_ENRICHMENT_PHASE = "llm_enrichment"
 _FULL_OPTION = typer.Option(False, "--full", help="Force regeneration of all phases")
 _ENRICH_OPTION = typer.Option(False, "--enrich", help="Include optional LLM enrichment")
 _DRY_RUN_OPTION = typer.Option(False, "--dry-run", help="Preview without writing")
+_BATCH_OPTION = typer.Option(
+    False, "--batch", help="Submit claims to OpenAI Batch API instead of async"
+)
 _PHASE_OPTION = typer.Option(None, "--phase", help="Run only a specific phase")
 _PROFILE_OPTION = typer.Option(None, "--profile", help="Config profile name")
 _CONFIG_OPTION = typer.Option(None, "--config", help="Config file path")
@@ -82,6 +87,7 @@ def build_graph_command(
     full: bool = _FULL_OPTION,
     enrich: bool = _ENRICH_OPTION,
     dry_run: bool = _DRY_RUN_OPTION,
+    batch: bool = _BATCH_OPTION,
     phase: str | None = _PHASE_OPTION,
     profile: str | None = _PROFILE_OPTION,
     config_path: Path | None = _CONFIG_OPTION,
@@ -138,6 +144,26 @@ def build_graph_command(
         # Phase: claims
         if "claims" in phases_to_run:
             update_graph_build_phase(connection, run_id=run_id, current_phase="claims")
+            if batch:
+                _console.print("[bold]Phase: claim extraction (Batch API)[/bold]")
+                from lxd.ingest.claims import prepare_claims_batch_jsonl, submit_claims_batch
+
+                batch_dir = config.paths.data_path / "batch"
+                jsonl_path = prepare_claims_batch_jsonl(connection, config, batch_dir, force=full)
+                batch_id = submit_claims_batch(jsonl_path, config)
+                _console.print(f"[green]Batch submitted:[/green] {batch_id}")
+                _console.print(f"JSONL: {jsonl_path}")
+                _console.print("Run [bold]collect-batch[/bold] when complete.")
+                notes.append(f"claims_batch={batch_id}")
+                # Skip remaining phases — batch results need collecting first
+                finish_graph_build(
+                    connection,
+                    run_id=run_id,
+                    finished_at=datetime.now(UTC).isoformat(),
+                    status="batch_submitted",
+                    notes=notes,
+                )
+                return
             _console.print("[bold]Phase: claim extraction[/bold]")
             claims_count = extract_claims_for_chunks(connection, config, force=full)
             update_graph_build_phase(
@@ -467,3 +493,73 @@ def _compute_entity_embeddings(
 
     _log.info("entity embeddings computed", count=len(records))
     return len(records)
+
+
+# ---------------------------------------------------------------------------
+# Batch API commands
+# ---------------------------------------------------------------------------
+
+_BATCH_ID_ARG = typer.Argument(help="OpenAI batch ID to collect or check")
+
+
+def collect_batch_command(
+    batch_id: str = _BATCH_ID_ARG,
+    profile: str | None = _PROFILE_OPTION,
+    config_path: Path | None = _CONFIG_OPTION,
+) -> None:
+    """Collect results from a completed OpenAI Batch API job and insert into SQLite."""
+    from lxd.ingest.claims import collect_claims_batch
+
+    ctx = bootstrap_app(profile=profile, config_path=config_path)
+    config = ctx.config
+    store_paths = build_store_paths(config.paths.data_path)
+    connection = connect_sqlite(store_paths.sqlite_path)
+    initialize_schema(connection)
+
+    batch_dir = config.paths.data_path / "batch"
+    chunks_meta_path = batch_dir / "claims_batch_chunks.json"
+    if not chunks_meta_path.exists():
+        _console.print(f"[red]Chunk metadata not found:[/red] {chunks_meta_path}")
+        raise typer.Exit(1)
+
+    # Check batch status first
+    from lxd.ingest.llm_client import poll_batch as _poll_batch
+
+    status = _poll_batch(batch_id)
+    if status["status"] != "completed":
+        _console.print(f"[yellow]Batch status:[/yellow] {status['status']}")
+        _console.print(f"  Completed: {status['request_counts']['completed']}")
+        _console.print(f"  Failed: {status['request_counts']['failed']}")
+        _console.print(f"  Total: {status['request_counts']['total']}")
+        raise typer.Exit(1)
+
+    claims_count = collect_claims_batch(batch_id, connection, config, chunks_meta_path)
+    _console.print(f"[green]Collected {claims_count} claims from batch {batch_id}[/green]")
+
+    # Now resume build-graph from the next phase
+    _console.print("\nRun [bold]build-graph --phase entity_graph[/bold] to continue the pipeline.")
+
+
+def batch_status_command(
+    batch_id: str = _BATCH_ID_ARG,
+    profile: str | None = _PROFILE_OPTION,
+    config_path: Path | None = _CONFIG_OPTION,
+) -> None:
+    """Check the status of an OpenAI Batch API job."""
+    bootstrap_app(profile=profile, config_path=config_path)
+
+    from lxd.ingest.llm_client import poll_batch as _poll_batch
+
+    status = _poll_batch(batch_id)
+    table = Table(title=f"Batch {batch_id}")
+    table.add_column("Field", style="bold")
+    table.add_column("Value")
+    table.add_row("Status", status["status"])
+    table.add_row("Total requests", str(status["request_counts"]["total"]))
+    table.add_row("Completed", str(status["request_counts"]["completed"]))
+    table.add_row("Failed", str(status["request_counts"]["failed"]))
+    if status.get("output_file_id"):
+        table.add_row("Output file", status["output_file_id"])
+    if status.get("error_file_id"):
+        table.add_row("Error file", status["error_file_id"])
+    _console.print(table)

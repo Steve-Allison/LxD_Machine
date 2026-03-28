@@ -169,7 +169,9 @@ def _strip_thinking(text: str) -> str:
 
 
 def _client(config: RuntimeConfig) -> ollama.Client:
-    return ollama.Client(host=str(config.ollama.url), timeout=float(config.synthesis.timeout_secs))
+    from lxd.ingest.llm_client import get_ollama_client
+
+    return get_ollama_client(str(config.ollama.url), float(config.synthesis.timeout_secs))
 
 
 def insufficient_evidence_answer() -> AnswerEnvelope:
