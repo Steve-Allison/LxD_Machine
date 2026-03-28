@@ -1,12 +1,19 @@
 # LxD Machine — Knowledge Graph Specification (Phase 5)
 
 **Document type:** Implementation specification
-**Status:** Draft
-**Version:** 4.0
+**Status:** Implemented
+**Version:** 4.1
 **Created:** 2026-03-28
+**Implemented:** 2026-03-28
 **Depends on:** Phases 0–4 complete, 14,461 extracted relations committed
 **Reference implementation:** Knowledge Machine (Neo4j-based GraphRAG — architectural patterns adopted, not the database)
-**API verification date:** 2026-03-28 (NetworkX 3.6.1, graspologic 3.4.4, FastMCP 3.1.1, LanceDB 0.21+)
+**API verification date:** 2026-03-28 (NetworkX 3.6.1, FastMCP 3.1.1, LanceDB 0.21+)
+
+### Implementation Notes
+
+- **Community detection:** Louvain via NetworkX selected as default. graspologic (Leiden) was removed from pixi.toml due to irreconcilable dependency conflict with fastmcp (beartype version clash). The Leiden codepath remains in `communities.py` with ImportError fallback for manual installations.
+- **Synthesis integration:** Graph context is prepended to the synthesis prompt in `src/lxd/synthesis/answering.py` (not a separate `prompts.py` — see Section 5.6 notes).
+- **MCP tools:** 14 graph tools implemented (11 from Section 5.7 + `search_knowledge`, `search_knowledge_deep`, `get_graph_overview`). Total MCP tools: 20.
 
 ---
 
@@ -518,7 +525,7 @@ Per community (where `llm_summary IS NULL` or `source_hash` changed):
 Multi-layer context augmentation for synthesis. Graph context is **additive** — it frames chunk evidence, it does not replace it.
 
 **New:** `src/lxd/retrieval/graph_routing.py`
-**Modified:** `query_pipeline.py`, `expansion.py`, `settings/models.py`, `src/lxd/synthesis/prompts.py`
+**Modified:** `query_pipeline.py`, `expansion.py`, `settings/models.py`, `src/lxd/synthesis/answering.py`
 
 **Important architectural note:** Graph context and chunk results are NOT fused via RRF. RRF operates on ranked lists of the same item type (e.g. chunks from vector search + chunks from fulltext search). Entity profiles, community reports, and claims are different item types — they are prepended to the synthesis context as structured framing, not ranked alongside chunks.
 
@@ -567,7 +574,7 @@ graph_expansion_hops: int                   # actual hops used
 {ranked chunks from existing retrieval pipeline — unchanged}
 ```
 
-The synthesis module (`src/lxd/synthesis/prompts.py`) must be updated to format and prepend graph context sections before the existing chunk evidence. When no graph context is present, the prompt is identical to Phase 4.
+The synthesis module (`src/lxd/synthesis/answering.py`) is updated to accept and prepend graph context sections before the existing chunk evidence. `graph_routing.py` builds the context; `answering.py._build_prompt()` formats it. When no graph context is present, the prompt is identical to Phase 4.
 
 **Acceptance:**
 
@@ -703,10 +710,10 @@ Phase 5.4 (Entity Profiles)  [needs 5.0 + 5.1 + 5.2 + 5.3]
 | `src/lxd/ingest/relations.py` | Modified | Evidence provenance capture |
 | `src/lxd/retrieval/query_pipeline.py` | Modified | Graph routing integration |
 | `src/lxd/retrieval/expansion.py` | Modified | Multi-hop over combined graph |
-| `src/lxd/synthesis/prompts.py` | Modified | Graph context sections prepended to synthesis prompt |
-| `src/lxd/mcp/tools.py` | Modified | 11 new tool implementations |
-| `src/lxd/mcp/server.py` | Modified | 11 new tool registrations |
-| `pixi.toml` | Modified | New tasks, optional `graspologic` dep |
+| `src/lxd/synthesis/answering.py` | Modified | Graph context sections prepended to synthesis prompt |
+| `src/lxd/mcp/tools.py` | Modified | 14 new tool implementations (11 graph + 3 full-pipeline) |
+| `src/lxd/mcp/server.py` | Modified | 14 new tool registrations (20 total) |
+| `pixi.toml` | Modified | New tasks (`build-graph`, `graph-status`) |
 
 ---
 
