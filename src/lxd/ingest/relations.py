@@ -161,7 +161,7 @@ def _parse_response(raw_text: str) -> list[_RawRelation]:
                 continue
             try:
                 confidence = float(confidence)
-            except TypeError, ValueError:
+            except (TypeError, ValueError):
                 confidence = 0.5
             results.append(
                 _RawRelation(
@@ -169,7 +169,7 @@ def _parse_response(raw_text: str) -> list[_RawRelation]:
                 )
             )
         return results
-    except json.JSONDecodeError, AttributeError:
+    except (json.JSONDecodeError, AttributeError):
         return []
 
 

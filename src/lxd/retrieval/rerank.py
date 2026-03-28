@@ -19,13 +19,14 @@ if TYPE_CHECKING:
     from lxd.retrieval.query_pipeline import RankedChunk
 
 
-_probe_cache: dict[tuple[str, str, str, str, bool, str], tuple[bool, str | None]] = {}
+_probe_cache: dict[tuple[str, str, str, str, str], tuple[bool, str | None]] = {}
 _RUNTIME_DIRNAME = "runtime"
 
 
 @dataclass(frozen=True)
 class RerankOutcome:
     """Reranked chunk list and reranker execution status."""
+
     ranked: list[RankedChunk]
     warnings: list[str]
     applied: bool
@@ -112,10 +113,6 @@ def rerank_chunks(
 
 
 def _probe_reranker_uncached(config: RuntimeConfig) -> tuple[bool, str | None]:
-    if not config.reranker.enabled or config.reranker.backend == "none":
-        return False, "Configured reranker backend is disabled."
-    if config.reranker.backend != "llama_cpp":
-        return False, f"Unsupported reranker backend: {config.reranker.backend}"
     if config.reranker.url is None:
         return False, "reranker.url must be configured for the llama.cpp backend."
     return _probe_reranker_http(config)
@@ -246,7 +243,7 @@ def _endpoint_path(config: RuntimeConfig) -> str:
     return endpoint
 
 
-def _cache_key(config: RuntimeConfig) -> tuple[str, str, str, str, bool, str]:
+def _cache_key(config: RuntimeConfig) -> tuple[str, str, str, str, str]:
     launch = config.reranker.launch
     launch_signature = "none"
     if launch is not None:
@@ -266,7 +263,6 @@ def _cache_key(config: RuntimeConfig) -> tuple[str, str, str, str, bool, str]:
         str(config.reranker.url) if config.reranker.url is not None else "",
         _endpoint_path(config),
         config.models.rerank,
-        config.reranker.enabled,
         launch_signature,
     )
 
@@ -329,7 +325,9 @@ def _resolve_reranker_model_path(config: RuntimeConfig) -> Path:
         if launch.model_path is None:
             raise RuntimeError("reranker.launch.model_path must be configured.")
         if not launch.model_path.exists():
-            raise RuntimeError(f"Configured reranker model path does not exist: {launch.model_path}")
+            raise RuntimeError(
+                f"Configured reranker model path does not exist: {launch.model_path}"
+            )
         return launch.model_path
     if launch.model_source == "ollama_blob":
         return _resolve_ollama_blob_model_path(config.models.rerank)

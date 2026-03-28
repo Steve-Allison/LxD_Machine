@@ -68,7 +68,6 @@ def test_rerank_chunks_uses_llama_cpp_backend(monkeypatch) -> None:
     config = SimpleNamespace(
         models=SimpleNamespace(rerank="qwen3-reranker"),
         reranker=SimpleNamespace(
-            enabled=True,
             backend="llama_cpp",
             url="http://127.0.0.1:8012",
             endpoint="/v1/rerank",
@@ -133,13 +132,12 @@ def test_rerank_chunks_uses_llama_cpp_backend(monkeypatch) -> None:
     assert calls[1][0] == "/v1/rerank"
 
 
-def test_rerank_chunks_falls_back_when_backend_disabled() -> None:
+def test_rerank_chunks_falls_back_when_url_not_configured() -> None:
     rerank._probe_cache.clear()
     config = SimpleNamespace(
         models=SimpleNamespace(rerank="qwen3-reranker"),
         reranker=SimpleNamespace(
-            enabled=False,
-            backend="none",
+            backend="llama_cpp",
             url=None,
             endpoint="/v1/rerank",
             timeout_secs=30,
@@ -172,12 +170,10 @@ def test_rerank_chunks_falls_back_when_backend_disabled() -> None:
 
     assert outcome.applied is False
     assert outcome.ranked == candidates
-    assert outcome.warnings == ["Configured reranker backend is disabled."]
+    assert outcome.warnings == ["reranker.url must be configured for the llama.cpp backend."]
 
 
-def test_probe_reranker_autostarts_llama_server_from_ollama_blob(
-    monkeypatch, tmp_path
-) -> None:
+def test_probe_reranker_autostarts_llama_server_from_ollama_blob(monkeypatch, tmp_path) -> None:
     rerank._probe_cache.clear()
     commands: list[list[str]] = []
     probe_results = iter(
@@ -214,7 +210,6 @@ def test_probe_reranker_autostarts_llama_server_from_ollama_blob(
     config = SimpleNamespace(
         models=SimpleNamespace(rerank="dengcao/Qwen3-Reranker-0.6B:F16"),
         reranker=SimpleNamespace(
-            enabled=True,
             backend="llama_cpp",
             url="http://127.0.0.1:8012",
             endpoint="/v1/rerank",

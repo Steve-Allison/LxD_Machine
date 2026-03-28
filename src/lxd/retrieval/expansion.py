@@ -57,12 +57,6 @@ def expand_question(question: str, config: RuntimeConfig) -> ExpansionOutcome:
     Returns:
         Expanded query text and added ontology terms.
     """
-    if not config.expansion.enabled:
-        return ExpansionOutcome(
-            expanded_question=question,
-            matched_entity_ids=[],
-            added_terms=[],
-        )
     runtime = _ontology_runtime(config)
     mentions = detect_mentions(question, runtime.automaton)
     matched_entity_ids = _dedupe([mention.entity_id for mention in mentions])

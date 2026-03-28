@@ -265,7 +265,7 @@ def answer_question(
 def _build_graph_context_prompt(config: RuntimeConfig, matched_entity_ids: list[str]) -> str:
     """Build graph context prompt from matched entity IDs.
 
-    Returns empty string if KG is disabled, no entities matched, or on any error.
+    Returns empty string if no entities matched, store unavailable, or on any error.
     """
     if not matched_entity_ids:
         return ""

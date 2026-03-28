@@ -59,7 +59,6 @@ retrieval:
   rerank_top_k: 20
   lexical_fusion_weight: 2.0
 reranker:
-  enabled: true
   backend: llama_cpp
   url: http://127.0.0.1:8012
   endpoint: /v1/rerank
@@ -74,7 +73,6 @@ reranker:
     startup_timeout_secs: 30
     extra_args: []
 expansion:
-  enabled: false
   hops: 1
   max_terms: 12
 synthesis:
@@ -198,7 +196,6 @@ retrieval:
   rerank_top_k: 20
   lexical_fusion_weight: 2.0
 reranker:
-  enabled: true
   backend: llama_cpp
   url: http://127.0.0.1:8012
   endpoint: /v1/rerank
@@ -213,7 +210,6 @@ reranker:
     startup_timeout_secs: 30
     extra_args: []
 expansion:
-  enabled: false
   hops: 1
   max_terms: 12
 synthesis:

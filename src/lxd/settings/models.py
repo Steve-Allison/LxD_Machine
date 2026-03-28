@@ -116,8 +116,7 @@ class RerankerConfig(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    enabled: bool
-    backend: Literal["llama_cpp", "none"]
+    backend: Literal["llama_cpp"] = "llama_cpp"
     url: HttpUrl | None = None
     endpoint: str = "/v1/rerank"
     timeout_secs: int = Field(default=30, gt=0)
@@ -127,8 +126,6 @@ class RerankerConfig(BaseModel):
     def _validate_launch_contract(self) -> RerankerConfig:
         if self.launch is None or not self.launch.auto_start:
             return self
-        if self.backend != "llama_cpp":
-            raise ValueError("reranker.launch.auto_start requires reranker.backend=llama_cpp.")
         if self.url is None:
             raise ValueError("reranker.launch.auto_start requires reranker.url to be configured.")
         if self.url.host != self.launch.host:
@@ -162,7 +159,6 @@ class ExpansionConfig(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    enabled: bool
     hops: int = Field(ge=0)
     max_terms: int = Field(gt=0)
 

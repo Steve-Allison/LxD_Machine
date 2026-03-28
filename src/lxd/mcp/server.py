@@ -406,7 +406,7 @@ def create_server(
     def get_graph_overview(ctx: Context) -> dict[str, object]:
         """Return a high-level overview of the knowledge graph.
 
-        Reports whether the graph is enabled, its version, build timestamp,
+        Reports the graph version, build timestamp,
         community algorithm, and counts for entity profiles, communities,
         community reports, canonical relations, relation evidence, and claims.
         Use this to check graph health before running graph-dependent queries.

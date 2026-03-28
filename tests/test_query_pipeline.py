@@ -12,7 +12,9 @@ from lxd.retrieval.query_pipeline import (
 )
 
 
-def _chunk(chunk_id: str, *, source_rel_path: str | None = None, score_hint: str | None = None) -> RankedChunk:
+def _chunk(
+    chunk_id: str, *, source_rel_path: str | None = None, score_hint: str | None = None
+) -> RankedChunk:
     return RankedChunk(
         chunk_id=chunk_id,
         document_id=f"doc-{chunk_id}",
@@ -94,7 +96,6 @@ def test_current_ingest_config_excludes_query_time_reranker_settings() -> None:
             rerank="dengcao/Qwen3-Reranker-4B:Q4_K_M",
         ),
         reranker=SimpleNamespace(
-            enabled=True,
             backend="llama_cpp",
             url="http://127.0.0.1:8012",
             endpoint="/v1/rerank",
@@ -104,7 +105,6 @@ def test_current_ingest_config_excludes_query_time_reranker_settings() -> None:
     snapshot = current_ingest_config(config)
 
     assert "models.rerank" not in snapshot
-    assert "reranker.enabled" not in snapshot
     assert "reranker.backend" not in snapshot
     assert "reranker.url" not in snapshot
     assert "reranker.endpoint" not in snapshot
