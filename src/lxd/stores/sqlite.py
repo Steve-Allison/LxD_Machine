@@ -11,15 +11,22 @@ from typing import Any
 from lxd.domain.ids import blake3_hex
 from lxd.stores.models import (
     AssetLinkRecord,
+    CanonicalRelationRecord,
     ChunkRecord,
+    ClaimRecord,
+    CommunityReportRecord,
     CorpusStatusSummary,
+    EntityCommunityRecord,
     EntityMentionResult,
+    EntityProfileRecord,
     ExtractedRelationRecord,
+    GraphBuildStateRecord,
     IngestConfigSnapshotRecord,
     ManifestRecord,
     MentionRecord,
     OntologySnapshotRecord,
     OntologySourceRecord,
+    RelationEvidenceRecord,
     StorePaths,
 )
 
@@ -200,6 +207,136 @@ def initialize_schema(connection: sqlite3.Connection) -> None:
                 failed_files INTEGER NOT NULL,
                 chunks_written INTEGER NOT NULL,
                 notes TEXT NOT NULL
+            );
+
+            -- Knowledge Graph tables (Phase 5)
+
+            CREATE TABLE IF NOT EXISTS claims (
+                claim_id TEXT PRIMARY KEY,
+                chunk_id TEXT NOT NULL,
+                document_id TEXT NOT NULL,
+                source_rel_path TEXT NOT NULL,
+                claim_text TEXT NOT NULL,
+                subject_entity_id TEXT,
+                object_entity_id TEXT,
+                claim_type TEXT NOT NULL DEFAULT 'assertion',
+                confidence REAL NOT NULL,
+                extraction_model TEXT NOT NULL,
+                extracted_at TEXT NOT NULL,
+                FOREIGN KEY(chunk_id) REFERENCES chunk_rows(chunk_id) ON DELETE CASCADE
+            );
+            CREATE INDEX IF NOT EXISTS idx_claims_subject ON claims(subject_entity_id);
+            CREATE INDEX IF NOT EXISTS idx_claims_object ON claims(object_entity_id);
+            CREATE INDEX IF NOT EXISTS idx_claims_chunk ON claims(chunk_id);
+            CREATE INDEX IF NOT EXISTS idx_claims_document ON claims(document_id);
+
+            CREATE TABLE IF NOT EXISTS entity_profiles (
+                entity_id TEXT PRIMARY KEY,
+                label TEXT NOT NULL,
+                entity_type TEXT NOT NULL,
+                domain TEXT NOT NULL DEFAULT '',
+                aliases_json TEXT NOT NULL DEFAULT '[]',
+                deterministic_summary TEXT NOT NULL,
+                llm_summary TEXT,
+                chunk_count INTEGER NOT NULL,
+                doc_count INTEGER NOT NULL,
+                mention_count INTEGER NOT NULL,
+                claim_count INTEGER NOT NULL DEFAULT 0,
+                top_predicates_json TEXT NOT NULL DEFAULT '[]',
+                top_claims_json TEXT NOT NULL DEFAULT '[]',
+                pagerank REAL NOT NULL DEFAULT 0.0,
+                betweenness REAL NOT NULL DEFAULT 0.0,
+                closeness REAL NOT NULL DEFAULT 0.0,
+                in_degree INTEGER NOT NULL DEFAULT 0,
+                out_degree INTEGER NOT NULL DEFAULT 0,
+                eigenvector REAL NOT NULL DEFAULT 0.0,
+                community_id INTEGER,
+                source_hash TEXT NOT NULL,
+                generated_at TEXT NOT NULL
+            );
+
+            CREATE TABLE IF NOT EXISTS entity_communities (
+                entity_id TEXT PRIMARY KEY,
+                community_id INTEGER NOT NULL,
+                community_level INTEGER NOT NULL DEFAULT 0,
+                modularity_class TEXT,
+                assigned_at TEXT NOT NULL
+            );
+            CREATE INDEX IF NOT EXISTS idx_entity_communities_community_id
+            ON entity_communities(community_id);
+
+            CREATE TABLE IF NOT EXISTS community_reports (
+                community_id INTEGER PRIMARY KEY,
+                community_level INTEGER NOT NULL DEFAULT 0,
+                member_count INTEGER NOT NULL,
+                member_entity_ids_json TEXT NOT NULL,
+                deterministic_summary TEXT NOT NULL,
+                llm_summary TEXT,
+                top_entities_json TEXT NOT NULL DEFAULT '[]',
+                top_claims_json TEXT NOT NULL DEFAULT '[]',
+                intra_community_edge_count INTEGER NOT NULL DEFAULT 0,
+                source_hash TEXT NOT NULL,
+                generated_at TEXT NOT NULL
+            );
+
+            CREATE TABLE IF NOT EXISTS relations (
+                relation_id TEXT PRIMARY KEY,
+                subject_entity_id TEXT NOT NULL,
+                predicate TEXT NOT NULL,
+                object_entity_id TEXT NOT NULL,
+                support_count INTEGER NOT NULL DEFAULT 0,
+                avg_confidence REAL NOT NULL DEFAULT 0.0,
+                min_confidence REAL NOT NULL DEFAULT 0.0,
+                max_confidence REAL NOT NULL DEFAULT 0.0,
+                first_seen_at TEXT NOT NULL,
+                last_seen_at TEXT NOT NULL
+            );
+            CREATE UNIQUE INDEX IF NOT EXISTS idx_relations_spo
+            ON relations(subject_entity_id, predicate, object_entity_id);
+            CREATE INDEX IF NOT EXISTS idx_relations_subject ON relations(subject_entity_id);
+            CREATE INDEX IF NOT EXISTS idx_relations_object ON relations(object_entity_id);
+
+            CREATE TABLE IF NOT EXISTS relation_evidence (
+                evidence_id TEXT PRIMARY KEY,
+                relation_id TEXT NOT NULL,
+                chunk_id TEXT NOT NULL,
+                surface_subject TEXT NOT NULL,
+                surface_object TEXT NOT NULL,
+                evidence_text TEXT NOT NULL,
+                confidence REAL NOT NULL,
+                extraction_model TEXT NOT NULL,
+                extracted_at TEXT NOT NULL,
+                FOREIGN KEY(relation_id) REFERENCES relations(relation_id) ON DELETE CASCADE,
+                FOREIGN KEY(chunk_id) REFERENCES chunk_rows(chunk_id) ON DELETE CASCADE
+            );
+            CREATE INDEX IF NOT EXISTS idx_relation_evidence_relation
+            ON relation_evidence(relation_id);
+            CREATE INDEX IF NOT EXISTS idx_relation_evidence_chunk
+            ON relation_evidence(chunk_id);
+
+            CREATE TABLE IF NOT EXISTS graph_build_state (
+                run_id TEXT PRIMARY KEY,
+                started_at TEXT NOT NULL,
+                finished_at TEXT,
+                status TEXT NOT NULL,
+                current_phase TEXT NOT NULL DEFAULT 'pending',
+                graph_version INTEGER NOT NULL,
+                relations_consolidated INTEGER NOT NULL DEFAULT 0,
+                evidence_rows_built INTEGER NOT NULL DEFAULT 0,
+                claims_extracted INTEGER NOT NULL DEFAULT 0,
+                entity_profiles_built INTEGER NOT NULL DEFAULT 0,
+                communities_detected INTEGER NOT NULL DEFAULT 0,
+                community_reports_built INTEGER NOT NULL DEFAULT 0,
+                centrality_computed INTEGER NOT NULL DEFAULT 0,
+                entity_embeddings_computed INTEGER NOT NULL DEFAULT 0,
+                llm_enrichment_count INTEGER NOT NULL DEFAULT 0,
+                notes_json TEXT NOT NULL DEFAULT '[]'
+            );
+
+            CREATE TABLE IF NOT EXISTS graph_metadata (
+                key TEXT PRIMARY KEY,
+                value TEXT NOT NULL,
+                updated_at TEXT NOT NULL
             );
             """
         )
@@ -1294,6 +1431,832 @@ def summarize_store(
         ontology_validation_issue_count=ontology_validation_issue_count,
         ontology_validation_issue_samples=ontology_validation_issue_samples or [],
         config_drift_warnings=config_drift_warnings or [],
+    )
+
+
+# ---------------------------------------------------------------------------
+# Knowledge Graph query functions (Phase 5)
+# ---------------------------------------------------------------------------
+
+
+def insert_claims(connection: sqlite3.Connection, records: list[ClaimRecord]) -> int:
+    """Insert claim records, skipping duplicates."""
+    if not records:
+        return 0
+    with connection:
+        connection.executemany(
+            """
+            INSERT OR IGNORE INTO claims (
+                claim_id, chunk_id, document_id, source_rel_path,
+                claim_text, subject_entity_id, object_entity_id,
+                claim_type, confidence, extraction_model, extracted_at
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            [
+                (
+                    r.claim_id,
+                    r.chunk_id,
+                    r.document_id,
+                    r.source_rel_path,
+                    r.claim_text,
+                    r.subject_entity_id,
+                    r.object_entity_id,
+                    r.claim_type,
+                    r.confidence,
+                    r.extraction_model,
+                    r.extracted_at,
+                )
+                for r in records
+            ],
+        )
+    return len(records)
+
+
+def load_claims_for_entities(
+    connection: sqlite3.Connection,
+    entity_ids: list[str],
+    *,
+    limit: int = 50,
+) -> list[ClaimRecord]:
+    """Load claims linked to any of the given entity IDs, ranked by confidence."""
+    if not entity_ids:
+        return []
+    placeholders = ",".join("?" * len(entity_ids))
+    rows = connection.execute(
+        f"""
+        SELECT * FROM claims
+        WHERE subject_entity_id IN ({placeholders})
+           OR object_entity_id IN ({placeholders})
+        ORDER BY confidence DESC
+        LIMIT ?
+        """,
+        [*entity_ids, *entity_ids, limit],
+    ).fetchall()
+    return [_claim_from_row(row) for row in rows]
+
+
+def load_claims_for_chunk(connection: sqlite3.Connection, chunk_id: str) -> list[ClaimRecord]:
+    """Load all claims extracted from a specific chunk."""
+    rows = connection.execute(
+        "SELECT * FROM claims WHERE chunk_id = ? ORDER BY confidence DESC",
+        (chunk_id,),
+    ).fetchall()
+    return [_claim_from_row(row) for row in rows]
+
+
+def count_claims(connection: sqlite3.Connection) -> int:
+    """Return total claim count."""
+    row = connection.execute("SELECT COUNT(*) AS cnt FROM claims").fetchone()
+    return int(_row_value(row, "cnt"))
+
+
+def load_chunk_ids_with_claims(connection: sqlite3.Connection) -> set[str]:
+    """Return chunk IDs that already have claims extracted."""
+    rows = connection.execute("SELECT DISTINCT chunk_id FROM claims").fetchall()
+    return {str(row["chunk_id"]) for row in rows}
+
+
+def upsert_entity_profile(connection: sqlite3.Connection, record: EntityProfileRecord) -> None:
+    """Insert or update an entity profile."""
+    with connection:
+        connection.execute(
+            """
+            INSERT INTO entity_profiles (
+                entity_id, label, entity_type, domain, aliases_json,
+                deterministic_summary, llm_summary,
+                chunk_count, doc_count, mention_count, claim_count,
+                top_predicates_json, top_claims_json,
+                pagerank, betweenness, closeness,
+                in_degree, out_degree, eigenvector,
+                community_id, source_hash, generated_at
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(entity_id) DO UPDATE SET
+                label = excluded.label,
+                entity_type = excluded.entity_type,
+                domain = excluded.domain,
+                aliases_json = excluded.aliases_json,
+                deterministic_summary = excluded.deterministic_summary,
+                llm_summary = excluded.llm_summary,
+                chunk_count = excluded.chunk_count,
+                doc_count = excluded.doc_count,
+                mention_count = excluded.mention_count,
+                claim_count = excluded.claim_count,
+                top_predicates_json = excluded.top_predicates_json,
+                top_claims_json = excluded.top_claims_json,
+                pagerank = excluded.pagerank,
+                betweenness = excluded.betweenness,
+                closeness = excluded.closeness,
+                in_degree = excluded.in_degree,
+                out_degree = excluded.out_degree,
+                eigenvector = excluded.eigenvector,
+                community_id = excluded.community_id,
+                source_hash = excluded.source_hash,
+                generated_at = excluded.generated_at
+            """,
+            (
+                record.entity_id,
+                record.label,
+                record.entity_type,
+                record.domain,
+                record.aliases_json,
+                record.deterministic_summary,
+                record.llm_summary,
+                record.chunk_count,
+                record.doc_count,
+                record.mention_count,
+                record.claim_count,
+                record.top_predicates_json,
+                record.top_claims_json,
+                record.pagerank,
+                record.betweenness,
+                record.closeness,
+                record.in_degree,
+                record.out_degree,
+                record.eigenvector,
+                record.community_id,
+                record.source_hash,
+                record.generated_at,
+            ),
+        )
+
+
+def load_entity_profile(
+    connection: sqlite3.Connection, entity_id: str
+) -> EntityProfileRecord | None:
+    """Load a single entity profile by ID."""
+    row = connection.execute(
+        "SELECT * FROM entity_profiles WHERE entity_id = ?", (entity_id,)
+    ).fetchone()
+    if row is None:
+        return None
+    return _entity_profile_from_row(row)
+
+
+def load_all_entity_profiles(connection: sqlite3.Connection) -> list[EntityProfileRecord]:
+    """Load all entity profiles, ordered by PageRank descending."""
+    rows = connection.execute("SELECT * FROM entity_profiles ORDER BY pagerank DESC").fetchall()
+    return [_entity_profile_from_row(row) for row in rows]
+
+
+def search_entity_profiles(
+    connection: sqlite3.Connection,
+    query: str,
+    *,
+    limit: int = 20,
+) -> list[EntityProfileRecord]:
+    """Search entity profiles by label or alias substring, ranked by PageRank."""
+    pattern = f"%{query}%"
+    rows = connection.execute(
+        """
+        SELECT * FROM entity_profiles
+        WHERE label LIKE ? OR aliases_json LIKE ?
+        ORDER BY pagerank DESC
+        LIMIT ?
+        """,
+        (pattern, pattern, limit),
+    ).fetchall()
+    return [_entity_profile_from_row(row) for row in rows]
+
+
+def load_top_entities_by_pagerank(
+    connection: sqlite3.Connection, *, limit: int = 20
+) -> list[EntityProfileRecord]:
+    """Load top entities ranked by PageRank."""
+    rows = connection.execute(
+        "SELECT * FROM entity_profiles ORDER BY pagerank DESC LIMIT ?", (limit,)
+    ).fetchall()
+    return [_entity_profile_from_row(row) for row in rows]
+
+
+def load_top_entities_by_betweenness(
+    connection: sqlite3.Connection, *, limit: int = 20
+) -> list[EntityProfileRecord]:
+    """Load top entities ranked by betweenness centrality."""
+    rows = connection.execute(
+        "SELECT * FROM entity_profiles ORDER BY betweenness DESC LIMIT ?", (limit,)
+    ).fetchall()
+    return [_entity_profile_from_row(row) for row in rows]
+
+
+def load_top_entities_by_closeness(
+    connection: sqlite3.Connection, *, limit: int = 20
+) -> list[EntityProfileRecord]:
+    """Load top entities ranked by closeness centrality."""
+    rows = connection.execute(
+        "SELECT * FROM entity_profiles ORDER BY closeness DESC LIMIT ?", (limit,)
+    ).fetchall()
+    return [_entity_profile_from_row(row) for row in rows]
+
+
+def load_entity_profile_source_hashes(
+    connection: sqlite3.Connection,
+) -> dict[str, str]:
+    """Load entity_id → source_hash mapping for incremental rebuild."""
+    rows = connection.execute("SELECT entity_id, source_hash FROM entity_profiles").fetchall()
+    return {str(row["entity_id"]): str(row["source_hash"]) for row in rows}
+
+
+def replace_entity_communities(
+    connection: sqlite3.Connection, records: list[EntityCommunityRecord]
+) -> None:
+    """Replace all community assignments (truncate and rebuild)."""
+    with connection:
+        connection.execute("DELETE FROM entity_communities")
+        if records:
+            connection.executemany(
+                """
+                INSERT INTO entity_communities (
+                    entity_id, community_id, community_level, modularity_class, assigned_at
+                )
+                VALUES (?, ?, ?, ?, ?)
+                """,
+                [
+                    (
+                        r.entity_id,
+                        r.community_id,
+                        r.community_level,
+                        r.modularity_class,
+                        r.assigned_at,
+                    )
+                    for r in records
+                ],
+            )
+
+
+def load_entity_community(
+    connection: sqlite3.Connection, entity_id: str
+) -> EntityCommunityRecord | None:
+    """Load community assignment for one entity."""
+    row = connection.execute(
+        "SELECT * FROM entity_communities WHERE entity_id = ?", (entity_id,)
+    ).fetchone()
+    if row is None:
+        return None
+    return EntityCommunityRecord(
+        entity_id=str(row["entity_id"]),
+        community_id=int(row["community_id"]),
+        community_level=int(row["community_level"]),
+        modularity_class=_optional_str(row["modularity_class"]),
+        assigned_at=str(row["assigned_at"]),
+    )
+
+
+def load_community_members(connection: sqlite3.Connection, community_id: int) -> list[str]:
+    """Return entity IDs belonging to a community."""
+    rows = connection.execute(
+        "SELECT entity_id FROM entity_communities WHERE community_id = ?",
+        (community_id,),
+    ).fetchall()
+    return [str(row["entity_id"]) for row in rows]
+
+
+def upsert_community_report(connection: sqlite3.Connection, record: CommunityReportRecord) -> None:
+    """Insert or update a community report."""
+    with connection:
+        connection.execute(
+            """
+            INSERT INTO community_reports (
+                community_id, community_level, member_count, member_entity_ids_json,
+                deterministic_summary, llm_summary,
+                top_entities_json, top_claims_json,
+                intra_community_edge_count, source_hash, generated_at
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(community_id) DO UPDATE SET
+                community_level = excluded.community_level,
+                member_count = excluded.member_count,
+                member_entity_ids_json = excluded.member_entity_ids_json,
+                deterministic_summary = excluded.deterministic_summary,
+                llm_summary = excluded.llm_summary,
+                top_entities_json = excluded.top_entities_json,
+                top_claims_json = excluded.top_claims_json,
+                intra_community_edge_count = excluded.intra_community_edge_count,
+                source_hash = excluded.source_hash,
+                generated_at = excluded.generated_at
+            """,
+            (
+                record.community_id,
+                record.community_level,
+                record.member_count,
+                record.member_entity_ids_json,
+                record.deterministic_summary,
+                record.llm_summary,
+                record.top_entities_json,
+                record.top_claims_json,
+                record.intra_community_edge_count,
+                record.source_hash,
+                record.generated_at,
+            ),
+        )
+
+
+def load_community_report(
+    connection: sqlite3.Connection, community_id: int
+) -> CommunityReportRecord | None:
+    """Load a single community report."""
+    row = connection.execute(
+        "SELECT * FROM community_reports WHERE community_id = ?", (community_id,)
+    ).fetchone()
+    if row is None:
+        return None
+    return _community_report_from_row(row)
+
+
+def load_all_community_reports(
+    connection: sqlite3.Connection,
+) -> list[CommunityReportRecord]:
+    """Load all community reports."""
+    rows = connection.execute(
+        "SELECT * FROM community_reports ORDER BY member_count DESC"
+    ).fetchall()
+    return [_community_report_from_row(row) for row in rows]
+
+
+def delete_stale_community_reports(connection: sqlite3.Connection) -> int:
+    """Remove community reports whose community_id no longer exists in entity_communities."""
+    with connection:
+        cursor = connection.execute(
+            """
+            DELETE FROM community_reports
+            WHERE community_id NOT IN (
+                SELECT DISTINCT community_id FROM entity_communities
+            )
+            """
+        )
+    return cursor.rowcount
+
+
+def replace_canonical_relations(
+    connection: sqlite3.Connection, records: list[CanonicalRelationRecord]
+) -> None:
+    """Truncate and rebuild the canonical relations table."""
+    with connection:
+        connection.execute("DELETE FROM relations")
+        if records:
+            connection.executemany(
+                """
+                INSERT INTO relations (
+                    relation_id, subject_entity_id, predicate, object_entity_id,
+                    support_count, avg_confidence, min_confidence, max_confidence,
+                    first_seen_at, last_seen_at
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                [
+                    (
+                        r.relation_id,
+                        r.subject_entity_id,
+                        r.predicate,
+                        r.object_entity_id,
+                        r.support_count,
+                        r.avg_confidence,
+                        r.min_confidence,
+                        r.max_confidence,
+                        r.first_seen_at,
+                        r.last_seen_at,
+                    )
+                    for r in records
+                ],
+            )
+
+
+def load_canonical_relation(
+    connection: sqlite3.Connection, relation_id: str
+) -> CanonicalRelationRecord | None:
+    """Load a single canonical relation by ID."""
+    row = connection.execute(
+        "SELECT * FROM relations WHERE relation_id = ?", (relation_id,)
+    ).fetchone()
+    if row is None:
+        return None
+    return _canonical_relation_from_row(row)
+
+
+def load_relations_for_entity(
+    connection: sqlite3.Connection,
+    entity_id: str,
+    *,
+    limit: int = 50,
+) -> list[CanonicalRelationRecord]:
+    """Load canonical relations where entity appears as subject or object."""
+    rows = connection.execute(
+        """
+        SELECT * FROM relations
+        WHERE subject_entity_id = ? OR object_entity_id = ?
+        ORDER BY support_count DESC
+        LIMIT ?
+        """,
+        (entity_id, entity_id, limit),
+    ).fetchall()
+    return [_canonical_relation_from_row(row) for row in rows]
+
+
+def load_top_predicates_for_entity(
+    connection: sqlite3.Connection,
+    entity_id: str,
+    *,
+    limit: int = 10,
+) -> list[dict[str, Any]]:
+    """Return top predicates for an entity by frequency."""
+    rows = connection.execute(
+        """
+        SELECT predicate, COUNT(*) AS cnt
+        FROM relations
+        WHERE subject_entity_id = ? OR object_entity_id = ?
+        GROUP BY predicate
+        ORDER BY cnt DESC
+        LIMIT ?
+        """,
+        (entity_id, entity_id, limit),
+    ).fetchall()
+    return [{"predicate": str(row["predicate"]), "count": int(row["cnt"])} for row in rows]
+
+
+def replace_relation_evidence(
+    connection: sqlite3.Connection, records: list[RelationEvidenceRecord]
+) -> None:
+    """Truncate and rebuild the relation evidence table."""
+    with connection:
+        connection.execute("DELETE FROM relation_evidence")
+        if records:
+            connection.executemany(
+                """
+                INSERT INTO relation_evidence (
+                    evidence_id, relation_id, chunk_id,
+                    surface_subject, surface_object, evidence_text,
+                    confidence, extraction_model, extracted_at
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                [
+                    (
+                        r.evidence_id,
+                        r.relation_id,
+                        r.chunk_id,
+                        r.surface_subject,
+                        r.surface_object,
+                        r.evidence_text,
+                        r.confidence,
+                        r.extraction_model,
+                        r.extracted_at,
+                    )
+                    for r in records
+                ],
+            )
+
+
+def load_evidence_for_relation(
+    connection: sqlite3.Connection, relation_id: str
+) -> list[RelationEvidenceRecord]:
+    """Load all evidence records for a canonical relation."""
+    rows = connection.execute(
+        """
+        SELECT * FROM relation_evidence
+        WHERE relation_id = ?
+        ORDER BY confidence DESC
+        """,
+        (relation_id,),
+    ).fetchall()
+    return [
+        RelationEvidenceRecord(
+            evidence_id=str(row["evidence_id"]),
+            relation_id=str(row["relation_id"]),
+            chunk_id=str(row["chunk_id"]),
+            surface_subject=str(row["surface_subject"]),
+            surface_object=str(row["surface_object"]),
+            evidence_text=str(row["evidence_text"]),
+            confidence=float(row["confidence"]),
+            extraction_model=str(row["extraction_model"]),
+            extracted_at=str(row["extracted_at"]),
+        )
+        for row in rows
+    ]
+
+
+def count_canonical_relations(connection: sqlite3.Connection) -> int:
+    """Return total canonical relation count."""
+    row = connection.execute("SELECT COUNT(*) AS cnt FROM relations").fetchone()
+    return int(_row_value(row, "cnt"))
+
+
+def count_relation_evidence(connection: sqlite3.Connection) -> int:
+    """Return total relation evidence count."""
+    row = connection.execute("SELECT COUNT(*) AS cnt FROM relation_evidence").fetchone()
+    return int(_row_value(row, "cnt"))
+
+
+def begin_graph_build(
+    connection: sqlite3.Connection,
+    *,
+    run_id: str,
+    started_at: str,
+    graph_version: int,
+) -> None:
+    """Insert initial graph build state row."""
+    with connection:
+        connection.execute(
+            """
+            INSERT OR REPLACE INTO graph_build_state (
+                run_id, started_at, finished_at, status, current_phase, graph_version,
+                relations_consolidated, evidence_rows_built, claims_extracted,
+                entity_profiles_built, communities_detected, community_reports_built,
+                centrality_computed, entity_embeddings_computed, llm_enrichment_count,
+                notes_json
+            )
+            VALUES (?, ?, NULL, 'running', 'pending', ?, 0, 0, 0, 0, 0, 0, 0, 0, 0, '[]')
+            """,
+            (run_id, started_at, graph_version),
+        )
+
+
+def update_graph_build_phase(
+    connection: sqlite3.Connection,
+    *,
+    run_id: str,
+    current_phase: str,
+    **counters: int,
+) -> None:
+    """Update the current phase and counter columns on a graph build."""
+    set_clauses = ["current_phase = ?"]
+    params: list[Any] = [current_phase]
+    valid_columns = {
+        "relations_consolidated",
+        "evidence_rows_built",
+        "claims_extracted",
+        "entity_profiles_built",
+        "communities_detected",
+        "community_reports_built",
+        "centrality_computed",
+        "entity_embeddings_computed",
+        "llm_enrichment_count",
+    }
+    for key, value in counters.items():
+        if key in valid_columns:
+            set_clauses.append(f"{key} = ?")
+            params.append(value)
+    params.append(run_id)
+    with connection:
+        connection.execute(
+            f"UPDATE graph_build_state SET {', '.join(set_clauses)} WHERE run_id = ?",
+            params,
+        )
+
+
+def finish_graph_build(
+    connection: sqlite3.Connection,
+    *,
+    run_id: str,
+    finished_at: str,
+    status: str,
+    notes: list[str],
+) -> None:
+    """Finalise a graph build run."""
+    with connection:
+        connection.execute(
+            """
+            UPDATE graph_build_state
+            SET finished_at = ?, status = ?, notes_json = ?
+            WHERE run_id = ?
+            """,
+            (finished_at, status, json.dumps(notes, separators=(",", ":")), run_id),
+        )
+
+
+def load_latest_graph_build_state(
+    connection: sqlite3.Connection,
+) -> GraphBuildStateRecord | None:
+    """Load the most recent graph build state row."""
+    row = connection.execute(
+        "SELECT * FROM graph_build_state ORDER BY started_at DESC LIMIT 1"
+    ).fetchone()
+    if row is None:
+        return None
+    return GraphBuildStateRecord(
+        run_id=str(row["run_id"]),
+        started_at=str(row["started_at"]),
+        finished_at=_optional_str(row["finished_at"]),
+        status=str(row["status"]),
+        current_phase=str(row["current_phase"]),
+        graph_version=int(row["graph_version"]),
+        relations_consolidated=int(row["relations_consolidated"]),
+        evidence_rows_built=int(row["evidence_rows_built"]),
+        claims_extracted=int(row["claims_extracted"]),
+        entity_profiles_built=int(row["entity_profiles_built"]),
+        communities_detected=int(row["communities_detected"]),
+        community_reports_built=int(row["community_reports_built"]),
+        centrality_computed=int(row["centrality_computed"]),
+        entity_embeddings_computed=int(row["entity_embeddings_computed"]),
+        llm_enrichment_count=int(row["llm_enrichment_count"]),
+        notes_json=str(row["notes_json"]),
+    )
+
+
+def upsert_graph_metadata(
+    connection: sqlite3.Connection,
+    key: str,
+    value: str,
+    updated_at: str,
+) -> None:
+    """Insert or update a graph metadata key-value entry."""
+    with connection:
+        connection.execute(
+            """
+            INSERT INTO graph_metadata (key, value, updated_at)
+            VALUES (?, ?, ?)
+            ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at
+            """,
+            (key, value, updated_at),
+        )
+
+
+def load_graph_metadata(connection: sqlite3.Connection) -> dict[str, str]:
+    """Load all graph metadata key-value pairs."""
+    rows = connection.execute("SELECT key, value FROM graph_metadata").fetchall()
+    return {str(row["key"]): str(row["value"]) for row in rows}
+
+
+def load_graph_version(connection: sqlite3.Connection) -> int:
+    """Load the current graph version number, defaulting to 0."""
+    row = connection.execute(
+        "SELECT value FROM graph_metadata WHERE key = 'graph_version'"
+    ).fetchone()
+    if row is None:
+        return 0
+    return int(row["value"])
+
+
+def load_all_extracted_relations(
+    connection: sqlite3.Connection,
+) -> list[ExtractedRelationRecord]:
+    """Load all rows from extracted_relations."""
+    rows = connection.execute(
+        """
+        SELECT relation_id, chunk_id, document_id, source_rel_path,
+               subject_entity_id, predicate, object_entity_id,
+               confidence, extraction_model, extracted_at
+        FROM extracted_relations
+        ORDER BY subject_entity_id, predicate, object_entity_id
+        """
+    ).fetchall()
+    return [
+        ExtractedRelationRecord(
+            relation_id=str(row["relation_id"]),
+            chunk_id=str(row["chunk_id"]),
+            document_id=str(row["document_id"]),
+            source_rel_path=str(row["source_rel_path"]),
+            subject_entity_id=str(row["subject_entity_id"]),
+            predicate=str(row["predicate"]),
+            object_entity_id=str(row["object_entity_id"]),
+            confidence=float(row["confidence"]),
+            extraction_model=str(row["extraction_model"]),
+            extracted_at=str(row["extracted_at"]),
+        )
+        for row in rows
+    ]
+
+
+def load_entity_mention_stats(
+    connection: sqlite3.Connection,
+) -> dict[str, dict[str, int]]:
+    """Load per-entity mention statistics (chunk_count, doc_count, mention_count)."""
+    rows = connection.execute(
+        """
+        SELECT
+            m.entity_id,
+            COUNT(DISTINCT m.chunk_id) AS chunk_count,
+            COUNT(DISTINCT c.source_rel_path) AS doc_count,
+            COUNT(*) AS mention_count
+        FROM mention_rows m
+        JOIN chunk_rows c ON m.chunk_id = c.chunk_id
+        GROUP BY m.entity_id
+        """
+    ).fetchall()
+    return {
+        str(row["entity_id"]): {
+            "chunk_count": int(row["chunk_count"]),
+            "doc_count": int(row["doc_count"]),
+            "mention_count": int(row["mention_count"]),
+        }
+        for row in rows
+    }
+
+
+def load_chunk_ids_for_entity(
+    connection: sqlite3.Connection, entity_id: str, *, limit: int = 100
+) -> list[str]:
+    """Return chunk IDs mentioning an entity, ordered by mention frequency."""
+    rows = connection.execute(
+        """
+        SELECT chunk_id, COUNT(*) AS cnt
+        FROM mention_rows
+        WHERE entity_id = ?
+        GROUP BY chunk_id
+        ORDER BY cnt DESC
+        LIMIT ?
+        """,
+        (entity_id, limit),
+    ).fetchall()
+    return [str(row["chunk_id"]) for row in rows]
+
+
+def count_entity_profiles(connection: sqlite3.Connection) -> int:
+    """Return total entity profile count."""
+    row = connection.execute("SELECT COUNT(*) AS cnt FROM entity_profiles").fetchone()
+    return int(_row_value(row, "cnt"))
+
+
+def count_communities(connection: sqlite3.Connection) -> int:
+    """Return number of distinct communities."""
+    row = connection.execute(
+        "SELECT COUNT(DISTINCT community_id) AS cnt FROM entity_communities"
+    ).fetchone()
+    return int(_row_value(row, "cnt"))
+
+
+def count_community_reports(connection: sqlite3.Connection) -> int:
+    """Return total community report count."""
+    row = connection.execute("SELECT COUNT(*) AS cnt FROM community_reports").fetchone()
+    return int(_row_value(row, "cnt"))
+
+
+# ---------------------------------------------------------------------------
+# Private helpers
+# ---------------------------------------------------------------------------
+
+
+def _claim_from_row(row: sqlite3.Row) -> ClaimRecord:
+    return ClaimRecord(
+        claim_id=str(row["claim_id"]),
+        chunk_id=str(row["chunk_id"]),
+        document_id=str(row["document_id"]),
+        source_rel_path=str(row["source_rel_path"]),
+        claim_text=str(row["claim_text"]),
+        subject_entity_id=_optional_str(row["subject_entity_id"]),
+        object_entity_id=_optional_str(row["object_entity_id"]),
+        claim_type=str(row["claim_type"]),
+        confidence=float(row["confidence"]),
+        extraction_model=str(row["extraction_model"]),
+        extracted_at=str(row["extracted_at"]),
+    )
+
+
+def _entity_profile_from_row(row: sqlite3.Row) -> EntityProfileRecord:
+    return EntityProfileRecord(
+        entity_id=str(row["entity_id"]),
+        label=str(row["label"]),
+        entity_type=str(row["entity_type"]),
+        domain=str(row["domain"]),
+        aliases_json=str(row["aliases_json"]),
+        deterministic_summary=str(row["deterministic_summary"]),
+        llm_summary=_optional_str(row["llm_summary"]),
+        chunk_count=int(row["chunk_count"]),
+        doc_count=int(row["doc_count"]),
+        mention_count=int(row["mention_count"]),
+        claim_count=int(row["claim_count"]),
+        top_predicates_json=str(row["top_predicates_json"]),
+        top_claims_json=str(row["top_claims_json"]),
+        pagerank=float(row["pagerank"]),
+        betweenness=float(row["betweenness"]),
+        closeness=float(row["closeness"]),
+        in_degree=int(row["in_degree"]),
+        out_degree=int(row["out_degree"]),
+        eigenvector=float(row["eigenvector"]),
+        community_id=int(row["community_id"]) if row["community_id"] is not None else None,
+        source_hash=str(row["source_hash"]),
+        generated_at=str(row["generated_at"]),
+    )
+
+
+def _community_report_from_row(row: sqlite3.Row) -> CommunityReportRecord:
+    return CommunityReportRecord(
+        community_id=int(row["community_id"]),
+        community_level=int(row["community_level"]),
+        member_count=int(row["member_count"]),
+        member_entity_ids_json=str(row["member_entity_ids_json"]),
+        deterministic_summary=str(row["deterministic_summary"]),
+        llm_summary=_optional_str(row["llm_summary"]),
+        top_entities_json=str(row["top_entities_json"]),
+        top_claims_json=str(row["top_claims_json"]),
+        intra_community_edge_count=int(row["intra_community_edge_count"]),
+        source_hash=str(row["source_hash"]),
+        generated_at=str(row["generated_at"]),
+    )
+
+
+def _canonical_relation_from_row(row: sqlite3.Row) -> CanonicalRelationRecord:
+    return CanonicalRelationRecord(
+        relation_id=str(row["relation_id"]),
+        subject_entity_id=str(row["subject_entity_id"]),
+        predicate=str(row["predicate"]),
+        object_entity_id=str(row["object_entity_id"]),
+        support_count=int(row["support_count"]),
+        avg_confidence=float(row["avg_confidence"]),
+        min_confidence=float(row["min_confidence"]),
+        max_confidence=float(row["max_confidence"]),
+        first_seen_at=str(row["first_seen_at"]),
+        last_seen_at=str(row["last_seen_at"]),
     )
 
 

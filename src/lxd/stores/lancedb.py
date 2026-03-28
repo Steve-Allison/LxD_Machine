@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 from pathlib import Path
 from typing import Any
 
@@ -188,6 +189,92 @@ def _chunk_record_to_row(record: ChunkRecord) -> dict[str, object]:
         "score_hint": record.score_hint,
         "metadata_json": record.metadata_json,
     }
+
+
+# ---------------------------------------------------------------------------
+# Entity embeddings table (Phase 5)
+# ---------------------------------------------------------------------------
+
+_ENTITY_TABLE_NAME = "entity_embeddings"
+
+
+def open_entity_table(database: Any, *, vector_size: int) -> Any:
+    """Open the entity embeddings table, creating it when missing."""
+    try:
+        return database.open_table(_ENTITY_TABLE_NAME)
+    except FileNotFoundError:
+        return database.create_table(
+            _ENTITY_TABLE_NAME,
+            schema=_entity_table_schema(vector_size),
+            mode="create",
+        )
+
+
+def reset_entity_table(database: Any, *, vector_size: int) -> Any:
+    """Drop and recreate the entity embeddings table."""
+    try:
+        database.drop_table(_ENTITY_TABLE_NAME)
+    except FileNotFoundError:
+        pass
+    except ValueError as exc:
+        if not _is_missing_table_error(exc):
+            raise
+    return database.create_table(
+        _ENTITY_TABLE_NAME,
+        schema=_entity_table_schema(vector_size),
+        mode="create",
+    )
+
+
+def replace_entity_embeddings(
+    table: Any,
+    records: list[dict[str, object]],
+) -> None:
+    """Replace all entity embeddings (full rebuild).
+
+    Each record must have: entity_id, label, community_id, vector.
+    """
+    with contextlib.suppress(Exception):
+        table.delete("entity_id IS NOT NULL")
+    if records:
+        table.add(records)
+
+
+def search_similar_entities(
+    table: Any,
+    *,
+    query_vector: list[float],
+    limit: int = 10,
+) -> list[dict[str, Any]]:
+    """Find entities nearest to a query vector."""
+    rows = table.search(query_vector, vector_column_name="vector").limit(limit).to_list()
+    results: list[dict[str, Any]] = []
+    for row in rows:
+        score_value = row.get("_distance")
+        if not isinstance(score_value, (int, float)):
+            continue
+        results.append(
+            {
+                "entity_id": str(row["entity_id"]),
+                "label": str(row["label"]),
+                "community_id": int(row["community_id"])
+                if row.get("community_id") is not None
+                else None,
+                "score": float(score_value),
+            }
+        )
+    return results
+
+
+def _entity_table_schema(vector_size: int) -> pa.Schema:
+    return pa.schema(
+        [
+            pa.field("entity_id", pa.string()),
+            pa.field("label", pa.string()),
+            pa.field("community_id", pa.int32()),
+            pa.field("vector", pa.list_(pa.float32(), vector_size)),
+        ]
+    )
 
 
 def _escape_string_literal(value: str) -> str:

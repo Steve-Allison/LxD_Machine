@@ -37,7 +37,7 @@ class _LxDLifespan:
 
 def _make_lifespan(cwd: Path, profile: str | None, config_path: Path | None):
     @asynccontextmanager
-    async def lifespan(server: FastMCP) -> AsyncGenerator[dict[str, _LxDLifespan], None]:
+    async def lifespan(server: FastMCP) -> AsyncGenerator[dict[str, _LxDLifespan]]:
         app_context = bootstrap_app(cwd, profile=profile, config_path=config_path)
         ingest_plan = build_ingest_plan(app_context.config)
         yield {_LIFESPAN_KEY: _LxDLifespan(app_context=app_context, ingest_plan=ingest_plan)}
@@ -221,12 +221,140 @@ def create_server(
         """
         return get_corpus_relations_tool(_lxd(ctx).app_context, entity_id, limit)
 
+    # -----------------------------------------------------------------------
+    # Knowledge Graph tools (Phase 5)
+    # -----------------------------------------------------------------------
+
+    @mcp.tool(annotations=_READ_ONLY)
+    def get_entity_summary(
+        entity_id: Annotated[str, Field(description="Canonical entity ID.")],
+        ctx: Context,
+    ) -> dict[str, object]:
+        """Return the full entity profile including centrality, claims, and community."""
+        from lxd.mcp.tools import get_entity_summary_tool
+
+        return get_entity_summary_tool(_lxd(ctx).app_context, entity_id)
+
+    @mcp.tool(annotations=_READ_ONLY)
+    def get_community_context(
+        entity_id: Annotated[str, Field(description="Canonical entity ID to find community for.")],
+        ctx: Context,
+    ) -> dict[str, object]:
+        """Return the community report for an entity's community."""
+        from lxd.mcp.tools import get_community_context_tool
+
+        return get_community_context_tool(_lxd(ctx).app_context, entity_id)
+
+    @mcp.tool(annotations=_READ_ONLY)
+    def get_similar_entities(
+        entity_id: Annotated[
+            str, Field(description="Canonical entity ID to find similar entities for.")
+        ],
+        ctx: Context,
+        limit: Annotated[int, Field(description="Maximum results.", ge=1, le=50)] = 10,
+    ) -> list[dict[str, object]]:
+        """Return entities most similar to the given entity via vector embedding similarity."""
+        from lxd.mcp.tools import get_similar_entities_tool
+
+        return get_similar_entities_tool(_lxd(ctx).app_context, entity_id, limit)
+
+    @mcp.tool(annotations=_READ_ONLY)
+    def search_entities(
+        query: Annotated[str, Field(description="Search query for entity name/alias.")],
+        ctx: Context,
+        limit: Annotated[int, Field(description="Maximum results.", ge=1, le=100)] = 20,
+    ) -> list[dict[str, object]]:
+        """Search entity profiles by name or alias, ranked by PageRank."""
+        from lxd.mcp.tools import search_entities_tool
+
+        return search_entities_tool(_lxd(ctx).app_context, query, limit)
+
+    @mcp.tool(annotations=_READ_ONLY)
+    def inspect_evidence(
+        relation_id: Annotated[str, Field(description="Canonical relation ID to audit.")],
+        ctx: Context,
+    ) -> list[dict[str, object]]:
+        """Return all evidence records for a canonical relation, including surface forms and chunk provenance."""
+        from lxd.mcp.tools import inspect_evidence_tool
+
+        return inspect_evidence_tool(_lxd(ctx).app_context, relation_id)
+
+    @mcp.tool(annotations=_READ_ONLY)
+    def find_path_between_entities(
+        source: Annotated[str, Field(description="Source entity ID.")],
+        target: Annotated[str, Field(description="Target entity ID.")],
+        ctx: Context,
+        max_hops: Annotated[int, Field(description="Maximum path length.", ge=1, le=10)] = 5,
+    ) -> dict[str, object]:
+        """Find shortest unweighted path between two entities."""
+        from lxd.mcp.tools import find_path_between_entities_tool
+
+        return find_path_between_entities_tool(
+            _lxd(ctx).app_context,
+            _lxd(ctx).ingest_plan,
+            source,
+            target,
+            max_hops,
+        )
+
+    @mcp.tool(annotations=_READ_ONLY)
+    def find_weighted_path(
+        source: Annotated[str, Field(description="Source entity ID.")],
+        target: Annotated[str, Field(description="Target entity ID.")],
+        ctx: Context,
+    ) -> dict[str, object]:
+        """Find confidence-weighted Dijkstra shortest path between two entities."""
+        from lxd.mcp.tools import find_weighted_path_tool
+
+        return find_weighted_path_tool(
+            _lxd(ctx).app_context,
+            _lxd(ctx).ingest_plan,
+            source,
+            target,
+        )
+
+    @mcp.tool(annotations=_READ_ONLY)
+    def get_hub_entities(
+        ctx: Context,
+        limit: Annotated[int, Field(description="Maximum results.", ge=1, le=100)] = 20,
+    ) -> list[dict[str, object]]:
+        """Return top entities by PageRank (hub concepts)."""
+        from lxd.mcp.tools import get_hub_entities_tool
+
+        return get_hub_entities_tool(_lxd(ctx).app_context, limit)
+
+    @mcp.tool(annotations=_READ_ONLY)
+    def find_bridge_entities(
+        ctx: Context,
+        limit: Annotated[int, Field(description="Maximum results.", ge=1, le=100)] = 20,
+    ) -> list[dict[str, object]]:
+        """Return top entities by betweenness centrality (bridge concepts)."""
+        from lxd.mcp.tools import find_bridge_entities_tool
+
+        return find_bridge_entities_tool(_lxd(ctx).app_context, limit)
+
+    @mcp.tool(annotations=_READ_ONLY)
+    def find_foundational_entities(
+        ctx: Context,
+        limit: Annotated[int, Field(description="Maximum results.", ge=1, le=100)] = 20,
+    ) -> list[dict[str, object]]:
+        """Return top entities by closeness centrality (foundational concepts)."""
+        from lxd.mcp.tools import find_foundational_entities_tool
+
+        return find_foundational_entities_tool(_lxd(ctx).app_context, limit)
+
+    @mcp.tool(annotations=_READ_ONLY)
+    def get_entity_graph_stats(ctx: Context) -> dict[str, object]:
+        """Return knowledge graph statistics: node/edge counts, community count, and version."""
+        from lxd.mcp.tools import get_entity_graph_stats_tool
+
+        return get_entity_graph_stats_tool(_lxd(ctx).app_context)
+
     return mcp
 
 
 def main() -> None:
-    """Run the module entrypoint.
-    """
+    """Run the module entrypoint."""
     parser = argparse.ArgumentParser(description="LxD Machine MCP server (stdio transport).")
     parser.add_argument("--profile", help="Named config profile to load.")
     parser.add_argument("--config", help="Explicit path to a config YAML file.")

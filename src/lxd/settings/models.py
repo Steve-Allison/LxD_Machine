@@ -10,6 +10,7 @@ from pydantic import BaseModel, ConfigDict, Field, HttpUrl, model_validator
 
 class OllamaConfig(BaseModel):
     """Configuration for connecting to the Ollama API."""
+
     model_config = ConfigDict(extra="forbid")
 
     url: HttpUrl
@@ -17,6 +18,7 @@ class OllamaConfig(BaseModel):
 
 class ModelsConfig(BaseModel):
     """Model identifiers and embedding/rerank model settings."""
+
     model_config = ConfigDict(extra="forbid")
 
     embed: str
@@ -29,6 +31,7 @@ class ModelsConfig(BaseModel):
 
 class ChunkingConfig(BaseModel):
     """Document chunking strategy and tokenizer settings."""
+
     model_config = ConfigDict(extra="forbid")
 
     strategy: str
@@ -41,6 +44,7 @@ class ChunkingConfig(BaseModel):
 
 class EmbeddingConfig(BaseModel):
     """Embedding client timeout, retry, and instruction settings."""
+
     model_config = ConfigDict(extra="forbid")
 
     timeout_secs: int = Field(gt=0)
@@ -57,6 +61,7 @@ class EmbeddingConfig(BaseModel):
 
 class OpenAIEmbeddingConfig(BaseModel):
     """OpenAI embedding backend credentials and model options."""
+
     model_config = ConfigDict(extra="forbid")
 
     api_key_env: str = "OPENAI_API_KEY"
@@ -68,6 +73,7 @@ class OpenAIEmbeddingConfig(BaseModel):
 
 class CorpusConfig(BaseModel):
     """Corpus file extension and scanning filters."""
+
     model_config = ConfigDict(extra="forbid")
 
     text_extensions: list[str]
@@ -78,6 +84,7 @@ class CorpusConfig(BaseModel):
 
 class AssetsConfig(BaseModel):
     """Asset ingestion toggles for registration and parent inference."""
+
     model_config = ConfigDict(extra="forbid")
 
     register_png: bool
@@ -86,6 +93,7 @@ class AssetsConfig(BaseModel):
 
 class OntologyConfig(BaseModel):
     """Ontology file inclusion and ignore filters."""
+
     model_config = ConfigDict(extra="forbid")
 
     include_globs: list[str]
@@ -94,6 +102,7 @@ class OntologyConfig(BaseModel):
 
 class RetrievalConfig(BaseModel):
     """Dense retrieval and fusion weighting parameters."""
+
     model_config = ConfigDict(extra="forbid")
 
     dense_top_k: int = Field(gt=0)
@@ -104,6 +113,7 @@ class RetrievalConfig(BaseModel):
 
 class RerankerConfig(BaseModel):
     """Reranker backend connectivity and launch settings."""
+
     model_config = ConfigDict(extra="forbid")
 
     enabled: bool
@@ -134,6 +144,7 @@ class RerankerConfig(BaseModel):
 
 class RerankerLaunchConfig(BaseModel):
     """Auto-start settings for llama.cpp reranker service."""
+
     model_config = ConfigDict(extra="forbid")
 
     auto_start: bool = False
@@ -148,6 +159,7 @@ class RerankerLaunchConfig(BaseModel):
 
 class ExpansionConfig(BaseModel):
     """Ontology-based query expansion behavior."""
+
     model_config = ConfigDict(extra="forbid")
 
     enabled: bool
@@ -157,6 +169,7 @@ class ExpansionConfig(BaseModel):
 
 class RelationExtractionConfig(BaseModel):
     """Relation extraction backend and generation controls."""
+
     model_config = ConfigDict(extra="forbid")
 
     enabled: bool = False
@@ -172,6 +185,7 @@ class RelationExtractionConfig(BaseModel):
 
 class SynthesisConfig(BaseModel):
     """Answer synthesis limits and generation settings."""
+
     model_config = ConfigDict(extra="forbid")
 
     max_chunks: int = Field(gt=0)
@@ -180,8 +194,50 @@ class SynthesisConfig(BaseModel):
     max_tokens: int = Field(gt=0)
 
 
+class KnowledgeGraphConfig(BaseModel):
+    """Knowledge graph build and query settings."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    enabled: bool = False
+    min_relation_confidence: float = Field(default=0.5, ge=0.0, le=1.0)
+
+    # Community detection
+    community_resolution: float = Field(default=1.0, gt=0.0)
+    community_algorithm: Literal["leiden", "louvain"] = "louvain"
+    community_seed: int = Field(default=42)
+
+    # Entity profiles
+    entity_summary_max_chunks: int = Field(default=20, gt=0)
+    entity_embedding_min_mentions: int = Field(default=3, ge=1)
+
+    # Claim extraction
+    claim_extraction_backend: Literal["openai", "ollama", "none"] = "openai"
+    claim_extraction_model: str = "gpt-4o-mini"
+    claim_extraction_fallback_model: str = "qwen3:14b"
+    claim_extraction_min_mentions: int = Field(default=1, ge=1)
+    claim_max_per_chunk: int = Field(default=10, gt=0)
+    claim_extraction_timeout_secs: int = Field(default=90, gt=0)
+    claim_extraction_temperature: float = Field(default=0.0, ge=0.0)
+
+    # Optional LLM enrichment
+    llm_enrichment: bool = False
+    llm_enrichment_backend: Literal["openai", "ollama", "none"] = "openai"
+    llm_enrichment_model: str = "gpt-4o-mini"
+    llm_enrichment_fallback_model: str = "qwen3:14b"
+    llm_enrichment_temperature: float = Field(default=0.1, ge=0.0)
+    llm_enrichment_timeout_secs: int = Field(default=30, gt=0)
+
+    # Query routing
+    multi_hop_max: int = Field(default=3, ge=1, le=5)
+    max_entity_context: int = Field(default=5, gt=0)
+    max_community_context: int = Field(default=3, gt=0)
+    max_claim_context: int = Field(default=10, gt=0)
+
+
 class MCPConfig(BaseModel):
     """MCP server identity configuration."""
+
     model_config = ConfigDict(extra="forbid")
 
     server_name: str
@@ -190,6 +246,7 @@ class MCPConfig(BaseModel):
 
 class LoggingConfig(BaseModel):
     """Runtime logging level and output format."""
+
     model_config = ConfigDict(extra="forbid")
 
     level: str
@@ -198,6 +255,7 @@ class LoggingConfig(BaseModel):
 
 class PathsConfig(BaseModel):
     """Filesystem paths for corpus, ontology, and data."""
+
     model_config = ConfigDict(extra="forbid")
 
     corpus_path: Path
@@ -207,6 +265,7 @@ class PathsConfig(BaseModel):
 
 class RuntimeConfig(BaseModel):
     """Top-level runtime configuration for the application."""
+
     model_config = ConfigDict(extra="forbid")
 
     paths: PathsConfig
@@ -220,10 +279,9 @@ class RuntimeConfig(BaseModel):
     retrieval: RetrievalConfig
     reranker: RerankerConfig
     expansion: ExpansionConfig
-    relation_extraction: RelationExtractionConfig = Field(
-        default_factory=RelationExtractionConfig
-    )
+    relation_extraction: RelationExtractionConfig = Field(default_factory=RelationExtractionConfig)
     synthesis: SynthesisConfig
+    knowledge_graph: KnowledgeGraphConfig = Field(default_factory=KnowledgeGraphConfig)
     mcp: MCPConfig
     logging: LoggingConfig
     openai: OpenAIEmbeddingConfig | None = None
@@ -231,9 +289,7 @@ class RuntimeConfig(BaseModel):
     @model_validator(mode="after")
     def _validate_openai_backend(self) -> RuntimeConfig:
         if self.models.embed_backend == "openai" and self.openai is None:
-            raise ValueError(
-                "models.embed_backend=openai requires an [openai] config section."
-            )
+            raise ValueError("models.embed_backend=openai requires an [openai] config section.")
         if (
             self.models.embed_backend == "openai"
             and self.openai is not None
