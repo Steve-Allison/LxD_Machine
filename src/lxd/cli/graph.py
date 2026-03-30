@@ -103,6 +103,20 @@ def build_graph_command(
         _dry_run_report(connection, config)
         return
 
+    if full:
+        claim_count = connection.execute("SELECT COUNT(*) FROM claims").fetchone()[0]
+        profile_count = connection.execute("SELECT COUNT(*) FROM entity_profiles").fetchone()[0]
+        if claim_count > 0 or profile_count > 0:
+            _console.print(
+                f"[bold red]--full will re-extract {claim_count:,} claims and rebuild"
+                f" {profile_count:,} entity profiles.[/bold red]"
+            )
+            _console.print(
+                "This costs API calls and time. Incremental build is usually sufficient."
+            )
+            if not typer.confirm("Proceed with full rebuild?"):
+                raise typer.Abort()
+
     # Load ontology for entity definitions and graph
     ontology = load_ontology(
         config.paths.ontology_path,

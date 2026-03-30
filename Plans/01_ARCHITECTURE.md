@@ -149,10 +149,12 @@ These are rebuilt on process start from the resolved ontology snapshot.
 
 The architecture distinguishes four identities:
 
-- file identity: current `file_path` in the corpus tree
+- file identity: corpus-relative path (`source_rel_path`) — portable across machines
 - logical document identity: `document_id` for text-bearing sources
 - content identity: file hash
 - chunk identity: stable per logical document and chunk text occurrence
+
+All PKs and FKs in SQLite use corpus-relative paths, making the `data/` folder portable between machines. The `absolute_path` column in `corpus_manifest` stores the machine-local path for file I/O and is refreshed by `pixi run ingest` on each machine.
 
 `document_id` rules:
 

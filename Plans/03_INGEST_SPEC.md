@@ -133,8 +133,8 @@ Other file types are out of scope unless added to config later.
 
 For every in-scope file, collect:
 
-- absolute path
-- relative path
+- absolute path (used for local file I/O only, not stored as PK)
+- relative path (corpus-relative — used as the portable identity in all stores)
 - source type
 - file size
 - content hash

@@ -20,12 +20,14 @@ globs: "**/*.py,**/pixi.toml,**/pyproject.toml"
 ## Data Stores
 - LanceDB for vector storage (chunk vectors + entity embeddings), SQLite for metadata (including 8 knowledge graph tables). Both are rebuildable via `pixi run ingest` and `pixi run build-graph`.
 - Store data lives under `data/` (gitignored). Never commit database files.
+- All SQLite PKs and FKs use corpus-relative paths — the `data/` folder is portable between machines. `absolute_path` in `corpus_manifest` is a non-PK column refreshed by ingest on each machine.
 
 ## Two-Step Build Pipeline
 
 - **Step 1:** `pixi run ingest` — scans corpus, chunks, embeds, detects mentions, extracts relations. Stores in SQLite + LanceDB.
 - **Step 2:** `pixi run build-graph` — consolidates relations, extracts claims (LLM), builds entity graph, computes centrality, detects communities, builds profiles and reports. Requires ingest data to exist.
 - Both steps are incremental by default. Use `--full` to force a complete rebuild.
+- `build-graph --full` requires interactive confirmation when existing KG data is present (claims, profiles). No command unconditionally destroys the knowledge graph.
 
 ## Knowledge Graph
 - The graph build is a resumable state machine with phases: evidence → claims → entity_graph → centrality → communities → entity_profiles → community_reports → complete.

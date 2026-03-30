@@ -78,6 +78,8 @@ The graph build is a resumable state machine (`pixi run build-graph`). Graph con
 ## Design Principles
 
 - **Incremental by default**: ingest skips unchanged files (BLAKE3 content hash), detects moves. Graph build resumes from last incomplete phase.
+- **Portable stores**: all SQLite PKs and FKs use corpus-relative paths. The `data/` folder can be copied between machines; `pixi run ingest` updates machine-local absolute paths. LanceDB vectors are also keyed by relative path.
+- **Safe by default**: `pixi run build-graph --full` requires interactive confirmation before re-extracting claims (costs API calls and time). No command unconditionally destroys the knowledge graph.
 - **Rebuildable**: all stores can be rebuilt from source via `pixi run ingest --full` and `pixi run build-graph --full`.
 - **Explicit provenance**: every chunk traces back to source document, page, and extraction method. Every claim and relation traces to source chunk.
 - **Ontology-first**: entity recognition uses Aho-Corasick automaton built from YAML definitions; relations extracted via LLM.
