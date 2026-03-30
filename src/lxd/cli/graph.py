@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 import sqlite3
 from datetime import UTC, datetime
 from pathlib import Path
@@ -30,6 +29,8 @@ from lxd.ontology.profiles import (
 from lxd.settings.models import RuntimeConfig
 from lxd.stores.lancedb import (
     connect_lancedb,
+    fetch_vectors_by_chunk_ids,
+    open_chunk_table,
     replace_entity_embeddings,
     reset_entity_table,
 )
@@ -463,6 +464,7 @@ def _compute_entity_embeddings(
         return 0
 
     db = connect_lancedb(store_paths.lancedb_path)
+    chunk_table = open_chunk_table(db, vector_size=vector_size)
     entity_table = reset_entity_table(db, vector_size=vector_size)
 
     records: list[dict[str, object]] = []
@@ -471,27 +473,18 @@ def _compute_entity_embeddings(
         if not chunk_ids:
             continue
 
-        # Load chunk vectors from SQLite
-        placeholders = ",".join("?" * len(chunk_ids))
-        chunk_rows = connection.execute(
-            f"SELECT vector_json FROM chunk_rows WHERE chunk_id IN ({placeholders})",
-            chunk_ids,
-        ).fetchall()
-
-        if not chunk_rows:
-            continue
-
-        # Mean-pool chunk embeddings
-        vectors: list[list[float]] = []
-        for row in chunk_rows:
-            vec = json.loads(str(row["vector_json"]))
-            if isinstance(vec, list) and len(vec) == vector_size:
-                vectors.append(vec)
+        # Fetch vectors from LanceDB (native float arrays, no JSON parsing)
+        vectors_by_id = fetch_vectors_by_chunk_ids(chunk_table, chunk_ids)
+        vectors = [v for v in vectors_by_id.values() if len(v) == vector_size]
 
         if not vectors:
             continue
 
         mean_vector = [sum(v[i] for v in vectors) / len(vectors) for i in range(vector_size)]
+        # L2-normalise so cosine similarity search works correctly
+        magnitude = sum(x * x for x in mean_vector) ** 0.5
+        if magnitude > 0:
+            mean_vector = [x / magnitude for x in mean_vector]
 
         records.append(
             {
@@ -533,8 +526,20 @@ def collect_batch_command(
     batch_dir = config.paths.data_path / "batch"
     chunks_meta_path = batch_dir / "claims_batch_chunks.json"
     if not chunks_meta_path.exists():
-        _console.print(f"[red]Chunk metadata not found:[/red] {chunks_meta_path}")
-        raise typer.Exit(1)
+        # Fall back to durable copy in SQLite graph_metadata
+        from lxd.stores.sqlite import load_graph_metadata
+
+        gm = load_graph_metadata(connection)
+        stored = gm.get("claims_batch_chunks")
+        if stored is None:
+            _console.print(
+                f"[red]Chunk metadata not found:[/red] {chunks_meta_path} "
+                "(and no durable copy in SQLite)"
+            )
+            raise typer.Exit(1)
+        chunks_meta_path.parent.mkdir(parents=True, exist_ok=True)
+        chunks_meta_path.write_text(stored)
+        _console.print("[yellow]Restored batch metadata from SQLite.[/yellow]")
 
     # Check batch status first
     from lxd.ingest.llm_client import poll_batch as _poll_batch

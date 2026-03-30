@@ -244,7 +244,12 @@ def search_similar_entities(
     limit: int = 10,
 ) -> list[dict[str, Any]]:
     """Find entities nearest to a query vector."""
-    rows = table.search(query_vector, vector_column_name="vector").limit(limit).to_list()
+    rows = (
+        table.search(query_vector, vector_column_name="vector")
+        .metric("cosine")
+        .limit(limit)
+        .to_list()
+    )
     results: list[dict[str, Any]] = []
     for row in rows:
         score_value = row.get("_distance")
@@ -261,6 +266,34 @@ def search_similar_entities(
             }
         )
     return results
+
+
+def fetch_vectors_by_chunk_ids(
+    table: Any,
+    chunk_ids: list[str],
+) -> dict[str, list[float]]:
+    """Fetch raw vectors for specific chunk IDs from LanceDB.
+
+    Returns a mapping of chunk_id to vector. More efficient than parsing
+    JSON text from SQLite for large vector dimensions.
+    """
+    if not chunk_ids:
+        return {}
+    # LanceDB where-clause uses SQL-like syntax
+    escaped = ", ".join(f"'{_escape_string_literal(cid)}'" for cid in chunk_ids)
+    rows = (
+        table.search()
+        .where(f"chunk_id IN ({escaped})")
+        .select(["chunk_id", "vector"])
+        .limit(len(chunk_ids))
+        .to_list()
+    )
+    result: dict[str, list[float]] = {}
+    for row in rows:
+        vec = row.get("vector")
+        if vec is not None:
+            result[str(row["chunk_id"])] = [float(v) for v in vec]
+    return result
 
 
 def _entity_table_schema(vector_size: int) -> pa.Schema:

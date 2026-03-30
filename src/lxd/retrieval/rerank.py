@@ -181,7 +181,7 @@ def _ensure_reranker_service(config: RuntimeConfig) -> None:
             start_new_session=True,
         )
     _write_pid_file(pid_path, log_path, process.pid, command)
-    if _wait_for_reranker_ready(config, timeout_secs=launch.startup_timeout_secs):
+    if _wait_for_reranker_ready(config, timeout_secs=launch.startup_timeout_secs, process=process):
         return
     exit_code = process.poll()
     if exit_code is None:
@@ -275,9 +275,22 @@ def _client(config: RuntimeConfig) -> httpx.Client:
     )
 
 
-def _wait_for_reranker_ready(config: RuntimeConfig, *, timeout_secs: int) -> bool:
+def _wait_for_reranker_ready(
+    config: RuntimeConfig,
+    *,
+    timeout_secs: int,
+    process: subprocess.Popen[bytes] | None = None,
+) -> bool:
+    """Poll until the reranker HTTP endpoint is ready.
+
+    If *process* is provided, check whether it has exited on each iteration
+    so we can fail fast instead of waiting the full timeout when the binary
+    crashes immediately after launch.
+    """
     deadline = time.monotonic() + timeout_secs
     while time.monotonic() < deadline:
+        if process is not None and process.poll() is not None:
+            return False
         ready, _ = _probe_reranker_http(config)
         if ready:
             return True

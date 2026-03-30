@@ -126,9 +126,20 @@ def prepare_claims_batch_jsonl(
         output_path=output_path,
     )
 
-    # Write chunk metadata sidecar for result collection
+    # Write chunk metadata sidecar for result collection (filesystem)
     meta_path = output_dir / "claims_batch_chunks.json"
-    meta_path.write_text(json.dumps({item["custom_id"]: item for item in items}, indent=2))
+    meta_payload = json.dumps({item["custom_id"]: item for item in items}, separators=(",", ":"))
+    meta_path.write_text(meta_payload)
+
+    # Also persist in SQLite so batch collection survives data/batch/ loss or machine moves
+    from lxd.stores.sqlite import upsert_graph_metadata
+
+    upsert_graph_metadata(
+        connection,
+        key="claims_batch_chunks",
+        value=meta_payload,
+        updated_at=datetime.now(UTC).isoformat(),
+    )
 
     return output_path
 
