@@ -20,7 +20,6 @@ def _chunk(
         document_id=f"doc-{chunk_id}",
         citation_label=chunk_id,
         source_rel_path=source_rel_path or f"{chunk_id}.md",
-        source_path=f"/tmp/{(source_rel_path or f'{chunk_id}.md')}",
         source_filename=Path(source_rel_path or f"{chunk_id}.md").name,
         source_type="markdown",
         source_domain="guides",

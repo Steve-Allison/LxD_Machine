@@ -217,7 +217,6 @@ def _apply_rerank_payload(candidates: list[RankedChunk], payload: Any) -> list[R
             document_id=candidate.document_id,
             citation_label=candidate.citation_label,
             source_rel_path=candidate.source_rel_path,
-            source_path=candidate.source_path,
             source_filename=candidate.source_filename,
             source_type=candidate.source_type,
             source_domain=candidate.source_domain,

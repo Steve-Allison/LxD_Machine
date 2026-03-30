@@ -72,14 +72,14 @@ def initialize_schema(connection: sqlite3.Connection) -> None:
         connection.executescript(
             """
             CREATE TABLE IF NOT EXISTS corpus_manifest (
-                file_path TEXT PRIMARY KEY,
-                file_rel_path TEXT NOT NULL,
+                source_rel_path TEXT PRIMARY KEY,
+                absolute_path TEXT NOT NULL,
                 source_type TEXT NOT NULL,
                 source_domain TEXT NOT NULL,
                 document_id TEXT,
                 blake3_hash TEXT NOT NULL,
                 file_size_bytes INTEGER NOT NULL,
-                parent_source_path TEXT,
+                parent_source_rel_path TEXT,
                 lifecycle_status TEXT NOT NULL,
                 retrieval_status TEXT NOT NULL,
                 chunk_count INTEGER NOT NULL DEFAULT 0,
@@ -93,7 +93,6 @@ def initialize_schema(connection: sqlite3.Connection) -> None:
                 chunk_id TEXT PRIMARY KEY,
                 document_id TEXT NOT NULL,
                 source_rel_path TEXT NOT NULL,
-                source_path TEXT NOT NULL,
                 source_filename TEXT NOT NULL,
                 source_type TEXT NOT NULL,
                 source_domain TEXT NOT NULL,
@@ -109,22 +108,21 @@ def initialize_schema(connection: sqlite3.Connection) -> None:
                 vector_json TEXT NOT NULL,
                 embedding_model TEXT NOT NULL,
                 embedding_dims INTEGER NOT NULL,
-                FOREIGN KEY(source_path) REFERENCES corpus_manifest(file_path) ON DELETE CASCADE
+                FOREIGN KEY(source_rel_path) REFERENCES corpus_manifest(source_rel_path) ON DELETE CASCADE
             );
 
             CREATE TABLE IF NOT EXISTS asset_links (
-                asset_path TEXT PRIMARY KEY,
-                asset_rel_path TEXT NOT NULL,
+                asset_rel_path TEXT PRIMARY KEY,
                 asset_filename TEXT NOT NULL,
                 source_domain TEXT NOT NULL,
-                parent_source_path TEXT,
+                parent_source_rel_path TEXT,
                 parent_document_id TEXT,
                 page_no INTEGER,
                 asset_index INTEGER,
                 link_method TEXT NOT NULL,
                 blake3_hash TEXT NOT NULL,
                 last_committed_at TEXT NOT NULL,
-                FOREIGN KEY(asset_path) REFERENCES corpus_manifest(file_path) ON DELETE CASCADE
+                FOREIGN KEY(asset_rel_path) REFERENCES corpus_manifest(source_rel_path) ON DELETE CASCADE
             );
 
             CREATE TABLE IF NOT EXISTS mention_rows (
@@ -132,22 +130,21 @@ def initialize_schema(connection: sqlite3.Connection) -> None:
                 entity_id TEXT NOT NULL,
                 term_source TEXT NOT NULL,
                 source_domain TEXT NOT NULL,
-                source_path TEXT NOT NULL,
+                source_rel_path TEXT NOT NULL,
                 source_filename TEXT NOT NULL,
                 chunk_id TEXT NOT NULL,
                 surface_form TEXT NOT NULL,
                 start_char INTEGER NOT NULL,
                 end_char INTEGER NOT NULL,
                 FOREIGN KEY(chunk_id) REFERENCES chunk_rows(chunk_id) ON DELETE CASCADE,
-                FOREIGN KEY(source_path) REFERENCES corpus_manifest(file_path) ON DELETE CASCADE
+                FOREIGN KEY(source_rel_path) REFERENCES corpus_manifest(source_rel_path) ON DELETE CASCADE
             );
 
             CREATE INDEX IF NOT EXISTS idx_mention_rows_entity_id
             ON mention_rows(entity_id);
 
             CREATE TABLE IF NOT EXISTS ontology_sources (
-                file_path TEXT PRIMARY KEY,
-                file_rel_path TEXT NOT NULL,
+                file_rel_path TEXT PRIMARY KEY,
                 blake3_hash TEXT NOT NULL,
                 last_seen_at TEXT NOT NULL
             );
@@ -524,14 +521,14 @@ def load_manifest_index(connection: sqlite3.Connection) -> dict[str, ManifestRec
     rows = connection.execute(
         """
         SELECT
-            file_path,
-            file_rel_path,
+            source_rel_path,
+            absolute_path,
             source_type,
             source_domain,
             document_id,
             blake3_hash,
             file_size_bytes,
-            parent_source_path,
+            parent_source_rel_path,
             lifecycle_status,
             retrieval_status,
             chunk_count,
@@ -559,14 +556,14 @@ def load_manifest_by_content_hash(
     rows = connection.execute(
         """
         SELECT
-            file_path,
-            file_rel_path,
+            source_rel_path,
+            absolute_path,
             source_type,
             source_domain,
             document_id,
             blake3_hash,
             file_size_bytes,
-            parent_source_path,
+            parent_source_rel_path,
             lifecycle_status,
             retrieval_status,
             chunk_count,
@@ -585,14 +582,14 @@ def load_manifest_by_content_hash(
     return dict(grouped)
 
 
-def load_manifest_by_absolute_path(
-    connection: sqlite3.Connection, absolute_path: str
+def load_manifest_by_rel_path(
+    connection: sqlite3.Connection, rel_path: str
 ) -> ManifestRecord | None:
-    """Load one manifest record by absolute path.
+    """Load one manifest record by relative path.
 
     Args:
         connection: Open SQLite connection.
-        absolute_path: Absolute source file path.
+        rel_path: Corpus-relative source file path.
 
     Returns:
         Matching manifest record, if present.
@@ -600,14 +597,14 @@ def load_manifest_by_absolute_path(
     row = connection.execute(
         """
         SELECT
-            file_path,
-            file_rel_path,
+            source_rel_path,
+            absolute_path,
             source_type,
             source_domain,
             document_id,
             blake3_hash,
             file_size_bytes,
-            parent_source_path,
+            parent_source_rel_path,
             lifecycle_status,
             retrieval_status,
             chunk_count,
@@ -616,9 +613,9 @@ def load_manifest_by_absolute_path(
             last_committed_at,
             error_message
         FROM corpus_manifest
-        WHERE file_path = ?
+        WHERE source_rel_path = ?
         """,
-        (absolute_path,),
+        (rel_path,),
     ).fetchone()
     if row is None:
         return None
@@ -636,14 +633,14 @@ def upsert_manifest_record(connection: sqlite3.Connection, record: ManifestRecor
         connection.execute(
             """
             INSERT INTO corpus_manifest (
-                file_path,
-                file_rel_path,
+                source_rel_path,
+                absolute_path,
                 source_type,
                 source_domain,
                 document_id,
                 blake3_hash,
                 file_size_bytes,
-                parent_source_path,
+                parent_source_rel_path,
                 lifecycle_status,
                 retrieval_status,
                 chunk_count,
@@ -653,14 +650,14 @@ def upsert_manifest_record(connection: sqlite3.Connection, record: ManifestRecor
                 error_message
             )
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ON CONFLICT(file_path) DO UPDATE SET
-                file_rel_path = excluded.file_rel_path,
+            ON CONFLICT(source_rel_path) DO UPDATE SET
+                absolute_path = excluded.absolute_path,
                 source_type = excluded.source_type,
                 source_domain = excluded.source_domain,
                 document_id = excluded.document_id,
                 blake3_hash = excluded.blake3_hash,
                 file_size_bytes = excluded.file_size_bytes,
-                parent_source_path = excluded.parent_source_path,
+                parent_source_rel_path = excluded.parent_source_rel_path,
                 lifecycle_status = excluded.lifecycle_status,
                 retrieval_status = excluded.retrieval_status,
                 chunk_count = excluded.chunk_count,
@@ -670,14 +667,14 @@ def upsert_manifest_record(connection: sqlite3.Connection, record: ManifestRecor
                 error_message = excluded.error_message
             """,
             (
-                record.absolute_path,
                 record.source_rel_path,
+                record.absolute_path,
                 record.source_type,
                 record.source_domain,
                 record.document_id,
                 record.content_hash,
                 record.file_size_bytes,
-                record.parent_source_path,
+                record.parent_source_rel_path,
                 record.lifecycle_status,
                 record.retrieval_status,
                 record.chunk_count,
@@ -689,25 +686,21 @@ def upsert_manifest_record(connection: sqlite3.Connection, record: ManifestRecor
         )
 
 
-def upsert_asset_link(
-    connection: sqlite3.Connection, absolute_asset_path: str, record: AssetLinkRecord
-) -> None:
+def upsert_asset_link(connection: sqlite3.Connection, record: AssetLinkRecord) -> None:
     """Insert or update an asset-to-parent linkage record.
 
     Args:
         connection: Open SQLite connection.
-        absolute_asset_path: Absolute asset file path.
         record: Record instance to persist.
     """
     with connection:
         connection.execute(
             """
             INSERT INTO asset_links (
-                asset_path,
                 asset_rel_path,
                 asset_filename,
                 source_domain,
-                parent_source_path,
+                parent_source_rel_path,
                 parent_document_id,
                 page_no,
                 asset_index,
@@ -715,12 +708,11 @@ def upsert_asset_link(
                 blake3_hash,
                 last_committed_at
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ON CONFLICT(asset_path) DO UPDATE SET
-                asset_rel_path = excluded.asset_rel_path,
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(asset_rel_path) DO UPDATE SET
                 asset_filename = excluded.asset_filename,
                 source_domain = excluded.source_domain,
-                parent_source_path = excluded.parent_source_path,
+                parent_source_rel_path = excluded.parent_source_rel_path,
                 parent_document_id = excluded.parent_document_id,
                 page_no = excluded.page_no,
                 asset_index = excluded.asset_index,
@@ -729,11 +721,10 @@ def upsert_asset_link(
                 last_committed_at = excluded.last_committed_at
             """,
             (
-                absolute_asset_path,
                 record.asset_rel_path,
                 record.asset_filename,
                 record.source_domain,
-                record.parent_source_path,
+                record.parent_source_rel_path,
                 record.parent_document_id,
                 record.page_no,
                 record.asset_index,
@@ -758,12 +749,11 @@ def replace_ontology_sources(
         if records:
             connection.executemany(
                 """
-                INSERT INTO ontology_sources (file_path, file_rel_path, blake3_hash, last_seen_at)
-                VALUES (?, ?, ?, ?)
+                INSERT INTO ontology_sources (file_rel_path, blake3_hash, last_seen_at)
+                VALUES (?, ?, ?)
                 """,
                 [
                     (
-                        record.file_path,
                         record.file_rel_path,
                         record.blake3_hash,
                         record.last_seen_at,
@@ -947,12 +937,12 @@ def store_has_committed_state(connection: sqlite3.Connection) -> bool:
     return int(_row_value(mention_row, "count")) > 0
 
 
-def delete_source(connection: sqlite3.Connection, absolute_path: str) -> None:
-    """Apply the requested persistence operation.
+def delete_source(connection: sqlite3.Connection, source_rel_path: str) -> None:
+    """Delete a source and its dependent rows.
 
     Args:
         connection: Open SQLite connection.
-        absolute_path: Absolute source file path.
+        source_rel_path: Corpus-relative source file path.
     """
     with connection:
         connection.execute(
@@ -961,18 +951,18 @@ def delete_source(connection: sqlite3.Connection, absolute_path: str) -> None:
             SET lifecycle_status = 'deleted',
                 retrieval_status = 'not_searchable',
                 chunk_count = 0
-            WHERE file_path = ?
+            WHERE source_rel_path = ?
             """,
-            (absolute_path,),
+            (source_rel_path,),
         )
-        connection.execute("DELETE FROM chunk_rows WHERE source_path = ?", (absolute_path,))
-        connection.execute("DELETE FROM asset_links WHERE asset_path = ?", (absolute_path,))
+        connection.execute("DELETE FROM chunk_rows WHERE source_rel_path = ?", (source_rel_path,))
+        connection.execute("DELETE FROM asset_links WHERE asset_rel_path = ?", (source_rel_path,))
 
 
 def replace_source_chunks(
     connection: sqlite3.Connection,
     *,
-    absolute_source_path: str,
+    source_rel_path: str,
     chunk_records: list[ChunkRecord],
     mention_records: list[MentionRecord],
     relation_records: list[ExtractedRelationRecord] | None = None,
@@ -981,20 +971,14 @@ def replace_source_chunks(
 
     Args:
         connection: Open SQLite connection.
-        absolute_source_path: Absolute source file path for chunk data.
+        source_rel_path: Corpus-relative source file path.
         chunk_records: Chunk rows to persist for a source.
         mention_records: Mention rows to persist for the source.
         relation_records: Extracted relation rows to persist for the source.
     """
     with connection:
-        connection.execute("DELETE FROM chunk_rows WHERE source_path = ?", (absolute_source_path,))
-        connection.execute(
-            """
-            DELETE FROM mention_rows
-            WHERE source_path = ?
-            """,
-            (absolute_source_path,),
-        )
+        connection.execute("DELETE FROM chunk_rows WHERE source_rel_path = ?", (source_rel_path,))
+        connection.execute("DELETE FROM mention_rows WHERE source_rel_path = ?", (source_rel_path,))
         if chunk_records:
             connection.executemany(
                 """
@@ -1002,7 +986,6 @@ def replace_source_chunks(
                     chunk_id,
                     document_id,
                     source_rel_path,
-                    source_path,
                     source_filename,
                     source_type,
                     source_domain,
@@ -1019,14 +1002,13 @@ def replace_source_chunks(
                     embedding_model,
                     embedding_dims
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 [
                     (
                         record.chunk_id,
                         record.document_id,
                         record.source_rel_path,
-                        record.source_path,
                         record.source_filename,
                         record.source_type,
                         record.source_domain,
@@ -1047,11 +1029,9 @@ def replace_source_chunks(
                 ],
             )
         if mention_records:
-            source_rel_path = chunk_records[0].source_rel_path if chunk_records else ""
+            rel_path = chunk_records[0].source_rel_path if chunk_records else source_rel_path
             source_domain = chunk_records[0].source_domain if chunk_records else ""
-            source_filename = (
-                Path(source_rel_path).name if source_rel_path else Path(absolute_source_path).name
-            )
+            source_filename = Path(rel_path).name if rel_path else ""
             connection.executemany(
                 """
                 INSERT INTO mention_rows (
@@ -1059,7 +1039,7 @@ def replace_source_chunks(
                     entity_id,
                     term_source,
                     source_domain,
-                    source_path,
+                    source_rel_path,
                     source_filename,
                     chunk_id,
                     surface_form,
@@ -1074,7 +1054,7 @@ def replace_source_chunks(
                         record.entity_id,
                         record.term_source,
                         source_domain,
-                        absolute_source_path,
+                        rel_path,
                         source_filename,
                         record.chunk_id,
                         record.surface_form,
@@ -1120,13 +1100,13 @@ def replace_source_chunks(
 
 
 def load_chunk_records_for_source(
-    connection: sqlite3.Connection, absolute_source_path: str
+    connection: sqlite3.Connection, source_rel_path: str
 ) -> list[ChunkRecord]:
     """Load persisted chunk records for a source path.
 
     Args:
         connection: Open SQLite connection.
-        absolute_source_path: Absolute source file path for chunk data.
+        source_rel_path: Corpus-relative source file path.
 
     Returns:
         Chunk records for the source path.
@@ -1137,7 +1117,6 @@ def load_chunk_records_for_source(
             chunk_id,
             document_id,
             source_rel_path,
-            source_path,
             source_filename,
             source_type,
             source_domain,
@@ -1154,22 +1133,22 @@ def load_chunk_records_for_source(
             embedding_model,
             embedding_dims
         FROM chunk_rows
-        WHERE source_path = ?
+        WHERE source_rel_path = ?
         ORDER BY chunk_index
         """,
-        (absolute_source_path,),
+        (source_rel_path,),
     ).fetchall()
     return [_chunk_from_row(row) for row in rows]
 
 
 def load_mentions_for_source(
-    connection: sqlite3.Connection, absolute_source_path: str
+    connection: sqlite3.Connection, source_rel_path: str
 ) -> dict[str, list[MentionRecord]]:
     """Load persisted mentions grouped by chunk ID for a source.
 
     Args:
         connection: Open SQLite connection.
-        absolute_source_path: Absolute source file path for chunk data.
+        source_rel_path: Corpus-relative source file path.
 
     Returns:
         Mentions grouped by chunk ID for the source.
@@ -1184,10 +1163,10 @@ def load_mentions_for_source(
             start_char,
             end_char
         FROM mention_rows
-        WHERE source_path = ?
+        WHERE source_rel_path = ?
         ORDER BY chunk_id, start_char, end_char, entity_id
         """,
-        (absolute_source_path,),
+        (source_rel_path,),
     ).fetchall()
     grouped: dict[str, list[MentionRecord]] = defaultdict(list)
     for row in rows:
@@ -2262,14 +2241,14 @@ def _canonical_relation_from_row(row: sqlite3.Row) -> CanonicalRelationRecord:
 
 def _manifest_from_row(row: sqlite3.Row) -> ManifestRecord:
     return ManifestRecord(
-        source_rel_path=str(row["file_rel_path"]),
-        absolute_path=str(row["file_path"]),
+        source_rel_path=str(row["source_rel_path"]),
+        absolute_path=str(row["absolute_path"]),
         source_type=str(row["source_type"]),
         source_domain=str(row["source_domain"]),
         document_id=_optional_str(row["document_id"]),
         file_size_bytes=int(row["file_size_bytes"]),
         content_hash=str(row["blake3_hash"]),
-        parent_source_path=_optional_str(row["parent_source_path"]),
+        parent_source_rel_path=_optional_str(row["parent_source_rel_path"]),
         chunk_count=int(row["chunk_count"]),
         last_seen_at=str(row["last_seen_at"]),
         last_processed_at=_optional_str(row["last_processed_at"]),
@@ -2288,7 +2267,6 @@ def _chunk_from_row(row: sqlite3.Row) -> ChunkRecord:
         chunk_id=str(row["chunk_id"]),
         document_id=str(row["document_id"]),
         source_rel_path=str(row["source_rel_path"]),
-        source_path=str(row["source_path"]),
         source_filename=str(row["source_filename"]),
         source_type=str(row["source_type"]),
         source_domain=str(row["source_domain"]),
@@ -2332,13 +2310,14 @@ def _migrate_legacy_schema(connection: sqlite3.Connection) -> None:
     _migrate_legacy_mention_rows(connection)
     _migrate_legacy_ontology_snapshot(connection)
     _migrate_legacy_ingest_runs(connection)
+    _migrate_absolute_path_pks(connection)
 
 
 def _migrate_legacy_corpus_manifest(connection: sqlite3.Connection) -> None:
     if not _table_exists(connection, "corpus_manifest"):
         return
     columns = _table_columns(connection, "corpus_manifest")
-    if "blake3_hash" in columns and "file_path" in columns and "file_rel_path" in columns:
+    if "blake3_hash" in columns:
         return
 
     legacy_rows = connection.execute(
@@ -2439,7 +2418,7 @@ def _migrate_legacy_chunk_rows(connection: sqlite3.Connection) -> None:
     if not _table_exists(connection, "chunk_rows"):
         return
     columns = _table_columns(connection, "chunk_rows")
-    if "document_id" in columns and "source_path" in columns and "metadata_json" in columns:
+    if "document_id" in columns and "metadata_json" in columns:
         return
 
     legacy_rows = connection.execute(
@@ -2574,7 +2553,7 @@ def _migrate_legacy_mention_rows(connection: sqlite3.Connection) -> None:
     if not _table_exists(connection, "mention_rows"):
         return
     columns = _table_columns(connection, "mention_rows")
-    required_columns = {"mention_id", "term_source", "source_path", "source_domain"}
+    required_columns = {"mention_id", "term_source", "source_domain"}
     if required_columns.issubset(columns):
         return
 
@@ -2845,6 +2824,307 @@ def _migrate_legacy_ingest_runs(connection: sqlite3.Connection) -> None:
         ],
     )
     connection.execute("DROP TABLE ingest_runs_legacy")
+
+
+def _migrate_absolute_path_pks(connection: sqlite3.Connection) -> None:
+    """Migrate from absolute-path PKs/FKs to relative-path PKs/FKs for portability."""
+    if not _table_exists(connection, "corpus_manifest"):
+        return
+    columns = _table_columns(connection, "corpus_manifest")
+    if "source_rel_path" in columns and "absolute_path" in columns:
+        return
+    if "file_path" not in columns:
+        return
+
+    connection.execute("PRAGMA foreign_keys=OFF")
+
+    # --- corpus_manifest: file_path PK → source_rel_path PK ---
+    legacy_manifest = connection.execute(
+        """
+        SELECT file_path, file_rel_path, source_type, source_domain, document_id,
+               blake3_hash, file_size_bytes, parent_source_path,
+               lifecycle_status, retrieval_status, chunk_count,
+               last_seen_at, last_processed_at, last_committed_at, error_message
+        FROM corpus_manifest ORDER BY file_rel_path
+        """
+    ).fetchall()
+    abs_to_rel: dict[str, str] = {
+        str(row["file_path"]): str(row["file_rel_path"]) for row in legacy_manifest
+    }
+    connection.execute("ALTER TABLE corpus_manifest RENAME TO corpus_manifest_v2_legacy")
+    connection.execute(
+        """
+        CREATE TABLE corpus_manifest (
+            source_rel_path TEXT PRIMARY KEY,
+            absolute_path TEXT NOT NULL,
+            source_type TEXT NOT NULL,
+            source_domain TEXT NOT NULL,
+            document_id TEXT,
+            blake3_hash TEXT NOT NULL,
+            file_size_bytes INTEGER NOT NULL,
+            parent_source_rel_path TEXT,
+            lifecycle_status TEXT NOT NULL,
+            retrieval_status TEXT NOT NULL,
+            chunk_count INTEGER NOT NULL DEFAULT 0,
+            last_seen_at TEXT NOT NULL,
+            last_processed_at TEXT,
+            last_committed_at TEXT,
+            error_message TEXT
+        )
+        """
+    )
+    connection.executemany(
+        """
+        INSERT INTO corpus_manifest (
+            source_rel_path, absolute_path, source_type, source_domain, document_id,
+            blake3_hash, file_size_bytes, parent_source_rel_path,
+            lifecycle_status, retrieval_status, chunk_count,
+            last_seen_at, last_processed_at, last_committed_at, error_message
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+        [
+            (
+                str(row["file_rel_path"]),
+                str(row["file_path"]),
+                str(row["source_type"]),
+                str(row["source_domain"]),
+                row["document_id"],
+                str(row["blake3_hash"]),
+                int(row["file_size_bytes"]),
+                abs_to_rel.get(str(row["parent_source_path"]))
+                if row["parent_source_path"]
+                else None,
+                str(row["lifecycle_status"]),
+                str(row["retrieval_status"]),
+                int(row["chunk_count"]),
+                str(row["last_seen_at"]),
+                row["last_processed_at"],
+                row["last_committed_at"],
+                row["error_message"],
+            )
+            for row in legacy_manifest
+        ],
+    )
+    connection.execute("DROP TABLE corpus_manifest_v2_legacy")
+
+    # --- chunk_rows: remove source_path, FK → source_rel_path ---
+    chunk_columns = _table_columns(connection, "chunk_rows")
+    if "source_path" in chunk_columns:
+        legacy_chunks = connection.execute(
+            """
+            SELECT chunk_id, document_id, source_rel_path, source_filename,
+                   source_type, source_domain, source_hash, citation_label,
+                   chunk_index, chunk_occurrence, token_count, text, chunk_hash,
+                   score_hint, metadata_json, vector_json, embedding_model, embedding_dims
+            FROM chunk_rows ORDER BY source_rel_path, chunk_index
+            """
+        ).fetchall()
+        connection.execute("ALTER TABLE chunk_rows RENAME TO chunk_rows_v2_legacy")
+        connection.execute(
+            """
+            CREATE TABLE chunk_rows (
+                chunk_id TEXT PRIMARY KEY,
+                document_id TEXT NOT NULL,
+                source_rel_path TEXT NOT NULL,
+                source_filename TEXT NOT NULL,
+                source_type TEXT NOT NULL,
+                source_domain TEXT NOT NULL,
+                source_hash TEXT NOT NULL,
+                citation_label TEXT NOT NULL,
+                chunk_index INTEGER NOT NULL,
+                chunk_occurrence INTEGER NOT NULL,
+                token_count INTEGER NOT NULL,
+                text TEXT NOT NULL,
+                chunk_hash TEXT NOT NULL,
+                score_hint TEXT NOT NULL,
+                metadata_json TEXT NOT NULL,
+                vector_json TEXT NOT NULL,
+                embedding_model TEXT NOT NULL,
+                embedding_dims INTEGER NOT NULL,
+                FOREIGN KEY(source_rel_path) REFERENCES corpus_manifest(source_rel_path)
+                    ON DELETE CASCADE
+            )
+            """
+        )
+        connection.executemany(
+            """
+            INSERT INTO chunk_rows (
+                chunk_id, document_id, source_rel_path, source_filename,
+                source_type, source_domain, source_hash, citation_label,
+                chunk_index, chunk_occurrence, token_count, text, chunk_hash,
+                score_hint, metadata_json, vector_json, embedding_model, embedding_dims
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            [
+                (
+                    str(row["chunk_id"]),
+                    str(row["document_id"]),
+                    str(row["source_rel_path"]),
+                    str(row["source_filename"]),
+                    str(row["source_type"]),
+                    str(row["source_domain"]),
+                    str(row["source_hash"]),
+                    str(row["citation_label"]),
+                    int(row["chunk_index"]),
+                    int(row["chunk_occurrence"]),
+                    int(row["token_count"]),
+                    str(row["text"]),
+                    str(row["chunk_hash"]),
+                    str(row["score_hint"]),
+                    str(row["metadata_json"]),
+                    str(row["vector_json"]),
+                    str(row["embedding_model"]),
+                    int(row["embedding_dims"]),
+                )
+                for row in legacy_chunks
+            ],
+        )
+        connection.execute("DROP TABLE chunk_rows_v2_legacy")
+
+    # --- mention_rows: source_path → source_rel_path ---
+    mention_columns = _table_columns(connection, "mention_rows")
+    if "source_path" in mention_columns and "source_rel_path" not in mention_columns:
+        legacy_mentions = connection.execute(
+            """
+            SELECT mention_id, entity_id, term_source, source_domain,
+                   source_path, source_filename, chunk_id, surface_form,
+                   start_char, end_char
+            FROM mention_rows
+            """
+        ).fetchall()
+        connection.execute("ALTER TABLE mention_rows RENAME TO mention_rows_v2_legacy")
+        connection.execute(
+            """
+            CREATE TABLE mention_rows (
+                mention_id TEXT PRIMARY KEY,
+                entity_id TEXT NOT NULL,
+                term_source TEXT NOT NULL,
+                source_domain TEXT NOT NULL,
+                source_rel_path TEXT NOT NULL,
+                source_filename TEXT NOT NULL,
+                chunk_id TEXT NOT NULL,
+                surface_form TEXT NOT NULL,
+                start_char INTEGER NOT NULL,
+                end_char INTEGER NOT NULL,
+                FOREIGN KEY(chunk_id) REFERENCES chunk_rows(chunk_id) ON DELETE CASCADE,
+                FOREIGN KEY(source_rel_path) REFERENCES corpus_manifest(source_rel_path)
+                    ON DELETE CASCADE
+            )
+            """
+        )
+        connection.executemany(
+            """
+            INSERT INTO mention_rows (
+                mention_id, entity_id, term_source, source_domain,
+                source_rel_path, source_filename, chunk_id, surface_form,
+                start_char, end_char
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            [
+                (
+                    str(row["mention_id"]),
+                    str(row["entity_id"]),
+                    str(row["term_source"]),
+                    str(row["source_domain"]),
+                    abs_to_rel.get(str(row["source_path"]), str(row["source_path"])),
+                    str(row["source_filename"]),
+                    str(row["chunk_id"]),
+                    str(row["surface_form"]),
+                    int(row["start_char"]),
+                    int(row["end_char"]),
+                )
+                for row in legacy_mentions
+            ],
+        )
+        connection.execute("DROP TABLE mention_rows_v2_legacy")
+
+    # --- asset_links: asset_path PK → asset_rel_path, parent_source_path → rel ---
+    if _table_exists(connection, "asset_links"):
+        asset_columns = _table_columns(connection, "asset_links")
+        if "asset_path" in asset_columns and "parent_source_path" in asset_columns:
+            legacy_assets = connection.execute(
+                """
+                SELECT asset_rel_path, asset_filename, source_domain,
+                       parent_source_path, parent_document_id,
+                       page_no, asset_index, link_method, blake3_hash, last_committed_at
+                FROM asset_links
+                """
+            ).fetchall()
+            connection.execute("ALTER TABLE asset_links RENAME TO asset_links_v2_legacy")
+            connection.execute(
+                """
+                CREATE TABLE asset_links (
+                    asset_rel_path TEXT PRIMARY KEY,
+                    asset_filename TEXT NOT NULL,
+                    source_domain TEXT NOT NULL,
+                    parent_source_rel_path TEXT,
+                    parent_document_id TEXT,
+                    page_no INTEGER,
+                    asset_index INTEGER,
+                    link_method TEXT NOT NULL,
+                    blake3_hash TEXT NOT NULL,
+                    last_committed_at TEXT NOT NULL,
+                    FOREIGN KEY(asset_rel_path) REFERENCES corpus_manifest(source_rel_path)
+                        ON DELETE CASCADE
+                )
+                """
+            )
+            connection.executemany(
+                """
+                INSERT INTO asset_links (
+                    asset_rel_path, asset_filename, source_domain,
+                    parent_source_rel_path, parent_document_id,
+                    page_no, asset_index, link_method, blake3_hash, last_committed_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                [
+                    (
+                        str(row["asset_rel_path"]),
+                        str(row["asset_filename"]),
+                        str(row["source_domain"]),
+                        abs_to_rel.get(str(row["parent_source_path"]))
+                        if row["parent_source_path"]
+                        else None,
+                        row["parent_document_id"],
+                        row["page_no"],
+                        row["asset_index"],
+                        str(row["link_method"]),
+                        str(row["blake3_hash"]),
+                        str(row["last_committed_at"]),
+                    )
+                    for row in legacy_assets
+                ],
+            )
+            connection.execute("DROP TABLE asset_links_v2_legacy")
+
+    # --- ontology_sources: file_path PK → file_rel_path PK ---
+    if _table_exists(connection, "ontology_sources"):
+        onto_columns = _table_columns(connection, "ontology_sources")
+        if "file_path" in onto_columns:
+            legacy_onto = connection.execute(
+                "SELECT file_rel_path, blake3_hash, last_seen_at FROM ontology_sources"
+            ).fetchall()
+            connection.execute("ALTER TABLE ontology_sources RENAME TO ontology_sources_v2_legacy")
+            connection.execute(
+                """
+                CREATE TABLE ontology_sources (
+                    file_rel_path TEXT PRIMARY KEY,
+                    blake3_hash TEXT NOT NULL,
+                    last_seen_at TEXT NOT NULL
+                )
+                """
+            )
+            connection.executemany(
+                "INSERT INTO ontology_sources (file_rel_path, blake3_hash, last_seen_at)"
+                " VALUES (?, ?, ?)",
+                [
+                    (str(row["file_rel_path"]), str(row["blake3_hash"]), str(row["last_seen_at"]))
+                    for row in legacy_onto
+                ],
+            )
+            connection.execute("DROP TABLE ontology_sources_v2_legacy")
+
+    connection.execute("PRAGMA foreign_keys=ON")
 
 
 def _ensure_indexes(connection: sqlite3.Connection) -> None:

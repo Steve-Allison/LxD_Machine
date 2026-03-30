@@ -74,7 +74,6 @@ class RankedChunk:
     document_id: str
     citation_label: str
     source_rel_path: str
-    source_path: str
     source_filename: str
     source_type: str
     source_domain: str
@@ -342,7 +341,6 @@ def _dense_ranked_candidates(
                 document_id=item.document_id,
                 citation_label=item.citation_label,
                 source_rel_path=item.source_rel_path,
-                source_path=item.source_path,
                 source_filename=item.source_filename,
                 source_type=item.source_type,
                 source_domain=item.source_domain,

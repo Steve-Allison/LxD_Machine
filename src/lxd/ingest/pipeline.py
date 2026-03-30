@@ -177,7 +177,6 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
             sqlite_connection,
             [
                 OntologySourceRecord(
-                    file_path=str(source.file_path),
                     file_rel_path=source.file_rel_path,
                     blake3_hash=source.blake3_hash,
                     last_seen_at=timestamp,
@@ -258,7 +257,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                     manifest_record = _manifest_record(
                         scanned=scanned,
                         document_id=None,
-                        parent_source_path=None,
+                        parent_source_rel_path=None,
                         chunk_count=0,
                         timestamp=timestamp,
                         lifecycle_status=LifecycleStatus.PROCESSING,
@@ -280,7 +279,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                         document_id=manifest_record.document_id,
                         file_size_bytes=manifest_record.file_size_bytes,
                         content_hash=manifest_record.content_hash,
-                        parent_source_path=parent_manifest.absolute_path
+                        parent_source_rel_path=parent_manifest.source_rel_path
                         if parent_manifest
                         else None,
                         chunk_count=manifest_record.chunk_count,
@@ -294,12 +293,11 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                     upsert_manifest_record(sqlite_connection, committed_manifest)
                     upsert_asset_link(
                         sqlite_connection,
-                        scanned.absolute_path.as_posix(),
                         AssetLinkRecord(
                             asset_rel_path=scanned.relative_path,
                             asset_filename=scanned.absolute_path.name,
                             source_domain=scanned.source_domain,
-                            parent_source_path=parent_manifest.absolute_path
+                            parent_source_rel_path=parent_manifest.source_rel_path
                             if parent_manifest
                             else None,
                             parent_document_id=parent_manifest.document_id
@@ -340,7 +338,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                 processing_manifest = _manifest_record(
                     scanned=scanned,
                     document_id=document_id,
-                    parent_source_path=None,
+                    parent_source_rel_path=None,
                     chunk_count=0,
                     timestamp=timestamp,
                     lifecycle_status=LifecycleStatus.PROCESSING,
@@ -357,11 +355,11 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                             new_scanned=scanned,
                             document_id=document_id,
                         )
-                        delete_sqlite_source(sqlite_connection, move_source.absolute_path)
+                        delete_sqlite_source(sqlite_connection, move_source.source_rel_path)
                         delete_vector_source(vector_table, move_source.source_rel_path)
                         replace_sqlite_source_chunks(
                             sqlite_connection,
-                            absolute_source_path=scanned.absolute_path.as_posix(),
+                            source_rel_path=scanned.relative_path,
                             chunk_records=cloned_chunks,
                             mention_records=cloned_mentions,
                             relation_records=[],
@@ -382,7 +380,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                         )
                         replace_sqlite_source_chunks(
                             sqlite_connection,
-                            absolute_source_path=scanned.absolute_path.as_posix(),
+                            source_rel_path=scanned.relative_path,
                             chunk_records=chunk_records,
                             mention_records=mention_records,
                             relation_records=relation_records,
@@ -395,7 +393,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                     committed_manifest = _manifest_record(
                         scanned=scanned,
                         document_id=document_id,
-                        parent_source_path=None,
+                        parent_source_rel_path=None,
                         chunk_count=len(chunk_records),
                         timestamp=timestamp,
                         lifecycle_status=LifecycleStatus.COMPLETE,
@@ -411,7 +409,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                     failed_manifest = _manifest_record(
                         scanned=scanned,
                         document_id=document_id,
-                        parent_source_path=None,
+                        parent_source_rel_path=None,
                         chunk_count=0,
                         timestamp=timestamp,
                         lifecycle_status=LifecycleStatus.FAILED,
@@ -596,7 +594,6 @@ def _build_source_records(
             chunk_id=chunk.chunk_id,
             document_id=document_id,
             source_rel_path=chunk.source_rel_path,
-            source_path=scanned.absolute_path.as_posix(),
             source_filename=scanned.absolute_path.name,
             source_type=chunk.source_type,
             source_domain=scanned.source_domain,
@@ -730,7 +727,7 @@ def _manifest_record(
     *,
     scanned: ScannedCorpusFile,
     document_id: str | None,
-    parent_source_path: str | None,
+    parent_source_rel_path: str | None,
     chunk_count: int,
     timestamp: str,
     lifecycle_status: LifecycleStatus,
@@ -745,7 +742,7 @@ def _manifest_record(
         document_id=document_id,
         file_size_bytes=scanned.file_size_bytes,
         content_hash=scanned.content_hash,
-        parent_source_path=parent_source_path,
+        parent_source_rel_path=parent_source_rel_path,
         chunk_count=chunk_count,
         last_seen_at=timestamp,
         last_processed_at=timestamp,
@@ -782,7 +779,7 @@ def _can_skip_unchanged_source(
         return True
     if manifest.retrieval_status != RetrievalStatus.SEARCHABLE or manifest.chunk_count <= 0:
         return False
-    committed_chunks = load_chunk_records_for_source(sqlite_connection, manifest.absolute_path)
+    committed_chunks = load_chunk_records_for_source(sqlite_connection, manifest.source_rel_path)
     return len(committed_chunks) == manifest.chunk_count
 
 
@@ -806,8 +803,8 @@ def _clone_source_records(
     new_scanned: ScannedCorpusFile,
     document_id: str,
 ) -> tuple[list[ChunkRecord], list[MentionRecord]]:
-    old_chunks = load_chunk_records_for_source(sqlite_connection, old_manifest.absolute_path)
-    mentions_by_chunk = load_mentions_for_source(sqlite_connection, old_manifest.absolute_path)
+    old_chunks = load_chunk_records_for_source(sqlite_connection, old_manifest.source_rel_path)
+    mentions_by_chunk = load_mentions_for_source(sqlite_connection, old_manifest.source_rel_path)
     chunk_id_map: dict[str, str] = {}
     cloned_chunks: list[ChunkRecord] = []
     for old_chunk in old_chunks:
@@ -818,7 +815,6 @@ def _clone_source_records(
                 chunk_id=chunk_id,
                 document_id=document_id,
                 source_rel_path=new_scanned.relative_path,
-                source_path=new_scanned.absolute_path.as_posix(),
                 source_filename=new_scanned.absolute_path.name,
                 source_type=old_chunk.source_type,
                 source_domain=new_scanned.source_domain,

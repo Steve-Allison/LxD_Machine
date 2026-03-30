@@ -13,7 +13,6 @@ class Candidate:
     document_id: str
     citation_label: str
     source_rel_path: str
-    source_path: str
     source_filename: str
     source_type: str
     source_domain: str
@@ -91,7 +90,6 @@ def test_rerank_chunks_uses_llama_cpp_backend(monkeypatch) -> None:
             document_id="doc",
             citation_label="A",
             source_rel_path="a.md",
-            source_path="/tmp/a.md",
             source_filename="a.md",
             source_type="markdown",
             source_domain="guides",
@@ -109,7 +107,6 @@ def test_rerank_chunks_uses_llama_cpp_backend(monkeypatch) -> None:
             document_id="doc",
             citation_label="B",
             source_rel_path="b.md",
-            source_path="/tmp/b.md",
             source_filename="b.md",
             source_type="markdown",
             source_domain="guides",
@@ -151,7 +148,6 @@ def test_rerank_chunks_falls_back_when_url_not_configured() -> None:
             document_id="doc",
             citation_label="A",
             source_rel_path="a.md",
-            source_path="/tmp/a.md",
             source_filename="a.md",
             source_type="markdown",
             source_domain="guides",
@@ -262,7 +258,6 @@ def test_apply_rerank_payload_orders_by_descending_relevance() -> None:
             document_id="doc",
             citation_label="A",
             source_rel_path="a.md",
-            source_path="/tmp/a.md",
             source_filename="a.md",
             source_type="markdown",
             source_domain="guides",
@@ -280,7 +275,6 @@ def test_apply_rerank_payload_orders_by_descending_relevance() -> None:
             document_id="doc",
             citation_label="B",
             source_rel_path="b.md",
-            source_path="/tmp/b.md",
             source_filename="b.md",
             source_type="markdown",
             source_domain="guides",
@@ -298,7 +292,6 @@ def test_apply_rerank_payload_orders_by_descending_relevance() -> None:
             document_id="doc",
             citation_label="C",
             source_rel_path="c.md",
-            source_path="/tmp/c.md",
             source_filename="c.md",
             source_type="markdown",
             source_domain="guides",

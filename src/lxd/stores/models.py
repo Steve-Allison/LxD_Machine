@@ -46,7 +46,7 @@ class ManifestRecord:
     document_id: str | None
     file_size_bytes: int
     content_hash: str
-    parent_source_path: str | None
+    parent_source_rel_path: str | None
     chunk_count: int
     last_seen_at: str
     last_processed_at: str | None
@@ -63,7 +63,6 @@ class ChunkRecord:
     chunk_id: str
     document_id: str
     source_rel_path: str
-    source_path: str
     source_filename: str
     source_type: str
     source_domain: str
@@ -100,7 +99,7 @@ class AssetLinkRecord:
     asset_rel_path: str
     asset_filename: str
     source_domain: str
-    parent_source_path: str | None
+    parent_source_rel_path: str | None
     parent_document_id: str | None
     link_method: str
     page_no: int | None
@@ -113,7 +112,6 @@ class AssetLinkRecord:
 class OntologySourceRecord:
     """Persisted ontology source file metadata."""
 
-    file_path: str
     file_rel_path: str
     blake3_hash: str
     last_seen_at: str
@@ -194,7 +192,6 @@ class VectorSearchRecord:
     chunk_id: str
     document_id: str
     source_rel_path: str
-    source_path: str
     source_filename: str
     source_type: str
     source_domain: str

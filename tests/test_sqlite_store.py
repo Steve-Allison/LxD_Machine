@@ -33,7 +33,7 @@ def test_sqlite_store_round_trip(tmp_path) -> None:
                 document_id="doc-guides",
                 file_size_bytes=123,
                 content_hash="abc123",
-                parent_source_path=None,
+                parent_source_rel_path=None,
                 chunk_count=1,
                 last_seen_at="2026-03-10T00:00:00+00:00",
                 last_processed_at="2026-03-10T00:00:00+00:00",
@@ -43,13 +43,12 @@ def test_sqlite_store_round_trip(tmp_path) -> None:
         )
         replace_source_chunks(
             connection,
-            absolute_source_path="/tmp/example.md",
+            source_rel_path="Guides/example.md",
             chunk_records=[
                 ChunkRecord(
                     chunk_id="chunk-1",
                     document_id="doc-guides",
                     source_rel_path="Guides/example.md",
-                    source_path="/tmp/example.md",
                     source_filename="example.md",
                     source_type="markdown",
                     source_domain="guides",
@@ -79,8 +78,8 @@ def test_sqlite_store_round_trip(tmp_path) -> None:
             ],
         )
 
-        loaded_chunks = load_chunk_records_for_source(connection, "/tmp/example.md")
-        loaded_mentions = load_mentions_for_source(connection, "/tmp/example.md")
+        loaded_chunks = load_chunk_records_for_source(connection, "Guides/example.md")
+        loaded_mentions = load_mentions_for_source(connection, "Guides/example.md")
         summary = summarize_store(
             connection,
             ontology_file_count=10,
