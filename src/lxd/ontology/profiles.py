@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import json
 import sqlite3
 from datetime import UTC, datetime
@@ -10,10 +11,13 @@ from typing import Any
 import structlog
 
 from lxd.domain.ids import blake3_hex
+from lxd.ingest.llm_client import call_with_fallback_async, run_concurrent_extraction
 from lxd.ontology.entity_graph import CentralityScores
 from lxd.settings.models import RuntimeConfig
 from lxd.stores.models import CommunityReportRecord, EntityProfileRecord
 from lxd.stores.sqlite import (
+    load_all_community_reports,
+    load_all_entity_profiles,
     load_claims_for_entities,
     load_community_members,
     load_entity_mention_stats,
@@ -42,6 +46,7 @@ def build_entity_profiles(
     """
     mention_stats = load_entity_mention_stats(connection)
     existing_hashes = load_entity_profile_source_hashes(connection) if not force else {}
+    chunk_ids_by_entity = _load_chunk_ids_by_entity(connection)
 
     timestamp = datetime.now(UTC).isoformat()
     profiles_built = 0
@@ -87,12 +92,9 @@ def build_entity_profiles(
         # Top predicates from canonical relations
         top_preds = load_top_predicates_for_entity(connection, entity_id, limit=10)
 
-        # Compute chunk IDs for source hash
-        chunk_ids_rows = connection.execute(
-            "SELECT DISTINCT chunk_id FROM mention_rows WHERE entity_id = ? ORDER BY chunk_id",
-            (entity_id,),
-        ).fetchall()
-        chunk_ids = sorted(str(r["chunk_id"]) for r in chunk_ids_rows)
+        # Chunk IDs for source hash are preloaded in one grouped query above
+        # to avoid an N+1 pattern across the ontology.
+        chunk_ids = chunk_ids_by_entity.get(entity_id, [])
         claim_ids = sorted(c.claim_id for c in claims)
 
         # Source hash per Section 3.2 definition
@@ -181,6 +183,28 @@ def build_entity_profiles(
     return profiles_built
 
 
+def _load_chunk_ids_by_entity(connection: sqlite3.Connection) -> dict[str, list[str]]:
+    """Return ``{entity_id: sorted unique chunk_ids}`` in a single query.
+
+    Replaces the per-entity ``SELECT DISTINCT chunk_id FROM mention_rows ...``
+    loop in :func:`build_entity_profiles`. Chunk IDs are sorted lexicographically
+    within each entity so callers can feed them directly into ``blake3_hex``
+    without an additional sort.
+    """
+    rows = connection.execute(
+        """
+        SELECT entity_id, chunk_id
+        FROM mention_rows
+        GROUP BY entity_id, chunk_id
+        ORDER BY entity_id, chunk_id
+        """
+    ).fetchall()
+    grouped: dict[str, list[str]] = {}
+    for row in rows:
+        grouped.setdefault(str(row["entity_id"]), []).append(str(row["chunk_id"]))
+    return grouped
+
+
 def build_community_reports(
     connection: sqlite3.Connection,
     community_assignments: dict[str, int],
@@ -244,14 +268,18 @@ def build_community_reports(
         ).fetchone()
         intra_edge_count = int(intra_edges["cnt"]) if intra_edges else 0
 
-        # Member source hashes for staleness detection
-        member_hashes = []
-        for eid in sorted_members:
-            row = connection.execute(
-                "SELECT source_hash FROM entity_profiles WHERE entity_id = ?", (eid,)
-            ).fetchone()
-            if row:
-                member_hashes.append(str(row["source_hash"]))
+        # Member source hashes for staleness detection.
+        # Single IN(...) query to avoid N+1 SQLite round-trips per community.
+        if sorted_members:
+            placeholders = ",".join("?" * len(sorted_members))
+            hash_rows = connection.execute(
+                f"SELECT entity_id, source_hash FROM entity_profiles "
+                f"WHERE entity_id IN ({placeholders})",
+                sorted_members,
+            ).fetchall()
+            member_hashes = [str(row["source_hash"]) for row in hash_rows]
+        else:
+            member_hashes = []
 
         source_hash = blake3_hex(*sorted_members, *sorted(member_hashes))
 
@@ -297,8 +325,6 @@ def enrich_entity_profiles_with_llm(
     Returns:
         Number of summaries generated.
     """
-    import asyncio
-
     return asyncio.run(_enrich_async(connection, config, force=force))
 
 
@@ -315,9 +341,6 @@ async def _enrich_async(
     force: bool = False,
 ) -> int:
     """Async concurrent enrichment of profiles and community reports."""
-    from lxd.ingest.llm_client import call_with_fallback_async, run_concurrent_extraction
-    from lxd.stores.sqlite import load_all_community_reports, load_all_entity_profiles
-
     kg_cfg = config.knowledge_graph
     api_key_env = config.openai.api_key_env if config.openai else "OPENAI_API_KEY"
     ollama_host = str(config.ollama.url)

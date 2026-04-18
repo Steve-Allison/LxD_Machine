@@ -26,7 +26,11 @@ from lxd.ingest.llm_client import (
 )
 from lxd.settings.models import RuntimeConfig
 from lxd.stores.models import ClaimRecord
-from lxd.stores.sqlite import insert_claims, load_chunk_ids_with_claims
+from lxd.stores.sqlite import (
+    insert_claims,
+    load_chunk_ids_with_claims,
+    upsert_graph_metadata,
+)
 
 _log = structlog.get_logger(__name__)
 
@@ -132,7 +136,6 @@ def prepare_claims_batch_jsonl(
     meta_path.write_text(meta_payload)
 
     # Also persist in SQLite so batch collection survives data/batch/ loss or machine moves
-    from lxd.stores.sqlite import upsert_graph_metadata
 
     upsert_graph_metadata(
         connection,
@@ -359,8 +362,8 @@ def _load_qualifying_chunks(
         all_entity_set.add(eid)
 
     # Sort entity lists for determinism
-    for cid in entity_ids_by_chunk:
-        entity_ids_by_chunk[cid].sort()
+    for entity_list in entity_ids_by_chunk.values():
+        entity_list.sort()
 
     all_entity_ids = sorted(all_entity_set)
 
@@ -384,13 +387,19 @@ def _build_user_prompt(chunk_text: str, entity_ids: list[str]) -> str:
 
 
 def _parse_response(raw_text: str) -> list[dict[str, Any]]:
-    """Parse LLM JSON response into raw claim dicts."""
+    """Parse LLM JSON response into raw claim dicts.
+
+    Returns an empty list for any payload that is not a JSON object with a
+    ``claims`` array. Logs parse failures with ``exc_info`` so the silent
+    fallback remains observable.
+    """
     try:
         data = json.loads(raw_text)
-        items = data.get("claims", []) if isinstance(data, dict) else []
-        return [item for item in items if isinstance(item, dict)]
-    except Exception:
+    except json.JSONDecodeError:
+        _log.warning("claims_response_parse_failed", exc_info=True)
         return []
+    items = data.get("claims", []) if isinstance(data, dict) else []
+    return [item for item in items if isinstance(item, dict)]
 
 
 # ---------------------------------------------------------------------------
@@ -444,11 +453,10 @@ def _build_claim_records(
         if claim_type not in _VALID_CLAIM_TYPES:
             claim_type = "assertion"
 
-        # Clamp confidence
         if not isinstance(confidence, (int, float)):
             try:
                 confidence = float(confidence)
-            except Exception:
+            except TypeError, ValueError:
                 confidence = 0.5
         confidence = max(0.0, min(1.0, float(confidence)))
 

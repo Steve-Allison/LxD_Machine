@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+import sqlite3
 from dataclasses import dataclass
 
 import structlog
@@ -10,11 +11,13 @@ import structlog
 from lxd.app.status import config_drift_warnings
 from lxd.retrieval.dense import embed_query
 from lxd.retrieval.expansion import expand_question
+from lxd.retrieval.graph_routing import build_graph_context, format_graph_context_prompt
 from lxd.retrieval.rerank import rerank_chunks
 from lxd.settings.models import RuntimeConfig
 from lxd.stores.lancedb import connect_lancedb, open_chunk_table
 from lxd.stores.lancedb import search_chunks as search_vector_chunks
 from lxd.stores.sqlite import (
+    StorePaths,
     build_store_paths,
     connect_sqlite,
     initialize_schema,
@@ -274,8 +277,6 @@ def _build_graph_context_prompt(config: RuntimeConfig, matched_entity_ids: list[
     try:
         connection = connect_sqlite(store_paths.sqlite_path)
         try:
-            from lxd.retrieval.graph_routing import build_graph_context, format_graph_context_prompt
-
             context = build_graph_context(connection, matched_entity_ids, config)
             prompt = format_graph_context_prompt(context)
             if prompt:
@@ -289,8 +290,8 @@ def _build_graph_context_prompt(config: RuntimeConfig, matched_entity_ids: list[
             return prompt
         finally:
             connection.close()
-    except Exception as exc:
-        _log.warning("graph context building failed, proceeding without: %s", exc)
+    except (sqlite3.DatabaseError, OSError) as exc:
+        _log.warning("graph_context_building_failed", exc_info=True, error=str(exc))
         return ""
 
 
@@ -365,10 +366,11 @@ def _dense_ranked_candidates(
 def _load_relation_chunk_ids(store_paths: object, entity_ids: list[str]) -> set[str]:
     """Load chunk IDs that have extracted relations for any of the queried entities.
 
-    Returns an empty set silently if the store doesn't exist or the query fails.
+    Returns an empty set when the store file does not exist, when the caller
+    passed a non-``StorePaths`` value, or when SQLite reports a database-level
+    error while loading (schema missing, corruption, etc.). I/O errors are
+    logged with ``exc_info`` so the silent path is observable.
     """
-    from lxd.stores.sqlite import StorePaths  # avoid circular at module level
-
     if not entity_ids or not isinstance(store_paths, StorePaths):
         return set()
     sqlite_path = store_paths.sqlite_path
@@ -380,7 +382,8 @@ def _load_relation_chunk_ids(store_paths: object, entity_ids: list[str]) -> set[
             return load_relation_chunk_ids(connection, entity_ids)
         finally:
             connection.close()
-    except Exception:
+    except sqlite3.DatabaseError, OSError:
+        _log.warning("load_relation_chunk_ids_failed", exc_info=True)
         return set()
 
 

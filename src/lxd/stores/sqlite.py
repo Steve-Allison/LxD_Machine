@@ -8,7 +8,18 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
-from lxd.domain.ids import blake3_hex
+from lxd.stores._sqlite_legacy_migrations import migrate_legacy_schema
+from lxd.stores._sqlite_rows import (
+    canonical_relation_from_row,
+    chunk_from_row,
+    claim_from_row,
+    community_report_from_row,
+    entity_profile_from_row,
+    manifest_from_row,
+    mention_id,
+    optional_str,
+    row_value,
+)
 from lxd.stores.models import (
     AssetLinkRecord,
     CanonicalRelationRecord,
@@ -29,12 +40,23 @@ from lxd.stores.models import (
     RelationEvidenceRecord,
     StorePaths,
 )
+from lxd.stores.schema import ensure_schema
 
 _SQLITE_FILENAME = "lxd.sqlite3"
 
 
 def connect_sqlite(path: Path) -> sqlite3.Connection:
     """Open SQLite storage and apply connection settings.
+
+    Applies tuned PRAGMAs on every fresh connection:
+
+    - ``journal_mode=WAL`` — concurrent readers alongside a single writer.
+    - ``synchronous=NORMAL`` — safe under WAL, meaningfully faster than FULL.
+    - ``foreign_keys=ON`` — enforce declared FKs (off by default in sqlite3).
+    - ``busy_timeout=5000`` — tolerate brief lock contention in place of
+      immediate ``database is locked`` errors.
+    - ``temp_store=MEMORY`` — keep transient B-trees in RAM, not tempfiles.
+    - ``cache_size=-65536`` — ~64 MiB per-connection page cache.
 
     Args:
         path: Path to the source file or storage location.
@@ -46,7 +68,11 @@ def connect_sqlite(path: Path) -> sqlite3.Connection:
     connection = sqlite3.connect(path)
     connection.row_factory = sqlite3.Row
     connection.execute("PRAGMA journal_mode=WAL;")
+    connection.execute("PRAGMA synchronous=NORMAL;")
     connection.execute("PRAGMA foreign_keys=ON;")
+    connection.execute("PRAGMA busy_timeout=5000;")
+    connection.execute("PRAGMA temp_store=MEMORY;")
+    connection.execute("PRAGMA cache_size=-65536;")
     return connection
 
 
@@ -65,279 +91,26 @@ def build_store_paths(data_path: Path) -> StorePaths:
 def initialize_schema(connection: sqlite3.Connection) -> None:
     """Create and migrate required SQLite tables.
 
+    Order of operations:
+
+    1. Apply legacy ad-hoc migrations first, so pre-versioning databases
+       reach the shape that the numbered migrations expect.
+    2. Delegate to :func:`lxd.stores.schema.ensure_schema` to create missing
+       baseline tables and run pending numbered migrations (e.g. dropping
+       obsolete columns) with ``PRAGMA user_version`` stamped on success.
+    3. Ensure runtime indexes that may live outside the DDL.
+
     Args:
         connection: Open SQLite connection.
+
+    Side Effects:
+        Executes DDL and bumps ``PRAGMA user_version`` to the current schema
+        version.
     """
     with connection:
-        connection.executescript(
-            """
-            CREATE TABLE IF NOT EXISTS corpus_manifest (
-                source_rel_path TEXT PRIMARY KEY,
-                absolute_path TEXT NOT NULL,
-                source_type TEXT NOT NULL,
-                source_domain TEXT NOT NULL,
-                document_id TEXT,
-                blake3_hash TEXT NOT NULL,
-                file_size_bytes INTEGER NOT NULL,
-                parent_source_rel_path TEXT,
-                lifecycle_status TEXT NOT NULL,
-                retrieval_status TEXT NOT NULL,
-                chunk_count INTEGER NOT NULL DEFAULT 0,
-                last_seen_at TEXT NOT NULL,
-                last_processed_at TEXT,
-                last_committed_at TEXT,
-                error_message TEXT
-            );
-
-            CREATE TABLE IF NOT EXISTS chunk_rows (
-                chunk_id TEXT PRIMARY KEY,
-                document_id TEXT NOT NULL,
-                source_rel_path TEXT NOT NULL,
-                source_filename TEXT NOT NULL,
-                source_type TEXT NOT NULL,
-                source_domain TEXT NOT NULL,
-                source_hash TEXT NOT NULL,
-                citation_label TEXT NOT NULL,
-                chunk_index INTEGER NOT NULL,
-                chunk_occurrence INTEGER NOT NULL,
-                token_count INTEGER NOT NULL,
-                text TEXT NOT NULL,
-                chunk_hash TEXT NOT NULL,
-                score_hint TEXT NOT NULL,
-                metadata_json TEXT NOT NULL,
-                vector_json TEXT NOT NULL,
-                embedding_model TEXT NOT NULL,
-                embedding_dims INTEGER NOT NULL,
-                FOREIGN KEY(source_rel_path) REFERENCES corpus_manifest(source_rel_path) ON DELETE CASCADE
-            );
-
-            CREATE TABLE IF NOT EXISTS asset_links (
-                asset_rel_path TEXT PRIMARY KEY,
-                asset_filename TEXT NOT NULL,
-                source_domain TEXT NOT NULL,
-                parent_source_rel_path TEXT,
-                parent_document_id TEXT,
-                page_no INTEGER,
-                asset_index INTEGER,
-                link_method TEXT NOT NULL,
-                blake3_hash TEXT NOT NULL,
-                last_committed_at TEXT NOT NULL,
-                FOREIGN KEY(asset_rel_path) REFERENCES corpus_manifest(source_rel_path) ON DELETE CASCADE
-            );
-
-            CREATE TABLE IF NOT EXISTS mention_rows (
-                mention_id TEXT PRIMARY KEY,
-                entity_id TEXT NOT NULL,
-                term_source TEXT NOT NULL,
-                source_domain TEXT NOT NULL,
-                source_rel_path TEXT NOT NULL,
-                source_filename TEXT NOT NULL,
-                chunk_id TEXT NOT NULL,
-                surface_form TEXT NOT NULL,
-                start_char INTEGER NOT NULL,
-                end_char INTEGER NOT NULL,
-                FOREIGN KEY(chunk_id) REFERENCES chunk_rows(chunk_id) ON DELETE CASCADE,
-                FOREIGN KEY(source_rel_path) REFERENCES corpus_manifest(source_rel_path) ON DELETE CASCADE
-            );
-
-            CREATE INDEX IF NOT EXISTS idx_mention_rows_entity_id
-            ON mention_rows(entity_id);
-
-            CREATE TABLE IF NOT EXISTS ontology_sources (
-                file_rel_path TEXT PRIMARY KEY,
-                blake3_hash TEXT NOT NULL,
-                last_seen_at TEXT NOT NULL
-            );
-
-            CREATE TABLE IF NOT EXISTS ontology_snapshot (
-                snapshot_id TEXT PRIMARY KEY CHECK (snapshot_id = 'current'),
-                ontology_root TEXT NOT NULL,
-                blake3_hash TEXT NOT NULL,
-                matcher_termset_hash TEXT NOT NULL,
-                matcher_term_count INTEGER NOT NULL,
-                source_file_count INTEGER NOT NULL,
-                entity_file_count INTEGER NOT NULL,
-                entity_count INTEGER NOT NULL,
-                coverage_path_count INTEGER NOT NULL DEFAULT 0,
-                graph_relation_count INTEGER NOT NULL DEFAULT 0,
-                validation_issue_count INTEGER NOT NULL DEFAULT 0,
-                validation_issues_json TEXT NOT NULL DEFAULT '[]',
-                last_loaded_at TEXT NOT NULL
-            );
-
-            CREATE TABLE IF NOT EXISTS extracted_relations (
-                relation_id TEXT PRIMARY KEY,
-                chunk_id TEXT NOT NULL,
-                document_id TEXT NOT NULL,
-                source_rel_path TEXT NOT NULL,
-                subject_entity_id TEXT NOT NULL,
-                predicate TEXT NOT NULL,
-                object_entity_id TEXT NOT NULL,
-                confidence REAL NOT NULL,
-                extraction_model TEXT NOT NULL,
-                extracted_at TEXT NOT NULL,
-                FOREIGN KEY(chunk_id) REFERENCES chunk_rows(chunk_id) ON DELETE CASCADE
-            );
-
-            CREATE INDEX IF NOT EXISTS idx_extracted_relations_subject
-            ON extracted_relations(subject_entity_id);
-
-            CREATE INDEX IF NOT EXISTS idx_extracted_relations_object
-            ON extracted_relations(object_entity_id);
-
-            CREATE TABLE IF NOT EXISTS ingest_config (
-                key TEXT PRIMARY KEY,
-                value TEXT NOT NULL
-            );
-
-            CREATE TABLE IF NOT EXISTS ingest_runs (
-                run_id TEXT PRIMARY KEY,
-                started_at TEXT NOT NULL,
-                finished_at TEXT,
-                mode TEXT NOT NULL,
-                status TEXT NOT NULL,
-                files_total INTEGER NOT NULL,
-                files_completed INTEGER NOT NULL,
-                searchable_files_rebuilt INTEGER NOT NULL,
-                asset_files_processed INTEGER NOT NULL,
-                unchanged_files_skipped INTEGER NOT NULL,
-                failed_files INTEGER NOT NULL,
-                chunks_written INTEGER NOT NULL,
-                notes TEXT NOT NULL
-            );
-
-            -- Knowledge Graph tables (Phase 5)
-
-            CREATE TABLE IF NOT EXISTS claims (
-                claim_id TEXT PRIMARY KEY,
-                chunk_id TEXT NOT NULL,
-                document_id TEXT NOT NULL,
-                source_rel_path TEXT NOT NULL,
-                claim_text TEXT NOT NULL,
-                subject_entity_id TEXT,
-                object_entity_id TEXT,
-                claim_type TEXT NOT NULL DEFAULT 'assertion',
-                confidence REAL NOT NULL,
-                extraction_model TEXT NOT NULL,
-                extracted_at TEXT NOT NULL,
-                FOREIGN KEY(chunk_id) REFERENCES chunk_rows(chunk_id) ON DELETE CASCADE
-            );
-            CREATE INDEX IF NOT EXISTS idx_claims_subject ON claims(subject_entity_id);
-            CREATE INDEX IF NOT EXISTS idx_claims_object ON claims(object_entity_id);
-            CREATE INDEX IF NOT EXISTS idx_claims_chunk ON claims(chunk_id);
-            CREATE INDEX IF NOT EXISTS idx_claims_document ON claims(document_id);
-
-            CREATE TABLE IF NOT EXISTS entity_profiles (
-                entity_id TEXT PRIMARY KEY,
-                label TEXT NOT NULL,
-                entity_type TEXT NOT NULL,
-                domain TEXT NOT NULL DEFAULT '',
-                aliases_json TEXT NOT NULL DEFAULT '[]',
-                deterministic_summary TEXT NOT NULL,
-                llm_summary TEXT,
-                chunk_count INTEGER NOT NULL,
-                doc_count INTEGER NOT NULL,
-                mention_count INTEGER NOT NULL,
-                claim_count INTEGER NOT NULL DEFAULT 0,
-                top_predicates_json TEXT NOT NULL DEFAULT '[]',
-                top_claims_json TEXT NOT NULL DEFAULT '[]',
-                pagerank REAL NOT NULL DEFAULT 0.0,
-                betweenness REAL NOT NULL DEFAULT 0.0,
-                closeness REAL NOT NULL DEFAULT 0.0,
-                in_degree INTEGER NOT NULL DEFAULT 0,
-                out_degree INTEGER NOT NULL DEFAULT 0,
-                eigenvector REAL NOT NULL DEFAULT 0.0,
-                community_id INTEGER,
-                source_hash TEXT NOT NULL,
-                generated_at TEXT NOT NULL
-            );
-
-            CREATE TABLE IF NOT EXISTS entity_communities (
-                entity_id TEXT PRIMARY KEY,
-                community_id INTEGER NOT NULL,
-                community_level INTEGER NOT NULL DEFAULT 0,
-                modularity_class TEXT,
-                assigned_at TEXT NOT NULL
-            );
-            CREATE INDEX IF NOT EXISTS idx_entity_communities_community_id
-            ON entity_communities(community_id);
-
-            CREATE TABLE IF NOT EXISTS community_reports (
-                community_id INTEGER PRIMARY KEY,
-                community_level INTEGER NOT NULL DEFAULT 0,
-                member_count INTEGER NOT NULL,
-                member_entity_ids_json TEXT NOT NULL,
-                deterministic_summary TEXT NOT NULL,
-                llm_summary TEXT,
-                top_entities_json TEXT NOT NULL DEFAULT '[]',
-                top_claims_json TEXT NOT NULL DEFAULT '[]',
-                intra_community_edge_count INTEGER NOT NULL DEFAULT 0,
-                source_hash TEXT NOT NULL,
-                generated_at TEXT NOT NULL
-            );
-
-            CREATE TABLE IF NOT EXISTS relations (
-                relation_id TEXT PRIMARY KEY,
-                subject_entity_id TEXT NOT NULL,
-                predicate TEXT NOT NULL,
-                object_entity_id TEXT NOT NULL,
-                support_count INTEGER NOT NULL DEFAULT 0,
-                avg_confidence REAL NOT NULL DEFAULT 0.0,
-                min_confidence REAL NOT NULL DEFAULT 0.0,
-                max_confidence REAL NOT NULL DEFAULT 0.0,
-                first_seen_at TEXT NOT NULL,
-                last_seen_at TEXT NOT NULL
-            );
-            CREATE UNIQUE INDEX IF NOT EXISTS idx_relations_spo
-            ON relations(subject_entity_id, predicate, object_entity_id);
-            CREATE INDEX IF NOT EXISTS idx_relations_subject ON relations(subject_entity_id);
-            CREATE INDEX IF NOT EXISTS idx_relations_object ON relations(object_entity_id);
-
-            CREATE TABLE IF NOT EXISTS relation_evidence (
-                evidence_id TEXT PRIMARY KEY,
-                relation_id TEXT NOT NULL,
-                chunk_id TEXT NOT NULL,
-                surface_subject TEXT NOT NULL,
-                surface_object TEXT NOT NULL,
-                evidence_text TEXT NOT NULL,
-                confidence REAL NOT NULL,
-                extraction_model TEXT NOT NULL,
-                extracted_at TEXT NOT NULL,
-                FOREIGN KEY(relation_id) REFERENCES relations(relation_id) ON DELETE CASCADE,
-                FOREIGN KEY(chunk_id) REFERENCES chunk_rows(chunk_id) ON DELETE CASCADE
-            );
-            CREATE INDEX IF NOT EXISTS idx_relation_evidence_relation
-            ON relation_evidence(relation_id);
-            CREATE INDEX IF NOT EXISTS idx_relation_evidence_chunk
-            ON relation_evidence(chunk_id);
-
-            CREATE TABLE IF NOT EXISTS graph_build_state (
-                run_id TEXT PRIMARY KEY,
-                started_at TEXT NOT NULL,
-                finished_at TEXT,
-                status TEXT NOT NULL,
-                current_phase TEXT NOT NULL DEFAULT 'pending',
-                graph_version INTEGER NOT NULL,
-                relations_consolidated INTEGER NOT NULL DEFAULT 0,
-                evidence_rows_built INTEGER NOT NULL DEFAULT 0,
-                claims_extracted INTEGER NOT NULL DEFAULT 0,
-                entity_profiles_built INTEGER NOT NULL DEFAULT 0,
-                communities_detected INTEGER NOT NULL DEFAULT 0,
-                community_reports_built INTEGER NOT NULL DEFAULT 0,
-                centrality_computed INTEGER NOT NULL DEFAULT 0,
-                entity_embeddings_computed INTEGER NOT NULL DEFAULT 0,
-                llm_enrichment_count INTEGER NOT NULL DEFAULT 0,
-                notes_json TEXT NOT NULL DEFAULT '[]'
-            );
-
-            CREATE TABLE IF NOT EXISTS graph_metadata (
-                key TEXT PRIMARY KEY,
-                value TEXT NOT NULL,
-                updated_at TEXT NOT NULL
-            );
-            """
-        )
-        _migrate_legacy_schema(connection)
+        migrate_legacy_schema(connection)
+    ensure_schema(connection)
+    with connection:
         _ensure_indexes(connection)
 
 
@@ -539,7 +312,7 @@ def load_manifest_index(connection: sqlite3.Connection) -> dict[str, ManifestRec
         FROM corpus_manifest
         """
     ).fetchall()
-    return {record.source_rel_path: record for record in (_manifest_from_row(row) for row in rows)}
+    return {record.source_rel_path: record for record in (manifest_from_row(row) for row in rows)}
 
 
 def load_manifest_by_content_hash(
@@ -572,12 +345,12 @@ def load_manifest_by_content_hash(
             last_committed_at,
             error_message
         FROM corpus_manifest
-        ORDER BY file_rel_path
+        ORDER BY source_rel_path
         """
     ).fetchall()
     grouped: dict[str, list[ManifestRecord]] = defaultdict(list)
     for row in rows:
-        record = _manifest_from_row(row)
+        record = manifest_from_row(row)
         grouped[record.content_hash].append(record)
     return dict(grouped)
 
@@ -619,7 +392,7 @@ def load_manifest_by_rel_path(
     ).fetchone()
     if row is None:
         return None
-    return _manifest_from_row(row)
+    return manifest_from_row(row)
 
 
 def upsert_manifest_record(connection: sqlite3.Connection, record: ManifestRecord) -> None:
@@ -928,13 +701,13 @@ def store_has_committed_state(connection: sqlite3.Connection) -> bool:
     manifest_row = connection.execute(
         "SELECT COUNT(*) AS count FROM corpus_manifest WHERE lifecycle_status != 'deleted'"
     ).fetchone()
-    if int(_row_value(manifest_row, "count")) > 0:
+    if int(row_value(manifest_row, "count")) > 0:
         return True
     chunk_row = connection.execute("SELECT COUNT(*) AS count FROM chunk_rows").fetchone()
-    if int(_row_value(chunk_row, "count")) > 0:
+    if int(row_value(chunk_row, "count")) > 0:
         return True
     mention_row = connection.execute("SELECT COUNT(*) AS count FROM mention_rows").fetchone()
-    return int(_row_value(mention_row, "count")) > 0
+    return int(row_value(mention_row, "count")) > 0
 
 
 def delete_source(connection: sqlite3.Connection, source_rel_path: str) -> None:
@@ -998,11 +771,10 @@ def replace_source_chunks(
                     chunk_hash,
                     score_hint,
                     metadata_json,
-                    vector_json,
                     embedding_model,
                     embedding_dims
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 [
                     (
@@ -1021,7 +793,6 @@ def replace_source_chunks(
                         record.chunk_hash,
                         record.score_hint,
                         record.metadata_json,
-                        json.dumps(record.vector, separators=(",", ":")),
                         record.embedding_model,
                         record.embedding_dims,
                     )
@@ -1050,7 +821,7 @@ def replace_source_chunks(
                 """,
                 [
                     (
-                        _mention_id(record),
+                        mention_id(record),
                         record.entity_id,
                         record.term_source,
                         source_domain,
@@ -1129,7 +900,6 @@ def load_chunk_records_for_source(
             chunk_hash,
             score_hint,
             metadata_json,
-            vector_json,
             embedding_model,
             embedding_dims
         FROM chunk_rows
@@ -1138,7 +908,7 @@ def load_chunk_records_for_source(
         """,
         (source_rel_path,),
     ).fetchall()
-    return [_chunk_from_row(row) for row in rows]
+    return [chunk_from_row(row) for row in rows]
 
 
 def load_mentions_for_source(
@@ -1344,6 +1114,59 @@ def load_relation_chunk_ids(
     return {str(row["chunk_id"]) for row in rows}
 
 
+def _summarize_manifest(connection: sqlite3.Connection) -> dict[str, int]:
+    """Return manifest-level counters grouped by source type and retrieval role.
+
+    Args:
+        connection: Open SQLite connection.
+
+    Returns:
+        Mapping with keys ``corpus_file_count``, ``text_file_count``,
+        ``asset_file_count``, ``searchable_count``, ``asset_only_count``,
+        ``not_searchable_count``. All deleted manifests are excluded from the
+        per-role tallies so status never double-counts tombstones.
+    """
+    row = connection.execute(
+        """
+        SELECT
+            COUNT(*) AS corpus_file_count,
+            SUM(CASE WHEN source_type = 'image_png' AND lifecycle_status != 'deleted' THEN 1 ELSE 0 END) AS asset_file_count,
+            SUM(CASE WHEN source_type != 'image_png' AND lifecycle_status != 'deleted' THEN 1 ELSE 0 END) AS text_file_count,
+            SUM(CASE WHEN retrieval_status = 'searchable' AND lifecycle_status != 'deleted' THEN 1 ELSE 0 END) AS searchable_count,
+            SUM(CASE WHEN retrieval_status = 'asset_only' AND lifecycle_status != 'deleted' THEN 1 ELSE 0 END) AS asset_only_count,
+            SUM(CASE WHEN retrieval_status = 'not_searchable' AND lifecycle_status != 'deleted' THEN 1 ELSE 0 END) AS not_searchable_count
+        FROM corpus_manifest
+        """
+    ).fetchone()
+    return {
+        "corpus_file_count": int(row_value(row, "corpus_file_count")),
+        "text_file_count": int(row_value(row, "text_file_count")),
+        "asset_file_count": int(row_value(row, "asset_file_count")),
+        "searchable_count": int(row_value(row, "searchable_count")),
+        "asset_only_count": int(row_value(row, "asset_only_count")),
+        "not_searchable_count": int(row_value(row, "not_searchable_count")),
+    }
+
+
+def _summarize_chunk_counts(connection: sqlite3.Connection) -> tuple[int, int]:
+    """Return ``(chunk_count, mention_count)`` across the whole store.
+
+    Args:
+        connection: Open SQLite connection.
+
+    Returns:
+        Two-tuple of total chunk rows and total mention rows.
+    """
+    chunk_row = connection.execute("SELECT COUNT(*) AS chunk_count FROM chunk_rows").fetchone()
+    mention_row = connection.execute(
+        "SELECT COUNT(*) AS mention_count FROM mention_rows"
+    ).fetchone()
+    return (
+        int(row_value(chunk_row, "chunk_count")),
+        int(row_value(mention_row, "mention_count")),
+    )
+
+
 def summarize_store(
     connection: sqlite3.Connection,
     *,
@@ -1374,33 +1197,19 @@ def summarize_store(
     Returns:
         Current corpus and ontology summary counts.
     """
-    manifest_row = connection.execute(
-        """
-        SELECT
-            COUNT(*) AS corpus_file_count,
-            SUM(CASE WHEN source_type = 'image_png' AND lifecycle_status != 'deleted' THEN 1 ELSE 0 END) AS asset_file_count,
-            SUM(CASE WHEN source_type != 'image_png' AND lifecycle_status != 'deleted' THEN 1 ELSE 0 END) AS text_file_count,
-            SUM(CASE WHEN retrieval_status = 'searchable' AND lifecycle_status != 'deleted' THEN 1 ELSE 0 END) AS searchable_count,
-            SUM(CASE WHEN retrieval_status = 'asset_only' AND lifecycle_status != 'deleted' THEN 1 ELSE 0 END) AS asset_only_count,
-            SUM(CASE WHEN retrieval_status = 'not_searchable' AND lifecycle_status != 'deleted' THEN 1 ELSE 0 END) AS not_searchable_count
-        FROM corpus_manifest
-        """
-    ).fetchone()
-    chunk_row = connection.execute("SELECT COUNT(*) AS chunk_count FROM chunk_rows").fetchone()
-    mention_row = connection.execute(
-        "SELECT COUNT(*) AS mention_count FROM mention_rows"
-    ).fetchone()
+    manifest = _summarize_manifest(connection)
+    chunk_count, mention_count = _summarize_chunk_counts(connection)
     return CorpusStatusSummary(
-        corpus_file_count=int(_row_value(manifest_row, "corpus_file_count")),
-        text_file_count=int(_row_value(manifest_row, "text_file_count")),
-        asset_file_count=int(_row_value(manifest_row, "asset_file_count")),
+        corpus_file_count=manifest["corpus_file_count"],
+        text_file_count=manifest["text_file_count"],
+        asset_file_count=manifest["asset_file_count"],
         retrieval_role_counts={
-            "searchable": int(_row_value(manifest_row, "searchable_count")),
-            "asset_only": int(_row_value(manifest_row, "asset_only_count")),
-            "not_searchable": int(_row_value(manifest_row, "not_searchable_count")),
+            "searchable": manifest["searchable_count"],
+            "asset_only": manifest["asset_only_count"],
+            "not_searchable": manifest["not_searchable_count"],
         },
-        chunk_count=int(_row_value(chunk_row, "chunk_count")),
-        mention_count=int(_row_value(mention_row, "mention_count")),
+        chunk_count=chunk_count,
+        mention_count=mention_count,
         ontology_file_count=ontology_file_count,
         matcher_term_count=matcher_term_count,
         matcher_termset_hash=matcher_termset_hash,
@@ -1472,7 +1281,7 @@ def load_claims_for_entities(
         """,
         [*entity_ids, *entity_ids, limit],
     ).fetchall()
-    return [_claim_from_row(row) for row in rows]
+    return [claim_from_row(row) for row in rows]
 
 
 def load_claims_for_chunk(connection: sqlite3.Connection, chunk_id: str) -> list[ClaimRecord]:
@@ -1481,13 +1290,13 @@ def load_claims_for_chunk(connection: sqlite3.Connection, chunk_id: str) -> list
         "SELECT * FROM claims WHERE chunk_id = ? ORDER BY confidence DESC",
         (chunk_id,),
     ).fetchall()
-    return [_claim_from_row(row) for row in rows]
+    return [claim_from_row(row) for row in rows]
 
 
 def count_claims(connection: sqlite3.Connection) -> int:
     """Return total claim count."""
     row = connection.execute("SELECT COUNT(*) AS cnt FROM claims").fetchone()
-    return int(_row_value(row, "cnt"))
+    return int(row_value(row, "cnt"))
 
 
 def load_chunk_ids_with_claims(connection: sqlite3.Connection) -> set[str]:
@@ -1570,13 +1379,13 @@ def load_entity_profile(
     ).fetchone()
     if row is None:
         return None
-    return _entity_profile_from_row(row)
+    return entity_profile_from_row(row)
 
 
 def load_all_entity_profiles(connection: sqlite3.Connection) -> list[EntityProfileRecord]:
     """Load all entity profiles, ordered by PageRank descending."""
     rows = connection.execute("SELECT * FROM entity_profiles ORDER BY pagerank DESC").fetchall()
-    return [_entity_profile_from_row(row) for row in rows]
+    return [entity_profile_from_row(row) for row in rows]
 
 
 def search_entity_profiles(
@@ -1596,7 +1405,7 @@ def search_entity_profiles(
         """,
         (pattern, pattern, limit),
     ).fetchall()
-    return [_entity_profile_from_row(row) for row in rows]
+    return [entity_profile_from_row(row) for row in rows]
 
 
 def load_top_entities_by_pagerank(
@@ -1606,7 +1415,7 @@ def load_top_entities_by_pagerank(
     rows = connection.execute(
         "SELECT * FROM entity_profiles ORDER BY pagerank DESC LIMIT ?", (limit,)
     ).fetchall()
-    return [_entity_profile_from_row(row) for row in rows]
+    return [entity_profile_from_row(row) for row in rows]
 
 
 def load_top_entities_by_betweenness(
@@ -1616,7 +1425,7 @@ def load_top_entities_by_betweenness(
     rows = connection.execute(
         "SELECT * FROM entity_profiles ORDER BY betweenness DESC LIMIT ?", (limit,)
     ).fetchall()
-    return [_entity_profile_from_row(row) for row in rows]
+    return [entity_profile_from_row(row) for row in rows]
 
 
 def load_top_entities_by_closeness(
@@ -1626,7 +1435,7 @@ def load_top_entities_by_closeness(
     rows = connection.execute(
         "SELECT * FROM entity_profiles ORDER BY closeness DESC LIMIT ?", (limit,)
     ).fetchall()
-    return [_entity_profile_from_row(row) for row in rows]
+    return [entity_profile_from_row(row) for row in rows]
 
 
 def load_entity_profile_source_hashes(
@@ -1677,7 +1486,7 @@ def load_entity_community(
         entity_id=str(row["entity_id"]),
         community_id=int(row["community_id"]),
         community_level=int(row["community_level"]),
-        modularity_class=_optional_str(row["modularity_class"]),
+        modularity_class=optional_str(row["modularity_class"]),
         assigned_at=str(row["assigned_at"]),
     )
 
@@ -1740,7 +1549,7 @@ def load_community_report(
     ).fetchone()
     if row is None:
         return None
-    return _community_report_from_row(row)
+    return community_report_from_row(row)
 
 
 def load_all_community_reports(
@@ -1750,7 +1559,7 @@ def load_all_community_reports(
     rows = connection.execute(
         "SELECT * FROM community_reports ORDER BY member_count DESC"
     ).fetchall()
-    return [_community_report_from_row(row) for row in rows]
+    return [community_report_from_row(row) for row in rows]
 
 
 def delete_stale_community_reports(connection: sqlite3.Connection) -> int:
@@ -1810,7 +1619,7 @@ def load_canonical_relation(
     ).fetchone()
     if row is None:
         return None
-    return _canonical_relation_from_row(row)
+    return canonical_relation_from_row(row)
 
 
 def load_relations_for_entity(
@@ -1829,7 +1638,7 @@ def load_relations_for_entity(
         """,
         (entity_id, entity_id, limit),
     ).fetchall()
-    return [_canonical_relation_from_row(row) for row in rows]
+    return [canonical_relation_from_row(row) for row in rows]
 
 
 def load_top_predicates_for_entity(
@@ -1917,13 +1726,13 @@ def load_evidence_for_relation(
 def count_canonical_relations(connection: sqlite3.Connection) -> int:
     """Return total canonical relation count."""
     row = connection.execute("SELECT COUNT(*) AS cnt FROM relations").fetchone()
-    return int(_row_value(row, "cnt"))
+    return int(row_value(row, "cnt"))
 
 
 def count_relation_evidence(connection: sqlite3.Connection) -> int:
     """Return total relation evidence count."""
     row = connection.execute("SELECT COUNT(*) AS cnt FROM relation_evidence").fetchone()
-    return int(_row_value(row, "cnt"))
+    return int(row_value(row, "cnt"))
 
 
 def begin_graph_build(
@@ -2015,7 +1824,7 @@ def load_latest_graph_build_state(
     return GraphBuildStateRecord(
         run_id=str(row["run_id"]),
         started_at=str(row["started_at"]),
-        finished_at=_optional_str(row["finished_at"]),
+        finished_at=optional_str(row["finished_at"]),
         status=str(row["status"]),
         current_phase=str(row["current_phase"]),
         graph_version=int(row["graph_version"]),
@@ -2143,7 +1952,7 @@ def load_chunk_ids_for_entity(
 def count_entity_profiles(connection: sqlite3.Connection) -> int:
     """Return total entity profile count."""
     row = connection.execute("SELECT COUNT(*) AS cnt FROM entity_profiles").fetchone()
-    return int(_row_value(row, "cnt"))
+    return int(row_value(row, "cnt"))
 
 
 def count_communities(connection: sqlite3.Connection) -> int:
@@ -2151,980 +1960,13 @@ def count_communities(connection: sqlite3.Connection) -> int:
     row = connection.execute(
         "SELECT COUNT(DISTINCT community_id) AS cnt FROM entity_communities"
     ).fetchone()
-    return int(_row_value(row, "cnt"))
+    return int(row_value(row, "cnt"))
 
 
 def count_community_reports(connection: sqlite3.Connection) -> int:
     """Return total community report count."""
     row = connection.execute("SELECT COUNT(*) AS cnt FROM community_reports").fetchone()
-    return int(_row_value(row, "cnt"))
-
-
-# ---------------------------------------------------------------------------
-# Private helpers
-# ---------------------------------------------------------------------------
-
-
-def _claim_from_row(row: sqlite3.Row) -> ClaimRecord:
-    return ClaimRecord(
-        claim_id=str(row["claim_id"]),
-        chunk_id=str(row["chunk_id"]),
-        document_id=str(row["document_id"]),
-        source_rel_path=str(row["source_rel_path"]),
-        claim_text=str(row["claim_text"]),
-        subject_entity_id=_optional_str(row["subject_entity_id"]),
-        object_entity_id=_optional_str(row["object_entity_id"]),
-        claim_type=str(row["claim_type"]),
-        confidence=float(row["confidence"]),
-        extraction_model=str(row["extraction_model"]),
-        extracted_at=str(row["extracted_at"]),
-    )
-
-
-def _entity_profile_from_row(row: sqlite3.Row) -> EntityProfileRecord:
-    return EntityProfileRecord(
-        entity_id=str(row["entity_id"]),
-        label=str(row["label"]),
-        entity_type=str(row["entity_type"]),
-        domain=str(row["domain"]),
-        aliases_json=str(row["aliases_json"]),
-        deterministic_summary=str(row["deterministic_summary"]),
-        llm_summary=_optional_str(row["llm_summary"]),
-        chunk_count=int(row["chunk_count"]),
-        doc_count=int(row["doc_count"]),
-        mention_count=int(row["mention_count"]),
-        claim_count=int(row["claim_count"]),
-        top_predicates_json=str(row["top_predicates_json"]),
-        top_claims_json=str(row["top_claims_json"]),
-        pagerank=float(row["pagerank"]),
-        betweenness=float(row["betweenness"]),
-        closeness=float(row["closeness"]),
-        in_degree=int(row["in_degree"]),
-        out_degree=int(row["out_degree"]),
-        eigenvector=float(row["eigenvector"]),
-        community_id=int(row["community_id"]) if row["community_id"] is not None else None,
-        source_hash=str(row["source_hash"]),
-        generated_at=str(row["generated_at"]),
-    )
-
-
-def _community_report_from_row(row: sqlite3.Row) -> CommunityReportRecord:
-    return CommunityReportRecord(
-        community_id=int(row["community_id"]),
-        community_level=int(row["community_level"]),
-        member_count=int(row["member_count"]),
-        member_entity_ids_json=str(row["member_entity_ids_json"]),
-        deterministic_summary=str(row["deterministic_summary"]),
-        llm_summary=_optional_str(row["llm_summary"]),
-        top_entities_json=str(row["top_entities_json"]),
-        top_claims_json=str(row["top_claims_json"]),
-        intra_community_edge_count=int(row["intra_community_edge_count"]),
-        source_hash=str(row["source_hash"]),
-        generated_at=str(row["generated_at"]),
-    )
-
-
-def _canonical_relation_from_row(row: sqlite3.Row) -> CanonicalRelationRecord:
-    return CanonicalRelationRecord(
-        relation_id=str(row["relation_id"]),
-        subject_entity_id=str(row["subject_entity_id"]),
-        predicate=str(row["predicate"]),
-        object_entity_id=str(row["object_entity_id"]),
-        support_count=int(row["support_count"]),
-        avg_confidence=float(row["avg_confidence"]),
-        min_confidence=float(row["min_confidence"]),
-        max_confidence=float(row["max_confidence"]),
-        first_seen_at=str(row["first_seen_at"]),
-        last_seen_at=str(row["last_seen_at"]),
-    )
-
-
-def _manifest_from_row(row: sqlite3.Row) -> ManifestRecord:
-    return ManifestRecord(
-        source_rel_path=str(row["source_rel_path"]),
-        absolute_path=str(row["absolute_path"]),
-        source_type=str(row["source_type"]),
-        source_domain=str(row["source_domain"]),
-        document_id=_optional_str(row["document_id"]),
-        file_size_bytes=int(row["file_size_bytes"]),
-        content_hash=str(row["blake3_hash"]),
-        parent_source_rel_path=_optional_str(row["parent_source_rel_path"]),
-        chunk_count=int(row["chunk_count"]),
-        last_seen_at=str(row["last_seen_at"]),
-        last_processed_at=_optional_str(row["last_processed_at"]),
-        last_committed_at=_optional_str(row["last_committed_at"]),
-        error_message=_optional_str(row["error_message"]),
-        lifecycle_status=str(row["lifecycle_status"]),
-        retrieval_status=str(row["retrieval_status"]),
-    )
-
-
-def _chunk_from_row(row: sqlite3.Row) -> ChunkRecord:
-    vector_payload = json.loads(str(row["vector_json"]))
-    if not isinstance(vector_payload, list):
-        raise ValueError("Expected vector_json to decode to a list of floats")
-    return ChunkRecord(
-        chunk_id=str(row["chunk_id"]),
-        document_id=str(row["document_id"]),
-        source_rel_path=str(row["source_rel_path"]),
-        source_filename=str(row["source_filename"]),
-        source_type=str(row["source_type"]),
-        source_domain=str(row["source_domain"]),
-        source_hash=str(row["source_hash"]),
-        citation_label=str(row["citation_label"]),
-        chunk_index=int(row["chunk_index"]),
-        chunk_occurrence=int(row["chunk_occurrence"]),
-        token_count=int(row["token_count"]),
-        text=str(row["text"]),
-        chunk_hash=str(row["chunk_hash"]),
-        score_hint=str(row["score_hint"]),
-        metadata_json=str(row["metadata_json"]),
-        vector=[float(item) for item in vector_payload],
-        embedding_model=str(row["embedding_model"]),
-        embedding_dims=int(row["embedding_dims"]),
-    )
-
-
-def _optional_str(value: Any) -> str | None:
-    if value is None:
-        return None
-    return str(value)
-
-
-def _mention_id(record: MentionRecord) -> str:
-    return blake3_hex(record.entity_id, record.chunk_id, str(record.start_char))
-
-
-def _row_value(row: sqlite3.Row | None, key: str) -> int:
-    if row is None:
-        return 0
-    value: Any = row[key]
-    if value is None:
-        return 0
-    return int(value)
-
-
-def _migrate_legacy_schema(connection: sqlite3.Connection) -> None:
-    _migrate_legacy_corpus_manifest(connection)
-    _migrate_legacy_chunk_rows(connection)
-    _migrate_legacy_mention_rows(connection)
-    _migrate_legacy_ontology_snapshot(connection)
-    _migrate_legacy_ingest_runs(connection)
-    _migrate_absolute_path_pks(connection)
-
-
-def _migrate_legacy_corpus_manifest(connection: sqlite3.Connection) -> None:
-    if not _table_exists(connection, "corpus_manifest"):
-        return
-    columns = _table_columns(connection, "corpus_manifest")
-    if "blake3_hash" in columns:
-        return
-
-    legacy_rows = connection.execute(
-        """
-        SELECT
-            source_rel_path,
-            absolute_path,
-            source_type,
-            source_domain,
-            file_size_bytes,
-            content_hash,
-            last_ingested_at
-        FROM corpus_manifest
-        ORDER BY source_rel_path
-        """
-    ).fetchall()
-    chunk_counts = {
-        str(row["source_rel_path"]): int(row["chunk_count"])
-        for row in connection.execute(
-            """
-            SELECT source_rel_path, COUNT(*) AS chunk_count
-            FROM chunk_rows
-            GROUP BY source_rel_path
-            """
-        ).fetchall()
-    }
-
-    connection.execute("ALTER TABLE corpus_manifest RENAME TO corpus_manifest_legacy")
-    connection.execute(
-        """
-        CREATE TABLE corpus_manifest (
-            file_path TEXT PRIMARY KEY,
-            file_rel_path TEXT NOT NULL,
-            source_type TEXT NOT NULL,
-            source_domain TEXT NOT NULL,
-            document_id TEXT,
-            blake3_hash TEXT NOT NULL,
-            file_size_bytes INTEGER NOT NULL,
-            parent_source_path TEXT,
-            lifecycle_status TEXT NOT NULL,
-            retrieval_status TEXT NOT NULL,
-            chunk_count INTEGER NOT NULL DEFAULT 0,
-            last_seen_at TEXT NOT NULL,
-            last_processed_at TEXT,
-            last_committed_at TEXT,
-            error_message TEXT
-        )
-        """
-    )
-    connection.executemany(
-        """
-        INSERT INTO corpus_manifest (
-            file_path,
-            file_rel_path,
-            source_type,
-            source_domain,
-            document_id,
-            blake3_hash,
-            file_size_bytes,
-            parent_source_path,
-            lifecycle_status,
-            retrieval_status,
-            chunk_count,
-            last_seen_at,
-            last_processed_at,
-            last_committed_at,
-            error_message
-        )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """,
-        [
-            (
-                str(row["absolute_path"]),
-                str(row["source_rel_path"]),
-                str(row["source_type"]),
-                str(row["source_domain"]),
-                None
-                if str(row["source_type"]) == "image_png"
-                else blake3_hex(str(row["source_rel_path"])),
-                str(row["content_hash"]),
-                int(row["file_size_bytes"]),
-                None,
-                "complete",
-                "asset_only" if str(row["source_type"]) == "image_png" else "searchable",
-                chunk_counts.get(str(row["source_rel_path"]), 0),
-                str(row["last_ingested_at"]),
-                str(row["last_ingested_at"]),
-                str(row["last_ingested_at"]),
-                None,
-            )
-            for row in legacy_rows
-        ],
-    )
-    connection.execute("DROP TABLE corpus_manifest_legacy")
-
-
-def _migrate_legacy_chunk_rows(connection: sqlite3.Connection) -> None:
-    if not _table_exists(connection, "chunk_rows"):
-        return
-    columns = _table_columns(connection, "chunk_rows")
-    if "document_id" in columns and "metadata_json" in columns:
-        return
-
-    legacy_rows = connection.execute(
-        """
-        SELECT
-            chunk_id,
-            source_rel_path,
-            source_type,
-            source_domain,
-            citation_label,
-            chunk_index,
-            text,
-            chunk_hash,
-            score_hint,
-            vector_json,
-            embedding_model,
-            embedding_dims
-        FROM chunk_rows
-        ORDER BY source_rel_path, chunk_index
-        """
-    ).fetchall()
-    manifest_rows = connection.execute(
-        """
-        SELECT
-            file_rel_path,
-            file_path,
-            document_id,
-            blake3_hash
-        FROM corpus_manifest
-        """
-    ).fetchall()
-    manifest_by_rel_path = {str(row["file_rel_path"]): row for row in manifest_rows}
-
-    connection.execute("ALTER TABLE chunk_rows RENAME TO chunk_rows_legacy")
-    connection.execute(
-        """
-        CREATE TABLE chunk_rows (
-            chunk_id TEXT PRIMARY KEY,
-            document_id TEXT NOT NULL,
-            source_rel_path TEXT NOT NULL,
-            source_path TEXT NOT NULL,
-            source_filename TEXT NOT NULL,
-            source_type TEXT NOT NULL,
-            source_domain TEXT NOT NULL,
-            source_hash TEXT NOT NULL,
-            citation_label TEXT NOT NULL,
-            chunk_index INTEGER NOT NULL,
-            chunk_occurrence INTEGER NOT NULL,
-            token_count INTEGER NOT NULL,
-            text TEXT NOT NULL,
-            chunk_hash TEXT NOT NULL,
-            score_hint TEXT NOT NULL,
-            metadata_json TEXT NOT NULL,
-            vector_json TEXT NOT NULL,
-            embedding_model TEXT NOT NULL,
-            embedding_dims INTEGER NOT NULL,
-            FOREIGN KEY(source_path) REFERENCES corpus_manifest(file_path) ON DELETE CASCADE
-        )
-        """
-    )
-    occurrence_by_document_hash: dict[tuple[str, str], int] = defaultdict(int)
-    rows_to_insert: list[tuple[object, ...]] = []
-    for row in legacy_rows:
-        source_rel_path = str(row["source_rel_path"])
-        manifest = manifest_by_rel_path.get(source_rel_path)
-        source_path = str(manifest["file_path"]) if manifest is not None else source_rel_path
-        document_id = (
-            str(manifest["document_id"])
-            if manifest is not None and manifest["document_id"] is not None
-            else blake3_hex(source_rel_path)
-        )
-        source_hash = str(manifest["blake3_hash"]) if manifest is not None else ""
-        chunk_hash = str(row["chunk_hash"])
-        occurrence_key = (document_id, chunk_hash)
-        chunk_occurrence = occurrence_by_document_hash[occurrence_key]
-        occurrence_by_document_hash[occurrence_key] += 1
-        text = str(row["text"])
-        rows_to_insert.append(
-            (
-                str(row["chunk_id"]),
-                document_id,
-                source_rel_path,
-                source_path,
-                Path(source_rel_path).name,
-                str(row["source_type"]),
-                str(row["source_domain"]),
-                source_hash,
-                str(row["citation_label"]),
-                int(row["chunk_index"]),
-                chunk_occurrence,
-                len(text.split()),
-                text,
-                chunk_hash,
-                str(row["score_hint"]),
-                "{}",
-                str(row["vector_json"]),
-                str(row["embedding_model"]),
-                int(row["embedding_dims"]),
-            )
-        )
-    connection.executemany(
-        """
-        INSERT INTO chunk_rows (
-            chunk_id,
-            document_id,
-            source_rel_path,
-            source_path,
-            source_filename,
-            source_type,
-            source_domain,
-            source_hash,
-            citation_label,
-            chunk_index,
-            chunk_occurrence,
-            token_count,
-            text,
-            chunk_hash,
-            score_hint,
-            metadata_json,
-            vector_json,
-            embedding_model,
-            embedding_dims
-        )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """,
-        rows_to_insert,
-    )
-    connection.execute("DROP TABLE chunk_rows_legacy")
-
-
-def _migrate_legacy_mention_rows(connection: sqlite3.Connection) -> None:
-    if not _table_exists(connection, "mention_rows"):
-        return
-    columns = _table_columns(connection, "mention_rows")
-    required_columns = {"mention_id", "term_source", "source_domain"}
-    if required_columns.issubset(columns):
-        return
-
-    legacy_rows = connection.execute(
-        """
-        SELECT
-            chunk_id,
-            entity_id,
-            term_source,
-            surface_form,
-            start_char,
-            end_char
-        FROM mention_rows
-        ORDER BY chunk_id, start_char, end_char
-        """
-    ).fetchall()
-    chunk_rows = connection.execute(
-        """
-        SELECT
-            chunk_id,
-            source_domain,
-            source_path,
-            source_filename
-        FROM chunk_rows
-        """
-    ).fetchall()
-    chunk_by_id = {str(row["chunk_id"]): row for row in chunk_rows}
-
-    connection.execute("ALTER TABLE mention_rows RENAME TO mention_rows_legacy")
-    connection.execute(
-        """
-        CREATE TABLE mention_rows (
-            mention_id TEXT PRIMARY KEY,
-            entity_id TEXT NOT NULL,
-            term_source TEXT NOT NULL,
-            source_domain TEXT NOT NULL,
-            source_path TEXT NOT NULL,
-            source_filename TEXT NOT NULL,
-            chunk_id TEXT NOT NULL,
-            surface_form TEXT NOT NULL,
-            start_char INTEGER NOT NULL,
-            end_char INTEGER NOT NULL,
-            FOREIGN KEY(chunk_id) REFERENCES chunk_rows(chunk_id) ON DELETE CASCADE,
-            FOREIGN KEY(source_path) REFERENCES corpus_manifest(file_path) ON DELETE CASCADE
-        )
-        """
-    )
-    connection.executemany(
-        """
-        INSERT INTO mention_rows (
-            mention_id,
-            entity_id,
-            term_source,
-            source_domain,
-            source_path,
-            source_filename,
-            chunk_id,
-            surface_form,
-            start_char,
-            end_char
-        )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """,
-        [
-            (
-                blake3_hex(str(row["entity_id"]), str(row["chunk_id"]), str(row["start_char"])),
-                str(row["entity_id"]),
-                str(row["term_source"]),
-                str(chunk_by_id[str(row["chunk_id"])]["source_domain"]),
-                str(chunk_by_id[str(row["chunk_id"])]["source_path"]),
-                str(chunk_by_id[str(row["chunk_id"])]["source_filename"]),
-                str(row["chunk_id"]),
-                str(row["surface_form"]),
-                int(row["start_char"]),
-                int(row["end_char"]),
-            )
-            for row in legacy_rows
-            if str(row["chunk_id"]) in chunk_by_id
-        ],
-    )
-    connection.execute("DROP TABLE mention_rows_legacy")
-
-
-def _migrate_legacy_ontology_snapshot(connection: sqlite3.Connection) -> None:
-    if not _table_exists(connection, "ontology_snapshot"):
-        return
-    columns = _table_columns(connection, "ontology_snapshot")
-    additions = {
-        "coverage_path_count": "INTEGER NOT NULL DEFAULT 0",
-        "graph_relation_count": "INTEGER NOT NULL DEFAULT 0",
-        "validation_issue_count": "INTEGER NOT NULL DEFAULT 0",
-        "validation_issues_json": "TEXT NOT NULL DEFAULT '[]'",
-    }
-    for column_name, column_sql in additions.items():
-        if column_name in columns:
-            continue
-        connection.execute(f"ALTER TABLE ontology_snapshot ADD COLUMN {column_name} {column_sql}")
-
-
-def _migrate_legacy_ingest_runs(connection: sqlite3.Connection) -> None:
-    if not _table_exists(connection, "ingest_runs"):
-        return
-    columns = _table_columns(connection, "ingest_runs")
-    if (
-        "mode" in columns
-        and "files_total" in columns
-        and "notes" in columns
-        and "searchable_files_rebuilt" in columns
-        and "asset_files_processed" in columns
-        and "unchanged_files_skipped" in columns
-        and "failed_files" in columns
-    ):
-        return
-
-    if "mode" in columns and "files_total" in columns and "notes" in columns:
-        legacy_rows = connection.execute(
-            """
-            SELECT
-                run_id,
-                started_at,
-                finished_at,
-                mode,
-                status,
-                files_total,
-                files_completed,
-                searchable_files_completed,
-                asset_files_completed,
-                chunks_written,
-                notes
-            FROM ingest_runs
-            ORDER BY started_at
-            """
-        ).fetchall()
-        connection.execute("ALTER TABLE ingest_runs RENAME TO ingest_runs_legacy")
-        connection.execute(
-            """
-            CREATE TABLE ingest_runs (
-                run_id TEXT PRIMARY KEY,
-                started_at TEXT NOT NULL,
-                finished_at TEXT,
-                mode TEXT NOT NULL,
-                status TEXT NOT NULL,
-                files_total INTEGER NOT NULL,
-                files_completed INTEGER NOT NULL,
-                searchable_files_rebuilt INTEGER NOT NULL,
-                asset_files_processed INTEGER NOT NULL,
-                unchanged_files_skipped INTEGER NOT NULL,
-                failed_files INTEGER NOT NULL,
-                chunks_written INTEGER NOT NULL,
-                notes TEXT NOT NULL
-            )
-            """
-        )
-        connection.executemany(
-            """
-            INSERT INTO ingest_runs (
-                run_id,
-                started_at,
-                finished_at,
-                mode,
-                status,
-                files_total,
-                files_completed,
-                searchable_files_rebuilt,
-                asset_files_processed,
-                unchanged_files_skipped,
-                failed_files,
-                chunks_written,
-                notes
-            )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
-            [
-                (
-                    str(row["run_id"]),
-                    str(row["started_at"]),
-                    str(row["finished_at"]) if row["finished_at"] is not None else None,
-                    str(row["mode"]),
-                    str(row["status"]),
-                    int(row["files_total"]),
-                    int(row["files_completed"]),
-                    int(row["searchable_files_completed"]),
-                    int(row["asset_files_completed"]),
-                    0,
-                    0,
-                    int(row["chunks_written"]),
-                    str(row["notes"]),
-                )
-                for row in legacy_rows
-            ],
-        )
-        connection.execute("DROP TABLE ingest_runs_legacy")
-        return
-
-    legacy_rows = connection.execute(
-        """
-        SELECT
-            run_id,
-            started_at,
-            completed_at,
-            status,
-            corpus_file_count,
-            text_file_count,
-            asset_file_count,
-            chunk_count,
-            warning_json
-        FROM ingest_runs
-        ORDER BY started_at
-        """
-    ).fetchall()
-
-    connection.execute("ALTER TABLE ingest_runs RENAME TO ingest_runs_legacy")
-    connection.execute(
-        """
-        CREATE TABLE ingest_runs (
-            run_id TEXT PRIMARY KEY,
-            started_at TEXT NOT NULL,
-            finished_at TEXT,
-            mode TEXT NOT NULL,
-            status TEXT NOT NULL,
-            files_total INTEGER NOT NULL,
-            files_completed INTEGER NOT NULL,
-            searchable_files_rebuilt INTEGER NOT NULL,
-            asset_files_processed INTEGER NOT NULL,
-            unchanged_files_skipped INTEGER NOT NULL,
-            failed_files INTEGER NOT NULL,
-            chunks_written INTEGER NOT NULL,
-            notes TEXT NOT NULL
-        )
-        """
-    )
-    connection.executemany(
-        """
-        INSERT INTO ingest_runs (
-            run_id,
-            started_at,
-            finished_at,
-            mode,
-            status,
-            files_total,
-            files_completed,
-            searchable_files_rebuilt,
-            asset_files_processed,
-            unchanged_files_skipped,
-            failed_files,
-            chunks_written,
-            notes
-        )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """,
-        [
-            (
-                str(row["run_id"]),
-                str(row["started_at"]),
-                str(row["completed_at"]) if row["completed_at"] is not None else None,
-                "legacy",
-                str(row["status"]),
-                int(row["corpus_file_count"]),
-                int(row["corpus_file_count"]),
-                int(row["text_file_count"]),
-                int(row["asset_file_count"]),
-                0,
-                0,
-                int(row["chunk_count"]),
-                str(row["warning_json"]),
-            )
-            for row in legacy_rows
-        ],
-    )
-    connection.execute("DROP TABLE ingest_runs_legacy")
-
-
-def _migrate_absolute_path_pks(connection: sqlite3.Connection) -> None:
-    """Migrate from absolute-path PKs/FKs to relative-path PKs/FKs for portability."""
-    if not _table_exists(connection, "corpus_manifest"):
-        return
-    columns = _table_columns(connection, "corpus_manifest")
-    if "source_rel_path" in columns and "absolute_path" in columns:
-        return
-    if "file_path" not in columns:
-        return
-
-    connection.execute("PRAGMA foreign_keys=OFF")
-
-    # --- corpus_manifest: file_path PK → source_rel_path PK ---
-    legacy_manifest = connection.execute(
-        """
-        SELECT file_path, file_rel_path, source_type, source_domain, document_id,
-               blake3_hash, file_size_bytes, parent_source_path,
-               lifecycle_status, retrieval_status, chunk_count,
-               last_seen_at, last_processed_at, last_committed_at, error_message
-        FROM corpus_manifest ORDER BY file_rel_path
-        """
-    ).fetchall()
-    abs_to_rel: dict[str, str] = {
-        str(row["file_path"]): str(row["file_rel_path"]) for row in legacy_manifest
-    }
-    connection.execute("ALTER TABLE corpus_manifest RENAME TO corpus_manifest_v2_legacy")
-    connection.execute(
-        """
-        CREATE TABLE corpus_manifest (
-            source_rel_path TEXT PRIMARY KEY,
-            absolute_path TEXT NOT NULL,
-            source_type TEXT NOT NULL,
-            source_domain TEXT NOT NULL,
-            document_id TEXT,
-            blake3_hash TEXT NOT NULL,
-            file_size_bytes INTEGER NOT NULL,
-            parent_source_rel_path TEXT,
-            lifecycle_status TEXT NOT NULL,
-            retrieval_status TEXT NOT NULL,
-            chunk_count INTEGER NOT NULL DEFAULT 0,
-            last_seen_at TEXT NOT NULL,
-            last_processed_at TEXT,
-            last_committed_at TEXT,
-            error_message TEXT
-        )
-        """
-    )
-    connection.executemany(
-        """
-        INSERT INTO corpus_manifest (
-            source_rel_path, absolute_path, source_type, source_domain, document_id,
-            blake3_hash, file_size_bytes, parent_source_rel_path,
-            lifecycle_status, retrieval_status, chunk_count,
-            last_seen_at, last_processed_at, last_committed_at, error_message
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """,
-        [
-            (
-                str(row["file_rel_path"]),
-                str(row["file_path"]),
-                str(row["source_type"]),
-                str(row["source_domain"]),
-                row["document_id"],
-                str(row["blake3_hash"]),
-                int(row["file_size_bytes"]),
-                abs_to_rel.get(str(row["parent_source_path"]))
-                if row["parent_source_path"]
-                else None,
-                str(row["lifecycle_status"]),
-                str(row["retrieval_status"]),
-                int(row["chunk_count"]),
-                str(row["last_seen_at"]),
-                row["last_processed_at"],
-                row["last_committed_at"],
-                row["error_message"],
-            )
-            for row in legacy_manifest
-        ],
-    )
-    connection.execute("DROP TABLE corpus_manifest_v2_legacy")
-
-    # --- chunk_rows: remove source_path, FK → source_rel_path ---
-    chunk_columns = _table_columns(connection, "chunk_rows")
-    if "source_path" in chunk_columns:
-        legacy_chunks = connection.execute(
-            """
-            SELECT chunk_id, document_id, source_rel_path, source_filename,
-                   source_type, source_domain, source_hash, citation_label,
-                   chunk_index, chunk_occurrence, token_count, text, chunk_hash,
-                   score_hint, metadata_json, vector_json, embedding_model, embedding_dims
-            FROM chunk_rows ORDER BY source_rel_path, chunk_index
-            """
-        ).fetchall()
-        connection.execute("ALTER TABLE chunk_rows RENAME TO chunk_rows_v2_legacy")
-        connection.execute(
-            """
-            CREATE TABLE chunk_rows (
-                chunk_id TEXT PRIMARY KEY,
-                document_id TEXT NOT NULL,
-                source_rel_path TEXT NOT NULL,
-                source_filename TEXT NOT NULL,
-                source_type TEXT NOT NULL,
-                source_domain TEXT NOT NULL,
-                source_hash TEXT NOT NULL,
-                citation_label TEXT NOT NULL,
-                chunk_index INTEGER NOT NULL,
-                chunk_occurrence INTEGER NOT NULL,
-                token_count INTEGER NOT NULL,
-                text TEXT NOT NULL,
-                chunk_hash TEXT NOT NULL,
-                score_hint TEXT NOT NULL,
-                metadata_json TEXT NOT NULL,
-                vector_json TEXT NOT NULL,
-                embedding_model TEXT NOT NULL,
-                embedding_dims INTEGER NOT NULL,
-                FOREIGN KEY(source_rel_path) REFERENCES corpus_manifest(source_rel_path)
-                    ON DELETE CASCADE
-            )
-            """
-        )
-        connection.executemany(
-            """
-            INSERT INTO chunk_rows (
-                chunk_id, document_id, source_rel_path, source_filename,
-                source_type, source_domain, source_hash, citation_label,
-                chunk_index, chunk_occurrence, token_count, text, chunk_hash,
-                score_hint, metadata_json, vector_json, embedding_model, embedding_dims
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
-            [
-                (
-                    str(row["chunk_id"]),
-                    str(row["document_id"]),
-                    str(row["source_rel_path"]),
-                    str(row["source_filename"]),
-                    str(row["source_type"]),
-                    str(row["source_domain"]),
-                    str(row["source_hash"]),
-                    str(row["citation_label"]),
-                    int(row["chunk_index"]),
-                    int(row["chunk_occurrence"]),
-                    int(row["token_count"]),
-                    str(row["text"]),
-                    str(row["chunk_hash"]),
-                    str(row["score_hint"]),
-                    str(row["metadata_json"]),
-                    str(row["vector_json"]),
-                    str(row["embedding_model"]),
-                    int(row["embedding_dims"]),
-                )
-                for row in legacy_chunks
-            ],
-        )
-        connection.execute("DROP TABLE chunk_rows_v2_legacy")
-
-    # --- mention_rows: source_path → source_rel_path ---
-    mention_columns = _table_columns(connection, "mention_rows")
-    if "source_path" in mention_columns and "source_rel_path" not in mention_columns:
-        legacy_mentions = connection.execute(
-            """
-            SELECT mention_id, entity_id, term_source, source_domain,
-                   source_path, source_filename, chunk_id, surface_form,
-                   start_char, end_char
-            FROM mention_rows
-            """
-        ).fetchall()
-        connection.execute("ALTER TABLE mention_rows RENAME TO mention_rows_v2_legacy")
-        connection.execute(
-            """
-            CREATE TABLE mention_rows (
-                mention_id TEXT PRIMARY KEY,
-                entity_id TEXT NOT NULL,
-                term_source TEXT NOT NULL,
-                source_domain TEXT NOT NULL,
-                source_rel_path TEXT NOT NULL,
-                source_filename TEXT NOT NULL,
-                chunk_id TEXT NOT NULL,
-                surface_form TEXT NOT NULL,
-                start_char INTEGER NOT NULL,
-                end_char INTEGER NOT NULL,
-                FOREIGN KEY(chunk_id) REFERENCES chunk_rows(chunk_id) ON DELETE CASCADE,
-                FOREIGN KEY(source_rel_path) REFERENCES corpus_manifest(source_rel_path)
-                    ON DELETE CASCADE
-            )
-            """
-        )
-        connection.executemany(
-            """
-            INSERT INTO mention_rows (
-                mention_id, entity_id, term_source, source_domain,
-                source_rel_path, source_filename, chunk_id, surface_form,
-                start_char, end_char
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
-            [
-                (
-                    str(row["mention_id"]),
-                    str(row["entity_id"]),
-                    str(row["term_source"]),
-                    str(row["source_domain"]),
-                    abs_to_rel.get(str(row["source_path"]), str(row["source_path"])),
-                    str(row["source_filename"]),
-                    str(row["chunk_id"]),
-                    str(row["surface_form"]),
-                    int(row["start_char"]),
-                    int(row["end_char"]),
-                )
-                for row in legacy_mentions
-            ],
-        )
-        connection.execute("DROP TABLE mention_rows_v2_legacy")
-
-    # --- asset_links: asset_path PK → asset_rel_path, parent_source_path → rel ---
-    if _table_exists(connection, "asset_links"):
-        asset_columns = _table_columns(connection, "asset_links")
-        if "asset_path" in asset_columns and "parent_source_path" in asset_columns:
-            legacy_assets = connection.execute(
-                """
-                SELECT asset_rel_path, asset_filename, source_domain,
-                       parent_source_path, parent_document_id,
-                       page_no, asset_index, link_method, blake3_hash, last_committed_at
-                FROM asset_links
-                """
-            ).fetchall()
-            connection.execute("ALTER TABLE asset_links RENAME TO asset_links_v2_legacy")
-            connection.execute(
-                """
-                CREATE TABLE asset_links (
-                    asset_rel_path TEXT PRIMARY KEY,
-                    asset_filename TEXT NOT NULL,
-                    source_domain TEXT NOT NULL,
-                    parent_source_rel_path TEXT,
-                    parent_document_id TEXT,
-                    page_no INTEGER,
-                    asset_index INTEGER,
-                    link_method TEXT NOT NULL,
-                    blake3_hash TEXT NOT NULL,
-                    last_committed_at TEXT NOT NULL,
-                    FOREIGN KEY(asset_rel_path) REFERENCES corpus_manifest(source_rel_path)
-                        ON DELETE CASCADE
-                )
-                """
-            )
-            connection.executemany(
-                """
-                INSERT INTO asset_links (
-                    asset_rel_path, asset_filename, source_domain,
-                    parent_source_rel_path, parent_document_id,
-                    page_no, asset_index, link_method, blake3_hash, last_committed_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
-                [
-                    (
-                        str(row["asset_rel_path"]),
-                        str(row["asset_filename"]),
-                        str(row["source_domain"]),
-                        abs_to_rel.get(str(row["parent_source_path"]))
-                        if row["parent_source_path"]
-                        else None,
-                        row["parent_document_id"],
-                        row["page_no"],
-                        row["asset_index"],
-                        str(row["link_method"]),
-                        str(row["blake3_hash"]),
-                        str(row["last_committed_at"]),
-                    )
-                    for row in legacy_assets
-                ],
-            )
-            connection.execute("DROP TABLE asset_links_v2_legacy")
-
-    # --- ontology_sources: file_path PK → file_rel_path PK ---
-    if _table_exists(connection, "ontology_sources"):
-        onto_columns = _table_columns(connection, "ontology_sources")
-        if "file_path" in onto_columns:
-            legacy_onto = connection.execute(
-                "SELECT file_rel_path, blake3_hash, last_seen_at FROM ontology_sources"
-            ).fetchall()
-            connection.execute("ALTER TABLE ontology_sources RENAME TO ontology_sources_v2_legacy")
-            connection.execute(
-                """
-                CREATE TABLE ontology_sources (
-                    file_rel_path TEXT PRIMARY KEY,
-                    blake3_hash TEXT NOT NULL,
-                    last_seen_at TEXT NOT NULL
-                )
-                """
-            )
-            connection.executemany(
-                "INSERT INTO ontology_sources (file_rel_path, blake3_hash, last_seen_at)"
-                " VALUES (?, ?, ?)",
-                [
-                    (str(row["file_rel_path"]), str(row["blake3_hash"]), str(row["last_seen_at"]))
-                    for row in legacy_onto
-                ],
-            )
-            connection.execute("DROP TABLE ontology_sources_v2_legacy")
-
-    connection.execute("PRAGMA foreign_keys=ON")
+    return int(row_value(row, "cnt"))
 
 
 def _ensure_indexes(connection: sqlite3.Connection) -> None:
@@ -3146,16 +1988,3 @@ def _ensure_indexes(connection: sqlite3.Connection) -> None:
         ON chunk_rows(source_domain);
         """
     )
-
-
-def _table_exists(connection: sqlite3.Connection, table_name: str) -> bool:
-    row = connection.execute(
-        "SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?",
-        (table_name,),
-    ).fetchone()
-    return row is not None
-
-
-def _table_columns(connection: sqlite3.Connection, table_name: str) -> set[str]:
-    rows = connection.execute(f"PRAGMA table_info({table_name})").fetchall()
-    return {str(row["name"]) for row in rows}

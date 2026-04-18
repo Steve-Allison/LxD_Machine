@@ -15,8 +15,12 @@ from rich.table import Table
 
 from lxd.app.bootstrap import bootstrap_app
 from lxd.ingest.claims import (
+    collect_claims_batch,
     extract_claims_for_chunks,
+    prepare_claims_batch_jsonl,
+    submit_claims_batch,
 )
+from lxd.ingest.llm_client import poll_batch as _poll_batch
 from lxd.ontology.communities import detect_communities, persist_community_assignments
 from lxd.ontology.entity_graph import build_combined_entity_graph
 from lxd.ontology.evidence import consolidate_relations
@@ -161,8 +165,6 @@ def build_graph_command(
             update_graph_build_phase(connection, run_id=run_id, current_phase="claims")
             if batch:
                 _console.print("[bold]Phase: claim extraction (Batch API)[/bold]")
-                from lxd.ingest.claims import prepare_claims_batch_jsonl, submit_claims_batch
-
                 batch_dir = config.paths.data_path / "batch"
                 jsonl_path = prepare_claims_batch_jsonl(connection, config, batch_dir, force=full)
                 batch_id = submit_claims_batch(jsonl_path, config)
@@ -515,7 +517,6 @@ def collect_batch_command(
     config_path: Path | None = _CONFIG_OPTION,
 ) -> None:
     """Collect results from a completed OpenAI Batch API job and insert into SQLite."""
-    from lxd.ingest.claims import collect_claims_batch
 
     ctx = bootstrap_app(profile=profile, config_path=config_path)
     config = ctx.config
@@ -527,8 +528,6 @@ def collect_batch_command(
     chunks_meta_path = batch_dir / "claims_batch_chunks.json"
     if not chunks_meta_path.exists():
         # Fall back to durable copy in SQLite graph_metadata
-        from lxd.stores.sqlite import load_graph_metadata
-
         gm = load_graph_metadata(connection)
         stored = gm.get("claims_batch_chunks")
         if stored is None:
@@ -540,9 +539,6 @@ def collect_batch_command(
         chunks_meta_path.parent.mkdir(parents=True, exist_ok=True)
         chunks_meta_path.write_text(stored)
         _console.print("[yellow]Restored batch metadata from SQLite.[/yellow]")
-
-    # Check batch status first
-    from lxd.ingest.llm_client import poll_batch as _poll_batch
 
     status = _poll_batch(batch_id)
     if status["status"] != "completed":
@@ -566,8 +562,6 @@ def batch_status_command(
 ) -> None:
     """Check the status of an OpenAI Batch API job."""
     bootstrap_app(profile=profile, config_path=config_path)
-
-    from lxd.ingest.llm_client import poll_batch as _poll_batch
 
     status = _poll_batch(batch_id)
     table = Table(title=f"Batch {batch_id}")

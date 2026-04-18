@@ -92,7 +92,7 @@ def test_sqlite_store_round_trip(tmp_path) -> None:
 
     assert len(loaded_chunks) == 1
     assert loaded_chunks[0].document_id == "doc-guides"
-    assert loaded_chunks[0].vector == [0.1, 0.2, 0.3]
+    assert loaded_chunks[0].vector == []  # Schema v2: LanceDB owns vectors, not SQLite.
     assert list(loaded_mentions) == ["chunk-1"]
     assert len(loaded_mentions["chunk-1"]) == 1
     assert loaded_mentions["chunk-1"][0].term_source == "alias"

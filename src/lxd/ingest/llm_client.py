@@ -14,46 +14,58 @@ from collections.abc import Awaitable, Callable, Sequence
 from pathlib import Path
 from typing import Any
 
+import ollama
+import openai
 import structlog
 
 _log = structlog.get_logger(__name__)
 
 # ---------------------------------------------------------------------------
-# Lazy client singletons
+# Client singletons
 # ---------------------------------------------------------------------------
+#
+# The AsyncOpenAI client is a per-api-key singleton (credentials never change
+# mid-process). The Ollama client is keyed on ``(host, timeout)`` because two
+# pipeline stages may legitimately target different hosts or request longer
+# timeouts, and returning a stale client would silently misroute calls.
 
-_async_openai_client: Any | None = None
-_sync_ollama_client: Any | None = None
-
-
-def get_async_openai_client(api_key_env: str = "OPENAI_API_KEY") -> Any:
-    """Return a lazily-initialised AsyncOpenAI client singleton."""
-    global _async_openai_client
-    if _async_openai_client is None:
-        import openai
-
-        api_key = os.environ.get(api_key_env)
-        if not api_key:
-            raise RuntimeError(f"Environment variable {api_key_env!r} is not set.")
-        _async_openai_client = openai.AsyncOpenAI(api_key=api_key)
-    return _async_openai_client
+_async_openai_clients: dict[str, openai.AsyncOpenAI] = {}
+_sync_ollama_clients: dict[tuple[str, float], ollama.Client] = {}
 
 
-def get_ollama_client(host: str, timeout: float) -> Any:
-    """Return a lazily-initialised Ollama client singleton."""
-    global _sync_ollama_client
-    if _sync_ollama_client is None:
-        import ollama
+def get_async_openai_client(api_key_env: str = "OPENAI_API_KEY") -> openai.AsyncOpenAI:
+    """Return a lazily-initialised ``AsyncOpenAI`` client keyed on API key env."""
+    cached = _async_openai_clients.get(api_key_env)
+    if cached is not None:
+        return cached
+    api_key = os.environ.get(api_key_env)
+    if not api_key:
+        raise RuntimeError(f"Environment variable {api_key_env!r} is not set.")
+    client = openai.AsyncOpenAI(api_key=api_key)
+    _async_openai_clients[api_key_env] = client
+    return client
 
-        _sync_ollama_client = ollama.Client(host=host, timeout=timeout)
-    return _sync_ollama_client
+
+def get_ollama_client(host: str, timeout: float) -> ollama.Client:
+    """Return a lazily-initialised Ollama client keyed on ``(host, timeout)``.
+
+    The key ensures that two callers with different hosts or different
+    per-request timeouts do not share a single client: the Ollama client
+    captures both values at construction time.
+    """
+    key = (host, float(timeout))
+    cached = _sync_ollama_clients.get(key)
+    if cached is not None:
+        return cached
+    client = ollama.Client(host=host, timeout=timeout)
+    _sync_ollama_clients[key] = client
+    return client
 
 
 def reset_clients() -> None:
     """Reset client singletons (for testing)."""
-    global _async_openai_client, _sync_ollama_client
-    _async_openai_client = None
-    _sync_ollama_client = None
+    _async_openai_clients.clear()
+    _sync_ollama_clients.clear()
 
 
 # ---------------------------------------------------------------------------
@@ -362,8 +374,6 @@ def submit_batch(
 
     Returns the batch ID.
     """
-    import openai
-
     api_key = os.environ.get(api_key_env)
     if not api_key:
         raise RuntimeError(f"Environment variable {api_key_env!r} is not set.")
@@ -406,8 +416,6 @@ def poll_batch(
     api_key_env: str = "OPENAI_API_KEY",
 ) -> dict[str, Any]:
     """Check batch status. Returns batch object as dict."""
-    import openai
-
     api_key = os.environ.get(api_key_env)
     if not api_key:
         raise RuntimeError(f"Environment variable {api_key_env!r} is not set.")
@@ -444,8 +452,6 @@ def collect_batch_results(
     Returns:
         List of parsed results from parse_fn.
     """
-    import openai
-
     api_key = os.environ.get(api_key_env)
     if not api_key:
         raise RuntimeError(f"Environment variable {api_key_env!r} is not set.")

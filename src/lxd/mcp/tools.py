@@ -4,18 +4,43 @@ from __future__ import annotations
 
 from typing import Any
 
+import networkx as nx
+
 from lxd.app.bootstrap import AppContext
 from lxd.app.status import load_committed_status
 from lxd.ingest.pipeline import IngestPlan
 from lxd.ontology.graph import direct_neighbors
 from lxd.retrieval.expansion import expand_entity_ids
-from lxd.retrieval.query_pipeline import search_chunks
+from lxd.retrieval.graph_routing import build_graph_context
+from lxd.retrieval.query_pipeline import answer_question, search_chunks
+from lxd.stores.lancedb import (
+    connect_lancedb,
+    load_vectors_by_chunk_ids,
+    open_chunk_table,
+    open_entity_table,
+    search_similar_entities,
+)
 from lxd.stores.sqlite import (
     build_store_paths,
     connect_sqlite,
+    count_canonical_relations,
+    count_claims,
+    count_communities,
+    count_community_reports,
+    count_entity_profiles,
+    count_relation_evidence,
     find_chunks_by_entity_mentions,
     initialize_schema,
+    load_chunk_ids_for_entity,
+    load_community_report,
     load_corpus_relations_for_entity,
+    load_entity_profile,
+    load_evidence_for_relation,
+    load_graph_metadata,
+    load_top_entities_by_betweenness,
+    load_top_entities_by_closeness,
+    load_top_entities_by_pagerank,
+    search_entity_profiles,
 )
 
 
@@ -241,8 +266,6 @@ def get_entity_summary_tool(app_context: AppContext, entity_id: str) -> dict[str
     connection = connect_sqlite(store_paths.sqlite_path)
     try:
         initialize_schema(connection)
-        from lxd.stores.sqlite import load_entity_profile
-
         profile = load_entity_profile(connection, entity_id)
         if profile is None:
             return {}
@@ -281,8 +304,6 @@ def get_community_context_tool(app_context: AppContext, entity_id: str) -> dict[
     connection = connect_sqlite(store_paths.sqlite_path)
     try:
         initialize_schema(connection)
-        from lxd.stores.sqlite import load_community_report, load_entity_profile
-
         profile = load_entity_profile(connection, entity_id)
         if profile is None or profile.community_id is None:
             return {}
@@ -314,39 +335,27 @@ def get_similar_entities_tool(
     connection = connect_sqlite(store_paths.sqlite_path)
     try:
         initialize_schema(connection)
-        import json
-
-        from lxd.stores.lancedb import connect_lancedb, open_entity_table, search_similar_entities
-        from lxd.stores.sqlite import load_chunk_ids_for_entity, load_entity_profile
-
         profile = load_entity_profile(connection, entity_id)
         if profile is None:
             return []
 
-        # Get entity embedding vector by computing from chunk embeddings
         chunk_ids = load_chunk_ids_for_entity(connection, entity_id, limit=20)
         if not chunk_ids:
             return []
 
         vector_size = app_context.config.models.embed_dims
-        placeholders = ",".join("?" * len(chunk_ids))
-        chunk_rows = connection.execute(
-            f"SELECT vector_json FROM chunk_rows WHERE chunk_id IN ({placeholders})",
-            chunk_ids,
-        ).fetchall()
-
-        vectors: list[list[float]] = []
-        for row in chunk_rows:
-            vec = json.loads(str(row["vector_json"]))
-            if isinstance(vec, list) and len(vec) == vector_size:
-                vectors.append(vec)
-
+        db = connect_lancedb(store_paths.lancedb_path)
+        try:
+            chunk_table = open_chunk_table(db, vector_size=vector_size)
+        except FileNotFoundError:
+            return []
+        vectors_by_id = load_vectors_by_chunk_ids(chunk_table, chunk_ids)
+        vectors = [v for v in vectors_by_id.values() if len(v) == vector_size]
         if not vectors:
             return []
 
         query_vector = [sum(v[i] for v in vectors) / len(vectors) for i in range(vector_size)]
 
-        db = connect_lancedb(store_paths.lancedb_path)
         try:
             entity_table = open_entity_table(db, vector_size=vector_size)
             results = search_similar_entities(
@@ -354,7 +363,6 @@ def get_similar_entities_tool(
                 query_vector=query_vector,
                 limit=limit + 1,
             )
-            # Exclude self
             return [r for r in results if r["entity_id"] != entity_id][:limit]
         except FileNotFoundError:
             return []
@@ -373,8 +381,6 @@ def search_entities_tool(
     connection = connect_sqlite(store_paths.sqlite_path)
     try:
         initialize_schema(connection)
-        from lxd.stores.sqlite import search_entity_profiles
-
         profiles = search_entity_profiles(connection, query, limit=limit)
         return [
             {
@@ -400,8 +406,6 @@ def inspect_evidence_tool(app_context: AppContext, relation_id: str) -> list[dic
     connection = connect_sqlite(store_paths.sqlite_path)
     try:
         initialize_schema(connection)
-        from lxd.stores.sqlite import load_evidence_for_relation
-
         records = load_evidence_for_relation(connection, relation_id)
         return [
             {
@@ -430,7 +434,6 @@ def find_path_between_entities_tool(
     """Find shortest unweighted path between two entities."""
     _require_non_empty(source, "source")
     _require_non_empty(target, "target")
-    import networkx as nx
 
     graph = plan.ontology.graph
     if source not in graph or target not in graph:
@@ -465,7 +468,6 @@ def find_weighted_path_tool(
     """Find confidence-weighted Dijkstra shortest path between two entities."""
     _require_non_empty(source, "source")
     _require_non_empty(target, "target")
-    import networkx as nx
 
     graph = plan.ontology.graph
 
@@ -512,8 +514,6 @@ def get_hub_entities_tool(app_context: AppContext, limit: int = 20) -> list[dict
     connection = connect_sqlite(store_paths.sqlite_path)
     try:
         initialize_schema(connection)
-        from lxd.stores.sqlite import load_top_entities_by_pagerank
-
         profiles = load_top_entities_by_pagerank(connection, limit=limit)
         return [
             {
@@ -536,8 +536,6 @@ def find_bridge_entities_tool(app_context: AppContext, limit: int = 20) -> list[
     connection = connect_sqlite(store_paths.sqlite_path)
     try:
         initialize_schema(connection)
-        from lxd.stores.sqlite import load_top_entities_by_betweenness
-
         profiles = load_top_entities_by_betweenness(connection, limit=limit)
         return [
             {
@@ -562,8 +560,6 @@ def find_foundational_entities_tool(
     connection = connect_sqlite(store_paths.sqlite_path)
     try:
         initialize_schema(connection)
-        from lxd.stores.sqlite import load_top_entities_by_closeness
-
         profiles = load_top_entities_by_closeness(connection, limit=limit)
         return [
             {
@@ -586,16 +582,6 @@ def get_entity_graph_stats_tool(app_context: AppContext) -> dict[str, Any]:
     connection = connect_sqlite(store_paths.sqlite_path)
     try:
         initialize_schema(connection)
-        from lxd.stores.sqlite import (
-            count_canonical_relations,
-            count_claims,
-            count_communities,
-            count_community_reports,
-            count_entity_profiles,
-            count_relation_evidence,
-            load_graph_metadata,
-        )
-
         metadata = load_graph_metadata(connection)
         return {
             "graph_version": int(metadata.get("graph_version", "0")),
@@ -618,7 +604,6 @@ def search_knowledge_tool(
 ) -> dict[str, Any]:
     """Run the full answer pipeline with graph-augmented synthesis."""
     _require_non_empty(question, "question")
-    from lxd.retrieval.query_pipeline import answer_question
 
     envelope = answer_question(question=question, config=app_context.config, domain=domain)
     return {
@@ -637,7 +622,6 @@ def search_knowledge_deep_tool(
 ) -> dict[str, Any]:
     """Run the full answer pipeline with graph context data returned alongside the answer."""
     _require_non_empty(question, "question")
-    from lxd.retrieval.query_pipeline import answer_question
 
     envelope = answer_question(question=question, config=app_context.config, domain=domain)
 
@@ -651,8 +635,6 @@ def search_knowledge_deep_tool(
             connection = connect_sqlite(store_paths.sqlite_path)
             try:
                 initialize_schema(connection)
-                from lxd.retrieval.graph_routing import build_graph_context
-
                 context = build_graph_context(connection, matched_entity_ids, app_context.config)
                 graph_data = {
                     "level": context.level,
@@ -717,16 +699,6 @@ def get_graph_overview_tool(app_context: AppContext) -> dict[str, Any]:
     connection = connect_sqlite(store_paths.sqlite_path)
     try:
         initialize_schema(connection)
-        from lxd.stores.sqlite import (
-            count_canonical_relations,
-            count_claims,
-            count_communities,
-            count_community_reports,
-            count_entity_profiles,
-            count_relation_evidence,
-            load_graph_metadata,
-        )
-
         metadata = load_graph_metadata(connection)
         return {
             "graph_version": int(metadata.get("graph_version", "0")),

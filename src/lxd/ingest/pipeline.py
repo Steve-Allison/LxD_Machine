@@ -8,6 +8,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any
 
 from lxd.domain.citations import make_citation_label
 from lxd.domain.ids import blake3_hex, make_chunk_id
@@ -21,7 +22,12 @@ from lxd.ingest.chunking import (
     token_count_with_tokenizer,
 )
 from lxd.ingest.docling import load_docling_document
-from lxd.ingest.embedder import EmbeddingContextError, embed_chunk_text, probe_embedder
+from lxd.ingest.embedder import (
+    EmbeddingContextError,
+    embed_chunk_text,
+    embed_texts_batched,
+    probe_embedder,
+)
 from lxd.ingest.markdown import ExtractedDocument, load_markdown_document
 from lxd.ingest.mentions import detect_mentions
 from lxd.ingest.relations import build_valid_predicates, extract_relations_for_chunk
@@ -31,6 +37,7 @@ from lxd.ontology.matcher import build_automaton
 from lxd.settings.models import RuntimeConfig
 from lxd.stores.lancedb import (
     connect_lancedb,
+    load_vectors_by_chunk_ids,
     open_chunk_table,
 )
 from lxd.stores.lancedb import delete_source as delete_vector_source
@@ -216,7 +223,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
 
         for missing_rel_path in sorted(set(current_manifest) - scanned_rel_paths):
             missing_manifest = current_manifest[missing_rel_path]
-            delete_sqlite_source(sqlite_connection, missing_manifest.absolute_path)
+            delete_sqlite_source(sqlite_connection, missing_manifest.source_rel_path)
             delete_vector_source(vector_table, missing_manifest.source_rel_path)
 
         reembedded_text_sources = 0
@@ -351,6 +358,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                     if move_source is not None:
                         cloned_chunks, cloned_mentions = _clone_source_records(
                             sqlite_connection=sqlite_connection,
+                            vector_table=vector_table,
                             old_manifest=move_source,
                             new_scanned=scanned,
                             document_id=document_id,
@@ -652,12 +660,29 @@ def _embed_with_context_refinement(
     document_id: str,
     config: RuntimeConfig,
 ) -> tuple[list[TextChunk], list[list[float]]]:
+    """Embed ``chunks`` in a single batch, splitting any that overflow context.
+
+    Attempts a batch call first so the embedding backend can amortise HTTP
+    and model-load overhead. Chunks that trigger
+    :class:`EmbeddingContextError` are recursively split via the existing
+    token-aware chunker and re-embedded; the returned ``chunks`` list may
+    therefore be longer than the input.
+    """
     token_counter = token_count_with_tokenizer(
         build_tokenizer(config.chunking.tokenizer_backend, config.chunking.tokenizer_name)
     )
-    resolved_chunks: list[TextChunk] = []
-    vectors: list[list[float]] = []
+    if not chunks:
+        return [], []
 
+    try:
+        vectors = embed_texts_batched(config, [chunk.text for chunk in chunks])
+        reindexed = _reindex_chunks(list(chunks), document_id)
+        return reindexed, vectors
+    except EmbeddingContextError:
+        pass
+
+    resolved_chunks: list[TextChunk] = []
+    vectors = []
     for chunk in chunks:
         refined_chunks, refined_vectors = _embed_chunk_recursively(
             chunk,
@@ -789,22 +814,43 @@ def _resolve_document_id(
     move_source: ManifestRecord | None,
     timestamp: str,
 ) -> str:
+    """Return a deterministic document_id for a scanned source.
+
+    The `timestamp` parameter is retained for signature stability with legacy
+    callers but is intentionally excluded from the hash: document_id must be a
+    pure function of content identity (relative path + content hash), so that
+    repeated full rebuilds yield identical identifiers and downstream tables
+    keyed on document_id (claims, relations, profiles, communities) remain
+    stable across runs.
+    """
     if existing_manifest is not None and existing_manifest.document_id is not None:
         return existing_manifest.document_id
     if move_source is not None and move_source.document_id is not None:
         return move_source.document_id
-    return blake3_hex(scanned.relative_path, scanned.content_hash, timestamp)
+    del timestamp
+    return blake3_hex(scanned.relative_path, scanned.content_hash)
 
 
 def _clone_source_records(
     *,
     sqlite_connection: sqlite3.Connection,
+    vector_table: Any,
     old_manifest: ManifestRecord,
     new_scanned: ScannedCorpusFile,
     document_id: str,
 ) -> tuple[list[ChunkRecord], list[MentionRecord]]:
+    """Clone an existing source's chunks/mentions under new identity.
+
+    Vectors are hydrated from LanceDB (the canonical vector store as of
+    schema v2) keyed on the old chunk IDs; SQLite no longer carries
+    ``vector_json``. Chunks whose vectors are missing from LanceDB inherit an
+    empty vector and must be re-embedded by the caller.
+    """
     old_chunks = load_chunk_records_for_source(sqlite_connection, old_manifest.source_rel_path)
     mentions_by_chunk = load_mentions_for_source(sqlite_connection, old_manifest.source_rel_path)
+    vectors_by_old_id = load_vectors_by_chunk_ids(
+        vector_table, [chunk.chunk_id for chunk in old_chunks]
+    )
     chunk_id_map: dict[str, str] = {}
     cloned_chunks: list[ChunkRecord] = []
     for old_chunk in old_chunks:
@@ -831,7 +877,7 @@ def _clone_source_records(
                 chunk_hash=old_chunk.chunk_hash,
                 score_hint=old_chunk.score_hint,
                 metadata_json=old_chunk.metadata_json,
-                vector=old_chunk.vector,
+                vector=vectors_by_old_id.get(old_chunk.chunk_id, []),
                 embedding_model=old_chunk.embedding_model,
                 embedding_dims=old_chunk.embedding_dims,
             )

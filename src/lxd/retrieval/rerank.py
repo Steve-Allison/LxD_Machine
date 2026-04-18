@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import subprocess
 import time
@@ -347,12 +348,22 @@ def _resolve_reranker_model_path(config: RuntimeConfig) -> Path:
 
 
 def _resolve_ollama_blob_model_path(model_name: str) -> Path:
-    result = subprocess.run(
-        ["ollama", "show", "--modelfile", model_name],
-        check=False,
-        capture_output=True,
-        text=True,
-    )
+    try:
+        result = subprocess.run(
+            ["ollama", "show", "--modelfile", model_name],
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=15.0,
+        )
+    except subprocess.TimeoutExpired as exc:
+        raise RuntimeError(
+            f"Timed out invoking 'ollama show' for reranker model '{model_name}'."
+        ) from exc
+    except FileNotFoundError as exc:
+        raise RuntimeError(
+            "Ollama CLI not found on PATH; cannot resolve reranker model blob."
+        ) from exc
     if result.returncode != 0:
         stderr = result.stderr.strip()
         raise RuntimeError(
@@ -394,7 +405,7 @@ def _load_running_pid(pid_path: Path) -> int | None:
         return None
     try:
         payload = json.loads(pid_path.read_text(encoding="utf-8"))
-    except (OSError, ValueError):
+    except OSError, ValueError:
         pid_path.unlink(missing_ok=True)
         return None
     pid = payload.get("pid")
@@ -408,8 +419,6 @@ def _load_running_pid(pid_path: Path) -> int | None:
 
 
 def _process_is_running(pid: int) -> bool:
-    import os
-
     try:
         os.kill(pid, 0)
     except OSError:

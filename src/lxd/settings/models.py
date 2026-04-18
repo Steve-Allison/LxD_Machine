@@ -51,6 +51,8 @@ class EmbeddingConfig(BaseModel):
     retry_attempts: int = Field(gt=0)
     retry_backoff: list[int] = Field(default_factory=list)
     query_instruction: str | None = None
+    batch_size: int = Field(default=32, gt=0)
+    max_workers: int = Field(default=4, gt=0)
 
     @model_validator(mode="after")
     def _normalize_query_instruction(self) -> EmbeddingConfig:
@@ -111,6 +113,21 @@ class RetrievalConfig(BaseModel):
     relation_fusion_weight: float = Field(default=1.0, ge=0.0)
 
 
+class RerankerLaunchConfig(BaseModel):
+    """Auto-start settings for llama.cpp reranker service."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    auto_start: bool = False
+    executable: str = "llama-server"
+    model_source: Literal["ollama_blob", "model_path"] = "ollama_blob"
+    model_path: Path | None = None
+    host: str = "127.0.0.1"
+    port: int = Field(default=8012, gt=0, le=65535)
+    startup_timeout_secs: int = Field(default=120, gt=0)
+    extra_args: list[str] = Field(default_factory=list)
+
+
 class RerankerConfig(BaseModel):
     """Reranker backend connectivity and launch settings."""
 
@@ -137,21 +154,6 @@ class RerankerConfig(BaseModel):
                 "reranker.launch.model_path must be set when reranker.launch.model_source=model_path."
             )
         return self
-
-
-class RerankerLaunchConfig(BaseModel):
-    """Auto-start settings for llama.cpp reranker service."""
-
-    model_config = ConfigDict(extra="forbid")
-
-    auto_start: bool = False
-    executable: str = "llama-server"
-    model_source: Literal["ollama_blob", "model_path"] = "ollama_blob"
-    model_path: Path | None = None
-    host: str = "127.0.0.1"
-    port: int = Field(default=8012, gt=0, le=65535)
-    startup_timeout_secs: int = Field(default=120, gt=0)
-    extra_args: list[str] = Field(default_factory=list)
 
 
 class ExpansionConfig(BaseModel):
@@ -233,12 +235,14 @@ class KnowledgeGraphConfig(BaseModel):
 
 
 class MCPConfig(BaseModel):
-    """MCP server identity configuration."""
+    """MCP server identity and runtime behaviour."""
 
     model_config = ConfigDict(extra="forbid")
 
     server_name: str
     version: str
+    async_tools_enabled: bool = True
+    tool_timeout_secs: float = Field(default=60.0, ge=0.0)
 
 
 class LoggingConfig(BaseModel):
@@ -248,6 +252,33 @@ class LoggingConfig(BaseModel):
 
     level: str
     format: Literal["json", "console"] = "json"
+
+
+class ObservabilityConfig(BaseModel):
+    """Optional OpenTelemetry + Prometheus exporter switches.
+
+    All exporters default to off to preserve the current single-process,
+    zero-dependency footprint. Enabling either flag is a deployment-time
+    decision that is read lazily at startup by the observability module;
+    the runtime does not fail if the underlying client libraries are not
+    installed when the flag is off.
+
+    Attributes:
+        otel_enabled: When true, emit OTel spans for tool calls and
+            long-running pipeline stages.
+        otel_endpoint: OTLP gRPC endpoint (ignored when ``otel_enabled`` is
+            false). Use environment overrides for per-deployment values.
+        prometheus_enabled: When true, expose a ``/metrics`` endpoint on
+            the configured port alongside the MCP server.
+        prometheus_port: TCP port for the Prometheus HTTP server.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    otel_enabled: bool = False
+    otel_endpoint: str | None = None
+    prometheus_enabled: bool = False
+    prometheus_port: int = Field(default=9464, ge=1, le=65535)
 
 
 class PathsConfig(BaseModel):
@@ -260,12 +291,47 @@ class PathsConfig(BaseModel):
     data_path: Path
 
 
+class TenancyConfig(BaseModel):
+    """Multi-tenant corpus identity.
+
+    The single-tenant default keeps the existing single-workspace shape: one
+    SQLite + LanceDB store under ``paths.data_path``. Setting ``corpus_id``
+    marks every persisted artefact (future migration) with a stable tenant
+    tag that downstream tooling (CQRS replicas, cross-corpus reporting) can
+    filter on.
+
+    Attributes:
+        corpus_id: Slug-style identifier, ``"default"`` when unspecified.
+            Must match ``^[a-z0-9][a-z0-9_-]{0,62}$`` so it is safe to use
+            in filesystem paths and LanceDB filter clauses.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    corpus_id: str = "default"
+
+    @model_validator(mode="after")
+    def _validate_corpus_id(self) -> TenancyConfig:
+        value = self.corpus_id
+        if not value or len(value) > 63:
+            raise ValueError("tenancy.corpus_id must be 1..63 characters")
+        if not value[0].isalnum():
+            raise ValueError("tenancy.corpus_id must start with an alphanumeric character")
+        for ch in value:
+            if not (ch.isalnum() or ch in {"_", "-"}):
+                raise ValueError("tenancy.corpus_id may only contain [a-z0-9_-] characters")
+            if ch.isalpha() and not ch.islower():
+                raise ValueError("tenancy.corpus_id must be lowercase")
+        return self
+
+
 class RuntimeConfig(BaseModel):
     """Top-level runtime configuration for the application."""
 
     model_config = ConfigDict(extra="forbid")
 
     paths: PathsConfig
+    tenancy: TenancyConfig = Field(default_factory=TenancyConfig)
     ollama: OllamaConfig
     models: ModelsConfig
     chunking: ChunkingConfig
@@ -281,6 +347,7 @@ class RuntimeConfig(BaseModel):
     knowledge_graph: KnowledgeGraphConfig = Field(default_factory=KnowledgeGraphConfig)
     mcp: MCPConfig
     logging: LoggingConfig
+    observability: ObservabilityConfig = Field(default_factory=ObservabilityConfig)
     openai: OpenAIEmbeddingConfig | None = None
 
     @model_validator(mode="after")

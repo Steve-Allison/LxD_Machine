@@ -241,8 +241,7 @@ async def test_concurrent_extraction_respects_semaphore():
         nonlocal max_in_flight, current_in_flight
         async with lock:
             current_in_flight += 1
-            if current_in_flight > max_in_flight:
-                max_in_flight = current_in_flight
+            max_in_flight = max(max_in_flight, current_in_flight)
         await asyncio.sleep(0.01)
         async with lock:
             current_in_flight -= 1

@@ -42,12 +42,22 @@ line-length    = 100
 target-version = "py314"
 
 [tool.ruff.lint]
-select  = ["E", "F", "I", "UP", "B", "SIM", "TCH"]
+select  = ["E", "F", "I", "UP", "B", "SIM", "TCH", "RUF", "PL", "PERF"]
 ignore  = [
     "E501",
     "TC001",  # pydantic resolves types at runtime — moving to TYPE_CHECKING breaks it
     "TC002",
     "TC003",
+    "PLR0911", # too many returns — query/formatter code is legitimately branchy
+    "PLR0912", # too many branches — same rationale as PLR0911
+    "PLR0913", # too many arguments — ingest pipelines have many stores
+    "PLR0915", # too many statements — split later, not in Wave 7
+    "PLR2004", # magic values — pervasive in tests and tight inner loops
+    "PLW0603", # global statement — used intentionally for client reuse
+    "PLC0415", # inline imports — some entry points still need lazy imports
+    "RUF001",  # ambiguous unicode — emdashes in user-facing strings are intentional
+    "RUF003",  # same, but in comments
+    "PERF401", # list-comprehension suggestion — not always clearer
 ]
 
 [tool.pyright]
@@ -69,3 +79,11 @@ reportUnusedFunction           = false  # MCP tool functions are registered via 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths    = ["tests"]
+markers = [
+    "unit: isolated tests that exercise pure functions and small classes without touching disk or network",
+    "integration: tests that wire multiple components together using temp dirs, SQLite, LanceDB, or the local FastMCP runtime",
+    "e2e: end-to-end tests that drive CLI entrypoints or MCP tool transcripts against a seeded corpus",
+    "property: Hypothesis property-based tests — typically deterministic invariants, not randomised fuzzing in CI",
+    "benchmark: pytest-benchmark performance regression gates; run explicitly via --benchmark-enable",
+    "slow: long-running tests skipped from the default suite (use -m slow to enable)",
+]

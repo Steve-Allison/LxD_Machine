@@ -14,6 +14,9 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+import httpx
+import ollama
+import openai
 import structlog
 
 from lxd.domain.ids import blake3_hex
@@ -21,6 +24,7 @@ from lxd.ingest.llm_client import (
     build_cached_system_prompt,
     call_with_fallback_async,
     collect_batch_results,
+    get_ollama_client,
     prepare_batch_jsonl,
     run_concurrent_extraction,
     submit_batch,
@@ -29,6 +33,18 @@ from lxd.settings.models import RuntimeConfig
 from lxd.stores.models import ExtractedRelationRecord, MentionRecord
 
 _log = structlog.get_logger(__name__)
+
+_RELATION_LLM_ERRORS: tuple[type[BaseException], ...] = (
+    openai.OpenAIError,
+    ollama.ResponseError,
+    ollama.RequestError,
+    httpx.HTTPError,
+    json.JSONDecodeError,
+    TimeoutError,
+    OSError,
+    RuntimeError,
+    ValueError,
+)
 
 _RELATION_BASE_PROMPT = """You are a knowledge graph builder specialising in learning experience design (LxD), instructional design, and educational theory.
 
@@ -353,26 +369,36 @@ def _call_with_fallback_sync(
     valid_predicates: frozenset[str],
     config: RuntimeConfig,
 ) -> list[_RawRelation]:
-    """Synchronous call with OpenAI → Ollama fallback."""
+    """Synchronous call with OpenAI → Ollama fallback.
+
+    Exception handling is scoped to the errors the LLM backends can
+    plausibly raise (transport/HTTP, model refusals, parse failures,
+    timeouts). ``asyncio.CancelledError`` and ``KeyboardInterrupt``
+    propagate so cancellation and ``Ctrl-C`` behave correctly.
+    """
     cfg = config.relation_extraction
 
     if cfg.backend == "openai":
         try:
             return _call_openai_sync(chunk_text, entity_ids, valid_predicates, config)
-        except Exception as exc:
-            _log.warning("OpenAI relation extraction failed, trying fallback: %s", exc)
+        except _RELATION_LLM_ERRORS as exc:
+            _log.warning("relation_extraction_openai_failed", error=str(exc), exc_info=True)
             if cfg.fallback_backend == "ollama":
                 try:
                     return _call_ollama_sync(chunk_text, entity_ids, valid_predicates, config)
-                except Exception as fallback_exc:
-                    _log.warning("Ollama relation extraction fallback failed: %s", fallback_exc)
+                except _RELATION_LLM_ERRORS as fallback_exc:
+                    _log.warning(
+                        "relation_extraction_ollama_fallback_failed",
+                        error=str(fallback_exc),
+                        exc_info=True,
+                    )
             return []
 
     if cfg.backend == "ollama":
         try:
             return _call_ollama_sync(chunk_text, entity_ids, valid_predicates, config)
-        except Exception as exc:
-            _log.warning("Ollama relation extraction failed: %s", exc)
+        except _RELATION_LLM_ERRORS as exc:
+            _log.warning("relation_extraction_ollama_failed", error=str(exc), exc_info=True)
             return []
 
     return []
@@ -384,8 +410,6 @@ def _call_openai_sync(
     valid_predicates: frozenset[str],
     config: RuntimeConfig,
 ) -> list[_RawRelation]:
-    import openai
-
     cfg = config.relation_extraction
     openai_cfg = config.openai
     api_key_env = openai_cfg.api_key_env if openai_cfg else "OPENAI_API_KEY"
@@ -417,10 +441,8 @@ def _call_ollama_sync(
     valid_predicates: frozenset[str],
     config: RuntimeConfig,
 ) -> list[_RawRelation]:
-    import ollama
-
     cfg = config.relation_extraction
-    client = ollama.Client(host=str(config.ollama.url), timeout=float(cfg.timeout_secs))
+    client = get_ollama_client(str(config.ollama.url), float(cfg.timeout_secs))
     response = client.chat(
         model=cfg.ollama_model,
         messages=[
@@ -483,7 +505,7 @@ def _parse_response(raw_text: str) -> list[_RawRelation]:
                 continue
             try:
                 confidence = float(confidence)
-            except (TypeError, ValueError):
+            except TypeError, ValueError:
                 confidence = 0.5
             results.append(
                 _RawRelation(
@@ -491,7 +513,7 @@ def _parse_response(raw_text: str) -> list[_RawRelation]:
                 )
             )
         return results
-    except (json.JSONDecodeError, AttributeError):
+    except json.JSONDecodeError, AttributeError:
         return []
 
 

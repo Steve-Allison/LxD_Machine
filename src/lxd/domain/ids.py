@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import unicodedata
+
 from blake3 import blake3
 
 _SEP = b"\x00"
@@ -18,12 +20,14 @@ def blake3_hex(*parts: str) -> str:
 
     Constraints:
         Separates parts with a null-byte delimiter to avoid ambiguous concatenations.
+        Each part is Unicode-normalised to NFC before hashing so that macOS HFS+
+        NFD paths and pre-composed NFC paths hash identically across platforms.
     """
     hasher = blake3()
     for index, part in enumerate(parts):
         if index:
             hasher.update(_SEP)
-        hasher.update(part.encode("utf-8"))
+        hasher.update(unicodedata.normalize("NFC", part).encode("utf-8"))
     return hasher.hexdigest()
 
 

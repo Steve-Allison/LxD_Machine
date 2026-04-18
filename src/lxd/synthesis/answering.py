@@ -2,12 +2,16 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 
 import ollama
 
 from lxd.domain.status import QueryAnswerStatus
+from lxd.ingest.llm_client import get_ollama_client
 from lxd.settings.models import RuntimeConfig
+
+_THINK_BLOCK_PATTERN = re.compile(r"<think>.*?</think>", flags=re.DOTALL)
 
 
 @dataclass(frozen=True)
@@ -158,19 +162,15 @@ def _build_prompt(
 
 
 def _strip_thinking(text: str) -> str:
-    start_tag = "<think>"
-    end_tag = "</think>"
-    cleaned = text
-    while start_tag in cleaned and end_tag in cleaned:
-        start_index = cleaned.index(start_tag)
-        end_index = cleaned.index(end_tag, start_index) + len(end_tag)
-        cleaned = (cleaned[:start_index] + cleaned[end_index:]).strip()
-    return cleaned
+    """Remove ``<think>...</think>`` scratchpad blocks emitted by reasoning models.
+
+    Uses a single non-greedy DOTALL regex pass rather than the previous
+    iterative ``index``/slice loop, which was O(n^2) on the number of blocks.
+    """
+    return _THINK_BLOCK_PATTERN.sub("", text).strip()
 
 
 def _client(config: RuntimeConfig) -> ollama.Client:
-    from lxd.ingest.llm_client import get_ollama_client
-
     return get_ollama_client(str(config.ollama.url), float(config.synthesis.timeout_secs))
 
 

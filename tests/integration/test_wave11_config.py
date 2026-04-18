@@ -1,0 +1,84 @@
+"""Regression tests for the Wave 11 config additions.
+
+Covers:
+    * :class:`TenancyConfig` validation (corpus_id shape).
+    * :class:`ObservabilityConfig` default + override behaviour.
+    * :class:`OntologyFileModel` validation on representative payloads.
+"""
+
+from __future__ import annotations
+
+import pytest
+
+from lxd.ontology.schema_models import OntologyFileModel, validate_ontology_file
+from lxd.settings.loader import load_runtime_config, resolve_repo_root
+from lxd.settings.models import (
+    ObservabilityConfig,
+    TenancyConfig,
+)
+
+
+def test_tenancy_config_defaults_to_single_tenant() -> None:
+    """Omitting ``corpus_id`` yields the ``default`` tenant."""
+    config = TenancyConfig()
+    assert config.corpus_id == "default"
+
+
+@pytest.mark.parametrize(
+    "invalid",
+    [
+        "",
+        "-leading-dash",
+        "UPPERCASE",
+        "has spaces",
+        "a" * 64,
+        "bad chars!",
+        "has.dot",
+    ],
+)
+def test_tenancy_config_rejects_invalid_ids(invalid: str) -> None:
+    with pytest.raises(ValueError):
+        TenancyConfig(corpus_id=invalid)
+
+
+def test_observability_defaults_are_off() -> None:
+    """Exporters must default to off to preserve zero-dep baseline."""
+    cfg = ObservabilityConfig()
+    assert cfg.otel_enabled is False
+    assert cfg.prometheus_enabled is False
+    assert 1 <= cfg.prometheus_port <= 65535
+
+
+def test_runtime_config_loads_with_default_wave11_sections() -> None:
+    """Existing configs load unchanged: new sections take defaults."""
+    config, _ = load_runtime_config(resolve_repo_root())
+    assert config.tenancy.corpus_id == "default"
+    assert isinstance(config.observability, ObservabilityConfig)
+
+
+def test_validate_ontology_file_accepts_minimal_payload() -> None:
+    """A simple entity-types payload validates without errors."""
+    payload = {
+        "_meta": {"id": "demo", "title": "Demo"},
+        "entity_types": {
+            "ENT_A": {"label": "A", "entity_kind": "concept"},
+        },
+    }
+    model = validate_ontology_file(payload)
+    assert isinstance(model, OntologyFileModel)
+    assert model.meta is not None
+    assert model.meta.id == "demo"
+    assert model.entity_types is not None
+    assert "ENT_A" in model.entity_types
+
+
+def test_validate_ontology_file_rejects_non_mapping() -> None:
+    with pytest.raises(ValueError, match="mapping"):
+        validate_ontology_file(["not", "a", "dict"])
+
+
+def test_validate_ontology_file_allows_unknown_top_level_keys() -> None:
+    """Extras are permitted because ontology shapes evolve quickly."""
+    payload = {"unknown_section": {"foo": "bar"}}
+    model = validate_ontology_file(payload)
+    assert model.entity_types is None

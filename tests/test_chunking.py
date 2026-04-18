@@ -72,6 +72,6 @@ def test_split_chunk_for_context_uses_supplied_token_counter() -> None:
         metadata_json="{}",
     )
 
-    split_chunks = split_chunk_for_context(chunk, token_counter=lambda text: len(text))
+    split_chunks = split_chunk_for_context(chunk, token_counter=len)
 
     assert [item.token_count for item in split_chunks] == [11, 20]

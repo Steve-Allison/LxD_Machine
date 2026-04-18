@@ -2,15 +2,18 @@
 
 from __future__ import annotations
 
-import contextlib
 from pathlib import Path
 from typing import Any
 
+import lancedb
 import pyarrow as pa
+import structlog
 
+from lxd.stores.lance_sql import eq_clause, in_clause
 from lxd.stores.models import ChunkRecord, VectorSearchRecord
 
 _TABLE_NAME = "chunk_vectors"
+_log = structlog.get_logger(__name__)
 
 
 def connect_lancedb(path: Path) -> Any:
@@ -22,8 +25,6 @@ def connect_lancedb(path: Path) -> Any:
     Returns:
         Connected LanceDB database handle.
     """
-    import lancedb
-
     path.mkdir(parents=True, exist_ok=True)
     return lancedb.connect(str(path))
 
@@ -40,7 +41,9 @@ def open_chunk_table(database: Any, *, vector_size: int) -> Any:
     """
     try:
         return database.open_table(_TABLE_NAME)
-    except FileNotFoundError:
+    except (FileNotFoundError, ValueError) as exc:
+        if isinstance(exc, ValueError) and not _is_missing_table_error(exc):
+            raise
         return database.create_table(
             _TABLE_NAME,
             schema=_chunk_table_schema(vector_size),
@@ -94,7 +97,7 @@ def delete_source(table: Any, source_rel_path: str) -> None:
         table: LanceDB table storing chunk vectors.
         source_rel_path: Corpus-relative source path.
     """
-    table.delete(f"source_rel_path = '{_escape_string_literal(source_rel_path)}'")
+    table.delete(eq_clause("source_rel_path", source_rel_path))
 
 
 def search_chunks(
@@ -117,7 +120,7 @@ def search_chunks(
     """
     query = table.search(query_vector, vector_column_name="vector").metric("cosine")
     if domain is not None:
-        query = query.where(f"source_domain = '{_escape_string_literal(domain)}'")
+        query = query.where(eq_clause("source_domain", domain))
     rows = query.limit(limit).to_list()
     records: list[VectorSearchRecord] = []
     for row in rows:
@@ -144,6 +147,37 @@ def search_chunks(
             )
         )
     return records
+
+
+def load_vectors_by_chunk_ids(table: Any, chunk_ids: list[str]) -> dict[str, list[float]]:
+    """Return the stored embedding vector for each requested chunk_id.
+
+    Args:
+        table: LanceDB table storing chunk vectors.
+        chunk_ids: Chunk identifiers to look up.
+
+    Returns:
+        Mapping of ``chunk_id`` -> ``vector``. Missing chunks are simply
+        absent from the returned dict; callers must handle that case.
+
+    Side Effects:
+        None. Performs a single filtered LanceDB scan.
+    """
+    if not chunk_ids:
+        return {}
+    rows = (
+        table.search()
+        .where(in_clause("chunk_id", chunk_ids))
+        .select(["chunk_id", "vector"])
+        .to_list()
+    )
+    result: dict[str, list[float]] = {}
+    for row in rows:
+        vector = row.get("vector")
+        if vector is None:
+            continue
+        result[str(row["chunk_id"])] = [float(v) for v in vector]
+    return result
 
 
 def _chunk_table_schema(vector_size: int) -> pa.Schema:
@@ -199,7 +233,9 @@ def open_entity_table(database: Any, *, vector_size: int) -> Any:
     """Open the entity embeddings table, creating it when missing."""
     try:
         return database.open_table(_ENTITY_TABLE_NAME)
-    except FileNotFoundError:
+    except (FileNotFoundError, ValueError) as exc:
+        if isinstance(exc, ValueError) and not _is_missing_table_error(exc):
+            raise
         return database.create_table(
             _ENTITY_TABLE_NAME,
             schema=_entity_table_schema(vector_size),
@@ -230,9 +266,17 @@ def replace_entity_embeddings(
     """Replace all entity embeddings (full rebuild).
 
     Each record must have: entity_id, label, community_id, vector.
+
+    The delete-before-add is the canonical "replace-all" idiom against
+    LanceDB's append-only storage. When the table has no prior rows, the
+    delete is a no-op but some LanceDB builds raise ``FileNotFoundError``
+    (empty-fragment lookup) or ``ValueError`` (no predicate match); both are
+    swallowed with a debug log so the caller sees a clean "replace" semantic.
     """
-    with contextlib.suppress(Exception):
+    try:
         table.delete("entity_id IS NOT NULL")
+    except (FileNotFoundError, ValueError) as exc:
+        _log.debug("lancedb_entity_delete_skipped", error=str(exc))
     if records:
         table.add(records)
 
@@ -279,11 +323,9 @@ def fetch_vectors_by_chunk_ids(
     """
     if not chunk_ids:
         return {}
-    # LanceDB where-clause uses SQL-like syntax
-    escaped = ", ".join(f"'{_escape_string_literal(cid)}'" for cid in chunk_ids)
     rows = (
         table.search()
-        .where(f"chunk_id IN ({escaped})")
+        .where(in_clause("chunk_id", chunk_ids))
         .select(["chunk_id", "vector"])
         .limit(len(chunk_ids))
         .to_list()
@@ -305,10 +347,6 @@ def _entity_table_schema(vector_size: int) -> pa.Schema:
             pa.field("vector", pa.list_(pa.float32(), vector_size)),
         ]
     )
-
-
-def _escape_string_literal(value: str) -> str:
-    return value.replace("'", "''")
 
 
 def _is_missing_table_error(error: ValueError) -> bool:
