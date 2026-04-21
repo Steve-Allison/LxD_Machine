@@ -9,22 +9,34 @@ Built for Adobe field enablement. The system ingests a mixed-format corpus (Mark
 ```
 src/lxd/
 ├── cli/          # Typer CLI: ingest, status, eval, build-graph, graph-status
-├── app/          # Bootstrap and status reporting
+├── app/          # Bootstrap + AppContext + config.lock reconciliation
 ├── domain/       # Pydantic models (citations, IDs, status enums)
+├── net/          # Shared httpx.Client / httpx.AsyncClient factories
 ├── ingest/       # Corpus pipeline: scan → chunk → embed → mention → relation → persist
-│   └── claims.py # Claim extraction from chunks (Phase 5)
+│   ├── embedder.py # Batched Ollama/OpenAI embedding with context-aware retry
+│   ├── relations.py # LLM-based relation extraction
+│   └── claims.py   # LLM-based claim extraction
 ├── ontology/     # YAML ontology loading, graph building, Aho-Corasick matching
 │   ├── entity_graph.py  # Combined entity graph + 6 centrality metrics
 │   ├── communities.py   # Louvain community detection (Leiden optional)
 │   ├── evidence.py      # Canonical relation deduplication + evidence provenance
-│   └── profiles.py      # Entity profiles, community reports, LLM enrichment
-├── stores/       # SQLite (metadata/manifest) + LanceDB (vectors + entity embeddings)
+│   ├── profiles.py      # Entity profiles, community reports, LLM enrichment
+│   └── schema_models.py # Pydantic ontology schema (opt-in validation)
+├── stores/       # SQLite + LanceDB (vectors canonical in LanceDB)
+│   ├── schema.py        # Numbered migrations driven by PRAGMA user_version
+│   ├── connection.py    # Pragma-tight SQLite connect + close hooks
+│   ├── sqlite.py        # Query/upsert API (thin orchestrator)
+│   ├── lancedb.py       # Canonical vector store
+│   ├── lance_sql.py     # Safe LanceDB filter builders
+│   ├── sql_helpers.py   # Safe SQLite IN (?, ?, …) helpers
+│   └── llm_jobs.py      # Persistent LLM job queue API
 ├── retrieval/    # Query pipeline: dense search → rerank → expansion → graph routing → synthesis
 │   └── graph_routing.py # Graph context augmentation for synthesis
 ├── synthesis/    # Answer generation with citations and graph context
 ├── mcp/          # FastMCP server (20 read-only tools)
-├── observability/# structlog configuration
-└── settings/     # Pydantic config models + YAML loader
+│   └── async_runtime.py # run_tool: async wrapper + hard timeout for tool bodies
+├── observability/# structlog: JSON/console, UTC, log_duration, scrub_secrets
+└── settings/     # Pydantic config models (incl. tenancy, observability) + YAML loader
 ```
 
 Key directories outside `src/`:
@@ -84,14 +96,29 @@ The graph build is a resumable state machine (`pixi run build-graph`). Graph con
 - **Explicit provenance**: every chunk traces back to source document, page, and extraction method. Every claim and relation traces to source chunk.
 - **Ontology-first**: entity recognition uses Aho-Corasick automaton built from YAML definitions; relations extracted via LLM.
 - **Graceful degradation**: the system remains usable when the knowledge graph is not yet built or the reranker service is unavailable.
+- **Async MCP surface**: every tool is `async def`; synchronous bodies run through `lxd.mcp.async_runtime.run_tool` with a hard `tool_timeout_secs` cap.
+- **Single source of truth for vectors**: LanceDB is canonical; `chunk_rows.vector_json` was dropped in schema migration 0002.
+- **Config drift is visible**: bootstrap hashes the resolved config (blake3) and reconciles `data/config.lock`; mismatches log a `config.lock.mismatch` warning without overwriting.
 
 ## Key Patterns
 
 - IDs are deterministic (BLAKE3 hash of content + context), not random UUIDs.
-- Configuration is fully Pydantic v2 validated, loaded from YAML profiles via `settings/loader.py`.
-- MCP tools are read-only with FastMCP (>=3.0) hints for client compatibility.
-- Chunking uses recursive context refinement when embedding dimensions exceed limits.
+- Configuration is fully Pydantic v2 validated, loaded from YAML profiles via `settings/loader.py`. Tenancy (`corpus_id`) and observability exporters are first-class config sections.
+- MCP tools are read-only with FastMCP (>=3.0) hints for client compatibility and are invoked through the async runtime with per-call timeouts.
+- Chunking uses recursive context refinement when embedding dimensions exceed limits; the batched embedder (`ingest/embedder.py`) falls back per-text on Ollama context-length errors.
 - Graph context is additive — prepended to synthesis prompts as structured framing, not fused via RRF with chunks.
+- Schema evolution runs automatically on bootstrap via numbered migrations keyed by `PRAGMA user_version` (`stores/schema.py`).
+- LanceDB `where` clauses are built through `stores/lance_sql.py`; SQLite `IN (?, ?, …)` clauses through `stores/sql_helpers.py`. No raw string interpolation.
+- Long-running LLM jobs are persisted via `stores/llm_jobs.py` (`queued → running → succeeded|failed|cancelled`) so executors can crash and resume.
+- Structured logs ship through `observability/logging.py` with UTC timestamps, `contextvars` propagation, a `log_duration` context manager, and a `scrub_secrets` processor.
+
+## Test Layout
+
+- `tests/unit/` — pure-logic tests (no disk, no network)
+- `tests/integration/` — temp-dir SQLite/LanceDB + local FastMCP
+- `tests/golden/` — API-surface regressions (e.g. `mcp_tool_manifest.json`)
+- Markers: `unit`, `integration`, `e2e`, `property`, `benchmark`, `slow`
+- Refresh a golden file with `pixi run pytest --update-golden`
 
 ## Design Specs
 

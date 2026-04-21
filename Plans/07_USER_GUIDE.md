@@ -106,11 +106,14 @@ If you need a non-default config file, pass it explicitly at launch time.
 
 Minimal useful tools:
 
-- `query_lxd`
+- `search_knowledge` (graph-augmented answer synthesis; was `query_lxd`)
+- `search_knowledge_deep` (same plus structured graph context)
 - `search_corpus`
 - `get_entity_types`
 - `get_related_concepts`
 - `corpus_status`
+
+See `05_MCP_SPEC.md` for the full list of 20 read-only tools.
 
 ---
 
@@ -121,3 +124,26 @@ Working state:
 - ingest commits progress while it runs
 - `status` shows committed progress
 - MCP tools answer against the real store
+- MCP tools are asynchronous; each call is bounded by
+  `mcp.tool_timeout_secs` (default `60s`), so a stuck backend can never
+  stall the server
+- on first launch, `data/config.lock` is seeded with the current config
+  digest; subsequent mismatches log a `config.lock.mismatch` warning. To
+  accept a new configuration, delete `data/config.lock`
+
+---
+
+## 7. Build The Knowledge Graph (Optional)
+
+Once ingest is complete you can build the knowledge graph:
+
+```bash
+pixi run build-graph         # resumable, incremental
+pixi run graph-status        # phase state + counts
+pixi run build-graph --full  # requires interactive confirmation (re-runs LLM extraction)
+```
+
+Graph build phases (claim extraction, entity graph, centrality, community
+detection, entity profiles, community reports) are tracked in
+`graph_build_state` and resume from the last incomplete phase. If the
+graph is absent, all MCP tools still work — graph context is additive.

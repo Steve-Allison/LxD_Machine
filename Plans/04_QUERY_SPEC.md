@@ -79,7 +79,7 @@ Baseline:
 
 ### Stage 5 — Synthesise
 
-For `query_lxd` only:
+For `search_knowledge` / `search_knowledge_deep` (legacy name: `query_lxd`):
 
 - answer only from retrieved chunks
 - cite unique `citation_label` values from chunk sources
@@ -97,7 +97,8 @@ Eval normalization rule:
 
 ## 3. Required Tools At Query Layer
 
-- `query_lxd`
+- `search_knowledge` (graph-augmented answer synthesis; was `query_lxd`)
+- `search_knowledge_deep` (same plus structured `graph_context` payload)
 - `search_corpus`
 - `get_entity_types`
 - `get_related_concepts`
@@ -137,7 +138,15 @@ Ontology context may guide reasoning, but it must not be treated as source evide
 The target remains:
 
 - `search_corpus` p95 <= 2.0 seconds on a warm local store
-- `query_lxd` p95 <= 12.0 seconds on a warm local store
+- `search_knowledge` p95 <= 12.0 seconds on a warm local store
+
+MCP runtime:
+
+- every tool runs as `async def`, wrapped by
+  `lxd.mcp.async_runtime.run_tool`
+- `mcp.tool_timeout_secs` (default `60.0`) is enforced via
+  `anyio.fail_after`; breaches surface as `TimeoutError` and a
+  `mcp.tool.timeout` structured log event
 
 But the first target is **correctness and durability**, not premature micro-optimization.
 
@@ -150,6 +159,6 @@ If synthesis must be slower than raw retrieval, that is acceptable.
 V1 query is complete when:
 
 - `search_corpus` returns ranked chunk results from the real built store
-- `query_lxd` returns either a cited answer or an explicit no-answer status from the real built store
+- `search_knowledge` returns either a cited answer or an explicit no-answer status from the real built store
 - ontology lookups work without relying on mention indexing
 - failure modes are explicit rather than silent

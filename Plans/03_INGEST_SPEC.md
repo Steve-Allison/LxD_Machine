@@ -68,19 +68,28 @@ Asset-only and ontology-only work may still proceed.
 
 Create or migrate:
 
-- LanceDB `chunks`
-- SQLite `corpus_manifest`
-- SQLite `asset_links`
-- SQLite `ontology_sources`
-- SQLite `ontology_snapshot`
-- SQLite `mentions`
-- SQLite `ingest_config`
-- SQLite `ingest_runs`
+- LanceDB `chunks` (canonical vector store)
+- LanceDB `entities` (entity vectors for KG similarity search)
+- SQLite baseline tables via `ensure_schema` (numbered migrations in
+  `lxd.stores.schema` keyed on `PRAGMA user_version`): `corpus_manifest`,
+  `asset_links`, `ontology_sources`, `ontology_snapshot`, `mentions`,
+  `ingest_config`, `ingest_runs`, all KG tables, and `llm_jobs`
 
-SQLite initialization must set:
+Store initialization rules:
 
-- `PRAGMA journal_mode=WAL;`
-- `PRAGMA foreign_keys=ON;`
+- `_migrate_legacy_schema` runs first so pre-versioning stores upgrade
+  cleanly before the numbered migrations fire
+- `ensure_schema` is idempotent; repeated calls are a no-op once
+  `user_version` matches `CURRENT_SCHEMA_VERSION`
+- SQLite connections are opened through `lxd.stores.connection`, which
+  applies and verifies the mandatory PRAGMAs:
+  - `PRAGMA journal_mode=WAL;`
+  - `PRAGMA synchronous=NORMAL;`
+  - `PRAGMA foreign_keys=ON;`
+  - `PRAGMA busy_timeout=5000;`
+  - `PRAGMA temp_store=MEMORY;`
+  - `PRAGMA cache_size=-65536;`
+- `PRAGMA optimize` is issued on close to keep statistics fresh
 
 ## 6. Phase 3 - Scan And Diff Ontology Sources
 
@@ -223,6 +232,18 @@ Embed only new or changed chunks.
 Retain unchanged chunk rows and identities.
 
 If emergency refinement creates additional accepted sub-chunks for a changed source, the committed chunk set for that source must be replaced with the refined accepted set before verification.
+
+Embedding dispatch rules:
+
+- all new/changed chunks are embedded through `embed_texts_batched`, which
+  uses the backend's native batch API in `embedding.batch_size`-sized
+  batches
+- on `EmbeddingContextError` (typically Ollama
+  `input length exceeds the context length`) the batch path falls back
+  to per-chunk embedding with recursive splitting, so a single oversize
+  chunk never stalls the whole document
+- OpenAI batches are dispatched concurrently via `embedding.max_workers`;
+  Ollama batches stay serial to keep the local model warm
 
 ### 10.5 Write And Verify
 

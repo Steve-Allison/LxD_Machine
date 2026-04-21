@@ -7,6 +7,24 @@
 - make interrupted ingest recoverable
 - keep ontology diff tracking separate from ontology snapshot state
 - preserve provenance for both text chunks and binary assets
+- LanceDB is canonical for vectors; SQLite never duplicates vector bytes
+
+## 1b. Schema Versioning
+
+SQLite schema evolution is tracked by the built-in `PRAGMA user_version`.
+Numbered migrations live in `lxd.stores.schema` and run in order at every
+startup via `ensure_schema` (called from `lxd.app.bootstrap`):
+
+| Version | Migration | Purpose |
+|---|---|---|
+| 1 | `0001_baseline` | Creates all primary ingest and KG tables |
+| 2 | `0002_drop_chunk_vector_json` | Drops `chunk_rows.vector_json`; LanceDB becomes canonical for vectors |
+| 3 | `0003_llm_jobs` | Creates the persistent LLM job queue (`llm_jobs` + `idx_llm_jobs_status`) |
+
+Legacy pre-versioning upgrades (rename of keys, PK migrations to
+corpus-relative paths, etc.) live in
+`lxd.stores._sqlite_legacy_migrations` and always run **before** the
+numbered migrations so that older stores upgrade cleanly.
 
 ## 2. LanceDB Schema
 
@@ -171,7 +189,37 @@ Columns:
 - `key` TEXT PRIMARY KEY
 - `value` TEXT NOT NULL
 
-### 3.7 `ingest_runs`
+### 3.7 `llm_jobs`
+
+Persistent LLM job queue (Wave 11). Used by long-running LLM workloads
+(OpenAI Batch, background claim/relation extraction) that must survive
+process restarts. Status transitions are enforced by a SQLite `CHECK`
+constraint; callers choose a stable `job_id` so re-enqueues are
+idempotent.
+
+Columns:
+
+- `job_id` TEXT PRIMARY KEY — caller-supplied stable identifier (commonly `blake3(kind + payload + corpus_id)`)
+- `kind` TEXT NOT NULL — logical job category (e.g. `claims.openai_batch`)
+- `corpus_id` TEXT NOT NULL DEFAULT `'default'` — tenancy marker (`TenancyConfig.corpus_id`)
+- `status` TEXT NOT NULL — one of `queued`, `running`, `succeeded`, `failed`, `cancelled`
+- `payload_json` TEXT NOT NULL — opaque JSON payload for the executor
+- `result_json` TEXT — opaque JSON result once the job succeeds
+- `error` TEXT — short human-readable error string on failure
+- `attempts` INTEGER NOT NULL DEFAULT 0 — retry counter (monotonic)
+- `created_at` TEXT NOT NULL — ISO-8601 UTC
+- `updated_at` TEXT NOT NULL — ISO-8601 UTC
+
+Indexes:
+
+- `idx_llm_jobs_status (corpus_id, status, updated_at)` — supports
+  multi-tenant scans and "oldest-first" worker pulls.
+
+Access happens exclusively through `lxd.stores.llm_jobs` (`enqueue_job`,
+`get_job`, `list_jobs`, `mark_running`, `mark_succeeded`, `mark_failed`,
+`mark_cancelled`).
+
+### 3.8 `ingest_runs`
 
 Recommended run bookkeeping.
 
@@ -220,3 +268,29 @@ Rules:
 The manifest state is the truth for ingest completeness.
 
 If vectors or asset metadata are written without the corresponding committed SQLite state, the ingest is not complete.
+
+## 7. Connection PRAGMAs
+
+Every SQLite connection opened through `lxd.stores.connection` applies
+(and verifies) these pragmas:
+
+- `journal_mode=WAL`
+- `synchronous=NORMAL`
+- `foreign_keys=ON`
+- `busy_timeout=5000`
+- `temp_store=MEMORY`
+- `cache_size=-65536`  (≈ 64 MiB page cache per connection)
+
+On close, `PRAGMA optimize` is issued to keep query planner statistics
+fresh. These settings are mandatory for concurrent ingest/MCP workloads;
+tests and CLI commands must go through the shared connection helpers
+rather than calling `sqlite3.connect` directly.
+
+## 8. Config Lock
+
+`lxd.app.bootstrap.compute_config_digest` produces a stable Blake3 digest
+of the resolved `RuntimeConfig` JSON dump. At startup, `reconcile_config_lock`
+writes `<paths.data_path>/config.lock` on first run and emits a
+`config.lock.mismatch` warning (without overwriting) when the stored
+digest disagrees with the current config. The lock file is a plain text
+file containing the hex digest; it is safe to delete to reseed.

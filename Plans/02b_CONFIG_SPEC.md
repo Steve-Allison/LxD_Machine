@@ -50,6 +50,8 @@ Both machine profiles must define the following sections:
 - `synthesis`
 - `mcp`
 - `logging`
+- `tenancy` *(optional; defaults to single-tenant `"default"`)*
+- `observability` *(optional; OTel + Prometheus exporters default to off)*
 
 ### Required `paths` settings
 
@@ -129,6 +131,68 @@ chunking:
 ```
 
 Tokenization must be explicit in config. No hidden tokenizer defaults are allowed.
+
+### Required `embedding` settings
+
+```yaml
+embedding:
+  timeout_secs: 120
+  retry_attempts: 3
+  retry_backoff: [2, 4, 8]
+  batch_size: 32        # texts per backend request (Ollama batch / OpenAI batch)
+  max_workers: 4        # concurrent batch workers for OpenAI; 1 for Ollama
+  query_instruction: null
+```
+
+Batching rules:
+
+- the ingest pipeline always calls `embed_texts_batched`, which uses the
+  backend's native batch API
+- on an Ollama `input length exceeds the context length` error the whole
+  batch falls back to per-text embedding to isolate the oversize input
+- OpenAI batches are dispatched concurrently via a thread pool of
+  `max_workers`; Ollama defaults to a single worker to keep the local
+  model warm
+
+### Optional `mcp` settings
+
+```yaml
+mcp:
+  server_name: lxd-machine
+  version: 0.1.0
+  async_tools_enabled: true
+  tool_timeout_secs: 60.0    # 0 disables the hard timeout (not recommended)
+```
+
+All MCP tools are `async def`; synchronous bodies run in a worker thread
+under `lxd.mcp.async_runtime.run_tool`, which enforces `tool_timeout_secs`
+via `anyio.fail_after`. Timeouts and exceptions emit structured
+`mcp.tool.timeout` / `mcp.tool.error` log events.
+
+### Optional `tenancy` settings
+
+```yaml
+tenancy:
+  corpus_id: default
+```
+
+`corpus_id` must match `^[a-z0-9][a-z0-9_-]{0,62}$`. It is stamped onto
+persistent `llm_jobs` rows and is reserved as a future multi-tenancy
+filter key across the store.
+
+### Optional `observability` settings
+
+```yaml
+observability:
+  otel_enabled: false
+  otel_endpoint: null          # e.g. http://localhost:4317
+  prometheus_enabled: false
+  prometheus_port: 9464
+```
+
+Both exporters default to off so the baseline remains dependency-free.
+When enabled, runtime wiring is responsible for starting the exporters;
+the config is a feature gate, not a runtime.
 
 `chunk_size` and `chunk_overlap` are initial chunker targets, not a trusted embedder safety contract.
 
@@ -364,3 +428,16 @@ At the end of a successful ingest, the system snapshots the settings that affect
 - `ontology`
 
 `status` must warn when the current config no longer matches the committed snapshot.
+
+## 10. Config Digest And Lock File
+
+On every bootstrap, the runtime computes `config_digest = blake3(json.dumps(config.model_dump(mode="json"), sort_keys=True))` and reconciles it against `<paths.data_path>/config.lock`:
+
+- first run: seed the lock file with the current digest
+- subsequent runs: on mismatch, emit a `config.lock.mismatch` warning with
+  both digests; never overwrite automatically
+- deleting `config.lock` is the supported way to reseed
+
+The digest covers every field in `RuntimeConfig`, including `tenancy` and
+`observability`, so infrastructure changes (tenancy slug, exporter
+toggles) surface as drift warnings.

@@ -85,13 +85,32 @@ Validation/source-of-truth rule:
 ## 3. Server Rules
 
 - load ontology once at startup
+- compute `config_digest` and reconcile `<data_path>/config.lock` at bootstrap
 - hold LanceDB table handle
-- open SQLite per request
+- open SQLite per request through `lxd.stores.connection` (WAL + PRAGMAs)
 - keep tool logic thin
 - use shared lower-level query/store functions
 - configure SQLite connections for concurrent read/write workloads
 - document client launch using `stdio` with `pixi run mcp` from the repo root
 - do not rely on inherited shell environment for `stdio` clients; required runtime settings must come from `config.yaml`, `config.{profile}.yaml`, or explicit `--config` / `--profile` launch arguments
+
+Async tool runtime:
+
+- every registered tool is declared `async def`
+- synchronous bodies execute inside a worker thread via
+  `lxd.mcp.async_runtime.run_tool(name, func, timeout_secs=...)`, which
+  wraps `anyio.to_thread.run_sync(..., abandon_on_cancel=True)` in
+  `anyio.fail_after`
+- the timeout comes from `mcp.tool_timeout_secs` (default `60.0`);
+  setting it to `0` disables the hard cap
+- timeouts and exceptions emit `mcp.tool.timeout` /
+  `mcp.tool.error` structured log events before propagating
+
+API-surface stability:
+
+- `tests/golden/mcp_tool_manifest.json` captures the current tool names,
+  parameter lists, and required fields; any change must be reviewed and
+  the golden file refreshed with `pytest --update-golden`
 
 ---
 

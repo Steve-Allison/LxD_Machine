@@ -97,6 +97,15 @@ Responsibilities:
 - open SQLite per request
 - avoid embedding business logic in the server layer
 
+MCP runtime rules:
+
+- every registered tool is an `async def`; synchronous tool bodies run inside
+  worker threads via `lxd.mcp.async_runtime.run_tool`, which enforces a
+  per-tool hard timeout (`mcp.tool_timeout_secs`)
+- the lifespan bundle owns the `AppContext`, the ontology graph, the
+  LanceDB table handles, and the HTTP client factories; tools never
+  construct new clients per call
+
 ## 3. Stores
 
 ### 3.1 LanceDB
@@ -104,11 +113,21 @@ Responsibilities:
 Used for:
 
 - searchable chunk text
-- vector embeddings
+- vector embeddings (canonical store for all chunk and entity vectors)
 - citation labels
 - chunk-level provenance
 
 LanceDB holds only text-bearing chunk rows.
+
+LanceDB is the single source of truth for vectors. The legacy
+`chunk_rows.vector_json` column in SQLite was dropped by schema migration
+`0002_drop_chunk_vector_json`; all vector reads must go through the
+LanceDB helpers in `lxd.stores.lancedb`.
+
+All LanceDB filter expressions must be constructed through the helpers in
+`lxd.stores.lance_sql` (`eq_clause`, `in_clause`, `escape_string_literal`),
+which reject NUL/newline characters and enforce SQL-identifier column
+names.
 
 ### 3.2 SQLite
 
@@ -131,10 +150,23 @@ Used for:
 - `community_reports` — deterministic community summaries (KG Phase 5)
 - `graph_metadata` — KG version and build timestamps (KG Phase 5)
 - `graph_build_state` — resumable build state machine (KG Phase 5)
+- `llm_jobs` — persistent LLM job queue (Wave 11; status, payload, result, attempts)
 
-SQLite is the source of truth for ingest state, recovery, asset registration, ontology snapshot tracking, and the full knowledge graph.
+SQLite is the source of truth for ingest state, recovery, asset registration, ontology snapshot tracking, the full knowledge graph, and persistent LLM job state.
+
+Schema evolution is tracked by SQLite's built-in `PRAGMA user_version`
+driven by numbered migrations in `lxd.stores.schema` (`0001_baseline`,
+`0002_drop_chunk_vector_json`, `0003_llm_jobs`). `ensure_schema` is
+idempotent and runs at startup from `lxd.app.bootstrap`. Legacy pre-version
+upgrades live in `lxd.stores._sqlite_legacy_migrations` and always run
+before the numbered migrations.
 
 WAL mode is mandatory because ingest writes and MCP reads are expected to overlap.
+
+Connection PRAGMAs applied at every connect:
+`journal_mode=WAL`, `synchronous=NORMAL`, `foreign_keys=ON`,
+`busy_timeout=5000`, `temp_store=MEMORY`, `cache_size=-65536`. On close,
+`PRAGMA optimize` runs.
 
 ### 3.3 In-Memory
 
@@ -222,10 +254,40 @@ Citation rules:
 
 The MCP server should:
 
-- load settings once
+- load settings once and compute a Blake3 `config_digest`; reconcile against
+  `<data_path>/config.lock` (seed on first run, warn on drift)
 - load ontology once at startup
 - hold the LanceDB table handle
 - open SQLite connections per request
 - call lower-level query and store modules
 
 The MCP layer should not own ingest, graph, or retrieval policy.
+
+All tools are `async def` and wrapped through `lxd.mcp.async_runtime.run_tool`,
+which runs synchronous bodies in a worker thread, applies a per-call timeout
+sourced from `mcp.tool_timeout_secs`, and logs `mcp.tool.timeout` /
+`mcp.tool.error` events on failure. This keeps the FastMCP event loop
+responsive under concurrent client load.
+
+## 8. Cross-Cutting Infrastructure
+
+- **Multi-tenancy hook.** `RuntimeConfig.tenancy.corpus_id` (default
+  `"default"`) marks every persisted job and is available to future
+  schema migrations. `corpus_id` is validated to match
+  `^[a-z0-9][a-z0-9_-]{0,62}$`.
+- **Observability.** Structured logging via `structlog` with UTC
+  timestamps, `contextvars`-propagated run IDs, a `log_duration` context
+  manager for stage timing, and a `scrub_secrets` processor that redacts
+  keys containing `api_key`, `token`, `authorization`, `password`, etc.
+  OpenTelemetry and Prometheus exporters are configurable via
+  `observability.otel_enabled` / `observability.prometheus_enabled` and
+  default to off.
+- **Persistent LLM jobs.** Long-running LLM workloads (OpenAI Batch,
+  background claim/relation extraction) are queued in `llm_jobs` via the
+  idempotent helpers in `lxd.stores.llm_jobs`. Each job carries a stable
+  caller-chosen `job_id`, an opaque JSON payload, and a
+  `queued → running → succeeded|failed|cancelled` lifecycle.
+- **Ontology validation.** `lxd.ontology.schema_models.OntologyFileModel`
+  (Pydantic v2, `extra="allow"`) offers opt-in structural validation of
+  ontology YAML files. The existing hand-rolled loader remains the source
+  of truth; the model is a complementary early-warning layer.

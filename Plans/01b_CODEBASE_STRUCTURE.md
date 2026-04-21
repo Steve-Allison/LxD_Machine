@@ -33,19 +33,27 @@ The canonical module layout is:
 ```text
 src/lxd/
   app/
-    bootstrap.py
+    bootstrap.py              # AppContext, config_digest, config.lock reconciliation
   settings/
-    models.py
+    models.py                 # Pydantic v2 config models (incl. tenancy, observability)
     loader.py
   domain/
     ids.py
     citations.py
     status.py
+  net/
+    http.py                   # Shared httpx.Client / httpx.AsyncClient factories
   ontology/
     loader.py
+    inventory.py
     graph.py
-    matcher.py
+    entity_graph.py           # Combined ontology + corpus relation graph + centrality
+    communities.py            # Louvain (NetworkX) / Leiden (optional graspologic)
+    evidence.py               # Canonical relation dedup + evidence provenance
+    profiles.py               # Entity profiles + community reports (+ LLM enrichment)
+    matcher.py                # Aho-Corasick matcher + normalization
     normalization.py
+    schema_models.py          # Pydantic ontology schema (opt-in structural validation)
   ingest/
     scanner.py
     diff.py
@@ -54,27 +62,42 @@ src/lxd/
     chunking.py
     assets.py
     mentions.py
+    relations.py              # LLM-based relation extraction
+    claims.py                 # LLM-based claim extraction
+    embedder.py               # Batched Ollama / OpenAI embedding with context-aware retry
+    llm_client.py             # Shared synchronous/async LLM client facade
     pipeline.py
   retrieval/
     dense.py
     rerank.py
+    graph_routing.py          # Graph context augmentation for synthesis
     query_pipeline.py
     eval.py
   synthesis/
     answering.py
   stores/
-    sqlite.py
-    lancedb.py
-    models.py
+    schema.py                 # Numbered migrations + ensure_schema; PRAGMA user_version
+    connection.py             # Pragma-tight SQLite connect + close hooks
+    sqlite.py                 # Query/upsert API (thin orchestrator, no DDL)
+    lancedb.py                # Canonical vector store (uses lance_sql helpers)
+    lance_sql.py              # Safe LanceDB filter builders (eq_clause, in_clause)
+    sql_helpers.py            # Safe SQLite `IN (?, ?, ...)` helpers
+    llm_jobs.py               # Persistent LLM job queue API
+    models.py                 # Typed store records
+    _sqlite_rows.py           # Row-to-record adapters (module-private)
+    _sqlite_legacy_migrations.py  # Pre-versioning upgrades (module-private)
+    _base_ddl.py
   mcp/
-    server.py
-    tools.py
+    server.py                 # FastMCP server + lifespan bundle
+    async_runtime.py          # run_tool: async wrapper + hard timeout for tool bodies
+    tools.py                  # Tool orchestration helpers (still thin)
   cli/
     ingest.py
     status.py
     eval.py
+    graph.py                  # build-graph / graph-status commands
   observability/
-    logging.py
+    logging.py                # structlog config, log_duration, scrub_secrets processor
 ```
 
 This layout is binding unless a later design document replaces it explicitly.
@@ -210,26 +233,42 @@ Must remain thin:
 
 Owns:
 
-- structured logging setup
-- optional metrics/report helpers
+- structured logging setup (`configure_logging`, UTC timestamps, JSON/console renderer)
+- the `log_duration` context manager that emits `<event>.started` / `<event>.completed` pairs with `duration_ms`
+- the `scrub_secrets` structlog processor that redacts sensitive keys
+- optional metrics/report helpers and OpenTelemetry / Prometheus wiring (gated by `observability.*` config)
 
 Must not own:
 
 - domain rules
 - retrieval rules
 
+### 3.11 `net/`
+
+Owns:
+
+- shared `httpx.Client` / `httpx.AsyncClient` factories with pool sizing
+  and timeout defaults
+- construction of user agent and auth headers for outbound HTTP
+
+Must not own:
+
+- business logic or response parsing; callers remain responsible for
+  endpoint-specific behaviour
+
 ## 4. Dependency Direction
 
 Allowed dependency direction:
 
-- `cli` -> `app`, `ingest`, `retrieval`, `stores`, `observability`, `settings`
-- `mcp` -> `app`, `retrieval`, `stores`, `ontology`, `observability`, `settings`
+- `cli` -> `app`, `ingest`, `retrieval`, `stores`, `observability`, `settings`, `net`
+- `mcp` -> `app`, `retrieval`, `stores`, `ontology`, `observability`, `settings`, `net`
 - `app` -> every non-adapter layer as wiring only
-- `ingest` -> `domain`, `ontology`, `stores`, `settings`, `observability`
-- `retrieval` -> `domain`, `stores`, `ontology`, `settings`, `observability`
-- `synthesis` -> `domain`, `settings`
+- `ingest` -> `domain`, `ontology`, `stores`, `settings`, `observability`, `net`
+- `retrieval` -> `domain`, `stores`, `ontology`, `settings`, `observability`, `net`
+- `synthesis` -> `domain`, `settings`, `net`
 - `ontology` -> `domain`, `settings`
 - `stores` -> `domain`, `settings`
+- `net` -> `settings`
 
 Disallowed dependencies:
 
@@ -282,10 +321,15 @@ Rules:
 
 ## 8. Testing Layout
 
-Tests should mirror the package layout:
+Tests mirror the package layout and are tagged with pytest markers so the
+suite can be sliced by layer:
 
 ```text
 tests/
+  conftest.py              # shared fixtures + --update-golden flag
+  unit/                    # pure-logic tests (no disk, no network)
+  integration/             # temp-dir SQLite/LanceDB + local FastMCP
+  golden/                  # golden transcripts (e.g. mcp_tool_manifest.json)
   ontology/
   ingest/
   retrieval/
@@ -295,11 +339,23 @@ tests/
   eval/
 ```
 
+Markers (registered in `pyproject.toml`):
+
+- `unit` — isolated pure-function tests
+- `integration` — wire multiple components through temp dirs and local services
+- `e2e` — CLI / MCP tool transcripts against a seeded corpus
+- `property` — Hypothesis property tests
+- `benchmark` — `pytest-benchmark` regression gates (opt-in)
+- `slow` — long-running tests excluded from the default suite
+
 Rules:
 
 - pure logic should have unit tests near its package area
 - store-backed behavior should have integration tests
 - end-to-end ingest and MCP behavior should have smoke tests
+- API-surface regressions (e.g. MCP tool manifest) are guarded by
+  golden-file tests under `tests/golden/`; update with
+  `pytest --update-golden`
 
 ## 9. Anti-Patterns
 
@@ -307,11 +363,15 @@ Do not introduce:
 
 - business logic in `mcp/server.py`
 - business logic in CLI command modules
-- direct SQL scattered outside `stores/sqlite.py`
+- direct SQL scattered outside `stores/sqlite.py` and `stores/schema.py`
+- hand-rolled `IN (?, ?, …)` clauses outside `stores/sql_helpers.py`
 - direct LanceDB query construction scattered outside `stores/lancedb.py` and retrieval modules
+- raw f-string interpolation into LanceDB `where` clauses outside `stores/lance_sql.py`
 - YAML schema assumptions duplicated outside ontology modules
 - citation formatting duplicated outside `domain/citations.py`
 - more than one implementation of chunk ID generation
+- ad-hoc `httpx.Client()` instances outside `net/http.py`
+- new synchronous MCP tools that bypass `mcp/async_runtime.run_tool`
 
 ## 10. Source Of Truth Rule
 
