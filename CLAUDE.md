@@ -108,3 +108,7 @@ Detailed specifications live in `Plans/`:
 - `06_BUILD_PLAN.md` — phased build plan
 - `07_USER_GUIDE.md` — end-user operation guide
 - `08_KNOWLEDGE_GRAPH_SPEC.md` — knowledge graph pipeline specification (Phase 5)
+
+---
+
+*Last reviewed: 2026-04-29.*
