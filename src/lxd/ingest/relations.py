@@ -63,7 +63,7 @@ JSON output format:
 Return {"relations": []} if no clear relationships exist between the provided entities."""
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class _RawRelation:
     subject: str
     predicate: str

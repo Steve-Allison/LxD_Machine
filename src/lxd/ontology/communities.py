@@ -16,7 +16,7 @@ from lxd.stores.sqlite import replace_entity_communities
 _log = structlog.get_logger(__name__)
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class CommunityDetectionResult:
     """Result of community detection."""
 

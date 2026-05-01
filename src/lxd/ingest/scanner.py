@@ -8,9 +8,10 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class ScannedCorpusFile:
     """Metadata for a discovered corpus file candidate."""
+
     absolute_path: Path
     relative_path: str
     source_type: str

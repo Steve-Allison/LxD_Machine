@@ -19,7 +19,7 @@ _log = structlog.get_logger(__name__)
 _CONFIG_LOCK_FILENAME = "config.lock"
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class AppContext:
     """Hold resolved runtime context for CLI and MCP entrypoints.
 

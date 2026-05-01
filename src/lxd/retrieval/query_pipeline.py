@@ -69,7 +69,7 @@ _GENERIC_QUERY_TERMS = {
 }
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class RankedChunk:
     """Retrieval chunk with metadata and ranking score."""
 
@@ -90,7 +90,7 @@ class RankedChunk:
     score: float
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class SearchOutcome:
     """Search results plus expansion/rerank diagnostics."""
 

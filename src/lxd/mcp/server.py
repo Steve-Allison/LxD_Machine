@@ -42,7 +42,7 @@ _READ_ONLY = {"readOnlyHint": True}
 _LIFESPAN_KEY = "lxd"
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class _LxDLifespan:
     """Immutable bundle of server-scoped resources, initialised once at startup."""
 

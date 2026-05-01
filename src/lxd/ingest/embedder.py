@@ -18,6 +18,9 @@ Key constraints:
       entire batch silently.
     * OpenAI batches respect ``OpenAIEmbeddingConfig.batch_size`` and are
       issued concurrently via a thread pool bounded by ``max_workers``.
+      Per-batch failures are aggregated into an :class:`ExceptionGroup` so
+      diagnostics surface every failed batch in one shot rather than the
+      first arbitrary one to land.
     * Retries are bounded by ``EmbeddingConfig.retry_attempts`` and
       ``retry_backoff`` (seconds, element-wise indexed by attempt).
 """
@@ -26,17 +29,21 @@ from __future__ import annotations
 
 import os
 import time
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
+from itertools import batched, chain
+from operator import attrgetter
 
 import ollama
 import openai
 
 from lxd.settings.models import RuntimeConfig
 
+_OPENAI_RESPONSE_INDEX = attrgetter("index")
 
-@dataclass(frozen=True)
+
+@dataclass(frozen=True, slots=True)
 class ModelProbeResult:
     """Embedding probe status and optional warning."""
 
@@ -44,7 +51,7 @@ class ModelProbeResult:
     warning: str | None = None
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class _EmbeddingRuntimeSettings:
     timeout_secs: int = 120
     retry_attempts: int = 1
@@ -162,32 +169,23 @@ def _ollama_embed_batch(config: RuntimeConfig, texts: list[str]) -> list[list[fl
     batch_size = max(1, runtime.batch_size)
     max_workers = max(1, runtime.max_workers)
 
-    batches = [texts[i : i + batch_size] for i in range(0, len(texts), batch_size)]
+    batches = [list(batch) for batch in batched(texts, batch_size, strict=False)]
     if not batches:
         return []
 
     if len(batches) == 1 or max_workers == 1:
-        return [
-            vector
-            for batch in batches
-            for vector in _ollama_embed_one_batch(config, batch, runtime)
-        ]
+        return list(
+            chain.from_iterable(
+                _ollama_embed_one_batch(config, batch, runtime) for batch in batches
+            )
+        )
 
-    results: list[list[list[float]] | None] = [None] * len(batches)
-    with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        futures = {
-            executor.submit(_ollama_embed_one_batch, config, batch, runtime): idx
-            for idx, batch in enumerate(batches)
-        }
-        for future in as_completed(futures):
-            idx = futures[future]
-            results[idx] = future.result()
-    flat: list[list[float]] = []
-    for batch_result in results:
-        if batch_result is None:
-            raise RuntimeError("Ollama embedding batch returned no results")
-        flat.extend(batch_result)
-    return flat
+    return _run_batches_concurrently(
+        batches,
+        max_workers=max_workers,
+        worker=lambda batch: _ollama_embed_one_batch(config, batch, runtime),
+        group_message="ollama embedding batch failures",
+    )
 
 
 def _ollama_embed_one_batch(
@@ -260,7 +258,11 @@ def _ollama_client(config: RuntimeConfig) -> ollama.Client:
 
 
 def _openai_embed_texts(config: RuntimeConfig, texts: list[str]) -> list[list[float]]:
-    """Embed texts via OpenAI with per-batch concurrency."""
+    """Embed texts via OpenAI with per-batch concurrency.
+
+    Per-batch failures are surfaced as a single :class:`ExceptionGroup` so a
+    multi-batch run never hides later failures behind an arbitrary first one.
+    """
     cfg = config.openai
     if cfg is None:
         raise RuntimeError("openai config required when embed_backend=openai")
@@ -271,30 +273,55 @@ def _openai_embed_texts(config: RuntimeConfig, texts: list[str]) -> list[list[fl
             "Set it before using the openai embedding backend."
         )
     client = openai.OpenAI(api_key=api_key)
-    batches = [texts[i : i + cfg.batch_size] for i in range(0, len(texts), cfg.batch_size)]
-    results: list[list[list[float]] | None] = [None] * len(batches)
+    batches = [list(batch) for batch in batched(texts, cfg.batch_size, strict=False)]
 
-    def _embed_batch(idx: int, batch: list[str]) -> tuple[int, list[list[float]]]:
+    def _embed_batch(batch: list[str]) -> list[list[float]]:
         response = client.embeddings.create(
             model=cfg.model,
             input=batch,
             dimensions=cfg.dims,
         )
-        return idx, [item.embedding for item in sorted(response.data, key=lambda item: item.index)]
+        return [item.embedding for item in sorted(response.data, key=_OPENAI_RESPONSE_INDEX)]
 
-    with ThreadPoolExecutor(max_workers=cfg.max_workers) as executor:
-        futures = {executor.submit(_embed_batch, i, batch): i for i, batch in enumerate(batches)}
+    return _run_batches_concurrently(
+        batches,
+        max_workers=cfg.max_workers,
+        worker=_embed_batch,
+        group_message="openai embedding batch failures",
+    )
+
+
+def _run_batches_concurrently(
+    batches: list[list[str]],
+    *,
+    max_workers: int,
+    worker: Callable[[list[str]], list[list[float]]],
+    group_message: str,
+) -> list[list[float]]:
+    """Run ``worker(batch)`` across ``batches`` concurrently and flatten in order.
+
+    Failures are aggregated into a single :class:`ExceptionGroup` so the
+    caller sees every failed batch instead of the arbitrary first one to
+    land. In-flight workers are allowed to drain via the executor's
+    ``shutdown(wait=True)`` semantics.
+    """
+    if not batches:
+        return []
+    results: list[list[list[float]] | None] = [None] * len(batches)
+    errors: list[Exception] = []
+    with ThreadPoolExecutor(max_workers=max(1, max_workers)) as executor:
+        futures = {executor.submit(worker, batch): idx for idx, batch in enumerate(batches)}
         for future in as_completed(futures):
-            idx, vectors = future.result()
-            results[idx] = vectors
-
-    if any(batch_result is None for batch_result in results):
-        raise RuntimeError("OpenAI embedding results were incomplete.")
-    flat: list[list[float]] = []
-    for batch_result in results:
-        if batch_result is not None:
-            flat.extend(batch_result)
-    return flat
+            idx = futures[future]
+            try:
+                results[idx] = future.result()
+            except Exception as exc:
+                errors.append(exc)
+    if errors:
+        raise ExceptionGroup(group_message, errors)
+    if any(batch is None for batch in results):
+        raise RuntimeError(f"{group_message}: incomplete results without raised errors")
+    return list(chain.from_iterable(batch for batch in results if batch is not None))
 
 
 def _embedding_runtime_settings(config: RuntimeConfig) -> _EmbeddingRuntimeSettings:

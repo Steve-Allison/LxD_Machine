@@ -10,9 +10,10 @@ import networkx as nx
 from lxd.domain.ids import make_graph_edge_key
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class OntologyNodeRecord:
     """Graph node metadata derived from ontology sources."""
+
     node_id: str
     node_type: str
     source_file_rel_path: str | None
@@ -21,9 +22,10 @@ class OntologyNodeRecord:
     metadata: dict[str, Any]
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class RelationRecord:
     """Directed ontology relation edge with provenance metadata."""
+
     relation_type: str
     origin_kind: str
     origin_path: str

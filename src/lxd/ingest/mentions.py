@@ -3,14 +3,16 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from operator import attrgetter
 from typing import Any
 
 from lxd.ontology.normalization import normalize_match_text
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class Mention:
     """Detected mention span for an ontology term."""
+
     entity_id: str
     term_source: str
     surface_form: str
@@ -63,4 +65,4 @@ def _resolve_overlaps(matches: list[Mention]) -> list[Mention]:
             continue
         accepted.append(match)
         occupied.append((match.start_char, match.end_char))
-    return sorted(accepted, key=lambda item: (item.start_char, item.end_char, item.entity_id))
+    return sorted(accepted, key=attrgetter("start_char", "end_char", "entity_id"))

@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class StorePaths:
     """Filesystem paths for SQLite and LanceDB stores."""
 
@@ -14,7 +14,7 @@ class StorePaths:
     lancedb_path: Path
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class CorpusStatusSummary:
     """Aggregate corpus and ontology status counters."""
 
@@ -35,7 +35,7 @@ class CorpusStatusSummary:
     config_drift_warnings: list[str]
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class ManifestRecord:
     """Manifest row describing ingest state for one source."""
 
@@ -56,7 +56,7 @@ class ManifestRecord:
     retrieval_status: str = "not_searchable"
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class ChunkRecord:
     """Persisted chunk row with embedding and source metadata."""
 
@@ -80,7 +80,7 @@ class ChunkRecord:
     embedding_dims: int
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class MentionRecord:
     """Entity mention span detected in a chunk."""
 
@@ -92,7 +92,7 @@ class MentionRecord:
     end_char: int
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class AssetLinkRecord:
     """Resolved asset-to-parent link metadata."""
 
@@ -108,7 +108,7 @@ class AssetLinkRecord:
     last_committed_at: str
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class OntologySourceRecord:
     """Persisted ontology source file metadata."""
 
@@ -117,7 +117,7 @@ class OntologySourceRecord:
     last_seen_at: str
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class OntologySnapshotRecord:
     """Persisted ontology snapshot metadata and hashes."""
 
@@ -136,7 +136,7 @@ class OntologySnapshotRecord:
     last_loaded_at: str
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class IngestConfigSnapshotRecord:
     """Persisted ingest config key-value entry."""
 
@@ -144,7 +144,7 @@ class IngestConfigSnapshotRecord:
     value: str
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class EntityMentionResult:
     """Chunk match summary for entity mention queries."""
 
@@ -169,7 +169,7 @@ class EntityMentionResult:
         return self.entity_match_count / self.total_entity_ids if self.total_entity_ids > 0 else 0.0
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class ExtractedRelationRecord:
     """Relation extracted from chunk text."""
 
@@ -185,7 +185,7 @@ class ExtractedRelationRecord:
     extracted_at: str
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class VectorSearchRecord:
     """Vector search hit with source metadata."""
 
@@ -211,7 +211,7 @@ class VectorSearchRecord:
 # ---------------------------------------------------------------------------
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class ClaimRecord:
     """Claim extracted from a chunk by LLM."""
 
@@ -228,7 +228,7 @@ class ClaimRecord:
     extracted_at: str
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class EntityProfileRecord:
     """Persisted entity profile with centrality and summaries."""
 
@@ -256,7 +256,7 @@ class EntityProfileRecord:
     generated_at: str
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class EntityCommunityRecord:
     """Community assignment for one entity."""
 
@@ -267,7 +267,7 @@ class EntityCommunityRecord:
     assigned_at: str
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class CommunityReportRecord:
     """Summary report for one community."""
 
@@ -284,7 +284,7 @@ class CommunityReportRecord:
     generated_at: str
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class CanonicalRelationRecord:
     """Canonical consolidated relation (one row per unique triple)."""
 
@@ -300,7 +300,7 @@ class CanonicalRelationRecord:
     last_seen_at: str
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class RelationEvidenceRecord:
     """Per-chunk evidence for a canonical relation."""
 
@@ -315,7 +315,7 @@ class RelationEvidenceRecord:
     extracted_at: str
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class GraphBuildStateRecord:
     """State machine row for a graph build run."""
 
@@ -337,7 +337,7 @@ class GraphBuildStateRecord:
     notes_json: str
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class GraphMetadataRecord:
     """Key-value metadata for the knowledge graph."""
 

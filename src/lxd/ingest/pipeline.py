@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 import json
 import sqlite3
 from collections.abc import Callable
@@ -27,6 +28,14 @@ from lxd.ingest.embedder import (
     embed_chunk_text,
     embed_texts_batched,
     probe_embedder,
+)
+from lxd.ingest.embedding_cache import lookup as cache_lookup
+from lxd.ingest.embedding_cache import open_cache_table
+from lxd.ingest.embedding_cache import store as cache_store
+from lxd.ingest.error_classification import (
+    CircuitBreakerTripped,
+    SystemicErrorCircuitBreaker,
+    classify,
 )
 from lxd.ingest.markdown import ExtractedDocument, load_markdown_document
 from lxd.ingest.mentions import detect_mentions
@@ -89,7 +98,7 @@ _RECOVERABLE_SOURCE_ERRORS = (
 )
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class IngestPlan:
     """Resolved scan and ontology inputs for an ingest run."""
 
@@ -97,7 +106,7 @@ class IngestPlan:
     ontology: OntologyLoadResult
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class IngestRunResult:
     """Outcome details and counters from an ingest run."""
 
@@ -169,6 +178,10 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
         initialize_schema(sqlite_connection)
         vector_db = connect_lancedb(store_paths.lancedb_path)
         vector_table = open_chunk_table(vector_db, vector_size=config.models.embed_dims)
+        cache_table = open_cache_table(vector_db, vector_size=config.models.embed_dims)
+        circuit_breaker = SystemicErrorCircuitBreaker(threshold=3)
+        cache_hit_total = 0
+        cache_miss_total = 0
 
         run_id = f"ingest-{datetime.now(UTC).strftime('%Y%m%d-%H%M%S')}"
         timestamp = _utc_now()
@@ -379,23 +392,49 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                         mention_records = cloned_mentions
                         reused_move_sources += 1
                     else:
-                        chunk_records, mention_records, relation_records = _build_source_records(
+                        (
+                            chunk_records,
+                            mention_records,
+                            relation_records,
+                            file_cache_hits,
+                            file_cache_misses,
+                        ) = _build_source_records(
                             scanned=scanned,
                             document_id=document_id,
                             config=config,
                             automaton=automaton,
                             valid_predicates=valid_predicates,
+                            cache_table=cache_table,
                         )
-                        replace_sqlite_source_chunks(
-                            sqlite_connection,
-                            source_rel_path=scanned.relative_path,
-                            chunk_records=chunk_records,
-                            mention_records=mention_records,
-                            relation_records=relation_records,
-                        )
+                        cache_hit_total += file_cache_hits
+                        cache_miss_total += file_cache_misses
+
+                        # LanceDB FIRST. If LanceDB succeeds and SQLite fails,
+                        # the LanceDB write is left in place — it's content-
+                        # addressed and a future re-ingest of the same file
+                        # will replace it cleanly. The compensating delete
+                        # below restores LanceDB to its pre-write state if
+                        # SQLite fails so query results stay consistent with
+                        # the (older) SQLite manifest.
                         replace_vector_source_chunks(
                             vector_table, scanned.relative_path, chunk_records
                         )
+                        try:
+                            replace_sqlite_source_chunks(
+                                sqlite_connection,
+                                source_rel_path=scanned.relative_path,
+                                chunk_records=chunk_records,
+                                mention_records=mention_records,
+                                relation_records=relation_records,
+                            )
+                        except sqlite3.Error:
+                            # Compensate: undo the LanceDB write so the two
+                            # stores stay coherent. Best-effort — if the
+                            # delete itself fails we propagate the original
+                            # SQLite error.
+                            with contextlib.suppress(FileNotFoundError, ValueError, RuntimeError):
+                                delete_vector_source(vector_table, scanned.relative_path)
+                            raise
                         reembedded_text_sources += 1
 
                     committed_manifest = _manifest_record(
@@ -413,6 +452,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                     files_completed += 1
                     searchable_files_rebuilt += 1
                     chunks_written += len(chunk_records)
+                    circuit_breaker.record_success()
                 except _RECOVERABLE_SOURCE_ERRORS as exc:
                     failed_manifest = _manifest_record(
                         scanned=scanned,
@@ -425,9 +465,13 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                         error_message=str(exc),
                     )
                     upsert_manifest_record(sqlite_connection, failed_manifest)
-                    warnings.append(f"{scanned.relative_path}: {exc}")
+                    err_class = classify(exc).value
+                    warnings.append(f"{scanned.relative_path}: [{err_class}] {exc}")
                     files_completed += 1
                     failed_files += 1
+                    # May raise CircuitBreakerTripped on the Nth consecutive
+                    # systemic failure. Caught at the outer try below.
+                    circuit_breaker.record_failure(exc)
                 _persist_ingest_progress(
                     sqlite_connection=sqlite_connection,
                     run_id=run_id,
@@ -471,6 +515,8 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                 failed_files=failed_files,
                 chunks_written=chunks_written,
                 notes=warnings,
+                embedding_cache_hits=cache_hit_total,
+                embedding_cache_misses=cache_miss_total,
             )
             return IngestRunResult(
                 run_id=run_id,
@@ -481,6 +527,32 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                 reused_move_sources=reused_move_sources,
                 snapshot_path=snapshot_path,
             )
+        except CircuitBreakerTripped as exc:
+            # Systemic failure: stop spending API budget and surface loudly.
+            # Store-level errors that fail identically for every file (e.g.
+            # a ghost FK reference, a corrupt schema, a locked database)
+            # bubble up here and abort the run.
+            failure_notes = [
+                *warnings,
+                f"aborted: circuit-breaker tripped after {exc.count} consecutive systemic errors",
+                f"last error: {type(exc.last_error).__name__}: {exc.last_error}",
+            ]
+            finish_ingest_run(
+                sqlite_connection,
+                run_id=run_id,
+                finished_at=_utc_now(),
+                status="aborted",
+                files_completed=files_completed,
+                searchable_files_rebuilt=searchable_files_rebuilt,
+                asset_files_processed=asset_files_processed,
+                unchanged_files_skipped=unchanged_files_skipped,
+                failed_files=failed_files,
+                chunks_written=chunks_written,
+                notes=failure_notes,
+                embedding_cache_hits=cache_hit_total,
+                embedding_cache_misses=cache_miss_total,
+            )
+            raise
         except _RECOVERABLE_SOURCE_ERRORS as exc:
             failure_notes = [*warnings, f"fatal: {exc}"]
             finish_ingest_run(
@@ -495,6 +567,8 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                 failed_files=failed_files + 1,
                 chunks_written=chunks_written,
                 notes=failure_notes,
+                embedding_cache_hits=cache_hit_total,
+                embedding_cache_misses=cache_miss_total,
             )
             raise
     finally:
@@ -581,7 +655,21 @@ def _build_source_records(
     config: RuntimeConfig,
     automaton: object,
     valid_predicates: frozenset[str],
-) -> tuple[list[ChunkRecord], list[MentionRecord], list[ExtractedRelationRecord]]:
+    cache_table: object | None = None,
+) -> tuple[
+    list[ChunkRecord],
+    list[MentionRecord],
+    list[ExtractedRelationRecord],
+    int,
+    int,
+]:
+    """Chunk, embed (with cache), and detect mentions/relations for one source.
+
+    Returns:
+        ``(chunk_records, mention_records, relation_records, cache_hits,
+        cache_misses)`` — the last two integers report how many chunks were
+        served from the embedding cache vs newly embedded via the API.
+    """
     extracted_document = _load_extracted_document(scanned)
     initial_chunks = chunk_document(
         extracted_document,
@@ -593,7 +681,12 @@ def _build_source_records(
         tokenizer_name=config.chunking.tokenizer_name,
         strategy=config.chunking.strategy,
     )
-    text_chunks, embeddings = _embed_with_context_refinement(initial_chunks, document_id, config)
+    text_chunks, embeddings, cache_hits, cache_misses = _embed_with_cache(
+        initial_chunks,
+        document_id=document_id,
+        config=config,
+        cache_table=cache_table,
+    )
     chunk_records: list[ChunkRecord] = []
     mention_records: list[MentionRecord] = []
     relation_records: list[ExtractedRelationRecord] = []
@@ -642,7 +735,7 @@ def _build_source_records(
                 config=config,
             )
         )
-    return chunk_records, mention_records, relation_records
+    return chunk_records, mention_records, relation_records, cache_hits, cache_misses
 
 
 def _load_extracted_document(scanned: ScannedCorpusFile) -> ExtractedDocument:
@@ -653,6 +746,111 @@ def _load_extracted_document(scanned: ScannedCorpusFile) -> ExtractedDocument:
             source_type=scanned.source_type,
         )
     return load_docling_document(scanned.absolute_path, scanned.relative_path)
+
+
+def _embed_with_cache(
+    chunks: list[TextChunk],
+    *,
+    document_id: str,
+    config: RuntimeConfig,
+    cache_table: object | None,
+) -> tuple[list[TextChunk], list[list[float]], int, int]:
+    """Embed ``chunks`` consulting the content-addressed cache first.
+
+    Cache hits avoid all network/API spend. Cache misses go through the
+    existing context-refinement embed path (which may split chunks that
+    overflow the model's context window). On miss-success, results are
+    stored back in the cache for the next run.
+
+    Returns:
+        ``(reindexed_chunks, vectors, cache_hits, cache_misses)`` — vectors
+        align with ``reindexed_chunks`` 1:1, regardless of cache status.
+
+    Important: the cache key is ``(chunk_hash, embedding_model,
+    embedding_dims)``. ``chunk_hash`` is content-addressed, so cache entries
+    are intrinsically safe to keep across full rebuilds and need no explicit
+    invalidation. Changing the embedding model produces a new key and old
+    entries naturally fall out of use.
+    """
+    if not chunks:
+        return [], [], 0, 0
+
+    if cache_table is None:
+        # Fallback: no cache configured. Behave as before.
+        text_chunks, vectors = _embed_with_context_refinement(chunks, document_id, config)
+        return text_chunks, vectors, 0, len(text_chunks)
+
+    chunk_hashes = [chunk.chunk_hash for chunk in chunks]
+    lookup_result = cache_lookup(
+        cache_table,
+        chunk_hashes=chunk_hashes,
+        embedding_model=config.models.embed,
+        embedding_dims=config.models.embed_dims,
+    )
+
+    if not lookup_result.misses_indices:
+        # Full hit. No API call.
+        reindexed = _reindex_chunks(list(chunks), document_id)
+        vectors = [lookup_result.hits[i] for i in range(len(chunks))]
+        return reindexed, vectors, lookup_result.hit_count, 0
+
+    # Partial or full miss. Embed only the misses, then merge.
+    miss_chunks = [chunks[i] for i in lookup_result.misses_indices]
+    if lookup_result.hits:
+        # Some chunks hit the cache. Run context-refinement only on the
+        # missed chunks, then reassemble in original order. This means
+        # context-refinement may split a missed chunk into N — we accept
+        # the resulting size mismatch and fall back to re-embedding the
+        # whole batch rather than try to splice cached and freshly-split
+        # chunks together (correctness > marginal cache savings on edge).
+        try:
+            miss_text_chunks, miss_vectors = _embed_with_context_refinement(
+                miss_chunks, document_id, config
+            )
+        except EmbeddingContextError:
+            # Should not happen here — _embed_with_context_refinement
+            # handles this internally — but if it bubbles up, propagate.
+            raise
+
+        if len(miss_text_chunks) == len(miss_chunks):
+            merged_chunks: list[TextChunk] = []
+            merged_vectors: list[list[float]] = []
+            miss_iter = iter(zip(miss_text_chunks, miss_vectors, strict=True))
+            for idx in range(len(chunks)):
+                if idx in lookup_result.hits:
+                    merged_chunks.append(chunks[idx])
+                    merged_vectors.append(lookup_result.hits[idx])
+                else:
+                    chunk_, vec_ = next(miss_iter)
+                    merged_chunks.append(chunk_)
+                    merged_vectors.append(vec_)
+            reindexed = _reindex_chunks(merged_chunks, document_id)
+            cache_store(
+                cache_table,
+                chunk_hashes=[chunks[i].chunk_hash for i in lookup_result.misses_indices],
+                vectors=miss_vectors,
+                embedding_model=config.models.embed,
+                embedding_dims=config.models.embed_dims,
+            )
+            return (
+                reindexed,
+                merged_vectors,
+                lookup_result.hit_count,
+                lookup_result.miss_count,
+            )
+
+        # Miss chunks were split during context refinement. Fall through
+        # to "embed all" path so chunk count stays consistent.
+
+    text_chunks, vectors = _embed_with_context_refinement(chunks, document_id, config)
+    cache_store(
+        cache_table,
+        chunk_hashes=[c.chunk_hash for c in text_chunks],
+        vectors=vectors,
+        embedding_model=config.models.embed,
+        embedding_dims=config.models.embed_dims,
+    )
+    return text_chunks, vectors, 0, len(text_chunks)
 
 
 def _embed_with_context_refinement(

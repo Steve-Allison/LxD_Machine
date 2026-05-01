@@ -36,7 +36,7 @@ _ALLOWED_STATUSES: frozenset[JobStatus] = frozenset(
 )
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class LLMJobRecord:
     """Immutable snapshot of a row in ``llm_jobs``.
 

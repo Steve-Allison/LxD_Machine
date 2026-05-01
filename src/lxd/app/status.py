@@ -18,9 +18,10 @@ from lxd.stores.sqlite import (
 )
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class StatusSnapshot:
     """Bundle persisted corpus summary and ontology entity count."""
+
     summary: CorpusStatusSummary
     entity_count: int
 
@@ -148,11 +149,19 @@ def load_committed_status(
             connection,
             ontology_file_count=ontology_snapshot.source_file_count if ontology_snapshot else 0,
             matcher_term_count=ontology_snapshot.matcher_term_count if ontology_snapshot else 0,
-            matcher_termset_hash=ontology_snapshot.matcher_termset_hash if ontology_snapshot else None,
+            matcher_termset_hash=ontology_snapshot.matcher_termset_hash
+            if ontology_snapshot
+            else None,
             ontology_snapshot_hash=ontology_snapshot.snapshot_hash if ontology_snapshot else None,
-            ontology_coverage_path_count=ontology_snapshot.coverage_path_count if ontology_snapshot else 0,
-            ontology_graph_relation_count=ontology_snapshot.graph_relation_count if ontology_snapshot else 0,
-            ontology_validation_issue_count=ontology_snapshot.validation_issue_count if ontology_snapshot else 0,
+            ontology_coverage_path_count=ontology_snapshot.coverage_path_count
+            if ontology_snapshot
+            else 0,
+            ontology_graph_relation_count=ontology_snapshot.graph_relation_count
+            if ontology_snapshot
+            else 0,
+            ontology_validation_issue_count=ontology_snapshot.validation_issue_count
+            if ontology_snapshot
+            else 0,
             ontology_validation_issue_samples=validation_issue_samples,
             config_drift_warnings=drift_warnings,
         ),

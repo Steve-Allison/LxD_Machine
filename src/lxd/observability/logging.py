@@ -28,7 +28,7 @@ from __future__ import annotations
 
 import logging
 import time
-from collections.abc import Iterator, MutableMapping
+from collections.abc import Generator, MutableMapping
 from contextlib import contextmanager
 from typing import Any
 
@@ -137,7 +137,7 @@ def log_duration(
     logger: structlog.stdlib.BoundLogger | None = None,
     level: str = "info",
     **fields: Any,
-) -> Iterator[dict[str, Any]]:
+) -> Generator[dict[str, Any]]:
     """Emit ``<event>.started`` and ``<event>.completed`` log entries around a block.
 
     The completion event includes a ``duration_ms`` field measured on the

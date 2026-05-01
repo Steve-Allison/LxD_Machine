@@ -13,9 +13,10 @@ from docling.document_converter import DocumentConverter
 from lxd.domain.citations import make_citation_label
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class ExtractedDocument:
     """Normalized extracted source document for chunking."""
+
     source_rel_path: str
     source_type: str
     citation_label: str

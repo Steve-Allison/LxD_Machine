@@ -185,21 +185,16 @@ def finish_ingest_run(
     failed_files: int,
     chunks_written: int,
     notes: list[str],
+    embedding_tokens: int | None = None,
+    llm_tokens: int | None = None,
+    estimated_cost_usd: float | None = None,
+    embedding_cache_hits: int | None = None,
+    embedding_cache_misses: int | None = None,
 ) -> None:
     """Finalize ingest run status and counters.
 
-    Args:
-        connection: Open SQLite connection.
-        run_id: Ingest run identifier.
-        finished_at: UTC timestamp when the run finished.
-        status: Final ingest run status label.
-        files_completed: Number of files processed so far.
-        searchable_files_rebuilt: Count of searchable sources rebuilt.
-        asset_files_processed: Count of asset-only files processed.
-        unchanged_files_skipped: Count of unchanged files skipped.
-        failed_files: Count of files that failed processing.
-        chunks_written: Count of chunks written in this run.
-        notes: Progress or warning notes to persist.
+    Telemetry columns are nullable so callers that don't know the values
+    can omit them without breaking schema constraints.
     """
     with connection:
         connection.execute(
@@ -213,7 +208,12 @@ def finish_ingest_run(
                 unchanged_files_skipped = ?,
                 failed_files = ?,
                 chunks_written = ?,
-                notes = ?
+                notes = ?,
+                embedding_tokens = ?,
+                llm_tokens = ?,
+                estimated_cost_usd = ?,
+                embedding_cache_hits = ?,
+                embedding_cache_misses = ?
             WHERE run_id = ?
             """,
             (
@@ -226,6 +226,11 @@ def finish_ingest_run(
                 failed_files,
                 chunks_written,
                 json.dumps(notes, separators=(",", ":")),
+                embedding_tokens,
+                llm_tokens,
+                estimated_cost_usd,
+                embedding_cache_hits,
+                embedding_cache_misses,
                 run_id,
             ),
         )

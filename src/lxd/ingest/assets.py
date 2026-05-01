@@ -6,9 +6,10 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class AssetParentLink:
     """Resolved parent-link metadata for an ingested asset."""
+
     parent_rel_path: str | None
     link_method: str
     page_no: int | None

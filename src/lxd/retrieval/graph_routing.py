@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import sqlite3
 from dataclasses import dataclass
+from operator import attrgetter
 
 import structlog
 
@@ -18,7 +19,7 @@ from lxd.stores.sqlite import (
 _log = structlog.get_logger(__name__)
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class GraphContext:
     """Graph context layers to prepend to synthesis prompt."""
 
@@ -56,7 +57,7 @@ def build_graph_context(
             profiles.append(profile)
 
     # Sort by PageRank and limit
-    profiles.sort(key=lambda p: p.pagerank, reverse=True)
+    profiles.sort(key=attrgetter("pagerank"), reverse=True)
     profiles = profiles[: kg_cfg.max_entity_context]
 
     if not profiles:

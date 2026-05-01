@@ -6,6 +6,7 @@ import asyncio
 import json
 import sqlite3
 from datetime import UTC, datetime
+from operator import itemgetter
 from typing import Any
 
 import structlog
@@ -464,7 +465,7 @@ def _rank_position(
     """Return 1-based rank position for an entity on a given metric."""
     values = sorted(
         ((eid, getattr(scores, metric)) for eid, scores in centrality.items()),
-        key=lambda pair: pair[1],
+        key=itemgetter(1),
         reverse=True,
     )
     for idx, (eid, _) in enumerate(values):

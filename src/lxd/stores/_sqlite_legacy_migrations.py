@@ -541,9 +541,28 @@ def _migrate_legacy_ingest_runs(connection: sqlite3.Connection) -> None:
 
 
 def _migrate_absolute_path_pks(connection: sqlite3.Connection) -> None:
-    """Migrate from absolute-path PKs/FKs to relative-path PKs/FKs for portability."""
+    """Migrate from absolute-path PKs/FKs to relative-path PKs/FKs for portability.
+
+    Idempotency / partial-state guard: in a previous version this function
+    only checked ``corpus_manifest`` for the ``source_rel_path`` column. If a
+    crash between the corpus_manifest rewrite and the chunk_rows rewrite ever
+    left the DB half-migrated, the next run would treat the migration as
+    "already applied" and skip the remaining tables. We now also refuse to
+    proceed if any ``*_v2_legacy`` table is present (a clear marker that a
+    prior run did not finish) — that's a hard stop with a useful message,
+    not a silent skip.
+    """
     if not _table_exists(connection, "corpus_manifest"):
         return
+
+    leftover = _find_leftover_legacy_tables(connection)
+    if leftover:
+        raise sqlite3.DatabaseError(
+            "Legacy migration partially applied; unexpected tables present: "
+            f"{', '.join(leftover)}. Restore from a pre-migration backup or "
+            "manually resolve the leftover tables before re-running ingest."
+        )
+
     columns = _table_columns(connection, "corpus_manifest")
     if "source_rel_path" in columns and "absolute_path" in columns:
         return
@@ -852,3 +871,17 @@ def _table_exists(connection: sqlite3.Connection, table_name: str) -> bool:
 def _table_columns(connection: sqlite3.Connection, table_name: str) -> set[str]:
     rows = connection.execute(f"PRAGMA table_info({table_name})").fetchall()
     return {str(row["name"]) for row in rows}
+
+
+def _find_leftover_legacy_tables(connection: sqlite3.Connection) -> list[str]:
+    """Return any ``*_v2_legacy`` tables left behind by an interrupted migration.
+
+    These should never exist after a clean run. If they do, a previous
+    migration crashed mid-way; the right answer is to surface that loudly
+    rather than silently skip and let the user discover the half-state when
+    a write fails downstream.
+    """
+    rows = connection.execute(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name LIKE '%_v2_legacy'"
+    ).fetchall()
+    return sorted(str(row["name"]) for row in rows)

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from itertools import pairwise
 from typing import Any
 
 import networkx as nx
@@ -443,14 +444,14 @@ def find_path_between_entities_tool(
         if len(path) - 1 > max_hops:
             return {"path": [], "edges": [], "hops": 0, "note": f"Path exceeds max_hops={max_hops}"}
         edges: list[dict[str, str]] = []
-        for i in range(len(path) - 1):
-            edge_data = graph.get_edge_data(path[i], path[i + 1])
+        for u, v in pairwise(path):
+            edge_data = graph.get_edge_data(u, v)
             if edge_data:
                 first_key = next(iter(edge_data))
                 edges.append(
                     {
-                        "source": str(path[i]),
-                        "target": str(path[i + 1]),
+                        "source": str(u),
+                        "target": str(v),
                         "relation_type": str(edge_data[first_key].get("relation_type", "")),
                     }
                 )
@@ -488,15 +489,14 @@ def find_weighted_path_tool(
     try:
         path = nx.dijkstra_path(weighted, source, target, weight="weight")
         total_weight = nx.dijkstra_path_length(weighted, source, target, weight="weight")
-        edges: list[dict[str, Any]] = []
-        for i in range(len(path) - 1):
-            edges.append(
-                {
-                    "source": str(path[i]),
-                    "target": str(path[i + 1]),
-                    "weight": weighted[path[i]][path[i + 1]]["weight"],
-                }
-            )
+        edges: list[dict[str, Any]] = [
+            {
+                "source": str(u),
+                "target": str(v),
+                "weight": weighted[u][v]["weight"],
+            }
+            for u, v in pairwise(path)
+        ]
         return {
             "path": [str(n) for n in path],
             "edges": edges,

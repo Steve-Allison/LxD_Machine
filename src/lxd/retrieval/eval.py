@@ -10,17 +10,19 @@ from lxd.settings.models import RuntimeConfig
 from lxd.stores.sqlite import build_store_paths, connect_sqlite, initialize_schema
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class EvalCase:
     """Single labeled retrieval evaluation case."""
+
     question: str
     expected_source_files: list[str]
     domain: str | None
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class EvalCaseResult:
     """Per-question retrieval metrics and ranked outputs."""
+
     question: str
     recall_at_10: float
     mrr_at_10: float
@@ -29,9 +31,10 @@ class EvalCaseResult:
     warnings: list[str]
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class EvalSummary:
     """Aggregate retrieval evaluation metrics across cases."""
+
     question_count: int
     mean_recall_at_10: float
     mean_mrr_at_10: float

@@ -22,7 +22,7 @@ Key constraints:
 from __future__ import annotations
 
 import sqlite3
-from collections.abc import Iterator
+from collections.abc import Generator
 from contextlib import contextmanager
 from pathlib import Path
 
@@ -32,7 +32,7 @@ from lxd.stores.schema import ensure_schema
 @contextmanager
 def open_store_connection(
     sqlite_path: Path, *, ensure: bool = True
-) -> Iterator[sqlite3.Connection]:
+) -> Generator[sqlite3.Connection]:
     """Yield an open, schema-correct SQLite connection and close it on exit.
 
     Args:

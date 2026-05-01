@@ -13,9 +13,10 @@ from lxd.domain.ids import blake3_hex
 from lxd.ontology.normalization import normalize_match_text
 
 
-@dataclass(frozen=True, order=True)
+@dataclass(frozen=True, order=True, slots=True)
 class MatcherTermRecord:
     """Normalized matcher term mapped to an entity ID."""
+
     normalized_term: str
     entity_id: str
     term_source: str

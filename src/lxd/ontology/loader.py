@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from collections import defaultdict
 from dataclasses import dataclass
+from operator import attrgetter
 from pathlib import Path, PurePosixPath
 from typing import Any
 
@@ -21,36 +22,40 @@ from lxd.ontology.matcher import (
 )
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class OntologySource:
     """Loaded ontology source file and parsed payload."""
+
     file_path: Path
     file_rel_path: str
     blake3_hash: str
     data: Any
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class OntologyMetadataRecord:
     """Ontology metadata row derived from file or entity payload."""
+
     record_kind: str
     source_file_rel_path: str
     entity_id: str | None
     payload: dict[str, Any]
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class OntologyValidationIssue:
     """Validation issue found during ontology loading."""
+
     issue_kind: str
     source_file_rel_path: str
     path: str
     message: str
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class OntologyLoadResult:
     """All artifacts produced by ontology loading."""
+
     sources: list[OntologySource]
     entity_definitions: list[dict[str, Any]]
     matcher_records: list[MatcherTermRecord]
@@ -63,7 +68,7 @@ class OntologyLoadResult:
     graph: Any
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class _RelationSchema:
     file_relation_types: dict[str, dict[str, Any]]
     entity_relation_types: dict[str, dict[str, Any]]
@@ -110,7 +115,9 @@ def load_ontology(
     snapshot_hash = _snapshot_hash(sources)
     metadata_records = _extract_metadata_records(sources, entity_definitions)
     relation_schema = _extract_relation_schema(sources)
-    relation_records, validation_issues = _extract_relations(sources, entity_definitions, relation_schema)
+    relation_records, validation_issues = _extract_relations(
+        sources, entity_definitions, relation_schema
+    )
     graph = build_graph(
         _build_node_records(sources, entity_definitions, relation_records),
         relation_records,
@@ -179,7 +186,7 @@ def _snapshot_hash(sources: list[OntologySource]) -> str:
             separators=(",", ":"),
             ensure_ascii=True,
         )
-        for source in sorted(sources, key=lambda item: item.file_rel_path)
+        for source in sorted(sources, key=attrgetter("file_rel_path"))
     )
     return blake3_hex(payload)
 
@@ -401,7 +408,10 @@ def _extract_file_relationships(
                 )
             )
             continue
-        if relation_schema.file_relation_types and relation_type not in relation_schema.file_relation_types:
+        if (
+            relation_schema.file_relation_types
+            and relation_type not in relation_schema.file_relation_types
+        ):
             issues.append(
                 OntologyValidationIssue(
                     issue_kind="unknown_file_relation_type",
@@ -431,10 +441,16 @@ def _extract_file_relationships(
                 source_node_type="ontology_file",
                 source_entity_id=None,
                 target_node_id=target_node_id,
-                target_node_type="ontology_file" if resolved_target is not None else "external_file",
+                target_node_type="ontology_file"
+                if resolved_target is not None
+                else "external_file",
                 target_entity_id=None,
-                target_file_rel_path=resolved_target.file_rel_path if resolved_target is not None else None,
-                metadata={key: value for key, value in item.items() if key not in {"target", "type"}},
+                target_file_rel_path=resolved_target.file_rel_path
+                if resolved_target is not None
+                else None,
+                metadata={
+                    key: value for key, value in item.items() if key not in {"target", "type"}
+                },
             )
         )
     return records
@@ -543,7 +559,9 @@ def _extract_entity_relationships(
                         relation_type=relation_type,
                         origin_path=f"entity_types.{entity_id}.relates_to.*",
                         target_name=target_name,
-                        target_file_hint=target_file_hint if isinstance(target_file_hint, str) else None,
+                        target_file_hint=target_file_hint
+                        if isinstance(target_file_hint, str)
+                        else None,
                         valid_entity_ids=valid_entity_ids,
                         entity_target_index=entity_target_index,
                         metadata=metadata,
@@ -597,7 +615,10 @@ def _validate_entity_relation_schema(
     metadata: dict[str, Any],
     issues: list[OntologyValidationIssue],
 ) -> None:
-    if relation_schema.entity_relation_types and relation_type not in relation_schema.entity_relation_types:
+    if (
+        relation_schema.entity_relation_types
+        and relation_type not in relation_schema.entity_relation_types
+    ):
         issues.append(
             OntologyValidationIssue(
                 issue_kind="unknown_entity_relation_type",
@@ -699,7 +720,11 @@ def _extract_taxonomy_mapping_relations(
         taxonomy_id = item.get("taxonomy")
         dimension = item.get("dimension")
         values = item.get("values")
-        if not isinstance(taxonomy_id, str) or not isinstance(dimension, str) or not isinstance(values, list):
+        if (
+            not isinstance(taxonomy_id, str)
+            or not isinstance(dimension, str)
+            or not isinstance(values, list)
+        ):
             issues.append(
                 OntologyValidationIssue(
                     issue_kind="invalid_taxonomy_mapping",
@@ -730,7 +755,11 @@ def _extract_taxonomy_mapping_relations(
                         "taxonomy": taxonomy_id,
                         "dimension": dimension,
                         "value": value,
-                        **{key: child for key, child in item.items() if key not in {"taxonomy", "dimension", "values"}},
+                        **{
+                            key: child
+                            for key, child in item.items()
+                            if key not in {"taxonomy", "dimension", "values"}
+                        },
                     },
                 )
             )
@@ -869,7 +898,13 @@ def _build_node_records(
         if isinstance(source_meta, dict):
             title = source_meta.get("title")
             meta_id = source_meta.get("id")
-            label = title if isinstance(title, str) else meta_id if isinstance(meta_id, str) else source.file_rel_path
+            label = (
+                title
+                if isinstance(title, str)
+                else meta_id
+                if isinstance(meta_id, str)
+                else source.file_rel_path
+            )
             metadata.update(
                 {
                     "meta_id": meta_id,

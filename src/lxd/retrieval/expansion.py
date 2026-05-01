@@ -20,7 +20,7 @@ from lxd.stores.sqlite import (
 _ONTOLOGY_CACHE: dict[tuple[str, tuple[str, ...], tuple[str, ...]], _OntologyRuntime] = {}
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class ExpansionOutcome:
     """Query expansion text plus matched ontology entities."""
 
@@ -29,7 +29,7 @@ class ExpansionOutcome:
     added_terms: list[str]
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class _OntologyRuntime:
     ontology: OntologyLoadResult
     automaton: object

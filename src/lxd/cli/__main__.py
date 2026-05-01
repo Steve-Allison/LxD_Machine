@@ -12,6 +12,7 @@ from lxd.cli.graph import (
     graph_status_command,
 )
 from lxd.cli.ingest import ingest_command
+from lxd.cli.preflight import preflight_command
 from lxd.cli.status import status_command
 
 app = typer.Typer(no_args_is_help=True)
@@ -22,6 +23,7 @@ app.command("build-graph")(build_graph_command)
 app.command("graph-status")(graph_status_command)
 app.command("collect-batch")(collect_batch_command)
 app.command("batch-status")(batch_status_command)
+app.command("preflight")(preflight_command)
 
 
 def main() -> None:

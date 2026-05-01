@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import sqlite3
 from collections import defaultdict
+from operator import attrgetter
 
 import structlog
 
@@ -75,7 +76,7 @@ def consolidate_relations(connection: sqlite3.Connection) -> tuple[int, int]:
             chunk_groups[row.chunk_id].append(row)
 
         for chunk_id, chunk_rows in chunk_groups.items():
-            best = max(chunk_rows, key=lambda r: r.confidence)
+            best = max(chunk_rows, key=attrgetter("confidence"))
             evidence_id = blake3_hex(relation_id, chunk_id)
 
             # Look up chunk text and surface forms

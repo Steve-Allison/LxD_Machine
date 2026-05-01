@@ -18,9 +18,10 @@ from lxd.domain.ids import blake3_hex, make_chunk_id
 from lxd.ingest.markdown import ExtractedDocument
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class TextChunk:
     """Retrieval-ready chunk derived from source text."""
+
     chunk_id: str
     document_id: str
     source_rel_path: str
@@ -287,7 +288,7 @@ def _build_chunk_from_fields(
     )
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class _Tokenizer:
     encode: Callable[[str], list[int]]
     decode: Callable[[list[int]], str]
@@ -368,6 +369,7 @@ def token_count_with_tokenizer(
     Returns:
         Callable that counts tokens for input text.
     """
+
     def count(text: str) -> int:
         return len(tokenizer.encode(text))
 

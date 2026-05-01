@@ -9,6 +9,7 @@ import subprocess
 import time
 from dataclasses import dataclass
 from datetime import UTC, datetime
+from operator import itemgetter
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
@@ -24,7 +25,7 @@ _probe_cache: dict[tuple[str, str, str, str, str], tuple[bool, str | None]] = {}
 _RUNTIME_DIRNAME = "runtime"
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class RerankOutcome:
     """Reranked chunk list and reranker execution status."""
 
@@ -233,7 +234,7 @@ def _apply_rerank_payload(candidates: list[RankedChunk], payload: Any) -> list[R
         scored.append((float(score), reranked_candidate))
     if not scored:
         return None
-    return [candidate for _, candidate in sorted(scored, key=lambda item: item[0], reverse=True)]
+    return [candidate for _, candidate in sorted(scored, key=itemgetter(0), reverse=True)]
 
 
 def _endpoint_path(config: RuntimeConfig) -> str:

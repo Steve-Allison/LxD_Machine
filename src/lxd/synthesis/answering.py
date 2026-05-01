@@ -14,7 +14,7 @@ from lxd.settings.models import RuntimeConfig
 _THINK_BLOCK_PATTERN = re.compile(r"<think>.*?</think>", flags=re.DOTALL)
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class EvidenceChunk:
     """Evidence snippet and score used for synthesis."""
 
@@ -23,7 +23,7 @@ class EvidenceChunk:
     score: float
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class AnswerEnvelope:
     """Final answer payload including citations and warnings."""
 

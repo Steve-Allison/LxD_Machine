@@ -7,3 +7,5 @@ return module-level singletons keyed on the relevant connection axis
 (base_url/timeout/limits) so that every module in the process shares the
 same pool.
 """
+
+from __future__ import annotations

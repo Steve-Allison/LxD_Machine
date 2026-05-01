@@ -34,9 +34,10 @@ _MATCHER_PATH_PATTERNS = (
 )
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class OntologyCoverageReport:
     """Coverage report for discovered ontology key paths."""
+
     path_counts: dict[str, int]
     path_classifications: dict[str, OntologyKeyClassification]
     classification_counts: dict[str, int]

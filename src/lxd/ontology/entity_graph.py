@@ -17,7 +17,7 @@ from lxd.stores.sqlite import load_all_extracted_relations
 _log = structlog.get_logger(__name__)
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class CentralityScores:
     """Centrality metric values for one entity."""
 
@@ -30,7 +30,7 @@ class CentralityScores:
     eigenvector: float
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class EntityGraphResult:
     """Result of building the combined entity graph."""
 

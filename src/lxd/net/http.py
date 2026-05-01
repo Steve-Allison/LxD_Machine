@@ -30,7 +30,7 @@ _DEFAULT_LIMITS = httpx.Limits(
 )
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class _ClientKey:
     """Immutable cache key for a pooled HTTPX client."""
 
