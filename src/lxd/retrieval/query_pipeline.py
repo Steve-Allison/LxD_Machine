@@ -393,6 +393,8 @@ def _merge_ranked_prefix(
 
 
 def _unique_source_prefix(ranked: list[RankedChunk], limit: int) -> list[RankedChunk]:
+    if limit <= 0:
+        return []
     unique: list[RankedChunk] = []
     seen_sources: set[str] = set()
     for item in ranked:
@@ -497,7 +499,9 @@ def _diversify_by_community(ranked: list[RankedChunk], limit: int) -> list[Ranke
     yet profiled) are treated as "no community" and only deferred to
     after the community-tagged chunks of equal rank.
     """
-    if not ranked or limit <= 0:
+    if limit <= 0:
+        return []
+    if not ranked:
         return ranked
     seen_communities: set[int] = set()
     untagged_chunks: list[RankedChunk] = []
