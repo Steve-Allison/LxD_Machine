@@ -22,6 +22,7 @@ from lxd.stores._sqlite_rows import (
 from lxd.stores.models import (
     AssetLinkRecord,
     CanonicalRelationRecord,
+    ChunkCentralitySignals,
     ChunkRecord,
     ClaimRecord,
     CommunityReportRecord,
@@ -1148,6 +1149,64 @@ def load_relation_chunk_ids(
         [*entity_ids, *entity_ids],
     ).fetchall()
     return {str(row["chunk_id"]) for row in rows}
+
+
+def load_chunk_centrality_signals(
+    connection: sqlite3.Connection, chunk_ids: list[str]
+) -> dict[str, ChunkCentralitySignals]:
+    """Return ``chunk_id -> ChunkCentralitySignals`` for the given chunks.
+
+    Resolves each chunk's mentioned entities, joins to ``entity_profiles``
+    (built by ``pixi run build-graph``), and returns:
+
+    * ``max_pagerank`` — the highest PageRank across the chunk's mentioned
+      entities, treated as the chunk's "graph importance" signal.
+    * ``community_ids`` — distinct community ids the chunk's entities
+      belong to, sorted ascending. Used for community-aware
+      diversification at retrieval time.
+
+    Returns an empty dict if ``chunk_ids`` is empty. Chunks with no rows
+    in ``entity_profiles`` (graph not yet built) are silently absent from
+    the result; callers default-fill with :class:`ChunkCentralitySignals`.
+    """
+    if not chunk_ids:
+        return {}
+    placeholders = ",".join("?" * len(chunk_ids))
+    rows = connection.execute(
+        f"""
+        SELECT
+            m.chunk_id AS chunk_id,
+            MAX(p.pagerank) AS max_pagerank,
+            GROUP_CONCAT(DISTINCT p.community_id) AS community_ids
+        FROM mention_rows m
+        JOIN entity_profiles p ON m.entity_id = p.entity_id
+        WHERE m.chunk_id IN ({placeholders})
+        GROUP BY m.chunk_id
+        """,
+        list(chunk_ids),
+    ).fetchall()
+    result: dict[str, ChunkCentralitySignals] = {}
+    for row in rows:
+        chunk_id = str(row["chunk_id"])
+        max_pr_value = row["max_pagerank"]
+        max_pr = float(max_pr_value) if max_pr_value is not None else 0.0
+        raw_comm = row["community_ids"]
+        community_ids: tuple[int, ...] = ()
+        if isinstance(raw_comm, str) and raw_comm:
+            community_ids = tuple(
+                sorted(
+                    {
+                        int(token)
+                        for token in raw_comm.split(",")
+                        if token.strip().lstrip("-").isdigit()
+                    }
+                )
+            )
+        result[chunk_id] = ChunkCentralitySignals(
+            max_pagerank=max_pr,
+            community_ids=community_ids,
+        )
+    return result
 
 
 def _summarize_manifest(connection: sqlite3.Connection) -> dict[str, int]:

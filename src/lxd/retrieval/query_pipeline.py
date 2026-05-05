@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import sqlite3
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 import structlog
 
@@ -21,6 +21,7 @@ from lxd.stores.sqlite import (
     connect_sqlite,
     initialize_schema,
     list_allowed_domains,
+    load_chunk_centrality_signals,
     load_relation_chunk_ids,
     summarize_store,
 )
@@ -48,6 +49,13 @@ class RankedChunk:
     ``cited_sources`` and ``wiki_links`` are page-level signals carried
     through from the underlying chunk row. Empty when the chunk's source
     is not a wiki-formatted markdown page.
+
+    ``central_entity_score`` and ``community_ids`` carry knowledge-graph
+    signals: the highest PageRank across the chunk's mentioned entities,
+    and the set of communities those entities belong to. Both default to
+    "no signal" so the pipeline degrades gracefully when the graph is
+    not yet built (centrality lane contributes nothing; community-aware
+    diversification is a no-op).
     """
 
     chunk_id: str
@@ -67,6 +75,8 @@ class RankedChunk:
     score: float
     cited_sources: tuple[str, ...] = ()
     wiki_links: tuple[str, ...] = ()
+    central_entity_score: float = 0.0
+    community_ids: tuple[int, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -150,6 +160,7 @@ def search_chunks(
         target_source_count=target_source_count,
         rerank_top_k=config.retrieval.rerank_top_k,
     )
+    ranked = _attach_centrality_signals(store_paths, ranked)
     representative_candidates = _unique_source_prefix(ranked, target_source_count)
     rerank_limit = min(len(representative_candidates), config.retrieval.rerank_top_k)
     rerank_inputs = representative_candidates[:rerank_limit]
@@ -163,7 +174,10 @@ def search_chunks(
         lexical_fusion_weight=config.retrieval.lexical_fusion_weight,
         relation_fusion_weight=config.retrieval.relation_fusion_weight,
         relation_chunk_ids=relation_chunk_ids,
+        centrality_fusion_weight=config.retrieval.centrality_fusion_weight,
     )
+    if config.retrieval.community_diversity_enabled:
+        fused_prefix = _diversify_by_community(fused_prefix, len(fused_prefix))
     merged_ranked = _merge_ranked_prefix(ranked, fused_prefix)[:requested_limit]
     return SearchOutcome(
         ranked=merged_ranked,
@@ -399,6 +413,7 @@ def _fuse_ranked_prefix(
     lexical_fusion_weight: float,
     relation_fusion_weight: float = 0.0,
     relation_chunk_ids: set[str] | None = None,
+    centrality_fusion_weight: float = 0.0,
 ) -> list[RankedChunk]:
     if not dense_prefix:
         return []
@@ -411,6 +426,13 @@ def _fuse_ranked_prefix(
         key=lambda c: (0 if c.chunk_id in _relation_chunk_ids else 1, dense_rank[c.chunk_id]),
     )
     relation_rank = {item.chunk_id: index for index, item in enumerate(relation_ranked, start=1)}
+    centrality_ranked = sorted(
+        dense_prefix,
+        key=lambda c: (-c.central_entity_score, dense_rank[c.chunk_id]),
+    )
+    centrality_rank = {
+        item.chunk_id: index for index, item in enumerate(centrality_ranked, start=1)
+    }
     return sorted(
         dense_prefix,
         key=lambda item: (
@@ -422,10 +444,76 @@ def _fuse_ranked_prefix(
                 )
                 + _rrf_score(rerank_rank.get(item.chunk_id, len(dense_prefix) + 1))
                 + (relation_fusion_weight * _rrf_score(relation_rank[item.chunk_id]))
+                + (centrality_fusion_weight * _rrf_score(centrality_rank[item.chunk_id]))
             ),
             dense_rank[item.chunk_id],
         ),
     )
+
+
+def _attach_centrality_signals(store_paths: object, ranked: list[RankedChunk]) -> list[RankedChunk]:
+    """Populate ``central_entity_score`` and ``community_ids`` on each chunk.
+
+    A chunk that mentions no profiled entity, or whose entities have no
+    community assignment yet (graph not built), keeps its default
+    ``(0.0, ())`` — the centrality lane and community-aware
+    diversification then become no-ops, so retrieval degrades gracefully.
+    """
+    if not ranked or not isinstance(store_paths, StorePaths):
+        return ranked
+    if not store_paths.sqlite_path.exists():
+        return ranked
+    chunk_ids = [item.chunk_id for item in ranked]
+    try:
+        connection = connect_sqlite(store_paths.sqlite_path)
+        try:
+            signals = load_chunk_centrality_signals(connection, chunk_ids)
+        finally:
+            connection.close()
+    except sqlite3.DatabaseError, OSError:
+        _log.warning("attach_centrality_signals_failed", exc_info=True)
+        return ranked
+    if not signals:
+        return ranked
+    return [
+        replace(
+            item,
+            central_entity_score=signals[item.chunk_id].max_pagerank,
+            community_ids=signals[item.chunk_id].community_ids,
+        )
+        if item.chunk_id in signals
+        else item
+        for item in ranked
+    ]
+
+
+def _diversify_by_community(ranked: list[RankedChunk], limit: int) -> list[RankedChunk]:
+    """Reorder so the first hits cover distinct communities before doubling up.
+
+    A simple round-robin: take the first chunk whose community has not
+    yet appeared, then the next, until every community in the prefix is
+    represented; only then revisit chunks from already-seen communities.
+    Chunks with empty ``community_ids`` (graph not built or entity not
+    yet profiled) are treated as "no community" and only deferred to
+    after the community-tagged chunks of equal rank.
+    """
+    if not ranked or limit <= 0:
+        return ranked
+    seen_communities: set[int] = set()
+    untagged_chunks: list[RankedChunk] = []
+    first_pass: list[RankedChunk] = []
+    revisit: list[RankedChunk] = []
+    for item in ranked:
+        if not item.community_ids:
+            untagged_chunks.append(item)
+            continue
+        novel_communities = set(item.community_ids) - seen_communities
+        if novel_communities:
+            seen_communities.update(item.community_ids)
+            first_pass.append(item)
+        else:
+            revisit.append(item)
+    return [*first_pass, *revisit, *untagged_chunks][:limit]
 
 
 def _fts_rank_map(

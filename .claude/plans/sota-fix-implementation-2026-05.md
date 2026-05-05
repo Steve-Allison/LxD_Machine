@@ -487,10 +487,10 @@ Sessions are ordered for clean ROI sequencing; each ends with a green build + co
 [~] S2.3–S2.4  [#14] **STRUCK 2026-05-05.** Remote-rerank work removed permanently; this is a local-only project. The local-code observation about `rerank.py` auto-spawning `llama-server` from inside a query path is parked in Tier 7 as `B-LOCAL-1` (an issue to raise, not a silent swap).
 [x] S2.5  Commit message: "[#1] LanceDB native FTS5 BM25 replaces hand-rolled lexical scoring" (`95ca6f6`).
 
-[ ] S3.1  [#3] New `wiki_relations.py` with slug-to-canonical-id mapping
-[ ] S3.2  [#3] Emit `wiki_references` and `wiki_cites` relations during ingest
-[ ] S3.3  [#3] Add dangling-slug report to `pixi run status`
-[ ] S3.4  Commit: "Map wiki [[slug]] cross-refs into knowledge graph"
+[x] S3.1  [#3] New `wiki_relations.py` with slug-to-canonical-id mapping — done in `94308d3`. 4-form normalisation (kebab/snake × upper/lower) covers either ontology convention.
+[x] S3.2  [#3] Emit `wiki_references` relations during ingest — done in `94308d3`. `extraction_model="wiki_metadata"` distinguishes from LLM-extracted edges. The original plan listed `wiki_cites` (Sources → entities) too; not implemented because source filenames do not correspond to ontology entities — the chunk-row `cited_sources_json` column already carries citations through to retrieval/synthesis without a synthetic relation layer.
+[x] S3.3  [#3] Dangling-slug + pages-without-subject diagnostics — done in `94308d3` as a structlog `wiki_relation_derivation_diagnostics` event at end of run (truncated to first 20 each, sorted). Adding the same surface to `pixi run status` is a polish task — left for B-DOCS or a follow-up.
+[x] S3.4  Commit: `94308d3` — "[#3] Wiki [[slug]] cross-refs become wiki_references KG edges".
 
 [ ] S4.1  [#2] Add `central_entity_score`, `community_ids` to `RankedChunk`
 [ ] S4.2  [#2] Load centrality + community in `_dense_ranked_candidates`

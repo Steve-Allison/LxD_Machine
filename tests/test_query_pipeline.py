@@ -6,13 +6,20 @@ from types import SimpleNamespace
 from lxd.app.status import current_ingest_config
 from lxd.retrieval.query_pipeline import (
     RankedChunk,
+    _diversify_by_community,
+    _fuse_ranked_prefix,
     _merge_ranked_prefix,
     _unique_source_prefix,
 )
 
 
 def _chunk(
-    chunk_id: str, *, source_rel_path: str | None = None, score_hint: str | None = None
+    chunk_id: str,
+    *,
+    source_rel_path: str | None = None,
+    score_hint: str | None = None,
+    central_entity_score: float = 0.0,
+    community_ids: tuple[int, ...] = (),
 ) -> RankedChunk:
     return RankedChunk(
         chunk_id=chunk_id,
@@ -30,6 +37,8 @@ def _chunk(
         score_hint=score_hint or chunk_id,
         metadata_json="{}",
         score=0.0,
+        central_entity_score=central_entity_score,
+        community_ids=community_ids,
     )
 
 
@@ -53,6 +62,70 @@ def test_unique_source_prefix_deduplicates_sources() -> None:
     prefix = _unique_source_prefix(ranked, 3)
 
     assert [item.chunk_id for item in prefix] == ["a1", "b1", "c1"]
+
+
+def test_diversify_by_community_picks_distinct_communities_first() -> None:
+    """Top-N should cover distinct communities before any community
+    appears twice."""
+    ranked = [
+        _chunk("a", community_ids=(1,)),
+        _chunk("b", community_ids=(1,)),  # same community as a
+        _chunk("c", community_ids=(2,)),
+        _chunk("d", community_ids=(3,)),
+        _chunk("e", community_ids=(2,)),  # same community as c
+    ]
+    diversified = _diversify_by_community(ranked, len(ranked))
+    assert [item.chunk_id for item in diversified] == ["a", "c", "d", "b", "e"]
+
+
+def test_diversify_by_community_defers_chunks_with_no_community() -> None:
+    """Chunks without community signals (graph not yet built) come last,
+    after every community-tagged chunk."""
+    ranked = [
+        _chunk("untagged-1", community_ids=()),
+        _chunk("a", community_ids=(1,)),
+        _chunk("untagged-2", community_ids=()),
+        _chunk("b", community_ids=(2,)),
+    ]
+    diversified = _diversify_by_community(ranked, 4)
+    assert [item.chunk_id for item in diversified] == ["a", "b", "untagged-1", "untagged-2"]
+
+
+def test_diversify_by_community_is_noop_when_signals_absent() -> None:
+    """If no chunk carries community ids, ordering is preserved."""
+    ranked = [_chunk("a"), _chunk("b"), _chunk("c")]
+    diversified = _diversify_by_community(ranked, len(ranked))
+    assert [item.chunk_id for item in diversified] == ["a", "b", "c"]
+
+
+def test_fuse_ranked_prefix_centrality_lane_promotes_high_pagerank_chunks() -> None:
+    """A chunk with strictly higher central_entity_score should outrank
+    its baseline-equal sibling once the centrality lane is enabled."""
+    high_pr = _chunk("high", central_entity_score=0.9)
+    low_pr = _chunk("low", central_entity_score=0.1)
+    dense_prefix = [low_pr, high_pr]
+    no_lane = _fuse_ranked_prefix(
+        dense_prefix=dense_prefix,
+        reranked_prefix=[],
+        lexical_rank={},
+        lexical_fusion_weight=0.0,
+        relation_fusion_weight=0.0,
+        relation_chunk_ids=set(),
+        centrality_fusion_weight=0.0,
+    )
+    with_lane = _fuse_ranked_prefix(
+        dense_prefix=dense_prefix,
+        reranked_prefix=[],
+        lexical_rank={},
+        lexical_fusion_weight=0.0,
+        relation_fusion_weight=0.0,
+        relation_chunk_ids=set(),
+        centrality_fusion_weight=10.0,
+    )
+    # Without the lane: dense order preserved (low first).
+    assert [item.chunk_id for item in no_lane] == ["low", "high"]
+    # With a strong lane: high-PR chunk surfaces.
+    assert [item.chunk_id for item in with_lane] == ["high", "low"]
 
 
 def test_current_ingest_config_excludes_query_time_reranker_settings() -> None:

@@ -194,6 +194,20 @@ class ExtractedRelationRecord:
 
 
 @dataclass(frozen=True, slots=True)
+class ChunkCentralitySignals:
+    """Per-chunk knowledge-graph signals aggregated from mentioned entities.
+
+    Computed by joining ``chunk_rows -> mention_rows -> entity_profiles``.
+    Chunks that mention no profiled entity (or whose entities have no
+    community assignment yet) yield default values: ``max_pagerank=0.0``,
+    ``community_ids=()``.
+    """
+
+    max_pagerank: float = 0.0
+    community_ids: tuple[int, ...] = ()
+
+
+@dataclass(frozen=True, slots=True)
 class VectorSearchRecord:
     """Vector search hit with source metadata.
 
