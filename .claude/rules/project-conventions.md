@@ -13,7 +13,7 @@ globs: "**/*.py,**/pixi.toml,**/pyproject.toml"
 - Domain models live in `src/lxd/domain/` as Pydantic models.
 - Settings/config use Pydantic models in `src/lxd/settings/`.
 - Logging uses `structlog` throughout. Never use `print()` or stdlib `logging` directly.
-- The ingest pipeline uses Hamilton DAG patterns. See the `hamilton-dag` skill for guidance.
+- The ingest pipeline is a sequential per-source orchestrator in `src/lxd/ingest/pipeline.py` (no DAG framework). Phases per source: scan → diff → load → chunk → embed (with content-addressed cache) → detect mentions → extract relations → persist (LanceDB-first, then SQLite). The pipeline runs under a systemic-error circuit breaker (`ingest/error_classification.py`) that aborts the run after 3 consecutive systemic failures to avoid burning API spend on a broken store.
 - MCP server is in `src/lxd/mcp/` using FastMCP (>=3.0). 20 read-only tools registered.
 - Knowledge graph pipeline lives in `src/lxd/ontology/` (entity_graph, communities, profiles, evidence) and `src/lxd/ingest/claims.py`. CLI in `src/lxd/cli/graph.py`.
 
