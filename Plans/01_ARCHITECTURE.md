@@ -142,15 +142,15 @@ Used for:
 - `ontology_snapshot` — ontology state hash for drift detection
 - `ingest_config` — persisted ingest config snapshot
 - `ingest_runs` — ingest run history
-- `relations` — canonical deduplicated relations (KG Phase 5)
-- `relation_evidence` — provenance linking canonical relations to source chunks (KG Phase 5)
-- `claims` — LLM-extracted factual claims per chunk (KG Phase 5)
-- `entity_profiles` — deterministic entity summaries with centrality (KG Phase 5)
-- `entity_communities` — community assignments per entity (KG Phase 5)
-- `community_reports` — deterministic community summaries (KG Phase 5)
-- `graph_metadata` — KG version and build timestamps (KG Phase 5)
-- `graph_build_state` — resumable build state machine (KG Phase 5)
-- `llm_jobs` — persistent LLM job queue (Wave 11; status, payload, result, attempts)
+- `relations` — canonical deduplicated relations (knowledge graph)
+- `relation_evidence` — provenance linking canonical relations to source chunks (knowledge graph)
+- `claims` — LLM-extracted factual claims per chunk (knowledge graph)
+- `entity_profiles` — deterministic entity summaries with centrality (knowledge graph)
+- `entity_communities` — community assignments per entity (knowledge graph)
+- `community_reports` — deterministic community summaries (knowledge graph)
+- `graph_metadata` — knowledge graph version and build timestamps
+- `graph_build_state` — resumable knowledge graph build state machine
+- `llm_jobs` — persistent LLM job queue (status, payload, result, attempts)
 
 SQLite is the source of truth for ingest state, recovery, asset registration, ontology snapshot tracking, the full knowledge graph, and persistent LLM job state.
 

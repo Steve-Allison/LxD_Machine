@@ -1,6 +1,8 @@
 # LxD Machine — MCP Specification
 
-**Note:** This document was the original Phase 0–4 MCP specification. Phase 5 added 14 knowledge graph tools and renamed `query_lxd` to `search_knowledge`. See `08_KNOWLEDGE_GRAPH_SPEC.md` Section 5.7 for the full Phase 5 tool specification.
+This is the canonical specification for the MCP surface. The full
+inventory of 20 tools is in Section 2; the knowledge-graph build pipeline
+behind the graph tools is described in `08_KNOWLEDGE_GRAPH_SPEC.md`.
 
 ---
 
@@ -22,7 +24,7 @@ Implementation choice:
 
 ### Current tool inventory (20 tools)
 
-**Corpus tools (Phase 0–4):**
+**Corpus tools:**
 
 | Tool | Parameters | Purpose |
 |---|---|---|
@@ -33,7 +35,7 @@ Implementation choice:
 | `find_documents_for_concept(entity_id, hops?, limit?)` | entity_id: str, hops: int, limit: int | Chunks mentioning entity + graph neighbours |
 | `get_corpus_relations(entity_id, limit?)` | entity_id: str, limit: int | Corpus-extracted relations for an entity |
 
-**Knowledge graph tools (Phase 5):**
+**Knowledge graph tools:**
 
 | Tool | Parameters | Purpose |
 |---|---|---|
@@ -49,7 +51,7 @@ Implementation choice:
 | `find_foundational_entities(limit?)` | limit: int | Top entities by closeness centrality |
 | `get_entity_graph_stats()` | — | KG statistics: counts, version, build time |
 
-**Full answer pipeline (Phase 5):**
+**Full answer pipeline:**
 
 | Tool | Parameters | Purpose |
 |---|---|---|

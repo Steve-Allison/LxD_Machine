@@ -51,7 +51,6 @@ Both machine profiles must define the following sections:
 - `mcp`
 - `logging`
 - `tenancy` *(optional; defaults to single-tenant `"default"`)*
-- `observability` *(optional; OTel + Prometheus exporters default to off)*
 
 ### Required `paths` settings
 
@@ -179,20 +178,6 @@ tenancy:
 `corpus_id` must match `^[a-z0-9][a-z0-9_-]{0,62}$`. It is stamped onto
 persistent `llm_jobs` rows and is reserved as a future multi-tenancy
 filter key across the store.
-
-### Optional `observability` settings
-
-```yaml
-observability:
-  otel_enabled: false
-  otel_endpoint: null          # e.g. http://localhost:4317
-  prometheus_enabled: false
-  prometheus_port: 9464
-```
-
-Both exporters default to off so the baseline remains dependency-free.
-When enabled, runtime wiring is responsible for starting the exporters;
-the config is a feature gate, not a runtime.
 
 `chunk_size` and `chunk_overlap` are initial chunker targets, not a trusted embedder safety contract.
 
@@ -438,6 +423,5 @@ On every bootstrap, the runtime computes `config_digest = blake3(json.dumps(conf
   both digests; never overwrite automatically
 - deleting `config.lock` is the supported way to reseed
 
-The digest covers every field in `RuntimeConfig`, including `tenancy` and
-`observability`, so infrastructure changes (tenancy slug, exporter
-toggles) surface as drift warnings.
+The digest covers every field in `RuntimeConfig`, including `tenancy`,
+so infrastructure changes (tenancy slug, etc.) surface as drift warnings.

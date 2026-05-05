@@ -191,7 +191,7 @@ Columns:
 
 ### 3.7 `llm_jobs`
 
-Persistent LLM job queue (Wave 11). Used by long-running LLM workloads
+Persistent LLM job queue. Used by long-running LLM workloads
 (OpenAI Batch, background claim/relation extraction) that must survive
 process restarts. Status transitions are enforced by a SQLite `CHECK`
 constraint; callers choose a stable `job_id` so re-enqueues are
