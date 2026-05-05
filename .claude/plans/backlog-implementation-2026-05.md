@@ -165,37 +165,21 @@ These reduce per-call overhead and remove duplicate client construction.
 
 ### Tier 3 — Performance polish
 
-#### `B-PERF-1` Tokenizer encodes full document twice
+#### `B-PERF-1` Tokenizer encodes full document twice — **OBSOLETE on survey 2026-05-05**
 
-**Why**: `tiktoken` encodes the same source text twice in `chunking.py` — once at line 84 for size estimation, once at line 188 for the actual chunker. Encoding a 50k-token doc takes ~100ms; doing it twice is ~200ms × N pages.
+**Status**: Closed. The audit description does not match current code in `src/lxd/ingest/chunking.py`:
 
-**Files**:
+- Line 84 builds `full_text` (a `str.join` on text blocks) — **no encoding**.
+- Line 90 encodes `full_text` exactly once via `tokenizer.encode(full_text)`.
+- Line 196 encodes individual chunker outputs (`configured_tokenizer.encode(normalized_text)`) — those are different texts (chunker outputs, not the source document) and Docling's `HybridChunker` does not expose per-output token counts, so re-encoding is the only correct way to obtain them.
 
-- `src/lxd/ingest/chunking.py` — cache the encoded token list once at top of `chunk_document`, pass through to the size estimator and chunker.
-
-**Actions**:
-
-1. Encode once at the entry point.
-2. Pass `encoded_tokens: list[int]` (or the encoded length) explicitly.
-3. Both internal call sites consume the cached value.
-
-**Verify**: existing chunker tests + new unit test asserting encoder call count == 1 per `chunk_document` call.
-
-**Effort**: 1 h.
+There is no double-encoding of the same text. No code change needed.
 
 ---
 
-#### `B-PERF-2` `_unique_source_prefix` set-based dedup
+#### `B-PERF-2` `_unique_source_prefix` set-based dedup — **OBSOLETE on survey 2026-05-05**
 
-**Why**: The retrieval-pipeline retry loop calls `_unique_source_prefix` repeatedly, each call iterates the ranked list using membership tests on a list-backed `seen_sources`. At small scale this is fine; at the dense-search-retry edge case it's O(N²).
-
-**Note**: Already a `set[str]` in current code; the legitimate optimisation is **avoid re-running the helper on every retry** by computing the unique prefix once and feeding it through. Re-survey on first read; the audit may be partly obsolete.
-
-**Files**: `src/lxd/retrieval/query_pipeline.py:408` (function), call sites in `_dense_ranked_candidates`.
-
-**Verify**: existing query-pipeline tests still pass; new property test (already exists from #16) covers the invariants.
-
-**Effort**: 0.5 h (or zero if the audit was stale).
+**Status**: Closed. `src/lxd/retrieval/query_pipeline.py:403–415` already uses `seen_sources: set[str]` for membership tests and exits early when `len(unique) >= limit`. The helper is O(N) on its input list and short-circuits at the requested prefix size. The "re-run on every retry" framing is a non-issue — each retry iteration in `_dense_ranked_candidates` operates on a *different* `ranked` list (the result of a wider `search_vector_chunks` call), so the prefix computation cannot be cached across iterations. No code change needed.
 
 ---
 
