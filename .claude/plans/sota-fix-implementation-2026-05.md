@@ -494,10 +494,10 @@ Sessions are ordered for clean ROI sequencing; each ends with a green build + co
 [x] S6.2  [#12] Resolved by deletion in commit `e29fb7c` (Tier 1 dead-code purge): `ObservabilityConfig` and the four unused `otel_*`/`prometheus_*` fields were removed outright. The "implement OTel" alternative is deferred — when OTel is genuinely wired through (configure_tracing, spans on run_tool / ingest / retrieval boundaries), it lands as a new code change rather than fulfilling a stale config promise.
 [x] S6.3  Two commits: `ffc5765` ([#11] budget) and `e29fb7c` ([#12] resolved-by-deletion).
 
-[ ] S7.1  [#10] Add `circuit_breaker_state` table + migration v7
-[ ] S7.2  [#10] Implement `PersistentCircuitBreaker`; **delete** the in-memory `SystemicErrorCircuitBreaker` (no parallel implementations)
+[x] S7.1  [#10] Add `circuit_breaker_state` table + migration v7 — done in `7dc96b7`. Both the migration and BASE_SCHEMA_DDL carry the table; `_REQUIRED_COLUMNS` enforces presence on integrity check.
+[x] S7.2  [#10] Implement `PersistentCircuitBreaker`; deleted the in-memory `SystemicErrorCircuitBreaker` outright — done in `7dc96b7`. Same public surface; takes a connection + scope. New `reset_circuit_breaker(connection, scope=...)` public helper for manual remediation.
 [ ] S7.3  [#7] Split `stores/sqlite.py` into a subpackage. Callers update their imports — no `__init__.py` re-export façade.
-[ ] S7.4  Commit: "Persistent breaker + sqlite.py split"
+[ ] S7.4  Commit: "Sqlite split into subpackage"
 
 [ ] S8.1  [#8] Define backend discriminated unions in `settings/models.py`
 [ ] S8.2  [#8] Replace if-chains with `match`/`case` in `relations.py`, `claims.py`, `llm_client.py`
