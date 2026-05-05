@@ -487,8 +487,8 @@ Sessions are ordered for clean ROI sequencing; each ends with a green build + co
 [x] S4.5  Commit: `6cb00d4` — "[#2] Use centrality + community signals in retrieval".
 
 [~] S5.1  [#4] **STRUCK 2026-05-05** — remote-synthesis swap was incompatible with the local-first design. Local-code observation parked as `B-LOCAL-2`.
-[ ] S5.2  [#5] Stream `synthesize_answer`; surface via FastMCP iterator (purely local, Ollama streaming)
-[ ] S5.3  Commit: "[#5] Streaming synthesis (Ollama)"
+[x] S5.2  [#5] `stream_synthesize_answer(...)` async-iterator API (yields `StreamingTextDelta` events then a terminal `AnswerEnvelope`); 5 new tests cover happy path, think-block stripping in the final envelope, initial-call failure, mid-stream failure, empty stream. Local Ollama only.
+[x] S5.3  Commit pending below — single commit covers [#5] only.
 
 [ ] S6.1  [#11] New `IngestBudget` config + threshold checks
 [ ] S6.2  [#12] Implement OTel via `configure_tracing`, span wrappers in `run_tool`, spans at ingest+retrieval boundaries (or delete the unused `otel_*`/`prometheus_*` settings outright per no-tech-debt — pick one, ship one)

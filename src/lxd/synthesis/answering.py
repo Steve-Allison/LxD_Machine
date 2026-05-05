@@ -1,8 +1,22 @@
-"""Generate final answer envelopes from ranked evidence chunks."""
+"""Generate final answer envelopes from ranked evidence chunks.
+
+Two modes:
+
+- :func:`synthesize_answer` — one-shot: blocks until the local Ollama
+  model finishes, returns a single :class:`AnswerEnvelope`.
+- :func:`stream_synthesize_answer` — iterator: yields incremental
+  :class:`StreamingTextDelta` events as the model emits text, then
+  exactly one terminal :class:`AnswerEnvelope` once the stream
+  completes (or sooner on error). Both stay on the local Ollama
+  backend; remote synthesis was rejected as incompatible with the
+  local-first design (see ``feedback_local_only_no_remote_rerank.md``
+  and the SOTA-plan strike of item ``[#4]``).
+"""
 
 from __future__ import annotations
 
 import re
+from collections.abc import Iterator
 from dataclasses import dataclass
 
 import ollama
@@ -40,6 +54,21 @@ class AnswerEnvelope:
     citations: list[str]
     warnings: list[str]
     metadata: dict[str, object]
+
+
+@dataclass(frozen=True, slots=True)
+class StreamingTextDelta:
+    """Incremental text emitted by :func:`stream_synthesize_answer`.
+
+    Streamed deltas are model-raw — they may include partial tokens or
+    fragments of ``<think>...</think>`` reasoning blocks the model
+    sometimes emits. The terminal :class:`AnswerEnvelope` carries the
+    full text with think blocks stripped, so consumers that only need
+    the final answer can ignore the deltas; consumers that want
+    progress UI render them as they arrive.
+    """
+
+    text: str
 
 
 def no_results_answer() -> AnswerEnvelope:
@@ -101,6 +130,71 @@ def synthesize_answer(
         citations=citations,
         warnings=[],
         metadata={},
+    )
+
+
+def stream_synthesize_answer(
+    question: str,
+    evidence: list[EvidenceChunk],
+    config: RuntimeConfig,
+    *,
+    graph_context_prompt: str = "",
+) -> Iterator[StreamingTextDelta | AnswerEnvelope]:
+    """Stream a synthesis answer from the local Ollama model.
+
+    Yields zero or more :class:`StreamingTextDelta` events as the model
+    emits text, then exactly one terminal :class:`AnswerEnvelope` (the
+    same object :func:`synthesize_answer` would return). Consumers that
+    don't drain the iterator to completion miss the envelope; consumers
+    that abandon mid-stream simply lose the answer status without
+    leaking server resources beyond Ollama's own request lifetime.
+
+    Errors during the stream short-circuit: the iterator yields a
+    single :class:`AnswerEnvelope` with
+    ``QueryAnswerStatus.SYNTHESIS_UNAVAILABLE`` and stops.
+    """
+    citations = [chunk.citation_label for chunk in evidence]
+    prompt = _build_prompt(question, evidence, graph_context_prompt=graph_context_prompt)
+    try:
+        stream = _client(config).generate(
+            model=config.models.llm,
+            prompt=prompt,
+            think=False if config.models.llm_no_think else None,
+            stream=True,
+            options={
+                "temperature": config.synthesis.temperature,
+                "num_predict": config.synthesis.max_tokens,
+            },
+        )
+    except (ollama.RequestError, ollama.ResponseError) as exc:
+        yield synthesis_unavailable_answer(citations, f"Synthesis model unavailable: {exc}")
+        return
+
+    accumulated: list[str] = []
+    try:
+        for response_chunk in stream:
+            text = str(response_chunk.response or "")
+            if not text:
+                continue
+            accumulated.append(text)
+            yield StreamingTextDelta(text=text)
+    except (ollama.RequestError, ollama.ResponseError) as exc:
+        yield synthesis_unavailable_answer(citations, f"Synthesis stream interrupted: {exc}")
+        return
+
+    full_text = _strip_thinking("".join(accumulated)).strip()
+    if not full_text:
+        yield synthesis_unavailable_answer(
+            citations,
+            "Synthesis model returned an empty response.",
+        )
+        return
+    yield AnswerEnvelope(
+        answer_status=QueryAnswerStatus.ANSWERED,
+        answer_text=full_text,
+        citations=citations,
+        warnings=[],
+        metadata={"streamed": True},
     )
 
 
