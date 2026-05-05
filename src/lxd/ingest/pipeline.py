@@ -11,6 +11,8 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+import structlog
+
 from lxd.domain.citations import make_citation_label
 from lxd.domain.ids import blake3_hex, make_chunk_id
 from lxd.domain.status import LifecycleStatus, RetrievalStatus
@@ -41,6 +43,7 @@ from lxd.ingest.markdown import ExtractedDocument, load_markdown_document
 from lxd.ingest.mentions import detect_mentions
 from lxd.ingest.relations import build_valid_predicates, extract_relations_for_chunk
 from lxd.ingest.scanner import ScannedCorpusFile, scan_corpus
+from lxd.ingest.wiki_relations import build_slug_index, derive_wiki_link_relations
 from lxd.ontology.loader import OntologyLoadResult, load_ontology
 from lxd.ontology.matcher import build_automaton
 from lxd.settings.models import RuntimeConfig
@@ -89,6 +92,8 @@ from lxd.stores.sqlite import (
 from lxd.stores.sqlite import (
     replace_source_chunks as replace_sqlite_source_chunks,
 )
+
+_log = structlog.get_logger(__name__)
 
 _RECOVERABLE_SOURCE_ERRORS = (
     FileNotFoundError,
@@ -173,6 +178,9 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
     warnings: list[str] = []
     automaton = build_automaton(plan.ontology.matcher_records)
     valid_predicates = build_valid_predicates(plan.ontology.relation_records)
+    slug_index = build_slug_index(plan.ontology.entity_definitions)
+    wiki_dangling_total: set[str] = set()
+    wiki_pages_without_subject_total: set[str] = set()
     store_paths = build_store_paths(config.paths.data_path)
     sqlite_connection = connect_sqlite(store_paths.sqlite_path)
     try:
@@ -377,12 +385,23 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                         )
                         delete_sqlite_source(sqlite_connection, move_source.source_rel_path)
                         delete_vector_source(vector_table, move_source.source_rel_path)
+                        # The page's wiki_links travel with the cloned chunks, but
+                        # the subject (resolved from the new filename stem) may
+                        # change for cross-directory moves. Re-derive against the
+                        # current path so KG edges follow the file.
+                        cloned_wiki = derive_wiki_link_relations(
+                            chunk_records=cloned_chunks,
+                            slug_index=slug_index,
+                            extracted_at=_utc_now(),
+                        )
+                        wiki_dangling_total.update(cloned_wiki.dangling_slugs)
+                        wiki_pages_without_subject_total.update(cloned_wiki.pages_without_subject)
                         replace_sqlite_source_chunks(
                             sqlite_connection,
                             source_rel_path=scanned.relative_path,
                             chunk_records=cloned_chunks,
                             mention_records=cloned_mentions,
-                            relation_records=[],
+                            relation_records=cloned_wiki.relations,
                         )
                         replace_vector_source_chunks(
                             vector_table, scanned.relative_path, cloned_chunks
@@ -397,16 +416,21 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                             relation_records,
                             file_cache_hits,
                             file_cache_misses,
+                            file_wiki_dangling,
+                            file_wiki_no_subject,
                         ) = _build_source_records(
                             scanned=scanned,
                             document_id=document_id,
                             config=config,
                             automaton=automaton,
                             valid_predicates=valid_predicates,
+                            slug_index=slug_index,
                             cache_table=cache_table,
                         )
                         cache_hit_total += file_cache_hits
                         cache_miss_total += file_cache_misses
+                        wiki_dangling_total.update(file_wiki_dangling)
+                        wiki_pages_without_subject_total.update(file_wiki_no_subject)
 
                         # LanceDB FIRST. If LanceDB succeeds and SQLite fails,
                         # the LanceDB write is left in place — it's content-
@@ -521,6 +545,14 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
             # index creation; rebuild the index once at the end of the run
             # so retrieval BM25 sees every chunk written this run.
             refresh_fts_index(vector_table)
+            if wiki_dangling_total or wiki_pages_without_subject_total:
+                _log.info(
+                    "wiki_relation_derivation_diagnostics",
+                    dangling_slug_count=len(wiki_dangling_total),
+                    dangling_slug_samples=sorted(wiki_dangling_total)[:20],
+                    pages_without_subject_count=len(wiki_pages_without_subject_total),
+                    pages_without_subject_samples=sorted(wiki_pages_without_subject_total)[:20],
+                )
             return IngestRunResult(
                 run_id=run_id,
                 summary=summary,
@@ -658,6 +690,7 @@ def _build_source_records(
     config: RuntimeConfig,
     automaton: object,
     valid_predicates: frozenset[str],
+    slug_index: dict[str, str],
     cache_table: object | None = None,
 ) -> tuple[
     list[ChunkRecord],
@@ -665,13 +698,24 @@ def _build_source_records(
     list[ExtractedRelationRecord],
     int,
     int,
+    tuple[str, ...],
+    tuple[str, ...],
 ]:
     """Chunk, embed (with cache), and detect mentions/relations for one source.
 
+    Relations are derived from two sources, joined into a single list:
+
+    * **LLM extraction** (``relations.py``) over chunk text, gated by
+      ``valid_predicates`` from the ontology relation schema.
+    * **Wiki frontmatter** (``wiki_relations.py``) — for chunks whose host
+      page has ``[[slug]]`` cross-references that resolve via
+      ``slug_index`` to ontology canonical_ids, emit deterministic
+      ``wiki_references`` edges. No LLM cost, no hallucination risk.
+
     Returns:
         ``(chunk_records, mention_records, relation_records, cache_hits,
-        cache_misses)`` — the last two integers report how many chunks were
-        served from the embedding cache vs newly embedded via the API.
+        cache_misses, wiki_dangling_slugs, wiki_pages_without_subject)`` —
+        the last two are diagnostics that the caller aggregates run-wide.
     """
     extracted_document = _load_extracted_document(scanned)
     initial_chunks = chunk_document(
@@ -742,7 +786,21 @@ def _build_source_records(
                 config=config,
             )
         )
-    return chunk_records, mention_records, relation_records, cache_hits, cache_misses
+    wiki_outcome = derive_wiki_link_relations(
+        chunk_records=chunk_records,
+        slug_index=slug_index,
+        extracted_at=_utc_now(),
+    )
+    relation_records.extend(wiki_outcome.relations)
+    return (
+        chunk_records,
+        mention_records,
+        relation_records,
+        cache_hits,
+        cache_misses,
+        wiki_outcome.dangling_slugs,
+        wiki_outcome.pages_without_subject,
+    )
 
 
 def _load_extracted_document(scanned: ScannedCorpusFile) -> ExtractedDocument:
