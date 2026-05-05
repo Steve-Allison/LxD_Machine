@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Literal
+from typing import Literal, Self
 
 from pydantic import BaseModel, ConfigDict, Field, HttpUrl, model_validator
 
@@ -55,7 +55,7 @@ class EmbeddingConfig(BaseModel):
     max_workers: int = Field(default=4, gt=0)
 
     @model_validator(mode="after")
-    def _normalize_query_instruction(self) -> EmbeddingConfig:
+    def _normalize_query_instruction(self) -> Self:
         if self.query_instruction is not None and not self.query_instruction.strip():
             self.query_instruction = None
         return self
@@ -163,7 +163,7 @@ class RerankerConfig(BaseModel):
     launch: RerankerLaunchConfig | None = None
 
     @model_validator(mode="after")
-    def _validate_launch_contract(self) -> RerankerConfig:
+    def _validate_launch_contract(self) -> Self:
         if self.launch is None or not self.launch.auto_start:
             return self
         if self.url is None:
@@ -307,7 +307,7 @@ class TenancyConfig(BaseModel):
     corpus_id: str = "default"
 
     @model_validator(mode="after")
-    def _validate_corpus_id(self) -> TenancyConfig:
+    def _validate_corpus_id(self) -> Self:
         value = self.corpus_id
         if not value or len(value) > 63:
             raise ValueError("tenancy.corpus_id must be 1..63 characters")
@@ -347,7 +347,7 @@ class RuntimeConfig(BaseModel):
     openai: OpenAIEmbeddingConfig | None = None
 
     @model_validator(mode="after")
-    def _validate_openai_backend(self) -> RuntimeConfig:
+    def _validate_openai_backend(self) -> Self:
         if self.models.embed_backend == "openai" and self.openai is None:
             raise ValueError("models.embed_backend=openai requires an [openai] config section.")
         if (
