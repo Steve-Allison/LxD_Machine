@@ -1,10 +1,10 @@
-# LxD Machine — SOTA Implementation Plan (19 items)
+# LxD Machine — SOTA Implementation Plan (18 items)
 
 ## Context
 
 A 2026-05-05 critical audit identified 20 architectural and code-quality gaps across retrieval, knowledge-graph signal use, code structure, robustness, and observability. The audit grounded each finding in `file:line` references; an Explore-agent pass against the live codebase has now confirmed exact integration points for every item.
 
-This plan organises the 19 remaining items (item #6 was a measurement-chore item not a SOTA improvement; removed 2026-05-05) into a multi-session implementation schedule prioritised by **return on investment** (impact ÷ effort), with one structural sequencing rule: **foundation before refinement**. Dead-code removal and architectural consolidation precede new features so we don't refactor newly-added code twice.
+This plan organises the 18 remaining items (item #6 was a measurement-chore item not a SOTA improvement, removed 2026-05-05; item #14 was a remote-rerank proposal incompatible with the local-first design, struck 2026-05-05) into a multi-session implementation schedule prioritised by **return on investment** (impact ÷ effort), with one structural sequencing rule: **foundation before refinement**. Dead-code removal and architectural consolidation precede new features so we don't refactor newly-added code twice.
 
 **Important — measurement is the user's call, not a plan-imposed gate.** This plan does NOT run ingest, does NOT capture eval baselines, and does NOT impose `pixi run eval` as a CI gate. Each item's verification is code-level: lint, typecheck, targeted tests, manual MCP smoke where applicable. The user runs ingest and eval when they choose; quality measurement is layered on top of this work, not gated by it.
 
@@ -106,28 +106,15 @@ This tier is a precondition for the rest of the plan. Modernising on top of lega
 
 ---
 
-#### `[#14]` Switch to remote rerank API (Cohere or Voyage rerank-2)
+#### `[#14]` ❌ STRUCK 2026-05-05 — "Switch to remote rerank API" was wrong for this project
 
-**Why fourth**: Current reranker (`rerank.py:156-197 _ensure_reranker_service`) auto-spawns `llama-server` from inside a query path. Fragile under concurrent MCP load, blocks 30s on missing-binary, breaks on model-download race. Remote APIs are 5-15% better on MTEB and removed-failure-mode in one swap.
+The original audit recommendation was: swap the local `llama-server` + `qwen3-reranker:0.6b` reranker for Cohere `/v2/rerank` or Voyage `/v1/rerank`.
 
-**Files**:
-- `src/lxd/retrieval/rerank.py:61-114` — `rerank_chunks` HTTP POST (lines 86-95) is the swap target.
-- `src/lxd/retrieval/rerank.py:117-197` — `_probe_reranker_uncached`, `_probe_reranker_http`, `_ensure_reranker_service`, `_client` — the auto-spawn machinery to deprecate.
-- `src/lxd/settings/models.py` — `RerankerConfig`: add `backend: Literal["cohere", "voyage", "llama_cpp"]`, API-key env, model name. Pydantic discriminated union shape.
-- `src/lxd/net/http.py` — reuse pooled `httpx.Client` for the new backend.
+**This is permanently rejected.** The user has stated as a hard rule: *"NEVER use a non-local reranker — remove that COMPLETELY and go back to ollama and the local reranker. If there is an issue with that code you should have raised it as an issue."*
 
-**Actions**:
-1. Add `RerankerConfig.backend` with discriminated union for cohere / voyage / llama_cpp.
-2. Implement `_rerank_via_cohere(question, candidates)` and `_rerank_via_voyage(question, candidates)` using the pooled `httpx` client.
-3. Keep llama_cpp path as fallback for offline / cost-controlled runs but remove auto-spawn — require user to start it manually with a clear "rerank unavailable" warning.
-4. Update `config.yaml` to document the choice.
+LxD is a local-first system: embeddings (Ollama / OpenAI batch), synthesis (Ollama), vector store (LanceDB), metadata store (SQLite), MCP over stdio. The reranker stays local. A remote rerank-as-an-API call on every retrieval would break the local-first guarantee, add per-query API spend, and introduce a remote-failure mode on the read path. Saved as feedback rule `feedback_local_only_no_remote_rerank.md`.
 
-**Verify**:
-- New unit tests for each backend's adapter (with mocked HTTP).
-- Concurrent-rerank stress test (no longer races on subprocess spawn).
-- `pixi run lint && pixi run typecheck && pixi run test` clean.
-
-**Effort**: 3 h.
+The legitimate observation buried under [#14] — that `rerank.py` auto-spawns `llama-server` from inside a query path — is a *local-code* concern, not a reason to leave the machine. It is parked in **Tier 7 backlog as `B-LOCAL-1`** as an issue to *raise and discuss with the user before changing anything*, not a silent rewrite.
 
 ---
 
@@ -476,7 +463,7 @@ Sessions are ordered for clean ROI sequencing; each ends with a green build + co
 | #      | Session                                     | Items                                                                                                                             | Effort                 |
 | ------ | ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
 | **1**  | **Delete every legacy and dead artefact**   | `#15` (codebase-wide sweep: legacy markers, compat shims, dead branches, unused symbols, stale settings, stale tests, stale docs) | 4-6 h                  |
-| **2**  | **Retrieval upgrade**                       | `#1`, `#14`                                                                                                                       | 6-7 h                  |
+| **2**  | **Retrieval upgrade**                       | `#1` (`#14` removed — see below)                                                                                                  | 3-4 h                  |
 | **3**  | **KG signal lift — wiki edges**             | `#3`                                                                                                                              | 4 h                    |
 | **4**  | **KG signal lift — centrality + community** | `#2`                                                                                                                              | 6 h                    |
 | **5**  | **Synthesis quality + streaming**           | `#4`, `#5`                                                                                                                        | 5-6 h                  |
@@ -495,11 +482,10 @@ Sessions are ordered for clean ROI sequencing; each ends with a green build + co
 ```
 [x] S1   [#15] Codebase-wide legacy and dead-code purge — done 2026-05-05 across 8 commits (`9227861`, `d1cc27d`, `e29fb7c`, `d524f82`, `0830fed`, `e1d9529`, `d09e0fd`, `1a3f126`). End-state assertion holds. Detail in the item header above.
 
-[ ] S2.1  [#1] Add `create_fts_index(["text"])` to `open_chunk_table`
-[ ] S2.2  [#1] Replace hand-rolled `_lexical_signal_score` with LanceDB FTS5 query (delete the old function — no fallback, no compat shim)
-[ ] S2.3  [#14] Add `RerankerConfig.backend` discriminated union
-[ ] S2.4  [#14] Implement Cohere + Voyage adapters; **delete** the auto-spawn `_ensure_reranker_service` machinery (no fallback path)
-[ ] S2.5  Commit: "Hybrid retrieval + remote rerank"
+[x] S2.1  [#1] Add `create_fts_index(["text"])` to `open_chunk_table` — done in commit `95ca6f6`.
+[x] S2.2  [#1] Replace hand-rolled `_lexical_signal_score` with LanceDB FTS5 query — done in commit `95ca6f6`. Hand-rolled scoring helpers (`_lexically_ranked`, `_lexical_signal_score`, `_significant_query_terms`, `_normalize_ranking_text`, `_contains_rank_term`, `_GENERIC_QUERY_TERMS`, `_QUERY_STOPWORDS`) all deleted; `import re` dropped.
+[~] S2.3–S2.4  [#14] **STRUCK 2026-05-05.** Remote-rerank work removed permanently; this is a local-only project. The local-code observation about `rerank.py` auto-spawning `llama-server` from inside a query path is parked in Tier 7 as `B-LOCAL-1` (an issue to raise, not a silent swap).
+[x] S2.5  Commit message: "[#1] LanceDB native FTS5 BM25 replaces hand-rolled lexical scoring" (`95ca6f6`).
 
 [ ] S3.1  [#3] New `wiki_relations.py` with slug-to-canonical-id mapping
 [ ] S3.2  [#3] Emit `wiki_references` and `wiki_cites` relations during ingest
@@ -586,7 +572,7 @@ mcp-client get_community_context --entity_id "addie-model"
 | #11  | `src/lxd/settings/models.py`, `src/lxd/ingest/pipeline.py`                                                                                         |
 | #12  | `src/lxd/observability/logging.py`, `src/lxd/mcp/async_runtime.py:38-72`, new `src/lxd/observability/tracing.py`                                   |
 | #13  | `src/lxd/stores/lancedb.py:103-149`, `src/lxd/retrieval/query_pipeline.py:329-373`                                                                 |
-| #14  | `src/lxd/retrieval/rerank.py:61-114,156-197`, `src/lxd/settings/models.py`, `src/lxd/net/http.py`                                                  |
+| #14  | ❌ struck — see backlog `B-LOCAL-1`                                                                                                                |
 | #15  | DELETE `src/lxd/stores/_sqlite_legacy_migrations.py`; edit `src/lxd/stores/sqlite.py:11,111`                                                       |
 | #16  | `tests/test_query_pipeline.py`, new `tests/test_chunking_properties.py`                                                                            |
 | #17  | `src/lxd/retrieval/query_pipeline.py:206`, new `src/lxd/retrieval/hyde.py`                                                                         |
@@ -601,7 +587,7 @@ mcp-client get_community_context --entity_id "addie-model"
 The plan deliberately reuses these rather than introducing parallel implementations:
 
 - **`lxd.ingest.llm_client.call_with_fallback_async`** (lines 87+) — used today by relations and claims for OpenAI primary + Ollama fallback. Reused by **#4** (synthesis), **#17** (HyDE).
-- **`lxd.net.http`** — pooled `httpx.Client` / `httpx.AsyncClient` factories. Reused by **#14** (remote rerank).
+- **`lxd.net.http`** — pooled `httpx.Client` / `httpx.AsyncClient` factories. Available for any future local- or remote-HTTP client work; **not** used to introduce remote replacements for locally-running components.
 - **`lxd.stores.sqlite.replace_canonical_relations`** + **`replace_relation_evidence`** (lines 1590-1708) — bulk-insert targets. Reused by **#3** (wiki-link relations).
 - **`lxd.retrieval.graph_routing.build_graph_context`** (lines 33-105) — already loads community reports + entity profiles. The same loader is lifted for retrieval-time community-aware MMR in **#2**.
 - **`lxd.mcp.async_runtime.run_tool`** (lines 38-72) — central wrapper for sync→async tool bridging. Natural span insertion point for **#12** (OTel).
@@ -675,6 +661,14 @@ The 2026-05-05 SOTA audit surfaced additional findings that are real but lower-R
 | `B-STACK-11` | NetworkX advanced (HITS, TF-IDF weighted paths, k-core, motif detection)            | unused  | Would unlock new graph queries; worth surfacing once item #2 lands and centrality starts paying off.                                |
 | `B-STACK-12` | Polars / Arrow-native DataFrames                                                    | unused  | LanceDB returns Arrow natively; some KG analyses currently round-trip through SQLite that Polars-on-Arrow would do in microseconds. |
 
+### B-LOCAL — Local-component code health (issues to RAISE, not silently swap)
+
+These are local-code observations about the existing local stack. They are **not** scheduled. None of them are a license to swap a local component for a remote one — that is permanently forbidden per `feedback_local_only_no_remote_rerank.md`. Before touching any of these, raise the concern with the user, agree on the local fix, then act.
+
+| ID | Finding | File / location | Note |
+|---|---|---|---|
+| `B-LOCAL-1` | **`rerank.py` auto-spawns `llama-server` from inside a query path** | `src/lxd/retrieval/rerank.py:_ensure_reranker_service`, `_build_llama_server_command`, `_load_running_pid`, `_resolve_ollama_blob_model_path`, `_runtime_paths`, `_write_pid_file`, `_wait_for_reranker_ready`, `_resolve_llama_server_executable`, `_resolve_reranker_model_path`, `_slugify`, `_tail_log`, `_process_is_running` | A search-time call may launch a long-running native process. Possible local-fix space (raise before changing): (a) move launch responsibility to `start.sh` / a new `pixi run reranker` task and have `rerank.py` be a pure HTTP client to a known URL; (b) keep auto-spawn but factor it out of the query path into a singleton/lifecycle hook; (c) leave as-is. **No remote replacement is on the table.** |
+
 ### B-DOCS — Documentation refactors (further)
 
 | ID | Finding | File / location | Note |
@@ -695,10 +689,11 @@ The 2026-05-05 SOTA audit surfaced additional findings that are real but lower-R
 - **B-ROBUST**: 3 items
 - **B-PERF**: 4 items
 - **B-STACK**: 12 items
+- **B-LOCAL**: 1 item
 - **B-DOCS**: 1 item
 - **B-TEST**: 2 items
 
-**Total backlog: 30 additional items beyond the 19 in the executable plan.**
+**Total backlog: 31 additional items beyond the 18 in the executable plan (item #14 was struck 2026-05-05).**
 
 These are not scheduled. When a session opens with bandwidth, pick a backlog item that complements the just-finished work (e.g. `B-STACK-10` after item #11 because both touch cost estimation; `B-KG-3` after item #2 because both leverage the centrality work). Promote the chosen item into the next session header and update this backlog section with a strikethrough or "promoted to S<N>" annotation.
 
