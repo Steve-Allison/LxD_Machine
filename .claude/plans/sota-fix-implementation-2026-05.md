@@ -29,7 +29,30 @@ This tier is a precondition for the rest of the plan. Modernising on top of lega
 
 #### `[#15]` Delete every legacy and dead artefact across the codebase
 
-**Status**: Started 2026-05-05 — the narrow first instance (`_sqlite_legacy_migrations.py`, 887 LOC) is done in commit `9227861`. Tier 1 expands this from one file to a codebase-wide sweep.
+**Status**: ✅ **DONE 2026-05-05.** Seven commits across `src/` + `Plans/` + top-level docs. End-state assertion holds: `git grep -E '#\s*(legacy|deprecated|TODO|FIXME|HACK|XXX|back-compat|backwards|kept for compat)' src/` returns zero hits; `git grep -E 'Phase [0-9]+|Wave [0-9]+' AGENTS.md CLAUDE.md` returns zero hits. Lint, typecheck, all 201 tests green throughout.
+
+**Commits:**
+
+- `9227861` — drop `_sqlite_legacy_migrations.py` (887 LOC) + replace with 14-line `assert_no_v2_legacy_tables` guard
+- `d1cc27d` — drop dead `timestamp` parameter from `_resolve_document_id` ("retained for legacy callers" + immediate `del timestamp`)
+- `e29fb7c` — delete `ObservabilityConfig` (false-promise OTel/Prometheus settings: declared, never read at runtime); remove its dead test
+- `d524f82` — strip historical "Phase 5" / "Wave 5+" tags from durable code (4 source files)
+- `0830fed` — strip stale framing from `Plans/` specs (`01_ARCHITECTURE.md`, `02_DATA_SCHEMA.md`, `02b_CONFIG_SPEC.md`, `05_MCP_SPEC.md`)
+- `e1d9529` — delete `Plans/06_BUILD_PLAN.md` (a completed build plan written as forward-looking); strip "(Phase 5)" from `08_KNOWLEDGE_GRAPH_SPEC.md` title and 5 "Phases 0–4" external references
+- `d09e0fd` — strip "(Phase 4)" / "(Phase 5)" tool-group labels from `CLAUDE.md` and `AGENTS.md`
+- `1a3f126` — rename misleading `_for_legacy_snapshot` test (the function it tests is a generic fallback, not a legacy migration)
+
+**Survey results — codebase was already cleaner than the audit suggested:**
+
+- Zero `# TODO`, `# FIXME`, `# HACK`, `# XXX`, `# deprecated`, `# noqa-without-justification` hits.
+- Zero pre-3.13 idioms (`Optional[X]`, `TypeAlias`, `lru_cache`, `utcnow`, `os.path`).
+- Zero `pytest.mark.skip("legacy")` / dead-skipped tests.
+- Zero `if False:`, `pragma: no cover`, dead `raise NotImplementedError`.
+- Zero re-export shims / compat aliases in any `__init__.py`.
+- Zero `_legacy_*` / `_old_*` / `_deprecated_*` / `_v2_*` symbol names (the `*_v2_legacy` table-name references are real, current regression-test code for the migration v4 ghost-FK repair).
+- The existing `# type: ignore[...]` comments are all legitimate (graspologic optional import; ahocorasick missing type args; etc.).
+
+**Backlog item flagged for Tier 7:** `Plans/08_KNOWLEDGE_GRAPH_SPEC.md` still uses `Phase 5.0` … `Phase 5.8` as internal subsection identifiers (~30 cross-references + a dependency diagram). The deeper rename to descriptive step names is a dedicated doc-rewrite project.
 
 **Why first**: We already proved the value on `_sqlite_legacy_migrations.py` — a clean delete plus a 14-line guard replaced 887 lines and removed the trap of two parallel migration paths. The same trap exists in any module that still carries a "legacy" / "deprecated" / "back-compat" surface; before we land any new SOTA pattern, we kill all of those.
 
@@ -470,16 +493,7 @@ Sessions are ordered for clean ROI sequencing; each ends with a green build + co
 ## To-do list — strictly ordered for execution
 
 ```
-[~] S1.0  [#15] First instance done: deleted `_sqlite_legacy_migrations.py` (887 LOC) + replaced with assertion guard — commit `9227861`. Now expand to codebase-wide sweep (S1.1 onward).
-[ ] S1.1  Survey: `git grep -nE '#\s*(legacy|deprecated|TODO|FIXME|HACK|XXX|back-compat|backwards|kept for compat|noqa)'` across `src/`. Categorise findings.
-[ ] S1.2  Survey: `ruff check --select F401,F811,F841 src` — unused imports, unused locals, redefinitions. List all.
-[ ] S1.3  Survey: `pixi run python -m vulture src/ --min-confidence 80` (one-shot, not pinned) — high-confidence unused functions/classes/constants.
-[ ] S1.4  Survey: read each module top-of-file for `_legacy_*`, `deprecated_*`, `_v2_*`, `_old_*` symbols; compat aliases in `__init__.py` files; pre-versioning migration code beyond what's already gone.
-[ ] S1.5  Survey: read `settings/models.py` end-to-end — every Pydantic field that no runtime code reads is dead (already-known examples: `otel_enabled`, `otel_endpoint`, `prometheus_enabled`, `prometheus_port`).
-[ ] S1.6  Survey: read `tests/` for tests asserting pre-wiki-swap state, tests for code that no longer exists, `pytest.mark.skip("legacy")`.
-[ ] S1.7  Survey: read `Plans/`, `CLAUDE.md`, `.claude/rules/`, `README.md` for stale references that contradict the current code.
-[ ] S1.8  Delete in coherent batches; each batch = one commit ending with `pixi run lint && pixi run typecheck && pixi run test` clean.
-[ ] S1.9  Commit final: "Codebase-wide legacy and dead-code purge". End-state assertion: `git grep` for legacy markers returns empty in `src/`.
+[x] S1   [#15] Codebase-wide legacy and dead-code purge — done 2026-05-05 across 8 commits (`9227861`, `d1cc27d`, `e29fb7c`, `d524f82`, `0830fed`, `e1d9529`, `d09e0fd`, `1a3f126`). End-state assertion holds. Detail in the item header above.
 
 [ ] S2.1  [#1] Add `create_fts_index(["text"])` to `open_chunk_table`
 [ ] S2.2  [#1] Replace hand-rolled `_lexical_signal_score` with LanceDB FTS5 query (delete the old function — no fallback, no compat shim)
@@ -661,6 +675,12 @@ The 2026-05-05 SOTA audit surfaced additional findings that are real but lower-R
 | `B-STACK-11` | NetworkX advanced (HITS, TF-IDF weighted paths, k-core, motif detection)            | unused  | Would unlock new graph queries; worth surfacing once item #2 lands and centrality starts paying off.                                |
 | `B-STACK-12` | Polars / Arrow-native DataFrames                                                    | unused  | LanceDB returns Arrow natively; some KG analyses currently round-trip through SQLite that Polars-on-Arrow would do in microseconds. |
 
+### B-DOCS — Documentation refactors (further)
+
+| ID | Finding | File / location | Note |
+|---|---|---|---|
+| `B-DOCS-1` | **`08_KNOWLEDGE_GRAPH_SPEC.md` internal sub-phase numbering** | `Plans/08_KNOWLEDGE_GRAPH_SPEC.md` | Subsection headings still use `Phase 5.0` … `Phase 5.8` as build-wave identifiers, with ~30 in-doc cross-references and a dependency diagram. Title and external "(Phase 5)" / "Phases 0–4" framings already cleaned (commit `e1d9529`). The full internal rename to descriptive step names is its own dedicated rewrite project. |
+
 ### B-TEST — Testing (further)
 
 | ID         | Finding                          | File / location | Note                                                                                                                                        |
@@ -675,9 +695,10 @@ The 2026-05-05 SOTA audit surfaced additional findings that are real but lower-R
 - **B-ROBUST**: 3 items
 - **B-PERF**: 4 items
 - **B-STACK**: 12 items
+- **B-DOCS**: 1 item
 - **B-TEST**: 2 items
 
-**Total backlog: 29 additional items beyond the 20 in the executable plan.**
+**Total backlog: 30 additional items beyond the 19 in the executable plan.**
 
 These are not scheduled. When a session opens with bandwidth, pick a backlog item that complements the just-finished work (e.g. `B-STACK-10` after item #11 because both touch cost estimation; `B-KG-3` after item #2 because both leverage the centrality work). Promote the chosen item into the next session header and update this backlog section with a strikethrough or "promoted to S<N>" annotation.
 
