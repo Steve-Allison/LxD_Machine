@@ -1,63 +1,59 @@
-# LxD Machine — SOTA Implementation Plan (Items 1–20)
+# LxD Machine — SOTA Implementation Plan (19 items)
 
 ## Context
 
 A 2026-05-05 critical audit identified 20 architectural and code-quality gaps across retrieval, knowledge-graph signal use, code structure, robustness, and observability. The audit grounded each finding in `file:line` references; an Explore-agent pass against the live codebase has now confirmed exact integration points for every item.
 
-This plan organises the 20 items into a multi-session implementation schedule prioritised by **return on investment** (impact ÷ effort), with two structural sequencing rules:
+This plan organises the 19 remaining items (item #6 was a measurement-chore item not a SOTA improvement; removed 2026-05-05) into a multi-session implementation schedule prioritised by **return on investment** (impact ÷ effort), with one structural sequencing rule: **foundation before refinement**. Dead-code removal and architectural consolidation precede new features so we don't refactor newly-added code twice.
 
-1. **Eval gate goes first.** Without it every subsequent change ships blind. We measure baseline, then every quality-affecting change is evaluated against that baseline before it lands.
-2. **Foundation before refinement.** Dead-code removal and architectural consolidation precede new features so we don't refactor newly-added code twice.
+**Important — measurement is the user's call, not a plan-imposed gate.** This plan does NOT run ingest, does NOT capture eval baselines, and does NOT impose `pixi run eval` as a CI gate. Each item's verification is code-level: lint, typecheck, targeted tests, manual MCP smoke where applicable. The user runs ingest and eval when they choose; quality measurement is layered on top of this work, not gated by it.
 
-The pending wiki swap (already 95% done — config flipped, schema v6 ready, parser + tests landed but full ingest not yet run) is the **prerequisite** for items #2 and #3 (KG signal lift). Session 1 closes that out before anything else.
-
-The fixed-cost expectation: **~60 hours over ~10–11 sessions**, half-day to full-day each. Each session ends with green CI (lint + typecheck + tests + eval) and a single commit. Sessions are not blocking — items within a session can be reordered, but inter-session prerequisites are enforced.
+The fixed-cost expectation: **~55 hours over ~9 sessions**, half-day to full-day each. Each session ends with green local checks (lint + typecheck + tests) and a single commit. Sessions are not blocking — items within a session can be reordered.
 
 ---
 
-## Items 1–20 — Reordered by Priority (ROI)
+## Items — Reordered by Priority (ROI)
 
-The original audit numbering is preserved in `[#N]` for traceability; the order below is the implementation order.
+The original audit numbering is preserved in `[#N]` for traceability; the order below is the implementation order. Item #6 (eval as CI gate) was removed: it is a measurement chore, not a SOTA improvement. Quality measurement is the user's call, layered on top of this work, not gated by it.
 
-### Tier 1 — Foundation & measurement (must precede everything else)
+### Tier 1 — Foundation: delete every legacy and dead artefact
 
-#### `[#15]` Delete `_sqlite_legacy_migrations.py` — dead code
+This tier is a precondition for the rest of the plan. Modernising on top of legacy doubles the surface area we have to touch; we delete first so each subsequent SOTA pattern lands in a clean codebase.
 
-**Why first**: 887 lines of pre-versioning migration code, called from exactly one site (`sqlite.py:111` in `initialize_schema`). Schema is now at v6 with proper numbered migrations under `PRAGMA user_version`; the legacy bridge has done its job. Removing it shrinks `stores/` blast radius and removes the lurking trap of two parallel migration paths.
+**Principles** (apply to every item below, but called out here because Tier 1 enforces them):
 
-**Files**: `src/lxd/stores/_sqlite_legacy_migrations.py` (delete), `src/lxd/stores/sqlite.py:11,111` (remove import + call site).
+- **No legacy.** Pre-versioning code paths, stale schema bridges, dead branches — gone.
+- **No backwards-compatibility shims.** No re-export façades, no compat aliases for renamed config fields, no `def old(*a, **kw): return new(*a, **kw)` wrappers, no "deprecated, still works" docstrings.
+- **No tech debt accumulators.** No `# TODO: clean up`, no `# FIXME later`, no `# kept for compatibility`, no half-finished refactors.
+- **Forward-only migrations.** The user runs rebuilds when *they* choose; we do not preserve old schema migrations to spare them.
 
-**Action**: Verify no callers outside `sqlite.py` (Explore confirmed only one call site). Replace `migrate_legacy_schema(connection)` call with a fast `_assert_no_v2_legacy_table(connection)` guard that raises a clear error if a stale legacy table is encountered. Delete the file. Run integration tests.
+#### `[#15]` Delete every legacy and dead artefact across the codebase
 
-**Verify**: `pixi run lint && pixi run typecheck && pixi run test` clean. `tests/test_schema_migrations.py::test_migration_0004_repairs_ghost_fk_in_extracted_relations` still passes (this is the regression test for the historic ghost-FK incident).
+**Status**: Started 2026-05-05 — the narrow first instance (`_sqlite_legacy_migrations.py`, 887 LOC) is done in commit `9227861`. Tier 1 expands this from one file to a codebase-wide sweep.
 
-**Effort**: 30 min.
+**Why first**: We already proved the value on `_sqlite_legacy_migrations.py` — a clean delete plus a 14-line guard replaced 887 lines and removed the trap of two parallel migration paths. The same trap exists in any module that still carries a "legacy" / "deprecated" / "back-compat" surface; before we land any new SOTA pattern, we kill all of those.
 
----
+**Scope** (the sweep finds these, not a fixed list):
 
-#### `[#6]` Eval as CI gate — `pixi run eval` runs on every commit, fails on regression
+1. **Markers** — `# legacy`, `# deprecated`, `# back-compat`, `# backwards`, `# kept for compat`, `# was`, `# previously`, `# TODO`, `# FIXME`, `# XXX`, `# HACK`, `# noqa` without a justifying comment. Each occurrence is either *finished* or *deleted*.
+2. **Compat shims** — wrapper functions whose only job is to call a renamed implementation; aliased re-exports in `__init__.py` files; `model_validator` shims that map old config field names to new ones.
+3. **Dead branches** — `if False:`, unreachable `else` arms after `raise`, error handlers for impossible scenarios, optional toggles where one branch is never taken in practice.
+4. **Unused symbols** — functions, classes, imports, constants flagged by `ruff --select F401,F811,F841` and by reading each module top-to-bottom.
+5. **Pre-versioning migration paths** — anything older than the current schema floor. (`stores/_sqlite_legacy_migrations.py` is one such; we look for siblings.)
+6. **Stale settings fields** — Pydantic model fields declared but never read at runtime (the audit already flagged `otel_enabled`, `otel_endpoint`, `prometheus_enabled`, `prometheus_port` as such).
+7. **Stale tests** — tests that assert pre-wiki-swap state, tests for code that no longer exists, tests skipped with `pytest.mark.skip("legacy")`.
+8. **Stale docs / specs** — any reference in `Plans/`, `CLAUDE.md`, `.claude/rules/`, or `README.md` that no longer reflects the codebase.
 
-**Why second**: Every subsequent quality-affecting change (#1, #2, #3, #4, #9, #13, #17) needs a measurable delta. Without a baseline + gate, optimisations are folklore.
+**Process**:
 
-**Files**:
-- `src/lxd/cli/eval.py:16-58` — current `eval_command()` returns metrics but doesn't fail on threshold.
-- `src/lxd/retrieval/eval.py:44-75,117-160` — `recall_at_k`, `mrr_at_k`, `run_eval` (`EvalSummary` with `mean_recall_at_10`, `mean_mrr_at_10`, per-case results).
-- `tests/eval/eval_set.json` — 20 cases, `{question, expected_source_files, domain}`.
-- `pixi.toml` — add `eval-gate` task.
-- `.github/workflows/` (if present) or pre-push hook.
+1. Survey the codebase systematically (grep + read). Produce a categorised list of every candidate.
+2. Group candidates into coherent batches (e.g. "stale OTel settings", "compat aliases in `settings/models.py`", "dead branches in `retrieval/`"). Each batch becomes one commit.
+3. For each batch: delete; update callers; run lint + typecheck + tests; commit. No batch lands red.
+4. End-state assertion: `git grep -E '#\s*(legacy|deprecated|TODO|FIXME|HACK|XXX|back-compat|backwards|kept for compat)'` returns zero hits in `src/`. Same for `pixi run lint` reports of unused symbols.
 
-**Actions**:
-1. Run `pixi run eval` against current state, save `tests/eval/baseline.json` with `recall_at_10` and `mrr_at_10` snapshot.
-2. Add `--gate-against=baseline.json --max-recall-drop=0.05 --max-mrr-drop=0.05` flag to `eval_command`.
-3. New pixi task `eval-gate` that calls eval with the gate.
-4. Wire into pre-push hook (or CI if present).
-5. Document baseline-refresh procedure (after a deliberate quality-affecting change is verified, refresh baseline).
+**Verify**: `pixi run lint && pixi run typecheck && pixi run test` clean after every batch. `git grep` for legacy markers returns empty. `vulture src/` (one-shot manual check; not added as a permanent dep) reports zero high-confidence unused functions.
 
-**Verify**: Run `pixi run eval-gate` against current state — should pass. Manually degrade a chunk of `eval_set.json` to confirm the gate fails.
-
-**Effort**: 4 h.
-
-**Prerequisite**: Wiki swap rebuild must have run, so the baseline reflects the actual production corpus. **Run the deferred ingest before this session.**
+**Effort**: 4-6 h (most of Session 1). Bigger than originally scoped; reflects the codebase-wide reach.
 
 ---
 
@@ -79,8 +75,9 @@ The original audit numbering is preserved in `[#N]` for traceability; the order 
 4. **Migration**: existing tables have no FTS5 index; the `--full` rebuild after the wiki swap creates them fresh. For incremental users, document the one-shot `pixi run reindex-fts` task.
 
 **Verify**:
-- `pixi run eval-gate` — measure recall delta vs baseline. Expected: +5-15% on lexically-driven queries.
-- `tests/test_query_pipeline.py` (extend with FTS5 fusion test).
+- New unit test in `tests/test_query_pipeline.py`: FTS5 lane returns BM25-scored candidates that fuse correctly into the existing RRF prefix.
+- New integration test: full hybrid query via `answer_question` returns chunks; lexical-heavy queries route through the BM25 lane.
+- `pixi run lint && pixi run typecheck && pixi run test` clean.
 
 **Effort**: 3-4 h.
 
@@ -103,9 +100,9 @@ The original audit numbering is preserved in `[#N]` for traceability; the order 
 4. Update `config.yaml` to document the choice.
 
 **Verify**:
-- `pixi run eval-gate` — measure recall@10 + mrr@10 delta. Expected: +3-8%.
 - New unit tests for each backend's adapter (with mocked HTTP).
 - Concurrent-rerank stress test (no longer races on subprocess spawn).
+- `pixi run lint && pixi run typecheck && pixi run test` clean.
 
 **Effort**: 3 h.
 
@@ -128,9 +125,9 @@ The original audit numbering is preserved in `[#N]` for traceability; the order 
 4. Add a "dangling slug" report to `pixi run status`.
 
 **Verify**:
-- `pixi run eval-gate` — measure delta (expected: +2-5% on graph-enabled questions; small but meaningful).
 - New tests in `tests/test_wiki_relations.py` for slug normalisation, canonical_id matching, citation tuple shape.
-- Manual: `pixi run python -c "from lxd.stores.sqlite import load_all_extracted_relations; ..."` to spot-check.
+- Integration test: ingest a fixture wiki page with `[[slug]]` references, assert relations land in `extracted_relations` with `extraction_model="wiki_metadata"`.
+- `pixi run lint && pixi run typecheck && pixi run test` clean.
 
 **Effort**: 4 h.
 
@@ -154,9 +151,9 @@ The original audit numbering is preserved in `[#N]` for traceability; the order 
 4. New retrieval-config knobs: `centrality_fusion_weight`, `community_diversity_lambda`.
 
 **Verify**:
-- `pixi run eval-gate` — expected: +5-10% recall@10, with bigger gains on broad queries that span concepts.
-- Manual: query "compare ADDIE to SAM" — should return chunks from both ADDIE community and SAM community, not 8 ADDIE chunks.
 - Tests for `_diversify_by_community` (deterministic given fixed candidate set + community map).
+- Tests for the centrality-weighted RRF lane (deterministic given fixed centrality scores + base ranking).
+- `pixi run lint && pixi run typecheck && pixi run test` clean.
 
 **Effort**: 6 h.
 
@@ -176,9 +173,9 @@ The original audit numbering is preserved in `[#N]` for traceability; the order 
 3. Make synthesis async end-to-end (it's currently sync inside async MCP wrapper — `run_tool` handles the bridge but it's wasteful).
 
 **Verify**:
-- `pixi run eval-gate` — measure with the new synthesis backend. Expected: meaningful answer-quality lift on a manual rubric (no automated metric for synthesis quality unless we add one).
-- Manual: spot-check 5 queries before/after.
 - Existing tests in `tests/test_synthesis_answering.py` (or equivalent) still pass with mocked LLM.
+- New test: synthesis backend dispatch is exercised for both backends via `call_with_fallback_async`.
+- `pixi run lint && pixi run typecheck && pixi run test` clean.
 
 **Effort**: 2-3 h.
 
@@ -328,8 +325,9 @@ The original audit numbering is preserved in `[#N]` for traceability; the order 
 3. If contextual wins by ≥5%, ship it. If not, try late chunking.
 
 **Verify**:
-- `pixi run eval-gate --strategy=contextual` vs `pixi run eval-gate --strategy=hybrid_docling`.
-- Document the winner in `Plans/03_INGEST_SPEC.md`.
+- New tests for the contextual chunker: chunk text is unchanged in storage; only the embedded-form is augmented.
+- Integration test: a fixture document round-trips through the new chunker, embeddings differ from baseline (proves prepend works), retrieval still returns the right chunk.
+- `pixi run lint && pixi run typecheck && pixi run test` clean.
 
 **Effort**: 6 h.
 
@@ -349,8 +347,9 @@ The original audit numbering is preserved in `[#N]` for traceability; the order 
 3. Toggle: `retrieval.hyde_enabled` config knob, default off until eval shows a win.
 
 **Verify**:
-- `pixi run eval-gate --hyde=true` vs default.
-- Manual: under-specified queries like "best practice for assessment" should improve.
+- New unit test for `hypothetical_answer` (mocked LLM): returns a string under the token budget; emits the right prompt shape.
+- Integration test: HyDE-enabled query path retrieves on the hypothetical-answer embedding instead of the literal question.
+- `pixi run lint && pixi run typecheck && pixi run test` clean.
 
 **Effort**: 4 h.
 
@@ -369,8 +368,10 @@ The original audit numbering is preserved in `[#N]` for traceability; the order 
 2. Switch `_dense_ranked_candidates` to use it; remove the separate FTS lane (the rerank + RRF fusion above it stays).
 
 **Verify**:
-- `pixi run eval-gate` — should match #1's result (this is a refactor for cleanliness, not a quality change).
-- Latency benchmark: ~10-30% faster than two parallel queries.
+- Existing retrieval tests still pass (this is a refactor for cleanliness, not a behaviour change).
+- New unit test against the hybrid query API confirms the result shape.
+- Latency micro-benchmark in `tests/`: native hybrid is at least as fast as two parallel queries plus manual fusion.
+- `pixi run lint && pixi run typecheck && pixi run test` clean.
 
 **Effort**: 3 h.
 
@@ -447,97 +448,83 @@ The original audit numbering is preserved in `[#N]` for traceability; the order 
 
 ## Multi-Session Schedule
 
-Sessions are ordered for clean ROI sequencing; each ends with a green build + commit. Some sessions can run in parallel if a teammate joins, but the eval gate (Session 2) is a hard prerequisite for Sessions 3–10.
+Sessions are ordered for clean ROI sequencing; each ends with a green build + commit. Sessions are not blocking — items within a session can be reordered.
 
 | # | Session | Items | Effort |
 |---|---|---|---|
-| **1** | **Foundation: cleanup + wiki rebuild + baseline** | `#15`, plus complete the deferred wiki swap rebuild (run `pixi run preflight && ingest --full && build-graph --full`) | 3 h |
-| **2** | **Eval as CI gate** | `#6` | 4 h |
-| **3** | **Retrieval upgrade** | `#1`, `#14` | 6-7 h |
-| **4** | **KG signal lift — wiki edges** | `#3` (isolated to measure delta) | 4 h |
-| **5** | **KG signal lift — centrality + community** | `#2` | 6 h |
-| **6** | **Synthesis quality + streaming** | `#4`, `#5` | 5-6 h |
-| **7** | **Production guardrails** | `#11`, `#12` (or delete OTel stub if not implementing) | 6 h |
-| **8** | **Persistent breaker + refactor** | `#10`, `#7` | 6 h |
-| **9** | **Backend dispatch refactor** | `#8` (after `#7` so the new modules absorb the change cleanly) | 2 h |
-| **10** | **Advanced retrieval** | `#9`, `#17` | 10 h (split if needed) |
-| **11** | **Hybrid native + polish** | `#13`, `#16`, `#18`, `#19`, `#20` | 13 h (split if needed) |
+| **1** | **Delete every legacy and dead artefact** | `#15` (codebase-wide sweep: legacy markers, compat shims, dead branches, unused symbols, stale settings, stale tests, stale docs) | 4-6 h |
+| **2** | **Retrieval upgrade** | `#1`, `#14` | 6-7 h |
+| **3** | **KG signal lift — wiki edges** | `#3` | 4 h |
+| **4** | **KG signal lift — centrality + community** | `#2` | 6 h |
+| **5** | **Synthesis quality + streaming** | `#4`, `#5` | 5-6 h |
+| **6** | **Production guardrails** | `#11`, `#12` (implement OTel or delete unused fields outright per the no-tech-debt rule) | 6 h |
+| **7** | **Persistent breaker + sqlite.py split** | `#10`, `#7` (callers update; no `__init__.py` re-export façade) | 6 h |
+| **8** | **Backend dispatch refactor** | `#8` (after `#7` so the new modules absorb the change cleanly) | 2 h |
+| **9** | **Advanced retrieval** | `#9`, `#17` | 10 h (split if needed) |
+| **10** | **Hybrid native + polish** | `#13`, `#16`, `#18`, `#19`, `#20` | 13 h (split if needed) |
 
-**Total: ~65 h, 10–11 sessions.** Realistic for ~2 weeks of focused work, ~4 weeks part-time.
+**Total: ~55 h, 9 sessions.** Realistic for ~2 weeks of focused work, ~4 weeks part-time.
 
 ---
 
 ## To-do list — strictly ordered for execution
 
 ```
-[ ] S1.1  Run `pixi run preflight && pixi run ingest --full && pixi run build-graph --full` — close the wiki swap
-[ ] S1.2  Capture baseline: `pixi run eval > tests/eval/baseline-pre-fixes.json`
-[x] S1.3  [#15] Delete `_sqlite_legacy_migrations.py`, replace caller with assertion guard — done 2026-05-05; replaced 887-line module with 14-line `assert_no_v2_legacy_tables` in `stores/sqlite.py`; updated regression test; lint+typecheck+test all green (202 passing). Also fixed stale `test_load_runtime_config_uses_default_config_yaml` from the wiki swap.
-[ ] S1.4  Commit: "Close wiki swap + drop legacy migrations file"
+[~] S1.0  [#15] First instance done: deleted `_sqlite_legacy_migrations.py` (887 LOC) + replaced with assertion guard — commit `9227861`. Now expand to codebase-wide sweep (S1.1 onward).
+[ ] S1.1  Survey: `git grep -nE '#\s*(legacy|deprecated|TODO|FIXME|HACK|XXX|back-compat|backwards|kept for compat|noqa)'` across `src/`. Categorise findings.
+[ ] S1.2  Survey: `ruff check --select F401,F811,F841 src` — unused imports, unused locals, redefinitions. List all.
+[ ] S1.3  Survey: `pixi run python -m vulture src/ --min-confidence 80` (one-shot, not pinned) — high-confidence unused functions/classes/constants.
+[ ] S1.4  Survey: read each module top-of-file for `_legacy_*`, `deprecated_*`, `_v2_*`, `_old_*` symbols; compat aliases in `__init__.py` files; pre-versioning migration code beyond what's already gone.
+[ ] S1.5  Survey: read `settings/models.py` end-to-end — every Pydantic field that no runtime code reads is dead (already-known examples: `otel_enabled`, `otel_endpoint`, `prometheus_enabled`, `prometheus_port`).
+[ ] S1.6  Survey: read `tests/` for tests asserting pre-wiki-swap state, tests for code that no longer exists, `pytest.mark.skip("legacy")`.
+[ ] S1.7  Survey: read `Plans/`, `CLAUDE.md`, `.claude/rules/`, `README.md` for stale references that contradict the current code.
+[ ] S1.8  Delete in coherent batches; each batch = one commit ending with `pixi run lint && pixi run typecheck && pixi run test` clean.
+[ ] S1.9  Commit final: "Codebase-wide legacy and dead-code purge". End-state assertion: `git grep` for legacy markers returns empty in `src/`.
 
-[ ] S2.1  [#6] Add `--gate-against` flag + thresholds to `eval_command`
-[ ] S2.2  [#6] New `pixi run eval-gate` task
-[ ] S2.3  [#6] Wire pre-push hook (or CI workflow)
-[ ] S2.4  Commit: "Add eval CI gate"
+[ ] S2.1  [#1] Add `create_fts_index(["text"])` to `open_chunk_table`
+[ ] S2.2  [#1] Replace hand-rolled `_lexical_signal_score` with LanceDB FTS5 query (delete the old function — no fallback, no compat shim)
+[ ] S2.3  [#14] Add `RerankerConfig.backend` discriminated union
+[ ] S2.4  [#14] Implement Cohere + Voyage adapters; **delete** the auto-spawn `_ensure_reranker_service` machinery (no fallback path)
+[ ] S2.5  Commit: "Hybrid retrieval + remote rerank"
 
-[ ] S3.1  [#1] Add `create_fts_index(["text"])` to `open_chunk_table`
-[ ] S3.2  [#1] Replace `_lexical_signal_score` with LanceDB FTS5 query
-[ ] S3.3  [#1] Eval: confirm recall lift
-[ ] S3.4  [#14] Add `RerankerConfig.backend` discriminated union
-[ ] S3.5  [#14] Implement Cohere + Voyage adapters; deprecate auto-spawn path
-[ ] S3.6  [#14] Eval: confirm rerank lift
-[ ] S3.7  Commit: "Hybrid retrieval + remote rerank"
+[ ] S3.1  [#3] New `wiki_relations.py` with slug-to-canonical-id mapping
+[ ] S3.2  [#3] Emit `wiki_references` and `wiki_cites` relations during ingest
+[ ] S3.3  [#3] Add dangling-slug report to `pixi run status`
+[ ] S3.4  Commit: "Map wiki [[slug]] cross-refs into knowledge graph"
 
-[ ] S4.1  [#3] New `wiki_relations.py` with slug-to-canonical-id mapping
-[ ] S4.2  [#3] Emit `wiki_references` and `wiki_cites` relations during ingest
-[ ] S4.3  [#3] Add dangling-slug report to `pixi run status`
-[ ] S4.4  [#3] Eval: confirm graph-question lift
-[ ] S4.5  Commit: "Map wiki [[slug]] cross-refs into knowledge graph"
+[ ] S4.1  [#2] Add `central_entity_score`, `community_ids` to `RankedChunk`
+[ ] S4.2  [#2] Load centrality + community in `_dense_ranked_candidates`
+[ ] S4.3  [#2] Implement community-aware MMR (`_diversify_by_community`)
+[ ] S4.4  [#2] Add centrality-weighted RRF lane
+[ ] S4.5  Commit: "Use centrality + community signals in retrieval"
 
-[ ] S5.1  [#2] Add `central_entity_score`, `community_ids` to `RankedChunk`
-[ ] S5.2  [#2] Load centrality + community in `_dense_ranked_candidates`
-[ ] S5.3  [#2] Implement community-aware MMR (`_diversify_by_community`)
-[ ] S5.4  [#2] Add centrality-weighted RRF lane
-[ ] S5.5  [#2] Eval: confirm broad-query diversity lift
-[ ] S5.6  Commit: "Use centrality + community signals in retrieval"
+[ ] S5.1  [#4] Replace synthesis Ollama-only call with `call_with_fallback_async`; default OpenAI primary
+[ ] S5.2  [#5] Stream `synthesise_answer`; surface via FastMCP iterator
+[ ] S5.3  Commit: "Synthesis: OpenAI primary + streaming"
 
-[ ] S6.1  [#4] Replace synthesis Ollama-only call with `call_with_fallback_async`
-[ ] S6.2  [#4] Default config: OpenAI primary
-[ ] S6.3  [#4] Eval (manual rubric): synthesis quality
-[ ] S6.4  [#5] Stream synthesise_answer; surface via FastMCP iterator
-[ ] S6.5  Commit: "Synthesis: OpenAI primary + streaming"
+[ ] S6.1  [#11] New `IngestBudget` config + threshold checks
+[ ] S6.2  [#12] Implement OTel via `configure_tracing`, span wrappers in `run_tool`, spans at ingest+retrieval boundaries (or delete the unused `otel_*`/`prometheus_*` settings outright per no-tech-debt — pick one, ship one)
+[ ] S6.3  Commit: "Production guardrails: budget + observability"
 
-[ ] S7.1  [#11] New `IngestBudget` config + threshold checks
-[ ] S7.2  [#11] Test: ingest aborts cleanly on budget exceeded
-[ ] S7.3  [#12] Decide: implement OTel or delete unused settings
-[ ] S7.4  [#12] If implementing: configure_tracing, span wrappers in run_tool, span at ingest+retrieval boundaries
-[ ] S7.5  [#12] Validate spans in local Jaeger
-[ ] S7.6  Commit: "Production guardrails: budget + observability"
+[ ] S7.1  [#10] Add `circuit_breaker_state` table + migration v7
+[ ] S7.2  [#10] Implement `PersistentCircuitBreaker`; **delete** the in-memory `SystemicErrorCircuitBreaker` (no parallel implementations)
+[ ] S7.3  [#7] Split `stores/sqlite.py` into a subpackage. Callers update their imports — no `__init__.py` re-export façade.
+[ ] S7.4  Commit: "Persistent breaker + sqlite.py split"
 
-[ ] S8.1  [#10] Add `circuit_breaker_state` table + migration v7
-[ ] S8.2  [#10] Implement `PersistentCircuitBreaker`
-[ ] S8.3  [#10] Test: state survives process restart
-[ ] S8.4  [#7] Create `stores/sqlite/` subpackage
-[ ] S8.5  [#7] Move modules per the 9-group split; preserve public API via __init__
-[ ] S8.6  [#7] Run full test suite; lint; typecheck
-[ ] S8.7  Commit: "Persistent breaker + sqlite.py split"
+[ ] S8.1  [#8] Define backend discriminated unions in `settings/models.py`
+[ ] S8.2  [#8] Replace if-chains with `match`/`case` in `relations.py`, `claims.py`, `llm_client.py`
+[ ] S8.3  Commit: "Backend dispatch: discriminated unions + match/case"
 
-[ ] S9.1  [#8] Define backend discriminated unions in settings/models.py
-[ ] S9.2  [#8] Replace if-chains with match/case in relations.py, claims.py, llm_client.py
-[ ] S9.3  Commit: "Backend dispatch: discriminated unions + match/case"
+[ ] S9.1  [#9] Implement contextual retrieval chunker (chunk-summary prepend before embed)
+[ ] S9.2  [#17] Implement HyDE pre-retrieval step
+[ ] S9.3  Commit: "Contextual retrieval + HyDE"
 
-[ ] S10.1 [#9] Implement contextual retrieval chunker (chunk-summary prepend)
-[ ] S10.2 [#9] A/B vs hybrid_docling; document winner
-[ ] S10.3 [#17] Implement HyDE pre-retrieval step
-[ ] S10.4 [#17] A/B; ship behind config flag
-[ ] S10.5 Commit: "Contextual retrieval + HyDE"
-
-[ ] S11.1 [#13] LanceDB native hybrid query (replaces parallel two-lane)
-[ ] S11.2 [#16] Property-based tests for RRF / lexical / chunking
-[ ] S11.3 [#18] asyncio.TaskGroup in llm_client.py
-[ ] S11.4 [#19] @override / Self / PEP 695 type aliases sweep
-[ ] S11.5 [#20] PEP 750 t-string prompts in synthesis + extraction
-[ ] S11.6 Commit: "Native hybrid query + polish + Python 3.14 idioms"
+[ ] S10.1 [#13] LanceDB native hybrid query — **delete** the parallel two-lane code path
+[ ] S10.2 [#16] Property-based tests for RRF / lexical / chunking
+[ ] S10.3 [#18] `asyncio.TaskGroup` in `llm_client.py`
+[ ] S10.4 [#19] `@override` / `Self` / PEP 695 `type` aliases sweep
+[ ] S10.5 [#20] PEP 750 t-string prompts in synthesis + extraction
+[ ] S10.6 Commit: "Native hybrid query + polish + Python 3.14 idioms"
 ```
 
 ---
@@ -545,20 +532,18 @@ Sessions are ordered for clean ROI sequencing; each ends with a green build + co
 ## Verification (overall)
 
 Each session ends with the same gate:
+
 ```bash
-pixi run lint && pixi run typecheck && pixi run test && pixi run eval-gate
+pixi run lint && pixi run typecheck && pixi run test
 ```
 
-Quality-affecting sessions (#3, #4, #5, #6, #9, #10) additionally:
-1. Manual spot-check via MCP: 5 representative queries before/after.
-2. Compare `pixi run eval` JSON output against baseline; record delta in commit message.
-3. Refresh `tests/eval/baseline.json` only after the change is verified to win.
+Refactor sessions (#7) additionally:
 
-Refactor sessions (#7, #8) additionally:
-1. `git grep` confirms no public API shifted.
-2. Module sizes after split: each <300 LOC.
+1. After the `stores/sqlite.py` split, `git grep "from lxd.stores.sqlite import"` shows callers updated to the new submodule paths — there is no `__init__.py` re-export façade preserving the old import shape.
+2. Each new module under `src/lxd/stores/sqlite/` is under 300 LOC.
 
 End-to-end smoke (any session that touches retrieval/synthesis):
+
 ```bash
 pixi run mcp &
 # In another shell:
@@ -566,6 +551,8 @@ mcp-client search_knowledge "What does ADDIE owe to backward design?"
 mcp-client search_corpus "cognitive load theory" --limit 5
 mcp-client get_community_context --entity_id "addie-model"
 ```
+
+**No `pixi run eval` gate.** Measurement is the user's call, run when *they* choose. The plan does not impose recall-delta verification or baseline-refresh chores.
 
 ---
 
@@ -578,8 +565,7 @@ mcp-client get_community_context --entity_id "addie-model"
 | #3 | `src/lxd/ingest/wiki_metadata.py:56-113`, `src/lxd/ingest/wiki_relations.py` (new), `src/lxd/stores/sqlite.py:1590-1621` |
 | #4 | `src/lxd/synthesis/answering.py:60-104`, `src/lxd/settings/models.py` |
 | #5 | `src/lxd/synthesis/answering.py:60-104`, `src/lxd/mcp/tools.py` |
-| #6 | `src/lxd/cli/eval.py:16-58`, `tests/eval/eval_set.json`, `pixi.toml` |
-| #7 | `src/lxd/stores/sqlite.py` → `src/lxd/stores/sqlite/__init__.py` + 9 modules |
+| #7 | `src/lxd/stores/sqlite.py` → `src/lxd/stores/sqlite/` subpackage (9 modules; callers updated, no re-export façade) |
 | #8 | `src/lxd/settings/models.py`, `src/lxd/ingest/relations.py:381-402`, `src/lxd/ingest/claims.py:486`, `src/lxd/ingest/llm_client.py:181` |
 | #9 | `src/lxd/ingest/chunking.py`, `src/lxd/ingest/contextual_chunker.py` (new) |
 | #10 | `src/lxd/ingest/error_classification.py`, `src/lxd/stores/_base_ddl.py`, `src/lxd/stores/schema.py` (migration 7) |
@@ -606,7 +592,6 @@ The plan deliberately reuses these rather than introducing parallel implementati
 - **`lxd.retrieval.graph_routing.build_graph_context`** (lines 33-105) — already loads community reports + entity profiles. The same loader is lifted for retrieval-time community-aware MMR in **#2**.
 - **`lxd.mcp.async_runtime.run_tool`** (lines 38-72) — central wrapper for sync→async tool bridging. Natural span insertion point for **#12** (OTel).
 - **`lxd.ingest.error_classification.SystemicErrorCircuitBreaker`** — extended to `PersistentCircuitBreaker` in **#10**.
-- **`lxd.retrieval.eval.run_eval`** (lines 117-160) — emits `EvalSummary` with `mean_recall_at_10`, `mean_mrr_at_10`. Reused by **#6** (CI gate).
 
 ---
 
@@ -698,4 +683,4 @@ These are not scheduled. When a session opens with bandwidth, pick a backlog ite
 
 ---
 
-*Plan created: 2026-05-05. Source audit: 2026-05-05 SOTA review. Prerequisite: complete the deferred wiki swap rebuild (Session 1.1 first). Backlog (Tier 7) added after first review — captures audit findings not in the 20-item executable plan.*
+*Plan created: 2026-05-05. Source audit: 2026-05-05 SOTA review. Reshaped 2026-05-05 to drop measurement ceremony (item #6 removed, no eval-gate, no baseline capture, no rebuild prereq) and to bake the user's "no legacy / no back-compat / no tech debt" principle into Tier 1 as a codebase-wide dead-code purge. Backlog (Tier 7) captures audit findings not in the 19-item executable plan.*
