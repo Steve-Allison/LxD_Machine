@@ -1,10 +1,10 @@
-# LxD Machine — SOTA Implementation Plan (17 items)
+# LxD Machine — SOTA Implementation Plan (16 items)
 
 ## Context
 
 A 2026-05-05 critical audit identified 20 architectural and code-quality gaps across retrieval, knowledge-graph signal use, code structure, robustness, and observability. The audit grounded each finding in `file:line` references; an Explore-agent pass against the live codebase has now confirmed exact integration points for every item.
 
-This plan organises the 17 remaining items (items #6 [measurement chore], #14 [remote rerank], and #4 [remote synthesis] were all struck 2026-05-05 because they either weren't SOTA improvements or were incompatible with the local-first design) into a multi-session implementation schedule prioritised by **return on investment** (impact ÷ effort), with one structural sequencing rule: **foundation before refinement**. Dead-code removal and architectural consolidation precede new features so we don't refactor newly-added code twice.
+This plan organises the 16 remaining items (items #6, #14, #4, and #13 were all struck 2026-05-05 — #6 was a measurement chore not a SOTA improvement; #14 and #4 were remote-replacement proposals incompatible with the local-first design; #13 would collapse two of five RRF lanes and lose user-tunable fusion weights) into a multi-session implementation schedule prioritised by **return on investment** (impact ÷ effort), with one structural sequencing rule: **foundation before refinement**. Dead-code removal and architectural consolidation precede new features so we don't refactor newly-added code twice.
 
 **Important — measurement is the user's call, not a plan-imposed gate.** This plan does NOT run ingest, does NOT capture eval baselines, and does NOT impose `pixi run eval` as a CI gate. Each item's verification is code-level: lint, typecheck, targeted tests, manual MCP smoke where applicable. The user runs ingest and eval when they choose; quality measurement is layered on top of this work, not gated by it.
 
@@ -353,25 +353,25 @@ The legitimate observation buried under `[#4]` — that `synthesis/answering.py`
 
 ---
 
-#### `[#13]` LanceDB native hybrid query
+#### `[#13]` ❌ STRUCK 2026-05-05 — LanceDB native hybrid would *lose* signal lanes
 
-**Why**: After #1 we have FTS5 indexes. LanceDB supports running both dense + FTS in one query via `query_type="hybrid"` instead of two parallel queries we manually fuse. Cleaner and slightly faster.
+The original framing assumed the retrieval pipeline runs "two parallel queries we manually fuse" — i.e. dense + FTS. The current implementation actually fuses **five** lanes via RRF in `_fuse_ranked_prefix`:
 
-**Files**:
-- `src/lxd/stores/lancedb.py:103-149` — `search_chunks` currently runs vector-only; add a `search_chunks_hybrid` variant.
-- `src/lxd/retrieval/query_pipeline.py:329-373` — replace the two-lane fetch with one hybrid call.
+1. Dense (vector cosine)
+2. Lexical (LanceDB FTS5 BM25, after `[#1]`)
+3. Reranker (cross-encoder, weighted by `lexical_fusion_weight`)
+4. Relation (entity-graph chunks, weighted by `relation_fusion_weight`)
+5. Centrality (max-PageRank across mentioned entities, weighted by `centrality_fusion_weight`, after `[#2]`)
 
-**Actions**:
-1. New `search_chunks_hybrid(table, query_vector, query_text, ...)` calling LanceDB's hybrid search.
-2. Switch `_dense_ranked_candidates` to use it; remove the separate FTS lane (the rerank + RRF fusion above it stays).
+LanceDB's `query_type="hybrid"` collapses dense + FTS into a single combined score using its own RRF. Switching would:
 
-**Verify**:
-- Existing retrieval tests still pass (this is a refactor for cleanliness, not a behaviour change).
-- New unit test against the hybrid query API confirms the result shape.
-- Latency micro-benchmark in `tests/`: native hybrid is at least as fast as two parallel queries plus manual fusion.
-- `pixi run lint && pixi run typecheck && pixi run test` clean.
+- **Lose the per-lane fusion weights** the user has config knobs for (`lexical_fusion_weight`, `centrality_fusion_weight`, etc.).
+- **Lose granular control** over how dense vs lexical contributions interact with the rerank, relation, and centrality lanes.
+- **Save no code** — the rerank + relation + centrality lanes still need explicit RRF on top of whatever LanceDB returns.
 
-**Effort**: 3 h.
+The audit framing was correct for a 2-lane pipeline; this is a 5-lane pipeline. The "cleaner and slightly faster" claim does not apply when the structural cost is losing user-tunable retrieval behaviour.
+
+This is the same kind of audit recommendation that `[#4]` and `[#14]` were: a generic SOTA-stack pattern that doesn't fit this project's actual architecture. Permanently rejected; no backlog entry needed (the existing 5-lane RRF *is* the intended design, not a debt to repay).
 
 ---
 
@@ -459,7 +459,7 @@ Sessions are ordered for clean ROI sequencing; each ends with a green build + co
 | **7**  | **Persistent breaker + sqlite.py split**    | `#10`, `#7` (callers update; no `__init__.py` re-export façade)                                                                   | 6 h                    |
 | **8**  | **Backend dispatch refactor**               | `#8` (after `#7` so the new modules absorb the change cleanly)                                                                    | 2 h                    |
 | **9**  | **Advanced retrieval**                      | `#9`, `#17`                                                                                                                       | 10 h (split if needed) |
-| **10** | **Hybrid native + polish**                  | `#13`, `#16`, `#18`, `#19`, `#20`                                                                                                 | 13 h (split if needed) |
+| **10** | **Polish + Python 3.14 modernisation**      | `#16`, `#18`, `#19`, `#20` (`#13` struck — see above)                                                                              | 10 h (split if needed) |
 
 **Total: ~55 h, 9 sessions.** Realistic for ~2 weeks of focused work, ~4 weeks part-time.
 
@@ -507,7 +507,7 @@ Sessions are ordered for clean ROI sequencing; each ends with a green build + co
 [ ] S9.2  [#17] Implement HyDE pre-retrieval step
 [ ] S9.3  Commit: "Contextual retrieval + HyDE"
 
-[ ] S10.1 [#13] LanceDB native hybrid query — **delete** the parallel two-lane code path
+[~] S10.1 [#13] **STRUCK 2026-05-05** — LanceDB hybrid would collapse 2 of 5 RRF lanes; current 5-lane fusion gives finer control. See item header for full reasoning.
 [ ] S10.2 [#16] Property-based tests for RRF / lexical / chunking
 [ ] S10.3 [#18] `asyncio.TaskGroup` in `llm_client.py`
 [ ] S10.4 [#19] `@override` / `Self` / PEP 695 `type` aliases sweep
@@ -559,7 +559,7 @@ mcp-client get_community_context --entity_id "addie-model"
 | #10  | `src/lxd/ingest/error_classification.py`, `src/lxd/stores/_base_ddl.py`, `src/lxd/stores/schema.py` (migration 7)                                  |
 | #11  | `src/lxd/settings/models.py`, `src/lxd/ingest/pipeline.py`                                                                                         |
 | #12  | `src/lxd/observability/logging.py`, `src/lxd/mcp/async_runtime.py:38-72`, new `src/lxd/observability/tracing.py`                                   |
-| #13  | `src/lxd/stores/lancedb.py:103-149`, `src/lxd/retrieval/query_pipeline.py:329-373`                                                                 |
+| #13  | ❌ struck — current 5-lane RRF is the intended design                                                                                              |
 | #14  | ❌ struck — see backlog `B-LOCAL-1`                                                                                                                |
 | #15  | DELETE `src/lxd/stores/_sqlite_legacy_migrations.py`; edit `src/lxd/stores/sqlite.py:11,111`                                                       |
 | #16  | `tests/test_query_pipeline.py`, new `tests/test_chunking_properties.py`                                                                            |
