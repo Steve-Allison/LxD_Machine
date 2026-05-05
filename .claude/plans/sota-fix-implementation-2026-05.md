@@ -463,7 +463,7 @@ Sessions are ordered for clean ROI sequencing; each ends with a green build + co
 | **4**  | **KG signal lift — centrality + community** | `#2`                                                                                                                              | 6 h                    |
 | **5**  | **Streaming synthesis**                     | `#5` (`#4` struck — see backlog `B-LOCAL-2`)                                                                                      | 3 h                    |
 | **6**  | **Production guardrails**                   | `#11` (DONE `ffc5765`), `#12` (resolved-by-deletion in `e29fb7c`)                                                                  | 0 h (done)             |
-| **7**  | **Persistent breaker + sqlite.py split**    | `#10`, `#7` (callers update; no `__init__.py` re-export façade)                                                                   | 6 h                    |
+| **7**  | **Persistent breaker** (sqlite split deferred to `B-CODE-4`) | `#10` (DONE `7dc96b7`); `#7` deferred to backlog                                                                                  | 0 h (done)             |
 | **8**  | **Backend dispatch refactor**               | `#8` (after `#7` so the new modules absorb the change cleanly)                                                                    | 2 h                    |
 | **9**  | **Advanced retrieval**                      | `#9`, `#17`                                                                                                                       | 10 h (split if needed) |
 | **10** | **Polish + Python 3.14 modernisation**      | `#16`, `#18`, `#19` (`#13` and `#20` struck — see above)                                                                          | 8 h                    |
@@ -503,8 +503,8 @@ Sessions are ordered for clean ROI sequencing; each ends with a green build + co
 
 [x] S7.1  [#10] Add `circuit_breaker_state` table + migration v7 — done in `7dc96b7`. Both the migration and BASE_SCHEMA_DDL carry the table; `_REQUIRED_COLUMNS` enforces presence on integrity check.
 [x] S7.2  [#10] Implement `PersistentCircuitBreaker`; deleted the in-memory `SystemicErrorCircuitBreaker` outright — done in `7dc96b7`. Same public surface; takes a connection + scope. New `reset_circuit_breaker(connection, scope=...)` public helper for manual remediation.
-[ ] S7.3  [#7] Split `stores/sqlite.py` into a subpackage. Callers update their imports — no `__init__.py` re-export façade.
-[ ] S7.4  Commit: "Sqlite split into subpackage"
+[~] S7.3  [#7] **DEFERRED to backlog 2026-05-05 as `B-CODE-4`.** The split needs a dedicated fresh-context session — ~70 functions across 9 modules with ~28 caller files including 8 test files updated atomically (no `__init__.py` re-export façade per no-legacy rule). The 2085-LOC monolith works correctly today; this is debt-of-organisation, not blocking SOTA capability. Format-hook stripping during this session would have made an atomic 28-file commit fragile.
+[~] S7.4  No commit — work moved to backlog.
 
 [ ] S8.1  [#8] Define backend discriminated unions in `settings/models.py`
 [ ] S8.2  [#8] Replace if-chains with `match`/`case` in `relations.py`, `claims.py`, `llm_client.py`
@@ -620,7 +620,8 @@ The 2026-05-05 SOTA audit surfaced additional findings that are real but lower-R
 | ---------- | ----------------------------------------------------------------------- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `B-CODE-1` | **`ingest/pipeline.py` is 1143 lines (21 funcs)**                       | `src/lxd/ingest/pipeline.py`                     | Item #7 splits `sqlite.py`; the same treatment applies here. Natural splits: scan/diff, embed-with-cache, chunk-build, persist, move-detection, clone-records, snapshot.  |
 | `B-CODE-2` | **No `Pydantic TypeAdapter` for hot-path validation**                   | `src/lxd/stores/sqlite.py` row → record adapters | `manifest_record_from_row`, `chunk_from_row` etc. construct dataclasses directly. `TypeAdapter[ChunkRecord]` is faster on repeated parsing and gives validation for free. |
-| `B-CODE-3` | **No `ComputedField`, `RootModel`, `BeforeValidator`/`AfterValidator`** | `src/lxd/settings/models.py`                     | Settings have one custom validator (`_normalize_query_instruction`); newer Pydantic v2 idioms would tighten the rest.                                                     |
+| `B-CODE-3` | **No `Pydantic ComputedField`, `RootModel`, `BeforeValidator`/`AfterValidator`** | `src/lxd/settings/models.py`                     | Settings have one custom validator (`_normalize_query_instruction`); newer Pydantic v2 idioms would tighten the rest. |
+| `B-CODE-4` | **Split `stores/sqlite.py` (2085 LOC) into a subpackage** | `src/lxd/stores/sqlite.py` | Originally `[#7]` in the executable plan; deferred to backlog 2026-05-05 because the refactor needs a dedicated fresh-context session — ~70 functions across ~9 natural groups (connection, runs, manifest, ontology, chunks, summary, claims, kg_profiles, kg_relations); per the no-legacy rule, no `__init__.py` re-export façade so every caller updates imports (~28 files including 8 test files). The module works correctly today; this is debt-of-organisation, not blocking SOTA capability. |
 
 ### B-ROBUST — Robustness (further)
 
@@ -681,7 +682,7 @@ These are local-code observations about the existing local stack. They are **not
 ### Summary
 
 - **B-KG**: 5 items
-- **B-CODE**: 3 items
+- **B-CODE**: 4 items
 - **B-ROBUST**: 3 items
 - **B-PERF**: 4 items
 - **B-STACK**: 12 items
@@ -689,7 +690,7 @@ These are local-code observations about the existing local stack. They are **not
 - **B-DOCS**: 1 item
 - **B-TEST**: 2 items
 
-**Total backlog: 32 additional items beyond the 17 in the executable plan (items #6, #14, and #4 were struck 2026-05-05).**
+**Total backlog: 33 additional items beyond the executable plan (items #6, #14, #4, #13, #20 were struck 2026-05-05; item #7 was deferred to backlog as `B-CODE-4`).**
 
 These are not scheduled. When a session opens with bandwidth, pick a backlog item that complements the just-finished work (e.g. `B-STACK-10` after item #11 because both touch cost estimation; `B-KG-3` after item #2 because both leverage the centrality work). Promote the chosen item into the next session header and update this backlog section with a strikethrough or "promoted to S<N>" annotation.
 
