@@ -1,11 +1,11 @@
-# LxD Machine — Knowledge Graph Specification (Phase 5)
+# LxD Machine — Knowledge Graph Specification
 
 **Document type:** Implementation specification
 **Status:** Implemented
 **Version:** 4.1
 **Created:** 2026-03-28
 **Implemented:** 2026-03-28
-**Depends on:** Phases 0–4 complete, 14,461 extracted relations committed
+**Depends on:** the ingest pipeline complete, 14,461 extracted relations committed
 **Reference implementation:** Knowledge Machine (Neo4j-based GraphRAG — architectural patterns adopted, not the database)
 **API verification date:** 2026-03-28 (NetworkX 3.6.1, FastMCP 3.1.1, LanceDB 0.21+)
 
@@ -193,8 +193,8 @@ CREATE INDEX IF NOT EXISTS idx_relations_object ON relations(object_entity_id);
 
 **Data flow between `extracted_relations` and `relations`:**
 
-- `extracted_relations` (existing, Phase 0–4) is the **write-path** during ingest. Per-chunk rows, FK CASCADE from `chunk_rows`. Owned by the ingest pipeline. Unchanged.
-- `relations` (new, Phase 5) is the **read-path** for graph queries. Canonical per triple, rebuilt from `extracted_relations` during graph build. Owned by the graph build pipeline.
+- `extracted_relations` is the **write-path** during ingest. Per-chunk rows, FK CASCADE from `chunk_rows`. Owned by the ingest pipeline.
+- `relations` is the **read-path** for graph queries. Canonical per triple, rebuilt from `extracted_relations` during graph build. Owned by the graph build pipeline.
 - Both tables coexist. `extracted_relations` is source-of-truth for raw extraction output. `relations` is the consolidated view used by entity profiles, MCP tools, and query routing.
 
 ### 3.6 `relation_evidence`
@@ -366,7 +366,7 @@ Merge ontology edges + corpus relations into one weighted `NetworkX.MultiDiGraph
 - Benchmark centrality computation time on the real graph (Rule Zero — no hard gate until measured)
 - Eigenvector centrality uses `_numpy` variant — verify convergence on the real graph
 
-**Dependencies:** Phases 0–4 (extracted relations must exist). Does NOT depend on Phase 5.0 (claims).
+**Dependencies:** the ingest pipeline (extracted relations must exist). Does NOT depend on Phase 5.0 (claims).
 
 ---
 
@@ -402,7 +402,7 @@ Partition entities into communities. Store assignments.
 
 ### Phase 5.3 — Relations Consolidation + Evidence Provenance
 
-Consolidate per-chunk `extracted_relations` into canonical `relations` table and populate `relation_evidence` with per-chunk provenance. **Can run in parallel with 5.0 and 5.1** (only depends on Phases 0–4 data).
+Consolidate per-chunk `extracted_relations` into canonical `relations` table and populate `relation_evidence` with per-chunk provenance. **Can run in parallel with 5.0 and 5.1** (only depends on the ingest pipeline data).
 
 **New:** `src/lxd/ontology/evidence.py`
 **Modified:** `src/lxd/ingest/relations.py`, `src/lxd/stores/sqlite.py`
@@ -439,7 +439,7 @@ Truncate `relation_evidence` table, insert all evidence rows.
 - `relations.support_count` matches actual evidence row count for each `relation_id`
 - Full rebuild from `extracted_relations` completes without LLM calls (pure SQLite read/write)
 
-**Dependencies:** Phases 0–4 only (`extracted_relations`, `chunk_rows`, `mention_rows`). Does NOT depend on Phase 5.0 (claims) or Phase 5.1 (combined graph).
+**Dependencies:** the ingest pipeline only (`extracted_relations`, `chunk_rows`, `mention_rows`). Does NOT depend on Phase 5.0 (claims) or Phase 5.1 (combined graph).
 
 ---
 
@@ -652,7 +652,7 @@ Note: `entity_profiles` phase includes entity embedding computation (stored in L
 Phase 5.0 (Claims)  ----------+
                                |
 Phase 5.1 (Entity Graph)      |    Phase 5.3 (Relations + Evidence)
-    |                          |        [needs Phases 0–4 only]
+    |                          |        [needs the ingest pipeline only]
     +---> Phase 5.2 (Communities)      |
     |                          |       |
     +--------------------------+-------+
@@ -667,7 +667,7 @@ Phase 5.4 (Entity Profiles)  [needs 5.0 + 5.1 + 5.2 + 5.3]
     +---> Phase 5.8 (CLI & State Machine)    [needs 5.0–5.4]
 ```
 
-- **5.0, 5.1, and 5.3 all run in parallel** — no mutual dependencies; all only need Phases 0–4 data
+- **5.0, 5.1, and 5.3 all run in parallel** — no mutual dependencies; all only need the ingest pipeline data
 - 5.2 runs after 5.1 (needs combined entity graph)
 - 5.4 waits for **all of** 5.0, 5.1, 5.2, and 5.3 (needs claims + centrality + communities + canonical relations)
 - 5.6, 5.7, 5.8 run in parallel after 5.4

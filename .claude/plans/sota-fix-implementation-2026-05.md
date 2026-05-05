@@ -450,18 +450,18 @@ This tier is a precondition for the rest of the plan. Modernising on top of lega
 
 Sessions are ordered for clean ROI sequencing; each ends with a green build + commit. Sessions are not blocking — items within a session can be reordered.
 
-| # | Session | Items | Effort |
-|---|---|---|---|
-| **1** | **Delete every legacy and dead artefact** | `#15` (codebase-wide sweep: legacy markers, compat shims, dead branches, unused symbols, stale settings, stale tests, stale docs) | 4-6 h |
-| **2** | **Retrieval upgrade** | `#1`, `#14` | 6-7 h |
-| **3** | **KG signal lift — wiki edges** | `#3` | 4 h |
-| **4** | **KG signal lift — centrality + community** | `#2` | 6 h |
-| **5** | **Synthesis quality + streaming** | `#4`, `#5` | 5-6 h |
-| **6** | **Production guardrails** | `#11`, `#12` (implement OTel or delete unused fields outright per the no-tech-debt rule) | 6 h |
-| **7** | **Persistent breaker + sqlite.py split** | `#10`, `#7` (callers update; no `__init__.py` re-export façade) | 6 h |
-| **8** | **Backend dispatch refactor** | `#8` (after `#7` so the new modules absorb the change cleanly) | 2 h |
-| **9** | **Advanced retrieval** | `#9`, `#17` | 10 h (split if needed) |
-| **10** | **Hybrid native + polish** | `#13`, `#16`, `#18`, `#19`, `#20` | 13 h (split if needed) |
+| #      | Session                                     | Items                                                                                                                             | Effort                 |
+| ------ | ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| **1**  | **Delete every legacy and dead artefact**   | `#15` (codebase-wide sweep: legacy markers, compat shims, dead branches, unused symbols, stale settings, stale tests, stale docs) | 4-6 h                  |
+| **2**  | **Retrieval upgrade**                       | `#1`, `#14`                                                                                                                       | 6-7 h                  |
+| **3**  | **KG signal lift — wiki edges**             | `#3`                                                                                                                              | 4 h                    |
+| **4**  | **KG signal lift — centrality + community** | `#2`                                                                                                                              | 6 h                    |
+| **5**  | **Synthesis quality + streaming**           | `#4`, `#5`                                                                                                                        | 5-6 h                  |
+| **6**  | **Production guardrails**                   | `#11`, `#12` (implement OTel or delete unused fields outright per the no-tech-debt rule)                                          | 6 h                    |
+| **7**  | **Persistent breaker + sqlite.py split**    | `#10`, `#7` (callers update; no `__init__.py` re-export façade)                                                                   | 6 h                    |
+| **8**  | **Backend dispatch refactor**               | `#8` (after `#7` so the new modules absorb the change cleanly)                                                                    | 2 h                    |
+| **9**  | **Advanced retrieval**                      | `#9`, `#17`                                                                                                                       | 10 h (split if needed) |
+| **10** | **Hybrid native + polish**                  | `#13`, `#16`, `#18`, `#19`, `#20`                                                                                                 | 13 h (split if needed) |
 
 **Total: ~55 h, 9 sessions.** Realistic for ~2 weeks of focused work, ~4 weeks part-time.
 
@@ -558,27 +558,27 @@ mcp-client get_community_context --entity_id "addie-model"
 
 ## Critical files to be modified (by item)
 
-| Item | Files |
-|---|---|
-| #1 | `src/lxd/stores/lancedb.py:33-52`, `src/lxd/retrieval/query_pipeline.py:329-373,459-487` |
-| #2 | `src/lxd/retrieval/query_pipeline.py:72-98,329-373,421-456`, `src/lxd/retrieval/graph_routing.py:33-105` |
-| #3 | `src/lxd/ingest/wiki_metadata.py:56-113`, `src/lxd/ingest/wiki_relations.py` (new), `src/lxd/stores/sqlite.py:1590-1621` |
-| #4 | `src/lxd/synthesis/answering.py:60-104`, `src/lxd/settings/models.py` |
-| #5 | `src/lxd/synthesis/answering.py:60-104`, `src/lxd/mcp/tools.py` |
-| #7 | `src/lxd/stores/sqlite.py` → `src/lxd/stores/sqlite/` subpackage (9 modules; callers updated, no re-export façade) |
-| #8 | `src/lxd/settings/models.py`, `src/lxd/ingest/relations.py:381-402`, `src/lxd/ingest/claims.py:486`, `src/lxd/ingest/llm_client.py:181` |
-| #9 | `src/lxd/ingest/chunking.py`, `src/lxd/ingest/contextual_chunker.py` (new) |
-| #10 | `src/lxd/ingest/error_classification.py`, `src/lxd/stores/_base_ddl.py`, `src/lxd/stores/schema.py` (migration 7) |
-| #11 | `src/lxd/settings/models.py`, `src/lxd/ingest/pipeline.py` |
-| #12 | `src/lxd/observability/logging.py`, `src/lxd/mcp/async_runtime.py:38-72`, new `src/lxd/observability/tracing.py` |
-| #13 | `src/lxd/stores/lancedb.py:103-149`, `src/lxd/retrieval/query_pipeline.py:329-373` |
-| #14 | `src/lxd/retrieval/rerank.py:61-114,156-197`, `src/lxd/settings/models.py`, `src/lxd/net/http.py` |
-| #15 | DELETE `src/lxd/stores/_sqlite_legacy_migrations.py`; edit `src/lxd/stores/sqlite.py:11,111` |
-| #16 | `tests/test_query_pipeline.py`, new `tests/test_chunking_properties.py` |
-| #17 | `src/lxd/retrieval/query_pipeline.py:206`, new `src/lxd/retrieval/hyde.py` |
-| #18 | `src/lxd/ingest/llm_client.py:254` |
-| #19 | `src/lxd/stores/llm_jobs.py:32`, `src/lxd/domain/status.py`, settings models |
-| #20 | `src/lxd/synthesis/answering.py:_build_prompt`, `src/lxd/ingest/relations.py:_RELATION_BASE_PROMPT`, `src/lxd/ingest/claims.py:_CLAIM_BASE_PROMPT` |
+| Item | Files                                                                                                                                              |
+| ---- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| #1   | `src/lxd/stores/lancedb.py:33-52`, `src/lxd/retrieval/query_pipeline.py:329-373,459-487`                                                           |
+| #2   | `src/lxd/retrieval/query_pipeline.py:72-98,329-373,421-456`, `src/lxd/retrieval/graph_routing.py:33-105`                                           |
+| #3   | `src/lxd/ingest/wiki_metadata.py:56-113`, `src/lxd/ingest/wiki_relations.py` (new), `src/lxd/stores/sqlite.py:1590-1621`                           |
+| #4   | `src/lxd/synthesis/answering.py:60-104`, `src/lxd/settings/models.py`                                                                              |
+| #5   | `src/lxd/synthesis/answering.py:60-104`, `src/lxd/mcp/tools.py`                                                                                    |
+| #7   | `src/lxd/stores/sqlite.py` → `src/lxd/stores/sqlite/` subpackage (9 modules; callers updated, no re-export façade)                                 |
+| #8   | `src/lxd/settings/models.py`, `src/lxd/ingest/relations.py:381-402`, `src/lxd/ingest/claims.py:486`, `src/lxd/ingest/llm_client.py:181`            |
+| #9   | `src/lxd/ingest/chunking.py`, `src/lxd/ingest/contextual_chunker.py` (new)                                                                         |
+| #10  | `src/lxd/ingest/error_classification.py`, `src/lxd/stores/_base_ddl.py`, `src/lxd/stores/schema.py` (migration 7)                                  |
+| #11  | `src/lxd/settings/models.py`, `src/lxd/ingest/pipeline.py`                                                                                         |
+| #12  | `src/lxd/observability/logging.py`, `src/lxd/mcp/async_runtime.py:38-72`, new `src/lxd/observability/tracing.py`                                   |
+| #13  | `src/lxd/stores/lancedb.py:103-149`, `src/lxd/retrieval/query_pipeline.py:329-373`                                                                 |
+| #14  | `src/lxd/retrieval/rerank.py:61-114,156-197`, `src/lxd/settings/models.py`, `src/lxd/net/http.py`                                                  |
+| #15  | DELETE `src/lxd/stores/_sqlite_legacy_migrations.py`; edit `src/lxd/stores/sqlite.py:11,111`                                                       |
+| #16  | `tests/test_query_pipeline.py`, new `tests/test_chunking_properties.py`                                                                            |
+| #17  | `src/lxd/retrieval/query_pipeline.py:206`, new `src/lxd/retrieval/hyde.py`                                                                         |
+| #18  | `src/lxd/ingest/llm_client.py:254`                                                                                                                 |
+| #19  | `src/lxd/stores/llm_jobs.py:32`, `src/lxd/domain/status.py`, settings models                                                                       |
+| #20  | `src/lxd/synthesis/answering.py:_build_prompt`, `src/lxd/ingest/relations.py:_RELATION_BASE_PROMPT`, `src/lxd/ingest/claims.py:_CLAIM_BASE_PROMPT` |
 
 ---
 
@@ -611,62 +611,62 @@ The 2026-05-05 SOTA audit surfaced additional findings that are real but lower-R
 
 ### B-KG — Knowledge graph (further)
 
-| ID | Finding | File / location | Note |
-|---|---|---|---|
-| `B-KG-1` | **Claim verification / contradiction detection** | `src/lxd/ingest/claims.py` (extraction); no consumer exists | Claims are extracted and stored but never cross-checked. A contradicting pair (claim A: X→Y; claim B: X→¬Y) sits silently in the corpus and amplifies hallucination risk. Would need a post-extraction pass that flags contradictions for human review. |
-| `B-KG-2` | **Entity disambiguation is naive** | `src/lxd/ontology/matcher.py` (Aho-Corasick); `src/lxd/ingest/mentions.py` | Surface form → entity_id is exact-match. No fuzzy matching, no embedding-based mention disambiguation. Acronyms with multiple expansions (e.g. "ID" = instructional design vs identifier) resolve by first-rule-wins. |
-| `B-KG-3` | **`entity_embeddings` table built but never queried at retrieval time** | `src/lxd/stores/lancedb.py:232` (table); used only by `get_similar_entities` MCP tool | Could drive query expansion: query embed → top-k entities by cosine → expand with related concepts. |
-| `B-KG-4` | **Graph context has no token budget** | `src/lxd/retrieval/graph_routing.py:_build_graph_context_prompt` | Could push synthesis past the model's context window; needs explicit `max_graph_tokens` cap with a tier-based truncation order (entities → communities → claims). |
-| `B-KG-5` | **Graph build is en-bloc per phase, not chunk-incremental** | `src/lxd/cli/graph.py` orchestrator | A new document still triggers full claim re-extraction for related entities. Should be additive at the chunk level. |
+| ID       | Finding                                                                 | File / location                                                                       | Note                                                                                                                                                                                                                                                    |
+| -------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `B-KG-1` | **Claim verification / contradiction detection**                        | `src/lxd/ingest/claims.py` (extraction); no consumer exists                           | Claims are extracted and stored but never cross-checked. A contradicting pair (claim A: X→Y; claim B: X→¬Y) sits silently in the corpus and amplifies hallucination risk. Would need a post-extraction pass that flags contradictions for human review. |
+| `B-KG-2` | **Entity disambiguation is naive**                                      | `src/lxd/ontology/matcher.py` (Aho-Corasick); `src/lxd/ingest/mentions.py`            | Surface form → entity_id is exact-match. No fuzzy matching, no embedding-based mention disambiguation. Acronyms with multiple expansions (e.g. "ID" = instructional design vs identifier) resolve by first-rule-wins.                                   |
+| `B-KG-3` | **`entity_embeddings` table built but never queried at retrieval time** | `src/lxd/stores/lancedb.py:232` (table); used only by `get_similar_entities` MCP tool | Could drive query expansion: query embed → top-k entities by cosine → expand with related concepts.                                                                                                                                                     |
+| `B-KG-4` | **Graph context has no token budget**                                   | `src/lxd/retrieval/graph_routing.py:_build_graph_context_prompt`                      | Could push synthesis past the model's context window; needs explicit `max_graph_tokens` cap with a tier-based truncation order (entities → communities → claims).                                                                                       |
+| `B-KG-5` | **Graph build is en-bloc per phase, not chunk-incremental**             | `src/lxd/cli/graph.py` orchestrator                                                   | A new document still triggers full claim re-extraction for related entities. Should be additive at the chunk level.                                                                                                                                     |
 
 ### B-CODE — Code structure (further)
 
-| ID | Finding | File / location | Note |
-|---|---|---|---|
-| `B-CODE-1` | **`ingest/pipeline.py` is 1143 lines (21 funcs)** | `src/lxd/ingest/pipeline.py` | Item #7 splits `sqlite.py`; the same treatment applies here. Natural splits: scan/diff, embed-with-cache, chunk-build, persist, move-detection, clone-records, snapshot. |
-| `B-CODE-2` | **No `Pydantic TypeAdapter` for hot-path validation** | `src/lxd/stores/sqlite.py` row → record adapters | `manifest_record_from_row`, `chunk_from_row` etc. construct dataclasses directly. `TypeAdapter[ChunkRecord]` is faster on repeated parsing and gives validation for free. |
-| `B-CODE-3` | **No `ComputedField`, `RootModel`, `BeforeValidator`/`AfterValidator`** | `src/lxd/settings/models.py` | Settings have one custom validator (`_normalize_query_instruction`); newer Pydantic v2 idioms would tighten the rest. |
+| ID         | Finding                                                                 | File / location                                  | Note                                                                                                                                                                      |
+| ---------- | ----------------------------------------------------------------------- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `B-CODE-1` | **`ingest/pipeline.py` is 1143 lines (21 funcs)**                       | `src/lxd/ingest/pipeline.py`                     | Item #7 splits `sqlite.py`; the same treatment applies here. Natural splits: scan/diff, embed-with-cache, chunk-build, persist, move-detection, clone-records, snapshot.  |
+| `B-CODE-2` | **No `Pydantic TypeAdapter` for hot-path validation**                   | `src/lxd/stores/sqlite.py` row → record adapters | `manifest_record_from_row`, `chunk_from_row` etc. construct dataclasses directly. `TypeAdapter[ChunkRecord]` is faster on repeated parsing and gives validation for free. |
+| `B-CODE-3` | **No `ComputedField`, `RootModel`, `BeforeValidator`/`AfterValidator`** | `src/lxd/settings/models.py`                     | Settings have one custom validator (`_normalize_query_instruction`); newer Pydantic v2 idioms would tighten the rest.                                                     |
 
 ### B-ROBUST — Robustness (further)
 
-| ID | Finding | File / location | Note |
-|---|---|---|---|
-| `B-ROBUST-1` | **OpenAI sync client created per-batch** | `src/lxd/ingest/embedder.py:275` (`_openai_embed_texts`) | `client = openai.OpenAI(api_key=...)` runs inside the function. Bypasses our pooled `httpx` factory in `net/http.py`. Should pass `http_client=` into `openai.OpenAI(...)` referencing the shared pool. |
-| `B-ROBUST-2` | **Aho-Corasick matcher rebuilt on every CLI invocation** | `src/lxd/ontology/matcher.py` + `src/lxd/retrieval/expansion.py:20` | Pickle to disk keyed on ontology hash. ~1-2s per CLI start; meaningful for short-running commands. |
-| `B-ROBUST-3` | **Empty wiki frontmatter still triggers full mention / relation pipelines** | `src/lxd/ingest/pipeline.py` | No early exit for "this page has no extractable signal." Wasted API calls on edge-case pages. |
+| ID           | Finding                                                                     | File / location                                                     | Note                                                                                                                                                                                                    |
+| ------------ | --------------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `B-ROBUST-1` | **OpenAI sync client created per-batch**                                    | `src/lxd/ingest/embedder.py:275` (`_openai_embed_texts`)            | `client = openai.OpenAI(api_key=...)` runs inside the function. Bypasses our pooled `httpx` factory in `net/http.py`. Should pass `http_client=` into `openai.OpenAI(...)` referencing the shared pool. |
+| `B-ROBUST-2` | **Aho-Corasick matcher rebuilt on every CLI invocation**                    | `src/lxd/ontology/matcher.py` + `src/lxd/retrieval/expansion.py:20` | Pickle to disk keyed on ontology hash. ~1-2s per CLI start; meaningful for short-running commands.                                                                                                      |
+| `B-ROBUST-3` | **Empty wiki frontmatter still triggers full mention / relation pipelines** | `src/lxd/ingest/pipeline.py`                                        | No early exit for "this page has no extractable signal." Wasted API calls on edge-case pages.                                                                                                           |
 
 ### B-PERF — Performance (further)
 
-| ID | Finding | File / location | Note |
-|---|---|---|---|
-| `B-PERF-1` | **Tokenizer encodes full document text twice** | `src/lxd/ingest/chunking.py:84,188` | Same text fed through `tiktoken` in both code paths; cache the encoded token list. |
-| `B-PERF-2` | **`_unique_source_prefix` re-iterates ranked list on each dense-search retry** | `src/lxd/retrieval/query_pipeline.py:408` | Use a set early; current pattern is O(N²) in the worst case. |
-| `B-PERF-3` | **SQLite connection opened with WAL + tuned pragmas per call** | `src/lxd/stores/sqlite.py:48` (`connect_sqlite`) | A per-thread connection pool would amortise the pragma cost. Matters for the long-lived MCP server, less for one-shot CLI. |
-| `B-PERF-4` | **Embedding cache lookup iterates per-chunk in Python** | `src/lxd/ingest/embedding_cache.py` (`lookup`) | Fine for batches of 1k. At 100k+ becomes the bottleneck. Vectorise by returning Arrow and joining in pyarrow. |
+| ID         | Finding                                                                        | File / location                                  | Note                                                                                                                       |
+| ---------- | ------------------------------------------------------------------------------ | ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
+| `B-PERF-1` | **Tokenizer encodes full document text twice**                                 | `src/lxd/ingest/chunking.py:84,188`              | Same text fed through `tiktoken` in both code paths; cache the encoded token list.                                         |
+| `B-PERF-2` | **`_unique_source_prefix` re-iterates ranked list on each dense-search retry** | `src/lxd/retrieval/query_pipeline.py:408`        | Use a set early; current pattern is O(N²) in the worst case.                                                               |
+| `B-PERF-3` | **SQLite connection opened with WAL + tuned pragmas per call**                 | `src/lxd/stores/sqlite.py:48` (`connect_sqlite`) | A per-thread connection pool would amortise the pragma cost. Matters for the long-lived MCP server, less for one-shot CLI. |
+| `B-PERF-4` | **Embedding cache lookup iterates per-chunk in Python**                        | `src/lxd/ingest/embedding_cache.py` (`lookup`)   | Fine for batches of 1k. At 100k+ becomes the bottleneck. Vectorise by returning Arrow and joining in pyarrow.              |
 
 ### B-STACK — Tech-stack underutilisation (further)
 
-| ID | Capability | Status | Note |
-|---|---|---|---|
-| `B-STACK-1` | LanceDB scalar quantisation + IVF_PQ | unused | At current scale (~25k chunks) not needed; flag once we cross 1M chunks. |
-| `B-STACK-2` | LanceDB version branching / time-travel queries | unused | Would let us A/B retrieval changes without rebuilding. |
-| `B-STACK-3` | LanceDB secondary indexes on `source_domain`, `source_rel_path` | unused | Would speed up the per-source delete-and-replace path. |
-| `B-STACK-4` | FastMCP **Resources** (e.g. `lxd://corpus/{path}`) | unused | Would let MCP clients fetch raw source files referenced in citations. |
-| `B-STACK-5` | FastMCP **Prompts** (parameterised templates) | unused | Could expose `lxd_search_prompt` / `lxd_synthesis_prompt` to clients for transparency. |
-| `B-STACK-6` | FastMCP **Sampling** (server-initiated LLM) | unused | Could let the server delegate LLM calls back to the client model. |
-| `B-STACK-7` | FastMCP **structured tool input schemas** | partial | We accept loose dicts in some tools; tighter Pydantic schemas would improve client autocomplete and validation. |
-| `B-STACK-8` | structlog `bind_contextvars` per request | partial | Used at startup; not propagated per MCP-tool-call. Item #12 (OTel) overlaps. |
-| `B-STACK-9` | structlog sampled logging for high-volume events | unused | At ingest-scale chunk events flood the log. |
-| `B-STACK-10` | `tiktoken` for budget-aware chunking, prompt truncation, pre-flight cost estimation | unused | Would let `pixi run preflight` show "this ingest will cost ~$X" before running. Pairs naturally with item #11. |
-| `B-STACK-11` | NetworkX advanced (HITS, TF-IDF weighted paths, k-core, motif detection) | unused | Would unlock new graph queries; worth surfacing once item #2 lands and centrality starts paying off. |
-| `B-STACK-12` | Polars / Arrow-native DataFrames | unused | LanceDB returns Arrow natively; some KG analyses currently round-trip through SQLite that Polars-on-Arrow would do in microseconds. |
+| ID           | Capability                                                                          | Status  | Note                                                                                                                                |
+| ------------ | ----------------------------------------------------------------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `B-STACK-1`  | LanceDB scalar quantisation + IVF_PQ                                                | unused  | At current scale (~25k chunks) not needed; flag once we cross 1M chunks.                                                            |
+| `B-STACK-2`  | LanceDB version branching / time-travel queries                                     | unused  | Would let us A/B retrieval changes without rebuilding.                                                                              |
+| `B-STACK-3`  | LanceDB secondary indexes on `source_domain`, `source_rel_path`                     | unused  | Would speed up the per-source delete-and-replace path.                                                                              |
+| `B-STACK-4`  | FastMCP **Resources** (e.g. `lxd://corpus/{path}`)                                  | unused  | Would let MCP clients fetch raw source files referenced in citations.                                                               |
+| `B-STACK-5`  | FastMCP **Prompts** (parameterised templates)                                       | unused  | Could expose `lxd_search_prompt` / `lxd_synthesis_prompt` to clients for transparency.                                              |
+| `B-STACK-6`  | FastMCP **Sampling** (server-initiated LLM)                                         | unused  | Could let the server delegate LLM calls back to the client model.                                                                   |
+| `B-STACK-7`  | FastMCP **structured tool input schemas**                                           | partial | We accept loose dicts in some tools; tighter Pydantic schemas would improve client autocomplete and validation.                     |
+| `B-STACK-8`  | structlog `bind_contextvars` per request                                            | partial | Used at startup; not propagated per MCP-tool-call. Item #12 (OTel) overlaps.                                                        |
+| `B-STACK-9`  | structlog sampled logging for high-volume events                                    | unused  | At ingest-scale chunk events flood the log.                                                                                         |
+| `B-STACK-10` | `tiktoken` for budget-aware chunking, prompt truncation, pre-flight cost estimation | unused  | Would let `pixi run preflight` show "this ingest will cost ~$X" before running. Pairs naturally with item #11.                      |
+| `B-STACK-11` | NetworkX advanced (HITS, TF-IDF weighted paths, k-core, motif detection)            | unused  | Would unlock new graph queries; worth surfacing once item #2 lands and centrality starts paying off.                                |
+| `B-STACK-12` | Polars / Arrow-native DataFrames                                                    | unused  | LanceDB returns Arrow natively; some KG analyses currently round-trip through SQLite that Polars-on-Arrow would do in microseconds. |
 
 ### B-TEST — Testing (further)
 
-| ID | Finding | File / location | Note |
-|---|---|---|---|
-| `B-TEST-1` | **No synthesis end-to-end test** | `tests/` | The LLM is mocked everywhere. We don't actually verify the synthesis prompt produces sensible output. Pair with `pixi run eval` end-to-end. |
-| `B-TEST-2` | **No mutation testing** | (n/a) | Not normally needed at this scale, but `mutmut` against `query_pipeline` would surface dead branches. Low priority. |
+| ID         | Finding                          | File / location | Note                                                                                                                                        |
+| ---------- | -------------------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `B-TEST-1` | **No synthesis end-to-end test** | `tests/`        | The LLM is mocked everywhere. We don't actually verify the synthesis prompt produces sensible output. Pair with `pixi run eval` end-to-end. |
+| `B-TEST-2` | **No mutation testing**          | (n/a)           | Not normally needed at this scale, but `mutmut` against `query_pipeline` would surface dead branches. Low priority.                         |
 
 ### Summary
 

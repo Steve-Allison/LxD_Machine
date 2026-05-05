@@ -132,6 +132,5 @@ Detailed specifications live in `Plans/`:
 - `03_INGEST_SPEC.md` — ingestion pipeline detail
 - `04_QUERY_SPEC.md` — query and retrieval pipeline
 - `05_MCP_SPEC.md` — MCP tool interface specification (20 tools)
-- `06_BUILD_PLAN.md` — phased build plan
 - `07_USER_GUIDE.md` — end-user operation guide
-- `08_KNOWLEDGE_GRAPH_SPEC.md` — knowledge graph pipeline specification (Phase 5)
+- `08_KNOWLEDGE_GRAPH_SPEC.md` — knowledge graph pipeline specification

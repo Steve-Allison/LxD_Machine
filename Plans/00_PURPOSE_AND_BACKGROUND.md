@@ -106,5 +106,4 @@ These documents are the source of truth for the rewrite:
 - `03_INGEST_SPEC.md`
 - `04_QUERY_SPEC.md`
 - `05_MCP_SPEC.md`
-- `06_BUILD_PLAN.md`
 - `07_USER_GUIDE.md`
