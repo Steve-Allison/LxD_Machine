@@ -242,9 +242,16 @@ async def run_concurrent_extraction[T, R](
     semaphore = asyncio.Semaphore(max_concurrent)
     all_results: list[R] = []
 
-    async def _guarded(item: T) -> R:
+    async def _guarded(item: T) -> R | Exception:
+        # Catch per-item failures inside the task so ``asyncio.TaskGroup``
+        # does not abort the whole batch via its first-error semantics.
+        # ``CancelledError`` is *not* caught — cancellation propagates so
+        # ``Ctrl-C`` works correctly.
         async with semaphore:
-            return await extract_fn(item)
+            try:
+                return await extract_fn(item)
+            except Exception as exc:
+                return exc
 
     total = len(items)
     for batch_start in range(0, total, sub_batch_size):
@@ -252,14 +259,14 @@ async def run_concurrent_extraction[T, R](
         batch_items = items[batch_start:batch_end]
 
         start_time = time.monotonic()
-        tasks = [asyncio.create_task(_guarded(item)) for item in batch_items]
-        batch_results = await asyncio.gather(*tasks, return_exceptions=True)
-
-        # Filter out exceptions, log them
+        async with asyncio.TaskGroup() as tg:
+            tasks = [tg.create_task(_guarded(item)) for item in batch_items]
+        # All tasks have completed by exit; pull results without awaiting.
         good_results: list[R] = []
         errors = 0
-        for result in batch_results:
-            if isinstance(result, BaseException):
+        for task in tasks:
+            result = task.result()
+            if isinstance(result, Exception):
                 errors += 1
                 _log.warning("extraction_item_failed", error=str(result), label=label)
             else:
