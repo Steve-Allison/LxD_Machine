@@ -67,13 +67,13 @@ pixi run typecheck       # pyright src
 
 20 read-only tools exposed via FastMCP (>=3.0) over stdio transport:
 
-**Corpus tools (Phase 4):** `corpus_status`, `get_entity_types`, `get_related_concepts`, `search_corpus`, `find_documents_for_concept`, `get_corpus_relations`
+**Corpus tools:** `corpus_status`, `get_entity_types`, `get_related_concepts`, `search_corpus`, `find_documents_for_concept`, `get_corpus_relations`
 
-**Knowledge graph tools (Phase 5):** `get_entity_summary`, `get_community_context`, `get_similar_entities`, `search_entities`, `inspect_evidence`, `find_path_between_entities`, `find_weighted_path`, `get_hub_entities`, `find_bridge_entities`, `find_foundational_entities`, `get_entity_graph_stats`
+**Knowledge graph tools:** `get_entity_summary`, `get_community_context`, `get_similar_entities`, `search_entities`, `inspect_evidence`, `find_path_between_entities`, `find_weighted_path`, `get_hub_entities`, `find_bridge_entities`, `find_foundational_entities`, `get_entity_graph_stats`
 
 **Full answer pipeline:** `search_knowledge` (graph-augmented synthesis), `search_knowledge_deep` (same + structured graph context), `get_graph_overview` (KG health check)
 
-## Knowledge Graph (Phase 5)
+## Knowledge Graph
 
 The knowledge graph pipeline builds on top of ingested corpus data:
 
@@ -85,7 +85,7 @@ The knowledge graph pipeline builds on top of ingested corpus data:
 6. **Community reports** — deterministic summaries per community, optional LLM enrichment
 7. **Graph-augmented synthesis** — entity profiles, community reports, and claims prepended to synthesis prompt when entities match the query
 
-The graph build is a resumable state machine (`pixi run build-graph`). Graph context is additive — when the graph is not yet built or no entities match a query, the pipeline degrades gracefully to the pre-Phase-5 baseline.
+The graph build is a resumable state machine (`pixi run build-graph`). Graph context is additive — when the graph is not yet built or no entities match a query, the pipeline degrades gracefully to a graph-free baseline.
 
 ## Design Principles
 
