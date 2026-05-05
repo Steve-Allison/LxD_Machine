@@ -356,7 +356,41 @@ Skip until a concrete consumer is identified.
 
 ---
 
-#### `B-KG-1` Claim verification / contradiction detection
+#### `B-KG-1` Claim verification / contradiction detection — **DEFERRED on survey 2026-05-05**
+
+**Status**: Deferred pending design clarification.
+
+The audit's deterministic approach groups claims by
+`(subject_entity_id, predicate)` but the actual `claims` schema has no
+`predicate` column — only `subject_entity_id`, `object_entity_id`,
+`claim_type`, `claim_text`, `confidence`. The audit's worked example
+`(addie_model, has_phase_count, "five")` vs `"six"` describes
+**relation-shaped triples with literal objects**, which fit neither
+`claims` (no predicate) nor `relations` (`object_entity_id` is an
+entity, not a literal value).
+
+Three honest options for a future implementation:
+
+1. **Relations-based contradiction**: pairs in canonical `relations`
+   sharing `(subject, predicate)` with different `object_entity_id`.
+   Real signal but limited to entity-entity relations, not literal
+   numeric/textual disagreements like the worked example.
+2. **Claims-redundancy detector**: pairs with identical
+   `(subject, object, claim_type)` and different `claim_text`. Surfaces
+   "possibly redundant or conflicting" pairs but is not actual
+   contradiction detection.
+3. **LLM-adjudicated pair check**: feed candidate claim pairs to an LLM
+   and ask "do these contradict?". Robust but adds API spend per pair;
+   needs a concrete consumer (CLI review workflow, MCP tool, or both)
+   to justify the cost.
+
+Decision needed from the user before this becomes work: which option
+(or which combination) actually answers the LxD use case. Until that
+decision is made, building any one of them risks shipping a feature
+that does not match the actual need.
+
+(Original audit note retained below for reference.)
+
 
 **Why**: `claims` table has structured assertions (subject, predicate, object, claim_text, confidence). Two claims with the same subject + predicate but contradictory objects (e.g. `(addie_model, has_phase_count, "five")` vs `(addie_model, has_phase_count, "six")`) sit silently. A contradiction-detection pass flags them for human review.
 

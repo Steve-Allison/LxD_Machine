@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from operator import attrgetter
 
 import structlog
+import tiktoken
 
 from lxd.settings.models import RuntimeConfig
 from lxd.stores.models import ClaimRecord, CommunityReportRecord, EntityProfileRecord
@@ -14,6 +15,8 @@ from lxd.stores.sqlite.claims import load_claims_for_entities
 from lxd.stores.sqlite.kg_profiles import load_community_report, load_entity_profile
 
 _log = structlog.get_logger(__name__)
+
+_TOKEN_ENCODING_NAME = "cl100k_base"
 
 
 @dataclass(frozen=True, slots=True)
@@ -35,6 +38,17 @@ def build_graph_context(
     """Build graph context layers from matched entity IDs.
 
     Graph context is additive — it frames chunk evidence, it does not replace it.
+
+    Truncation under ``knowledge_graph.max_graph_context_tokens`` (B-KG-4):
+
+    1. Always preserve at least one entity profile per matched entity that
+       resolves (so synthesis sees evidence framing for every matched
+       concept, never silent drop).
+    2. Add lower-PageRank profiles, community reports (sorted by community
+       id), then claims (sorted by confidence) until the prompt-token
+       count reaches the cap.
+    3. Token counting uses ``tiktoken`` (``cl100k_base``); for non-OpenAI
+       synthesis the count is a high-fidelity proxy.
     """
     kg_cfg = config.knowledge_graph
     if not matched_entity_ids:
@@ -46,14 +60,12 @@ def build_graph_context(
             expansion_hops=0,
         )
 
-    # Entity profiles — top N by PageRank
     profiles: list[EntityProfileRecord] = []
     for entity_id in matched_entity_ids:
         profile = load_entity_profile(connection, entity_id)
         if profile:
             profiles.append(profile)
 
-    # Sort by PageRank and limit
     profiles.sort(key=attrgetter("pagerank"), reverse=True)
     profiles = profiles[: kg_cfg.max_entity_context]
 
@@ -66,7 +78,6 @@ def build_graph_context(
             expansion_hops=0,
         )
 
-    # Community reports — if matched entities span 2+ communities
     community_ids = {p.community_id for p in profiles if p.community_id is not None}
     reports: list[CommunityReportRecord] = []
     if len(community_ids) >= 2:
@@ -76,11 +87,17 @@ def build_graph_context(
                 reports.append(report)
         reports = reports[: kg_cfg.max_community_context]
 
-    # Claims — top N for matched entities, ranked by confidence
     claims = load_claims_for_entities(
         connection,
         matched_entity_ids,
         limit=kg_cfg.max_claim_context,
+    )
+
+    profiles, reports, claims = _trim_to_token_budget(
+        profiles=profiles,
+        reports=reports,
+        claims=claims,
+        max_tokens=kg_cfg.max_graph_context_tokens,
     )
 
     level = "community" if reports else "entity"
@@ -139,3 +156,57 @@ def format_graph_context_prompt(context: GraphContext) -> str:
         sections.append("")
 
     return "\n".join(sections)
+
+
+def _trim_to_token_budget(
+    *,
+    profiles: list[EntityProfileRecord],
+    reports: list[CommunityReportRecord],
+    claims: list[ClaimRecord],
+    max_tokens: int,
+) -> tuple[list[EntityProfileRecord], list[CommunityReportRecord], list[ClaimRecord]]:
+    """Drop low-priority context items until the rendered prompt fits ``max_tokens``.
+
+    Order of preservation (highest first):
+
+    1. The single highest-PageRank entity profile (always kept; even when
+       the budget is below this single item the synthesis path still
+       receives a non-empty graph context rather than silent fallback).
+    2. Remaining entity profiles (already PageRank-sorted).
+    3. Community reports (already community-id-sorted).
+    4. Claims (sorted by descending confidence).
+
+    Truncation runs from low priority upward: claims first, then reports,
+    then trailing profiles.
+    """
+    encoder = tiktoken.get_encoding(_TOKEN_ENCODING_NAME)
+
+    def fits(
+        p: list[EntityProfileRecord], r: list[CommunityReportRecord], c: list[ClaimRecord]
+    ) -> bool:
+        rendered = format_graph_context_prompt(
+            GraphContext(
+                level="community" if r else "entity",
+                entity_profiles=p,
+                community_reports=r,
+                claims=c,
+                expansion_hops=0,
+            )
+        )
+        return len(encoder.encode(rendered)) <= max_tokens
+
+    sorted_claims = sorted(claims, key=lambda c: c.confidence, reverse=True)
+
+    while sorted_claims and not fits(profiles, reports, sorted_claims):
+        sorted_claims.pop()
+    if fits(profiles, reports, sorted_claims):
+        return profiles, reports, sorted_claims
+
+    while reports and not fits(profiles, reports, sorted_claims):
+        reports.pop()
+    if fits(profiles, reports, sorted_claims):
+        return profiles, reports, sorted_claims
+
+    while len(profiles) > 1 and not fits(profiles, reports, sorted_claims):
+        profiles.pop()
+    return profiles, reports, sorted_claims

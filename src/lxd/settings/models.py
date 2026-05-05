@@ -304,6 +304,7 @@ class KnowledgeGraphConfig(BaseModel):
     max_entity_context: int = Field(default=5, gt=0)
     max_community_context: int = Field(default=3, gt=0)
     max_claim_context: int = Field(default=10, gt=0)
+    max_graph_context_tokens: int = Field(default=1500, gt=0)
 
 
 class MCPConfig(BaseModel):
