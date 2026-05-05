@@ -1,10 +1,10 @@
-# LxD Machine — SOTA Implementation Plan (16 items)
+# LxD Machine — SOTA Implementation Plan (15 items)
 
 ## Context
 
 A 2026-05-05 critical audit identified 20 architectural and code-quality gaps across retrieval, knowledge-graph signal use, code structure, robustness, and observability. The audit grounded each finding in `file:line` references; an Explore-agent pass against the live codebase has now confirmed exact integration points for every item.
 
-This plan organises the 16 remaining items (items #6, #14, #4, and #13 were all struck 2026-05-05 — #6 was a measurement chore not a SOTA improvement; #14 and #4 were remote-replacement proposals incompatible with the local-first design; #13 would collapse two of five RRF lanes and lose user-tunable fusion weights) into a multi-session implementation schedule prioritised by **return on investment** (impact ÷ effort), with one structural sequencing rule: **foundation before refinement**. Dead-code removal and architectural consolidation precede new features so we don't refactor newly-added code twice.
+This plan organises the 15 remaining items (items #6, #14, #4, #13, and #20 were all struck 2026-05-05 — #6 was a measurement chore not a SOTA improvement; #14 and #4 were remote-replacement proposals incompatible with the local-first design; #13 would collapse two of five RRF lanes; #20 t-strings add syntax noise without a renderer to back the safety claims) into a multi-session implementation schedule prioritised by **return on investment** (impact ÷ effort), with one structural sequencing rule: **foundation before refinement**. Dead-code removal and architectural consolidation precede new features so we don't refactor newly-added code twice.
 
 **Important — measurement is the user's call, not a plan-imposed gate.** This plan does NOT run ingest, does NOT capture eval baselines, and does NOT impose `pixi run eval` as a CI gate. Each item's verification is code-level: lint, typecheck, targeted tests, manual MCP smoke where applicable. The user runs ingest and eval when they choose; quality measurement is layered on top of this work, not gated by it.
 
@@ -434,13 +434,20 @@ This is the same kind of audit recommendation that `[#4]` and `[#14]` were: a ge
 
 ---
 
-#### `[#20]` PEP 750 t-string prompts
+#### `[#20]` ❌ STRUCK 2026-05-05 — PEP 750 t-strings only buy safety with a renderer
 
-**Why**: t-strings give automatic interpolation safety and structured logging integration. Refactor `_build_prompt` and the `_RELATION_BASE_PROMPT` / `_CLAIM_BASE_PROMPT` builders.
+The audit framing claimed "automatic interpolation safety and structured logging integration". That is only true when t-strings are paired with a **renderer** that walks the `Template` object's parts and applies interpolation-time transforms (SQL parameter escaping, HTML attribute escaping, prompt-injection sanitisation, structured-log key extraction). PEP 750 itself is just the syntax + the `Template` / `Interpolation` types in `string.templatelib`.
 
-**Files**: `src/lxd/synthesis/answering.py:_build_prompt`, `src/lxd/ingest/relations.py:_RELATION_BASE_PROMPT`, `src/lxd/ingest/claims.py:_CLAIM_BASE_PROMPT`.
+This codebase has none of those needs:
 
-**Effort**: 3 h.
+- **No SQL string interpolation** — every query goes through `?`-parameter placeholders or the safe `lxd.stores.sql_helpers.in_clause(N)` builder.
+- **No HTML rendering** — output is structured JSON / Markdown / MCP envelopes.
+- **No prompt-injection sanitisation today, and adding it is research-territory** — there is no canonical OWASP-style escaper for LLM prompts; "safe interpolation" of `user_question` into a system prompt is a quality/policy decision, not a syntax decision.
+- **structlog integration with t-strings** — structlog already accepts kwargs (`_log.warning("event", key=value)`); t-strings would be a sideways step, not a SOTA win.
+
+Mechanical `f"..."` → `t"..."` conversion would add syntax noise without any safety property. Per the no-half-implementation rule, ship a renderer-backed t-string layer when there is a concrete safety requirement that needs it (prompt-injection mitigation, etc.) — until then, f-strings are the right tool.
+
+Same shape as `[#4]`, `[#13]`, `[#14]`: a generic SOTA-stack pattern that doesn't fit the project's actual needs. Permanently rejected; no backlog entry — re-introduce only when paired with a concrete safety requirement.
 
 ---
 
@@ -459,7 +466,7 @@ Sessions are ordered for clean ROI sequencing; each ends with a green build + co
 | **7**  | **Persistent breaker + sqlite.py split**    | `#10`, `#7` (callers update; no `__init__.py` re-export façade)                                                                   | 6 h                    |
 | **8**  | **Backend dispatch refactor**               | `#8` (after `#7` so the new modules absorb the change cleanly)                                                                    | 2 h                    |
 | **9**  | **Advanced retrieval**                      | `#9`, `#17`                                                                                                                       | 10 h (split if needed) |
-| **10** | **Polish + Python 3.14 modernisation**      | `#16`, `#18`, `#19`, `#20` (`#13` struck — see above)                                                                              | 10 h (split if needed) |
+| **10** | **Polish + Python 3.14 modernisation**      | `#16`, `#18`, `#19` (`#13` and `#20` struck — see above)                                                                          | 8 h                    |
 
 **Total: ~55 h, 9 sessions.** Realistic for ~2 weeks of focused work, ~4 weeks part-time.
 
@@ -511,7 +518,7 @@ Sessions are ordered for clean ROI sequencing; each ends with a green build + co
 [ ] S10.2 [#16] Property-based tests for RRF / lexical / chunking
 [ ] S10.3 [#18] `asyncio.TaskGroup` in `llm_client.py`
 [ ] S10.4 [#19] `@override` / `Self` / PEP 695 `type` aliases sweep
-[ ] S10.5 [#20] PEP 750 t-string prompts in synthesis + extraction
+[~] S10.5 [#20] **STRUCK 2026-05-05** — t-strings without a renderer add syntax noise, not safety. See item header.
 [ ] S10.6 Commit: "Native hybrid query + polish + Python 3.14 idioms"
 ```
 
@@ -566,7 +573,7 @@ mcp-client get_community_context --entity_id "addie-model"
 | #17  | `src/lxd/retrieval/query_pipeline.py:206`, new `src/lxd/retrieval/hyde.py`                                                                         |
 | #18  | `src/lxd/ingest/llm_client.py:254`                                                                                                                 |
 | #19  | `src/lxd/stores/llm_jobs.py:32`, `src/lxd/domain/status.py`, settings models                                                                       |
-| #20  | `src/lxd/synthesis/answering.py:_build_prompt`, `src/lxd/ingest/relations.py:_RELATION_BASE_PROMPT`, `src/lxd/ingest/claims.py:_CLAIM_BASE_PROMPT` |
+| #20  | ❌ struck — t-strings without a renderer add syntax noise                                                                                          |
 
 ---
 
