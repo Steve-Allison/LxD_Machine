@@ -17,6 +17,7 @@ from lxd.domain.citations import make_citation_label
 from lxd.domain.ids import blake3_hex, make_chunk_id
 from lxd.domain.status import LifecycleStatus, RetrievalStatus
 from lxd.ingest.assets import infer_asset_parent
+from lxd.ingest.budget import BudgetExceededError, IngestBudgetTracker
 from lxd.ingest.chunking import (
     TextChunk,
     build_tokenizer,
@@ -179,6 +180,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
     automaton = build_automaton(plan.ontology.matcher_records)
     valid_predicates = build_valid_predicates(plan.ontology.relation_records)
     slug_index = build_slug_index(plan.ontology.entity_definitions)
+    budget_tracker = IngestBudgetTracker(config.ingest_budget)
     wiki_dangling_total: set[str] = set()
     wiki_pages_without_subject_total: set[str] = set()
     store_paths = build_store_paths(config.paths.data_path)
@@ -425,6 +427,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                             automaton=automaton,
                             valid_predicates=valid_predicates,
                             slug_index=slug_index,
+                            budget_tracker=budget_tracker,
                             cache_table=cache_table,
                         )
                         cache_hit_total += file_cache_hits
@@ -588,6 +591,28 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                 embedding_cache_misses=cache_miss_total,
             )
             raise
+        except BudgetExceededError as exc:
+            failure_notes = [
+                *warnings,
+                f"aborted: {exc}",
+                f"llm_calls_at_abort={budget_tracker.llm_calls}",
+            ]
+            finish_ingest_run(
+                sqlite_connection,
+                run_id=run_id,
+                finished_at=_utc_now(),
+                status="aborted_budget",
+                files_completed=files_completed,
+                searchable_files_rebuilt=searchable_files_rebuilt,
+                asset_files_processed=asset_files_processed,
+                unchanged_files_skipped=unchanged_files_skipped,
+                failed_files=failed_files,
+                chunks_written=chunks_written,
+                notes=failure_notes,
+                embedding_cache_hits=cache_hit_total,
+                embedding_cache_misses=cache_miss_total,
+            )
+            raise
         except _RECOVERABLE_SOURCE_ERRORS as exc:
             failure_notes = [*warnings, f"fatal: {exc}"]
             finish_ingest_run(
@@ -691,6 +716,7 @@ def _build_source_records(
     automaton: object,
     valid_predicates: frozenset[str],
     slug_index: dict[str, str],
+    budget_tracker: IngestBudgetTracker,
     cache_table: object | None = None,
 ) -> tuple[
     list[ChunkRecord],
@@ -775,6 +801,11 @@ def _build_source_records(
             for mention in detect_mentions(chunk.text, automaton)
         )
         mention_records.extend(chunk_mentions)
+        will_call_llm = len(
+            {m.entity_id for m in chunk_mentions}
+        ) >= config.relation_extraction.min_entity_mentions and bool(valid_predicates)
+        if will_call_llm:
+            budget_tracker.check()
         relation_records.extend(
             extract_relations_for_chunk(
                 chunk_id=chunk_record.chunk_id,
@@ -786,6 +817,8 @@ def _build_source_records(
                 config=config,
             )
         )
+        if will_call_llm:
+            budget_tracker.record_llm_call()
     wiki_outcome = derive_wiki_link_relations(
         chunk_records=chunk_records,
         slug_index=slug_index,

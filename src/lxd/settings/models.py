@@ -102,6 +102,27 @@ class OntologyConfig(BaseModel):
     ignore_names: list[str]
 
 
+class IngestBudget(BaseModel):
+    """Per-run ingest cost ceiling.
+
+    A runaway ``--full`` ingest against a large corpus can burn LLM-API
+    spend before any error-class circuit-breaker trips, because relation
+    extraction makes one LLM call per qualifying chunk regardless of
+    success. The budget tracker counts those calls and aborts the run
+    when the configured ceiling is reached, so an over-large corpus or
+    a misconfigured ``min_entity_mentions`` cannot keep spending.
+
+    Currently tracks **only LLM call count** (relation extraction during
+    ingest). Embedding-token tracking and per-call cost estimation are
+    not yet wired through and remain a Tier 7 backlog item; for embedding
+    spend, set conservative limits via your provider's account dashboard.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    max_llm_calls_per_run: int | None = None
+
+
 class RetrievalConfig(BaseModel):
     """Dense retrieval and fusion weighting parameters."""
 
@@ -320,6 +341,7 @@ class RuntimeConfig(BaseModel):
     relation_extraction: RelationExtractionConfig = Field(default_factory=RelationExtractionConfig)
     synthesis: SynthesisConfig
     knowledge_graph: KnowledgeGraphConfig = Field(default_factory=KnowledgeGraphConfig)
+    ingest_budget: IngestBudget = Field(default_factory=IngestBudget)
     mcp: MCPConfig
     logging: LoggingConfig
     openai: OpenAIEmbeddingConfig | None = None
