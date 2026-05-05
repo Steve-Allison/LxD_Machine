@@ -12,8 +12,8 @@
 ### Implementation Notes
 
 - **Community detection:** Louvain via NetworkX selected as default. graspologic (Leiden) was removed from pixi.toml due to irreconcilable dependency conflict with fastmcp (beartype version clash). The Leiden codepath remains in `communities.py` with ImportError fallback for manual installations.
-- **Synthesis integration:** Graph context is prepended to the synthesis prompt in `src/lxd/synthesis/answering.py` (not a separate `prompts.py` — see Section 5.6 notes).
-- **MCP tools:** 14 graph tools implemented (11 from Section 5.7 + `search_knowledge`, `search_knowledge_deep`, `get_graph_overview`). Total MCP tools: 20.
+- **Synthesis integration:** Graph context is prepended to the synthesis prompt in `src/lxd/synthesis/answering.py` (not a separate `prompts.py` — see Step 7 notes).
+- **MCP tools:** 14 graph tools implemented (11 from Step 8 + `search_knowledge`, `search_knowledge_deep`, `get_graph_overview`). Total MCP tools: 20.
 
 ---
 
@@ -23,7 +23,7 @@ No performance or capacity claim is accepted until benchmarked on the real corpu
 
 - Community detection algorithm (Leiden vs Louvain) benchmarked on the actual combined entity graph before committing
 - Centrality computation time measured on the real graph before committing to all 5 metrics
-- Claim extraction pilot: 50 chunks through GPT-4o-mini before committing to full extraction — quality criteria defined in Phase 5.0 acceptance
+- Claim extraction pilot: 50 chunks through GPT-4o-mini before committing to full extraction — quality criteria defined in Step 1 acceptance
 - Entity summary deterministic generation verified against 10 entities before full build
 - Optional LLM enrichment measured on pilot batch of 10 entities for quality comparison
 - Query routing thresholds tuned against the eval set — no threshold is accepted without eval evidence
@@ -32,7 +32,7 @@ No performance or capacity claim is accepted until benchmarked on the real corpu
 
 ## 2. Tech Stack Additions
 
-- **`graspologic >=3.4`** for Leiden community detection (Rust-backed via `graspologic-native`, does NOT require igraph). If too heavy, fall back to `networkx.algorithms.community.louvain_communities` (zero new deps). Decision made in Phase 5.2 benchmarking.
+- **`graspologic >=3.4`** for Leiden community detection (Rust-backed via `graspologic-native`, does NOT require igraph). If too heavy, fall back to `networkx.algorithms.community.louvain_communities` (zero new deps). Decision made in Step 3 benchmarking.
 - No other new runtime dependencies. NetworkX 3.6+ provides all centrality and path algorithms. LLM calls use existing OpenAI client with Ollama fallback.
 
 ### Verified API Constraints
@@ -219,7 +219,7 @@ CREATE INDEX IF NOT EXISTS idx_relation_evidence_chunk ON relation_evidence(chun
 
 **ID generation:** `evidence_id = blake3(relation_id + chunk_id)`. One evidence row per (canonical triple × chunk) pair.
 
-**Lifecycle:** Both `relations` and `relation_evidence` are **derived tables** — fully rebuilt from `extracted_relations` during the graph build (Phase 5.3). No `superseded_at` column, no soft-delete: latest-only model means truncate and rebuild. Between builds, FK CASCADE on `chunk_id` cleans up dangling evidence if a chunk is deleted during re-ingest. FK CASCADE on `relation_id` ensures evidence is removed if its parent relation disappears.
+**Lifecycle:** Both `relations` and `relation_evidence` are **derived tables** — fully rebuilt from `extracted_relations` during the graph build (Step 4). No `superseded_at` column, no soft-delete: latest-only model means truncate and rebuild. Between builds, FK CASCADE on `chunk_id` cleans up dangling evidence if a chunk is deleted during re-ingest. FK CASCADE on `relation_id` ensures evidence is removed if its parent relation disappears.
 
 ### 3.7 `graph_build_state`
 
@@ -296,7 +296,7 @@ Each entity embedding is the mean of the embeddings of the top N chunks (by ment
 
 ## 5. Phase Order
 
-### Phase 5.0 — Claim Extraction
+### Step 1 — Claim Extraction
 
 Extract fine-grained assertions from chunks. Claims are the evidence layer that makes entity and community summaries meaningful.
 
@@ -337,9 +337,9 @@ Return JSON: {"claims": [{"claim_text": "...", "subject": "entity_id or null", "
 
 ---
 
-### Phase 5.1 — Combined Entity Graph + Centrality
+### Step 2 — Combined Entity Graph + Centrality
 
-Merge ontology edges + corpus relations into one weighted `NetworkX.MultiDiGraph`. Compute all centrality metrics. **Can run in parallel with Phase 5.0.**
+Merge ontology edges + corpus relations into one weighted `NetworkX.MultiDiGraph`. Compute all centrality metrics. **Can run in parallel with Step 1.**
 
 **New:** `src/lxd/ontology/entity_graph.py`
 **Modified:** `src/lxd/stores/sqlite.py`, `src/lxd/stores/models.py`
@@ -347,9 +347,9 @@ Merge ontology edges + corpus relations into one weighted `NetworkX.MultiDiGraph
 **Entity graph construction:**
 - Load ontology `MultiDiGraph` (existing)
 - Load `extracted_relations` (per-chunk rows) where `confidence >= config.knowledge_graph.min_relation_confidence`
-- Group by `(subject_entity_id, predicate, object_entity_id)` — same grouping key as the canonical `relation_id` in Phase 5.3
+- Group by `(subject_entity_id, predicate, object_entity_id)` — same grouping key as the canonical `relation_id` in Step 4
 - For each unique triple, add a single edge with `weight = max(confidence)` across all supporting rows, `origin_kind="corpus"`, `support_count = len(rows)`
-- This in-memory deduplication is consistent with but independent of Phase 5.3's consolidation into the `relations` table (both phases can run in parallel because both read from the same source: `extracted_relations`)
+- This in-memory deduplication is consistent with but independent of Step 4's consolidation into the `relations` table (both phases can run in parallel because both read from the same source: `extracted_relations`)
 
 **Centrality computation (5 metrics on the directed MultiDiGraph):**
 - **PageRank** (`networkx.pagerank`) — works natively on MultiDiGraph; multigraph edge weights are summed automatically
@@ -366,11 +366,11 @@ Merge ontology edges + corpus relations into one weighted `NetworkX.MultiDiGraph
 - Benchmark centrality computation time on the real graph (Rule Zero — no hard gate until measured)
 - Eigenvector centrality uses `_numpy` variant — verify convergence on the real graph
 
-**Dependencies:** the ingest pipeline (extracted relations must exist). Does NOT depend on Phase 5.0 (claims).
+**Dependencies:** the ingest pipeline (extracted relations must exist). Does NOT depend on Step 1 (claims).
 
 ---
 
-### Phase 5.2 — Community Detection
+### Step 3 — Community Detection
 
 Partition entities into communities. Store assignments.
 
@@ -396,13 +396,13 @@ Partition entities into communities. Store assignments.
 - Benchmark report records algorithm, resolution, community count, modularity, and runtime
 - Expected: 10–40 communities
 
-**Dependencies:** Phase 5.1 (needs combined entity graph).
+**Dependencies:** Step 2 (needs combined entity graph).
 
 ---
 
-### Phase 5.3 — Relations Consolidation + Evidence Provenance
+### Step 4 — Relations Consolidation + Evidence Provenance
 
-Consolidate per-chunk `extracted_relations` into canonical `relations` table and populate `relation_evidence` with per-chunk provenance. **Can run in parallel with 5.0 and 5.1** (only depends on the ingest pipeline data).
+Consolidate per-chunk `extracted_relations` into canonical `relations` table and populate `relation_evidence` with per-chunk provenance. **Can run in parallel with Steps 1 and 2** (only depends on the ingest pipeline data).
 
 **New:** `src/lxd/ontology/evidence.py`
 **Modified:** `src/lxd/ingest/relations.py`, `src/lxd/stores/sqlite.py`
@@ -439,11 +439,11 @@ Truncate `relation_evidence` table, insert all evidence rows.
 - `relations.support_count` matches actual evidence row count for each `relation_id`
 - Full rebuild from `extracted_relations` completes without LLM calls (pure SQLite read/write)
 
-**Dependencies:** the ingest pipeline only (`extracted_relations`, `chunk_rows`, `mention_rows`). Does NOT depend on Phase 5.0 (claims) or Phase 5.1 (combined graph).
+**Dependencies:** the ingest pipeline only (`extracted_relations`, `chunk_rows`, `mention_rows`). Does NOT depend on Step 1 (claims) or Step 2 (combined graph).
 
 ---
 
-### Phase 5.4 — Entity Profiles (Deterministic)
+### Step 5 — Entity Profiles (Deterministic)
 
 Build a complete profile for each entity from graph structure. No LLM required. Entity embeddings computed and stored in LanceDB.
 
@@ -453,10 +453,10 @@ Build a complete profile for each entity from graph structure. No LLM required. 
 Per entity, assemble deterministically:
 
 - Label, aliases, `entity_type`, and `domain` (from ontology YAML — persisted on profile)
-- Centrality scores (from Phase 5.1)
-- Community assignment (from Phase 5.2)
-- Top predicates by frequency (from canonical `relations` table — Phase 5.3)
-- Top claims (from `claims` table, ranked by confidence — Phase 5.0)
+- Centrality scores (from Step 2)
+- Community assignment (from Step 3)
+- Top predicates by frequency (from canonical `relations` table — Step 4)
+- Top claims (from `claims` table, ranked by confidence — Step 1)
 - `chunk_count` (from `mention_rows` — distinct chunk_ids)
 - `doc_count` (`COUNT(DISTINCT source_rel_path)` across chunks mentioning this entity, joined via `mention_rows`)
 - `mention_count` (from `mention_rows`)
@@ -488,13 +488,13 @@ Key claims: {top_3_claims_by_confidence}.
 - Incremental rebuild skips unchanged entities
 - Zero LLM calls. Zero API cost.
 
-**Dependencies:** Phases 5.0 (claims for `top_claims`), 5.1 (centrality), 5.2 (communities), 5.3 (canonical `relations` for `top_predicates`).
+**Dependencies:** Steps 1 (claims for `top_claims`), 2 (centrality), 3 (communities), 4 (canonical `relations` for `top_predicates`).
 
 ---
 
-### Phase 5.5 — Optional LLM Summary Enrichment
+### Step 6 — Optional LLM Summary Enrichment
 
-Generate richer prose summaries via GPT-4o-mini for entities and communities. **Entirely optional.** The system is fully functional with deterministic summaries from Phase 5.4.
+Generate richer prose summaries via GPT-4o-mini for entities and communities. **Entirely optional.** The system is fully functional with deterministic summaries from Step 5.
 
 **Modified:** `src/lxd/ontology/profiles.py`, `src/lxd/stores/sqlite.py`
 
@@ -516,11 +516,11 @@ Per community (where `llm_summary IS NULL` or `source_hash` changed):
 - Incremental rebuild skips unchanged entities/communities
 - CLI flag: `pixi run build-graph --enrich`
 
-**Dependencies:** Phase 5.4.
+**Dependencies:** Step 5.
 
 ---
 
-### Phase 5.6 — Graph-Aware Query Routing
+### Step 7 — Graph-Aware Query Routing
 
 Multi-layer context augmentation for synthesis. Graph context is **additive** — it frames chunk evidence, it does not replace it.
 
@@ -584,13 +584,13 @@ The synthesis module (`src/lxd/synthesis/answering.py`) is updated to accept and
 - No regression on eval set with graph routing active
 - Eval set extended with 10 graph-specific questions to validate graph routing quality
 
-**Dependencies:** Phases 5.0–5.4.
+**Dependencies:** Steps 1–5.
 
 ---
 
-### Phase 5.7 — MCP Tools
+### Step 8 — MCP Tools
 
-11 new tools. **Can run in parallel with 5.6.**
+11 new tools. **Can run in parallel with Step 7.**
 
 | Tool | Returns |
 |---|---|
@@ -610,7 +610,7 @@ All tools degrade gracefully when graph features aren't built (empty results, no
 
 ---
 
-### Phase 5.8 — CLI, State Machine & Maintenance
+### Step 9 — CLI, State Machine & Maintenance
 
 **New:** `src/lxd/cli/graph.py`
 
@@ -649,29 +649,29 @@ Note: `entity_profiles` phase includes entity embedding computation (stored in L
 ## 6. Dependency Graph
 
 ```
-Phase 5.0 (Claims)  ----------+
+Step 1 (Claims)  ----------+
                                |
-Phase 5.1 (Entity Graph)      |    Phase 5.3 (Relations + Evidence)
+Step 2 (Entity Graph)      |    Step 4 (Relations + Evidence)
     |                          |        [needs the ingest pipeline only]
-    +---> Phase 5.2 (Communities)      |
+    +---> Step 3 (Communities)      |
     |                          |       |
     +--------------------------+-------+
     |
     v
-Phase 5.4 (Entity Profiles)  [needs 5.0 + 5.1 + 5.2 + 5.3]
+Step 5 (Entity Profiles)  [needs Steps 1 + 2 + 3 + 4]
     |
-    +---> Phase 5.5 (Optional LLM Enrichment)
+    +---> Step 6 (Optional LLM Enrichment)
     |
-    +---> Phase 5.6 (Query Routing)          [needs 5.0–5.4]
-    +---> Phase 5.7 (MCP Tools)              [needs 5.0–5.4]
-    +---> Phase 5.8 (CLI & State Machine)    [needs 5.0–5.4]
+    +---> Step 7 (Query Routing)          [needs Steps 1–5]
+    +---> Step 8 (MCP Tools)              [needs Steps 1–5]
+    +---> Step 9 (CLI & State Machine)    [needs Steps 1–5]
 ```
 
-- **5.0, 5.1, and 5.3 all run in parallel** — no mutual dependencies; all only need the ingest pipeline data
-- 5.2 runs after 5.1 (needs combined entity graph)
-- 5.4 waits for **all of** 5.0, 5.1, 5.2, and 5.3 (needs claims + centrality + communities + canonical relations)
-- 5.6, 5.7, 5.8 run in parallel after 5.4
-- 5.5 is optional and can run any time after 5.4
+- **Steps 1, 2, and 4 all run in parallel** — no mutual dependencies; all only need the ingest pipeline data
+- Step 3 runs after Step 2 (needs combined entity graph)
+- Step 5 waits for **all of** Steps 1, 2, 3, and 4 (needs claims + centrality + communities + canonical relations)
+- Steps 7, 8, 9 run in parallel after Step 5
+- Step 6 is optional and can run any time after Step 5
 - **Default serial execution order** (state machine): evidence → claims → entity_graph → centrality → communities → entity_profiles → community_reports → complete
 
 ---
@@ -801,7 +801,7 @@ All graph tables store exactly one row per entity/community/relation. Rebuilds o
 
 | Risk | Mitigation |
 |---|---|
-| Degenerate communities (1 giant or all singletons) | Sweep 3–5 resolution values in Phase 5.2; select based on modularity |
+| Degenerate communities (1 giant or all singletons) | Sweep 3–5 resolution values in Step 3; select based on modularity |
 | Claim extraction noise / hallucinated claims | Confidence threshold; pilot batch with quality criteria (≥80% grounded, ≥70% entity-linked, avg ≥2/chunk) |
 | Claim extraction cost higher than estimated | Incremental after first build; can reduce by raising `claim_extraction_min_mentions` |
 | `graspologic` heavy deps | Fall back to `networkx.algorithms.community.louvain_communities` (zero new deps, supports directed graphs) |
