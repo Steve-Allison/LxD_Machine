@@ -352,9 +352,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                     if full_rebuild
                     else _find_move_source(scanned, existing_by_hash, scanned_rel_paths)
                 )
-                document_id = _resolve_document_id(
-                    scanned, previous_manifest, move_source, timestamp
-                )
+                document_id = _resolve_document_id(scanned, previous_manifest, move_source)
                 processing_manifest = _manifest_record(
                     scanned=scanned,
                     document_id=document_id,
@@ -1014,22 +1012,18 @@ def _resolve_document_id(
     scanned: ScannedCorpusFile,
     existing_manifest: ManifestRecord | None,
     move_source: ManifestRecord | None,
-    timestamp: str,
 ) -> str:
     """Return a deterministic document_id for a scanned source.
 
-    The `timestamp` parameter is retained for signature stability with legacy
-    callers but is intentionally excluded from the hash: document_id must be a
-    pure function of content identity (relative path + content hash), so that
-    repeated full rebuilds yield identical identifiers and downstream tables
-    keyed on document_id (claims, relations, profiles, communities) remain
-    stable across runs.
+    `document_id` is a pure function of content identity (relative path +
+    content hash) so that repeated full rebuilds yield identical identifiers
+    and downstream tables keyed on `document_id` (claims, relations,
+    profiles, communities) remain stable across runs.
     """
     if existing_manifest is not None and existing_manifest.document_id is not None:
         return existing_manifest.document_id
     if move_source is not None and move_source.document_id is not None:
         return move_source.document_id
-    del timestamp
     return blake3_hex(scanned.relative_path, scanned.content_hash)
 
 

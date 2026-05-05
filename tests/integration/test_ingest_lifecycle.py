@@ -1,22 +1,16 @@
-"""Regression tests for Wave 0 P0 correctness fixes.
+"""Tests for ingest-lifecycle invariants.
 
-Covers three bugs introduced into the ingest/store layer:
+Covers:
 
-1. ``load_manifest_by_content_hash`` previously ordered rows by a non-existent
-   column (``file_rel_path``) and raised ``sqlite3.OperationalError`` the first
-   time an incremental ingest exercised the move-detection branch.
-2. The ingest pipeline's deletion branch previously passed the absolute path
-   (``missing_manifest.absolute_path``) to ``delete_sqlite_source``, which
-   filters by ``source_rel_path``; the call silently no-opped, leaving
-   orphan manifest/chunk rows and causing drift against LanceDB.
-3. ``_resolve_document_id`` previously mixed the ingest wall-clock timestamp
-   into the BLAKE3 hash, so two full rebuilds of the same corpus produced
-   different ``document_id`` values; downstream tables keyed on
-   ``document_id`` (claims, relations, profiles, communities) could not be
-   safely rebuilt.
-
-Each test exercises the fix directly against a temp SQLite instance or a
-pure-Python call, to catch regressions without the full ingest stack.
+- ``load_manifest_by_content_hash`` orders by ``source_rel_path`` so the
+  incremental move-detection branch finds existing manifests.
+- The ingest deletion branch passes ``source_rel_path`` (not the absolute
+  path) to ``delete_sqlite_source``, so missing-from-corpus files are
+  marked deleted in SQLite and the LanceDB rows are dropped.
+- ``_resolve_document_id`` is a pure function of relative path + content
+  hash, so full rebuilds yield identical ``document_id`` values and
+  downstream tables (claims, relations, profiles, communities) remain
+  stable.
 """
 
 from __future__ import annotations
@@ -137,12 +131,7 @@ def test_delete_source_removes_manifest_when_given_relative_path(tmp_path: Path)
 
 
 def test_resolve_document_id_is_deterministic_across_full_rebuilds(tmp_path: Path) -> None:
-    """Regression: ``document_id`` must be a pure function of path + content hash.
-
-    The pre-fix implementation folded the ingest wall-clock timestamp into the
-    BLAKE3 hash; two full rebuilds of the same corpus produced different IDs
-    and broke every downstream table keyed on ``document_id``.
-    """
+    """`document_id` must be a pure function of path + content hash."""
     scanned = ScannedCorpusFile(
         absolute_path=tmp_path / "Guides" / "doc.md",
         relative_path="Guides/doc.md",
@@ -156,16 +145,14 @@ def test_resolve_document_id_is_deterministic_across_full_rebuilds(tmp_path: Pat
         scanned,
         existing_manifest=None,
         move_source=None,
-        timestamp="2026-03-27T00:00:00+00:00",
     )
     second = _resolve_document_id(
         scanned,
         existing_manifest=None,
         move_source=None,
-        timestamp="2027-01-01T12:34:56+00:00",
     )
 
-    assert first == second, "document_id must not depend on wall-clock timestamp."
+    assert first == second
 
 
 def test_resolve_document_id_prefers_existing_manifest_id(tmp_path: Path) -> None:
@@ -189,7 +176,6 @@ def test_resolve_document_id_prefers_existing_manifest_id(tmp_path: Path) -> Non
         scanned,
         existing_manifest=existing,
         move_source=None,
-        timestamp="2026-03-27T00:00:00+00:00",
     )
 
     assert resolved == "stable-doc-id"
