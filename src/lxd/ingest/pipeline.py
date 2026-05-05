@@ -48,6 +48,7 @@ from lxd.stores.lancedb import (
     connect_lancedb,
     load_vectors_by_chunk_ids,
     open_chunk_table,
+    refresh_fts_index,
 )
 from lxd.stores.lancedb import delete_source as delete_vector_source
 from lxd.stores.lancedb import (
@@ -516,6 +517,10 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                 embedding_cache_hits=cache_hit_total,
                 embedding_cache_misses=cache_miss_total,
             )
+            # Native LanceDB FTS does not auto-include rows added after
+            # index creation; rebuild the index once at the end of the run
+            # so retrieval BM25 sees every chunk written this run.
+            refresh_fts_index(vector_table)
             return IngestRunResult(
                 run_id=run_id,
                 summary=summary,

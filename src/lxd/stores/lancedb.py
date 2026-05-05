@@ -14,6 +14,7 @@ from lxd.stores.lance_sql import eq_clause, in_clause
 from lxd.stores.models import ChunkRecord, VectorSearchRecord
 
 _TABLE_NAME = "chunk_vectors"
+_FTS_FIELD = "text"
 _log = structlog.get_logger(__name__)
 
 
@@ -33,6 +34,12 @@ def connect_lancedb(path: Path) -> Any:
 def open_chunk_table(database: Any, *, vector_size: int) -> Any:
     """Open the chunk vector table, creating it when missing.
 
+    Also ensures the native LanceDB FTS index over the ``text`` column is
+    present so retrieval can issue BM25 queries without per-call setup.
+    The index is replaced (rebuilt) on each open: native LanceDB FTS does
+    not auto-include rows added after index creation, so retrieval needs a
+    fresh index for fairness against the latest writes.
+
     Args:
         database: Open LanceDB database handle.
         vector_size: Embedding vector length for schema creation.
@@ -41,15 +48,17 @@ def open_chunk_table(database: Any, *, vector_size: int) -> Any:
         Opened or newly created chunk table.
     """
     try:
-        return database.open_table(_TABLE_NAME)
+        table = database.open_table(_TABLE_NAME)
     except (FileNotFoundError, ValueError) as exc:
         if isinstance(exc, ValueError) and not _is_missing_table_error(exc):
             raise
-        return database.create_table(
+        table = database.create_table(
             _TABLE_NAME,
             schema=_chunk_table_schema(vector_size),
             mode="create",
         )
+    refresh_fts_index(table)
+    return table
 
 
 def reset_chunk_table(database: Any, *, vector_size: int) -> Any:
@@ -69,11 +78,28 @@ def reset_chunk_table(database: Any, *, vector_size: int) -> Any:
     except ValueError as exc:
         if not _is_missing_table_error(exc):
             raise
-    return database.create_table(
+    table = database.create_table(
         _TABLE_NAME,
         schema=_chunk_table_schema(vector_size),
         mode="create",
     )
+    refresh_fts_index(table)
+    return table
+
+
+def refresh_fts_index(table: Any) -> None:
+    """(Re)build the native LanceDB FTS index over the ``text`` column.
+
+    Native LanceDB FTS is incrementally appendable but does not
+    auto-include rows added after index creation; ingest calls this once
+    after persisting all chunks so retrieval BM25 sees every row. Calls
+    are idempotent: the index is replaced in place when it already exists
+    and created from scratch otherwise.
+
+    Args:
+        table: LanceDB chunk_vectors table.
+    """
+    table.create_fts_index(_FTS_FIELD, use_tantivy=False, replace=True)
 
 
 def replace_source_chunks(
@@ -108,48 +134,94 @@ def search_chunks(
     domain: str | None,
     limit: int,
 ) -> list[VectorSearchRecord]:
-    """Run dense retrieval, optional rerank, and fusion.
+    """Dense vector retrieval ordered by cosine distance.
 
     Args:
         table: LanceDB table storing chunk vectors.
-        query_vector: Embedded query vector for nearest-neighbor search.
+        query_vector: Embedded query vector for nearest-neighbour search.
         domain: Optional source domain filter.
         limit: Maximum number of records to return.
 
     Returns:
-        Vector search matches ordered by similarity.
+        Vector search matches ordered by similarity. ``score`` carries the
+        raw cosine distance (lower is closer); callers negate it when a
+        higher-is-better ordering is needed.
     """
     query = table.search(query_vector, vector_column_name="vector").metric("cosine")
     if domain is not None:
         query = query.where(eq_clause("source_domain", domain))
     rows = query.limit(limit).to_list()
-    records: list[VectorSearchRecord] = []
-    for row in rows:
-        score_value = row.get("_distance")
-        if not isinstance(score_value, (int, float)):
-            continue
-        records.append(
-            VectorSearchRecord(
-                chunk_id=str(row["chunk_id"]),
-                document_id=str(row["document_id"]),
-                source_rel_path=str(row["source_rel_path"]),
-                source_filename=str(row["source_filename"]),
-                source_type=str(row["source_type"]),
-                source_domain=str(row["source_domain"]),
-                source_hash=str(row["source_hash"]),
-                citation_label=str(row["citation_label"]),
-                chunk_index=int(row["chunk_index"]),
-                chunk_occurrence=int(row["chunk_occurrence"]),
-                token_count=int(row["token_count"]),
-                text=str(row["text"]),
-                score_hint=str(row["score_hint"]),
-                metadata_json=str(row["metadata_json"]),
-                score=float(score_value),
-                cited_sources=_decode_string_list(row.get("cited_sources_json")),
-                wiki_links=_decode_string_list(row.get("wiki_links_json")),
-            )
-        )
-    return records
+    return [
+        record
+        for record in (_row_to_vector_search_record(row, score_field="_distance") for row in rows)
+        if record is not None
+    ]
+
+
+def search_chunks_fts(
+    table: Any,
+    *,
+    query: str,
+    domain: str | None,
+    limit: int,
+) -> list[VectorSearchRecord]:
+    """BM25 full-text retrieval over the chunk ``text`` column.
+
+    The native LanceDB FTS index is built by :func:`open_chunk_table` /
+    :func:`refresh_fts_index`; queries here issue BM25 directly against
+    that index — no Python-side keyword counting, no IDF estimation by
+    hand, no length-normalisation guesswork.
+
+    Args:
+        table: LanceDB table storing chunk vectors.
+        query: Natural-language query string.
+        domain: Optional source domain filter.
+        limit: Maximum number of records to return.
+
+    Returns:
+        Chunks ordered by BM25 relevance (higher score = better match).
+        Returns an empty list when the query is empty or contains no
+        index-matching tokens.
+    """
+    cleaned = query.strip()
+    if not cleaned:
+        return []
+    fts_query = table.search(cleaned, query_type="fts")
+    if domain is not None:
+        fts_query = fts_query.where(eq_clause("source_domain", domain))
+    rows = fts_query.limit(limit).to_list()
+    return [
+        record
+        for record in (_row_to_vector_search_record(row, score_field="_score") for row in rows)
+        if record is not None
+    ]
+
+
+def _row_to_vector_search_record(
+    row: dict[str, Any], *, score_field: str
+) -> VectorSearchRecord | None:
+    score_value = row.get(score_field)
+    if not isinstance(score_value, (int, float)):
+        return None
+    return VectorSearchRecord(
+        chunk_id=str(row["chunk_id"]),
+        document_id=str(row["document_id"]),
+        source_rel_path=str(row["source_rel_path"]),
+        source_filename=str(row["source_filename"]),
+        source_type=str(row["source_type"]),
+        source_domain=str(row["source_domain"]),
+        source_hash=str(row["source_hash"]),
+        citation_label=str(row["citation_label"]),
+        chunk_index=int(row["chunk_index"]),
+        chunk_occurrence=int(row["chunk_occurrence"]),
+        token_count=int(row["token_count"]),
+        text=str(row["text"]),
+        score_hint=str(row["score_hint"]),
+        metadata_json=str(row["metadata_json"]),
+        score=float(score_value),
+        cited_sources=_decode_string_list(row.get("cited_sources_json")),
+        wiki_links=_decode_string_list(row.get("wiki_links_json")),
+    )
 
 
 def load_vectors_by_chunk_ids(table: Any, chunk_ids: list[str]) -> dict[str, list[float]]:

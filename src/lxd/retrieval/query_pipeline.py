@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import re
 import sqlite3
 from dataclasses import dataclass
 
@@ -14,7 +13,7 @@ from lxd.retrieval.expansion import expand_question
 from lxd.retrieval.graph_routing import build_graph_context, format_graph_context_prompt
 from lxd.retrieval.rerank import rerank_chunks
 from lxd.settings.models import RuntimeConfig
-from lxd.stores.lancedb import connect_lancedb, open_chunk_table
+from lxd.stores.lancedb import connect_lancedb, open_chunk_table, search_chunks_fts
 from lxd.stores.lancedb import search_chunks as search_vector_chunks
 from lxd.stores.sqlite import (
     StorePaths,
@@ -39,34 +38,7 @@ _MAX_LIMIT = 50
 _MIN_EVIDENCE_CHUNKS = 2
 _MIN_EVIDENCE_CHARS = 400
 _RRF_K = 20
-_QUERY_STOPWORDS = {
-    "a",
-    "an",
-    "are",
-    "about",
-    "cover",
-    "covers",
-    "define",
-    "describe",
-    "do",
-    "does",
-    "explain",
-    "is",
-    "mean",
-    "means",
-    "of",
-    "tell",
-    "the",
-    "what",
-}
-_GENERIC_QUERY_TERMS = {
-    "framework",
-    "instruction",
-    "model",
-    "principle",
-    "principles",
-    "theory",
-}
+_FTS_OVERFETCH_MULTIPLIER = 3
 
 
 @dataclass(frozen=True, slots=True)
@@ -183,10 +155,11 @@ def search_chunks(
     rerank_inputs = representative_candidates[:rerank_limit]
     reranked = rerank_chunks(question, rerank_inputs, config)
     relation_chunk_ids = _load_relation_chunk_ids(store_paths, expansion.matched_entity_ids)
+    lexical_rank = _fts_rank_map(table, question, domain, len(rerank_inputs))
     fused_prefix = _fuse_ranked_prefix(
-        question=question,
         dense_prefix=rerank_inputs,
         reranked_prefix=reranked.ranked,
+        lexical_rank=lexical_rank,
         lexical_fusion_weight=config.retrieval.lexical_fusion_weight,
         relation_fusion_weight=config.retrieval.relation_fusion_weight,
         relation_chunk_ids=relation_chunk_ids,
@@ -420,9 +393,9 @@ def _unique_source_prefix(ranked: list[RankedChunk], limit: int) -> list[RankedC
 
 def _fuse_ranked_prefix(
     *,
-    question: str,
     dense_prefix: list[RankedChunk],
     reranked_prefix: list[RankedChunk],
+    lexical_rank: dict[str, int],
     lexical_fusion_weight: float,
     relation_fusion_weight: float = 0.0,
     relation_chunk_ids: set[str] | None = None,
@@ -432,11 +405,7 @@ def _fuse_ranked_prefix(
     _relation_chunk_ids = relation_chunk_ids or set()
     dense_rank = {item.chunk_id: index for index, item in enumerate(dense_prefix, start=1)}
     rerank_rank = {item.chunk_id: index for index, item in enumerate(reranked_prefix, start=1)}
-    lexical_rank = {
-        item.chunk_id: index
-        for index, item in enumerate(_lexically_ranked(question, dense_prefix), start=1)
-    }
-    # Relation signal: chunks containing extracted relations for queried entities rank first
+    fallback_lexical_rank = len(dense_prefix) + 1
     relation_ranked = sorted(
         dense_prefix,
         key=lambda c: (0 if c.chunk_id in _relation_chunk_ids else 1, dense_rank[c.chunk_id]),
@@ -447,7 +416,10 @@ def _fuse_ranked_prefix(
         key=lambda item: (
             -(
                 _rrf_score(dense_rank[item.chunk_id])
-                + (lexical_fusion_weight * _rrf_score(lexical_rank[item.chunk_id]))
+                + (
+                    lexical_fusion_weight
+                    * _rrf_score(lexical_rank.get(item.chunk_id, fallback_lexical_rank))
+                )
                 + _rrf_score(rerank_rank.get(item.chunk_id, len(dense_prefix) + 1))
                 + (relation_fusion_weight * _rrf_score(relation_rank[item.chunk_id]))
             ),
@@ -456,53 +428,21 @@ def _fuse_ranked_prefix(
     )
 
 
-def _lexically_ranked(question: str, candidates: list[RankedChunk]) -> list[RankedChunk]:
-    return sorted(
-        candidates,
-        key=lambda item: -_lexical_signal_score(question, item),
-    )
+def _fts_rank_map(
+    table: object, question: str, domain: str | None, dense_prefix_size: int
+) -> dict[str, int]:
+    """Return ``chunk_id -> 1-based BM25 rank`` over the chunk_vectors FTS index.
 
-
-def _lexical_signal_score(question: str, candidate: RankedChunk) -> float:
-    significant_terms = _significant_query_terms(question)
-    if not significant_terms:
-        return 0.0
-    candidate_text = _normalize_ranking_text(
-        " ".join(
-            [
-                candidate.source_filename,
-                candidate.source_rel_path,
-                candidate.citation_label,
-                candidate.score_hint[:240],
-            ]
-        )
-    )
-    specific_terms = [term for term in significant_terms if term not in _GENERIC_QUERY_TERMS]
-    score = 0.0
-    for term in significant_terms:
-        if _contains_rank_term(candidate_text, term):
-            score += 5.0 if term in specific_terms else 0.5
-    if specific_terms and all(_contains_rank_term(candidate_text, term) for term in specific_terms):
-        score += 10.0
-    return score
-
-
-def _significant_query_terms(question: str) -> list[str]:
-    return [
-        term
-        for term in _normalize_ranking_text(question).split()
-        if len(term) >= 3 and term not in _QUERY_STOPWORDS
-    ]
-
-
-def _normalize_ranking_text(value: str) -> str:
-    normalized = value.casefold().replace("’", "'").replace("`", "'")
-    return re.sub(r"[^a-z0-9]+", " ", normalized).strip()
-
-
-def _contains_rank_term(normalized_text: str, term: str) -> bool:
-    padded_text = f" {normalized_text} "
-    return f" {term} " in padded_text
+    Overfetches to give chunks outside the dense top-N a chance to surface
+    via the lexical lane. Chunks not in the BM25 result get an implicit
+    fallback rank inside :func:`_fuse_ranked_prefix`, so they contribute
+    nothing to the lexical RRF lane rather than blocking it.
+    """
+    if dense_prefix_size <= 0:
+        return {}
+    fts_limit = min(_MAX_LIMIT, max(dense_prefix_size, 1) * _FTS_OVERFETCH_MULTIPLIER)
+    fts_hits = search_chunks_fts(table, query=question, domain=domain, limit=fts_limit)
+    return {hit.chunk_id: index for index, hit in enumerate(fts_hits, start=1)}
 
 
 def _rrf_score(rank: int) -> float:

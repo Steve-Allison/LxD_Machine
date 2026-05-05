@@ -66,24 +66,75 @@ def test_lancedb_search_and_domain_filter(tmp_path) -> None:
     assert [item.chunk_id for item in theory_hits] == ["chunk-theories"]
 
 
-def test_reset_chunk_table_ignores_missing_table() -> None:
-    class FakeDatabase:
-        def __init__(self) -> None:
-            self.drop_calls: list[str] = []
-            self.create_calls: list[tuple[str, str]] = []
+def test_reset_chunk_table_creates_when_no_prior_table_exists(tmp_path) -> None:
+    """``reset_chunk_table`` must succeed even when the table is missing —
+    the underlying ``drop_table`` raises and that error is swallowed."""
+    database = connect_lancedb(tmp_path / "lancedb")
+    table = reset_chunk_table(database, vector_size=3)
+    assert "chunk_vectors" in database.list_tables().tables
+    # Newly created table is empty and queryable.
+    assert table.count_rows() == 0
 
-        def drop_table(self, table_name: str) -> None:
-            self.drop_calls.append(table_name)
-            raise ValueError(f"Table '{table_name}' was not found")
 
-        def create_table(self, table_name: str, *, schema, mode: str):
-            self.create_calls.append((table_name, mode))
-            return {"name": table_name, "mode": mode, "schema": schema}
+def test_search_chunks_fts_returns_bm25_ordering(tmp_path) -> None:
+    """The FTS lane is BM25 over the ``text`` column, ordered by score."""
+    from lxd.stores.lancedb import search_chunks_fts
 
-    fake_database = FakeDatabase()
+    database = connect_lancedb(tmp_path / "lancedb")
+    table = reset_chunk_table(database, vector_size=3)
+    replace_source_chunks(
+        table,
+        "Theories/addie.md",
+        [
+            ChunkRecord(
+                chunk_id="addie-1",
+                document_id="d1",
+                source_rel_path="Theories/addie.md",
+                source_filename="addie.md",
+                source_type="markdown",
+                source_domain="theories",
+                source_hash="h1",
+                citation_label="Theories/addie.md#0",
+                chunk_index=0,
+                chunk_occurrence=0,
+                token_count=8,
+                text="ADDIE is a five-phase instructional design model.",
+                chunk_hash="ch-addie",
+                score_hint="ADDIE",
+                metadata_json="{}",
+                vector=[1.0, 0.0, 0.0],
+                embedding_model="test-embed",
+                embedding_dims=3,
+            ),
+            ChunkRecord(
+                chunk_id="kirkpatrick-1",
+                document_id="d2",
+                source_rel_path="Theories/kirkpatrick.md",
+                source_filename="kirkpatrick.md",
+                source_type="markdown",
+                source_domain="theories",
+                source_hash="h2",
+                citation_label="Theories/kirkpatrick.md#0",
+                chunk_index=0,
+                chunk_occurrence=0,
+                token_count=8,
+                text="Kirkpatrick describes four levels of training evaluation.",
+                chunk_hash="ch-kirk",
+                score_hint="Kirkpatrick",
+                metadata_json="{}",
+                vector=[0.0, 1.0, 0.0],
+                embedding_model="test-embed",
+                embedding_dims=3,
+            ),
+        ],
+    )
+    # The FTS index is auto-rebuilt on table open; rebuild explicitly so
+    # the just-added rows are visible.
+    from lxd.stores.lancedb import refresh_fts_index
 
-    table = reset_chunk_table(fake_database, vector_size=3)
-
-    assert fake_database.drop_calls == ["chunk_vectors"]
-    assert fake_database.create_calls == [("chunk_vectors", "create")]
-    assert table["name"] == "chunk_vectors"
+    refresh_fts_index(table)
+    hits = search_chunks_fts(table, query="ADDIE phase", domain=None, limit=5)
+    assert hits, "BM25 should match at least the ADDIE chunk."
+    assert hits[0].chunk_id == "addie-1"
+    # Empty query returns nothing rather than raising.
+    assert search_chunks_fts(table, query="   ", domain=None, limit=5) == []

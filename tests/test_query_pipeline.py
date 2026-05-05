@@ -6,7 +6,6 @@ from types import SimpleNamespace
 from lxd.app.status import current_ingest_config
 from lxd.retrieval.query_pipeline import (
     RankedChunk,
-    _lexical_signal_score,
     _merge_ranked_prefix,
     _unique_source_prefix,
 )
@@ -54,23 +53,6 @@ def test_unique_source_prefix_deduplicates_sources() -> None:
     prefix = _unique_source_prefix(ranked, 3)
 
     assert [item.chunk_id for item in prefix] == ["a1", "b1", "c1"]
-
-
-def test_lexical_signal_score_prefers_exact_named_source() -> None:
-    target = _chunk(
-        "target",
-        source_rel_path="Theories/theory_addie_model.md",
-        score_hint="ADDIE Model: A Comprehensive Summary of the Instructional Design Framework",
-    )
-    distractor = _chunk(
-        "other",
-        source_rel_path="Theories/Theory_John_Kellers_ARCS_model.md",
-        score_hint="ARCS Model: Motivation and instructional design",
-    )
-
-    assert _lexical_signal_score("What is the ADDIE model?", target) > _lexical_signal_score(
-        "What is the ADDIE model?", distractor
-    )
 
 
 def test_current_ingest_config_excludes_query_time_reranker_settings() -> None:
