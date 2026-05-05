@@ -58,7 +58,13 @@ class ManifestRecord:
 
 @dataclass(frozen=True, slots=True)
 class ChunkRecord:
-    """Persisted chunk row with embedding and source metadata."""
+    """Persisted chunk row with embedding and source metadata.
+
+    ``cited_sources`` and ``wiki_links`` are page-level fields populated from
+    wiki-style frontmatter (``**Sources**:``) and inline ``[[slug]]``
+    references. Every chunk in the same source page sees the same values;
+    consumers should not assume per-chunk granularity.
+    """
 
     chunk_id: str
     document_id: str
@@ -78,6 +84,8 @@ class ChunkRecord:
     vector: list[float]
     embedding_model: str
     embedding_dims: int
+    cited_sources: tuple[str, ...] = ()
+    wiki_links: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -187,7 +195,12 @@ class ExtractedRelationRecord:
 
 @dataclass(frozen=True, slots=True)
 class VectorSearchRecord:
-    """Vector search hit with source metadata."""
+    """Vector search hit with source metadata.
+
+    ``cited_sources`` and ``wiki_links`` are page-level signals carried
+    through from :class:`ChunkRecord`; default to empty when the underlying
+    chunk pre-dates schema v6 or comes from a non-wiki source.
+    """
 
     chunk_id: str
     document_id: str
@@ -204,6 +217,8 @@ class VectorSearchRecord:
     score_hint: str
     metadata_json: str
     score: float
+    cited_sources: tuple[str, ...] = ()
+    wiki_links: tuple[str, ...] = ()
 
 
 # ---------------------------------------------------------------------------

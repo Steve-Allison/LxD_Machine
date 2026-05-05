@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Any
 
@@ -144,6 +145,8 @@ def search_chunks(
                 score_hint=str(row["score_hint"]),
                 metadata_json=str(row["metadata_json"]),
                 score=float(score_value),
+                cited_sources=_decode_string_list(row.get("cited_sources_json")),
+                wiki_links=_decode_string_list(row.get("wiki_links_json")),
             )
         )
     return records
@@ -180,6 +183,23 @@ def load_vectors_by_chunk_ids(table: Any, chunk_ids: list[str]) -> dict[str, lis
     return result
 
 
+def _decode_string_list(value: object) -> tuple[str, ...]:
+    """Decode a JSON-array-of-strings column tolerantly.
+
+    LanceDB rows pre-dating the wiki swap may not carry the column at all
+    (returns ``None``), or carry an empty string. Both cases are fine.
+    """
+    if not value or not isinstance(value, str):
+        return ()
+    try:
+        parsed = json.loads(value)
+    except TypeError, ValueError:
+        return ()
+    if not isinstance(parsed, list):
+        return ()
+    return tuple(str(item) for item in parsed if isinstance(item, str))
+
+
 def _chunk_table_schema(vector_size: int) -> pa.Schema:
     return pa.schema(
         [
@@ -198,6 +218,8 @@ def _chunk_table_schema(vector_size: int) -> pa.Schema:
             pa.field("text", pa.string()),
             pa.field("score_hint", pa.string()),
             pa.field("metadata_json", pa.string()),
+            pa.field("cited_sources_json", pa.string()),
+            pa.field("wiki_links_json", pa.string()),
         ]
     )
 
@@ -219,6 +241,8 @@ def _chunk_record_to_row(record: ChunkRecord) -> dict[str, object]:
         "text": record.text,
         "score_hint": record.score_hint,
         "metadata_json": record.metadata_json,
+        "cited_sources_json": json.dumps(list(record.cited_sources)),
+        "wiki_links_json": json.dumps(list(record.wiki_links)),
     }
 
 

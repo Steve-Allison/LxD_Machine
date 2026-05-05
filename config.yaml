@@ -1,5 +1,10 @@
 paths:
-  corpus_path: Knowledge_Base
+  # Curated wiki — synthesised, deduplicated, cross-linked digest of the
+  # raw Knowledge_Base research. Higher signal density and consistent
+  # vocabulary give a better RAG surface than the raw corpus. Each page
+  # carries a **Sources**: line that the ingest pipeline parses into
+  # transitive citations attached to every chunk.
+  corpus_path: /Users/steveallison/Documents/_Knowledge/wiki
   ontology_path: Yamls
   data_path: data/openai
 
@@ -46,7 +51,15 @@ corpus:
   asset_extensions:
     - ".png"
   ignore_names:
+    # macOS metadata
     - ".DS_Store"
+    # Wiki meta files: high-volume operational logs and registers that
+    # would otherwise dilute retrieval. _index.md and _glossary.md are
+    # intentionally KEPT — both are pure RAG gold (TOC + canonical-term
+    # registry). _log is the append-only operations log; _ingest-tracker
+    # is meta-about-sources and would shadow real source pages.
+    - "_log.md"
+    - "_ingest-tracker.md"
   min_text_file_bytes: 1
 
 assets:

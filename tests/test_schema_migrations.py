@@ -121,9 +121,15 @@ def test_migration_0004_preserves_existing_data() -> None:
                 ('p1', '/p1', 'markdown', 'd', 'd1', 'h', 0,
                  NULL, 'complete', 'searchable', 1,
                  '2026-01-01', '2026-01-01', '2026-01-01', NULL);
-            INSERT INTO chunk_rows VALUES
-                ('c1', 'd1', 'p1', 'p1.md', 'markdown', 'd', 'h',
-                 'p1#1', 0, 0, 1, 'text', 'h1', 'normal', '{}', 'm', 1);
+            INSERT INTO chunk_rows (
+                chunk_id, document_id, source_rel_path, source_filename,
+                source_type, source_domain, source_hash, citation_label,
+                chunk_index, chunk_occurrence, token_count, text, chunk_hash,
+                score_hint, metadata_json, embedding_model, embedding_dims
+            ) VALUES (
+                'c1', 'd1', 'p1', 'p1.md', 'markdown', 'd', 'h',
+                'p1#1', 0, 0, 1, 'text', 'h1', 'normal', '{}', 'm', 1
+            );
             """
         )
         _disable_fks(connection)
@@ -234,5 +240,50 @@ def test_migration_0005_adds_telemetry_columns() -> None:
         assert "estimated_cost_usd" in cols
         assert "embedding_cache_hits" in cols
         assert "embedding_cache_misses" in cols
+    finally:
+        connection.close()
+
+
+def test_migration_0006_adds_wiki_metadata_columns_with_default_empty_array() -> None:
+    """Schema v6 adds ``cited_sources_json`` and ``wiki_links_json`` to
+    ``chunk_rows``. Both default to ``'[]'`` so historic rows remain valid
+    after the migration without any backfill."""
+    connection = _open_inmem()
+    try:
+        ensure_schema(connection)
+        cols = {
+            row["name"] for row in connection.execute("PRAGMA table_info(chunk_rows);").fetchall()
+        }
+        assert "cited_sources_json" in cols
+        assert "wiki_links_json" in cols
+        # Insert a row WITHOUT specifying the new columns — defaults must apply.
+        connection.executescript(
+            """
+            INSERT INTO corpus_manifest (
+                source_rel_path, absolute_path, source_type, source_domain,
+                document_id, blake3_hash, file_size_bytes, parent_source_rel_path,
+                lifecycle_status, retrieval_status, chunk_count,
+                last_seen_at, last_processed_at, last_committed_at, error_message
+            ) VALUES (
+                'p1', '/p1', 'markdown', 'd', 'd1', 'h', 0, NULL,
+                'complete', 'searchable', 1, '2026-01-01', '2026-01-01',
+                '2026-01-01', NULL
+            );
+            INSERT INTO chunk_rows (
+                chunk_id, document_id, source_rel_path, source_filename,
+                source_type, source_domain, source_hash, citation_label,
+                chunk_index, chunk_occurrence, token_count, text, chunk_hash,
+                score_hint, metadata_json, embedding_model, embedding_dims
+            ) VALUES (
+                'c1', 'd1', 'p1', 'p1.md', 'markdown', 'd', 'h', 'p1#1',
+                0, 0, 1, 'text', 'h1', 'normal', '{}', 'm', 1
+            );
+            """
+        )
+        row = connection.execute(
+            "SELECT cited_sources_json, wiki_links_json FROM chunk_rows WHERE chunk_id = 'c1'"
+        ).fetchone()
+        assert row["cited_sources_json"] == "[]"
+        assert row["wiki_links_json"] == "[]"
     finally:
         connection.close()

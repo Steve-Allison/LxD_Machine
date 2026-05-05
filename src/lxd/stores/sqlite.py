@@ -777,9 +777,11 @@ def replace_source_chunks(
                     score_hint,
                     metadata_json,
                     embedding_model,
-                    embedding_dims
+                    embedding_dims,
+                    cited_sources_json,
+                    wiki_links_json
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 [
                     (
@@ -800,6 +802,8 @@ def replace_source_chunks(
                         record.metadata_json,
                         record.embedding_model,
                         record.embedding_dims,
+                        json.dumps(list(record.cited_sources)),
+                        json.dumps(list(record.wiki_links)),
                     )
                     for record in chunk_records
                 ],
@@ -906,7 +910,9 @@ def load_chunk_records_for_source(
             score_hint,
             metadata_json,
             embedding_model,
-            embedding_dims
+            embedding_dims,
+            cited_sources_json,
+            wiki_links_json
         FROM chunk_rows
         WHERE source_rel_path = ?
         ORDER BY chunk_index

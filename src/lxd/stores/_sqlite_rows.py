@@ -17,6 +17,7 @@ Key constraints:
 
 from __future__ import annotations
 
+import json
 import sqlite3
 from typing import Any
 
@@ -153,6 +154,9 @@ def chunk_from_row(row: sqlite3.Row) -> ChunkRecord:
         as of schema v2); the returned record therefore carries an empty
         ``vector``. Callers that need vectors must hydrate them from LanceDB
         via :func:`lxd.stores.lancedb.load_vectors_by_chunk_ids`.
+
+    The ``cited_sources_json`` and ``wiki_links_json`` columns are read
+    defensively — rows that pre-date schema v6 default to empty tuples.
     """
     return ChunkRecord(
         chunk_id=str(row["chunk_id"]),
@@ -173,4 +177,23 @@ def chunk_from_row(row: sqlite3.Row) -> ChunkRecord:
         vector=[],
         embedding_model=str(row["embedding_model"]),
         embedding_dims=int(row["embedding_dims"]),
+        cited_sources=_parse_string_list(row, "cited_sources_json"),
+        wiki_links=_parse_string_list(row, "wiki_links_json"),
     )
+
+
+def _parse_string_list(row: sqlite3.Row, column: str) -> tuple[str, ...]:
+    """Parse a JSON array of strings, returning an empty tuple on error or absence."""
+    try:
+        raw = row[column]
+    except KeyError, IndexError:
+        return ()
+    if not raw:
+        return ()
+    try:
+        parsed = json.loads(raw)
+    except TypeError, ValueError:
+        return ()
+    if not isinstance(parsed, list):
+        return ()
+    return tuple(str(item) for item in parsed if isinstance(item, str))

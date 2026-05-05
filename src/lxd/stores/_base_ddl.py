@@ -50,6 +50,8 @@ CREATE TABLE IF NOT EXISTS chunk_rows (
     metadata_json TEXT NOT NULL,
     embedding_model TEXT NOT NULL,
     embedding_dims INTEGER NOT NULL,
+    cited_sources_json TEXT NOT NULL DEFAULT '[]',
+    wiki_links_json TEXT NOT NULL DEFAULT '[]',
     FOREIGN KEY(source_rel_path) REFERENCES corpus_manifest(source_rel_path) ON DELETE CASCADE
 );
 

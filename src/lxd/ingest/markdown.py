@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -11,17 +11,25 @@ from docling.datamodel.base_models import InputFormat
 from docling.document_converter import DocumentConverter
 
 from lxd.domain.citations import make_citation_label
+from lxd.ingest.wiki_metadata import WikiPageMetadata, parse_wiki_metadata
 
 
 @dataclass(frozen=True, slots=True)
 class ExtractedDocument:
-    """Normalized extracted source document for chunking."""
+    """Normalized extracted source document for chunking.
+
+    ``wiki_metadata`` carries page-level signals parsed from wiki-formatted
+    frontmatter (``**Sources**:`` and ``[[slug]]`` references). For non-wiki
+    sources this is an empty :class:`WikiPageMetadata` with ``is_empty`` true,
+    so downstream code can treat all sources uniformly.
+    """
 
     source_rel_path: str
     source_type: str
     citation_label: str
     text_blocks: list[str]
     docling_document: Any | None = None
+    wiki_metadata: WikiPageMetadata = field(default_factory=WikiPageMetadata)
 
 
 def load_markdown_document(
@@ -51,6 +59,7 @@ def load_markdown_document(
         citation_label=make_citation_label(source_rel_path),
         text_blocks=[],
         docling_document=document,
+        wiki_metadata=parse_wiki_metadata(text),
     )
 
 

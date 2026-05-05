@@ -36,7 +36,7 @@ from lxd.stores._base_ddl import BASE_SCHEMA_DDL
 
 Migration = Callable[[sqlite3.Connection], None]
 
-CURRENT_SCHEMA_VERSION = 5
+CURRENT_SCHEMA_VERSION = 6
 
 
 class SchemaIntegrityError(sqlite3.DatabaseError):
@@ -385,12 +385,33 @@ def _migration_0005_ingest_run_telemetry(connection: sqlite3.Connection) -> None
         connection.execute("ALTER TABLE ingest_runs ADD COLUMN embedding_cache_misses INTEGER;")
 
 
+def _migration_0006_chunk_rows_wiki_metadata(connection: sqlite3.Connection) -> None:
+    """Add page-level wiki metadata columns to ``chunk_rows``.
+
+    Captures the Sources line and ``[[slug]]`` cross-references parsed from
+    the wiki frontmatter so retrieval can surface citations and traverse the
+    page graph without re-parsing files. JSON arrays of strings; '[]' for
+    historic rows that pre-date the wiki swap.
+    """
+    row = connection.execute("PRAGMA table_info(chunk_rows);").fetchall()
+    columns = {str(info[1]) for info in row} if row else set()
+    if "cited_sources_json" not in columns:
+        connection.execute(
+            "ALTER TABLE chunk_rows ADD COLUMN cited_sources_json TEXT NOT NULL DEFAULT '[]';"
+        )
+    if "wiki_links_json" not in columns:
+        connection.execute(
+            "ALTER TABLE chunk_rows ADD COLUMN wiki_links_json TEXT NOT NULL DEFAULT '[]';"
+        )
+
+
 _MIGRATIONS: dict[int, Migration] = {
     1: _migration_0001_baseline,
     2: _migration_0002_drop_chunk_vector_json,
     3: _migration_0003_llm_jobs,
     4: _migration_0004_repair_ghost_fks,
     5: _migration_0005_ingest_run_telemetry,
+    6: _migration_0006_chunk_rows_wiki_metadata,
 }
 
 
@@ -404,7 +425,15 @@ _MIGRATIONS: dict[int, Migration] = {
 _REQUIRED_COLUMNS: dict[str, frozenset[str]] = {
     "corpus_manifest": frozenset({"source_rel_path", "blake3_hash", "lifecycle_status"}),
     "chunk_rows": frozenset(
-        {"chunk_id", "source_rel_path", "chunk_hash", "embedding_model", "embedding_dims"}
+        {
+            "chunk_id",
+            "source_rel_path",
+            "chunk_hash",
+            "embedding_model",
+            "embedding_dims",
+            "cited_sources_json",
+            "wiki_links_json",
+        }
     ),
     "mention_rows": frozenset({"mention_id", "chunk_id", "entity_id"}),
     "extracted_relations": frozenset({"relation_id", "chunk_id"}),

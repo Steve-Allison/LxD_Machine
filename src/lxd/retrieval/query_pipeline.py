@@ -71,7 +71,12 @@ _GENERIC_QUERY_TERMS = {
 
 @dataclass(frozen=True, slots=True)
 class RankedChunk:
-    """Retrieval chunk with metadata and ranking score."""
+    """Retrieval chunk with metadata and ranking score.
+
+    ``cited_sources`` and ``wiki_links`` are page-level signals carried
+    through from the underlying chunk row. Empty when the chunk's source
+    is not a wiki-formatted markdown page.
+    """
 
     chunk_id: str
     document_id: str
@@ -88,6 +93,8 @@ class RankedChunk:
     score_hint: str
     metadata_json: str
     score: float
+    cited_sources: tuple[str, ...] = ()
+    wiki_links: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -239,6 +246,7 @@ def answer_question(
             citation_label=item.citation_label,
             text=item.text,
             score=item.score,
+            cited_sources=item.cited_sources,
         )
         for item in outcome.ranked[: config.synthesis.max_chunks]
     ]
@@ -353,6 +361,8 @@ def _dense_ranked_candidates(
                 score_hint=item.score_hint,
                 metadata_json=item.metadata_json,
                 score=-item.score,
+                cited_sources=item.cited_sources,
+                wiki_links=item.wiki_links,
             )
             for item in dense_hits
         ]

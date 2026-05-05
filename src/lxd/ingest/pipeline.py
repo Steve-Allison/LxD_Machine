@@ -690,6 +690,8 @@ def _build_source_records(
     chunk_records: list[ChunkRecord] = []
     mention_records: list[MentionRecord] = []
     relation_records: list[ExtractedRelationRecord] = []
+    page_cited_sources = extracted_document.wiki_metadata.cited_sources
+    page_wiki_links = extracted_document.wiki_metadata.wiki_links
     for chunk, vector in zip(text_chunks, embeddings, strict=True):
         chunk_record = ChunkRecord(
             chunk_id=chunk.chunk_id,
@@ -710,6 +712,8 @@ def _build_source_records(
             vector=vector,
             embedding_model=config.models.embed,
             embedding_dims=config.models.embed_dims,
+            cited_sources=page_cited_sources,
+            wiki_links=page_wiki_links,
         )
         chunk_records.append(chunk_record)
         chunk_mentions = list(
@@ -1078,6 +1082,8 @@ def _clone_source_records(
                 vector=vectors_by_old_id.get(old_chunk.chunk_id, []),
                 embedding_model=old_chunk.embedding_model,
                 embedding_dims=old_chunk.embedding_dims,
+                cited_sources=old_chunk.cited_sources,
+                wiki_links=old_chunk.wiki_links,
             )
         )
     cloned_mentions: list[MentionRecord] = []

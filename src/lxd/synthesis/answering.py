@@ -16,11 +16,19 @@ _THINK_BLOCK_PATTERN = re.compile(r"<think>.*?</think>", flags=re.DOTALL)
 
 @dataclass(frozen=True, slots=True)
 class EvidenceChunk:
-    """Evidence snippet and score used for synthesis."""
+    """Evidence snippet and score used for synthesis.
+
+    ``cited_sources`` carries the underlying-source filenames parsed from
+    the chunk's wiki frontmatter (``**Sources**:`` line). When present, the
+    synthesis prompt instructs the model to cite both the wiki page (via
+    ``citation_label``) and the underlying sources, giving the user a
+    transitive provenance trail back to the original research.
+    """
 
     citation_label: str
     text: str
     score: float
+    cited_sources: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -141,12 +149,21 @@ def probe_synthesis_model(config: RuntimeConfig) -> tuple[bool, str | None]:
 def _build_prompt(
     question: str, evidence: list[EvidenceChunk], *, graph_context_prompt: str = ""
 ) -> str:
-    evidence_block = "\n\n".join(f"[{item.citation_label}]\n{item.text}" for item in evidence)
+    evidence_block = "\n\n".join(_format_evidence_chunk(item) for item in evidence)
+    has_transitive_sources = any(item.cited_sources for item in evidence)
     preamble = (
         "Answer the question using only the evidence below.\n"
         "If the evidence is insufficient, say so plainly.\n"
         "Do not invent facts.\n"
     )
+    if has_transitive_sources:
+        preamble += (
+            "\nEvidence chunks may include a ``Sources:`` line listing the underlying\n"
+            "research files the chunk was synthesised from. When such sources are\n"
+            "present, your citations should reference both the chunk citation label\n"
+            "AND the underlying sources transitively, e.g.\n"
+            '"[citation_label] (citing source_a.md, source_b.pdf)".\n'
+        )
     if graph_context_prompt:
         preamble += (
             "\nThe graph context below provides structured knowledge about entities,\n"
@@ -159,6 +176,18 @@ def _build_prompt(
     sections.append(f"Question:\n{question}\n")
     sections.append(f"Evidence:\n{evidence_block}\n")
     return "\n".join(sections)
+
+
+def _format_evidence_chunk(item: EvidenceChunk) -> str:
+    """Render an evidence chunk for the synthesis prompt.
+
+    Includes a ``Sources:`` line when the chunk carries transitive citations
+    so the LLM can attribute claims back to the originating research.
+    """
+    header = f"[{item.citation_label}]"
+    if item.cited_sources:
+        header += f"\nSources: {', '.join(item.cited_sources)}"
+    return f"{header}\n{item.text}"
 
 
 def _strip_thinking(text: str) -> str:

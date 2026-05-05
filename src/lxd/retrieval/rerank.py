@@ -7,7 +7,7 @@ import os
 import shutil
 import subprocess
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import UTC, datetime
 from operator import itemgetter
 from pathlib import Path
@@ -214,23 +214,9 @@ def _apply_rerank_payload(candidates: list[RankedChunk], payload: Any) -> list[R
         if index < 0 or index >= len(candidates):
             continue
         candidate = candidates[index]
-        reranked_candidate = candidate.__class__(
-            chunk_id=candidate.chunk_id,
-            document_id=candidate.document_id,
-            citation_label=candidate.citation_label,
-            source_rel_path=candidate.source_rel_path,
-            source_filename=candidate.source_filename,
-            source_type=candidate.source_type,
-            source_domain=candidate.source_domain,
-            source_hash=candidate.source_hash,
-            chunk_index=candidate.chunk_index,
-            chunk_occurrence=candidate.chunk_occurrence,
-            token_count=candidate.token_count,
-            text=candidate.text,
-            score_hint=candidate.score_hint,
-            metadata_json=candidate.metadata_json,
-            score=float(score),
-        )
+        # ``dataclasses.replace`` preserves every field (including
+        # ``cited_sources`` / ``wiki_links``) and only updates the score.
+        reranked_candidate = replace(candidate, score=float(score))
         scored.append((float(score), reranked_candidate))
     if not scored:
         return None
