@@ -363,7 +363,7 @@ Do not introduce:
 
 - business logic in `mcp/server.py`
 - business logic in CLI command modules
-- direct SQL scattered outside `stores/sqlite.py` and `stores/schema.py`
+- direct SQL scattered outside the `stores/sqlite/` subpackage and `stores/schema.py`
 - hand-rolled `IN (?, ?, …)` clauses outside `stores/sql_helpers.py`
 - direct LanceDB query construction scattered outside `stores/lancedb.py` and retrieval modules
 - raw f-string interpolation into LanceDB `where` clauses outside `stores/lance_sql.py`

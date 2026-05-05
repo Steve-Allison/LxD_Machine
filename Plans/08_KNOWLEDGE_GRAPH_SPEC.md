@@ -307,7 +307,7 @@ Extract fine-grained assertions from chunks. Claims are the evidence layer that 
 - Separating from ingest keeps the ingest pipeline fast and focused.
 
 **New:** `src/lxd/ingest/claims.py`
-**Modified:** `src/lxd/stores/sqlite.py`, `src/lxd/stores/models.py`
+**Modified:** `src/lxd/stores/sqlite/claims.py`, `src/lxd/stores/models.py`
 
 For each chunk with ≥1 entity mention, extract claims via GPT-4o-mini (with Ollama qwen3:14b fallback):
 
@@ -342,7 +342,7 @@ Return JSON: {"claims": [{"claim_text": "...", "subject": "entity_id or null", "
 Merge ontology edges + corpus relations into one weighted `NetworkX.MultiDiGraph`. Compute all centrality metrics. **Can run in parallel with Step 1.**
 
 **New:** `src/lxd/ontology/entity_graph.py`
-**Modified:** `src/lxd/stores/sqlite.py`, `src/lxd/stores/models.py`
+**Modified:** `src/lxd/stores/sqlite/kg_profiles.py`, `src/lxd/stores/sqlite/kg_relations.py`, `src/lxd/stores/models.py`
 
 **Entity graph construction:**
 - Load ontology `MultiDiGraph` (existing)
@@ -375,7 +375,7 @@ Merge ontology edges + corpus relations into one weighted `NetworkX.MultiDiGraph
 Partition entities into communities. Store assignments.
 
 **New:** `src/lxd/ontology/communities.py`
-**Modified:** `src/lxd/stores/sqlite.py`
+**Modified:** `src/lxd/stores/sqlite/kg_profiles.py`
 
 **Algorithm selection (benchmark both):**
 
@@ -405,7 +405,7 @@ Partition entities into communities. Store assignments.
 Consolidate per-chunk `extracted_relations` into canonical `relations` table and populate `relation_evidence` with per-chunk provenance. **Can run in parallel with Steps 1 and 2** (only depends on the ingest pipeline data).
 
 **New:** `src/lxd/ontology/evidence.py`
-**Modified:** `src/lxd/ingest/relations.py`, `src/lxd/stores/sqlite.py`
+**Modified:** `src/lxd/ingest/relations.py`, `src/lxd/stores/sqlite/kg_relations.py`
 
 **Step 1 — Consolidate canonical relations:**
 
@@ -448,7 +448,7 @@ Truncate `relation_evidence` table, insert all evidence rows.
 Build a complete profile for each entity from graph structure. No LLM required. Entity embeddings computed and stored in LanceDB.
 
 **New:** `src/lxd/ontology/profiles.py`
-**Modified:** `src/lxd/stores/sqlite.py`, `src/lxd/stores/lancedb.py`
+**Modified:** `src/lxd/stores/sqlite/kg_profiles.py`, `src/lxd/stores/lancedb.py`
 
 Per entity, assemble deterministically:
 
@@ -496,7 +496,7 @@ Key claims: {top_3_claims_by_confidence}.
 
 Generate richer prose summaries via GPT-4o-mini for entities and communities. **Entirely optional.** The system is fully functional with deterministic summaries from Step 5.
 
-**Modified:** `src/lxd/ontology/profiles.py`, `src/lxd/stores/sqlite.py`
+**Modified:** `src/lxd/ontology/profiles.py`, `src/lxd/stores/sqlite/kg_profiles.py`
 
 Per entity (where `llm_summary IS NULL` or `source_hash` changed):
 - Feed deterministic summary + top chunks + relations + claims to GPT-4o-mini (with Ollama qwen3:14b fallback)
@@ -702,7 +702,7 @@ Step 5 (Entity Profiles)  [needs Steps 1 + 2 + 3 + 4]
 | `src/lxd/ontology/evidence.py` | New | Relations consolidation + evidence provenance |
 | `src/lxd/retrieval/graph_routing.py` | New | Context augmentation for synthesis |
 | `src/lxd/cli/graph.py` | New | CLI commands + build state machine |
-| `src/lxd/stores/sqlite.py` | Modified | 8 new tables, ~30 query functions |
+| `src/lxd/stores/sqlite/` | Modified | 8 new tables, ~30 query functions split across `claims.py`, `kg_profiles.py`, `kg_relations.py` |
 | `src/lxd/stores/lancedb.py` | Modified | Entity embeddings table (create, add, search) |
 | `src/lxd/stores/models.py` | Modified | 8 new dataclass records |
 | `src/lxd/settings/models.py` | Modified | `KnowledgeGraphConfig` |

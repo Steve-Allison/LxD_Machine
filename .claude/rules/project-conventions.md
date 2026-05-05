@@ -13,7 +13,7 @@ globs: "**/*.py,**/pixi.toml,**/pyproject.toml"
 - Domain models live in `src/lxd/domain/` as Pydantic models.
 - Settings/config use Pydantic models in `src/lxd/settings/`.
 - Logging uses `structlog` throughout. Never use `print()` or stdlib `logging` directly.
-- The ingest pipeline is a sequential per-source orchestrator in `src/lxd/ingest/pipeline.py` (no DAG framework). Phases per source: scan → diff → load → chunk → embed (with content-addressed cache) → detect mentions → extract relations → persist (LanceDB-first, then SQLite). The pipeline runs under a systemic-error circuit breaker (`ingest/error_classification.py`) that aborts the run after 3 consecutive systemic failures to avoid burning API spend on a broken store.
+- The ingest pipeline is a sequential per-source orchestrator split across the `src/lxd/ingest/pipeline/` subpackage (no DAG framework; no `__init__.py` re-export façade — callers import from the owning submodule directly): `orchestrator.py` drives `run_ingest`/`build_ingest_plan`; `sources.py` builds per-source records; `embed.py` handles cache + contextual augmentation + context refinement; `moves.py` covers move detection, unchanged-source skip, document_id resolution, and chunk cloning. Phases per source: scan → diff → load → chunk → embed (with content-addressed cache) → detect mentions → extract relations → persist (LanceDB-first, then SQLite). The pipeline runs under a systemic-error circuit breaker (`ingest/error_classification.py`) that aborts the run after 3 consecutive systemic failures to avoid burning API spend on a broken store.
 - MCP server is in `src/lxd/mcp/` using FastMCP (>=3.0). 20 read-only tools registered.
 - Knowledge graph pipeline lives in `src/lxd/ontology/` (entity_graph, communities, profiles, evidence) and `src/lxd/ingest/claims.py`. CLI in `src/lxd/cli/graph.py`.
 
@@ -21,6 +21,7 @@ globs: "**/*.py,**/pixi.toml,**/pyproject.toml"
 - LanceDB for vector storage (chunk vectors + entity embeddings), SQLite for metadata (including 8 knowledge graph tables). Both are rebuildable via `pixi run ingest` and `pixi run build-graph`.
 - Store data lives under `data/` (gitignored). Never commit database files.
 - All SQLite PKs and FKs use corpus-relative paths — the `data/` folder is portable between machines. `absolute_path` in `corpus_manifest` is a non-PK column refreshed by ingest on each machine.
+- The SQLite query/upsert layer lives in the `src/lxd/stores/sqlite/` subpackage (no `__init__.py` re-export façade; callers import directly from the owning submodule): `connection`, `_pool` (per-thread connection pool for the long-lived MCP request path), `runs`, `manifest`, `ontology`, `chunks`, `summary`, `claims`, `kg_profiles`, `kg_relations`. Schema migrations stay in `src/lxd/stores/schema.py`; authoritative DDL in `src/lxd/stores/_base_ddl.py`; row→record adapters in `src/lxd/stores/_sqlite_rows.py`.
 
 ## Two-Step Build Pipeline
 

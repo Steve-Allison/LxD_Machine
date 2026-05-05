@@ -5,3 +5,5 @@
 - [Knowledge Graph Phase 5](project_knowledge_graph.md) — Phase 5 implemented 2026-03-28; Louvain communities, 5 centrality metrics, graph-augmented synthesis
 - [KG features are mandatory](feedback_mandatory_features.md) — never add enabled toggles for core KG features; relation extraction, claims, enrichment are mandatory
 - [API keys in .env](feedback_env_file.md) — always test env vars through bootstrap path, not bare Python; .env loaded by app/bootstrap.py
+- [2026-05 backlog run](project_2026-05_backlog_run.md) — Sessions 1–7: 8 ships, 5 strikes (with rationale), 1 deferral (B-KG-1 needs user direction); commit shas + the why-behind each
+- [No unverified claims](feedback_no_unverified_claims.md) — every closure phrase needs evidence in the same turn; documentation + memory are part of "done", not optional polish

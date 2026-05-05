@@ -15,7 +15,11 @@ src/lxd/
 ├── domain/                   # Pydantic models (citations, IDs, status enums)
 ├── net/                      # Shared httpx.Client / httpx.AsyncClient factories
 ├── ingest/                   # Corpus pipeline (sequential orchestrator + per-phase modules)
-│   ├── pipeline.py           # Top-level orchestrator: scan → diff → load → chunk → embed → mention → relation → persist
+│   ├── pipeline/             # Top-level orchestrator subpackage (no re-export façade)
+│   │   ├── orchestrator.py   # `run_ingest`, `build_ingest_plan`, `IngestPlan`, persist+commit loop
+│   │   ├── sources.py        # Per-source extract → chunk → embed → assemble records
+│   │   ├── embed.py          # Embedding cache + contextual augmentation + context refinement
+│   │   └── moves.py          # Move detection, unchanged-source skip, document_id resolution, chunk cloning
 │   ├── scanner.py            # Filesystem scan + BLAKE3 hashing of corpus files
 │   ├── diff.py               # Set-wise scan diff (new / deleted / unchanged)
 │   ├── markdown.py           # Markdown → ExtractedDocument (calls wiki_metadata)
@@ -39,9 +43,18 @@ src/lxd/
 ├── stores/                   # SQLite + LanceDB (vectors canonical in LanceDB)
 │   ├── schema.py             # Numbered migrations (PRAGMA user_version) + integrity check
 │   ├── _base_ddl.py          # Authoritative CREATE TABLE / CREATE INDEX statements
-│   ├── connection.py         # Pragma-tight SQLite connect + close hooks
-│   ├── sqlite.py             # Query/upsert API (orchestrator over typed records)
-│   ├── _sqlite_rows.py       # Row → record adapters
+│   ├── _sqlite_rows.py       # Row → record adapters (private to stores)
+│   ├── sqlite/               # SQLite query/upsert subpackage (no re-export façade)
+│   │   ├── connection.py     # `connect_sqlite`, `build_store_paths`, schema initialisation
+│   │   ├── _pool.py          # Per-thread schema-initialised connection pool for the MCP request path
+│   │   ├── runs.py           # Ingest-run lifecycle (begin / progress / finish)
+│   │   ├── manifest.py       # `corpus_manifest` upsert / load / hash-grouped queries
+│   │   ├── ontology.py       # Ontology snapshot, ingest-config snapshot, allowed-domain lookups
+│   │   ├── chunks.py         # Chunk + mention persist; entity-mention search; centrality signals
+│   │   ├── summary.py        # Aggregate counts and `CorpusStatusSummary` builder
+│   │   ├── claims.py         # Claim insert / load / count
+│   │   ├── kg_profiles.py    # Entity profiles, community assignments, community reports
+│   │   └── kg_relations.py   # Canonical relations, relation evidence, graph metadata
 │   ├── lancedb.py            # Canonical vector store + chunk_vectors / embedding_cache tables
 │   ├── lance_sql.py          # Safe LanceDB filter builders
 │   ├── sql_helpers.py        # Safe SQLite IN (?, ?, …) helpers
@@ -165,4 +178,4 @@ Detailed specifications live in `Plans/`:
 
 ---
 
-*Last reviewed: 2026-05-05. Updated: corpus default switched to curated wiki; ingest module list refreshed (added `pipeline.py`, `wiki_metadata.py`, `embedding_cache.py`, `error_classification.py`, `chunking.py`, `markdown.py`, `docling.py`, `mentions.py`, `assets.py`, `scanner.py`, `diff.py`, `llm_client.py`); resilience principles documented (schema-integrity gate, auto-backup on migration, content-addressed cache, circuit breaker, cross-store atomicity); `pixi run preflight` and `start.sh` added to commands. Removed false claim of Hamilton DAG patterns in `.claude/rules/project-conventions.md` — pipeline is a sequential per-source orchestrator, no DAG framework.*
+*Last reviewed: 2026-05-05. Two architectural splits landed since the previous review (commits `880c596` and `9119fb0`): `stores/sqlite.py` is now the `stores/sqlite/` subpackage (9 modules, no re-export façade); `ingest/pipeline.py` is now the `ingest/pipeline/` subpackage (4 modules, no re-export façade). The MCP request path uses a per-thread SQLite connection pool (`stores/sqlite/_pool.py`, commit `868354f`) and a process-wide cached `openai.OpenAI` client (`ingest/embedder.py:get_openai_client`). Retrieval now widens `expansion.matched_entity_ids` with the entities nearest to the query vector via `entity_embeddings` (commit `4eb7d2e`); graph context is bounded by `knowledge_graph.max_graph_context_tokens` (commit `d01b70f`). Two field-level Pydantic v2 validators replaced `model_validator(mode="after")` self-mutation in `settings/models.py` (commit `9c151eb`).*
