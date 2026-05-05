@@ -483,8 +483,8 @@ def _build_claim_records(
 def _active_model(config: RuntimeConfig) -> str:
     """Return the model name that will be used for extraction."""
     kg_cfg = config.knowledge_graph
-    if kg_cfg.claim_extraction_backend == "openai":
-        return kg_cfg.claim_extraction_model
-    if kg_cfg.claim_extraction_backend == "ollama":
-        return kg_cfg.claim_extraction_fallback_model
-    return "none"
+    match kg_cfg.claim_extraction_backend:
+        case "openai":
+            return kg_cfg.claim_extraction_model
+        case "ollama":
+            return kg_cfg.claim_extraction_fallback_model

@@ -164,21 +164,23 @@ async def call_with_fallback_async(
 
     Returns response content string, or empty string if all backends fail.
     """
-    if primary_backend == "openai":
-        try:
-            return await call_openai_async(
-                system_prompt=system_prompt,
-                user_prompt=user_prompt,
-                model=openai_model,
-                temperature=temperature,
-                timeout=openai_timeout,
-                max_tokens=max_tokens,
-                response_format=response_format,
-                api_key_env=api_key_env,
-            )
-        except Exception as exc:
-            _log.warning("openai_call_failed", error=str(exc))
-            if fallback_backend == "ollama":
+    match primary_backend:
+        case "openai":
+            try:
+                return await call_openai_async(
+                    system_prompt=system_prompt,
+                    user_prompt=user_prompt,
+                    model=openai_model,
+                    temperature=temperature,
+                    timeout=openai_timeout,
+                    max_tokens=max_tokens,
+                    response_format=response_format,
+                    api_key_env=api_key_env,
+                )
+            except Exception as exc:
+                _log.warning("openai_call_failed", error=str(exc))
+                if fallback_backend != "ollama":
+                    return ""
                 try:
                     return await call_ollama_sync_in_thread(
                         system_prompt=system_prompt,
@@ -191,24 +193,23 @@ async def call_with_fallback_async(
                     )
                 except Exception as fallback_exc:
                     _log.warning("ollama_fallback_failed", error=str(fallback_exc))
+                    return ""
+        case "ollama":
+            try:
+                return await call_ollama_sync_in_thread(
+                    system_prompt=system_prompt,
+                    user_prompt=user_prompt,
+                    model=ollama_model,
+                    host=ollama_host,
+                    temperature=temperature,
+                    timeout=ollama_timeout,
+                    format_=ollama_format,
+                )
+            except Exception as exc:
+                _log.warning("ollama_call_failed", error=str(exc))
+                return ""
+        case _:
             return ""
-
-    if primary_backend == "ollama":
-        try:
-            return await call_ollama_sync_in_thread(
-                system_prompt=system_prompt,
-                user_prompt=user_prompt,
-                model=ollama_model,
-                host=ollama_host,
-                temperature=temperature,
-                timeout=ollama_timeout,
-                format_=ollama_format,
-            )
-        except Exception as exc:
-            _log.warning("ollama_call_failed", error=str(exc))
-            return ""
-
-    return ""
 
 
 # ---------------------------------------------------------------------------

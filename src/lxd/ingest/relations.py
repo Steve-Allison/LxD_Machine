@@ -377,13 +377,14 @@ def _call_with_fallback_sync(
     propagate so cancellation and ``Ctrl-C`` behave correctly.
     """
     cfg = config.relation_extraction
-
-    if cfg.backend == "openai":
-        try:
-            return _call_openai_sync(chunk_text, entity_ids, valid_predicates, config)
-        except _RELATION_LLM_ERRORS as exc:
-            _log.warning("relation_extraction_openai_failed", error=str(exc), exc_info=True)
-            if cfg.fallback_backend == "ollama":
+    match cfg.backend:
+        case "openai":
+            try:
+                return _call_openai_sync(chunk_text, entity_ids, valid_predicates, config)
+            except _RELATION_LLM_ERRORS as exc:
+                _log.warning("relation_extraction_openai_failed", error=str(exc), exc_info=True)
+                if cfg.fallback_backend != "ollama":
+                    return []
                 try:
                     return _call_ollama_sync(chunk_text, entity_ids, valid_predicates, config)
                 except _RELATION_LLM_ERRORS as fallback_exc:
@@ -392,16 +393,13 @@ def _call_with_fallback_sync(
                         error=str(fallback_exc),
                         exc_info=True,
                     )
-            return []
-
-    if cfg.backend == "ollama":
-        try:
-            return _call_ollama_sync(chunk_text, entity_ids, valid_predicates, config)
-        except _RELATION_LLM_ERRORS as exc:
-            _log.warning("relation_extraction_ollama_failed", error=str(exc), exc_info=True)
-            return []
-
-    return []
+                    return []
+        case "ollama":
+            try:
+                return _call_ollama_sync(chunk_text, entity_ids, valid_predicates, config)
+            except _RELATION_LLM_ERRORS as exc:
+                _log.warning("relation_extraction_ollama_failed", error=str(exc), exc_info=True)
+                return []
 
 
 def _call_openai_sync(
@@ -525,9 +523,11 @@ def _parse_response(raw_text: str) -> list[_RawRelation]:
 def _active_model(config: RuntimeConfig) -> str:
     """Return the model name that will be used for extraction."""
     cfg = config.relation_extraction
-    if cfg.backend == "openai":
-        return cfg.openai_model
-    return cfg.ollama_model
+    match cfg.backend:
+        case "openai":
+            return cfg.openai_model
+        case "ollama":
+            return cfg.ollama_model
 
 
 def _build_relation_records(
