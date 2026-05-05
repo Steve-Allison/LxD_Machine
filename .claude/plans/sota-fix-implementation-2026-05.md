@@ -472,7 +472,7 @@ Sessions are ordered for clean ROI sequencing; each ends with a green build + co
 ```
 [ ] S1.1  Run `pixi run preflight && pixi run ingest --full && pixi run build-graph --full` — close the wiki swap
 [ ] S1.2  Capture baseline: `pixi run eval > tests/eval/baseline-pre-fixes.json`
-[ ] S1.3  [#15] Delete `_sqlite_legacy_migrations.py`, replace caller with assertion guard
+[x] S1.3  [#15] Delete `_sqlite_legacy_migrations.py`, replace caller with assertion guard — done 2026-05-05; replaced 887-line module with 14-line `assert_no_v2_legacy_tables` in `stores/sqlite.py`; updated regression test; lint+typecheck+test all green (202 passing). Also fixed stale `test_load_runtime_config_uses_default_config_yaml` from the wiki swap.
 [ ] S1.4  Commit: "Close wiki swap + drop legacy migrations file"
 
 [ ] S2.1  [#6] Add `--gate-against` flag + thresholds to `eval_command`

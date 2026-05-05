@@ -596,7 +596,7 @@ def test_legacy_migration_refuses_to_run_with_leftover_v2_legacy_table(
     migration. Re-running ingest must hard-stop with a clear message rather
     than silently skip and let downstream writes fail mid-batch.
     """
-    from lxd.stores._sqlite_legacy_migrations import _migrate_absolute_path_pks
+    from lxd.stores.sqlite import assert_no_v2_legacy_tables
 
     db_path = tmp_path / "lxd.sqlite3"
     conn = sqlite3.connect(db_path)
@@ -630,7 +630,7 @@ def test_legacy_migration_refuses_to_run_with_leftover_v2_legacy_table(
         )
         conn.commit()
         with pytest.raises(sqlite3.DatabaseError) as exc_info:
-            _migrate_absolute_path_pks(conn)
+            assert_no_v2_legacy_tables(conn)
         assert "chunk_rows_v2_legacy" in str(exc_info.value)
     finally:
         conn.close()

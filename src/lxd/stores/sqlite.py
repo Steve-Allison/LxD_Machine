@@ -8,7 +8,6 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
-from lxd.stores._sqlite_legacy_migrations import migrate_legacy_schema
 from lxd.stores._sqlite_rows import (
     canonical_relation_from_row,
     chunk_from_row,
@@ -88,16 +87,42 @@ def build_store_paths(data_path: Path) -> StorePaths:
     return StorePaths(sqlite_path=data_path / _SQLITE_FILENAME, lancedb_path=data_path / "lancedb")
 
 
+def assert_no_v2_legacy_tables(connection: sqlite3.Connection) -> None:
+    """Refuse to proceed if any ``*_v2_legacy`` table is present.
+
+    These tables only exist as the smoking gun of a half-finished pre-v0
+    migration. The numbered migration system in :mod:`lxd.stores.schema`
+    cannot reason about them and downstream writes will fail mid-batch if
+    we silently continue. Raising here surfaces the corruption loudly.
+
+    Args:
+        connection: Open SQLite connection.
+
+    Raises:
+        sqlite3.DatabaseError: If any ``*_v2_legacy`` table is present.
+    """
+    rows = connection.execute(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name LIKE '%_v2_legacy'"
+    ).fetchall()
+    leftover = sorted(str(row["name"]) for row in rows)
+    if leftover:
+        raise sqlite3.DatabaseError(
+            "Legacy migration partially applied; unexpected tables present: "
+            f"{', '.join(leftover)}. Restore from a pre-migration backup or "
+            "manually resolve the leftover tables before re-running ingest."
+        )
+
+
 def initialize_schema(connection: sqlite3.Connection) -> None:
     """Create and migrate required SQLite tables.
 
     Order of operations:
 
-    1. Apply legacy ad-hoc migrations first, so pre-versioning databases
-       reach the shape that the numbered migrations expect.
+    1. Refuse to proceed if any ``*_v2_legacy`` table is present (smoking
+       gun of an interrupted pre-v0 migration).
     2. Delegate to :func:`lxd.stores.schema.ensure_schema` to create missing
-       baseline tables and run pending numbered migrations (e.g. dropping
-       obsolete columns) with ``PRAGMA user_version`` stamped on success.
+       baseline tables and run pending numbered migrations with
+       ``PRAGMA user_version`` stamped on success.
     3. Ensure runtime indexes that may live outside the DDL.
 
     Args:
@@ -108,7 +133,7 @@ def initialize_schema(connection: sqlite3.Connection) -> None:
         version.
     """
     with connection:
-        migrate_legacy_schema(connection)
+        assert_no_v2_legacy_tables(connection)
     ensure_schema(connection)
     with connection:
         _ensure_indexes(connection)
