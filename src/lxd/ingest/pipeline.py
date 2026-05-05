@@ -25,10 +25,18 @@ from lxd.ingest.chunking import (
     split_chunk_for_context,
     token_count_with_tokenizer,
 )
+from lxd.ingest.contextual_chunker import (
+    augment_chunk_for_embedding,
+    generate_chunk_context,
+    lookup_summaries,
+    open_summary_cache_table,
+    store_summaries,
+)
 from lxd.ingest.docling import load_docling_document
 from lxd.ingest.embedder import (
     EmbeddingContextError,
     embed_chunk_text,
+    embed_texts,
     embed_texts_batched,
     probe_embedder,
 )
@@ -190,6 +198,11 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
         vector_db = connect_lancedb(store_paths.lancedb_path)
         vector_table = open_chunk_table(vector_db, vector_size=config.models.embed_dims)
         cache_table = open_cache_table(vector_db, vector_size=config.models.embed_dims)
+        contextual_summary_table = (
+            open_summary_cache_table(vector_db)
+            if config.chunking.contextual_summary_enabled
+            else None
+        )
         circuit_breaker = PersistentCircuitBreaker(sqlite_connection, threshold=3)
         cache_hit_total = 0
         cache_miss_total = 0
@@ -429,6 +442,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                             slug_index=slug_index,
                             budget_tracker=budget_tracker,
                             cache_table=cache_table,
+                            contextual_summary_table=contextual_summary_table,
                         )
                         cache_hit_total += file_cache_hits
                         cache_miss_total += file_cache_misses
@@ -718,6 +732,7 @@ def _build_source_records(
     slug_index: dict[str, str],
     budget_tracker: IngestBudgetTracker,
     cache_table: object | None = None,
+    contextual_summary_table: object | None = None,
 ) -> tuple[
     list[ChunkRecord],
     list[MentionRecord],
@@ -754,12 +769,22 @@ def _build_source_records(
         tokenizer_name=config.chunking.tokenizer_name,
         strategy=config.chunking.strategy,
     )
-    text_chunks, embeddings, cache_hits, cache_misses = _embed_with_cache(
-        initial_chunks,
-        document_id=document_id,
-        config=config,
-        cache_table=cache_table,
-    )
+    if config.chunking.contextual_summary_enabled and contextual_summary_table is not None:
+        text_chunks, embeddings, cache_hits, cache_misses = _embed_with_contextual_augmentation(
+            initial_chunks,
+            document_id=document_id,
+            config=config,
+            extracted_document=extracted_document,
+            summary_cache_table=contextual_summary_table,
+            budget_tracker=budget_tracker,
+        )
+    else:
+        text_chunks, embeddings, cache_hits, cache_misses = _embed_with_cache(
+            initial_chunks,
+            document_id=document_id,
+            config=config,
+            cache_table=cache_table,
+        )
     chunk_records: list[ChunkRecord] = []
     mention_records: list[MentionRecord] = []
     relation_records: list[ExtractedRelationRecord] = []
@@ -844,6 +869,81 @@ def _load_extracted_document(scanned: ScannedCorpusFile) -> ExtractedDocument:
             source_type=scanned.source_type,
         )
     return load_docling_document(scanned.absolute_path, scanned.relative_path)
+
+
+def _embed_with_contextual_augmentation(
+    chunks: list[TextChunk],
+    *,
+    document_id: str,
+    config: RuntimeConfig,
+    extracted_document: ExtractedDocument,
+    summary_cache_table: object,
+    budget_tracker: IngestBudgetTracker,
+) -> tuple[list[TextChunk], list[list[float]], int, int]:
+    """Embed chunks with contextual summary augmentation.
+
+    For each chunk: look up a one-sentence "what this chunk is about"
+    summary in the contextual cache; on miss, generate via local Ollama
+    (counted against the ingest budget). Build the augmented text
+    ``f"{summary}\\n\\n{chunk.text}"`` and embed *that* — the stored
+    chunk text remains the original. Returns the cache-hit/miss counts
+    for the **summary** cache (not the embedding cache, which is
+    bypassed when contextual is enabled).
+    """
+    if not chunks:
+        return [], [], 0, 0
+
+    chunk_hashes = [chunk.chunk_hash for chunk in chunks]
+    summary_model = config.chunking.contextual_summary_model
+    summary_lookup = lookup_summaries(
+        summary_cache_table, chunk_hashes=chunk_hashes, model=summary_model
+    )
+
+    document_title = scanned_filename_for_title(extracted_document)
+    document_summary = extracted_document.wiki_metadata.summary or ""
+
+    summaries: list[str] = []
+    fresh_pairs: list[tuple[str, str]] = []
+    for index, chunk in enumerate(chunks):
+        cached = summary_lookup.hits.get(index)
+        if cached is not None:
+            summaries.append(cached)
+            continue
+        budget_tracker.check()
+        summary = generate_chunk_context(
+            chunk_text=chunk.text,
+            document_title=document_title,
+            document_summary=document_summary,
+            config=config,
+        )
+        budget_tracker.record_llm_call()
+        summaries.append(summary)
+        if summary:
+            fresh_pairs.append((chunk.chunk_hash, summary))
+
+    if fresh_pairs:
+        store_summaries(
+            summary_cache_table,
+            chunk_hashes=[h for h, _ in fresh_pairs],
+            summaries=[s for _, s in fresh_pairs],
+            model=summary_model,
+        )
+
+    augmented_texts = [
+        augment_chunk_for_embedding(chunk.text, summary)
+        for chunk, summary in zip(chunks, summaries, strict=True)
+    ]
+    vectors = embed_texts(config, augmented_texts)
+    reindexed = _reindex_chunks(list(chunks), document_id)
+    return reindexed, vectors, summary_lookup.hit_count, summary_lookup.miss_count
+
+
+def scanned_filename_for_title(extracted_document: ExtractedDocument) -> str:
+    """Fallback title when the document has no explicit one."""
+    source_path = getattr(extracted_document, "source_rel_path", None)
+    if isinstance(source_path, str) and source_path:
+        return source_path.rsplit("/", 1)[-1]
+    return "(untitled document)"
 
 
 def _embed_with_cache(

@@ -30,7 +30,18 @@ class ModelsConfig(BaseModel):
 
 
 class ChunkingConfig(BaseModel):
-    """Document chunking strategy and tokenizer settings."""
+    """Document chunking strategy and tokenizer settings.
+
+    ``contextual_summary_*`` settings control optional contextual
+    retrieval (Anthropic-style chunk-level context preamble): when
+    enabled, the ingest pipeline asks the local Ollama LLM to
+    generate a 1-sentence summary of *what each chunk is about in the
+    context of its document*, prepends it to the chunk text **before
+    embedding only** (the stored chunk text stays clean for citation
+    rendering), and caches the summary keyed on
+    ``(chunk_hash, model)``. Default off — opt in by setting
+    ``contextual_summary_enabled: true`` and re-running ingest.
+    """
 
     model_config = ConfigDict(extra="forbid")
 
@@ -40,6 +51,11 @@ class ChunkingConfig(BaseModel):
     min_tokens: int = Field(ge=0)
     tokenizer_backend: str
     tokenizer_name: str
+    contextual_summary_enabled: bool = False
+    contextual_summary_model: str = "qwen3:14b"
+    contextual_summary_temperature: float = Field(default=0.0, ge=0.0)
+    contextual_summary_timeout_secs: int = Field(default=60, gt=0)
+    contextual_summary_max_tokens: int = Field(default=80, gt=0)
 
 
 class EmbeddingConfig(BaseModel):
