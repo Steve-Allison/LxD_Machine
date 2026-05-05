@@ -254,33 +254,6 @@ class LoggingConfig(BaseModel):
     format: Literal["json", "console"] = "json"
 
 
-class ObservabilityConfig(BaseModel):
-    """Optional OpenTelemetry + Prometheus exporter switches.
-
-    All exporters default to off to preserve the current single-process,
-    zero-dependency footprint. Enabling either flag is a deployment-time
-    decision that is read lazily at startup by the observability module;
-    the runtime does not fail if the underlying client libraries are not
-    installed when the flag is off.
-
-    Attributes:
-        otel_enabled: When true, emit OTel spans for tool calls and
-            long-running pipeline stages.
-        otel_endpoint: OTLP gRPC endpoint (ignored when ``otel_enabled`` is
-            false). Use environment overrides for per-deployment values.
-        prometheus_enabled: When true, expose a ``/metrics`` endpoint on
-            the configured port alongside the MCP server.
-        prometheus_port: TCP port for the Prometheus HTTP server.
-    """
-
-    model_config = ConfigDict(extra="forbid")
-
-    otel_enabled: bool = False
-    otel_endpoint: str | None = None
-    prometheus_enabled: bool = False
-    prometheus_port: int = Field(default=9464, ge=1, le=65535)
-
-
 class PathsConfig(BaseModel):
     """Filesystem paths for corpus, ontology, and data."""
 
@@ -347,7 +320,6 @@ class RuntimeConfig(BaseModel):
     knowledge_graph: KnowledgeGraphConfig = Field(default_factory=KnowledgeGraphConfig)
     mcp: MCPConfig
     logging: LoggingConfig
-    observability: ObservabilityConfig = Field(default_factory=ObservabilityConfig)
     openai: OpenAIEmbeddingConfig | None = None
 
     @model_validator(mode="after")

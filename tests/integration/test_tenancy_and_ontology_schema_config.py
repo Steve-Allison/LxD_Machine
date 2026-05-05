@@ -1,8 +1,7 @@
-"""Regression tests for the Wave 11 config additions.
+"""Tests for tenancy + ontology-schema config validation.
 
 Covers:
     * :class:`TenancyConfig` validation (corpus_id shape).
-    * :class:`ObservabilityConfig` default + override behaviour.
     * :class:`OntologyFileModel` validation on representative payloads.
 """
 
@@ -12,10 +11,7 @@ import pytest
 
 from lxd.ontology.schema_models import OntologyFileModel, validate_ontology_file
 from lxd.settings.loader import load_runtime_config, resolve_repo_root
-from lxd.settings.models import (
-    ObservabilityConfig,
-    TenancyConfig,
-)
+from lxd.settings.models import TenancyConfig
 
 
 def test_tenancy_config_defaults_to_single_tenant() -> None:
@@ -41,19 +37,10 @@ def test_tenancy_config_rejects_invalid_ids(invalid: str) -> None:
         TenancyConfig(corpus_id=invalid)
 
 
-def test_observability_defaults_are_off() -> None:
-    """Exporters must default to off to preserve zero-dep baseline."""
-    cfg = ObservabilityConfig()
-    assert cfg.otel_enabled is False
-    assert cfg.prometheus_enabled is False
-    assert 1 <= cfg.prometheus_port <= 65535
-
-
-def test_runtime_config_loads_with_default_wave11_sections() -> None:
-    """Existing configs load unchanged: new sections take defaults."""
+def test_runtime_config_loads_with_default_tenancy() -> None:
+    """Configs without an explicit `tenancy:` block load with the default tenant."""
     config, _ = load_runtime_config(resolve_repo_root())
     assert config.tenancy.corpus_id == "default"
-    assert isinstance(config.observability, ObservabilityConfig)
 
 
 def test_validate_ontology_file_accepts_minimal_payload() -> None:
