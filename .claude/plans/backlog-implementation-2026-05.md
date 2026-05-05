@@ -1,5 +1,39 @@
 # LxD Machine — Backlog (Tier 7) Implementation Plan
 
+## Execution status — 2026-05-05
+
+**Sessions 1–7 complete (commits `880c596 → d01b70f`, all on `main`, pushed).** 270 tests passing (+12 net new across the run). Lint and pyright strict both green at every commit.
+
+| Session | Items | Outcome | Commit |
+|---|---|---|---|
+| S1 | `B-CODE-4` — split `stores/sqlite.py` | shipped (9-module subpackage, 25 callers updated atomically) | `880c596` |
+| S2 | `B-DOCS-1` — `08_KNOWLEDGE_GRAPH_SPEC.md` Phase 5 → Step 1–9 rename | shipped | `396f9bf` |
+| S2b | `B-CODE-1` — split `ingest/pipeline.py` | shipped (4-module subpackage, 7 callers updated; cross-module helpers de-underscored) | `9119fb0` |
+| S3 | `B-PERF-3` + `B-ROBUST-1` — pooled SQLite + pooled OpenAI client | shipped (per-thread pool, content-keyed cache, 6 new unit tests) | `868354f` |
+| S4 | `B-PERF-1` + `B-PERF-2` | **closed obsolete-on-survey** — audit line numbers and shape claims did not match current code | `17cc3cb` |
+| S5 | `B-CODE-3` — Pydantic v2 field-level validators | shipped (`BeforeValidator` for `query_instruction`, `AfterValidator` for `corpus_id`); `B-CODE-2` and `B-STACK-7` **struck** | `9c151eb` |
+| S6 | `B-KG-3` — embedding-based entity expansion | shipped (always-on, no toggle, query-vector reused, 3 new tests); `B-STACK-11` **struck** | `4eb7d2e` |
+| S7 | `B-KG-4` — graph context token budget | shipped (`max_graph_context_tokens=1500`, deterministic truncation order, 3 new tests); `B-KG-1` **deferred-pending-design** (audit assumes a `predicate` column on `claims` that does not exist) | `d01b70f` |
+
+### Net delivery so far
+
+- **8 items shipped**: B-CODE-1, B-CODE-3, B-CODE-4, B-DOCS-1, B-KG-3, B-KG-4, B-PERF-3, B-ROBUST-1.
+- **5 items struck on survey**: B-CODE-2, B-PERF-1, B-PERF-2, B-STACK-7, B-STACK-11 — each audit description either pointed at code that no longer existed or proposed work that the current architecture already covered.
+- **1 item deferred**: B-KG-1 — schema mismatch with the audit's premise; needs user direction between three honest design options (relations-based, claims-redundancy, LLM-adjudicated).
+
+### Remaining sessions (not yet executed)
+
+- **Session 8** — `B-KG-2` (entity disambiguation), `B-KG-5` (chunk-incremental graph build).
+- **Session 9** — `B-STACK-4`, `B-STACK-5` (MCP capability surface).
+- **Session 10** — `B-STACK-8/9/10`, `B-ROBUST-2/3` (observability + ingest polish).
+- **Session 11** — `B-TEST-1` (synthesis e2e test).
+- **RAISE-FIRST** (gated on user direction): `B-LOCAL-1`, `B-LOCAL-2`, `B-STACK-6`.
+- **SCALE-DEFERRED** (gated on corpus / load growth): `B-PERF-4`, `B-STACK-1`, `B-STACK-2`, `B-STACK-12`, `B-TEST-2`.
+
+The user has paused the run before Session 8 so each remaining session can be re-scoped against current code first — several remaining items have similar "design choice needed" or "audit framing now stale" properties (B-KG-5's own caveat warns of centrality-drift risk; B-STACK-4/5 only deliver value with a concrete consumer; B-STACK-8/9/10 may overlap with already-shipped observability surface).
+
+---
+
 ## Context
 
 This is the follow-on plan for the 33 Tier 7 backlog items captured during the 2026-05-05 SOTA review. The executable SOTA plan (`sota-fix-implementation-2026-05.md`) is now complete (12 items shipped, 5 struck, 1 deferred → backlog as `B-CODE-4`); this plan picks up the backlog.

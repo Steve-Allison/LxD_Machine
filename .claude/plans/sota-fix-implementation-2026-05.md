@@ -1,5 +1,23 @@
 # LxD Machine — SOTA Implementation Plan (15 items)
 
+## Status — 2026-05-05
+
+**Parent plan complete.** All in-scope items either shipped or struck-with-rationale during the original session. The 1 deferred item (`B-CODE-4` — sqlite split) and the broader Tier 7 backlog are continued in `backlog-implementation-2026-05.md`, which is now 7 of 11 sessions complete:
+
+- `B-CODE-4` (sqlite split) — shipped `880c596`.
+- `B-CODE-1` (ingest/pipeline split) — shipped `9119fb0`.
+- `B-PERF-3` + `B-ROBUST-1` (pooled SQLite + pooled OpenAI client) — shipped `868354f`.
+- `B-CODE-3` (Pydantic v2 field-level validators) — shipped `9c151eb`.
+- `B-KG-3` (embedding-based entity expansion) — shipped `4eb7d2e`.
+- `B-KG-4` (graph context token budget) — shipped `d01b70f`.
+- `B-DOCS-1` (08_KNOWLEDGE_GRAPH_SPEC Phase 5 → Step 1–9 rename) — shipped `396f9bf`.
+
+5 backlog items struck on survey (audit framing didn't match current code): `B-CODE-2`, `B-PERF-1`, `B-PERF-2`, `B-STACK-7`, `B-STACK-11`. 1 backlog item deferred pending user direction: `B-KG-1` (claim contradiction detection — schema mismatch with audit's premise).
+
+Remaining backlog work — Sessions 8–11 (`B-KG-2`, `B-KG-5`, `B-STACK-4/5/8/9/10`, `B-ROBUST-2/3`, `B-TEST-1`) plus the RAISE-FIRST and SCALE-DEFERRED gates — is paused for the user to re-scope each remaining item against current code before continuing. See `backlog-implementation-2026-05.md` for full status and rationale.
+
+---
+
 ## Context
 
 A 2026-05-05 critical audit identified 20 architectural and code-quality gaps across retrieval, knowledge-graph signal use, code structure, robustness, and observability. The audit grounded each finding in `file:line` references; an Explore-agent pass against the live codebase has now confirmed exact integration points for every item.
