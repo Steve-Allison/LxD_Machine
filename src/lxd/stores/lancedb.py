@@ -247,7 +247,7 @@ def _chunk_record_to_row(record: ChunkRecord) -> dict[str, object]:
 
 
 # ---------------------------------------------------------------------------
-# Entity embeddings table (Phase 5)
+# Entity embeddings table
 # ---------------------------------------------------------------------------
 
 _ENTITY_TABLE_NAME = "entity_embeddings"

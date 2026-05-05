@@ -7,9 +7,10 @@ Responsibility:
     thread-pool offload, and uniform structured logging for free.
 
 Design boundary:
-    Only MCP server bindings should import this module. Stores, retrieval,
-    and ingest code must remain synchronous until Wave 5+ migrate them to
-    truly-async equivalents.
+    Only MCP server bindings should import this module. The store, retrieval,
+    and ingest layers remain synchronous: LanceDB and SQLite are blocking-I/O
+    libraries, and at this scale running them in a worker thread costs less
+    than maintaining a parallel async stack.
 
 Key constraints:
     * Each call runs in a worker thread, so the MCP event loop stays

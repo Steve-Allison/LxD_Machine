@@ -1259,7 +1259,7 @@ def summarize_store(
 
 
 # ---------------------------------------------------------------------------
-# Knowledge Graph query functions (Phase 5)
+# Knowledge Graph query functions
 # ---------------------------------------------------------------------------
 
 
