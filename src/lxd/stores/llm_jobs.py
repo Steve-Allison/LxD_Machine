@@ -29,7 +29,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import Any, Literal
 
-JobStatus = Literal["queued", "running", "succeeded", "failed", "cancelled"]
+type JobStatus = Literal["queued", "running", "succeeded", "failed", "cancelled"]
 
 _ALLOWED_STATUSES: frozenset[JobStatus] = frozenset(
     {"queued", "running", "succeeded", "failed", "cancelled"}
