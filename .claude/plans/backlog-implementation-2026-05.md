@@ -197,7 +197,19 @@ There is no double-encoding of the same text. No code change needed.
 
 ### Tier 4 — Pydantic v2 modernisation
 
-#### `B-CODE-2` `Pydantic TypeAdapter` for hot-path row→record validation
+#### `B-CODE-2` `Pydantic TypeAdapter` for hot-path row→record validation — **STRUCK on survey 2026-05-05**
+
+**Status**: Closed. The hand-written row→record adapters in
+`src/lxd/stores/_sqlite_rows.py` are minimal `int/str/float` coercions on
+a *trusted* internal SQLite schema. Pydantic `TypeAdapter` is for
+validating untrusted input shapes; converting our frozen-dataclass
+records to Pydantic `BaseModel` would add validation overhead without a
+correctness benefit. The audit's own caveat ("benchmark, ship if at
+parity") and the user's "no measurement ceremony" rule both point the
+same way: skip.
+
+(Original audit note retained below for reference.)
+
 
 **Why**: `manifest_record_from_row`, `chunk_from_row`, `entity_profile_from_row` etc. construct dataclasses by hand. `TypeAdapter[ChunkRecord]` parses the same dict with field validation in C-implemented Pydantic core, faster on repeated parsing.
 
@@ -241,7 +253,15 @@ There is no double-encoding of the same text. No code change needed.
 
 ---
 
-#### `B-STACK-7` FastMCP structured tool input schemas
+#### `B-STACK-7` FastMCP structured tool input schemas — **CLOSED on survey 2026-05-05**
+
+**Status**: Already done. Every tool in `src/lxd/mcp/tools.py` takes
+typed primitives (`str`, `int`, `str | None`) — no tool accepts a
+`dict[str, Any]` arg. FastMCP derives input JSON Schema from the typed
+signatures automatically. Nothing to refactor.
+
+(Original audit note retained below for reference.)
+
 
 **Why**: Some MCP tools accept loose `dict[str, Any]` parameters. FastMCP can derive an input JSON Schema from a Pydantic model, which gives clients (Claude.ai, Cursor, etc.) auto-complete and validation.
 

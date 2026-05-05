@@ -3,9 +3,43 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Literal, Self
+from typing import Annotated, Literal, Self
 
-from pydantic import BaseModel, ConfigDict, Field, HttpUrl, model_validator
+from pydantic import (
+    AfterValidator,
+    BaseModel,
+    BeforeValidator,
+    ConfigDict,
+    Field,
+    HttpUrl,
+    model_validator,
+)
+
+
+def _normalize_query_instruction(value: str | None) -> str | None:
+    """Treat a blank query instruction as ``None`` so config consumers see a single absent shape."""
+    if value is None:
+        return None
+    return value if value.strip() else None
+
+
+def _validate_corpus_id_shape(value: str) -> str:
+    """Enforce the slug shape ``^[a-z0-9][a-z0-9_-]{0,62}$`` for ``tenancy.corpus_id``.
+
+    The slug must be safe for filesystem paths, LanceDB filter clauses, and
+    SQLite row keys, so we reject anything that would force downstream
+    quoting or normalisation.
+    """
+    if not value or len(value) > 63:
+        raise ValueError("tenancy.corpus_id must be 1..63 characters")
+    if not value[0].isalnum():
+        raise ValueError("tenancy.corpus_id must start with an alphanumeric character")
+    for ch in value:
+        if not (ch.isalnum() or ch in {"_", "-"}):
+            raise ValueError("tenancy.corpus_id may only contain [a-z0-9_-] characters")
+        if ch.isalpha() and not ch.islower():
+            raise ValueError("tenancy.corpus_id must be lowercase")
+    return value
 
 
 class OllamaConfig(BaseModel):
@@ -66,15 +100,9 @@ class EmbeddingConfig(BaseModel):
     timeout_secs: int = Field(gt=0)
     retry_attempts: int = Field(gt=0)
     retry_backoff: list[int] = Field(default_factory=list)
-    query_instruction: str | None = None
+    query_instruction: Annotated[str | None, BeforeValidator(_normalize_query_instruction)] = None
     batch_size: int = Field(default=32, gt=0)
     max_workers: int = Field(default=4, gt=0)
-
-    @model_validator(mode="after")
-    def _normalize_query_instruction(self) -> Self:
-        if self.query_instruction is not None and not self.query_instruction.strip():
-            self.query_instruction = None
-        return self
 
 
 class OpenAIEmbeddingConfig(BaseModel):
@@ -325,21 +353,7 @@ class TenancyConfig(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    corpus_id: str = "default"
-
-    @model_validator(mode="after")
-    def _validate_corpus_id(self) -> Self:
-        value = self.corpus_id
-        if not value or len(value) > 63:
-            raise ValueError("tenancy.corpus_id must be 1..63 characters")
-        if not value[0].isalnum():
-            raise ValueError("tenancy.corpus_id must start with an alphanumeric character")
-        for ch in value:
-            if not (ch.isalnum() or ch in {"_", "-"}):
-                raise ValueError("tenancy.corpus_id may only contain [a-z0-9_-] characters")
-            if ch.isalpha() and not ch.islower():
-                raise ValueError("tenancy.corpus_id must be lowercase")
-        return self
+    corpus_id: Annotated[str, AfterValidator(_validate_corpus_id_shape)] = "default"
 
 
 class RuntimeConfig(BaseModel):
