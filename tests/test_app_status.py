@@ -12,7 +12,7 @@ from lxd.stores.sqlite import (
 )
 
 
-def test_load_committed_status_uses_live_plan_entity_count_for_legacy_snapshot(tmp_path) -> None:
+def test_load_committed_status_uses_live_plan_when_snapshot_lacks_coverage(tmp_path) -> None:
     store_paths = build_store_paths(tmp_path)
     connection = connect_sqlite(store_paths.sqlite_path)
     try:
@@ -37,7 +37,11 @@ def test_load_committed_status_uses_live_plan_entity_count_for_legacy_snapshot(t
         )
 
         config = SimpleNamespace(
-            paths=SimpleNamespace(corpus_path=tmp_path / "corpus", ontology_path=tmp_path / "ontology", data_path=tmp_path),
+            paths=SimpleNamespace(
+                corpus_path=tmp_path / "corpus",
+                ontology_path=tmp_path / "ontology",
+                data_path=tmp_path,
+            ),
             chunking=SimpleNamespace(
                 chunk_overlap=10,
                 chunk_size=100,
@@ -99,7 +103,11 @@ def test_load_committed_status_ignores_malformed_validation_issue_json(tmp_path)
             ),
         )
         config = SimpleNamespace(
-            paths=SimpleNamespace(corpus_path=tmp_path / "corpus", ontology_path=tmp_path / "ontology", data_path=tmp_path),
+            paths=SimpleNamespace(
+                corpus_path=tmp_path / "corpus",
+                ontology_path=tmp_path / "ontology",
+                data_path=tmp_path,
+            ),
             chunking=SimpleNamespace(
                 chunk_overlap=10,
                 chunk_size=100,
