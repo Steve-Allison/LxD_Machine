@@ -37,7 +37,7 @@ from lxd.ingest.embedding_cache import open_cache_table
 from lxd.ingest.embedding_cache import store as cache_store
 from lxd.ingest.error_classification import (
     CircuitBreakerTripped,
-    SystemicErrorCircuitBreaker,
+    PersistentCircuitBreaker,
     classify,
 )
 from lxd.ingest.markdown import ExtractedDocument, load_markdown_document
@@ -190,7 +190,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
         vector_db = connect_lancedb(store_paths.lancedb_path)
         vector_table = open_chunk_table(vector_db, vector_size=config.models.embed_dims)
         cache_table = open_cache_table(vector_db, vector_size=config.models.embed_dims)
-        circuit_breaker = SystemicErrorCircuitBreaker(threshold=3)
+        circuit_breaker = PersistentCircuitBreaker(sqlite_connection, threshold=3)
         cache_hit_total = 0
         cache_miss_total = 0
 

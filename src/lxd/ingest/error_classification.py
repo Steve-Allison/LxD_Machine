@@ -14,11 +14,18 @@ The pipeline used to lump every recoverable error into a single bucket and
 keep going. That is what burned API spend on every changed Research file when
 the ghost FK was tripped: the first failure was systemic, but the pipeline
 treated it as transient and re-paid 17 more times for the same failure.
+
+Persistence: the breaker stores its consecutive-failure count in a
+``circuit_breaker_state`` row keyed by ``scope``. A crashed process
+mid-trip resumes at the last persisted count on the next start, so a
+flaky run that already saw 2 systemic failures can trip on the very
+next failure rather than starting fresh from zero.
 """
 
 from __future__ import annotations
 
 import sqlite3
+from datetime import UTC, datetime
 from enum import Enum
 
 
@@ -98,7 +105,7 @@ def classify(exc: BaseException) -> ErrorClass:
 
 
 class CircuitBreakerTripped(RuntimeError):
-    """Raised by :class:`SystemicErrorCircuitBreaker` after threshold is hit.
+    """Raised by :class:`PersistentCircuitBreaker` after threshold is hit.
 
     Contains the last exception so the operator sees what went wrong instead
     of a generic "aborted" message.
@@ -113,38 +120,128 @@ class CircuitBreakerTripped(RuntimeError):
         self.last_error = last_error
 
 
-class SystemicErrorCircuitBreaker:
-    """Counts consecutive systemic errors and trips after a threshold.
+_DEFAULT_SCOPE = "ingest_default"
 
-    Successes reset the counter. Transient and data errors do not advance
-    the counter — they are normal per-file failures that should not abort a
-    long run.
+
+class PersistentCircuitBreaker:
+    """Counts consecutive systemic errors with state persisted to SQLite.
+
+    State lives in the ``circuit_breaker_state`` table keyed by
+    ``scope`` so a crashed process resumes at the last-known count on
+    the next start (rather than starting fresh from zero and re-paying
+    on the same systemic failure pattern). Successes reset the counter.
+    Transient and data errors do not advance it — they are normal
+    per-file failures that should not abort a long run.
+
+    Thread safety: writes happen inside the connection's autocommit-on-
+    ``execute`` model with explicit ``commit()``; the breaker is intended
+    for single-source-loop ingest. Concurrent ingest must guard externally.
     """
 
-    def __init__(self, threshold: int = 3) -> None:
+    __slots__ = ("_connection", "_consecutive", "_scope", "_threshold")
+
+    def __init__(
+        self,
+        connection: sqlite3.Connection,
+        *,
+        scope: str = _DEFAULT_SCOPE,
+        threshold: int = 3,
+    ) -> None:
         if threshold < 1:
             raise ValueError("threshold must be >= 1")
+        self._connection = connection
+        self._scope = scope
         self._threshold = threshold
-        self._consecutive = 0
+        self._consecutive = self._load_consecutive()
 
     @property
     def consecutive_failures(self) -> int:
         return self._consecutive
 
+    @property
+    def threshold(self) -> int:
+        return self._threshold
+
     def record_success(self) -> None:
+        """Reset the counter and persist the success timestamp."""
         self._consecutive = 0
+        now = datetime.now(UTC).isoformat()
+        with self._connection:
+            self._connection.execute(
+                """
+                INSERT INTO circuit_breaker_state (
+                    scope, consecutive_failures, last_success_at, tripped_at
+                )
+                VALUES (?, 0, ?, NULL)
+                ON CONFLICT(scope) DO UPDATE SET
+                    consecutive_failures = 0,
+                    last_success_at = excluded.last_success_at,
+                    tripped_at = NULL
+                """,
+                (self._scope, now),
+            )
 
     def record_failure(self, exc: BaseException) -> None:
-        """Record an exception. Raises :class:`CircuitBreakerTripped` if the
-        threshold of consecutive systemic failures is reached.
+        """Record an exception. Persists the new state and raises
+        :class:`CircuitBreakerTripped` once the threshold of consecutive
+        systemic failures is reached.
         """
         cls = classify(exc)
-        if cls is ErrorClass.SYSTEMIC:
-            self._consecutive += 1
-            if self._consecutive >= self._threshold:
-                raise CircuitBreakerTripped(self._consecutive, exc)
-        else:
-            # Non-systemic errors don't advance the counter, but they don't
-            # reset it either — a transient blip in the middle of a systemic
-            # run shouldn't mask the pattern.
+        if cls is not ErrorClass.SYSTEMIC:
+            # Non-systemic errors don't advance the counter and don't reset
+            # it either — a transient blip in the middle of a systemic run
+            # shouldn't mask the pattern. No persistence needed.
             return
+        self._consecutive += 1
+        now = datetime.now(UTC).isoformat()
+        tripped_at = now if self._consecutive >= self._threshold else None
+        with self._connection:
+            self._connection.execute(
+                """
+                INSERT INTO circuit_breaker_state (
+                    scope, consecutive_failures, last_error_class,
+                    last_error_message, last_error_type, last_failure_at,
+                    tripped_at
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT(scope) DO UPDATE SET
+                    consecutive_failures = excluded.consecutive_failures,
+                    last_error_class = excluded.last_error_class,
+                    last_error_message = excluded.last_error_message,
+                    last_error_type = excluded.last_error_type,
+                    last_failure_at = excluded.last_failure_at,
+                    tripped_at = COALESCE(
+                        excluded.tripped_at, circuit_breaker_state.tripped_at
+                    )
+                """,
+                (
+                    self._scope,
+                    self._consecutive,
+                    cls.value,
+                    str(exc)[:1000],
+                    type(exc).__name__,
+                    now,
+                    tripped_at,
+                ),
+            )
+        if self._consecutive >= self._threshold:
+            raise CircuitBreakerTripped(self._consecutive, exc)
+
+    def _load_consecutive(self) -> int:
+        row = self._connection.execute(
+            "SELECT consecutive_failures FROM circuit_breaker_state WHERE scope = ?",
+            (self._scope,),
+        ).fetchone()
+        if row is None:
+            return 0
+        return int(row[0])
+
+
+def reset_circuit_breaker(connection: sqlite3.Connection, *, scope: str = _DEFAULT_SCOPE) -> None:
+    """Clear the persisted breaker row for ``scope``.
+
+    Use after manually resolving a tripped breaker (the underlying
+    systemic failure has been fixed) so the next ingest run starts fresh.
+    """
+    with connection:
+        connection.execute("DELETE FROM circuit_breaker_state WHERE scope = ?", (scope,))

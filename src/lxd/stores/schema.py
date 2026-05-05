@@ -36,7 +36,7 @@ from lxd.stores._base_ddl import BASE_SCHEMA_DDL
 
 Migration = Callable[[sqlite3.Connection], None]
 
-CURRENT_SCHEMA_VERSION = 6
+CURRENT_SCHEMA_VERSION = 7
 
 
 class SchemaIntegrityError(sqlite3.DatabaseError):
@@ -405,6 +405,32 @@ def _migration_0006_chunk_rows_wiki_metadata(connection: sqlite3.Connection) -> 
         )
 
 
+def _migration_0007_circuit_breaker_state(connection: sqlite3.Connection) -> None:
+    """Create the persistent circuit-breaker state table.
+
+    The in-memory ``SystemicErrorCircuitBreaker`` reset its counter on
+    every process start: a crashed run mid-trip would re-spend on the
+    same systemic failure pattern. The persistent breaker reads its
+    state from this table on construct, so a crashed pid that already
+    saw 2 consecutive systemic failures resumes at 2 — a single new
+    failure trips the breaker rather than starting fresh from zero.
+    """
+    connection.execute(
+        """
+        CREATE TABLE IF NOT EXISTS circuit_breaker_state (
+            scope TEXT PRIMARY KEY,
+            consecutive_failures INTEGER NOT NULL DEFAULT 0,
+            last_error_class TEXT,
+            last_error_message TEXT,
+            last_error_type TEXT,
+            last_failure_at TEXT,
+            last_success_at TEXT,
+            tripped_at TEXT
+        );
+        """
+    )
+
+
 _MIGRATIONS: dict[int, Migration] = {
     1: _migration_0001_baseline,
     2: _migration_0002_drop_chunk_vector_json,
@@ -412,6 +438,7 @@ _MIGRATIONS: dict[int, Migration] = {
     4: _migration_0004_repair_ghost_fks,
     5: _migration_0005_ingest_run_telemetry,
     6: _migration_0006_chunk_rows_wiki_metadata,
+    7: _migration_0007_circuit_breaker_state,
 }
 
 
@@ -441,6 +468,7 @@ _REQUIRED_COLUMNS: dict[str, frozenset[str]] = {
     "relation_evidence": frozenset({"evidence_id", "relation_id", "chunk_id"}),
     "ingest_runs": frozenset({"run_id", "status"}),
     "llm_jobs": frozenset({"job_id", "status"}),
+    "circuit_breaker_state": frozenset({"scope", "consecutive_failures"}),
 }
 
 

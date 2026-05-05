@@ -455,7 +455,7 @@ Sessions are ordered for clean ROI sequencing; each ends with a green build + co
 | **3**  | **KG signal lift — wiki edges**             | `#3`                                                                                                                              | 4 h                    |
 | **4**  | **KG signal lift — centrality + community** | `#2`                                                                                                                              | 6 h                    |
 | **5**  | **Streaming synthesis**                     | `#5` (`#4` struck — see backlog `B-LOCAL-2`)                                                                                      | 3 h                    |
-| **6**  | **Production guardrails**                   | `#11`, `#12` (implement OTel or delete unused fields outright per the no-tech-debt rule)                                          | 6 h                    |
+| **6**  | **Production guardrails**                   | `#11` (DONE `ffc5765`), `#12` (resolved-by-deletion in `e29fb7c`)                                                                  | 0 h (done)             |
 | **7**  | **Persistent breaker + sqlite.py split**    | `#10`, `#7` (callers update; no `__init__.py` re-export façade)                                                                   | 6 h                    |
 | **8**  | **Backend dispatch refactor**               | `#8` (after `#7` so the new modules absorb the change cleanly)                                                                    | 2 h                    |
 | **9**  | **Advanced retrieval**                      | `#9`, `#17`                                                                                                                       | 10 h (split if needed) |
@@ -490,9 +490,9 @@ Sessions are ordered for clean ROI sequencing; each ends with a green build + co
 [x] S5.2  [#5] `stream_synthesize_answer(...)` async-iterator API (yields `StreamingTextDelta` events then a terminal `AnswerEnvelope`); 5 new tests cover happy path, think-block stripping in the final envelope, initial-call failure, mid-stream failure, empty stream. Local Ollama only.
 [x] S5.3  Commit pending below — single commit covers [#5] only.
 
-[ ] S6.1  [#11] New `IngestBudget` config + threshold checks
-[ ] S6.2  [#12] Implement OTel via `configure_tracing`, span wrappers in `run_tool`, spans at ingest+retrieval boundaries (or delete the unused `otel_*`/`prometheus_*` settings outright per no-tech-debt — pick one, ship one)
-[ ] S6.3  Commit: "Production guardrails: budget + observability"
+[x] S6.1  [#11] `IngestBudget` config + `IngestBudgetTracker` + per-call threshold check + `aborted_budget` run status — done in `ffc5765`. 6 unit tests. Scope: LLM call count only; embedding-token tracking deferred.
+[x] S6.2  [#12] Resolved by deletion in commit `e29fb7c` (Tier 1 dead-code purge): `ObservabilityConfig` and the four unused `otel_*`/`prometheus_*` fields were removed outright. The "implement OTel" alternative is deferred — when OTel is genuinely wired through (configure_tracing, spans on run_tool / ingest / retrieval boundaries), it lands as a new code change rather than fulfilling a stale config promise.
+[x] S6.3  Two commits: `ffc5765` ([#11] budget) and `e29fb7c` ([#12] resolved-by-deletion).
 
 [ ] S7.1  [#10] Add `circuit_breaker_state` table + migration v7
 [ ] S7.2  [#10] Implement `PersistentCircuitBreaker`; **delete** the in-memory `SystemicErrorCircuitBreaker` (no parallel implementations)

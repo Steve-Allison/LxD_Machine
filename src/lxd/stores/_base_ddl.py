@@ -277,4 +277,15 @@ CREATE TABLE IF NOT EXISTS graph_metadata (
     value TEXT NOT NULL,
     updated_at TEXT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS circuit_breaker_state (
+    scope TEXT PRIMARY KEY,
+    consecutive_failures INTEGER NOT NULL DEFAULT 0,
+    last_error_class TEXT,
+    last_error_message TEXT,
+    last_error_type TEXT,
+    last_failure_at TEXT,
+    last_success_at TEXT,
+    tripped_at TEXT
+);
 """
