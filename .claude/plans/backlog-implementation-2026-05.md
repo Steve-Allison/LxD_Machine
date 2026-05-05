@@ -306,7 +306,19 @@ signatures automatically. Nothing to refactor.
 
 ---
 
-#### `B-STACK-11` Advanced NetworkX graph queries
+#### `B-STACK-11` Advanced NetworkX graph queries — **STRUCK on survey 2026-05-05**
+
+**Status**: Closed. The KG already exposes 6 centrality metrics
+(PageRank, betweenness, closeness, in/out-degree, eigenvector) and a
+`find_weighted_path` MCP tool that runs weighted Dijkstra. The audit's
+remaining suggestions (HITS authority/hub, k-core decomposition, motif
+detection) are graph-theoretic novelties without a concrete consumer in
+the retrieval or synthesis paths. Adding metrics in search of a use
+case violates the user's "nothing else / no measurement ceremony" rule.
+Skip until a concrete consumer is identified.
+
+(Original audit note retained below for reference.)
+
 
 **Why**: With centrality already shipped (`[#2]`), the `entity_graph` is rich enough to support more sophisticated queries: HITS authority/hub scores, weighted-edge shortest paths, k-core decomposition for "core concepts", motif detection for triangle-completion suggestions.
 

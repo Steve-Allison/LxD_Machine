@@ -9,12 +9,18 @@ import structlog
 
 from lxd.app.status import config_drift_warnings
 from lxd.retrieval.dense import embed_query
-from lxd.retrieval.expansion import expand_question
+from lxd.retrieval.expansion import ExpansionOutcome, expand_question
 from lxd.retrieval.graph_routing import build_graph_context, format_graph_context_prompt
 from lxd.retrieval.hyde import generate_hypothetical_answer
 from lxd.retrieval.rerank import rerank_chunks
 from lxd.settings.models import RuntimeConfig
-from lxd.stores.lancedb import connect_lancedb, open_chunk_table, search_chunks_fts
+from lxd.stores.lancedb import (
+    connect_lancedb,
+    open_chunk_table,
+    open_entity_table,
+    search_chunks_fts,
+    search_similar_entities,
+)
 from lxd.stores.lancedb import search_chunks as search_vector_chunks
 from lxd.stores.models import StorePaths
 from lxd.stores.sqlite.chunks import (
@@ -152,6 +158,12 @@ def search_chunks(
         if hyde_text:
             embed_target = hyde_text
     query_vector = embed_query(config, embed_target)
+    expansion = _augment_with_embedding_neighbours(
+        expansion=expansion,
+        query_vector=query_vector,
+        store_paths=store_paths,
+        config=config,
+    )
     table = open_chunk_table(
         connect_lancedb(store_paths.lancedb_path), vector_size=config.models.embed_dims
     )
@@ -390,6 +402,57 @@ def _load_relation_chunk_ids(store_paths: object, entity_ids: list[str]) -> set[
     except sqlite3.DatabaseError, OSError:
         _log.warning("load_relation_chunk_ids_failed", exc_info=True)
         return set()
+
+
+def _augment_with_embedding_neighbours(
+    *,
+    expansion: ExpansionOutcome,
+    query_vector: list[float],
+    store_paths: StorePaths,
+    config: RuntimeConfig,
+) -> ExpansionOutcome:
+    """Widen ``expansion.matched_entity_ids`` with the entities nearest to the query vector.
+
+    The ``entity_embeddings`` LanceDB table holds per-entity vectors built
+    during the knowledge-graph build. This helper looks up the nearest
+    entities by cosine similarity and merges them into the expansion's
+    matched-entity set so the relation lane in
+    :func:`_fuse_ranked_prefix` benefits from semantic neighbourhoods, not
+    just surface-form mention detection.
+
+    Silently no-ops when the LanceDB store, the entity table, or the
+    underlying KG build are not yet present; this keeps the retrieval
+    path usable on a freshly ingested corpus before
+    ``pixi run build-graph`` has run.
+    """
+    limit = max(1, config.expansion.max_terms)
+    try:
+        database = connect_lancedb(store_paths.lancedb_path)
+        entity_table = open_entity_table(database, vector_size=config.models.embed_dims)
+    except (FileNotFoundError, ValueError) as exc:
+        _log.debug("embedding_entity_expansion_skipped", error=str(exc))
+        return expansion
+    try:
+        nearest = search_similar_entities(entity_table, query_vector=query_vector, limit=limit)
+    except (FileNotFoundError, ValueError) as exc:
+        _log.debug("embedding_entity_search_failed", error=str(exc))
+        return expansion
+
+    if not nearest:
+        return expansion
+
+    existing = set(expansion.matched_entity_ids)
+    additions = [
+        str(row["entity_id"])
+        for row in nearest
+        if isinstance(row.get("entity_id"), str) and row["entity_id"] not in existing
+    ]
+    if not additions:
+        return expansion
+    return replace(
+        expansion,
+        matched_entity_ids=[*expansion.matched_entity_ids, *additions],
+    )
 
 
 def _merge_ranked_prefix(
