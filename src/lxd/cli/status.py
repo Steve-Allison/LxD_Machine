@@ -9,7 +9,7 @@ import typer
 
 from lxd.app.bootstrap import bootstrap_app
 from lxd.app.status import load_committed_status
-from lxd.ingest.pipeline import build_ingest_plan
+from lxd.ingest.pipeline.orchestrator import build_ingest_plan
 from lxd.stores.sqlite.connection import build_store_paths, connect_sqlite, initialize_schema
 
 PROFILE_OPTION = typer.Option(None, "--profile")

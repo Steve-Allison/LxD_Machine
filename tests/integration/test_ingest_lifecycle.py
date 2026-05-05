@@ -7,7 +7,7 @@ Covers:
 - The ingest deletion branch passes ``source_rel_path`` (not the absolute
   path) to ``delete_sqlite_source``, so missing-from-corpus files are
   marked deleted in SQLite and the LanceDB rows are dropped.
-- ``_resolve_document_id`` is a pure function of relative path + content
+- ``resolve_document_id`` is a pure function of relative path + content
   hash, so full rebuilds yield identical ``document_id`` values and
   downstream tables (claims, relations, profiles, communities) remain
   stable.
@@ -17,7 +17,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from lxd.ingest.pipeline import _resolve_document_id
+from lxd.ingest.pipeline.moves import resolve_document_id
 from lxd.ingest.scanner import ScannedCorpusFile
 from lxd.stores.models import ManifestRecord
 from lxd.stores.sqlite.connection import build_store_paths, connect_sqlite, initialize_schema
@@ -128,7 +128,7 @@ def test_delete_source_removes_manifest_when_given_relative_path(tmp_path: Path)
     assert after_correct_key["Guides/old.md"].lifecycle_status == "deleted"
 
 
-def test_resolve_document_id_is_deterministic_across_full_rebuilds(tmp_path: Path) -> None:
+def testresolve_document_id_is_deterministic_across_full_rebuilds(tmp_path: Path) -> None:
     """`document_id` must be a pure function of path + content hash."""
     scanned = ScannedCorpusFile(
         absolute_path=tmp_path / "Guides" / "doc.md",
@@ -139,12 +139,12 @@ def test_resolve_document_id_is_deterministic_across_full_rebuilds(tmp_path: Pat
         source_domain="guides",
     )
 
-    first = _resolve_document_id(
+    first = resolve_document_id(
         scanned,
         existing_manifest=None,
         move_source=None,
     )
-    second = _resolve_document_id(
+    second = resolve_document_id(
         scanned,
         existing_manifest=None,
         move_source=None,
@@ -153,7 +153,7 @@ def test_resolve_document_id_is_deterministic_across_full_rebuilds(tmp_path: Pat
     assert first == second
 
 
-def test_resolve_document_id_prefers_existing_manifest_id(tmp_path: Path) -> None:
+def testresolve_document_id_prefers_existing_manifest_id(tmp_path: Path) -> None:
     """Existing manifest ``document_id`` wins over any fresh derivation."""
     scanned = ScannedCorpusFile(
         absolute_path=tmp_path / "Guides" / "doc.md",
@@ -170,7 +170,7 @@ def test_resolve_document_id_prefers_existing_manifest_id(tmp_path: Path) -> Non
         document_id="stable-doc-id",
     )
 
-    resolved = _resolve_document_id(
+    resolved = resolve_document_id(
         scanned,
         existing_manifest=existing,
         move_source=None,

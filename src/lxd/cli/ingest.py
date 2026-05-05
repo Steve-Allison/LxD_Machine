@@ -7,7 +7,7 @@ from pathlib import Path
 import typer
 
 from lxd.app.bootstrap import bootstrap_app
-from lxd.ingest.pipeline import run_ingest
+from lxd.ingest.pipeline.orchestrator import run_ingest
 
 PROFILE_OPTION = typer.Option(None, "--profile")
 CONFIG_OPTION = typer.Option(None, "--config", dir_okay=False, resolve_path=True)

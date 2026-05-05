@@ -1,56 +1,35 @@
-"""Plan and execute end-to-end ingestion and persistence steps."""
+"""Top-level ingest run orchestrator: plan, execute, persist, finish."""
 
 from __future__ import annotations
 
 import contextlib
 import json
 import sqlite3
-from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
 
 import structlog
 
-from lxd.domain.citations import make_citation_label
-from lxd.domain.ids import blake3_hex, make_chunk_id
 from lxd.domain.status import LifecycleStatus, RetrievalStatus
 from lxd.ingest.assets import infer_asset_parent
 from lxd.ingest.budget import BudgetExceededError, IngestBudgetTracker
-from lxd.ingest.chunking import (
-    TextChunk,
-    build_tokenizer,
-    chunk_document,
-    split_chunk_for_context,
-    token_count_with_tokenizer,
-)
-from lxd.ingest.contextual_chunker import (
-    augment_chunk_for_embedding,
-    generate_chunk_context,
-    lookup_summaries,
-    open_summary_cache_table,
-    store_summaries,
-)
-from lxd.ingest.docling import load_docling_document
-from lxd.ingest.embedder import (
-    EmbeddingContextError,
-    embed_chunk_text,
-    embed_texts,
-    embed_texts_batched,
-    probe_embedder,
-)
-from lxd.ingest.embedding_cache import lookup as cache_lookup
+from lxd.ingest.contextual_chunker import open_summary_cache_table
+from lxd.ingest.embedder import probe_embedder
 from lxd.ingest.embedding_cache import open_cache_table
-from lxd.ingest.embedding_cache import store as cache_store
 from lxd.ingest.error_classification import (
     CircuitBreakerTripped,
     PersistentCircuitBreaker,
     classify,
 )
-from lxd.ingest.markdown import ExtractedDocument, load_markdown_document
-from lxd.ingest.mentions import detect_mentions
-from lxd.ingest.relations import build_valid_predicates, extract_relations_for_chunk
+from lxd.ingest.pipeline.moves import (
+    can_skip_unchanged_source,
+    clone_source_records,
+    find_move_source,
+    resolve_document_id,
+)
+from lxd.ingest.pipeline.sources import build_manifest_record, build_source_records
+from lxd.ingest.relations import build_valid_predicates
 from lxd.ingest.scanner import ScannedCorpusFile, scan_corpus
 from lxd.ingest.wiki_relations import build_slug_index, derive_wiki_link_relations
 from lxd.ontology.loader import OntologyLoadResult, load_ontology
@@ -58,7 +37,6 @@ from lxd.ontology.matcher import build_automaton
 from lxd.settings.models import RuntimeConfig
 from lxd.stores.lancedb import (
     connect_lancedb,
-    load_vectors_by_chunk_ids,
     open_chunk_table,
     refresh_fts_index,
 )
@@ -68,18 +46,11 @@ from lxd.stores.lancedb import (
 )
 from lxd.stores.models import (
     AssetLinkRecord,
-    ChunkRecord,
     CorpusStatusSummary,
-    ExtractedRelationRecord,
     IngestConfigSnapshotRecord,
     ManifestRecord,
-    MentionRecord,
     OntologySnapshotRecord,
     OntologySourceRecord,
-)
-from lxd.stores.sqlite.chunks import (
-    load_chunk_records_for_source,
-    load_mentions_for_source,
 )
 from lxd.stores.sqlite.chunks import (
     replace_source_chunks as replace_sqlite_source_chunks,
@@ -143,11 +114,7 @@ class IngestRunResult:
 
 
 def validate_project_paths(config: RuntimeConfig) -> None:
-    """Validate configuration and apply runtime settings.
-
-    Args:
-        config: Runtime configuration object.
-    """
+    """Validate configuration and apply runtime settings."""
     if not config.paths.corpus_path.exists():
         raise FileNotFoundError(f"Missing corpus path: {config.paths.corpus_path}")
     if not config.paths.ontology_path.exists():
@@ -156,14 +123,7 @@ def validate_project_paths(config: RuntimeConfig) -> None:
 
 
 def build_ingest_plan(config: RuntimeConfig) -> IngestPlan:
-    """Build an ingest plan from corpus scan and ontology load.
-
-    Args:
-        config: Runtime configuration object.
-
-    Returns:
-        Planned corpus scan and ontology snapshot.
-    """
+    """Build an ingest plan from corpus scan and ontology load."""
     validate_project_paths(config)
     scanned_files = scan_corpus(
         corpus_root=config.paths.corpus_path,
@@ -180,15 +140,7 @@ def build_ingest_plan(config: RuntimeConfig) -> IngestPlan:
 
 
 def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRunResult:
-    """Execute the ingestion pipeline and persist results.
-
-    Args:
-        config: Runtime configuration object.
-        full_rebuild: Whether to rebuild stores from scratch.
-
-    Returns:
-        Completed ingest run summary and diagnostics.
-    """
+    """Execute the ingestion pipeline and persist results."""
     plan = build_ingest_plan(config)
     _validate_ingest_dependencies(config)
 
@@ -216,7 +168,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
         cache_miss_total = 0
 
         run_id = f"ingest-{datetime.now(UTC).strftime('%Y%m%d-%H%M%S')}"
-        timestamp = _utc_now()
+        timestamp = utc_now()
         begin_ingest_run(
             sqlite_connection,
             run_id=run_id,
@@ -287,7 +239,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                     unchanged is not None
                     and unchanged.content_hash == scanned.content_hash
                     and not full_rebuild
-                    and _can_skip_unchanged_source(sqlite_connection, scanned, unchanged)
+                    and can_skip_unchanged_source(sqlite_connection, scanned, unchanged)
                 ):
                     manifest_by_rel_path[scanned.relative_path] = unchanged
                     files_completed += 1
@@ -306,7 +258,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                     continue
 
                 if scanned.source_type == "image_png":
-                    manifest_record = _manifest_record(
+                    manifest_record = build_manifest_record(
                         scanned=scanned,
                         document_id=None,
                         parent_source_rel_path=None,
@@ -382,10 +334,10 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                 move_source = (
                     None
                     if full_rebuild
-                    else _find_move_source(scanned, existing_by_hash, scanned_rel_paths)
+                    else find_move_source(scanned, existing_by_hash, scanned_rel_paths)
                 )
-                document_id = _resolve_document_id(scanned, previous_manifest, move_source)
-                processing_manifest = _manifest_record(
+                document_id = resolve_document_id(scanned, previous_manifest, move_source)
+                processing_manifest = build_manifest_record(
                     scanned=scanned,
                     document_id=document_id,
                     parent_source_rel_path=None,
@@ -399,7 +351,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
 
                 try:
                     if move_source is not None:
-                        cloned_chunks, cloned_mentions = _clone_source_records(
+                        cloned_chunks, cloned_mentions = clone_source_records(
                             sqlite_connection=sqlite_connection,
                             vector_table=vector_table,
                             old_manifest=move_source,
@@ -415,7 +367,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                         cloned_wiki = derive_wiki_link_relations(
                             chunk_records=cloned_chunks,
                             slug_index=slug_index,
-                            extracted_at=_utc_now(),
+                            extracted_at=utc_now(),
                         )
                         wiki_dangling_total.update(cloned_wiki.dangling_slugs)
                         wiki_pages_without_subject_total.update(cloned_wiki.pages_without_subject)
@@ -441,7 +393,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                             file_cache_misses,
                             file_wiki_dangling,
                             file_wiki_no_subject,
-                        ) = _build_source_records(
+                        ) = build_source_records(
                             scanned=scanned,
                             document_id=document_id,
                             config=config,
@@ -485,7 +437,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                             raise
                         reembedded_text_sources += 1
 
-                    committed_manifest = _manifest_record(
+                    committed_manifest = build_manifest_record(
                         scanned=scanned,
                         document_id=document_id,
                         parent_source_rel_path=None,
@@ -502,7 +454,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                     chunks_written += len(chunk_records)
                     circuit_breaker.record_success()
                 except _RECOVERABLE_SOURCE_ERRORS as exc:
-                    failed_manifest = _manifest_record(
+                    failed_manifest = build_manifest_record(
                         scanned=scanned,
                         document_id=document_id,
                         parent_source_rel_path=None,
@@ -554,7 +506,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
             finish_ingest_run(
                 sqlite_connection,
                 run_id=run_id,
-                finished_at=_utc_now(),
+                finished_at=utc_now(),
                 status="complete" if not warnings else "complete_with_warnings",
                 files_completed=files_completed,
                 searchable_files_rebuilt=searchable_files_rebuilt,
@@ -589,9 +541,6 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
             )
         except CircuitBreakerTripped as exc:
             # Systemic failure: stop spending API budget and surface loudly.
-            # Store-level errors that fail identically for every file (e.g.
-            # a ghost FK reference, a corrupt schema, a locked database)
-            # bubble up here and abort the run.
             failure_notes = [
                 *warnings,
                 f"aborted: circuit-breaker tripped after {exc.count} consecutive systemic errors",
@@ -600,7 +549,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
             finish_ingest_run(
                 sqlite_connection,
                 run_id=run_id,
-                finished_at=_utc_now(),
+                finished_at=utc_now(),
                 status="aborted",
                 files_completed=files_completed,
                 searchable_files_rebuilt=searchable_files_rebuilt,
@@ -622,7 +571,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
             finish_ingest_run(
                 sqlite_connection,
                 run_id=run_id,
-                finished_at=_utc_now(),
+                finished_at=utc_now(),
                 status="aborted_budget",
                 files_completed=files_completed,
                 searchable_files_rebuilt=searchable_files_rebuilt,
@@ -640,7 +589,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
             finish_ingest_run(
                 sqlite_connection,
                 run_id=run_id,
-                finished_at=_utc_now(),
+                finished_at=utc_now(),
                 status="failed",
                 files_completed=files_completed,
                 searchable_files_rebuilt=searchable_files_rebuilt,
@@ -688,16 +637,7 @@ def persist_ingest_snapshot(
     summary: CorpusStatusSummary,
     entity_count: int,
 ) -> Path:
-    """Write the latest ingest summary snapshot JSON.
-
-    Args:
-        config: Runtime configuration object.
-        summary: Current corpus status summary.
-        entity_count: Total ontology entity count.
-
-    Returns:
-        Path to the written ingest snapshot JSON.
-    """
+    """Write the latest ingest summary snapshot JSON."""
     config.paths.data_path.mkdir(parents=True, exist_ok=True)
     output_path = config.paths.data_path / "ingest_snapshot.json"
     payload = {
@@ -730,593 +670,6 @@ def _validate_ingest_dependencies(config: RuntimeConfig) -> None:
         raise RuntimeError(f"Embedding readiness probe failed: {embed_probe.warning}")
 
 
-def _build_source_records(
-    *,
-    scanned: ScannedCorpusFile,
-    document_id: str,
-    config: RuntimeConfig,
-    automaton: object,
-    valid_predicates: frozenset[str],
-    slug_index: dict[str, str],
-    budget_tracker: IngestBudgetTracker,
-    cache_table: object | None = None,
-    contextual_summary_table: object | None = None,
-) -> tuple[
-    list[ChunkRecord],
-    list[MentionRecord],
-    list[ExtractedRelationRecord],
-    int,
-    int,
-    tuple[str, ...],
-    tuple[str, ...],
-]:
-    """Chunk, embed (with cache), and detect mentions/relations for one source.
-
-    Relations are derived from two sources, joined into a single list:
-
-    * **LLM extraction** (``relations.py``) over chunk text, gated by
-      ``valid_predicates`` from the ontology relation schema.
-    * **Wiki frontmatter** (``wiki_relations.py``) — for chunks whose host
-      page has ``[[slug]]`` cross-references that resolve via
-      ``slug_index`` to ontology canonical_ids, emit deterministic
-      ``wiki_references`` edges. No LLM cost, no hallucination risk.
-
-    Returns:
-        ``(chunk_records, mention_records, relation_records, cache_hits,
-        cache_misses, wiki_dangling_slugs, wiki_pages_without_subject)`` —
-        the last two are diagnostics that the caller aggregates run-wide.
-    """
-    extracted_document = _load_extracted_document(scanned)
-    initial_chunks = chunk_document(
-        extracted_document,
-        document_id=document_id,
-        chunk_size=config.chunking.chunk_size,
-        chunk_overlap=config.chunking.chunk_overlap,
-        min_tokens=config.chunking.min_tokens,
-        tokenizer_backend=config.chunking.tokenizer_backend,
-        tokenizer_name=config.chunking.tokenizer_name,
-        strategy=config.chunking.strategy,
-    )
-    if config.chunking.contextual_summary_enabled and contextual_summary_table is not None:
-        text_chunks, embeddings, cache_hits, cache_misses = _embed_with_contextual_augmentation(
-            initial_chunks,
-            document_id=document_id,
-            config=config,
-            extracted_document=extracted_document,
-            summary_cache_table=contextual_summary_table,
-            budget_tracker=budget_tracker,
-        )
-    else:
-        text_chunks, embeddings, cache_hits, cache_misses = _embed_with_cache(
-            initial_chunks,
-            document_id=document_id,
-            config=config,
-            cache_table=cache_table,
-        )
-    chunk_records: list[ChunkRecord] = []
-    mention_records: list[MentionRecord] = []
-    relation_records: list[ExtractedRelationRecord] = []
-    page_cited_sources = extracted_document.wiki_metadata.cited_sources
-    page_wiki_links = extracted_document.wiki_metadata.wiki_links
-    for chunk, vector in zip(text_chunks, embeddings, strict=True):
-        chunk_record = ChunkRecord(
-            chunk_id=chunk.chunk_id,
-            document_id=document_id,
-            source_rel_path=chunk.source_rel_path,
-            source_filename=scanned.absolute_path.name,
-            source_type=chunk.source_type,
-            source_domain=scanned.source_domain,
-            source_hash=scanned.content_hash,
-            citation_label=chunk.citation_label,
-            chunk_index=chunk.chunk_index,
-            chunk_occurrence=chunk.chunk_occurrence,
-            token_count=chunk.token_count,
-            text=chunk.text,
-            chunk_hash=chunk.chunk_hash,
-            score_hint=chunk.score_hint,
-            metadata_json=chunk.metadata_json,
-            vector=vector,
-            embedding_model=config.models.embed,
-            embedding_dims=config.models.embed_dims,
-            cited_sources=page_cited_sources,
-            wiki_links=page_wiki_links,
-        )
-        chunk_records.append(chunk_record)
-        chunk_mentions = list(
-            MentionRecord(
-                chunk_id=chunk_record.chunk_id,
-                entity_id=mention.entity_id,
-                term_source=mention.term_source,
-                surface_form=mention.surface_form,
-                start_char=mention.start_char,
-                end_char=mention.end_char,
-            )
-            for mention in detect_mentions(chunk.text, automaton)
-        )
-        mention_records.extend(chunk_mentions)
-        will_call_llm = len(
-            {m.entity_id for m in chunk_mentions}
-        ) >= config.relation_extraction.min_entity_mentions and bool(valid_predicates)
-        if will_call_llm:
-            budget_tracker.check()
-        relation_records.extend(
-            extract_relations_for_chunk(
-                chunk_id=chunk_record.chunk_id,
-                document_id=document_id,
-                source_rel_path=chunk_record.source_rel_path,
-                chunk_text=chunk.text,
-                mention_records=chunk_mentions,
-                valid_predicates=valid_predicates,
-                config=config,
-            )
-        )
-        if will_call_llm:
-            budget_tracker.record_llm_call()
-    wiki_outcome = derive_wiki_link_relations(
-        chunk_records=chunk_records,
-        slug_index=slug_index,
-        extracted_at=_utc_now(),
-    )
-    relation_records.extend(wiki_outcome.relations)
-    return (
-        chunk_records,
-        mention_records,
-        relation_records,
-        cache_hits,
-        cache_misses,
-        wiki_outcome.dangling_slugs,
-        wiki_outcome.pages_without_subject,
-    )
-
-
-def _load_extracted_document(scanned: ScannedCorpusFile) -> ExtractedDocument:
-    if scanned.source_type in ("markdown", "docling_md"):
-        return load_markdown_document(
-            scanned.absolute_path,
-            scanned.relative_path,
-            source_type=scanned.source_type,
-        )
-    return load_docling_document(scanned.absolute_path, scanned.relative_path)
-
-
-def _embed_with_contextual_augmentation(
-    chunks: list[TextChunk],
-    *,
-    document_id: str,
-    config: RuntimeConfig,
-    extracted_document: ExtractedDocument,
-    summary_cache_table: object,
-    budget_tracker: IngestBudgetTracker,
-) -> tuple[list[TextChunk], list[list[float]], int, int]:
-    """Embed chunks with contextual summary augmentation.
-
-    For each chunk: look up a one-sentence "what this chunk is about"
-    summary in the contextual cache; on miss, generate via local Ollama
-    (counted against the ingest budget). Build the augmented text
-    ``f"{summary}\\n\\n{chunk.text}"`` and embed *that* — the stored
-    chunk text remains the original. Returns the cache-hit/miss counts
-    for the **summary** cache (not the embedding cache, which is
-    bypassed when contextual is enabled).
-    """
-    if not chunks:
-        return [], [], 0, 0
-
-    chunk_hashes = [chunk.chunk_hash for chunk in chunks]
-    summary_model = config.chunking.contextual_summary_model
-    summary_lookup = lookup_summaries(
-        summary_cache_table, chunk_hashes=chunk_hashes, model=summary_model
-    )
-
-    document_title = scanned_filename_for_title(extracted_document)
-    document_summary = extracted_document.wiki_metadata.summary or ""
-
-    summaries: list[str] = []
-    fresh_pairs: list[tuple[str, str]] = []
-    for index, chunk in enumerate(chunks):
-        cached = summary_lookup.hits.get(index)
-        if cached is not None:
-            summaries.append(cached)
-            continue
-        budget_tracker.check()
-        summary = generate_chunk_context(
-            chunk_text=chunk.text,
-            document_title=document_title,
-            document_summary=document_summary,
-            config=config,
-        )
-        budget_tracker.record_llm_call()
-        summaries.append(summary)
-        if summary:
-            fresh_pairs.append((chunk.chunk_hash, summary))
-
-    if fresh_pairs:
-        store_summaries(
-            summary_cache_table,
-            chunk_hashes=[h for h, _ in fresh_pairs],
-            summaries=[s for _, s in fresh_pairs],
-            model=summary_model,
-        )
-
-    augmented_texts = [
-        augment_chunk_for_embedding(chunk.text, summary)
-        for chunk, summary in zip(chunks, summaries, strict=True)
-    ]
-    vectors = embed_texts(config, augmented_texts)
-    reindexed = _reindex_chunks(list(chunks), document_id)
-    return reindexed, vectors, summary_lookup.hit_count, summary_lookup.miss_count
-
-
-def scanned_filename_for_title(extracted_document: ExtractedDocument) -> str:
-    """Fallback title when the document has no explicit one."""
-    source_path = getattr(extracted_document, "source_rel_path", None)
-    if isinstance(source_path, str) and source_path:
-        return source_path.rsplit("/", 1)[-1]
-    return "(untitled document)"
-
-
-def _embed_with_cache(
-    chunks: list[TextChunk],
-    *,
-    document_id: str,
-    config: RuntimeConfig,
-    cache_table: object | None,
-) -> tuple[list[TextChunk], list[list[float]], int, int]:
-    """Embed ``chunks`` consulting the content-addressed cache first.
-
-    Cache hits avoid all network/API spend. Cache misses go through the
-    existing context-refinement embed path (which may split chunks that
-    overflow the model's context window). On miss-success, results are
-    stored back in the cache for the next run.
-
-    Returns:
-        ``(reindexed_chunks, vectors, cache_hits, cache_misses)`` — vectors
-        align with ``reindexed_chunks`` 1:1, regardless of cache status.
-
-    Important: the cache key is ``(chunk_hash, embedding_model,
-    embedding_dims)``. ``chunk_hash`` is content-addressed, so cache entries
-    are intrinsically safe to keep across full rebuilds and need no explicit
-    invalidation. Changing the embedding model produces a new key and old
-    entries naturally fall out of use.
-    """
-    if not chunks:
-        return [], [], 0, 0
-
-    if cache_table is None:
-        # Fallback: no cache configured. Behave as before.
-        text_chunks, vectors = _embed_with_context_refinement(chunks, document_id, config)
-        return text_chunks, vectors, 0, len(text_chunks)
-
-    chunk_hashes = [chunk.chunk_hash for chunk in chunks]
-    lookup_result = cache_lookup(
-        cache_table,
-        chunk_hashes=chunk_hashes,
-        embedding_model=config.models.embed,
-        embedding_dims=config.models.embed_dims,
-    )
-
-    if not lookup_result.misses_indices:
-        # Full hit. No API call.
-        reindexed = _reindex_chunks(list(chunks), document_id)
-        vectors = [lookup_result.hits[i] for i in range(len(chunks))]
-        return reindexed, vectors, lookup_result.hit_count, 0
-
-    # Partial or full miss. Embed only the misses, then merge.
-    miss_chunks = [chunks[i] for i in lookup_result.misses_indices]
-    if lookup_result.hits:
-        # Some chunks hit the cache. Run context-refinement only on the
-        # missed chunks, then reassemble in original order. This means
-        # context-refinement may split a missed chunk into N — we accept
-        # the resulting size mismatch and fall back to re-embedding the
-        # whole batch rather than try to splice cached and freshly-split
-        # chunks together (correctness > marginal cache savings on edge).
-        try:
-            miss_text_chunks, miss_vectors = _embed_with_context_refinement(
-                miss_chunks, document_id, config
-            )
-        except EmbeddingContextError:
-            # Should not happen here — _embed_with_context_refinement
-            # handles this internally — but if it bubbles up, propagate.
-            raise
-
-        if len(miss_text_chunks) == len(miss_chunks):
-            merged_chunks: list[TextChunk] = []
-            merged_vectors: list[list[float]] = []
-            miss_iter = iter(zip(miss_text_chunks, miss_vectors, strict=True))
-            for idx in range(len(chunks)):
-                if idx in lookup_result.hits:
-                    merged_chunks.append(chunks[idx])
-                    merged_vectors.append(lookup_result.hits[idx])
-                else:
-                    chunk_, vec_ = next(miss_iter)
-                    merged_chunks.append(chunk_)
-                    merged_vectors.append(vec_)
-            reindexed = _reindex_chunks(merged_chunks, document_id)
-            cache_store(
-                cache_table,
-                chunk_hashes=[chunks[i].chunk_hash for i in lookup_result.misses_indices],
-                vectors=miss_vectors,
-                embedding_model=config.models.embed,
-                embedding_dims=config.models.embed_dims,
-            )
-            return (
-                reindexed,
-                merged_vectors,
-                lookup_result.hit_count,
-                lookup_result.miss_count,
-            )
-
-        # Miss chunks were split during context refinement. Fall through
-        # to "embed all" path so chunk count stays consistent.
-
-    text_chunks, vectors = _embed_with_context_refinement(chunks, document_id, config)
-    cache_store(
-        cache_table,
-        chunk_hashes=[c.chunk_hash for c in text_chunks],
-        vectors=vectors,
-        embedding_model=config.models.embed,
-        embedding_dims=config.models.embed_dims,
-    )
-    return text_chunks, vectors, 0, len(text_chunks)
-
-
-def _embed_with_context_refinement(
-    chunks: list[TextChunk],
-    document_id: str,
-    config: RuntimeConfig,
-) -> tuple[list[TextChunk], list[list[float]]]:
-    """Embed ``chunks`` in a single batch, splitting any that overflow context.
-
-    Attempts a batch call first so the embedding backend can amortise HTTP
-    and model-load overhead. Chunks that trigger
-    :class:`EmbeddingContextError` are recursively split via the existing
-    token-aware chunker and re-embedded; the returned ``chunks`` list may
-    therefore be longer than the input.
-    """
-    token_counter = token_count_with_tokenizer(
-        build_tokenizer(config.chunking.tokenizer_backend, config.chunking.tokenizer_name)
-    )
-    if not chunks:
-        return [], []
-
-    try:
-        vectors = embed_texts_batched(config, [chunk.text for chunk in chunks])
-        reindexed = _reindex_chunks(list(chunks), document_id)
-        return reindexed, vectors
-    except EmbeddingContextError:
-        pass
-
-    resolved_chunks: list[TextChunk] = []
-    vectors = []
-    for chunk in chunks:
-        refined_chunks, refined_vectors = _embed_chunk_recursively(
-            chunk,
-            config,
-            token_counter=token_counter,
-        )
-        resolved_chunks.extend(refined_chunks)
-        vectors.extend(refined_vectors)
-
-    reindexed_chunks = _reindex_chunks(resolved_chunks, document_id)
-    return reindexed_chunks, vectors
-
-
-def _embed_chunk_recursively(
-    chunk: TextChunk,
-    config: RuntimeConfig,
-    *,
-    token_counter: Callable[[str], int],
-) -> tuple[list[TextChunk], list[list[float]]]:
-    try:
-        return [chunk], [embed_chunk_text(config, chunk.text)]
-    except EmbeddingContextError:
-        split_chunks = split_chunk_for_context(chunk, token_counter=token_counter)
-        if len(split_chunks) == 1 and split_chunks[0].text == chunk.text:
-            raise
-        resolved_chunks: list[TextChunk] = []
-        vectors: list[list[float]] = []
-        for split_chunk in split_chunks:
-            nested_chunks, nested_vectors = _embed_chunk_recursively(
-                split_chunk,
-                config,
-                token_counter=token_counter,
-            )
-            resolved_chunks.extend(nested_chunks)
-            vectors.extend(nested_vectors)
-        return resolved_chunks, vectors
-
-
-def _reindex_chunks(chunks: list[TextChunk], document_id: str) -> list[TextChunk]:
-    if not chunks:
-        return []
-    occurrences: dict[str, int] = {}
-    reindexed: list[TextChunk] = []
-    for index, chunk in enumerate(chunks):
-        chunk_occurrence = occurrences.get(chunk.chunk_hash, 0)
-        occurrences[chunk.chunk_hash] = chunk_occurrence + 1
-        reindexed.append(
-            TextChunk(
-                chunk_id=make_chunk_id(document_id, chunk.chunk_hash, chunk_occurrence),
-                document_id=document_id,
-                source_rel_path=chunk.source_rel_path,
-                source_type=chunk.source_type,
-                citation_label=chunk.citation_label,
-                chunk_index=index,
-                chunk_occurrence=chunk_occurrence,
-                token_count=chunk.token_count,
-                text=chunk.text,
-                chunk_hash=chunk.chunk_hash,
-                score_hint=chunk.score_hint,
-                metadata_json=chunk.metadata_json,
-            )
-        )
-    return reindexed
-
-
-def _manifest_record(
-    *,
-    scanned: ScannedCorpusFile,
-    document_id: str | None,
-    parent_source_rel_path: str | None,
-    chunk_count: int,
-    timestamp: str,
-    lifecycle_status: LifecycleStatus,
-    retrieval_status: RetrievalStatus,
-    error_message: str | None,
-) -> ManifestRecord:
-    return ManifestRecord(
-        source_rel_path=scanned.relative_path,
-        absolute_path=scanned.absolute_path.as_posix(),
-        source_type=scanned.source_type,
-        source_domain=scanned.source_domain,
-        document_id=document_id,
-        file_size_bytes=scanned.file_size_bytes,
-        content_hash=scanned.content_hash,
-        parent_source_rel_path=parent_source_rel_path,
-        chunk_count=chunk_count,
-        last_seen_at=timestamp,
-        last_processed_at=timestamp,
-        last_committed_at=timestamp if lifecycle_status == LifecycleStatus.COMPLETE else None,
-        error_message=error_message,
-        lifecycle_status=lifecycle_status,
-        retrieval_status=retrieval_status,
-    )
-
-
-def _find_move_source(
-    scanned: ScannedCorpusFile,
-    existing_by_hash: dict[str, list[ManifestRecord]],
-    scanned_paths: set[str],
-) -> ManifestRecord | None:
-    candidates = existing_by_hash.get(scanned.content_hash, [])
-    for candidate in candidates:
-        if candidate.source_rel_path == scanned.relative_path:
-            continue
-        if candidate.source_rel_path in scanned_paths:
-            continue
-        if candidate.source_type != scanned.source_type:
-            continue
-        return candidate
-    return None
-
-
-def _can_skip_unchanged_source(
-    sqlite_connection: sqlite3.Connection,
-    scanned: ScannedCorpusFile,
-    manifest: ManifestRecord,
-) -> bool:
-    if scanned.source_type == "image_png":
-        return True
-    if manifest.retrieval_status != RetrievalStatus.SEARCHABLE or manifest.chunk_count <= 0:
-        return False
-    committed_chunks = load_chunk_records_for_source(sqlite_connection, manifest.source_rel_path)
-    return len(committed_chunks) == manifest.chunk_count
-
-
-def _resolve_document_id(
-    scanned: ScannedCorpusFile,
-    existing_manifest: ManifestRecord | None,
-    move_source: ManifestRecord | None,
-) -> str:
-    """Return a deterministic document_id for a scanned source.
-
-    `document_id` is a pure function of content identity (relative path +
-    content hash) so that repeated full rebuilds yield identical identifiers
-    and downstream tables keyed on `document_id` (claims, relations,
-    profiles, communities) remain stable across runs.
-    """
-    if existing_manifest is not None and existing_manifest.document_id is not None:
-        return existing_manifest.document_id
-    if move_source is not None and move_source.document_id is not None:
-        return move_source.document_id
-    return blake3_hex(scanned.relative_path, scanned.content_hash)
-
-
-def _clone_source_records(
-    *,
-    sqlite_connection: sqlite3.Connection,
-    vector_table: Any,
-    old_manifest: ManifestRecord,
-    new_scanned: ScannedCorpusFile,
-    document_id: str,
-) -> tuple[list[ChunkRecord], list[MentionRecord]]:
-    """Clone an existing source's chunks/mentions under new identity.
-
-    Vectors are hydrated from LanceDB (the canonical vector store as of
-    schema v2) keyed on the old chunk IDs; SQLite no longer carries
-    ``vector_json``. Chunks whose vectors are missing from LanceDB inherit an
-    empty vector and must be re-embedded by the caller.
-    """
-    old_chunks = load_chunk_records_for_source(sqlite_connection, old_manifest.source_rel_path)
-    mentions_by_chunk = load_mentions_for_source(sqlite_connection, old_manifest.source_rel_path)
-    vectors_by_old_id = load_vectors_by_chunk_ids(
-        vector_table, [chunk.chunk_id for chunk in old_chunks]
-    )
-    chunk_id_map: dict[str, str] = {}
-    cloned_chunks: list[ChunkRecord] = []
-    for old_chunk in old_chunks:
-        chunk_id = make_chunk_id(document_id, old_chunk.chunk_hash, old_chunk.chunk_occurrence)
-        chunk_id_map[old_chunk.chunk_id] = chunk_id
-        cloned_chunks.append(
-            ChunkRecord(
-                chunk_id=chunk_id,
-                document_id=document_id,
-                source_rel_path=new_scanned.relative_path,
-                source_filename=new_scanned.absolute_path.name,
-                source_type=old_chunk.source_type,
-                source_domain=new_scanned.source_domain,
-                source_hash=new_scanned.content_hash,
-                citation_label=_clone_citation_label(
-                    old_chunk.citation_label,
-                    old_manifest.source_rel_path,
-                    new_scanned.relative_path,
-                ),
-                chunk_index=old_chunk.chunk_index,
-                chunk_occurrence=old_chunk.chunk_occurrence,
-                token_count=old_chunk.token_count,
-                text=old_chunk.text,
-                chunk_hash=old_chunk.chunk_hash,
-                score_hint=old_chunk.score_hint,
-                metadata_json=old_chunk.metadata_json,
-                vector=vectors_by_old_id.get(old_chunk.chunk_id, []),
-                embedding_model=old_chunk.embedding_model,
-                embedding_dims=old_chunk.embedding_dims,
-                cited_sources=old_chunk.cited_sources,
-                wiki_links=old_chunk.wiki_links,
-            )
-        )
-    cloned_mentions: list[MentionRecord] = []
-    for old_chunk_id, mentions in mentions_by_chunk.items():
-        new_chunk_id = chunk_id_map.get(old_chunk_id)
-        if new_chunk_id is None:
-            continue
-        cloned_mentions.extend(
-            MentionRecord(
-                chunk_id=new_chunk_id,
-                entity_id=mention.entity_id,
-                term_source=mention.term_source,
-                surface_form=mention.surface_form,
-                start_char=mention.start_char,
-                end_char=mention.end_char,
-            )
-            for mention in mentions
-        )
-    return cloned_chunks, cloned_mentions
-
-
-def _clone_citation_label(
-    old_label: str, old_source_rel_path: str, new_source_rel_path: str
-) -> str:
-    page_fragment = ""
-    if old_label.startswith(old_source_rel_path) and "#page=" in old_label:
-        page_fragment = old_label.split("#page=", 1)[1]
-    if page_fragment:
-        try:
-            return make_citation_label(new_source_rel_path, int(page_fragment))
-        except ValueError:
-            return f"{new_source_rel_path}#page={page_fragment}"
-    return make_citation_label(new_source_rel_path)
-
-
 def _config_snapshot_records(config: RuntimeConfig) -> list[IngestConfigSnapshotRecord]:
     snapshot = {
         "paths.corpus_path": str(config.paths.corpus_path),
@@ -1337,5 +690,5 @@ def _config_snapshot_records(config: RuntimeConfig) -> list[IngestConfigSnapshot
     ]
 
 
-def _utc_now() -> str:
+def utc_now() -> str:
     return datetime.now(UTC).isoformat()

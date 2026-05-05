@@ -13,7 +13,7 @@ from fastmcp import Context, FastMCP
 from pydantic import Field
 
 from lxd.app.bootstrap import AppContext, bootstrap_app
-from lxd.ingest.pipeline import IngestPlan, build_ingest_plan
+from lxd.ingest.pipeline.orchestrator import IngestPlan, build_ingest_plan
 from lxd.mcp.async_runtime import run_tool
 from lxd.mcp.tools import (
     corpus_status_tool,

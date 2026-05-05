@@ -9,7 +9,7 @@ import networkx as nx
 
 from lxd.app.bootstrap import AppContext
 from lxd.app.status import load_committed_status
-from lxd.ingest.pipeline import IngestPlan
+from lxd.ingest.pipeline.orchestrator import IngestPlan
 from lxd.ontology.graph import direct_neighbors
 from lxd.retrieval.expansion import expand_entity_ids
 from lxd.retrieval.graph_routing import build_graph_context

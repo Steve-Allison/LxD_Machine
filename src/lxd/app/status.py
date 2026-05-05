@@ -7,7 +7,7 @@ import sqlite3
 from collections.abc import Callable
 from dataclasses import dataclass
 
-from lxd.ingest.pipeline import IngestPlan
+from lxd.ingest.pipeline.orchestrator import IngestPlan
 from lxd.settings.models import RuntimeConfig
 from lxd.stores.models import CorpusStatusSummary, OntologySnapshotRecord
 from lxd.stores.sqlite.ontology import (

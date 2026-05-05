@@ -47,7 +47,7 @@ from lxd.domain.ids import blake3_hex
 from lxd.ingest import embedder as embedder_module
 from lxd.ingest.embedding_cache import open_cache_table
 from lxd.ingest.error_classification import CircuitBreakerTripped
-from lxd.ingest.pipeline import run_ingest
+from lxd.ingest.pipeline.orchestrator import run_ingest
 from lxd.settings.loader import load_runtime_config
 from lxd.stores.lancedb import connect_lancedb, open_chunk_table
 from lxd.stores.schema import (
@@ -424,14 +424,14 @@ def test_sqlite_persist_failure_compensates_lancedb_write(
     # Inject a SYSTEMIC-class SQLite error at exactly the persist call.
     # We patch the SQLite-side persist function (the same function pipeline
     # uses), so LanceDB has already been written by the time this fires.
-    from lxd.ingest import pipeline
+    from lxd.ingest.pipeline import orchestrator
 
-    real_replace = pipeline.replace_sqlite_source_chunks
+    real_replace = orchestrator.replace_sqlite_source_chunks
 
     def _explode(*args: Any, **kwargs: Any) -> Any:
         raise sqlite3.OperationalError("simulated systemic failure")
 
-    with patch.object(pipeline, "replace_sqlite_source_chunks", side_effect=_explode):
+    with patch.object(orchestrator, "replace_sqlite_source_chunks", side_effect=_explode):
         # Run will fail at file-level. With only 1 file, circuit-breaker
         # threshold of 3 is not hit; the pipeline should finish with status
         # 'complete_with_warnings' and 1 failed file.
@@ -443,7 +443,7 @@ def test_sqlite_persist_failure_compensates_lancedb_write(
             pass  # Also acceptable — depends on whether breaker fires first.
 
     # Restore the real persist for the verification queries below.
-    assert pipeline.replace_sqlite_source_chunks is real_replace
+    assert orchestrator.replace_sqlite_source_chunks is real_replace
 
     # Verify: LanceDB has zero rows for the failed source.
     store_paths = build_store_paths(tmp_corpus_env["data"])
@@ -479,13 +479,13 @@ def test_three_consecutive_systemic_errors_trip_breaker_before_more_spend(
         )
     config, _ = load_runtime_config(tmp_corpus_env["root"])
 
-    from lxd.ingest import pipeline
+    from lxd.ingest.pipeline import orchestrator
 
     def _systemic(*args: Any, **kwargs: Any) -> Any:
         raise sqlite3.OperationalError("simulated systemic store error")
 
     with (
-        patch.object(pipeline, "replace_sqlite_source_chunks", side_effect=_systemic),
+        patch.object(orchestrator, "replace_sqlite_source_chunks", side_effect=_systemic),
         pytest.raises(CircuitBreakerTripped),
     ):
         run_ingest(config, full_rebuild=False)
