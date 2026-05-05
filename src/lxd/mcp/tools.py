@@ -21,17 +21,14 @@ from lxd.stores.lancedb import (
     open_entity_table,
     search_similar_entities,
 )
+from lxd.stores.sqlite._pool import pooled_connection
 from lxd.stores.sqlite.chunks import (
     find_chunks_by_entity_mentions,
     load_chunk_ids_for_entity,
     load_corpus_relations_for_entity,
 )
 from lxd.stores.sqlite.claims import count_claims
-from lxd.stores.sqlite.connection import (
-    build_store_paths,
-    connect_sqlite,
-    initialize_schema,
-)
+from lxd.stores.sqlite.connection import build_store_paths
 from lxd.stores.sqlite.kg_profiles import (
     count_communities,
     count_community_reports,
@@ -63,16 +60,12 @@ def corpus_status_tool(app_context: AppContext, plan: IngestPlan) -> dict[str, o
     """
     store_paths = build_store_paths(app_context.config.paths.data_path)
     if store_paths.sqlite_path.exists():
-        connection = connect_sqlite(store_paths.sqlite_path)
-        try:
-            initialize_schema(connection)
+        with pooled_connection(store_paths.sqlite_path) as connection:
             status_snapshot = load_committed_status(
                 connection,
                 config=app_context.config,
                 plan_provider=lambda: plan,
             )
-        finally:
-            connection.close()
         if status_snapshot is not None:
             summary = status_snapshot.summary
             return {
@@ -215,12 +208,8 @@ def find_documents_for_concept_tool(
     )
     all_entity_ids = list({entity_id, *related_ids})
     store_paths = build_store_paths(app_context.config.paths.data_path)
-    connection = connect_sqlite(store_paths.sqlite_path)
-    try:
-        initialize_schema(connection)
+    with pooled_connection(store_paths.sqlite_path) as connection:
         results = find_chunks_by_entity_mentions(connection, all_entity_ids, limit=limit)
-    finally:
-        connection.close()
     return [
         {
             "chunk_id": item.chunk_id,
@@ -256,12 +245,8 @@ def get_corpus_relations_tool(
     store_paths = build_store_paths(app_context.config.paths.data_path)
     if not store_paths.sqlite_path.exists():
         return []
-    connection = connect_sqlite(store_paths.sqlite_path)
-    try:
-        initialize_schema(connection)
+    with pooled_connection(store_paths.sqlite_path) as connection:
         return load_corpus_relations_for_entity(connection, entity_id, limit=limit)
-    finally:
-        connection.close()
 
 
 def get_entity_summary_tool(app_context: AppContext, entity_id: str) -> dict[str, Any]:
@@ -270,9 +255,7 @@ def get_entity_summary_tool(app_context: AppContext, entity_id: str) -> dict[str
     store_paths = build_store_paths(app_context.config.paths.data_path)
     if not store_paths.sqlite_path.exists():
         return {}
-    connection = connect_sqlite(store_paths.sqlite_path)
-    try:
-        initialize_schema(connection)
+    with pooled_connection(store_paths.sqlite_path) as connection:
         profile = load_entity_profile(connection, entity_id)
         if profile is None:
             return {}
@@ -298,8 +281,6 @@ def get_entity_summary_tool(app_context: AppContext, entity_id: str) -> dict[str
             "eigenvector": profile.eigenvector,
             "community_id": profile.community_id,
         }
-    finally:
-        connection.close()
 
 
 def get_community_context_tool(app_context: AppContext, entity_id: str) -> dict[str, Any]:
@@ -308,9 +289,7 @@ def get_community_context_tool(app_context: AppContext, entity_id: str) -> dict[
     store_paths = build_store_paths(app_context.config.paths.data_path)
     if not store_paths.sqlite_path.exists():
         return {}
-    connection = connect_sqlite(store_paths.sqlite_path)
-    try:
-        initialize_schema(connection)
+    with pooled_connection(store_paths.sqlite_path) as connection:
         profile = load_entity_profile(connection, entity_id)
         if profile is None or profile.community_id is None:
             return {}
@@ -327,8 +306,6 @@ def get_community_context_tool(app_context: AppContext, entity_id: str) -> dict[
             "top_claims": report.top_claims_json,
             "intra_community_edge_count": report.intra_community_edge_count,
         }
-    finally:
-        connection.close()
 
 
 def get_similar_entities_tool(
@@ -339,9 +316,7 @@ def get_similar_entities_tool(
     store_paths = build_store_paths(app_context.config.paths.data_path)
     if not store_paths.sqlite_path.exists():
         return []
-    connection = connect_sqlite(store_paths.sqlite_path)
-    try:
-        initialize_schema(connection)
+    with pooled_connection(store_paths.sqlite_path) as connection:
         profile = load_entity_profile(connection, entity_id)
         if profile is None:
             return []
@@ -373,8 +348,6 @@ def get_similar_entities_tool(
             return [r for r in results if r["entity_id"] != entity_id][:limit]
         except FileNotFoundError:
             return []
-    finally:
-        connection.close()
 
 
 def search_entities_tool(
@@ -385,9 +358,7 @@ def search_entities_tool(
     store_paths = build_store_paths(app_context.config.paths.data_path)
     if not store_paths.sqlite_path.exists():
         return []
-    connection = connect_sqlite(store_paths.sqlite_path)
-    try:
-        initialize_schema(connection)
+    with pooled_connection(store_paths.sqlite_path) as connection:
         profiles = search_entity_profiles(connection, query, limit=limit)
         return [
             {
@@ -400,8 +371,6 @@ def search_entities_tool(
             }
             for p in profiles
         ]
-    finally:
-        connection.close()
 
 
 def inspect_evidence_tool(app_context: AppContext, relation_id: str) -> list[dict[str, Any]]:
@@ -410,9 +379,7 @@ def inspect_evidence_tool(app_context: AppContext, relation_id: str) -> list[dic
     store_paths = build_store_paths(app_context.config.paths.data_path)
     if not store_paths.sqlite_path.exists():
         return []
-    connection = connect_sqlite(store_paths.sqlite_path)
-    try:
-        initialize_schema(connection)
+    with pooled_connection(store_paths.sqlite_path) as connection:
         records = load_evidence_for_relation(connection, relation_id)
         return [
             {
@@ -427,8 +394,6 @@ def inspect_evidence_tool(app_context: AppContext, relation_id: str) -> list[dic
             }
             for r in records
         ]
-    finally:
-        connection.close()
 
 
 def find_path_between_entities_tool(
@@ -481,7 +446,6 @@ def find_weighted_path_tool(
     if source not in graph or target not in graph:
         return {"path": [], "edges": [], "total_weight": 0.0}
 
-    # Create weighted graph where weight = 1.0 - confidence
     weighted = nx.DiGraph()
     for u, v, data in graph.edges(data=True):
         confidence = data.get("weight", 0.5) if data.get("origin_kind") == "corpus" else 0.5
@@ -517,9 +481,7 @@ def get_hub_entities_tool(app_context: AppContext, limit: int = 20) -> list[dict
     store_paths = build_store_paths(app_context.config.paths.data_path)
     if not store_paths.sqlite_path.exists():
         return []
-    connection = connect_sqlite(store_paths.sqlite_path)
-    try:
-        initialize_schema(connection)
+    with pooled_connection(store_paths.sqlite_path) as connection:
         profiles = load_top_entities_by_pagerank(connection, limit=limit)
         return [
             {
@@ -530,8 +492,6 @@ def get_hub_entities_tool(app_context: AppContext, limit: int = 20) -> list[dict
             }
             for p in profiles
         ]
-    finally:
-        connection.close()
 
 
 def find_bridge_entities_tool(app_context: AppContext, limit: int = 20) -> list[dict[str, Any]]:
@@ -539,9 +499,7 @@ def find_bridge_entities_tool(app_context: AppContext, limit: int = 20) -> list[
     store_paths = build_store_paths(app_context.config.paths.data_path)
     if not store_paths.sqlite_path.exists():
         return []
-    connection = connect_sqlite(store_paths.sqlite_path)
-    try:
-        initialize_schema(connection)
+    with pooled_connection(store_paths.sqlite_path) as connection:
         profiles = load_top_entities_by_betweenness(connection, limit=limit)
         return [
             {
@@ -552,8 +510,6 @@ def find_bridge_entities_tool(app_context: AppContext, limit: int = 20) -> list[
             }
             for p in profiles
         ]
-    finally:
-        connection.close()
 
 
 def find_foundational_entities_tool(
@@ -563,9 +519,7 @@ def find_foundational_entities_tool(
     store_paths = build_store_paths(app_context.config.paths.data_path)
     if not store_paths.sqlite_path.exists():
         return []
-    connection = connect_sqlite(store_paths.sqlite_path)
-    try:
-        initialize_schema(connection)
+    with pooled_connection(store_paths.sqlite_path) as connection:
         profiles = load_top_entities_by_closeness(connection, limit=limit)
         return [
             {
@@ -576,8 +530,6 @@ def find_foundational_entities_tool(
             }
             for p in profiles
         ]
-    finally:
-        connection.close()
 
 
 def get_entity_graph_stats_tool(app_context: AppContext) -> dict[str, Any]:
@@ -585,9 +537,7 @@ def get_entity_graph_stats_tool(app_context: AppContext) -> dict[str, Any]:
     store_paths = build_store_paths(app_context.config.paths.data_path)
     if not store_paths.sqlite_path.exists():
         return {"graph_version": 0, "entity_profiles": 0, "communities": 0}
-    connection = connect_sqlite(store_paths.sqlite_path)
-    try:
-        initialize_schema(connection)
+    with pooled_connection(store_paths.sqlite_path) as connection:
         metadata = load_graph_metadata(connection)
         return {
             "graph_version": int(metadata.get("graph_version", "0")),
@@ -599,8 +549,6 @@ def get_entity_graph_stats_tool(app_context: AppContext) -> dict[str, Any]:
             "relation_evidence": count_relation_evidence(connection),
             "claims": count_claims(connection),
         }
-    finally:
-        connection.close()
 
 
 def search_knowledge_tool(
@@ -631,16 +579,13 @@ def search_knowledge_deep_tool(
 
     envelope = answer_question(question=question, config=app_context.config, domain=domain)
 
-    # Also load graph context data for the matched entities
     matched_entity_ids = envelope.metadata.get("matched_entity_ids", [])
     graph_data: dict[str, Any] = {"level": "none", "entity_profiles": [], "claims": []}
 
     if isinstance(matched_entity_ids, list) and matched_entity_ids:
         store_paths = build_store_paths(app_context.config.paths.data_path)
         if store_paths.sqlite_path.exists():
-            connection = connect_sqlite(store_paths.sqlite_path)
-            try:
-                initialize_schema(connection)
+            with pooled_connection(store_paths.sqlite_path) as connection:
                 context = build_graph_context(connection, matched_entity_ids, app_context.config)
                 graph_data = {
                     "level": context.level,
@@ -676,8 +621,6 @@ def search_knowledge_deep_tool(
                         for c in context.claims
                     ],
                 }
-            finally:
-                connection.close()
 
     return {
         "answer_status": envelope.answer_status.value,
@@ -702,9 +645,7 @@ def get_graph_overview_tool(app_context: AppContext) -> dict[str, Any]:
             "relation_evidence": 0,
             "claims": 0,
         }
-    connection = connect_sqlite(store_paths.sqlite_path)
-    try:
-        initialize_schema(connection)
+    with pooled_connection(store_paths.sqlite_path) as connection:
         metadata = load_graph_metadata(connection)
         return {
             "graph_version": int(metadata.get("graph_version", "0")),
@@ -720,8 +661,6 @@ def get_graph_overview_tool(app_context: AppContext) -> dict[str, Any]:
             "relation_evidence": count_relation_evidence(connection),
             "claims": count_claims(connection),
         }
-    finally:
-        connection.close()
 
 
 def _require_non_empty(value: str, field_name: str) -> None:

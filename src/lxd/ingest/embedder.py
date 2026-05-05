@@ -28,6 +28,7 @@ Key constraints:
 from __future__ import annotations
 
 import os
+import threading
 import time
 from collections.abc import Callable, Sequence
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -41,6 +42,31 @@ import openai
 from lxd.settings.models import RuntimeConfig
 
 _OPENAI_RESPONSE_INDEX = attrgetter("index")
+
+_openai_client_cache: dict[str, openai.OpenAI] = {}
+_openai_client_lock = threading.Lock()
+
+
+def get_openai_client(api_key: str) -> openai.OpenAI:
+    """Return a process-wide cached :class:`openai.OpenAI` for ``api_key``.
+
+    The OpenAI SDK constructs its own pooled :class:`httpx.Client` on
+    instantiation; instantiating once per process means a single TLS pool
+    is reused across batches and across ingest phases instead of being
+    rebuilt per ``_embed_batch`` call.
+    """
+    with _openai_client_lock:
+        client = _openai_client_cache.get(api_key)
+        if client is None:
+            client = openai.OpenAI(api_key=api_key)
+            _openai_client_cache[api_key] = client
+        return client
+
+
+def reset_openai_client_cache() -> None:
+    """Drop every cached OpenAI client. Intended for tests."""
+    with _openai_client_lock:
+        _openai_client_cache.clear()
 
 
 @dataclass(frozen=True, slots=True)
@@ -272,7 +298,7 @@ def _openai_embed_texts(config: RuntimeConfig, texts: list[str]) -> list[list[fl
             f"Environment variable {cfg.api_key_env!r} is not set. "
             "Set it before using the openai embedding backend."
         )
-    client = openai.OpenAI(api_key=api_key)
+    client = get_openai_client(api_key)
     batches = [list(batch) for batch in batched(texts, cfg.batch_size, strict=False)]
 
     def _embed_batch(batch: list[str]) -> list[list[float]]:
