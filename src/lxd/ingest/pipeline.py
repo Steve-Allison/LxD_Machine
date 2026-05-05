@@ -77,30 +77,38 @@ from lxd.stores.models import (
     OntologySnapshotRecord,
     OntologySourceRecord,
 )
-from lxd.stores.sqlite import (
-    begin_ingest_run,
+from lxd.stores.sqlite.chunks import (
+    load_chunk_records_for_source,
+    load_mentions_for_source,
+)
+from lxd.stores.sqlite.chunks import (
+    replace_source_chunks as replace_sqlite_source_chunks,
+)
+from lxd.stores.sqlite.connection import (
     build_store_paths,
     connect_sqlite,
-    finish_ingest_run,
     initialize_schema,
-    load_chunk_records_for_source,
+)
+from lxd.stores.sqlite.manifest import (
+    delete_source as delete_sqlite_source,
+)
+from lxd.stores.sqlite.manifest import (
     load_manifest_by_content_hash,
     load_manifest_index,
-    load_mentions_for_source,
-    replace_ingest_config_snapshot,
-    replace_ontology_snapshot,
-    replace_ontology_sources,
-    summarize_store,
-    update_ingest_run_progress,
     upsert_asset_link,
     upsert_manifest_record,
 )
-from lxd.stores.sqlite import (
-    delete_source as delete_sqlite_source,
+from lxd.stores.sqlite.ontology import (
+    replace_ingest_config_snapshot,
+    replace_ontology_snapshot,
+    replace_ontology_sources,
 )
-from lxd.stores.sqlite import (
-    replace_source_chunks as replace_sqlite_source_chunks,
+from lxd.stores.sqlite.runs import (
+    begin_ingest_run,
+    finish_ingest_run,
+    update_ingest_run_progress,
 )
+from lxd.stores.sqlite.summary import summarize_store
 
 _log = structlog.get_logger(__name__)
 

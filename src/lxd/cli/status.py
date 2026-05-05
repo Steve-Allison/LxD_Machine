@@ -10,11 +10,7 @@ import typer
 from lxd.app.bootstrap import bootstrap_app
 from lxd.app.status import load_committed_status
 from lxd.ingest.pipeline import build_ingest_plan
-from lxd.stores.sqlite import (
-    build_store_paths,
-    connect_sqlite,
-    initialize_schema,
-)
+from lxd.stores.sqlite.connection import build_store_paths, connect_sqlite, initialize_schema
 
 PROFILE_OPTION = typer.Option(None, "--profile")
 CONFIG_OPTION = typer.Option(None, "--config", dir_okay=False, resolve_path=True)
@@ -56,7 +52,9 @@ def status_command(
             typer.echo(f"Asset files tracked: {summary.asset_file_count}")
             typer.echo(f"Retrieval searchable: {summary.retrieval_role_counts['searchable']}")
             typer.echo(f"Retrieval asset_only: {summary.retrieval_role_counts['asset_only']}")
-            typer.echo(f"Retrieval not_searchable: {summary.retrieval_role_counts['not_searchable']}")
+            typer.echo(
+                f"Retrieval not_searchable: {summary.retrieval_role_counts['not_searchable']}"
+            )
             typer.echo(f"Chunks stored: {summary.chunk_count}")
             typer.echo(f"Mentions stored: {summary.mention_count}")
             typer.echo(f"Ontology snapshot hash: {summary.ontology_snapshot_hash}")
@@ -64,9 +62,7 @@ def status_command(
             typer.echo(f"Entity definitions: {status_snapshot.entity_count}")
             typer.echo(f"Ontology coverage paths: {summary.ontology_coverage_path_count}")
             typer.echo(f"Ontology graph relations: {summary.ontology_graph_relation_count}")
-            typer.echo(
-                f"Ontology validation issues: {summary.ontology_validation_issue_count}"
-            )
+            typer.echo(f"Ontology validation issues: {summary.ontology_validation_issue_count}")
             for sample in summary.ontology_validation_issue_samples:
                 typer.echo(f"Ontology issue: {sample}")
             for warning in summary.config_drift_warnings:
@@ -87,7 +83,9 @@ def status_command(
         typer.echo(f"Matcher termset hash: {payload['matcher_termset_hash']}")
         typer.echo(f"Ontology coverage paths: {payload.get('ontology_coverage_path_count', 0)}")
         typer.echo(f"Ontology graph relations: {payload.get('ontology_graph_relation_count', 0)}")
-        typer.echo(f"Ontology validation issues: {payload.get('ontology_validation_issue_count', 0)}")
+        typer.echo(
+            f"Ontology validation issues: {payload.get('ontology_validation_issue_count', 0)}"
+        )
         for sample in payload.get("ontology_validation_issue_samples", []):
             typer.echo(f"Ontology issue: {sample}")
         return
@@ -99,8 +97,6 @@ def status_command(
     typer.echo(f"Scanned asset files: {asset_count}")
     typer.echo(f"Ontology snapshot hash: {plan.ontology.snapshot_hash}")
     typer.echo(f"Matcher termset hash: {plan.ontology.matcher_termset_hash}")
-    typer.echo(
-        f"Ontology validation issues: {len(plan.ontology.validation_issues)}"
-    )
+    typer.echo(f"Ontology validation issues: {len(plan.ontology.validation_issues)}")
     for issue in plan.ontology.validation_issues[:10]:
         typer.echo(f"Ontology issue: {issue.message}")

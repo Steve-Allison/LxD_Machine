@@ -17,13 +17,10 @@ from lxd.stores.models import (
     MentionRecord,
 )
 from lxd.stores.schema import ensure_schema
-from lxd.stores.sqlite import (
-    connect_sqlite,
-    load_chunk_centrality_signals,
-    replace_source_chunks,
-    upsert_entity_profile,
-    upsert_manifest_record,
-)
+from lxd.stores.sqlite.chunks import load_chunk_centrality_signals, replace_source_chunks
+from lxd.stores.sqlite.connection import connect_sqlite
+from lxd.stores.sqlite.kg_profiles import upsert_entity_profile
+from lxd.stores.sqlite.manifest import upsert_manifest_record
 
 
 def _seed_manifest(connection, source_rel_path: str) -> None:

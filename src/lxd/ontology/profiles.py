@@ -16,17 +16,17 @@ from lxd.ingest.llm_client import call_with_fallback_async, run_concurrent_extra
 from lxd.ontology.entity_graph import CentralityScores
 from lxd.settings.models import RuntimeConfig
 from lxd.stores.models import CommunityReportRecord, EntityProfileRecord
-from lxd.stores.sqlite import (
+from lxd.stores.sqlite.chunks import load_entity_mention_stats
+from lxd.stores.sqlite.claims import load_claims_for_entities
+from lxd.stores.sqlite.kg_profiles import (
     load_all_community_reports,
     load_all_entity_profiles,
-    load_claims_for_entities,
     load_community_members,
-    load_entity_mention_stats,
     load_entity_profile_source_hashes,
-    load_top_predicates_for_entity,
     upsert_community_report,
     upsert_entity_profile,
 )
+from lxd.stores.sqlite.kg_relations import load_top_predicates_for_entity
 
 _log = structlog.get_logger(__name__)
 

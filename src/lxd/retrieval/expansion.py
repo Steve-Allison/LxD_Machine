@@ -11,11 +11,8 @@ from lxd.ontology.graph import OntologyGraph
 from lxd.ontology.loader import OntologyLoadResult, load_ontology
 from lxd.ontology.matcher import build_automaton
 from lxd.settings.models import RuntimeConfig
-from lxd.stores.sqlite import (
-    build_store_paths,
-    connect_sqlite,
-    load_corpus_related_entity_ids,
-)
+from lxd.stores.sqlite.chunks import load_corpus_related_entity_ids
+from lxd.stores.sqlite.connection import build_store_paths, connect_sqlite
 
 _ONTOLOGY_CACHE: dict[tuple[str, tuple[str, ...], tuple[str, ...]], _OntologyRuntime] = {}
 

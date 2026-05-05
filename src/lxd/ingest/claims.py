@@ -26,11 +26,8 @@ from lxd.ingest.llm_client import (
 )
 from lxd.settings.models import RuntimeConfig
 from lxd.stores.models import ClaimRecord
-from lxd.stores.sqlite import (
-    insert_claims,
-    load_chunk_ids_with_claims,
-    upsert_graph_metadata,
-)
+from lxd.stores.sqlite.claims import insert_claims, load_chunk_ids_with_claims
+from lxd.stores.sqlite.kg_relations import upsert_graph_metadata
 
 _log = structlog.get_logger(__name__)
 

@@ -10,12 +10,12 @@ from dataclasses import dataclass
 from lxd.ingest.pipeline import IngestPlan
 from lxd.settings.models import RuntimeConfig
 from lxd.stores.models import CorpusStatusSummary, OntologySnapshotRecord
-from lxd.stores.sqlite import (
+from lxd.stores.sqlite.ontology import (
     load_ingest_config_snapshot,
     load_ontology_snapshot,
     store_has_committed_state,
-    summarize_store,
 )
+from lxd.stores.sqlite.summary import summarize_store
 
 
 @dataclass(frozen=True, slots=True)

@@ -21,27 +21,33 @@ from lxd.stores.lancedb import (
     open_entity_table,
     search_similar_entities,
 )
-from lxd.stores.sqlite import (
+from lxd.stores.sqlite.chunks import (
+    find_chunks_by_entity_mentions,
+    load_chunk_ids_for_entity,
+    load_corpus_relations_for_entity,
+)
+from lxd.stores.sqlite.claims import count_claims
+from lxd.stores.sqlite.connection import (
     build_store_paths,
     connect_sqlite,
-    count_canonical_relations,
-    count_claims,
+    initialize_schema,
+)
+from lxd.stores.sqlite.kg_profiles import (
     count_communities,
     count_community_reports,
     count_entity_profiles,
-    count_relation_evidence,
-    find_chunks_by_entity_mentions,
-    initialize_schema,
-    load_chunk_ids_for_entity,
     load_community_report,
-    load_corpus_relations_for_entity,
     load_entity_profile,
-    load_evidence_for_relation,
-    load_graph_metadata,
     load_top_entities_by_betweenness,
     load_top_entities_by_closeness,
     load_top_entities_by_pagerank,
     search_entity_profiles,
+)
+from lxd.stores.sqlite.kg_relations import (
+    count_canonical_relations,
+    count_relation_evidence,
+    load_evidence_for_relation,
+    load_graph_metadata,
 )
 
 

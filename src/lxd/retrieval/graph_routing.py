@@ -10,11 +10,8 @@ import structlog
 
 from lxd.settings.models import RuntimeConfig
 from lxd.stores.models import ClaimRecord, CommunityReportRecord, EntityProfileRecord
-from lxd.stores.sqlite import (
-    load_claims_for_entities,
-    load_community_report,
-    load_entity_profile,
-)
+from lxd.stores.sqlite.claims import load_claims_for_entities
+from lxd.stores.sqlite.kg_profiles import load_community_report, load_entity_profile
 
 _log = structlog.get_logger(__name__)
 

@@ -4,12 +4,8 @@ from types import SimpleNamespace
 
 from lxd.app.status import load_committed_status
 from lxd.stores.models import OntologySnapshotRecord
-from lxd.stores.sqlite import (
-    build_store_paths,
-    connect_sqlite,
-    initialize_schema,
-    replace_ontology_snapshot,
-)
+from lxd.stores.sqlite.connection import build_store_paths, connect_sqlite, initialize_schema
+from lxd.stores.sqlite.ontology import replace_ontology_snapshot
 
 
 def test_load_committed_status_uses_live_plan_when_snapshot_lacks_coverage(tmp_path) -> None:

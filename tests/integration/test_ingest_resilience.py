@@ -55,7 +55,7 @@ from lxd.stores.schema import (
     ensure_schema,
     verify_schema_integrity,
 )
-from lxd.stores.sqlite import build_store_paths, connect_sqlite
+from lxd.stores.sqlite.connection import build_store_paths, connect_sqlite
 
 # ---------------------------------------------------------------------------
 # Test fixtures: real corpus, real ontology, real stores
@@ -596,7 +596,7 @@ def test_legacy_migration_refuses_to_run_with_leftover_v2_legacy_table(
     migration. Re-running ingest must hard-stop with a clear message rather
     than silently skip and let downstream writes fail mid-batch.
     """
-    from lxd.stores.sqlite import assert_no_v2_legacy_tables
+    from lxd.stores.sqlite.connection import assert_no_v2_legacy_tables
 
     db_path = tmp_path / "lxd.sqlite3"
     conn = sqlite3.connect(db_path)

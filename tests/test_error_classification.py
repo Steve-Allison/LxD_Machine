@@ -15,7 +15,7 @@ from lxd.ingest.error_classification import (
     reset_circuit_breaker,
 )
 from lxd.stores.schema import ensure_schema
-from lxd.stores.sqlite import connect_sqlite
+from lxd.stores.sqlite.connection import connect_sqlite
 
 
 def _open_with_schema(path: Path) -> sqlite3.Connection:

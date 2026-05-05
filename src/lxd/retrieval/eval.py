@@ -7,7 +7,7 @@ from pathlib import Path
 
 from lxd.retrieval.query_pipeline import SearchOutcome, search_chunks
 from lxd.settings.models import RuntimeConfig
-from lxd.stores.sqlite import build_store_paths, connect_sqlite, initialize_schema
+from lxd.stores.sqlite.connection import build_store_paths, connect_sqlite, initialize_schema
 
 
 @dataclass(frozen=True, slots=True)

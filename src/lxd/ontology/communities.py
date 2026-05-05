@@ -11,7 +11,7 @@ import structlog
 
 from lxd.settings.models import RuntimeConfig
 from lxd.stores.models import EntityCommunityRecord
-from lxd.stores.sqlite import replace_entity_communities
+from lxd.stores.sqlite.kg_profiles import replace_entity_communities
 
 _log = structlog.get_logger(__name__)
 

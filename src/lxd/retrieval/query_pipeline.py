@@ -16,16 +16,18 @@ from lxd.retrieval.rerank import rerank_chunks
 from lxd.settings.models import RuntimeConfig
 from lxd.stores.lancedb import connect_lancedb, open_chunk_table, search_chunks_fts
 from lxd.stores.lancedb import search_chunks as search_vector_chunks
-from lxd.stores.sqlite import (
-    StorePaths,
+from lxd.stores.models import StorePaths
+from lxd.stores.sqlite.chunks import (
+    load_chunk_centrality_signals,
+    load_relation_chunk_ids,
+)
+from lxd.stores.sqlite.connection import (
     build_store_paths,
     connect_sqlite,
     initialize_schema,
-    list_allowed_domains,
-    load_chunk_centrality_signals,
-    load_relation_chunk_ids,
-    summarize_store,
 )
+from lxd.stores.sqlite.ontology import list_allowed_domains
+from lxd.stores.sqlite.summary import summarize_store
 from lxd.synthesis.answering import (
     AnswerEnvelope,
     EvidenceChunk,

@@ -48,7 +48,7 @@ def open_store_connection(
         Opens a SQLite connection; closes it on context exit, even if the
         caller raises.
     """
-    from lxd.stores.sqlite import connect_sqlite
+    from lxd.stores.sqlite.connection import connect_sqlite
 
     connection = connect_sqlite(sqlite_path)
     try:

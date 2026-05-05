@@ -20,11 +20,9 @@ from pathlib import Path
 from lxd.ingest.pipeline import _resolve_document_id
 from lxd.ingest.scanner import ScannedCorpusFile
 from lxd.stores.models import ManifestRecord
-from lxd.stores.sqlite import (
-    build_store_paths,
-    connect_sqlite,
+from lxd.stores.sqlite.connection import build_store_paths, connect_sqlite, initialize_schema
+from lxd.stores.sqlite.manifest import (
     delete_source,
-    initialize_schema,
     load_manifest_by_content_hash,
     load_manifest_index,
     upsert_manifest_record,

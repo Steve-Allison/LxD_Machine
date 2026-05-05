@@ -12,7 +12,7 @@ import structlog
 
 from lxd.ontology.graph import OntologyGraph
 from lxd.settings.models import RuntimeConfig
-from lxd.stores.sqlite import load_all_extracted_relations
+from lxd.stores.sqlite.chunks import load_all_extracted_relations
 
 _log = structlog.get_logger(__name__)
 

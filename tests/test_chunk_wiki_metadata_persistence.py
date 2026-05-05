@@ -19,14 +19,12 @@ from lxd.stores.lancedb import (
 )
 from lxd.stores.models import ChunkRecord, ManifestRecord
 from lxd.stores.schema import ensure_schema
-from lxd.stores.sqlite import (
-    connect_sqlite,
-    load_chunk_records_for_source,
-    upsert_manifest_record,
-)
-from lxd.stores.sqlite import (
+from lxd.stores.sqlite.chunks import load_chunk_records_for_source
+from lxd.stores.sqlite.chunks import (
     replace_source_chunks as sqlite_replace_source_chunks,
 )
+from lxd.stores.sqlite.connection import connect_sqlite
+from lxd.stores.sqlite.manifest import upsert_manifest_record
 
 
 def _make_chunk(

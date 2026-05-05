@@ -21,7 +21,7 @@ import pytest
 
 from lxd.stores.connection import open_store_connection
 from lxd.stores.schema import CURRENT_SCHEMA_VERSION, ensure_schema, get_schema_version
-from lxd.stores.sqlite import build_store_paths, connect_sqlite, initialize_schema
+from lxd.stores.sqlite.connection import build_store_paths, connect_sqlite, initialize_schema
 
 
 def test_ensure_schema_stamps_user_version(tmp_path: Path) -> None:

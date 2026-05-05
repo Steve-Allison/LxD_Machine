@@ -1,21 +1,20 @@
 from __future__ import annotations
 
 from lxd.stores.models import ChunkRecord, ManifestRecord, MentionRecord, OntologySnapshotRecord
-from lxd.stores.sqlite import (
-    begin_ingest_run,
-    build_store_paths,
-    connect_sqlite,
-    finish_ingest_run,
-    initialize_schema,
+from lxd.stores.sqlite.chunks import (
     load_chunk_records_for_source,
     load_mentions_for_source,
-    load_ontology_snapshot,
-    replace_ontology_snapshot,
     replace_source_chunks,
-    summarize_store,
-    update_ingest_run_progress,
-    upsert_manifest_record,
 )
+from lxd.stores.sqlite.connection import build_store_paths, connect_sqlite, initialize_schema
+from lxd.stores.sqlite.manifest import upsert_manifest_record
+from lxd.stores.sqlite.ontology import load_ontology_snapshot, replace_ontology_snapshot
+from lxd.stores.sqlite.runs import (
+    begin_ingest_run,
+    finish_ingest_run,
+    update_ingest_run_progress,
+)
+from lxd.stores.sqlite.summary import summarize_store
 
 
 def test_sqlite_store_round_trip(tmp_path) -> None:

@@ -38,21 +38,21 @@ from lxd.stores.lancedb import (
     replace_entity_embeddings,
     reset_entity_table,
 )
-from lxd.stores.sqlite import (
-    begin_graph_build,
-    build_store_paths,
-    connect_sqlite,
-    count_canonical_relations,
-    count_claims,
+from lxd.stores.sqlite.chunks import load_chunk_ids_for_entity
+from lxd.stores.sqlite.claims import count_claims
+from lxd.stores.sqlite.connection import build_store_paths, connect_sqlite, initialize_schema
+from lxd.stores.sqlite.kg_profiles import (
     count_communities,
     count_community_reports,
     count_entity_profiles,
-    count_relation_evidence,
     delete_stale_community_reports,
-    finish_graph_build,
-    initialize_schema,
     load_all_entity_profiles,
-    load_chunk_ids_for_entity,
+)
+from lxd.stores.sqlite.kg_relations import (
+    begin_graph_build,
+    count_canonical_relations,
+    count_relation_evidence,
+    finish_graph_build,
     load_graph_metadata,
     load_graph_version,
     load_latest_graph_build_state,

@@ -14,8 +14,8 @@ from lxd.stores.models import (
     ExtractedRelationRecord,
     RelationEvidenceRecord,
 )
-from lxd.stores.sqlite import (
-    load_all_extracted_relations,
+from lxd.stores.sqlite.chunks import load_all_extracted_relations
+from lxd.stores.sqlite.kg_relations import (
     replace_canonical_relations,
     replace_relation_evidence,
 )

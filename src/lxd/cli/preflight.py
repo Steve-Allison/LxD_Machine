@@ -35,10 +35,7 @@ from lxd.stores.schema import (
     get_schema_version,
     verify_schema_integrity,
 )
-from lxd.stores.sqlite import (
-    build_store_paths,
-    connect_sqlite,
-)
+from lxd.stores.sqlite.connection import build_store_paths, connect_sqlite
 
 PROFILE_OPTION = typer.Option(None, "--profile")
 CONFIG_OPTION = typer.Option(None, "--config", dir_okay=False, resolve_path=True)
