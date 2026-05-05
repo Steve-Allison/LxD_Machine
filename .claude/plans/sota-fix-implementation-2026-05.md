@@ -1,10 +1,10 @@
-# LxD Machine — SOTA Implementation Plan (18 items)
+# LxD Machine — SOTA Implementation Plan (17 items)
 
 ## Context
 
 A 2026-05-05 critical audit identified 20 architectural and code-quality gaps across retrieval, knowledge-graph signal use, code structure, robustness, and observability. The audit grounded each finding in `file:line` references; an Explore-agent pass against the live codebase has now confirmed exact integration points for every item.
 
-This plan organises the 18 remaining items (item #6 was a measurement-chore item not a SOTA improvement, removed 2026-05-05; item #14 was a remote-rerank proposal incompatible with the local-first design, struck 2026-05-05) into a multi-session implementation schedule prioritised by **return on investment** (impact ÷ effort), with one structural sequencing rule: **foundation before refinement**. Dead-code removal and architectural consolidation precede new features so we don't refactor newly-added code twice.
+This plan organises the 17 remaining items (items #6 [measurement chore], #14 [remote rerank], and #4 [remote synthesis] were all struck 2026-05-05 because they either weren't SOTA improvements or were incompatible with the local-first design) into a multi-session implementation schedule prioritised by **return on investment** (impact ÷ effort), with one structural sequencing rule: **foundation before refinement**. Dead-code removal and architectural consolidation precede new features so we don't refactor newly-added code twice.
 
 **Important — measurement is the user's call, not a plan-imposed gate.** This plan does NOT run ingest, does NOT capture eval baselines, and does NOT impose `pixi run eval` as a CI gate. Each item's verification is code-level: lint, typecheck, targeted tests, manual MCP smoke where applicable. The user runs ingest and eval when they choose; quality measurement is layered on top of this work, not gated by it.
 
@@ -169,25 +169,13 @@ The legitimate observation buried under [#14] — that `rerank.py` auto-spawns `
 
 ---
 
-#### `[#4]` Synthesis: OpenAI primary + Ollama fallback
+#### `[#4]` ❌ STRUCK 2026-05-05 — "OpenAI primary for synthesis" was wrong for this project
 
-**Why seventh**: Asymmetric stack — relations and claims use OpenAI primary + Ollama fallback (`ingest/llm_client.py`); synthesis is **Ollama-only locked to `qwen3:14b`** (`synthesis/answering.py:81`). User-facing answer quality matters more than ingest-time extraction quality, yet we're using the smaller model on the user-facing path.
+The original framing was: route the user-facing synthesis path through OpenAI by default with Ollama as a fallback. That moves every MCP query off-machine, which is the same anti-pattern as `[#14]` and is rejected on the same grounds.
 
-**Files**:
-- `src/lxd/synthesis/answering.py:60-104` — `synthesize_answer` calls `_client(config).generate()` only; replace with `lxd.ingest.llm_client.call_with_fallback_async`.
-- `src/lxd/settings/models.py` — extend `SynthesisConfig` with `backend: Literal["openai", "ollama"]`, `fallback_backend: Literal["ollama", "openai"]`, `openai_model`, `ollama_model`.
+LxD synthesis stays local Ollama. Per `feedback_local_only_no_remote_rerank.md` (which generalises to all user-facing components): never propose remote replacements for locally-running components without explicit user direction.
 
-**Actions**:
-1. Reuse `call_with_fallback_async` exactly as relations/claims do — single source of truth for backend dispatch.
-2. Default config: `backend="openai"`, `openai_model="gpt-4o-mini"` (fast, cheap, smart enough for this), `fallback_backend="ollama"`, `ollama_model="qwen3:14b"`.
-3. Make synthesis async end-to-end (it's currently sync inside async MCP wrapper — `run_tool` handles the bridge but it's wasteful).
-
-**Verify**:
-- Existing tests in `tests/test_synthesis_answering.py` (or equivalent) still pass with mocked LLM.
-- New test: synthesis backend dispatch is exercised for both backends via `call_with_fallback_async`.
-- `pixi run lint && pixi run typecheck && pixi run test` clean.
-
-**Effort**: 2-3 h.
+The legitimate observation buried under `[#4]` — that `synthesis/answering.py` is hard-bound to `config.models.llm` (currently `qwen3:14b`) instead of going through a backend-dispatch layer — is parked in **Tier 7 backlog as `B-LOCAL-2`** as an issue to *raise and discuss* (e.g. swap the local model to a stronger one, or refactor to a discriminated-union dispatch that supports multiple local backends like Ollama vs llama.cpp). No remote fallbacks.
 
 ---
 
@@ -302,7 +290,7 @@ The legitimate observation buried under [#14] — that `rerank.py` auto-spawns `
 **Why**: 4+ `if cfg.backend == "openai"` chains across `relations.py:381,397,528`, `llm_client.py:181`, `claims.py:486`. Pydantic v2 `Discriminator` + `Tag` makes the union type-safe and replaces runtime branching with structural pattern matching (`match`/`case`) where it remains.
 
 **Files**:
-- `src/lxd/settings/models.py` — refactor `RelationExtractionConfig`, `ClaimExtractionConfig`, `RerankerConfig`, `SynthesisConfig` (after #4) to use discriminated unions.
+- `src/lxd/settings/models.py` — refactor `RelationExtractionConfig`, `ClaimExtractionConfig`, `SynthesisConfig` to use discriminated unions (the dispatch is already useful even though `[#4]`'s remote-synthesis swap was struck — the cleanup applies to ingest-time backends).
 - `src/lxd/ingest/relations.py:381-402,528` — replace if-chain with `match cfg: case OpenAIBackend(): ... case OllamaBackend(): ...`.
 - `src/lxd/ingest/claims.py:486` — same pattern.
 - `src/lxd/ingest/llm_client.py:181` — same pattern.
@@ -466,7 +454,7 @@ Sessions are ordered for clean ROI sequencing; each ends with a green build + co
 | **2**  | **Retrieval upgrade**                       | `#1` (`#14` removed — see below)                                                                                                  | 3-4 h                  |
 | **3**  | **KG signal lift — wiki edges**             | `#3`                                                                                                                              | 4 h                    |
 | **4**  | **KG signal lift — centrality + community** | `#2`                                                                                                                              | 6 h                    |
-| **5**  | **Synthesis quality + streaming**           | `#4`, `#5`                                                                                                                        | 5-6 h                  |
+| **5**  | **Streaming synthesis**                     | `#5` (`#4` struck — see backlog `B-LOCAL-2`)                                                                                      | 3 h                    |
 | **6**  | **Production guardrails**                   | `#11`, `#12` (implement OTel or delete unused fields outright per the no-tech-debt rule)                                          | 6 h                    |
 | **7**  | **Persistent breaker + sqlite.py split**    | `#10`, `#7` (callers update; no `__init__.py` re-export façade)                                                                   | 6 h                    |
 | **8**  | **Backend dispatch refactor**               | `#8` (after `#7` so the new modules absorb the change cleanly)                                                                    | 2 h                    |
@@ -492,15 +480,15 @@ Sessions are ordered for clean ROI sequencing; each ends with a green build + co
 [x] S3.3  [#3] Dangling-slug + pages-without-subject diagnostics — done in `94308d3` as a structlog `wiki_relation_derivation_diagnostics` event at end of run (truncated to first 20 each, sorted). Adding the same surface to `pixi run status` is a polish task — left for B-DOCS or a follow-up.
 [x] S3.4  Commit: `94308d3` — "[#3] Wiki [[slug]] cross-refs become wiki_references KG edges".
 
-[ ] S4.1  [#2] Add `central_entity_score`, `community_ids` to `RankedChunk`
-[ ] S4.2  [#2] Load centrality + community in `_dense_ranked_candidates`
-[ ] S4.3  [#2] Implement community-aware MMR (`_diversify_by_community`)
-[ ] S4.4  [#2] Add centrality-weighted RRF lane
-[ ] S4.5  Commit: "Use centrality + community signals in retrieval"
+[x] S4.1  [#2] Add `central_entity_score`, `community_ids` to `RankedChunk` — done in `6cb00d4`. Both default to "no signal" so the pipeline degrades gracefully when the graph is not yet built.
+[x] S4.2  [#2] Load centrality + community via new `load_chunk_centrality_signals` SQLite helper — done in `6cb00d4`. Joins `chunk_rows -> mention_rows -> entity_profiles`; populated via `_attach_centrality_signals` after dense fetch.
+[x] S4.3  [#2] Community-aware diversification (`_diversify_by_community`) — done in `6cb00d4`. Round-robin: distinct communities before any community appears twice; untagged chunks defer. Toggle via `retrieval.community_diversity_enabled`.
+[x] S4.4  [#2] Centrality-weighted RRF lane in `_fuse_ranked_prefix` — done in `6cb00d4`. Config knob `retrieval.centrality_fusion_weight` (default 1.0).
+[x] S4.5  Commit: `6cb00d4` — "[#2] Use centrality + community signals in retrieval".
 
-[ ] S5.1  [#4] Replace synthesis Ollama-only call with `call_with_fallback_async`; default OpenAI primary
-[ ] S5.2  [#5] Stream `synthesise_answer`; surface via FastMCP iterator
-[ ] S5.3  Commit: "Synthesis: OpenAI primary + streaming"
+[~] S5.1  [#4] **STRUCK 2026-05-05** — remote-synthesis swap was incompatible with the local-first design. Local-code observation parked as `B-LOCAL-2`.
+[ ] S5.2  [#5] Stream `synthesize_answer`; surface via FastMCP iterator (purely local, Ollama streaming)
+[ ] S5.3  Commit: "[#5] Streaming synthesis (Ollama)"
 
 [ ] S6.1  [#11] New `IngestBudget` config + threshold checks
 [ ] S6.2  [#12] Implement OTel via `configure_tracing`, span wrappers in `run_tool`, spans at ingest+retrieval boundaries (or delete the unused `otel_*`/`prometheus_*` settings outright per no-tech-debt — pick one, ship one)
@@ -563,7 +551,7 @@ mcp-client get_community_context --entity_id "addie-model"
 | #1   | `src/lxd/stores/lancedb.py:33-52`, `src/lxd/retrieval/query_pipeline.py:329-373,459-487`                                                           |
 | #2   | `src/lxd/retrieval/query_pipeline.py:72-98,329-373,421-456`, `src/lxd/retrieval/graph_routing.py:33-105`                                           |
 | #3   | `src/lxd/ingest/wiki_metadata.py:56-113`, `src/lxd/ingest/wiki_relations.py` (new), `src/lxd/stores/sqlite.py:1590-1621`                           |
-| #4   | `src/lxd/synthesis/answering.py:60-104`, `src/lxd/settings/models.py`                                                                              |
+| #4   | ❌ struck — see backlog `B-LOCAL-2`                                                                                                                |
 | #5   | `src/lxd/synthesis/answering.py:60-104`, `src/lxd/mcp/tools.py`                                                                                    |
 | #7   | `src/lxd/stores/sqlite.py` → `src/lxd/stores/sqlite/` subpackage (9 modules; callers updated, no re-export façade)                                 |
 | #8   | `src/lxd/settings/models.py`, `src/lxd/ingest/relations.py:381-402`, `src/lxd/ingest/claims.py:486`, `src/lxd/ingest/llm_client.py:181`            |
@@ -586,7 +574,7 @@ mcp-client get_community_context --entity_id "addie-model"
 
 The plan deliberately reuses these rather than introducing parallel implementations:
 
-- **`lxd.ingest.llm_client.call_with_fallback_async`** (lines 87+) — used today by relations and claims for OpenAI primary + Ollama fallback. Reused by **#4** (synthesis), **#17** (HyDE).
+- **`lxd.ingest.llm_client.call_with_fallback_async`** (lines 87+) — used today by relations and claims (ingest-time, offline batch path) for OpenAI primary + Ollama fallback. **Not** reused on the user-facing query path — synthesis and HyDE stay local Ollama (item `[#4]` was struck; `[#17]` will be local-only when it lands).
 - **`lxd.net.http`** — pooled `httpx.Client` / `httpx.AsyncClient` factories. Available for any future local- or remote-HTTP client work; **not** used to introduce remote replacements for locally-running components.
 - **`lxd.stores.sqlite.replace_canonical_relations`** + **`replace_relation_evidence`** (lines 1590-1708) — bulk-insert targets. Reused by **#3** (wiki-link relations).
 - **`lxd.retrieval.graph_routing.build_graph_context`** (lines 33-105) — already loads community reports + entity profiles. The same loader is lifted for retrieval-time community-aware MMR in **#2**.
@@ -668,6 +656,7 @@ These are local-code observations about the existing local stack. They are **not
 | ID | Finding | File / location | Note |
 |---|---|---|---|
 | `B-LOCAL-1` | **`rerank.py` auto-spawns `llama-server` from inside a query path** | `src/lxd/retrieval/rerank.py:_ensure_reranker_service`, `_build_llama_server_command`, `_load_running_pid`, `_resolve_ollama_blob_model_path`, `_runtime_paths`, `_write_pid_file`, `_wait_for_reranker_ready`, `_resolve_llama_server_executable`, `_resolve_reranker_model_path`, `_slugify`, `_tail_log`, `_process_is_running` | A search-time call may launch a long-running native process. Possible local-fix space (raise before changing): (a) move launch responsibility to `start.sh` / a new `pixi run reranker` task and have `rerank.py` be a pure HTTP client to a known URL; (b) keep auto-spawn but factor it out of the query path into a singleton/lifecycle hook; (c) leave as-is. **No remote replacement is on the table.** |
+| `B-LOCAL-2` | **`synthesis/answering.py` is hard-bound to one local model** | `src/lxd/synthesis/answering.py` (calls Ollama directly, locked to `config.models.llm`) | Synthesis bypasses any dispatch layer; switching model means editing config and that's it. Possible local-fix space (raise before changing): (a) leave as-is — the explicit single-model coupling is honest; (b) introduce a local-only backend dispatch (Ollama / llama.cpp / MLX) so the user can swap engines without touching synthesis code; (c) parameterise the model choice per-query rather than globally. **No remote backends.** |
 
 ### B-DOCS — Documentation refactors (further)
 
@@ -689,11 +678,11 @@ These are local-code observations about the existing local stack. They are **not
 - **B-ROBUST**: 3 items
 - **B-PERF**: 4 items
 - **B-STACK**: 12 items
-- **B-LOCAL**: 1 item
+- **B-LOCAL**: 2 items
 - **B-DOCS**: 1 item
 - **B-TEST**: 2 items
 
-**Total backlog: 31 additional items beyond the 18 in the executable plan (item #14 was struck 2026-05-05).**
+**Total backlog: 32 additional items beyond the 17 in the executable plan (items #6, #14, and #4 were struck 2026-05-05).**
 
 These are not scheduled. When a session opens with bandwidth, pick a backlog item that complements the just-finished work (e.g. `B-STACK-10` after item #11 because both touch cost estimation; `B-KG-3` after item #2 because both leverage the centrality work). Promote the chosen item into the next session header and update this backlog section with a strikethrough or "promoted to S<N>" annotation.
 
