@@ -150,6 +150,11 @@ class RetrievalConfig(BaseModel):
     relation_fusion_weight: float = Field(default=1.0, ge=0.0)
     centrality_fusion_weight: float = Field(default=1.0, ge=0.0)
     community_diversity_enabled: bool = True
+    hyde_enabled: bool = False
+    hyde_model: str = "qwen3:14b"
+    hyde_temperature: float = Field(default=0.0, ge=0.0)
+    hyde_timeout_secs: int = Field(default=30, gt=0)
+    hyde_max_tokens: int = Field(default=200, gt=0)
 
 
 class RerankerLaunchConfig(BaseModel):

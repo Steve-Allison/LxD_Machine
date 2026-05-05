@@ -11,6 +11,7 @@ from lxd.app.status import config_drift_warnings
 from lxd.retrieval.dense import embed_query
 from lxd.retrieval.expansion import expand_question
 from lxd.retrieval.graph_routing import build_graph_context, format_graph_context_prompt
+from lxd.retrieval.hyde import generate_hypothetical_answer
 from lxd.retrieval.rerank import rerank_chunks
 from lxd.settings.models import RuntimeConfig
 from lxd.stores.lancedb import connect_lancedb, open_chunk_table, search_chunks_fts
@@ -143,7 +144,12 @@ def search_chunks(
         )
 
     expansion = expand_question(question.strip(), config)
-    query_vector = embed_query(config, expansion.expanded_question)
+    embed_target = expansion.expanded_question
+    if config.retrieval.hyde_enabled:
+        hyde_text = generate_hypothetical_answer(expansion.expanded_question, config)
+        if hyde_text:
+            embed_target = hyde_text
+    query_vector = embed_query(config, embed_target)
     table = open_chunk_table(
         connect_lancedb(store_paths.lancedb_path), vector_size=config.models.embed_dims
     )
