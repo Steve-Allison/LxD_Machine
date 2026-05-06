@@ -33,7 +33,7 @@ from lxd.ingest.relations import build_valid_predicates
 from lxd.ingest.scanner import ScannedCorpusFile, scan_corpus
 from lxd.ingest.wiki_relations import build_slug_index, derive_wiki_link_relations
 from lxd.ontology.loader import OntologyLoadResult, load_ontology
-from lxd.ontology.matcher import build_automaton
+from lxd.ontology.matcher import build_or_load_automaton
 from lxd.settings.models import RuntimeConfig
 from lxd.stores.lancedb import (
     connect_lancedb,
@@ -145,7 +145,10 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
     _validate_ingest_dependencies(config)
 
     warnings: list[str] = []
-    automaton = build_automaton(plan.ontology.matcher_records)
+    automaton = build_or_load_automaton(
+        plan.ontology.matcher_records,
+        cache_dir=config.paths.data_path / "matcher_cache",
+    )
     valid_predicates = build_valid_predicates(plan.ontology.relation_records)
     slug_index = build_slug_index(plan.ontology.entity_definitions)
     budget_tracker = IngestBudgetTracker(config.ingest_budget)

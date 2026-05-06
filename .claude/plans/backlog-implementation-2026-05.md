@@ -575,7 +575,12 @@ that does not match the actual need.
 
 ---
 
-#### `B-ROBUST-2` Aho-Corasick matcher disk-pickle
+#### `B-ROBUST-2` Aho-Corasick matcher disk-pickle — **SHIPPED 2026-05-06**
+
+**Status**: shipped. `build_or_load_automaton(records, *, cache_dir)` lives at `src/lxd/ontology/matcher.py:107`; cache key is `matcher-<matcher_termset_hash>.pkl` under `cache_dir`. Both call sites (`retrieval/expansion.py`, `ingest/pipeline/orchestrator.py`) now use `<data_path>/matcher_cache/`. 4 unit tests cover cold-build, warm-load equivalence, hash-mismatch isolation, and corrupt-cache fall-through. 274 tests passing.
+
+(Original audit note retained below for reference.)
+
 
 **Why**: Building the matcher from the ontology takes ~1-2s per CLI invocation. For short-running commands (`pixi run status`, MCP tool calls) this dominates the wall-clock. Pickle the matcher to `data/openai/cache/matcher-{ontology_hash}.pkl`; load on startup if the hash matches.
 
@@ -590,7 +595,12 @@ that does not match the actual need.
 
 ---
 
-#### `B-ROBUST-3` Empty-frontmatter wiki page early-exit
+#### `B-ROBUST-3` Empty-frontmatter wiki page early-exit — **OBSOLETE on survey 2026-05-06**
+
+**Status**: closed. The LLM short-circuit the audit asks for *already exists* at the chunk level: `extract_relations_for_chunk` (`src/lxd/ingest/relations.py:79`) returns `[]` immediately when `len(entity_ids) < cfg.min_entity_mentions` (line 95-96) or when `valid_predicates` is empty (line 98-99). `pipeline/sources.py:131-133` mirrors the same gate before recording an LLM call against the budget tracker. An empty-frontmatter wiki page where every chunk has zero entity matches already pays zero LLM calls. The only marginal saving the audit's page-level check would deliver is skipping the cheap Aho-Corasick `detect_mentions` work — sub-millisecond per chunk. Not worth a code change.
+
+(Original audit note retained below for reference.)
+
 
 **Why**: A wiki page with no `Sources:` line and no `[[slug]]` cross-references still goes through the full mention-detection + relation-extraction pipeline. If the page has no entity matches AND no wiki frontmatter, it can't contribute any KG signal — should skip the LLM relation extraction lane.
 

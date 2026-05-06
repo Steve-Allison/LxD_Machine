@@ -9,7 +9,7 @@ from typing import Any
 from lxd.ingest.mentions import detect_mentions
 from lxd.ontology.graph import OntologyGraph
 from lxd.ontology.loader import OntologyLoadResult, load_ontology
-from lxd.ontology.matcher import build_automaton
+from lxd.ontology.matcher import build_or_load_automaton
 from lxd.settings.models import RuntimeConfig
 from lxd.stores.sqlite.chunks import load_corpus_related_entity_ids
 from lxd.stores.sqlite.connection import build_store_paths, connect_sqlite
@@ -128,7 +128,10 @@ def _ontology_runtime(config: RuntimeConfig) -> _OntologyRuntime:
     )
     runtime = _OntologyRuntime(
         ontology=ontology,
-        automaton=build_automaton(ontology.matcher_records),
+        automaton=build_or_load_automaton(
+            ontology.matcher_records,
+            cache_dir=config.paths.data_path / "matcher_cache",
+        ),
         entity_by_id={entity["canonical_id"]: entity for entity in ontology.entity_definitions},
     )
     _ONTOLOGY_CACHE[cache_key] = runtime
