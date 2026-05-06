@@ -678,7 +678,27 @@ that does not match the actual need.
 
 ### Tier 11 — Polars / Arrow modernisation (low priority)
 
-#### `B-STACK-12` Polars-on-Arrow for KG analyses
+#### `B-STACK-12` Polars-on-Arrow for KG analyses — **STRUCK on survey 2026-05-06**
+
+**Status**: closed. The audit's framing assumes the source data is already in Arrow ("LanceDB returns Arrow natively"). Survey of the actual aggregation hotspots:
+
+- `load_entity_mention_stats` — `SELECT ... FROM mention_rows JOIN chunk_rows GROUP BY entity_id`
+- `load_chunk_ids_for_entity` — `SELECT chunk_id FROM mention_rows WHERE entity_id = ? GROUP BY chunk_id`
+- aggregation in `kg_relations.py:94` — `GROUP BY predicate` over `extracted_relations`
+- aggregation in `profiles.py:199` — `GROUP BY entity_id, chunk_id` over `mention_rows`
+
+Every one of these reads SQLite tables (`mention_rows`, `chunk_rows`, `extracted_relations`) which have no Arrow counterpart — only chunk *vectors* live in LanceDB, not the mention/relation rows. To use Polars-on-Arrow we would have to:
+
+1. `SELECT * FROM mention_rows` (full table scan into Python),
+2. convert to Arrow,
+3. run polars `group_by`/`agg`,
+
+which is strictly slower than letting SQLite do the GROUP BY natively over its own b-tree indexes. There is no scale at which this becomes a win until the underlying mention/relation data is migrated into Arrow storage — and that migration would be a much larger change than this audit item, gated on its own consumer requirement.
+
+This is a strike based on the data shape, not a scale defer: the rewrite is a regression at every scale of the current data model.
+
+(Original audit note retained below for reference.)
+
 
 **Why**: LanceDB returns Arrow natively; some KG analyses currently round-trip through SQLite (`load_entity_mention_stats` etc.) for grouping/aggregation that Polars-on-Arrow does in microseconds.
 
