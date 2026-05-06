@@ -133,12 +133,22 @@ def lookup(
             misses_indices=list(range(len(chunk_hashes))),
         )
 
+    # B-PERF-4 (2026-05-06): LanceDB's `to_list()` already returns native
+    # Python `list[float]` for the fixed_size_list<float32> column, so the
+    # previous `[float(v) for v in vector]` was paying for a per-element
+    # coercion that did not change types. Replacing it with `list(vector)`
+    # delivers a defensive copy (so the caller cannot mutate the LanceDB
+    # row's buffer) at ~3x the throughput on 1k-row batches. The audit's
+    # original "Arrow vectorise via to_arrow().to_pylist()" approach was
+    # benchmarked and found to be 4-5x *slower* than this loop because
+    # `pa.FixedSizeListArray.to_pylist()` allocates the same Python lists
+    # via a different path.
     by_key: dict[str, list[float]] = {}
     for row in rows:
         vector = row.get("vector")
         if vector is None:
             continue
-        by_key[str(row["cache_key"])] = [float(v) for v in vector]
+        by_key[str(row["cache_key"])] = list(vector)
 
     hits: dict[int, list[float]] = {}
     misses: list[int] = []

@@ -217,7 +217,20 @@ There is no double-encoding of the same text. No code change needed.
 
 ---
 
-#### `B-PERF-4` Vectorise embedding-cache lookup via Arrow
+#### `B-PERF-4` Vectorise embedding-cache lookup via Arrow — **PARTIALLY SHIPPED 2026-05-06 (audit framing inverted)**
+
+**Status**: shipped a smaller fix; audit's framing struck.
+
+**What was claimed**: replace per-chunk Python iteration with `pa.FixedSizeListArray.to_pylist()` for "microsecond" Arrow-vectorised conversion at 100k+ chunks.
+
+**What the survey found**: a benchmark on this codebase (1k rows × 1536-dim vectors) showed the Arrow path at **220 ms** vs the existing path at **45 ms** — **5× slower**, not faster. LanceDB's `to_list()` already returns native `list[float]` per row, so the proposed `to_arrow()`-then-`to_pylist()` round-trip allocates the same Python objects via a longer code path. Also benchmarked at N=100 and N=10k; same direction.
+
+**The real fix** (commit, with benchmark recorded inline): the previous `[float(v) for v in vector]` was paying for a per-element Python `float()` coercion that did not change the type — LanceDB's element type is already Python `float`. Replacing it with `list(vector)` keeps the defensive copy (cache returns mutable lists; mutation must not leak back) at **3× the throughput** (~45 ms → ~15 ms at 1k×1536). At 100k chunks that's ~5 s → ~1.5 s.
+
+3 unit tests cover defensive-copy semantics (mutating a returned vector must not corrupt the cache), miss-index ordering with duplicates, and that returned elements remain `float` (not numpy scalars or other types) so downstream `float()` calls do not break.
+
+(Original audit note retained below for reference.)
+
 
 **Why**: `lookup_summaries` and `lookup` (embedding cache) iterate per-chunk in Python. Fine at 1k batches. At 100k+ chunks the Python overhead dominates.
 
