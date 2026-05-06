@@ -37,6 +37,7 @@ from lxd.mcp.tools import (
     search_knowledge_deep_tool,
     search_knowledge_tool,
 )
+from lxd.synthesis.answering import synthesis_preamble
 
 _READ_ONLY = {"readOnlyHint": True}
 _LIFESPAN_KEY = "lxd"
@@ -495,6 +496,22 @@ def create_server(
             "get_graph_overview",
             lambda: get_graph_overview_tool(lxd.app_context),
             timeout_secs=_tool_timeout(lxd),
+        )
+
+    @mcp.prompt(name="lxd_synthesis_preamble")
+    def synthesis_preamble_prompt() -> str:
+        """Show the static preamble prepended to every synthesis prompt.
+
+        Returns the exact instructions the LLM receives before the
+        question and evidence — both transitive-sources and graph-context
+        sub-sections included — so clients can audit what the system tells
+        the model. The runtime path uses the same text via
+        :func:`lxd.synthesis.answering.synthesis_preamble`; this prompt is
+        a transparency surface, not a separate template.
+        """
+        return synthesis_preamble(
+            has_transitive_sources=True,
+            has_graph_context=True,
         )
 
     @mcp.resource(

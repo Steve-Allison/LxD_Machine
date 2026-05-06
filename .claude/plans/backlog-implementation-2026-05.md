@@ -507,7 +507,12 @@ that does not match the actual need.
 
 ---
 
-#### `B-STACK-5` FastMCP Prompts (parameterised templates)
+#### `B-STACK-5` FastMCP Prompts (parameterised templates) — **SHIPPED 2026-05-06**
+
+**Status**: shipped. The synthesis preamble is now a single source of truth at `src/lxd/synthesis/answering.py:synthesis_preamble(...)` with three exported constants (`SYNTHESIS_PREAMBLE_BASE`, `SYNTHESIS_PREAMBLE_TRANSITIVE_SOURCES`, `SYNTHESIS_PREAMBLE_GRAPH_CONTEXT`); the runtime `_build_prompt` and the MCP `lxd_synthesis_preamble` prompt both call the same function. The MCP prompt returns the full text (both sub-sections enabled) so clients see every instruction the system might emit. 6 tests cover the four sub-section permutations plus FastMCP-side prompt registration and render-content equivalence.
+
+(Original audit note retained below for reference.)
+
 
 **Why**: Currently the synthesis prompt and graph-context prompt are baked into our code. Exposing them as FastMCP Prompts (`lxd_search_prompt`, `lxd_synthesis_prompt`) lets clients render-and-edit them — useful for transparency and for users who want to tweak phrasing without forking the code.
 

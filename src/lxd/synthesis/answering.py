@@ -28,6 +28,49 @@ from lxd.settings.models import RuntimeConfig
 _THINK_BLOCK_PATTERN = re.compile(r"<think>.*?</think>", flags=re.DOTALL)
 
 
+# Public, single source of truth for the synthesis preamble. Extracted so
+# the MCP Prompt resource (`mcp/prompts.py`) can surface the exact text
+# that gets prepended to every synthesis prompt without duplication —
+# clients auditing the system see the same instructions the model sees.
+SYNTHESIS_PREAMBLE_BASE = (
+    "Answer the question using only the evidence below.\n"
+    "If the evidence is insufficient, say so plainly.\n"
+    "Do not invent facts.\n"
+)
+SYNTHESIS_PREAMBLE_TRANSITIVE_SOURCES = (
+    "\nEvidence chunks may include a ``Sources:`` line listing the underlying\n"
+    "research files the chunk was synthesised from. When such sources are\n"
+    "present, your citations should reference both the chunk citation label\n"
+    "AND the underlying sources transitively, e.g.\n"
+    '"[citation_label] (citing source_a.md, source_b.pdf)".\n'
+)
+SYNTHESIS_PREAMBLE_GRAPH_CONTEXT = (
+    "\nThe graph context below provides structured knowledge about entities,\n"
+    "communities, and claims relevant to the question. Use it to frame your\n"
+    "answer but ground all facts in the source evidence.\n"
+)
+
+
+def synthesis_preamble(
+    *,
+    has_transitive_sources: bool = True,
+    has_graph_context: bool = True,
+) -> str:
+    """Return the synthesis-prompt preamble with optional sub-sections enabled.
+
+    Used by both the runtime synthesis path (where ``has_*`` flags reflect
+    the actual evidence on the call) and the MCP ``lxd_synthesis_preamble``
+    prompt (where both flags default to ``True`` so clients see every
+    sub-section the system might emit).
+    """
+    text = SYNTHESIS_PREAMBLE_BASE
+    if has_transitive_sources:
+        text += SYNTHESIS_PREAMBLE_TRANSITIVE_SOURCES
+    if has_graph_context:
+        text += SYNTHESIS_PREAMBLE_GRAPH_CONTEXT
+    return text
+
+
 @dataclass(frozen=True, slots=True)
 class EvidenceChunk:
     """Evidence snippet and score used for synthesis.
@@ -244,26 +287,10 @@ def _build_prompt(
     question: str, evidence: list[EvidenceChunk], *, graph_context_prompt: str = ""
 ) -> str:
     evidence_block = "\n\n".join(_format_evidence_chunk(item) for item in evidence)
-    has_transitive_sources = any(item.cited_sources for item in evidence)
-    preamble = (
-        "Answer the question using only the evidence below.\n"
-        "If the evidence is insufficient, say so plainly.\n"
-        "Do not invent facts.\n"
+    preamble = synthesis_preamble(
+        has_transitive_sources=any(item.cited_sources for item in evidence),
+        has_graph_context=bool(graph_context_prompt),
     )
-    if has_transitive_sources:
-        preamble += (
-            "\nEvidence chunks may include a ``Sources:`` line listing the underlying\n"
-            "research files the chunk was synthesised from. When such sources are\n"
-            "present, your citations should reference both the chunk citation label\n"
-            "AND the underlying sources transitively, e.g.\n"
-            '"[citation_label] (citing source_a.md, source_b.pdf)".\n'
-        )
-    if graph_context_prompt:
-        preamble += (
-            "\nThe graph context below provides structured knowledge about entities,\n"
-            "communities, and claims relevant to the question. Use it to frame your\n"
-            "answer but ground all facts in the source evidence.\n"
-        )
     sections = [preamble]
     if graph_context_prompt:
         sections.append(graph_context_prompt)
