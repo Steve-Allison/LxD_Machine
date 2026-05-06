@@ -27,6 +27,7 @@ Key constraints:
 from __future__ import annotations
 
 import logging
+import threading
 import time
 from collections.abc import Generator, MutableMapping
 from contextlib import contextmanager
@@ -35,12 +36,23 @@ from typing import Any
 import structlog
 
 
-def configure_logging(level: str, output_format: str = "json") -> None:
+def configure_logging(
+    level: str,
+    output_format: str = "json",
+    *,
+    sample_rate: int = 1,
+    sampled_event_names: frozenset[str] = frozenset(),
+) -> None:
     """Validate configuration and apply runtime settings.
 
     Args:
         level: Logging level name (for example, INFO or DEBUG).
         output_format: Log renderer format ("json" or "console").
+        sample_rate: Emit one in every ``sample_rate`` copies of the events
+            named in ``sampled_event_names``. ``1`` disables sampling.
+        sampled_event_names: Event names eligible for sampling (e.g.
+            ``embedding_cache_hit``). Anything outside this set is always
+            emitted; errors and ``critical`` events are also always emitted.
 
     Side Effects:
         Mutates global ``logging`` and ``structlog`` configuration. Safe to
@@ -53,18 +65,27 @@ def configure_logging(level: str, output_format: str = "json") -> None:
     else:
         renderer = structlog.processors.JSONRenderer()
 
+    processors: list[structlog.types.Processor] = [
+        structlog.contextvars.merge_contextvars,
+        structlog.processors.add_log_level,
+        structlog.processors.TimeStamper(fmt="iso", utc=True),
+        scrub_secrets,
+    ]
+    if sample_rate > 1 and sampled_event_names:
+        processors.append(
+            make_sampled_processor(
+                rate=sample_rate,
+                high_volume_events=sampled_event_names,
+            )
+        )
+    processors.append(renderer)
+
     logging.basicConfig(
         level=numeric_level,
         format="%(message)s",
     )
     structlog.configure(
-        processors=[
-            structlog.contextvars.merge_contextvars,
-            structlog.processors.add_log_level,
-            structlog.processors.TimeStamper(fmt="iso", utc=True),
-            scrub_secrets,
-            renderer,
-        ],
+        processors=processors,
         wrapper_class=structlog.make_filtering_bound_logger(numeric_level),
         logger_factory=structlog.PrintLoggerFactory(),
         cache_logger_on_first_use=True,
@@ -128,6 +149,62 @@ def _scrub_sequence(items: list[Any]) -> None:
             _scrub_mapping(item)
         elif isinstance(item, list):
             _scrub_sequence(item)
+
+
+def make_sampled_processor(
+    *,
+    rate: int,
+    high_volume_events: frozenset[str],
+) -> structlog.types.Processor:
+    """Build a structlog processor that drops most copies of high-volume events.
+
+    The processor lets through:
+
+    * **Errors** (events whose level is ``error`` or ``critical``) — always.
+    * **Non-sampled events** (event names not in ``high_volume_events``) —
+      always; this is the escape hatch for run-summary lines, lifecycle
+      transitions, and anything the caller has not opted into sampling.
+    * **One-in-``rate`` copies** of each high-volume event — counted via a
+      lock-guarded counter per event name so the sampling is exact rather
+      than probabilistic.
+
+    Suppression raises :class:`structlog.DropEvent`, which structlog uses to
+    discard a log call without further processing.
+
+    Args:
+        rate: Emit one in every ``rate`` events; ``rate=1`` disables
+            sampling. Values < 1 are treated as 1.
+        high_volume_events: Event names eligible for sampling. Anything
+            outside this set is always emitted.
+
+    Returns:
+        A structlog processor suitable for placement *before* the renderer.
+    """
+    sample_rate = max(1, int(rate))
+    counters: dict[str, int] = {}
+    lock = threading.Lock()
+
+    def processor(
+        _logger: object,
+        _method_name: str,
+        event_dict: MutableMapping[str, Any],
+    ) -> MutableMapping[str, Any]:
+        if _method_name in {"error", "critical"}:
+            return event_dict
+        event = event_dict.get("event")
+        if not isinstance(event, str) or event not in high_volume_events:
+            return event_dict
+        if sample_rate == 1:
+            return event_dict
+        with lock:
+            counter = counters.get(event, 0)
+            counters[event] = counter + 1
+            keep = counter % sample_rate == 0
+        if keep:
+            return event_dict
+        raise structlog.DropEvent
+
+    return processor
 
 
 @contextmanager

@@ -528,7 +528,12 @@ that does not match the actual need.
 
 ### Tier 8 — Observability
 
-#### `B-STACK-8` `bind_contextvars` per MCP-tool-call
+#### `B-STACK-8` `bind_contextvars` per MCP-tool-call — **SHIPPED 2026-05-06**
+
+**Status**: shipped. `mcp/async_runtime.run_tool` now calls `structlog.contextvars.bind_contextvars(tool=name)` at request entry and `reset_contextvars(**bound_keys)` in `finally`, so every log line emitted while the tool body runs is automatically tagged with the originating tool name. Three integration tests verify: tag is present on logs inside the tool, contextvar is cleared after a successful run, and the contextvar is also cleared when the tool body raises.
+
+(Original audit note retained below for reference.)
+
 
 **Why**: structlog is configured at startup with global contextvars. Per-request fields (tool name, query length, matched entity IDs) are added inline in each log call. Binding them once at request entry makes every log line in that request carry the context automatically.
 
@@ -543,7 +548,12 @@ that does not match the actual need.
 
 ---
 
-#### `B-STACK-9` Sampled logging for high-volume events
+#### `B-STACK-9` Sampled logging for high-volume events — **SHIPPED 2026-05-06**
+
+**Status**: shipped. `make_sampled_processor(rate, high_volume_events)` lives at `src/lxd/observability/logging.py`; counter-based 1-in-N sampling per event name (lock-guarded so threaded callers see exact sampling, not probabilistic). `error` and `critical` level events bypass sampling unconditionally, as do any event names outside the allow-list. Wired through `LoggingConfig.sample_rate` (default 1 — disabled) and `LoggingConfig.sampled_event_names` (default high-volume ingest events: `embedding_cache_hit`, `embedding_cache_miss`, `chunk_processed`, `mention_detected`). Bootstrap passes the new fields into `configure_logging`. 7 unit tests cover rate=1 disable, non-sampled bypass, sampling math, error/critical bypass, per-event counters, and `DropEvent` semantics.
+
+(Original audit note retained below for reference.)
+
 
 **Why**: Ingest emits per-chunk progress logs (`chunk_processed`, `embedding_cache_hit`, etc.) — at 25k chunks that's 25k log lines per run. Most are redundant. Sample 1 in 100 (configurable); always emit errors and final summaries.
 

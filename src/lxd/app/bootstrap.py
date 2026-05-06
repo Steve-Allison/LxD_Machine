@@ -66,7 +66,12 @@ def bootstrap_app(
         profile=profile,
         config_path=config_path,
     )
-    configure_logging(config.logging.level, config.logging.format)
+    configure_logging(
+        config.logging.level,
+        config.logging.format,
+        sample_rate=config.logging.sample_rate,
+        sampled_event_names=frozenset(config.logging.sampled_event_names),
+    )
     digest = compute_config_digest(config)
     reconcile_config_lock(config.paths.data_path, digest=digest)
     return AppContext(

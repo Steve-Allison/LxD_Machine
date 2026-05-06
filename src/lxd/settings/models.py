@@ -325,6 +325,15 @@ class LoggingConfig(BaseModel):
 
     level: str
     format: Literal["json", "console"] = "json"
+    sample_rate: int = Field(default=1, ge=1)
+    sampled_event_names: list[str] = Field(
+        default_factory=lambda: [
+            "embedding_cache_hit",
+            "embedding_cache_miss",
+            "chunk_processed",
+            "mention_detected",
+        ]
+    )
 
 
 class PathsConfig(BaseModel):

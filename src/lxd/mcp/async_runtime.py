@@ -44,6 +44,13 @@ async def run_tool[T](
 ) -> T:
     """Execute ``func`` in a worker thread with a hard timeout.
 
+    Binds ``tool=<name>`` as a structlog contextvar for the duration of the
+    call so every log line emitted by ``func`` (and any code it calls) is
+    automatically tagged with the originating MCP tool, without each call
+    site having to thread the name through manually. The contextvar is
+    cleared in ``finally`` so it never leaks to the next request, even on
+    timeout or unhandled exceptions.
+
     Args:
         name: Human-readable tool identifier; used for logging.
         func: Zero-argument callable that performs the synchronous work.
@@ -58,15 +65,18 @@ async def run_tool[T](
         Exception: Any exception raised by ``func`` is propagated unchanged
             (after being logged with ``exc_info=True``).
     """
-    if timeout_secs <= 0:
-        return await anyio.to_thread.run_sync(func)
-
+    bound_keys = structlog.contextvars.bind_contextvars(tool=name)
     try:
-        with anyio.fail_after(timeout_secs):
-            return await anyio.to_thread.run_sync(func, abandon_on_cancel=True)
-    except TimeoutError:
-        _log.warning("mcp.tool.timeout", tool=name, timeout_secs=timeout_secs)
-        raise
-    except Exception:
-        _log.error("mcp.tool.error", tool=name, exc_info=True)
-        raise
+        if timeout_secs <= 0:
+            return await anyio.to_thread.run_sync(func)
+        try:
+            with anyio.fail_after(timeout_secs):
+                return await anyio.to_thread.run_sync(func, abandon_on_cancel=True)
+        except TimeoutError:
+            _log.warning("mcp.tool.timeout", tool=name, timeout_secs=timeout_secs)
+            raise
+        except Exception:
+            _log.error("mcp.tool.error", tool=name, exc_info=True)
+            raise
+    finally:
+        structlog.contextvars.reset_contextvars(**bound_keys)
