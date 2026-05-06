@@ -497,7 +497,66 @@ def create_server(
             timeout_secs=_tool_timeout(lxd),
         )
 
+    @mcp.resource(
+        "lxd://corpus/{path*}",
+        mime_type="text/markdown",
+        annotations=_READ_ONLY,
+    )
+    async def corpus_file(path: str, ctx: Context) -> str:
+        """Return the raw text of a corpus file by relative path.
+
+        Citations from search tools reference chunks by ``citation_label``,
+        which has the form ``<source_rel_path>#<chunk_index>``. This
+        resource lets clients pull the underlying source so the
+        ``source_rel_path`` half can be rendered for users.
+
+        Path-traversal attempts (``..``, absolute paths, symlinks pointing
+        outside the corpus root) are rejected with :class:`FileNotFoundError`,
+        which FastMCP surfaces to the client as an MCP error.
+        """
+        lxd = _lxd(ctx)
+        return _read_corpus_file(
+            corpus_root=lxd.app_context.config.paths.corpus_path,
+            relative_path=path,
+        )
+
     return mcp
+
+
+def _read_corpus_file(*, corpus_root: Path, relative_path: str) -> str:
+    """Resolve ``relative_path`` under ``corpus_root`` and return its text.
+
+    Raises:
+        FileNotFoundError: If the path resolves outside ``corpus_root`` or
+            does not exist as a regular text file.
+        ValueError: If the file extension is not in the allowed text set.
+    """
+    if not relative_path or relative_path.startswith("/"):
+        raise FileNotFoundError(f"Invalid corpus path: {relative_path!r}")
+
+    corpus_root_resolved = corpus_root.resolve()
+    candidate = (corpus_root_resolved / relative_path).resolve()
+    try:
+        candidate.relative_to(corpus_root_resolved)
+    except ValueError as exc:
+        raise FileNotFoundError(f"Corpus path traversal refused: {relative_path!r}") from exc
+
+    if not candidate.is_file():
+        raise FileNotFoundError(f"Corpus file not found: {relative_path!r}")
+
+    suffix = candidate.suffix.lower()
+    if suffix not in _CORPUS_RESOURCE_TEXT_SUFFIXES:
+        raise ValueError(
+            f"Corpus resource only serves text suffixes "
+            f"{sorted(_CORPUS_RESOURCE_TEXT_SUFFIXES)}; got {suffix!r}."
+        )
+
+    return candidate.read_text(encoding="utf-8")
+
+
+_CORPUS_RESOURCE_TEXT_SUFFIXES: frozenset[str] = frozenset(
+    {".md", ".markdown", ".mdx", ".txt", ".json"}
+)
 
 
 def main() -> None:

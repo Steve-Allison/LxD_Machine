@@ -484,7 +484,12 @@ that does not match the actual need.
 
 ### Tier 7 — MCP capability surface
 
-#### `B-STACK-4` FastMCP Resources (`lxd://corpus/{path}`)
+#### `B-STACK-4` FastMCP Resources (`lxd://corpus/{path}`) — **SHIPPED 2026-05-06**
+
+**Status**: shipped. `lxd://corpus/{path*}` resource registered in `mcp/server.py` (`{path*}` so nested paths like `Guides/alpha.md` resolve, since FastMCP's default `{path}` matcher does not capture `/`). Allowed text suffixes: `.md`, `.markdown`, `.mdx`, `.txt`, `.json`. Path-traversal protection refuses absolute paths, `..` segments, and symlinks pointing outside the corpus root (verified by `Path.resolve().relative_to(corpus_root.resolve())`). 7 unit tests cover happy path, dotdot, absolute path, missing file, non-text suffix, symlink escape, and empty path.
+
+(Original audit note retained below for reference.)
+
 
 **Why**: Citations from `search_knowledge` reference chunks by `citation_label`, which is `<source_rel_path>#<chunk_index>`. Clients can't currently fetch the raw source file. A FastMCP Resource for `lxd://corpus/{rel_path}` would let clients (Claude.ai, Cursor) pull the original markdown for display.
 
