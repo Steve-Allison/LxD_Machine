@@ -748,13 +748,13 @@ This is a strike based on the data shape, not a scale defer: the rewrite is a re
 
 ## SCALE-DEFERRED (do not promote until the gate clears)
 
-| ID | Gate | Effort when promoted |
+| ID | Gate | Outcome |
 |---|---|---|
-| `B-PERF-4` Vectorise embedding-cache lookup via Arrow | Corpus crosses ~25k chunks (today: ~3k) | 2 h |
-| `B-STACK-1` LanceDB scalar quantisation + IVF_PQ | Corpus crosses ~1M chunks (today: ~3k) | 4 h |
-| `B-STACK-2` LanceDB version branching / time-travel queries | Only useful with an A/B framework. Per the no-measurement-ceremony rule, this lands when a concrete user-facing A/B need exists | 3 h |
-| `B-STACK-12` Polars-on-Arrow KG analyses | Profile-driven: a specific analysis observed >1s | 3 h |
-| `B-TEST-2` Mutation testing | Low-value at current scale; revisit if regressions become a pattern | 4 h |
+| `B-PERF-4` Vectorise embedding-cache lookup via Arrow | Corpus crosses ~25k chunks (today: ~3k) | **Partially shipped 2026-05-06**: audit's Arrow path benchmarked 5× slower; smaller real fix (drop redundant `float()` coercion) shipped instead, 3× faster. See item detail. |
+| `B-STACK-1` LanceDB scalar quantisation + IVF_PQ | Corpus crosses ~1M chunks (today: ~3k) | **STRUCK on survey 2026-05-06**: IVF_PQ is *approximate* nearest-neighbour with recall trade-offs. At 3k chunks the brute-force exact search LanceDB uses by default is faster AND more accurate than IVF_PQ. Adding it now is a regression on both axes; promotion only makes sense when exact-search latency dominates (~1M chunks). Per the user's "future-proofing > scale" rule, this still doesn't qualify because it's not a forward-compatible win — it's a quality regression at the current shape. |
+| `B-STACK-2` LanceDB version branching / time-travel queries | Only useful with an A/B framework | **STRUCK on survey 2026-05-06**: time-travel only delivers value with a concrete consumer (an A/B harness, an "as of yesterday" diagnostic CLI, etc.). Without one it is dead code. Per the no-measurement-ceremony rule, build the consumer first; the time-travel surface lands as part of that work, not ahead of it. |
+| `B-STACK-12` Polars-on-Arrow KG analyses | Profile-driven: a specific analysis observed >1s | **STRUCK on survey 2026-05-06**: data is in SQLite, not Arrow. Polars-on-Arrow would require materialising entire SQLite tables into Python first — strictly slower than the existing SQLite-native GROUP BY at every scale of the current data model. See item detail. |
+| `B-TEST-2` Mutation testing | Low-value at current scale; revisit if regressions become a pattern | **STRUCK on survey 2026-05-06**: mutation testing is the canonical example of measurement ceremony — it generates a quality metric without changing the system's behaviour. Per the user's rule "make the code 100% SOTA, nothing else", and the absence of an observed regression pattern justifying a regression-detection layer, this is closed. Revisit if the suite grows large enough that mutation-driven test selection becomes operationally useful (typically ~1k tests; today: ~308). |
 
 ---
 
