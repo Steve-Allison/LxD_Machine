@@ -490,7 +490,27 @@ Build dependency: disambiguation lane requires `entity_embeddings` to be populat
 
 ---
 
-#### `B-KG-5` Chunk-incremental graph build
+#### `B-KG-5` Chunk-incremental graph build — **STRUCK on survey 2026-05-06**
+
+**Status**: closed.
+
+**Already incremental** (audit framing wrong about current code): claim extraction. `src/lxd/ingest/claims.py:60` `extract_claims_for_chunks(connection, config, force=False)` — docstring line 68-69: *"Incremental: skips chunks that already have claims unless force=True."* The audit's headline complaint ("re-runs claim extraction for every entity touched by any new document") describes a behaviour that doesn't exist in the current codebase.
+
+**Cannot be made incremental without correctness regression** — the audit's own caveat acknowledges this:
+
+> "Centrality can change globally when a single chunk adds an edge; profiles are deterministic-from-current-graph, so a partial rebuild risks drift."
+
+The remaining build phases are all global properties of the graph:
+
+- **Centrality** (PageRank, betweenness, closeness, eigenvector): every node's score depends on the full edge set. A single new edge can shift every node's PageRank — there is no mathematically correct way to update a subset of scores. NetworkX provides no "incremental PageRank" API for this reason.
+- **Community detection** (Louvain): operates on the full graph; you cannot reassign a subset of nodes without potentially breaking the modularity that defined the rest of the partition.
+- **Entity profiles**: surface the centrality scores; a stale profile is a wrong profile.
+- **Community reports**: surface the community assignments; same constraint.
+
+The audit's `--incremental` opt-in framing is honest about the drift risk ("Make `--full` still the safe default"). Per the user's "no half-implementations" rule, shipping a flag whose own caveat says "the result may be wrong" is the wrong shape. The acceptable form of this work is a correctness-preserving full rebuild that runs faster — and since the global recomputation at the current ~3k chunk scale takes a few seconds (not minutes), there is no operational pain to address. Re-promote only when (a) global recompute exceeds operational tolerance (~minutes per build) AND (b) a mathematically correct incremental algorithm is selected for each global metric.
+
+(Original audit note retained below for reference.)
+
 
 **Why**: `pixi run build-graph` re-runs claim extraction for every entity touched by any new document. For a single-page incremental ingest this is wasteful. Should be additive: only extract claims for newly-added or changed chunks; merge into existing entity profiles.
 
