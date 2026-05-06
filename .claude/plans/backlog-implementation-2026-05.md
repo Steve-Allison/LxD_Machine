@@ -568,7 +568,12 @@ that does not match the actual need.
 
 ### Tier 9 — Pre-flight + ingest polish
 
-#### `B-STACK-10` `tiktoken` pre-flight cost estimation
+#### `B-STACK-10` `tiktoken` pre-flight cost estimation — **SHIPPED 2026-05-06**
+
+**Status**: shipped. `estimate_run_cost(scanned_files, config) -> CostEstimate` lives at `src/lxd/ingest/budget.py`. Embedding tokens are estimated at `ceil(corpus_text_bytes / 4)` (a safe upper bound on natural-prose corpora). LLM cost is bounded by `ingest_budget.max_llm_calls_per_run × (prompt + completion) tokens`, so the user sees a worst-case ceiling rather than an unbounded "infinity"; when no cap is set, the LLM total is reported as 0 and the CLI surfaces a "no cap configured" note. OpenAI list prices are encoded in a hard-coded table commented with the re-check date (2026-05-06): text-embedding-3-small ($0.020/M), text-embedding-3-large ($0.130/M), gpt-4o-mini input/output ($0.150/$0.600 per M). Wired into `pixi run preflight` as a new "Estimated run cost" panel after the existing health checks. 8 unit tests cover token math, image-file exclusion, USD calculation, no-cap fallback, total summation, and unknown-model graceful default.
+
+(Original audit note retained below for reference.)
+
 
 **Why**: Pairs naturally with `[#11]` ingest budget cap. Today the budget is on **count of LLM calls**; with `tiktoken` we can estimate **token cost** before running, so `pixi run preflight` shows "this ingest will require ~12.5M embedding tokens (~$0.20 at text-embedding-3-small) and ~8M LLM tokens (~$1.60 at gpt-4o-mini)". User can refuse before paying.
 

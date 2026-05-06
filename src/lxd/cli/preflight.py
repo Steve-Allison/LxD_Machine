@@ -27,7 +27,9 @@ from pathlib import Path
 import typer
 
 from lxd.app.bootstrap import bootstrap_app
+from lxd.ingest.budget import estimate_run_cost
 from lxd.ingest.embedding_cache import open_cache_table
+from lxd.ingest.pipeline.orchestrator import build_ingest_plan
 from lxd.stores.lancedb import connect_lancedb, open_chunk_table
 from lxd.stores.schema import (
     CURRENT_SCHEMA_VERSION,
@@ -122,6 +124,34 @@ def preflight_command(
 
     for line in notes:
         typer.echo(line)
+
+    if context.config.paths.corpus_path.exists() and context.config.paths.ontology_path.exists():
+        try:
+            plan = build_ingest_plan(context.config)
+            estimate = estimate_run_cost(plan.scanned_files, context.config)
+        except (FileNotFoundError, ValueError, OSError) as exc:
+            issues.append(f"cost-estimate scan failed: {exc}")
+        else:
+            typer.echo("")
+            typer.echo("Estimated run cost (upper bound — review before pressing go):")
+            typer.echo(
+                f"  Embedding: {estimate.text_file_count} text files, "
+                f"~{estimate.embedding_tokens_est:,} tokens at {estimate.embedding_model} "
+                f"(~${estimate.embedding_usd_est:.2f})"
+            )
+            if estimate.llm_call_cap is None:
+                typer.echo(
+                    "  LLM (relation extraction): no cap configured "
+                    "— cost ceiling unknown. Set "
+                    "`ingest_budget.max_llm_calls_per_run` to bound spend."
+                )
+            else:
+                typer.echo(
+                    f"  LLM (relation extraction): up to {estimate.llm_call_cap} calls × "
+                    f"~{estimate.llm_prompt_tokens_per_call + estimate.llm_completion_tokens_per_call} "
+                    f"tokens at {estimate.llm_model} (~${estimate.llm_usd_est:.2f})"
+                )
+            typer.echo(f"  Total upper bound: ~${estimate.total_usd_est:.2f}")
 
     if issues:
         typer.echo("")
