@@ -641,7 +641,12 @@ that does not match the actual need.
 
 ### Tier 10 — Test infrastructure
 
-#### `B-TEST-1` Synthesis end-to-end test
+#### `B-TEST-1` Synthesis end-to-end test — **SHIPPED 2026-05-06**
+
+**Status**: shipped. `tests/integration/test_synthesis_e2e.py` calls real `synthesize_answer` against the local Ollama server with a seeded `EvidenceChunk` and asserts `answer_status == ANSWERED` plus a substring match against expected entity terms. Marked `live` + `integration`; pre-flight reachability probe (`socket.create_connection` with 1 s timeout) returns `pytest.skip` rather than fail when Ollama is not running. Pyproject registers the new `live` marker; `pixi run test` filters it out (`-m 'not live'`); new `pixi run test-live` invokes only `live` tests with verbose output. Default suite: 305 passed, 1 deselected (the new live test) — exactly as designed.
+
+(Original audit note retained below for reference.)
+
 
 **Why**: LLM is mocked everywhere in the test suite. No test verifies the synthesis prompt produces sensible output against a real local Ollama. Pair with an opt-in "live" pytest marker; runs against a local Ollama instance when `pixi run pytest -m live` is invoked.
 
