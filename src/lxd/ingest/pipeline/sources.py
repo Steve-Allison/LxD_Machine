@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
+
 from lxd.domain.status import LifecycleStatus, RetrievalStatus
 from lxd.ingest.budget import IngestBudgetTracker
 from lxd.ingest.chunking import chunk_document
@@ -35,6 +37,8 @@ def build_source_records(
     budget_tracker: IngestBudgetTracker,
     cache_table: object | None = None,
     contextual_summary_table: object | None = None,
+    ambiguous_map: dict[str, list[str]] | None = None,
+    disambiguator: Callable[[str, list[str]], str | None] | None = None,
 ) -> tuple[
     list[ChunkRecord],
     list[MentionRecord],
@@ -125,7 +129,12 @@ def build_source_records(
                 start_char=mention.start_char,
                 end_char=mention.end_char,
             )
-            for mention in detect_mentions(chunk.text, automaton)
+            for mention in detect_mentions(
+                chunk.text,
+                automaton,
+                ambiguous_map=ambiguous_map,
+                disambiguator=disambiguator,
+            )
         )
         mention_records.extend(chunk_mentions)
         will_call_llm = len(

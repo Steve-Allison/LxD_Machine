@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from collections.abc import Callable
+from dataclasses import dataclass, replace
 from operator import attrgetter
 from typing import Any
 
@@ -20,12 +21,34 @@ class Mention:
     end_char: int
 
 
-def detect_mentions(text: str, automaton: Any) -> list[Mention]:
+def detect_mentions(
+    text: str,
+    automaton: Any,
+    *,
+    ambiguous_map: dict[str, list[str]] | None = None,
+    disambiguator: Callable[[str, list[str]], str | None] | None = None,
+    context_radius: int = 200,
+) -> list[Mention]:
     """Detect ontology term mentions in text.
 
     Args:
         text: Input text to process.
         automaton: Aho-Corasick automaton built from matcher terms.
+        ambiguous_map: Optional ``{normalized_term: [entity_id, ...]}``
+            for surface forms that map to >1 candidate (built once at
+            ontology load via
+            :func:`lxd.ontology.ambiguity.ambiguous_surface_forms_with_candidates`).
+            When provided alongside ``disambiguator``, ambiguous matches
+            get re-resolved via the surrounding context window. Both
+            ``ambiguous_map`` and ``disambiguator`` must be set together;
+            either one missing falls back to the upstream first-match
+            policy (Aho-Corasick last-write-wins payload).
+        disambiguator: Callable ``(window_text, candidates) -> entity_id |
+            None``. ``None`` return means "could not decide"; the mention
+            keeps the upstream entity_id.
+        context_radius: ±characters of context around the ambiguous
+            mention fed to the disambiguator. ±200 by default (B-KG-2
+            spec).
 
     Returns:
         Non-overlapping mention spans sorted by position.
@@ -44,7 +67,51 @@ def detect_mentions(text: str, automaton: Any) -> list[Mention]:
                 end_char=end_index + 1,
             )
         )
-    return _resolve_overlaps(matches)
+    resolved = _resolve_overlaps(matches)
+    if ambiguous_map and disambiguator is not None:
+        resolved = _apply_disambiguator(
+            resolved,
+            text=normalized,
+            ambiguous_map=ambiguous_map,
+            disambiguator=disambiguator,
+            context_radius=context_radius,
+        )
+    return resolved
+
+
+def _apply_disambiguator(
+    mentions: list[Mention],
+    *,
+    text: str,
+    ambiguous_map: dict[str, list[str]],
+    disambiguator: Callable[[str, list[str]], str | None],
+    context_radius: int,
+) -> list[Mention]:
+    """Re-assign ``entity_id`` on ambiguous mentions using the disambiguator.
+
+    Mentions whose surface form is unambiguous, or whose disambiguator
+    returns ``None``, are left unchanged. The structural fields
+    (``start_char``, ``end_char``, ``surface_form``, ``term_source``)
+    are always preserved so chunk-level alignment is unaffected by the
+    re-assignment.
+    """
+    out: list[Mention] = []
+    for mention in mentions:
+        candidates = ambiguous_map.get(mention.surface_form)
+        if not candidates or len(candidates) < 2:
+            out.append(mention)
+            continue
+        window = text[
+            max(0, mention.start_char - context_radius) : min(
+                len(text), mention.end_char + context_radius
+            )
+        ]
+        chosen = disambiguator(window, candidates)
+        if chosen is None or chosen == mention.entity_id:
+            out.append(mention)
+            continue
+        out.append(replace(mention, entity_id=chosen))
+    return out
 
 
 def _resolve_overlaps(matches: list[Mention]) -> list[Mention]:

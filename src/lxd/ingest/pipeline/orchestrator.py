@@ -32,6 +32,8 @@ from lxd.ingest.pipeline.sources import build_manifest_record, build_source_reco
 from lxd.ingest.relations import build_valid_predicates
 from lxd.ingest.scanner import ScannedCorpusFile, scan_corpus
 from lxd.ingest.wiki_relations import build_slug_index, derive_wiki_link_relations
+from lxd.ontology.ambiguity import ambiguous_surface_forms_with_candidates
+from lxd.ontology.disambiguator import make_disambiguator
 from lxd.ontology.loader import OntologyLoadResult, load_ontology
 from lxd.ontology.matcher import build_or_load_automaton
 from lxd.settings.models import RuntimeConfig
@@ -149,12 +151,21 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
         plan.ontology.matcher_records,
         cache_dir=config.paths.data_path / "matcher_cache",
     )
+    ambiguous_map = ambiguous_surface_forms_with_candidates(plan.ontology.matcher_records)
     valid_predicates = build_valid_predicates(plan.ontology.relation_records)
     slug_index = build_slug_index(plan.ontology.entity_definitions)
     budget_tracker = IngestBudgetTracker(config.ingest_budget)
     wiki_dangling_total: set[str] = set()
     wiki_pages_without_subject_total: set[str] = set()
     store_paths = build_store_paths(config.paths.data_path)
+    # B-KG-2: only stand up the embedding-disambiguation lane when the
+    # ontology actually has ambiguous surface forms. The factory creates
+    # an empty `entity_embeddings` LanceDB table as a side effect, which
+    # is wasted work (and disturbs cache-hit tests) on ontologies that
+    # have no ambiguous terms at all.
+    disambiguator = (
+        make_disambiguator(config=config, store_paths=store_paths) if ambiguous_map else None
+    )
     sqlite_connection = connect_sqlite(store_paths.sqlite_path)
     try:
         initialize_schema(sqlite_connection)
@@ -406,6 +417,8 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                             budget_tracker=budget_tracker,
                             cache_table=cache_table,
                             contextual_summary_table=contextual_summary_table,
+                            ambiguous_map=ambiguous_map,
+                            disambiguator=disambiguator,
                         )
                         cache_hit_total += file_cache_hits
                         cache_miss_total += file_cache_misses

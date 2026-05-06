@@ -456,7 +456,20 @@ that does not match the actual need.
 
 ---
 
-#### `B-KG-2` Entity disambiguation (fuzzy + embedding-aware)
+#### `B-KG-2` Entity disambiguation (fuzzy + embedding-aware) — **SHIPPED 2026-05-06**
+
+**Status**: shipped. Three new modules:
+
+- `src/lxd/ontology/ambiguity.py` — `ambiguous_surface_forms_with_candidates(records)` returns `{normalized_term: sorted [entity_id]}` for terms that map to >1 entity. Surface forms with one candidate are excluded so the disambiguation lane never runs for them (zero overhead on unambiguous mentions).
+- `src/lxd/ontology/disambiguator.py` — `make_disambiguator(config, store_paths)` returns a callable `(window_text, candidates) -> entity_id | None` bound to the live `entity_embeddings` LanceDB table. Returns `None` (i.e. "no disambiguation possible") when (a) the lancedb path doesn't exist, (b) the entity table doesn't exist (uses `database.open_table` *without* falling through to creation, so the factory has zero side effects), or (c) the table is empty. This preserves the "always-on, no toggle" rule (`feedback_mandatory_features`) while degrading gracefully on a fresh ingest before `pixi run build-graph` has populated the embeddings.
+- `src/lxd/ingest/mentions.py` — `detect_mentions(text, automaton, *, ambiguous_map=None, disambiguator=None, context_radius=200)` accepts the optional disambiguation lane; for ambiguous matches it slices a ±context_radius window around the mention and asks the disambiguator to pick. `None` from the disambiguator preserves the upstream entity_id (Aho-Corasick last-write-wins).
+
+Wired into `ingest/pipeline/orchestrator.py:run_ingest`: `ambiguous_map` is computed once per run from the ontology records; the disambiguator factory is *only* invoked when `ambiguous_map` is non-empty (avoids unnecessary LanceDB connection work on ontologies without ambiguous terms). 7 unit tests cover the ambiguous-map shape, sorted-candidate determinism, disambiguator-fires-only-on-ambiguous-terms, None-return preserves-upstream, no-op when ambiguous_map is None, and `context_window` clipping/inclusion.
+
+Build dependency: disambiguation lane requires `entity_embeddings` to be populated (built by `pixi run build-graph`). On a freshly ingested corpus the lane silently no-ops.
+
+(Original audit note retained below for reference.)
+
 
 **Why**: Aho-Corasick is exact-match-only. Acronyms with multiple expansions (e.g. "ID" = instructional design / identifier) resolve first-rule-wins. A contextual disambiguator using surrounding chunk text would resolve ambiguity correctly.
 
