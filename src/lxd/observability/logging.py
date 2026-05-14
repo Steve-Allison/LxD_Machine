@@ -27,6 +27,7 @@ Key constraints:
 from __future__ import annotations
 
 import logging
+import sys
 import threading
 import time
 from collections.abc import Generator, MutableMapping
@@ -87,7 +88,10 @@ def configure_logging(
     structlog.configure(
         processors=processors,
         wrapper_class=structlog.make_filtering_bound_logger(numeric_level),
-        logger_factory=structlog.PrintLoggerFactory(),
+        # Route structlog records to stderr. Required for MCP stdio servers
+        # where stdout is reserved for JSON-RPC; otherwise log lines collide
+        # with the protocol stream and Claude Desktop rejects them as malformed.
+        logger_factory=structlog.PrintLoggerFactory(file=sys.stderr),
         cache_logger_on_first_use=True,
     )
 
