@@ -1,3 +1,5 @@
+@AGENTS.md
+
 # LxD Machine
 
 An **Instructional Designer / Learning Experience Designer in RAG format**. The corpus encodes how to teach — pedagogical and delivery best practice grounded in academic theory and industry evidence. Instructional design frameworks, cognitive load theory, assessment design, modality selection, delivery formats — everything needed to design effective learning for any topic in any modality.
