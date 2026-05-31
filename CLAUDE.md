@@ -6,6 +6,23 @@ An **Instructional Designer / Learning Experience Designer in RAG format**. The 
 
 Built for Adobe field enablement. The system ingests a mixed-format corpus (Markdown, Docling JSON, PNGs), builds an ontology-driven knowledge graph with entity recognition, relation extraction, community detection, and centrality analysis, and exposes retrieval and graph-augmented synthesis via 20 MCP tools. Everything runs locally; MCP is the only external interface.
 
+## Claude Code conventions
+
+This project's `.claude/` directory carries scoped guidance that auto-loads when relevant files are touched. Reach for these before redefining anything.
+
+| Layer | Where | Triggers / use |
+| --- | --- | --- |
+| Rules | `.claude/rules/` | `ingest-discipline`, `stores-and-paths`, `mandatory-features`, `citations-and-evidence`, `mcp-tools-readonly`, `project-conventions`, `python-style`, `testing` (path-scoped via frontmatter) |
+| Skills | `.claude/skills/` | `/lxd-status`, `/lxd-ingest`, `/lxd-rebuild`, `/lxd-add-mcp-tool` |
+| Agents | `.claude/agents/` | `ingest-pipeline-auditor`, `mcp-tool-reviewer`, `schema-migration-reviewer` (read-only audits) |
+| Hooks | `.claude/hooks/` | `session-start` (orient), `protect-critical` (blocks edits to `.env` / lockfiles / DBs / golden tests), `pre-bash-destructive-ingest` (warns on `ingest --full` / `build-graph --full` / `rm -rf data`), `instructions-loaded` (logs path-scoped rules per session) |
+| Memory | `.claude/memory/` | Project context + `feedback_preflight_is_a_gate` (the rule behind today's discipline) |
+
+Two non-negotiables baked into these:
+
+- **Preflight is a gate, never the flight.** `pixi run preflight` / `pixi run status` / `pixi run graph-status` always pause for explicit user go-ahead before the costed step runs.
+- **No PRs in this workflow.** Stage → commit → push directly; `git-branch-lifecycle` still applies (branch for non-trivial work, ff-merge into `main`, delete the branch after).
+
 ## Architecture
 
 ```text
