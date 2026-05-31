@@ -205,11 +205,26 @@ class RerankerConfig(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    backend: Literal["llama_cpp"] = "llama_cpp"
+    backend: Literal["llama_cpp", "colbert"] = "llama_cpp"
     url: HttpUrl | None = None
     endpoint: str = "/v1/rerank"
     timeout_secs: int = Field(default=30, gt=0)
     launch: RerankerLaunchConfig | None = None
+    colbert_model: str = Field(
+        default="BAAI/bge-m3",
+        description=(
+            "HuggingFace model id used by the ``colbert`` backend for "
+            "late-interaction (multi-vector) reranking. ``BAAI/bge-m3`` "
+            "produces token-level vectors that the reranker scores via "
+            "MaxSim — the same mechanism ColBERT v2 uses."
+        ),
+    )
+    colbert_max_length: int = Field(
+        default=512,
+        gt=0,
+        le=8192,
+        description="Token cap per document when encoding for late-interaction scoring.",
+    )
 
     @model_validator(mode="after")
     def _validate_launch_contract(self) -> Self:

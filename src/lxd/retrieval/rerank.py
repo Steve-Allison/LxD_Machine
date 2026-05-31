@@ -11,7 +11,7 @@ from dataclasses import dataclass, replace
 from datetime import UTC, datetime
 from operator import itemgetter
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, assert_never
 
 import httpx
 
@@ -75,6 +75,37 @@ def rerank_chunks(
     """
     if not candidates:
         return RerankOutcome(ranked=[], warnings=[], applied=False)
+
+    backend = config.reranker.backend
+    if backend == "colbert":
+        return _rerank_via_colbert(question, candidates, config)
+    if backend == "llama_cpp":
+        return _rerank_via_llama_cpp(question, candidates, config)
+    assert_never(backend)
+
+
+def _rerank_via_colbert(
+    question: str,
+    candidates: list[RankedChunk],
+    config: RuntimeConfig,
+) -> RerankOutcome:
+    """Run the in-process ColBERT-style late-interaction reranker."""
+    from lxd.retrieval.colbert_reranker import colbert_rerank
+
+    try:
+        scored = colbert_rerank(question=question, candidates=candidates, config=config)
+    except RuntimeError as exc:
+        return RerankOutcome(ranked=candidates, warnings=[str(exc)], applied=False)
+    reranked = [replace(s.chunk, score=s.score) for s in scored]
+    return RerankOutcome(ranked=reranked, warnings=[], applied=True)
+
+
+def _rerank_via_llama_cpp(
+    question: str,
+    candidates: list[RankedChunk],
+    config: RuntimeConfig,
+) -> RerankOutcome:
+    """Run the existing llama.cpp HTTP cross-encoder reranker."""
     supported, warning = probe_reranker(config)
     if not supported:
         return RerankOutcome(
