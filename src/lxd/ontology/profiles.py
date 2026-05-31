@@ -212,8 +212,15 @@ def build_community_reports(
     centrality: dict[str, CentralityScores],
     *,
     force: bool = False,
+    community_level: int = 0,
+    parent_of: dict[int, int | None] | None = None,
 ) -> int:
-    """Build deterministic community reports.
+    """Build deterministic community reports for one level of the hierarchy.
+
+    ``community_level`` defaults to 0 (finest) — callers that produced a
+    hierarchical partition pass the level and a ``parent_of`` map so each
+    report records its parent. For single-level builds (default), the parent
+    field is null.
 
     Returns:
         Number of reports built.
@@ -225,6 +232,7 @@ def build_community_reports(
 
     timestamp = datetime.now(UTC).isoformat()
     reports_built = 0
+    parent_lookup = parent_of or {}
 
     for community_id, member_ids in communities.items():
         sorted_members = sorted(member_ids)
@@ -297,7 +305,8 @@ def build_community_reports(
 
         record = CommunityReportRecord(
             community_id=community_id,
-            community_level=0,
+            community_level=community_level,
+            parent_community_id=parent_lookup.get(community_id),
             member_count=len(member_ids),
             member_entity_ids_json=json.dumps(sorted_members, separators=(",", ":")),
             deterministic_summary=deterministic_summary,

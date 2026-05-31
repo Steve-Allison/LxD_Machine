@@ -298,7 +298,13 @@ class EntityCommunityRecord:
 
 @dataclass(frozen=True, slots=True)
 class CommunityReportRecord:
-    """Summary report for one community."""
+    """Summary report for one community.
+
+    ``parent_community_id`` anchors hierarchical communities: a level-N
+    community's parent is the level-(N+1) community that contains it.
+    ``None`` for top-level communities (or for the single-level case where
+    no hierarchy was built).
+    """
 
     community_id: int
     community_level: int
@@ -311,6 +317,7 @@ class CommunityReportRecord:
     intra_community_edge_count: int
     source_hash: str
     generated_at: str
+    parent_community_id: int | None = None
 
 
 @dataclass(frozen=True, slots=True)

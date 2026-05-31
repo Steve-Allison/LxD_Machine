@@ -21,7 +21,11 @@ from lxd.ingest.claims import (
     submit_claims_batch,
 )
 from lxd.ingest.llm_client import poll_batch as _poll_batch
-from lxd.ontology.communities import detect_communities, persist_community_assignments
+from lxd.ontology.communities import (
+    CommunityDetectionResult,
+    detect_hierarchical_communities,
+    persist_hierarchical_communities,
+)
 from lxd.ontology.entity_graph import build_combined_entity_graph
 from lxd.ontology.evidence import consolidate_relations
 from lxd.ontology.loader import load_ontology
@@ -215,6 +219,7 @@ def build_graph_command(
 
         # Phase: communities
         community_assignments: dict[str, int] = {}
+        community_levels: list[CommunityDetectionResult] | None = None
         if "communities" in phases_to_run:
             if combined_result is None:
                 _console.print(
@@ -227,18 +232,24 @@ def build_graph_command(
                 )
 
             update_graph_build_phase(connection, run_id=run_id, current_phase="communities")
-            _console.print("[bold]Phase: community detection[/bold]")
-            detection = detect_communities(combined_result.graph, config)
-            community_assignments = detection.assignments
-            persist_community_assignments(connection, community_assignments)
+            _console.print("[bold]Phase: hierarchical community detection[/bold]")
+            community_levels = detect_hierarchical_communities(combined_result.graph, config)
+            persist_hierarchical_communities(connection, community_levels)
+            level_zero = community_levels[0] if community_levels else None
+            community_assignments = level_zero.assignments if level_zero is not None else {}
             delete_stale_community_reports(connection)
+            level_counts = ",".join(str(lvl.community_count) for lvl in community_levels)
+            top_level_count = community_levels[-1].community_count if community_levels else 0
             update_graph_build_phase(
                 connection,
                 run_id=run_id,
                 current_phase="communities",
-                communities_detected=detection.community_count,
+                communities_detected=top_level_count,
             )
-            notes.append(f"communities={detection.community_count} algorithm={detection.algorithm}")
+            algorithm_name = level_zero.algorithm if level_zero is not None else "n/a"
+            notes.append(
+                f"communities=[{level_counts}] (finest→coarsest) algorithm={algorithm_name}"
+            )
 
         # Phase: entity_profiles (includes entity embeddings)
         if "entity_profiles" in phases_to_run or "profiles" in phases_to_run:
@@ -307,20 +318,29 @@ def build_graph_command(
                 run_id=run_id,
                 current_phase="community_reports",
             )
-            _console.print("[bold]Phase: community reports[/bold]")
-            reports_built = build_community_reports(
-                connection,
-                community_assignments,
-                combined_result.centrality,
-                force=full,
+            _console.print("[bold]Phase: community reports (per hierarchy level)[/bold]")
+            levels_to_report = _community_levels_for_reports(
+                community_levels=community_levels,
+                connection=connection,
+                level_zero_assignments=community_assignments,
             )
+            reports_built = 0
+            for level_assignments, level_idx, parent_of in levels_to_report:
+                reports_built += build_community_reports(
+                    connection,
+                    level_assignments,
+                    combined_result.centrality,
+                    force=full,
+                    community_level=level_idx,
+                    parent_of=parent_of,
+                )
             update_graph_build_phase(
                 connection,
                 run_id=run_id,
                 current_phase="community_reports",
                 community_reports_built=reports_built,
             )
-            notes.append(f"community_reports={reports_built}")
+            notes.append(f"community_reports={reports_built} levels={len(levels_to_report)}")
 
         # Optional: LLM enrichment
         if enrich and (_LLM_ENRICHMENT_PHASE in phases_to_run or phase is None):
@@ -403,6 +423,78 @@ def graph_status_command(
         table.add_row("Finished at", state.finished_at or "in progress")
 
     _console.print(table)
+
+
+def _community_levels_for_reports(
+    *,
+    community_levels: list[CommunityDetectionResult] | None,
+    connection: sqlite3.Connection,
+    level_zero_assignments: dict[str, int],
+) -> list[tuple[dict[str, int], int, dict[int, int | None]]]:
+    """Return the per-level ``(assignments, level, parent_of)`` tuples for report build.
+
+    Three sources, in priority order:
+
+    1. ``community_levels`` from the in-process hierarchical detection — used
+       when the ``communities`` phase ran in the same invocation.
+    2. ``entity_communities`` table grouped by ``community_level`` — used when
+       ``community_reports`` runs as a standalone phase against a previously
+       persisted hierarchy.
+    3. Fallback to ``level_zero_assignments`` as a single-level partition —
+       only fires when neither (1) nor (2) yielded any levels (legacy DB
+       state).
+    """
+    if community_levels:
+        return [
+            (level.assignments, level.community_level, level.parent_of)
+            for level in community_levels
+        ]
+
+    rows = connection.execute(
+        "SELECT entity_id, community_id, community_level FROM entity_communities ORDER BY community_level"
+    ).fetchall()
+    if not rows:
+        return [(level_zero_assignments, 0, {})]
+
+    by_level: dict[int, dict[str, int]] = {}
+    for row in rows:
+        level = int(row["community_level"])
+        by_level.setdefault(level, {})[str(row["entity_id"])] = int(row["community_id"])
+
+    ordered = sorted(by_level.items())
+    result: list[tuple[dict[str, int], int, dict[int, int | None]]] = []
+    for index, (level, assignments) in enumerate(ordered):
+        if index + 1 < len(ordered):
+            coarser_assignments = ordered[index + 1][1]
+            parent_of: dict[int, int | None] = _reconstruct_parent_of(
+                assignments, coarser_assignments
+            )
+        else:
+            parent_of = {}
+        result.append((assignments, level, parent_of))
+    return result
+
+
+def _reconstruct_parent_of(
+    fine_assignments: dict[str, int],
+    coarse_assignments: dict[str, int],
+) -> dict[int, int | None]:
+    """Majority-vote parent reconstruction from two assignment maps."""
+    from collections import Counter
+
+    votes: dict[int, list[int]] = {}
+    for entity_id, fine_id in fine_assignments.items():
+        coarse_id = coarse_assignments.get(entity_id)
+        if coarse_id is None:
+            continue
+        votes.setdefault(fine_id, []).append(coarse_id)
+    parent_of: dict[int, int | None] = {}
+    for fine_id, ballots in votes.items():
+        if not ballots:
+            parent_of[fine_id] = None
+            continue
+        parent_of[fine_id] = Counter(ballots).most_common(1)[0][0]
+    return parent_of
 
 
 def _dry_run_report(connection: sqlite3.Connection, config: RuntimeConfig) -> None:

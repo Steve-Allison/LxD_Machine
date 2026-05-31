@@ -195,18 +195,22 @@ CREATE TABLE IF NOT EXISTS entity_profiles (
 );
 
 CREATE TABLE IF NOT EXISTS entity_communities (
-    entity_id TEXT PRIMARY KEY,
+    entity_id TEXT NOT NULL,
     community_id INTEGER NOT NULL,
     community_level INTEGER NOT NULL DEFAULT 0,
     modularity_class TEXT,
-    assigned_at TEXT NOT NULL
+    assigned_at TEXT NOT NULL,
+    PRIMARY KEY (entity_id, community_level)
 );
-CREATE INDEX IF NOT EXISTS idx_entity_communities_community_id
-ON entity_communities(community_id);
+CREATE INDEX IF NOT EXISTS idx_entity_communities_community_level
+ON entity_communities(community_id, community_level);
+CREATE INDEX IF NOT EXISTS idx_entity_communities_level
+ON entity_communities(community_level);
 
 CREATE TABLE IF NOT EXISTS community_reports (
-    community_id INTEGER PRIMARY KEY,
+    community_id INTEGER NOT NULL,
     community_level INTEGER NOT NULL DEFAULT 0,
+    parent_community_id INTEGER,
     member_count INTEGER NOT NULL,
     member_entity_ids_json TEXT NOT NULL,
     deterministic_summary TEXT NOT NULL,
@@ -215,8 +219,13 @@ CREATE TABLE IF NOT EXISTS community_reports (
     top_claims_json TEXT NOT NULL DEFAULT '[]',
     intra_community_edge_count INTEGER NOT NULL DEFAULT 0,
     source_hash TEXT NOT NULL,
-    generated_at TEXT NOT NULL
+    generated_at TEXT NOT NULL,
+    PRIMARY KEY (community_id, community_level)
 );
+CREATE INDEX IF NOT EXISTS idx_community_reports_level
+ON community_reports(community_level);
+CREATE INDEX IF NOT EXISTS idx_community_reports_parent
+ON community_reports(parent_community_id, community_level);
 
 CREATE TABLE IF NOT EXISTS relations (
     relation_id TEXT PRIMARY KEY,

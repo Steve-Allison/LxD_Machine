@@ -96,9 +96,12 @@ def entity_profile_from_row(row: sqlite3.Row) -> EntityProfileRecord:
 
 
 def community_report_from_row(row: sqlite3.Row) -> CommunityReportRecord:
+    row_keys = set(row.keys())
+    parent_raw = row["parent_community_id"] if "parent_community_id" in row_keys else None
     return CommunityReportRecord(
         community_id=int(row["community_id"]),
         community_level=int(row["community_level"]),
+        parent_community_id=int(parent_raw) if parent_raw is not None else None,
         member_count=int(row["member_count"]),
         member_entity_ids_json=str(row["member_entity_ids_json"]),
         deterministic_summary=str(row["deterministic_summary"]),

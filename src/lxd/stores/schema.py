@@ -36,7 +36,7 @@ from lxd.stores._base_ddl import BASE_SCHEMA_DDL
 
 Migration = Callable[[sqlite3.Connection], None]
 
-CURRENT_SCHEMA_VERSION = 7
+CURRENT_SCHEMA_VERSION = 8
 
 
 class SchemaIntegrityError(sqlite3.DatabaseError):
@@ -431,6 +431,70 @@ def _migration_0007_circuit_breaker_state(connection: sqlite3.Connection) -> Non
     )
 
 
+def _migration_0008_hierarchical_communities(connection: sqlite3.Connection) -> None:
+    """Migrate community tables to composite PK on ``(community_id, community_level)``.
+
+    The pre-v8 schema had a single ``community_id PRIMARY KEY`` on
+    ``community_reports`` and a single ``entity_id PRIMARY KEY`` on
+    ``entity_communities``, which made hierarchical (multi-level) clustering
+    impossible — the same numeric community_id could not exist at multiple
+    levels, and a single entity could not belong to communities at multiple
+    resolutions.
+
+    Adds:
+      - composite PK ``(community_id, community_level)`` on
+        ``community_reports`` plus a ``parent_community_id`` column to
+        anchor the hierarchy.
+      - composite PK ``(entity_id, community_level)`` on
+        ``entity_communities`` so each entity holds one assignment per level.
+      - new indexes for level-scoped queries.
+
+    Destructive: drops existing community rows. The knowledge graph build
+    is rebuildable end-to-end via ``pixi run build-graph --full`` so this is
+    recoverable; the migration framework's auto-backup gives the operator a
+    rollback target.
+    """
+    connection.executescript(
+        """
+        DROP TABLE IF EXISTS entity_communities;
+        DROP TABLE IF EXISTS community_reports;
+
+        CREATE TABLE entity_communities (
+            entity_id TEXT NOT NULL,
+            community_id INTEGER NOT NULL,
+            community_level INTEGER NOT NULL DEFAULT 0,
+            modularity_class TEXT,
+            assigned_at TEXT NOT NULL,
+            PRIMARY KEY (entity_id, community_level)
+        );
+        CREATE INDEX idx_entity_communities_community_level
+            ON entity_communities(community_id, community_level);
+        CREATE INDEX idx_entity_communities_level
+            ON entity_communities(community_level);
+
+        CREATE TABLE community_reports (
+            community_id INTEGER NOT NULL,
+            community_level INTEGER NOT NULL DEFAULT 0,
+            parent_community_id INTEGER,
+            member_count INTEGER NOT NULL,
+            member_entity_ids_json TEXT NOT NULL,
+            deterministic_summary TEXT NOT NULL,
+            llm_summary TEXT,
+            top_entities_json TEXT NOT NULL DEFAULT '[]',
+            top_claims_json TEXT NOT NULL DEFAULT '[]',
+            intra_community_edge_count INTEGER NOT NULL DEFAULT 0,
+            source_hash TEXT NOT NULL,
+            generated_at TEXT NOT NULL,
+            PRIMARY KEY (community_id, community_level)
+        );
+        CREATE INDEX idx_community_reports_level
+            ON community_reports(community_level);
+        CREATE INDEX idx_community_reports_parent
+            ON community_reports(parent_community_id, community_level);
+        """
+    )
+
+
 _MIGRATIONS: dict[int, Migration] = {
     1: _migration_0001_baseline,
     2: _migration_0002_drop_chunk_vector_json,
@@ -439,6 +503,7 @@ _MIGRATIONS: dict[int, Migration] = {
     5: _migration_0005_ingest_run_telemetry,
     6: _migration_0006_chunk_rows_wiki_metadata,
     7: _migration_0007_circuit_breaker_state,
+    8: _migration_0008_hierarchical_communities,
 }
 
 

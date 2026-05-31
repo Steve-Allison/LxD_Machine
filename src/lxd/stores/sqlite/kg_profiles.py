@@ -186,11 +186,15 @@ def replace_entity_communities(
 
 
 def load_entity_community(
-    connection: sqlite3.Connection, entity_id: str
+    connection: sqlite3.Connection, entity_id: str, *, community_level: int = 0
 ) -> EntityCommunityRecord | None:
-    """Load community assignment for one entity."""
+    """Load community assignment for one entity at the given level (default 0)."""
     row = connection.execute(
-        "SELECT * FROM entity_communities WHERE entity_id = ?", (entity_id,)
+        """
+        SELECT * FROM entity_communities
+        WHERE entity_id = ? AND community_level = ?
+        """,
+        (entity_id, community_level),
     ).fetchone()
     if row is None:
         return None
@@ -203,29 +207,55 @@ def load_entity_community(
     )
 
 
-def load_community_members(connection: sqlite3.Connection, community_id: int) -> list[str]:
-    """Return entity IDs belonging to a community."""
+def load_all_entity_communities(
+    connection: sqlite3.Connection, *, community_level: int = 0
+) -> list[EntityCommunityRecord]:
+    """Load every entity assignment at a given level — primarily for building hierarchies."""
     rows = connection.execute(
-        "SELECT entity_id FROM entity_communities WHERE community_id = ?",
-        (community_id,),
+        "SELECT * FROM entity_communities WHERE community_level = ?",
+        (community_level,),
+    ).fetchall()
+    return [
+        EntityCommunityRecord(
+            entity_id=str(row["entity_id"]),
+            community_id=int(row["community_id"]),
+            community_level=int(row["community_level"]),
+            modularity_class=optional_str(row["modularity_class"]),
+            assigned_at=str(row["assigned_at"]),
+        )
+        for row in rows
+    ]
+
+
+def load_community_members(
+    connection: sqlite3.Connection, community_id: int, *, community_level: int = 0
+) -> list[str]:
+    """Return entity IDs belonging to a community at the given level (default 0)."""
+    rows = connection.execute(
+        """
+        SELECT entity_id FROM entity_communities
+        WHERE community_id = ? AND community_level = ?
+        """,
+        (community_id, community_level),
     ).fetchall()
     return [str(row["entity_id"]) for row in rows]
 
 
 def upsert_community_report(connection: sqlite3.Connection, record: CommunityReportRecord) -> None:
-    """Insert or update a community report."""
+    """Insert or update a community report keyed by ``(community_id, community_level)``."""
     with connection:
         connection.execute(
             """
             INSERT INTO community_reports (
-                community_id, community_level, member_count, member_entity_ids_json,
+                community_id, community_level, parent_community_id,
+                member_count, member_entity_ids_json,
                 deterministic_summary, llm_summary,
                 top_entities_json, top_claims_json,
                 intra_community_edge_count, source_hash, generated_at
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ON CONFLICT(community_id) DO UPDATE SET
-                community_level = excluded.community_level,
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(community_id, community_level) DO UPDATE SET
+                parent_community_id = excluded.parent_community_id,
                 member_count = excluded.member_count,
                 member_entity_ids_json = excluded.member_entity_ids_json,
                 deterministic_summary = excluded.deterministic_summary,
@@ -239,6 +269,7 @@ def upsert_community_report(connection: sqlite3.Connection, record: CommunityRep
             (
                 record.community_id,
                 record.community_level,
+                record.parent_community_id,
                 record.member_count,
                 record.member_entity_ids_json,
                 record.deterministic_summary,
@@ -253,11 +284,15 @@ def upsert_community_report(connection: sqlite3.Connection, record: CommunityRep
 
 
 def load_community_report(
-    connection: sqlite3.Connection, community_id: int
+    connection: sqlite3.Connection, community_id: int, *, community_level: int = 0
 ) -> CommunityReportRecord | None:
-    """Load a single community report."""
+    """Load a single community report at the given level (default 0 = finest)."""
     row = connection.execute(
-        "SELECT * FROM community_reports WHERE community_id = ?", (community_id,)
+        """
+        SELECT * FROM community_reports
+        WHERE community_id = ? AND community_level = ?
+        """,
+        (community_id, community_level),
     ).fetchone()
     if row is None:
         return None
@@ -265,23 +300,33 @@ def load_community_report(
 
 
 def load_all_community_reports(
-    connection: sqlite3.Connection,
+    connection: sqlite3.Connection, *, community_level: int | None = None
 ) -> list[CommunityReportRecord]:
-    """Load all community reports."""
-    rows = connection.execute(
-        "SELECT * FROM community_reports ORDER BY member_count DESC"
-    ).fetchall()
+    """Load all community reports, optionally filtered by level."""
+    if community_level is None:
+        rows = connection.execute(
+            "SELECT * FROM community_reports ORDER BY community_level, member_count DESC"
+        ).fetchall()
+    else:
+        rows = connection.execute(
+            """
+            SELECT * FROM community_reports
+            WHERE community_level = ?
+            ORDER BY member_count DESC
+            """,
+            (community_level,),
+        ).fetchall()
     return [community_report_from_row(row) for row in rows]
 
 
 def delete_stale_community_reports(connection: sqlite3.Connection) -> int:
-    """Remove community reports whose community_id no longer exists in entity_communities."""
+    """Remove community reports whose ``(community_id, community_level)`` is gone."""
     with connection:
         cursor = connection.execute(
             """
             DELETE FROM community_reports
-            WHERE community_id NOT IN (
-                SELECT DISTINCT community_id FROM entity_communities
+            WHERE (community_id, community_level) NOT IN (
+                SELECT DISTINCT community_id, community_level FROM entity_communities
             )
             """
         )
@@ -294,11 +339,20 @@ def count_entity_profiles(connection: sqlite3.Connection) -> int:
     return int(row_value(row, "cnt"))
 
 
-def count_communities(connection: sqlite3.Connection) -> int:
-    """Return number of distinct communities."""
-    row = connection.execute(
-        "SELECT COUNT(DISTINCT community_id) AS cnt FROM entity_communities"
-    ).fetchone()
+def count_communities(connection: sqlite3.Connection, *, community_level: int | None = None) -> int:
+    """Return number of distinct communities, optionally scoped to one level."""
+    if community_level is None:
+        row = connection.execute(
+            "SELECT COUNT(DISTINCT community_id || ':' || community_level) AS cnt FROM entity_communities"
+        ).fetchone()
+    else:
+        row = connection.execute(
+            """
+            SELECT COUNT(DISTINCT community_id) AS cnt FROM entity_communities
+            WHERE community_level = ?
+            """,
+            (community_level,),
+        ).fetchone()
     return int(row_value(row, "cnt"))
 
 
