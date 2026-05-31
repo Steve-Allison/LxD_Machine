@@ -17,13 +17,14 @@ from __future__ import annotations
 
 import re
 from collections.abc import Iterator
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import ollama
 
 from lxd.domain.status import QueryAnswerStatus
 from lxd.ingest.llm_client import get_ollama_client
 from lxd.settings.models import RuntimeConfig
+from lxd.synthesis.citation_alignment import SentenceCitation, align_citations
 
 _THINK_BLOCK_PATTERN = re.compile(r"<think>.*?</think>", flags=re.DOTALL)
 
@@ -36,6 +37,13 @@ SYNTHESIS_PREAMBLE_BASE = (
     "Answer the question using only the evidence below.\n"
     "If the evidence is insufficient, say so plainly.\n"
     "Do not invent facts.\n"
+    "\n"
+    "Cite every assertion inline using ``[citation_label]`` markers placed\n"
+    "immediately after the sentence they support. Use the exact citation\n"
+    "label string from the evidence header — do not paraphrase, abbreviate,\n"
+    "or invent labels. A sentence may carry multiple markers (e.g.\n"
+    '"X is Y [chunk_a] [chunk_b]."). A sentence with no citable evidence\n'
+    "MUST end with no marker — never fabricate one to satisfy the format.\n"
 )
 SYNTHESIS_PREAMBLE_TRANSITIVE_SOURCES = (
     "\nEvidence chunks may include a ``Sources:`` line listing the underlying\n"
@@ -90,13 +98,21 @@ class EvidenceChunk:
 
 @dataclass(frozen=True, slots=True)
 class AnswerEnvelope:
-    """Final answer payload including citations and warnings."""
+    """Final answer payload including citations and warnings.
+
+    ``sentence_citations`` carries per-sentence attribution: each entry is
+    one sentence of ``answer_text`` plus the citation labels the model
+    attributed to it inline. Sentences with empty ``citation_labels``
+    are unattributed claims — surface them in the UI as a hallucination
+    risk signal.
+    """
 
     answer_status: QueryAnswerStatus
     answer_text: str
     citations: list[str]
     warnings: list[str]
     metadata: dict[str, object]
+    sentence_citations: list[SentenceCitation] = field(default_factory=list)
 
 
 @dataclass(frozen=True, slots=True)
@@ -173,6 +189,7 @@ def synthesize_answer(
         citations=citations,
         warnings=[],
         metadata={},
+        sentence_citations=align_citations(answer_text=answer_text, valid_labels=citations),
     )
 
 
@@ -238,6 +255,7 @@ def stream_synthesize_answer(
         citations=citations,
         warnings=[],
         metadata={"streamed": True},
+        sentence_citations=align_citations(answer_text=full_text, valid_labels=citations),
     )
 
 

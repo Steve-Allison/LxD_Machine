@@ -294,6 +294,20 @@ class GraphContextData(_Frozen):
     claims: list[GraphContextClaim] = Field(default_factory=list)
 
 
+class SentenceCitationView(_Frozen):
+    """One sentence + the citation labels supporting it (MCP-facing shape).
+
+    Mirrors :class:`lxd.synthesis.citation_alignment.SentenceCitation` but
+    lives in the MCP namespace so clients can import a typed model
+    alongside the rest of the MCP surface. Sentences with empty
+    ``citation_labels`` are unattributed claims — surface them in UIs as
+    a hallucination risk signal.
+    """
+
+    text: str
+    citation_labels: list[str] = Field(default_factory=list)
+
+
 class KnowledgeAnswer(_Frozen):
     """Full answer envelope from ``search_knowledge``."""
 
@@ -302,6 +316,14 @@ class KnowledgeAnswer(_Frozen):
     )
     answer_text: str
     citations: list[str] = Field(description="Citation labels referenced by the answer.")
+    sentence_citations: list[SentenceCitationView] = Field(
+        default_factory=list,
+        description=(
+            "Per-sentence attribution parsed from the inline ``[citation_label]`` "
+            "markers the synthesis preamble required. Empty ``citation_labels`` "
+            "on a sentence means the model could not attribute that claim."
+        ),
+    )
     warnings: list[str] = Field(default_factory=list)
     metadata: dict[str, Any] = Field(
         default_factory=dict,
@@ -315,6 +337,7 @@ class KnowledgeAnswerDeep(_Frozen):
     answer_status: str
     answer_text: str
     citations: list[str]
+    sentence_citations: list[SentenceCitationView] = Field(default_factory=list)
     warnings: list[str] = Field(default_factory=list)
     metadata: dict[str, Any] = Field(default_factory=dict)
     graph_context: GraphContextData

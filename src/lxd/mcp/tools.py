@@ -33,6 +33,7 @@ from lxd.mcp.models import (
     PathBetweenEntities,
     PathEdge,
     RelationEvidence,
+    SentenceCitationView,
     SimilarEntity,
     WeightedEdge,
     WeightedPath,
@@ -581,6 +582,10 @@ def search_knowledge_tool(
         answer_status=envelope.answer_status.value,
         answer_text=envelope.answer_text,
         citations=envelope.citations,
+        sentence_citations=[
+            SentenceCitationView(text=sc.text, citation_labels=sc.citation_labels)
+            for sc in envelope.sentence_citations
+        ],
         warnings=envelope.warnings,
         metadata=dict(envelope.metadata),
     )
@@ -643,6 +648,10 @@ def search_knowledge_deep_tool(
         answer_status=envelope.answer_status.value,
         answer_text=envelope.answer_text,
         citations=envelope.citations,
+        sentence_citations=[
+            SentenceCitationView(text=sc.text, citation_labels=sc.citation_labels)
+            for sc in envelope.sentence_citations
+        ],
         warnings=envelope.warnings,
         metadata=dict(envelope.metadata),
         graph_context=graph_data,
