@@ -12,7 +12,7 @@ import os
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, assert_never
 
 import httpx
 import ollama
@@ -400,6 +400,8 @@ def _call_with_fallback_sync(
             except _RELATION_LLM_ERRORS as exc:
                 _log.warning("relation_extraction_ollama_failed", error=str(exc), exc_info=True)
                 return []
+        case _:
+            assert_never(cfg.backend)
 
 
 def _call_openai_sync(
@@ -528,6 +530,8 @@ def _active_model(config: RuntimeConfig) -> str:
             return cfg.openai_model
         case "ollama":
             return cfg.ollama_model
+        case _:
+            assert_never(cfg.backend)
 
 
 def _build_relation_records(

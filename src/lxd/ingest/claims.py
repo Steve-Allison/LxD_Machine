@@ -11,7 +11,7 @@ import json
 import sqlite3
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, assert_never
 
 import structlog
 
@@ -485,3 +485,5 @@ def _active_model(config: RuntimeConfig) -> str:
             return kg_cfg.claim_extraction_model
         case "ollama":
             return kg_cfg.claim_extraction_fallback_model
+        case _:
+            assert_never(kg_cfg.claim_extraction_backend)

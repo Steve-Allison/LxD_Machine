@@ -12,7 +12,7 @@ import os
 import time
 from collections.abc import Awaitable, Callable, Sequence
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal, assert_never
 
 import ollama
 import openai
@@ -147,10 +147,10 @@ async def call_with_fallback_async(
     *,
     system_prompt: str,
     user_prompt: str,
-    primary_backend: str,
+    primary_backend: Literal["openai", "ollama"],
     openai_model: str,
     ollama_model: str,
-    fallback_backend: str = "ollama",
+    fallback_backend: Literal["ollama", "none"] = "ollama",
     temperature: float = 0.0,
     openai_timeout: float = 90.0,
     ollama_timeout: float = 90.0,
@@ -209,7 +209,7 @@ async def call_with_fallback_async(
                 _log.warning("ollama_call_failed", error=str(exc))
                 return ""
         case _:
-            return ""
+            assert_never(primary_backend)
 
 
 # ---------------------------------------------------------------------------
@@ -348,7 +348,7 @@ def prepare_batch_jsonl(
     Returns the output path.
     """
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    with output_path.open("w") as f:
+    with output_path.open("w", encoding="utf-8") as f:
         for idx, item in enumerate(items):
             messages = build_messages_fn(item)
             body: dict[str, Any] = {
