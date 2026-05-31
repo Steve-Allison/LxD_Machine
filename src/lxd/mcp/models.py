@@ -312,7 +312,14 @@ class KnowledgeAnswer(_Frozen):
     """Full answer envelope from ``search_knowledge``."""
 
     answer_status: str = Field(
-        description="``answered`` / ``no_results`` / ``insufficient_evidence`` / ``synthesis_unavailable``."
+        description=(
+            "One of: ``answered`` (synthesis ran), ``no_results`` (retrieval "
+            "returned nothing), ``insufficient_evidence`` (results too weak "
+            "for grounded answer), ``synthesis_unavailable`` (LLM unreachable), "
+            "or ``no_retrieval_needed`` (adaptive router classified the query "
+            "as meta / out-of-scope and skipped retrieval — see the "
+            "``router_*`` keys in ``metadata`` for the route rationale)."
+        )
     )
     answer_text: str
     citations: list[str] = Field(description="Citation labels referenced by the answer.")

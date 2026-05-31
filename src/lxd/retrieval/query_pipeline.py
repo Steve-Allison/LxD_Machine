@@ -13,6 +13,7 @@ from lxd.retrieval.expansion import ExpansionOutcome, expand_question
 from lxd.retrieval.graph_routing import build_graph_context, format_graph_context_prompt
 from lxd.retrieval.hyde import generate_hypothetical_answer
 from lxd.retrieval.rerank import rerank_chunks
+from lxd.retrieval.router import resolve_dense_top_k, route_query
 from lxd.settings.models import RuntimeConfig
 from lxd.stores.lancedb import (
     connect_lancedb,
@@ -39,6 +40,7 @@ from lxd.synthesis.answering import (
     EvidenceChunk,
     insufficient_evidence_answer,
     no_results_answer,
+    no_retrieval_needed_answer,
     synthesize_answer,
 )
 
@@ -217,26 +219,64 @@ def answer_question(
 ) -> AnswerEnvelope:
     """Generate an answer envelope from retrieval evidence.
 
+    Adaptive flow:
+      1. Route the question via :func:`lxd.retrieval.router.route_query`.
+         If ``retrieve=False``, short-circuit with a canned "no-retrieval-needed"
+         envelope — saves cost and avoids stuffing meaningless evidence
+         into synthesis.
+      2. Otherwise translate the route's ``breadth`` into a dense_top_k
+         override, run retrieval / rerank / expansion, build graph
+         context, and synthesise.
+
     Args:
         question: User question text.
         config: Runtime configuration object.
         domain: Optional source domain filter.
 
     Returns:
-        Synthesized answer with citations and metadata.
+        Synthesized answer with citations and route metadata.
     """
-    outcome = search_chunks(question=question, config=config, domain=domain)
+    route = route_query(question=question, config=config.adaptive_retrieval)
+    route_metadata: dict[str, object] = {
+        "router_retrieve": route.retrieve,
+        "router_breadth": route.breadth,
+        "router_rationale": route.rationale,
+        "router_routed": route.routed,
+    }
+    route_warnings: list[str] = []
+    if not route.routed:
+        route_warnings.append("Query router fell back to default route — see router_rationale.")
+
+    if not route.retrieve:
+        skipped = no_retrieval_needed_answer(route.rationale)
+        return AnswerEnvelope(
+            answer_status=skipped.answer_status,
+            answer_text=skipped.answer_text,
+            citations=skipped.citations,
+            warnings=route_warnings,
+            metadata=route_metadata,
+        )
+
+    dense_top_k = resolve_dense_top_k(
+        breadth=route.breadth,
+        config=config.adaptive_retrieval,
+        default_top_k=config.retrieval.dense_top_k,
+    )
+
+    outcome = search_chunks(question=question, config=config, domain=domain, limit=dense_top_k)
 
     # Build graph context from matched entities (graceful degradation)
     graph_context_prompt = _build_graph_context_prompt(config, outcome.matched_entity_ids)
 
     metadata: dict[str, object] = {
+        **route_metadata,
         "reranking_applied": outcome.reranking_applied,
         "expansion_applied": outcome.expansion_applied,
         "matched_entity_ids": outcome.matched_entity_ids,
         "expansion_terms": outcome.expansion_terms,
         "result_count": len(outcome.ranked),
         "graph_context_applied": bool(graph_context_prompt),
+        "dense_top_k": dense_top_k,
     }
     if not outcome.ranked:
         answer = no_results_answer()

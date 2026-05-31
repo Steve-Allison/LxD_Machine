@@ -280,6 +280,59 @@ class SynthesisConfig(BaseModel):
     max_tokens: int = Field(gt=0)
 
 
+class AdaptiveRetrievalConfig(BaseModel):
+    """Adaptive (Self-RAG / CRAG-style) retrieval router controls.
+
+    The router runs a cheap LLM call before retrieval. It returns a
+    :class:`lxd.retrieval.router.QueryRoute` that the pipeline uses to:
+
+      - skip retrieval entirely for meta queries (e.g. "hello", "what
+        can you do?", "how does this work?") — saves cost and returns
+        a graceful answer
+      - widen retrieval breadth for broad survey queries
+      - tighten it for narrow factual lookups
+
+    Mandatory feature; disabling the router is not a config knob. The
+    router degrades gracefully — any failure of the LLM call leaves
+    the pipeline on a sensible default route (``retrieve=True``,
+    breadth=``standard``).
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    router_backend: Literal["openai", "ollama"] = Field(
+        default="openai",
+        description="LLM backend used for the router classification.",
+    )
+    router_model: str = Field(
+        default="gpt-4o-mini",
+        description="Chat model used for the router classification.",
+    )
+    router_timeout_secs: float = Field(
+        default=15.0,
+        gt=0.0,
+        description="Hard timeout for the router LLM call (seconds).",
+    )
+    narrow_dense_top_k: int = Field(
+        default=8,
+        gt=0,
+        le=200,
+        description=(
+            "Dense retrieval depth for narrow queries. Smaller than "
+            "``retrieval.dense_top_k`` so synthesis sees a focused set."
+        ),
+    )
+    broad_dense_top_k: int = Field(
+        default=40,
+        gt=0,
+        le=200,
+        description=(
+            "Dense retrieval depth for broad / survey queries. Larger than "
+            "``retrieval.dense_top_k`` so synthesis can cover more ground."
+        ),
+    )
+
+
 class KnowledgeGraphConfig(BaseModel):
     """Knowledge graph build and query settings."""
 
@@ -400,6 +453,7 @@ class RuntimeConfig(BaseModel):
     expansion: ExpansionConfig
     relation_extraction: RelationExtractionConfig = Field(default_factory=RelationExtractionConfig)
     synthesis: SynthesisConfig
+    adaptive_retrieval: AdaptiveRetrievalConfig = Field(default_factory=AdaptiveRetrievalConfig)
     knowledge_graph: KnowledgeGraphConfig = Field(default_factory=KnowledgeGraphConfig)
     ingest_budget: IngestBudget = Field(default_factory=IngestBudget)
     mcp: MCPConfig

@@ -130,6 +130,33 @@ class StreamingTextDelta:
     text: str
 
 
+def no_retrieval_needed_answer(rationale: str) -> AnswerEnvelope:
+    """Build the canned response for queries the router decided to skip.
+
+    Args:
+        rationale: One-sentence reason the router gave (e.g. "greeting,
+            no corpus signal needed").
+
+    Returns:
+        Answer envelope with ``no_retrieval_needed`` status. Empty
+        citations and empty sentence_citations — there is nothing to
+        cite.
+    """
+    body = (
+        "This question does not appear to require information from the "
+        "instructional-design corpus. If you intended a corpus-related "
+        "question, please rephrase to point at a specific concept, "
+        "framework, or model."
+    )
+    return AnswerEnvelope(
+        answer_status=QueryAnswerStatus.NO_RETRIEVAL_NEEDED,
+        answer_text=body,
+        citations=[],
+        warnings=[],
+        metadata={"router_rationale": rationale},
+    )
+
+
 def no_results_answer() -> AnswerEnvelope:
     """Build a no-results answer envelope.
 
