@@ -1,4 +1,31 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "autoMemoryDirectory": ".claude/memory",
-  "enableAllProjectMcpServers": true
+  "enableAllProjectMcpServers": true,
+  "permissions": {
+    "allow": [
+      "Bash(pixi run status:*)",
+      "Bash(pixi run preflight:*)",
+      "Bash(pixi run graph-status:*)",
+      "Bash(pixi run lint:*)",
+      "Bash(pixi run typecheck:*)",
+      "Bash(pixi run fmt:*)",
+      "Bash(pixi run test:*)",
+      "Bash(pixi run pytest:*)",
+      "Bash(pixi run ruff:*)",
+      "Bash(pixi run pyright:*)",
+      "Bash(pixi run python -c:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git branch:*)",
+      "Bash(git show:*)",
+      "Bash(rg:*)",
+      "Bash(find:*)",
+      "Bash(ls:*)",
+      "Bash(wc:*)",
+      "Bash(du:*)",
+      "Bash(jq:*)"
+    ]
+  }
 }

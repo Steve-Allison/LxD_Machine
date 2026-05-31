@@ -7,3 +7,4 @@
 - [API keys in .env](feedback_env_file.md) — always test env vars through bootstrap path, not bare Python; .env loaded by app/bootstrap.py
 - [2026-05 backlog run](project_2026-05_backlog_run.md) — Sessions 1–7: 8 ships, 5 strikes (with rationale), 1 deferral (B-KG-1 needs user direction); commit shas + the why-behind each
 - [No unverified claims](feedback_no_unverified_claims.md) — every closure phrase needs evidence in the same turn; documentation + memory are part of "done", not optional polish
+- [Preflight is a gate, never the flight](feedback_preflight_is_a_gate.md) — preflight/dry-run/estimate commands stop and wait for user decision; never auto-chain with the real operation
