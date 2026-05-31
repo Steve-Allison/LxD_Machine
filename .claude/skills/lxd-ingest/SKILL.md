@@ -2,15 +2,20 @@
 name: lxd-ingest
 description: |
   Run an LxD corpus ingest with mandatory gates: pre-ingest readiness checks,
-  preflight cost estimate, EXPLICIT USER GO-AHEAD, then ingest. Codifies the
-  preflight-is-a-gate rule (2026-05-31 incident) so the operation cannot
-  silently chain from estimate to costed run. Use when the user asks to "run
-  ingest", "ingest the corpus", "rebuild the index" — incremental or full.
+  preflight cost estimate, EXPLICIT USER GO-AHEAD, then ingest. The ingest
+  step auto-chains into the knowledge-graph build by default so a single
+  `pixi run ingest` gets the corpus query-ready end-to-end (corpus + claims
+  + communities + profiles + reports). Codifies the preflight-is-a-gate rule
+  (2026-05-31 incident) so the operation cannot silently chain from estimate
+  to costed run. Use when the user asks to "run ingest", "ingest the corpus",
+  "rebuild the index", "ingest + build graph" — incremental or full.
 allowed-tools:
   - Read
   - Bash(pixi run status:*)
   - Bash(pixi run preflight:*)
   - Bash(pixi run ingest:*)
+  - Bash(pixi run build-graph:*)
+  - Bash(pixi run graph-status:*)
   - Bash(test -f .env:*)
   - Bash(grep:*)
 ---
@@ -64,16 +69,34 @@ Run preflight. Capture the output. Report a structured summary:
 **STOP.** Report. Ask the user: *"Press go on ingest, set a budget cap first,
 or cancel?"* Do NOT proceed without the explicit decision.
 
-### Step 3 — Ingest (costed)
+### Step 3 — Ingest (costed) — auto-chains to build-graph by default
 
 Only after the user says go in Step 2:
 
-- For incremental: `pixi run ingest`
-- For full rebuild: `pixi run ingest --full`  (per §7, this needs a fresh
-  destructive-op confirmation — confirm again before running)
+- Incremental, full pipeline: `pixi run ingest`
+- Full rebuild, full pipeline: `pixi run ingest --full`  (per §7, this
+  needs a fresh destructive-op confirmation; the build-graph phase
+  inside also has its own destructive prompt that fires when claims /
+  profiles exist)
+- Corpus-only (skip KG build): `pixi run ingest --no-graph`
+
+`pixi run ingest` runs the corpus pass (chunks → embeddings → mentions
+→ relations) **then auto-chains into `build_graph_command`**
+(claims → entity graph → centrality → communities → entity profiles →
+community reports). One command, full pipeline, single mental model.
+
+The auto-chain inherits — does not replace — the preflight gate above.
+Once the user has pressed go at Step 2, the chain runs through to a
+queryable store without further prompts (except the build-graph
+`--full` confirmation, which is a separate destructive gate).
+
+Power-user opt-out: `--no-graph` runs corpus-only. This is the right
+choice when the user wants to inspect the corpus state before paying
+for KG enrichment, or when running tests that only need the corpus
+layer.
 
 Run in the background if the corpus is large. Report progress and final
-counts when done.
+counts (corpus stats + KG stats) when done.
 
 ## Anti-patterns this skill prevents
 
