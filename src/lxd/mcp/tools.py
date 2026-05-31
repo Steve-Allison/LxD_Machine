@@ -3,13 +3,40 @@
 from __future__ import annotations
 
 from itertools import pairwise
-from typing import Any
 
 import networkx as nx
 
 from lxd.app.bootstrap import AppContext
 from lxd.app.status import load_committed_status
 from lxd.ingest.pipeline.orchestrator import IngestPlan
+from lxd.mcp.models import (
+    BridgeEntity,
+    ChunkSearchResult,
+    CommunityContext,
+    ConceptDocumentMatch,
+    CorpusCounts,
+    CorpusRelation,
+    CorpusStatusResponse,
+    EntityGraphStats,
+    EntityNeighbor,
+    EntitySearchResult,
+    EntitySummary,
+    FoundationalEntity,
+    GraphContextClaim,
+    GraphContextCommunityReport,
+    GraphContextData,
+    GraphContextEntityProfile,
+    GraphOverview,
+    HubEntity,
+    KnowledgeAnswer,
+    KnowledgeAnswerDeep,
+    PathBetweenEntities,
+    PathEdge,
+    RelationEvidence,
+    SimilarEntity,
+    WeightedEdge,
+    WeightedPath,
+)
 from lxd.ontology.graph import direct_neighbors
 from lxd.retrieval.expansion import expand_entity_ids
 from lxd.retrieval.graph_routing import build_graph_context
@@ -48,16 +75,8 @@ from lxd.stores.sqlite.kg_relations import (
 )
 
 
-def corpus_status_tool(app_context: AppContext, plan: IngestPlan) -> dict[str, object]:
-    """Return corpus and ontology status for MCP clients.
-
-    Args:
-        app_context: Application context that provides runtime configuration.
-        plan: Precomputed ingest plan and ontology snapshot.
-
-    Returns:
-        Corpus and ontology status payload for MCP responses.
-    """
+def corpus_status_tool(app_context: AppContext, plan: IngestPlan) -> CorpusStatusResponse:
+    """Return corpus and ontology status for MCP clients."""
     store_paths = build_store_paths(app_context.config.paths.data_path)
     if store_paths.sqlite_path.exists():
         with pooled_connection(store_paths.sqlite_path) as connection:
@@ -68,77 +87,69 @@ def corpus_status_tool(app_context: AppContext, plan: IngestPlan) -> dict[str, o
             )
         if status_snapshot is not None:
             summary = status_snapshot.summary
-            return {
-                "corpus_counts": {
-                    "total": summary.corpus_file_count,
-                    "text": summary.text_file_count,
-                    "asset": summary.asset_file_count,
-                },
-                "retrieval_role_counts": summary.retrieval_role_counts,
-                "chunk_count": summary.chunk_count,
-                "mention_count": summary.mention_count,
-                "ontology_file_count": summary.ontology_file_count,
-                "entity_count": status_snapshot.entity_count,
-                "matcher_term_count": summary.matcher_term_count,
-                "ontology_snapshot_hash": summary.ontology_snapshot_hash,
-                "matcher_termset_hash": summary.matcher_termset_hash,
-                "ontology_coverage_path_count": summary.ontology_coverage_path_count,
-                "ontology_graph_relation_count": summary.ontology_graph_relation_count,
-                "ontology_validation_issue_count": summary.ontology_validation_issue_count,
-                "ontology_validation_issue_samples": summary.ontology_validation_issue_samples,
-                "config_drift_warnings": summary.config_drift_warnings,
-            }
+            return CorpusStatusResponse(
+                corpus_counts=CorpusCounts(
+                    total=summary.corpus_file_count,
+                    text=summary.text_file_count,
+                    asset=summary.asset_file_count,
+                ),
+                retrieval_role_counts=summary.retrieval_role_counts,
+                chunk_count=summary.chunk_count,
+                mention_count=summary.mention_count,
+                ontology_file_count=summary.ontology_file_count,
+                entity_count=status_snapshot.entity_count,
+                matcher_term_count=summary.matcher_term_count,
+                ontology_snapshot_hash=summary.ontology_snapshot_hash,
+                matcher_termset_hash=summary.matcher_termset_hash,
+                ontology_coverage_path_count=summary.ontology_coverage_path_count,
+                ontology_graph_relation_count=summary.ontology_graph_relation_count,
+                ontology_validation_issue_count=summary.ontology_validation_issue_count,
+                ontology_validation_issue_samples=summary.ontology_validation_issue_samples,
+                config_drift_warnings=summary.config_drift_warnings,
+            )
     asset_count = sum(1 for item in plan.scanned_files if item.source_type == "image_png")
-    return {
-        "corpus_counts": {
-            "total": len(plan.scanned_files),
-            "text": len(plan.scanned_files) - asset_count,
-            "asset": asset_count,
-        },
-        "retrieval_role_counts": {"searchable": 0, "asset_only": 0, "not_searchable": 0},
-        "chunk_count": 0,
-        "mention_count": 0,
-        "ontology_file_count": len(plan.ontology.sources),
-        "entity_count": len(plan.ontology.entity_definitions),
-        "matcher_term_count": len(plan.ontology.matcher_records),
-        "ontology_snapshot_hash": plan.ontology.snapshot_hash,
-        "matcher_termset_hash": plan.ontology.matcher_termset_hash,
-        "ontology_coverage_path_count": plan.ontology.coverage_report.discovered_path_count,
-        "ontology_graph_relation_count": len(plan.ontology.relation_records),
-        "ontology_validation_issue_count": len(plan.ontology.validation_issues),
-        "ontology_validation_issue_samples": [
+    return CorpusStatusResponse(
+        corpus_counts=CorpusCounts(
+            total=len(plan.scanned_files),
+            text=len(plan.scanned_files) - asset_count,
+            asset=asset_count,
+        ),
+        retrieval_role_counts={"searchable": 0, "asset_only": 0, "not_searchable": 0},
+        chunk_count=0,
+        mention_count=0,
+        ontology_file_count=len(plan.ontology.sources),
+        entity_count=len(plan.ontology.entity_definitions),
+        matcher_term_count=len(plan.ontology.matcher_records),
+        ontology_snapshot_hash=plan.ontology.snapshot_hash,
+        matcher_termset_hash=plan.ontology.matcher_termset_hash,
+        ontology_coverage_path_count=plan.ontology.coverage_report.discovered_path_count,
+        ontology_graph_relation_count=len(plan.ontology.relation_records),
+        ontology_validation_issue_count=len(plan.ontology.validation_issues),
+        ontology_validation_issue_samples=[
             issue.message for issue in plan.ontology.validation_issues[:10]
         ],
-        "config_drift_warnings": [],
-    }
+        config_drift_warnings=[],
+    )
 
 
 def get_entity_types_tool(plan: IngestPlan) -> list[str]:
-    """List canonical ontology entity IDs.
-
-    Args:
-        plan: Precomputed ingest plan and ontology snapshot.
-
-    Returns:
-        Sorted canonical ontology entity IDs.
-    """
+    """List canonical ontology entity IDs."""
     return sorted(entity["canonical_id"] for entity in plan.ontology.entity_definitions)
 
 
-def get_related_concepts_tool(plan: IngestPlan, entity_id: str) -> list[dict[str, Any]]:
-    """Return direct ontology neighbors for an entity.
-
-    Args:
-        plan: Precomputed ingest plan and ontology snapshot.
-        entity_id: Canonical ontology entity identifier.
-
-    Returns:
-        Direct ontology neighbor entries for the entity.
-    """
+def get_related_concepts_tool(plan: IngestPlan, entity_id: str) -> list[EntityNeighbor]:
+    """Return direct ontology neighbors for an entity."""
     _require_non_empty(entity_id, "entity_id")
     if entity_id not in plan.ontology.graph:
         return []
-    return direct_neighbors(plan.ontology.graph, entity_id)
+    return [
+        EntityNeighbor(
+            entity_id=str(n["entity_id"]),
+            relation=str(n["relation"]),
+            direction=str(n["direction"]),
+        )
+        for n in direct_neighbors(plan.ontology.graph, entity_id)
+    ]
 
 
 def search_corpus_tool(
@@ -146,18 +157,8 @@ def search_corpus_tool(
     terms: str,
     domain: str | None,
     limit: int,
-) -> list[dict[str, Any]]:
-    """Search indexed chunks for query terms.
-
-    Args:
-        app_context: Application context that provides runtime configuration.
-        terms: User query string to search for.
-        domain: Optional source domain filter.
-        limit: Maximum number of records to return.
-
-    Returns:
-        Matching chunk records formatted for MCP.
-    """
+) -> list[ChunkSearchResult]:
+    """Search indexed chunks for query terms."""
     outcome = search_chunks(
         question=terms,
         config=app_context.config,
@@ -165,15 +166,15 @@ def search_corpus_tool(
         limit=limit,
     )
     return [
-        {
-            "chunk_id": item.chunk_id,
-            "document_id": item.document_id,
-            "citation_label": item.citation_label,
-            "source_rel_path": item.source_rel_path,
-            "score": item.score,
-            "text": item.text,
-            "metadata_json": item.metadata_json,
-        }
+        ChunkSearchResult(
+            chunk_id=item.chunk_id,
+            document_id=item.document_id,
+            citation_label=item.citation_label,
+            source_rel_path=item.source_rel_path,
+            score=item.score,
+            text=item.text,
+            metadata_json=item.metadata_json,
+        )
         for item in outcome.ranked
     ]
 
@@ -184,19 +185,8 @@ def find_documents_for_concept_tool(
     entity_id: str,
     hops: int = 1,
     limit: int = 10,
-) -> list[dict[str, Any]]:
-    """Find chunks mentioning an entity and related concepts.
-
-    Args:
-        app_context: Application context that provides runtime configuration.
-        plan: Precomputed ingest plan and ontology snapshot.
-        entity_id: Canonical ontology entity identifier.
-        hops: Graph expansion depth from the seed entity.
-        limit: Maximum number of records to return.
-
-    Returns:
-        Matching chunks for the entity expansion set.
-    """
+) -> list[ConceptDocumentMatch]:
+    """Find chunks mentioning an entity and related concepts."""
     _require_non_empty(entity_id, "entity_id")
     if entity_id not in plan.ontology.graph:
         return []
@@ -211,17 +201,17 @@ def find_documents_for_concept_tool(
     with pooled_connection(store_paths.sqlite_path) as connection:
         results = find_chunks_by_entity_mentions(connection, all_entity_ids, limit=limit)
     return [
-        {
-            "chunk_id": item.chunk_id,
-            "document_id": item.document_id,
-            "citation_label": item.citation_label,
-            "source_rel_path": item.source_rel_path,
-            "score": item.score,
-            "entity_match_count": item.entity_match_count,
-            "matched_from_total": item.total_entity_ids,
-            "text": item.text,
-            "metadata_json": item.metadata_json,
-        }
+        ConceptDocumentMatch(
+            chunk_id=item.chunk_id,
+            document_id=item.document_id,
+            citation_label=item.citation_label,
+            source_rel_path=item.source_rel_path,
+            score=item.score,
+            entity_match_count=item.entity_match_count,
+            matched_from_total=item.total_entity_ids,
+            text=item.text,
+            metadata_json=item.metadata_json,
+        )
         for item in results
     ]
 
@@ -230,87 +220,89 @@ def get_corpus_relations_tool(
     app_context: AppContext,
     entity_id: str,
     limit: int = 50,
-) -> list[dict[str, Any]]:
-    """Load extracted corpus relations for an entity.
-
-    Args:
-        app_context: Application context that provides runtime configuration.
-        entity_id: Canonical ontology entity identifier.
-        limit: Maximum number of records to return.
-
-    Returns:
-        Relation rows involving the requested entity.
-    """
+) -> list[CorpusRelation]:
+    """Load extracted corpus relations for an entity."""
     _require_non_empty(entity_id, "entity_id")
     store_paths = build_store_paths(app_context.config.paths.data_path)
     if not store_paths.sqlite_path.exists():
         return []
     with pooled_connection(store_paths.sqlite_path) as connection:
-        return load_corpus_relations_for_entity(connection, entity_id, limit=limit)
+        rows = load_corpus_relations_for_entity(connection, entity_id, limit=limit)
+    return [
+        CorpusRelation(
+            subject=str(row["subject"]),
+            predicate=str(row["predicate"]),
+            object=str(row["object"]),
+            confidence=float(row["confidence"]),
+            source_rel_path=str(row["source_rel_path"]),
+            chunk_id=str(row["chunk_id"]),
+        )
+        for row in rows
+    ]
 
 
-def get_entity_summary_tool(app_context: AppContext, entity_id: str) -> dict[str, Any]:
+def get_entity_summary_tool(app_context: AppContext, entity_id: str) -> EntitySummary | None:
     """Return the full entity profile for an entity."""
     _require_non_empty(entity_id, "entity_id")
     store_paths = build_store_paths(app_context.config.paths.data_path)
     if not store_paths.sqlite_path.exists():
-        return {}
+        return None
     with pooled_connection(store_paths.sqlite_path) as connection:
         profile = load_entity_profile(connection, entity_id)
-        if profile is None:
-            return {}
-        return {
-            "entity_id": profile.entity_id,
-            "label": profile.label,
-            "entity_type": profile.entity_type,
-            "domain": profile.domain,
-            "aliases": profile.aliases_json,
-            "deterministic_summary": profile.deterministic_summary,
-            "llm_summary": profile.llm_summary,
-            "chunk_count": profile.chunk_count,
-            "doc_count": profile.doc_count,
-            "mention_count": profile.mention_count,
-            "claim_count": profile.claim_count,
-            "top_predicates": profile.top_predicates_json,
-            "top_claims": profile.top_claims_json,
-            "pagerank": profile.pagerank,
-            "betweenness": profile.betweenness,
-            "closeness": profile.closeness,
-            "in_degree": profile.in_degree,
-            "out_degree": profile.out_degree,
-            "eigenvector": profile.eigenvector,
-            "community_id": profile.community_id,
-        }
+    if profile is None:
+        return None
+    return EntitySummary(
+        entity_id=profile.entity_id,
+        label=profile.label,
+        entity_type=profile.entity_type,
+        domain=profile.domain,
+        aliases=profile.aliases_json,
+        deterministic_summary=profile.deterministic_summary,
+        llm_summary=profile.llm_summary,
+        chunk_count=profile.chunk_count,
+        doc_count=profile.doc_count,
+        mention_count=profile.mention_count,
+        claim_count=profile.claim_count,
+        top_predicates=profile.top_predicates_json,
+        top_claims=profile.top_claims_json,
+        pagerank=profile.pagerank,
+        betweenness=profile.betweenness,
+        closeness=profile.closeness,
+        in_degree=profile.in_degree,
+        out_degree=profile.out_degree,
+        eigenvector=profile.eigenvector,
+        community_id=profile.community_id,
+    )
 
 
-def get_community_context_tool(app_context: AppContext, entity_id: str) -> dict[str, Any]:
+def get_community_context_tool(app_context: AppContext, entity_id: str) -> CommunityContext | None:
     """Return the community report for an entity's community."""
     _require_non_empty(entity_id, "entity_id")
     store_paths = build_store_paths(app_context.config.paths.data_path)
     if not store_paths.sqlite_path.exists():
-        return {}
+        return None
     with pooled_connection(store_paths.sqlite_path) as connection:
         profile = load_entity_profile(connection, entity_id)
         if profile is None or profile.community_id is None:
-            return {}
+            return None
         report = load_community_report(connection, profile.community_id)
-        if report is None:
-            return {}
-        return {
-            "community_id": report.community_id,
-            "member_count": report.member_count,
-            "member_entity_ids": report.member_entity_ids_json,
-            "deterministic_summary": report.deterministic_summary,
-            "llm_summary": report.llm_summary,
-            "top_entities": report.top_entities_json,
-            "top_claims": report.top_claims_json,
-            "intra_community_edge_count": report.intra_community_edge_count,
-        }
+    if report is None:
+        return None
+    return CommunityContext(
+        community_id=report.community_id,
+        member_count=report.member_count,
+        member_entity_ids=report.member_entity_ids_json,
+        deterministic_summary=report.deterministic_summary,
+        llm_summary=report.llm_summary,
+        top_entities=report.top_entities_json,
+        top_claims=report.top_claims_json,
+        intra_community_edge_count=report.intra_community_edge_count,
+    )
 
 
 def get_similar_entities_tool(
     app_context: AppContext, entity_id: str, limit: int = 10
-) -> list[dict[str, Any]]:
+) -> list[SimilarEntity]:
     """Return similar entities via LanceDB vector search on entity embeddings."""
     _require_non_empty(entity_id, "entity_id")
     store_paths = build_store_paths(app_context.config.paths.data_path)
@@ -345,14 +337,23 @@ def get_similar_entities_tool(
                 query_vector=query_vector,
                 limit=limit + 1,
             )
-            return [r for r in results if r["entity_id"] != entity_id][:limit]
         except FileNotFoundError:
             return []
+        return [
+            SimilarEntity(
+                entity_id=str(r["entity_id"]),
+                label=str(r["label"]),
+                community_id=r["community_id"],
+                score=float(r["score"]),
+            )
+            for r in results
+            if r["entity_id"] != entity_id
+        ][:limit]
 
 
 def search_entities_tool(
     app_context: AppContext, query: str, limit: int = 20
-) -> list[dict[str, Any]]:
+) -> list[EntitySearchResult]:
     """Search entity profiles by label/alias substring, ranked by PageRank."""
     _require_non_empty(query, "query")
     store_paths = build_store_paths(app_context.config.paths.data_path)
@@ -360,20 +361,20 @@ def search_entities_tool(
         return []
     with pooled_connection(store_paths.sqlite_path) as connection:
         profiles = search_entity_profiles(connection, query, limit=limit)
-        return [
-            {
-                "entity_id": p.entity_id,
-                "label": p.label,
-                "entity_type": p.entity_type,
-                "pagerank": p.pagerank,
-                "community_id": p.community_id,
-                "mention_count": p.mention_count,
-            }
-            for p in profiles
-        ]
+    return [
+        EntitySearchResult(
+            entity_id=p.entity_id,
+            label=p.label,
+            entity_type=p.entity_type,
+            pagerank=p.pagerank,
+            community_id=p.community_id,
+            mention_count=p.mention_count,
+        )
+        for p in profiles
+    ]
 
 
-def inspect_evidence_tool(app_context: AppContext, relation_id: str) -> list[dict[str, Any]]:
+def inspect_evidence_tool(app_context: AppContext, relation_id: str) -> list[RelationEvidence]:
     """Return all evidence records for a canonical relation."""
     _require_non_empty(relation_id, "relation_id")
     store_paths = build_store_paths(app_context.config.paths.data_path)
@@ -381,62 +382,69 @@ def inspect_evidence_tool(app_context: AppContext, relation_id: str) -> list[dic
         return []
     with pooled_connection(store_paths.sqlite_path) as connection:
         records = load_evidence_for_relation(connection, relation_id)
-        return [
-            {
-                "evidence_id": r.evidence_id,
-                "relation_id": r.relation_id,
-                "chunk_id": r.chunk_id,
-                "surface_subject": r.surface_subject,
-                "surface_object": r.surface_object,
-                "evidence_text": r.evidence_text[:500],
-                "confidence": r.confidence,
-                "extraction_model": r.extraction_model,
-            }
-            for r in records
-        ]
+    return [
+        RelationEvidence(
+            evidence_id=r.evidence_id,
+            relation_id=r.relation_id,
+            chunk_id=r.chunk_id,
+            surface_subject=r.surface_subject,
+            surface_object=r.surface_object,
+            evidence_text=r.evidence_text[:500],
+            confidence=r.confidence,
+            extraction_model=r.extraction_model,
+        )
+        for r in records
+    ]
 
 
 def find_path_between_entities_tool(
-    app_context: AppContext,
     plan: IngestPlan,
     source: str,
     target: str,
     max_hops: int = 5,
-) -> dict[str, Any]:
+) -> PathBetweenEntities:
     """Find shortest unweighted path between two entities."""
     _require_non_empty(source, "source")
     _require_non_empty(target, "target")
 
     graph = plan.ontology.graph
     if source not in graph or target not in graph:
-        return {"path": [], "edges": [], "hops": 0}
+        return PathBetweenEntities(path=[], edges=[], hops=0)
     try:
         path = nx.shortest_path(graph, source, target)
-        if len(path) - 1 > max_hops:
-            return {"path": [], "edges": [], "hops": 0, "note": f"Path exceeds max_hops={max_hops}"}
-        edges: list[dict[str, str]] = []
-        for u, v in pairwise(path):
-            edge_data = graph.get_edge_data(u, v)
-            if edge_data:
-                first_key = next(iter(edge_data))
-                edges.append(
-                    {
-                        "source": str(u),
-                        "target": str(v),
-                        "relation_type": str(edge_data[first_key].get("relation_type", "")),
-                    }
-                )
-        return {"path": [str(n) for n in path], "edges": edges, "hops": len(path) - 1}
     except nx.NetworkXNoPath:
-        return {"path": [], "edges": [], "hops": 0}
+        return PathBetweenEntities(path=[], edges=[], hops=0)
+    if len(path) - 1 > max_hops:
+        return PathBetweenEntities(
+            path=[],
+            edges=[],
+            hops=0,
+            note=f"Path exceeds max_hops={max_hops}",
+        )
+    edges: list[PathEdge] = []
+    for u, v in pairwise(path):
+        edge_data = graph.get_edge_data(u, v)
+        if edge_data:
+            first_key = next(iter(edge_data))
+            edges.append(
+                PathEdge(
+                    source=str(u),
+                    target=str(v),
+                    relation_type=str(edge_data[first_key].get("relation_type", "")),
+                )
+            )
+    return PathBetweenEntities(
+        path=[str(n) for n in path],
+        edges=edges,
+        hops=len(path) - 1,
+    )
 
 
 def find_weighted_path_tool(
-    app_context: AppContext,
     plan: IngestPlan,
     source: str,
     target: str,
-) -> dict[str, Any]:
+) -> WeightedPath:
     """Find confidence-weighted Dijkstra shortest path between two entities."""
     _require_non_empty(source, "source")
     _require_non_empty(target, "target")
@@ -444,7 +452,7 @@ def find_weighted_path_tool(
     graph = plan.ontology.graph
 
     if source not in graph or target not in graph:
-        return {"path": [], "edges": [], "total_weight": 0.0}
+        return WeightedPath(path=[], edges=[], total_weight=0.0)
 
     weighted = nx.DiGraph()
     for u, v, data in graph.edges(data=True):
@@ -459,208 +467,219 @@ def find_weighted_path_tool(
     try:
         path = nx.dijkstra_path(weighted, source, target, weight="weight")
         total_weight = nx.dijkstra_path_length(weighted, source, target, weight="weight")
-        edges: list[dict[str, Any]] = [
-            {
-                "source": str(u),
-                "target": str(v),
-                "weight": weighted[u][v]["weight"],
-            }
-            for u, v in pairwise(path)
-        ]
-        return {
-            "path": [str(n) for n in path],
-            "edges": edges,
-            "total_weight": total_weight,
-        }
     except nx.NetworkXNoPath:
-        return {"path": [], "edges": [], "total_weight": 0.0}
+        return WeightedPath(path=[], edges=[], total_weight=0.0)
+    edges: list[WeightedEdge] = [
+        WeightedEdge(
+            source=str(u),
+            target=str(v),
+            weight=float(weighted[u][v]["weight"]),
+        )
+        for u, v in pairwise(path)
+    ]
+    return WeightedPath(
+        path=[str(n) for n in path],
+        edges=edges,
+        total_weight=float(total_weight),
+    )
 
 
-def get_hub_entities_tool(app_context: AppContext, limit: int = 20) -> list[dict[str, Any]]:
+def get_hub_entities_tool(app_context: AppContext, limit: int = 20) -> list[HubEntity]:
     """Return top entities by PageRank."""
     store_paths = build_store_paths(app_context.config.paths.data_path)
     if not store_paths.sqlite_path.exists():
         return []
     with pooled_connection(store_paths.sqlite_path) as connection:
         profiles = load_top_entities_by_pagerank(connection, limit=limit)
-        return [
-            {
-                "entity_id": p.entity_id,
-                "label": p.label,
-                "pagerank": p.pagerank,
-                "community_id": p.community_id,
-            }
-            for p in profiles
-        ]
+    return [
+        HubEntity(
+            entity_id=p.entity_id,
+            label=p.label,
+            pagerank=p.pagerank,
+            community_id=p.community_id,
+        )
+        for p in profiles
+    ]
 
 
-def find_bridge_entities_tool(app_context: AppContext, limit: int = 20) -> list[dict[str, Any]]:
+def find_bridge_entities_tool(app_context: AppContext, limit: int = 20) -> list[BridgeEntity]:
     """Return top entities by betweenness centrality."""
     store_paths = build_store_paths(app_context.config.paths.data_path)
     if not store_paths.sqlite_path.exists():
         return []
     with pooled_connection(store_paths.sqlite_path) as connection:
         profiles = load_top_entities_by_betweenness(connection, limit=limit)
-        return [
-            {
-                "entity_id": p.entity_id,
-                "label": p.label,
-                "betweenness": p.betweenness,
-                "community_id": p.community_id,
-            }
-            for p in profiles
-        ]
+    return [
+        BridgeEntity(
+            entity_id=p.entity_id,
+            label=p.label,
+            betweenness=p.betweenness,
+            community_id=p.community_id,
+        )
+        for p in profiles
+    ]
 
 
 def find_foundational_entities_tool(
     app_context: AppContext, limit: int = 20
-) -> list[dict[str, Any]]:
+) -> list[FoundationalEntity]:
     """Return top entities by closeness centrality."""
     store_paths = build_store_paths(app_context.config.paths.data_path)
     if not store_paths.sqlite_path.exists():
         return []
     with pooled_connection(store_paths.sqlite_path) as connection:
         profiles = load_top_entities_by_closeness(connection, limit=limit)
-        return [
-            {
-                "entity_id": p.entity_id,
-                "label": p.label,
-                "closeness": p.closeness,
-                "community_id": p.community_id,
-            }
-            for p in profiles
-        ]
+    return [
+        FoundationalEntity(
+            entity_id=p.entity_id,
+            label=p.label,
+            closeness=p.closeness,
+            community_id=p.community_id,
+        )
+        for p in profiles
+    ]
 
 
-def get_entity_graph_stats_tool(app_context: AppContext) -> dict[str, Any]:
+def get_entity_graph_stats_tool(app_context: AppContext) -> EntityGraphStats:
     """Return knowledge graph statistics."""
     store_paths = build_store_paths(app_context.config.paths.data_path)
     if not store_paths.sqlite_path.exists():
-        return {"graph_version": 0, "entity_profiles": 0, "communities": 0}
+        return EntityGraphStats(
+            graph_version=0,
+            last_build_at="never",
+            entity_profiles=0,
+            communities=0,
+            community_reports=0,
+            canonical_relations=0,
+            relation_evidence=0,
+            claims=0,
+        )
     with pooled_connection(store_paths.sqlite_path) as connection:
         metadata = load_graph_metadata(connection)
-        return {
-            "graph_version": int(metadata.get("graph_version", "0")),
-            "last_build_at": metadata.get("last_build_at", "never"),
-            "entity_profiles": count_entity_profiles(connection),
-            "communities": count_communities(connection),
-            "community_reports": count_community_reports(connection),
-            "canonical_relations": count_canonical_relations(connection),
-            "relation_evidence": count_relation_evidence(connection),
-            "claims": count_claims(connection),
-        }
+        return EntityGraphStats(
+            graph_version=int(metadata.get("graph_version", "0")),
+            last_build_at=metadata.get("last_build_at", "never"),
+            entity_profiles=count_entity_profiles(connection),
+            communities=count_communities(connection),
+            community_reports=count_community_reports(connection),
+            canonical_relations=count_canonical_relations(connection),
+            relation_evidence=count_relation_evidence(connection),
+            claims=count_claims(connection),
+        )
 
 
 def search_knowledge_tool(
     app_context: AppContext,
     question: str,
     domain: str | None = None,
-) -> dict[str, Any]:
+) -> KnowledgeAnswer:
     """Run the full answer pipeline with graph-augmented synthesis."""
     _require_non_empty(question, "question")
 
     envelope = answer_question(question=question, config=app_context.config, domain=domain)
-    return {
-        "answer_status": envelope.answer_status.value,
-        "answer_text": envelope.answer_text,
-        "citations": envelope.citations,
-        "warnings": envelope.warnings,
-        "metadata": envelope.metadata,
-    }
+    return KnowledgeAnswer(
+        answer_status=envelope.answer_status.value,
+        answer_text=envelope.answer_text,
+        citations=envelope.citations,
+        warnings=envelope.warnings,
+        metadata=dict(envelope.metadata),
+    )
 
 
 def search_knowledge_deep_tool(
     app_context: AppContext,
     question: str,
     domain: str | None = None,
-) -> dict[str, Any]:
+) -> KnowledgeAnswerDeep:
     """Run the full answer pipeline with graph context data returned alongside the answer."""
     _require_non_empty(question, "question")
 
     envelope = answer_question(question=question, config=app_context.config, domain=domain)
 
     matched_entity_ids = envelope.metadata.get("matched_entity_ids", [])
-    graph_data: dict[str, Any] = {"level": "none", "entity_profiles": [], "claims": []}
+    graph_data = GraphContextData(level="none")
 
     if isinstance(matched_entity_ids, list) and matched_entity_ids:
         store_paths = build_store_paths(app_context.config.paths.data_path)
         if store_paths.sqlite_path.exists():
             with pooled_connection(store_paths.sqlite_path) as connection:
                 context = build_graph_context(connection, matched_entity_ids, app_context.config)
-                graph_data = {
-                    "level": context.level,
-                    "entity_profiles": [
-                        {
-                            "entity_id": p.entity_id,
-                            "label": p.label,
-                            "entity_type": p.entity_type,
-                            "deterministic_summary": p.deterministic_summary,
-                            "llm_summary": p.llm_summary,
-                            "pagerank": p.pagerank,
-                            "community_id": p.community_id,
-                        }
-                        for p in context.entity_profiles
-                    ],
-                    "community_reports": [
-                        {
-                            "community_id": r.community_id,
-                            "member_count": r.member_count,
-                            "deterministic_summary": r.deterministic_summary,
-                            "llm_summary": r.llm_summary,
-                        }
-                        for r in context.community_reports
-                    ],
-                    "claims": [
-                        {
-                            "claim_text": c.claim_text,
-                            "claim_type": c.claim_type,
-                            "confidence": c.confidence,
-                            "subject_entity_id": c.subject_entity_id,
-                            "object_entity_id": c.object_entity_id,
-                        }
-                        for c in context.claims
-                    ],
-                }
+            graph_data = GraphContextData(
+                level=context.level,
+                entity_profiles=[
+                    GraphContextEntityProfile(
+                        entity_id=p.entity_id,
+                        label=p.label,
+                        entity_type=p.entity_type,
+                        deterministic_summary=p.deterministic_summary,
+                        llm_summary=p.llm_summary,
+                        pagerank=p.pagerank,
+                        community_id=p.community_id,
+                    )
+                    for p in context.entity_profiles
+                ],
+                community_reports=[
+                    GraphContextCommunityReport(
+                        community_id=r.community_id,
+                        member_count=r.member_count,
+                        deterministic_summary=r.deterministic_summary,
+                        llm_summary=r.llm_summary,
+                    )
+                    for r in context.community_reports
+                ],
+                claims=[
+                    GraphContextClaim(
+                        claim_text=c.claim_text,
+                        claim_type=c.claim_type,
+                        confidence=c.confidence,
+                        subject_entity_id=c.subject_entity_id,
+                        object_entity_id=c.object_entity_id,
+                    )
+                    for c in context.claims
+                ],
+            )
 
-    return {
-        "answer_status": envelope.answer_status.value,
-        "answer_text": envelope.answer_text,
-        "citations": envelope.citations,
-        "warnings": envelope.warnings,
-        "metadata": envelope.metadata,
-        "graph_context": graph_data,
-    }
+    return KnowledgeAnswerDeep(
+        answer_status=envelope.answer_status.value,
+        answer_text=envelope.answer_text,
+        citations=envelope.citations,
+        warnings=envelope.warnings,
+        metadata=dict(envelope.metadata),
+        graph_context=graph_data,
+    )
 
 
-def get_graph_overview_tool(app_context: AppContext) -> dict[str, Any]:
+def get_graph_overview_tool(app_context: AppContext) -> GraphOverview:
     """Return knowledge graph overview including stats and build state."""
     store_paths = build_store_paths(app_context.config.paths.data_path)
     if not store_paths.sqlite_path.exists():
-        return {
-            "graph_version": 0,
-            "entity_profiles": 0,
-            "communities": 0,
-            "community_reports": 0,
-            "canonical_relations": 0,
-            "relation_evidence": 0,
-            "claims": 0,
-        }
+        return GraphOverview(
+            graph_version=0,
+            last_build_at="never",
+            community_algorithm=None,
+            entity_profiles=0,
+            communities=0,
+            community_reports=0,
+            canonical_relations=0,
+            relation_evidence=0,
+            claims=0,
+        )
     with pooled_connection(store_paths.sqlite_path) as connection:
         metadata = load_graph_metadata(connection)
-        return {
-            "graph_version": int(metadata.get("graph_version", "0")),
-            "last_build_at": metadata.get("last_build_at", "never"),
-            "community_algorithm": metadata.get(
+        return GraphOverview(
+            graph_version=int(metadata.get("graph_version", "0")),
+            last_build_at=metadata.get("last_build_at", "never"),
+            community_algorithm=metadata.get(
                 "community_algorithm",
                 app_context.config.knowledge_graph.community_algorithm,
             ),
-            "entity_profiles": count_entity_profiles(connection),
-            "communities": count_communities(connection),
-            "community_reports": count_community_reports(connection),
-            "canonical_relations": count_canonical_relations(connection),
-            "relation_evidence": count_relation_evidence(connection),
-            "claims": count_claims(connection),
-        }
+            entity_profiles=count_entity_profiles(connection),
+            communities=count_communities(connection),
+            community_reports=count_community_reports(connection),
+            canonical_relations=count_canonical_relations(connection),
+            relation_evidence=count_relation_evidence(connection),
+            claims=count_claims(connection),
+        )
 
 
 def _require_non_empty(value: str, field_name: str) -> None:

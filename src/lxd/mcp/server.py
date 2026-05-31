@@ -7,14 +7,36 @@ from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, Literal
 
 from fastmcp import Context, FastMCP
+from mcp.types import ToolAnnotations
 from pydantic import Field
 
 from lxd.app.bootstrap import AppContext, bootstrap_app
 from lxd.ingest.pipeline.orchestrator import IngestPlan, build_ingest_plan
 from lxd.mcp.async_runtime import run_tool
+from lxd.mcp.models import (
+    BridgeEntity,
+    ChunkSearchResult,
+    CommunityContext,
+    ConceptDocumentMatch,
+    CorpusRelation,
+    CorpusStatusResponse,
+    EntityGraphStats,
+    EntityNeighbor,
+    EntitySearchResult,
+    EntitySummary,
+    FoundationalEntity,
+    GraphOverview,
+    HubEntity,
+    KnowledgeAnswer,
+    KnowledgeAnswerDeep,
+    PathBetweenEntities,
+    RelationEvidence,
+    SimilarEntity,
+    WeightedPath,
+)
 from lxd.mcp.tools import (
     corpus_status_tool,
     find_bridge_entities_tool,
@@ -39,7 +61,17 @@ from lxd.mcp.tools import (
 )
 from lxd.synthesis.answering import synthesis_preamble
 
-_READ_ONLY = {"readOnlyHint": True}
+# Per-tool semantic hints. Every tool here is read-only; the split is:
+#   IDEMPOTENT  — ontology-bound; same inputs always yield the same outputs
+#                 within a single server lifespan.
+#   OPEN_WORLD  — reads the corpus/graph store, which can change between
+#                 calls (ingest may run while the server is up).
+#   LLM         — open-world AND non-deterministic because answer synthesis
+#                 calls an LLM.
+_HINT_IDEMPOTENT = ToolAnnotations(readOnlyHint=True, idempotentHint=True, openWorldHint=False)
+_HINT_OPEN_WORLD = ToolAnnotations(readOnlyHint=True, idempotentHint=False, openWorldHint=True)
+_HINT_LLM = ToolAnnotations(readOnlyHint=True, idempotentHint=False, openWorldHint=True)
+
 _LIFESPAN_KEY = "lxd"
 
 
@@ -103,8 +135,8 @@ def create_server(
         lifespan=_make_lifespan(cwd or Path.cwd(), profile, config_path),
     )
 
-    @mcp.tool(annotations=_READ_ONLY)
-    async def corpus_status(ctx: Context) -> dict[str, object]:
+    @mcp.tool(annotations=_HINT_OPEN_WORLD)
+    async def corpus_status(ctx: Context) -> CorpusStatusResponse:
         """Return a health snapshot of the LxD corpus and ontology.
 
         Reports document counts (total, text, asset), chunk and entity-mention
@@ -120,7 +152,7 @@ def create_server(
             timeout_secs=_tool_timeout(lxd),
         )
 
-    @mcp.tool(annotations=_READ_ONLY)
+    @mcp.tool(annotations=_HINT_IDEMPOTENT)
     async def get_entity_types(ctx: Context) -> list[str]:
         """Return a sorted list of all canonical entity IDs defined in the ontology.
 
@@ -134,7 +166,7 @@ def create_server(
             timeout_secs=_tool_timeout(lxd),
         )
 
-    @mcp.tool(annotations=_READ_ONLY)
+    @mcp.tool(annotations=_HINT_IDEMPOTENT)
     async def get_related_concepts(
         entity_id: Annotated[
             str,
@@ -146,12 +178,12 @@ def create_server(
             ),
         ],
         ctx: Context,
-    ) -> list[dict[str, object]]:
+    ) -> list[EntityNeighbor]:
         """Return the direct neighbours of an entity in the ontology graph.
 
-        Each result dict contains ``entity_id``, ``relation``, and ``direction``
-        keys describing a single edge. Returns an empty list if the entity is
-        not found in the graph.
+        Each result describes a single edge with ``entity_id``, ``relation``,
+        and ``direction``. Returns an empty list if the entity is not found
+        in the graph.
         """
         lxd = _lxd(ctx)
         return await run_tool(
@@ -160,7 +192,7 @@ def create_server(
             timeout_secs=_tool_timeout(lxd),
         )
 
-    @mcp.tool(annotations=_READ_ONLY)
+    @mcp.tool(annotations=_HINT_OPEN_WORLD)
     async def search_corpus(
         terms: Annotated[
             str,
@@ -180,22 +212,23 @@ def create_server(
             int,
             Field(description="Maximum number of ranked chunks to return.", ge=1, le=100),
         ] = 10,
-    ) -> list[dict[str, object]]:
+    ) -> list[ChunkSearchResult]:
         """Search the corpus using semantic similarity and return ranked text chunks.
 
-        Performs a vector search over ingested document chunks. Each result
-        includes ``chunk_id``, ``document_id``, ``citation_label``,
-        ``source_rel_path``, ``score``, ``text``, and ``metadata_json``.
-        Results are ordered highest-score first.
+        Performs a vector search over ingested document chunks. Results are
+        ordered highest-score first.
         """
         lxd = _lxd(ctx)
-        return await run_tool(
+        await ctx.report_progress(progress=0, total=1, message="searching corpus")
+        result = await run_tool(
             "search_corpus",
             lambda: search_corpus_tool(lxd.app_context, terms, domain, limit),
             timeout_secs=_tool_timeout(lxd),
         )
+        await ctx.report_progress(progress=1, total=1, message="search complete")
+        return result
 
-    @mcp.tool(annotations=_READ_ONLY)
+    @mcp.tool(annotations=_HINT_OPEN_WORLD)
     async def find_documents_for_concept(
         entity_id: Annotated[
             str,
@@ -222,16 +255,13 @@ def create_server(
             int,
             Field(description="Maximum number of document chunks to return.", ge=1, le=100),
         ] = 10,
-    ) -> list[dict[str, object]]:
+    ) -> list[ConceptDocumentMatch]:
         """Find document chunks that mention a concept or its graph neighbours.
 
         Expands ``entity_id`` outward by ``hops`` edges in the ontology graph,
         then retrieves corpus chunks that contain entity-mention annotations for
-        any of the resulting entity IDs. Each result includes ``chunk_id``,
-        ``document_id``, ``citation_label``, ``source_rel_path``, ``score``,
-        ``entity_match_count``, ``matched_from_total``, ``text``, and
-        ``metadata_json``. Returns an empty list if the entity is not in the
-        graph.
+        any of the resulting entity IDs. Returns an empty list if the entity is
+        not in the graph.
         """
         lxd = _lxd(ctx)
         return await run_tool(
@@ -242,7 +272,7 @@ def create_server(
             timeout_secs=_tool_timeout(lxd),
         )
 
-    @mcp.tool(annotations=_READ_ONLY)
+    @mcp.tool(annotations=_HINT_OPEN_WORLD)
     async def get_corpus_relations(
         entity_id: Annotated[
             str,
@@ -258,16 +288,14 @@ def create_server(
             int,
             Field(description="Maximum number of relations to return.", ge=1, le=200),
         ] = 50,
-    ) -> list[dict[str, object]]:
+    ) -> list[CorpusRelation]:
         """Return semantic relations extracted from the corpus for an entity.
 
         Unlike ``get_related_concepts`` (which returns hand-coded ontology edges),
         this tool returns relations learned from document text during ingest —
         e.g. ``(bloom_apply) → [requires] → (cognitive_load)`` as stated in a
-        specific chunk. Each result includes ``subject``, ``predicate``, ``object``,
-        ``confidence``, ``source_rel_path``, and ``chunk_id``.
-
-        Returns an empty list if relation extraction has not been run yet.
+        specific chunk. Returns an empty list if relation extraction has not
+        been run yet.
         """
         lxd = _lxd(ctx)
         return await run_tool(
@@ -276,12 +304,15 @@ def create_server(
             timeout_secs=_tool_timeout(lxd),
         )
 
-    @mcp.tool(annotations=_READ_ONLY)
+    @mcp.tool(annotations=_HINT_OPEN_WORLD)
     async def get_entity_summary(
         entity_id: Annotated[str, Field(description="Canonical entity ID.")],
         ctx: Context,
-    ) -> dict[str, object]:
-        """Return the full entity profile including centrality, claims, and community."""
+    ) -> EntitySummary | None:
+        """Return the full entity profile including centrality, claims, and community.
+
+        Returns ``null`` if the entity is not in the knowledge graph.
+        """
         lxd = _lxd(ctx)
         return await run_tool(
             "get_entity_summary",
@@ -289,12 +320,15 @@ def create_server(
             timeout_secs=_tool_timeout(lxd),
         )
 
-    @mcp.tool(annotations=_READ_ONLY)
+    @mcp.tool(annotations=_HINT_OPEN_WORLD)
     async def get_community_context(
         entity_id: Annotated[str, Field(description="Canonical entity ID to find community for.")],
         ctx: Context,
-    ) -> dict[str, object]:
-        """Return the community report for an entity's community."""
+    ) -> CommunityContext | None:
+        """Return the community report for an entity's community.
+
+        Returns ``null`` if the entity is not in the graph or has no community.
+        """
         lxd = _lxd(ctx)
         return await run_tool(
             "get_community_context",
@@ -302,14 +336,14 @@ def create_server(
             timeout_secs=_tool_timeout(lxd),
         )
 
-    @mcp.tool(annotations=_READ_ONLY)
+    @mcp.tool(annotations=_HINT_OPEN_WORLD)
     async def get_similar_entities(
         entity_id: Annotated[
             str, Field(description="Canonical entity ID to find similar entities for.")
         ],
         ctx: Context,
         limit: Annotated[int, Field(description="Maximum results.", ge=1, le=50)] = 10,
-    ) -> list[dict[str, object]]:
+    ) -> list[SimilarEntity]:
         """Return entities most similar to the given entity via vector embedding similarity."""
         lxd = _lxd(ctx)
         return await run_tool(
@@ -318,12 +352,12 @@ def create_server(
             timeout_secs=_tool_timeout(lxd),
         )
 
-    @mcp.tool(annotations=_READ_ONLY)
+    @mcp.tool(annotations=_HINT_OPEN_WORLD)
     async def search_entities(
         query: Annotated[str, Field(description="Search query for entity name/alias.")],
         ctx: Context,
         limit: Annotated[int, Field(description="Maximum results.", ge=1, le=100)] = 20,
-    ) -> list[dict[str, object]]:
+    ) -> list[EntitySearchResult]:
         """Search entity profiles by name or alias, ranked by PageRank."""
         lxd = _lxd(ctx)
         return await run_tool(
@@ -332,11 +366,11 @@ def create_server(
             timeout_secs=_tool_timeout(lxd),
         )
 
-    @mcp.tool(annotations=_READ_ONLY)
+    @mcp.tool(annotations=_HINT_OPEN_WORLD)
     async def inspect_evidence(
         relation_id: Annotated[str, Field(description="Canonical relation ID to audit.")],
         ctx: Context,
-    ) -> list[dict[str, object]]:
+    ) -> list[RelationEvidence]:
         """Return all evidence records for a canonical relation.
 
         Includes surface forms and chunk provenance for downstream auditing.
@@ -348,42 +382,40 @@ def create_server(
             timeout_secs=_tool_timeout(lxd),
         )
 
-    @mcp.tool(annotations=_READ_ONLY)
+    @mcp.tool(annotations=_HINT_IDEMPOTENT)
     async def find_path_between_entities(
         source: Annotated[str, Field(description="Source entity ID.")],
         target: Annotated[str, Field(description="Target entity ID.")],
         ctx: Context,
         max_hops: Annotated[int, Field(description="Maximum path length.", ge=1, le=10)] = 5,
-    ) -> dict[str, object]:
+    ) -> PathBetweenEntities:
         """Find shortest unweighted path between two entities."""
         lxd = _lxd(ctx)
         return await run_tool(
             "find_path_between_entities",
-            lambda: find_path_between_entities_tool(
-                lxd.app_context, lxd.ingest_plan, source, target, max_hops
-            ),
+            lambda: find_path_between_entities_tool(lxd.ingest_plan, source, target, max_hops),
             timeout_secs=_tool_timeout(lxd),
         )
 
-    @mcp.tool(annotations=_READ_ONLY)
+    @mcp.tool(annotations=_HINT_IDEMPOTENT)
     async def find_weighted_path(
         source: Annotated[str, Field(description="Source entity ID.")],
         target: Annotated[str, Field(description="Target entity ID.")],
         ctx: Context,
-    ) -> dict[str, object]:
+    ) -> WeightedPath:
         """Find confidence-weighted Dijkstra shortest path between two entities."""
         lxd = _lxd(ctx)
         return await run_tool(
             "find_weighted_path",
-            lambda: find_weighted_path_tool(lxd.app_context, lxd.ingest_plan, source, target),
+            lambda: find_weighted_path_tool(lxd.ingest_plan, source, target),
             timeout_secs=_tool_timeout(lxd),
         )
 
-    @mcp.tool(annotations=_READ_ONLY)
+    @mcp.tool(annotations=_HINT_OPEN_WORLD)
     async def get_hub_entities(
         ctx: Context,
         limit: Annotated[int, Field(description="Maximum results.", ge=1, le=100)] = 20,
-    ) -> list[dict[str, object]]:
+    ) -> list[HubEntity]:
         """Return top entities by PageRank (hub concepts)."""
         lxd = _lxd(ctx)
         return await run_tool(
@@ -392,11 +424,11 @@ def create_server(
             timeout_secs=_tool_timeout(lxd),
         )
 
-    @mcp.tool(annotations=_READ_ONLY)
+    @mcp.tool(annotations=_HINT_OPEN_WORLD)
     async def find_bridge_entities(
         ctx: Context,
         limit: Annotated[int, Field(description="Maximum results.", ge=1, le=100)] = 20,
-    ) -> list[dict[str, object]]:
+    ) -> list[BridgeEntity]:
         """Return top entities by betweenness centrality (bridge concepts)."""
         lxd = _lxd(ctx)
         return await run_tool(
@@ -405,11 +437,11 @@ def create_server(
             timeout_secs=_tool_timeout(lxd),
         )
 
-    @mcp.tool(annotations=_READ_ONLY)
+    @mcp.tool(annotations=_HINT_OPEN_WORLD)
     async def find_foundational_entities(
         ctx: Context,
         limit: Annotated[int, Field(description="Maximum results.", ge=1, le=100)] = 20,
-    ) -> list[dict[str, object]]:
+    ) -> list[FoundationalEntity]:
         """Return top entities by closeness centrality (foundational concepts)."""
         lxd = _lxd(ctx)
         return await run_tool(
@@ -418,8 +450,8 @@ def create_server(
             timeout_secs=_tool_timeout(lxd),
         )
 
-    @mcp.tool(annotations=_READ_ONLY)
-    async def get_entity_graph_stats(ctx: Context) -> dict[str, object]:
+    @mcp.tool(annotations=_HINT_OPEN_WORLD)
+    async def get_entity_graph_stats(ctx: Context) -> EntityGraphStats:
         """Return knowledge graph statistics: node/edge counts, community count, version."""
         lxd = _lxd(ctx)
         return await run_tool(
@@ -428,7 +460,7 @@ def create_server(
             timeout_secs=_tool_timeout(lxd),
         )
 
-    @mcp.tool(annotations=_READ_ONLY)
+    @mcp.tool(annotations=_HINT_LLM)
     async def search_knowledge(
         question: Annotated[
             str,
@@ -439,24 +471,24 @@ def create_server(
             str | None,
             Field(description="Optional domain filter. Pass null to search all domains."),
         ] = None,
-    ) -> dict[str, object]:
+    ) -> KnowledgeAnswer:
         """Answer a question using semantic retrieval with graph-augmented synthesis.
 
         Performs dense vector search, reranking, ontology expansion, and
         graph context augmentation (entity profiles, community reports, claims)
-        before synthesising an answer via LLM. Returns ``answer_status``
-        (``answered``, ``no_results``, ``insufficient_evidence``, or
-        ``synthesis_unavailable``), ``answer_text``, ``citations``, and
-        query ``metadata`` including matched entities and expansion terms.
+        before synthesising an answer via LLM.
         """
         lxd = _lxd(ctx)
-        return await run_tool(
+        await ctx.report_progress(progress=0, total=3, message="retrieving evidence")
+        result = await run_tool(
             "search_knowledge",
             lambda: search_knowledge_tool(lxd.app_context, question, domain),
             timeout_secs=_tool_timeout(lxd),
         )
+        await ctx.report_progress(progress=3, total=3, message="answer ready")
+        return result
 
-    @mcp.tool(annotations=_READ_ONLY)
+    @mcp.tool(annotations=_HINT_LLM)
     async def search_knowledge_deep(
         question: Annotated[
             str,
@@ -467,29 +499,31 @@ def create_server(
             str | None,
             Field(description="Optional domain filter. Pass null to search all domains."),
         ] = None,
-    ) -> dict[str, object]:
+    ) -> KnowledgeAnswerDeep:
         """Answer a question with full graph context returned alongside the answer.
 
         Like ``search_knowledge`` but also returns structured ``graph_context``
         data: entity profiles with centrality scores, community reports, and
-        claims for matched entities. Use this for complex queries where the
-        caller needs to inspect the graph evidence behind the answer.
+        claims for matched entities.
         """
         lxd = _lxd(ctx)
-        return await run_tool(
+        await ctx.report_progress(progress=0, total=3, message="retrieving evidence")
+        result = await run_tool(
             "search_knowledge_deep",
             lambda: search_knowledge_deep_tool(lxd.app_context, question, domain),
             timeout_secs=_tool_timeout(lxd),
         )
+        await ctx.report_progress(progress=3, total=3, message="answer ready")
+        return result
 
-    @mcp.tool(annotations=_READ_ONLY)
-    async def get_graph_overview(ctx: Context) -> dict[str, object]:
+    @mcp.tool(annotations=_HINT_OPEN_WORLD)
+    async def get_graph_overview(ctx: Context) -> GraphOverview:
         """Return a high-level overview of the knowledge graph.
 
-        Reports the graph version, build timestamp,
-        community algorithm, and counts for entity profiles, communities,
-        community reports, canonical relations, relation evidence, and claims.
-        Use this to check graph health before running graph-dependent queries.
+        Reports the graph version, build timestamp, community algorithm, and
+        counts for entity profiles, communities, community reports, canonical
+        relations, relation evidence, and claims. Use this to check graph
+        health before running graph-dependent queries.
         """
         lxd = _lxd(ctx)
         return await run_tool(
@@ -514,10 +548,31 @@ def create_server(
             has_graph_context=True,
         )
 
+    @mcp.prompt(name="lxd_query_refinement")
+    def query_refinement_prompt(question: str) -> str:
+        """Refine an ambiguous query into a precise corpus search.
+
+        Returns a one-shot prompt the client can run against its own LLM to
+        produce a sharper version of ``question``: narrower scope, explicit
+        entity references, removed filler. Use before ``search_knowledge``
+        when the original question is broad or contains pronouns the corpus
+        won't resolve.
+        """
+        return (
+            "You will rewrite a user question into a sharper search query for "
+            "an instructional-design knowledge base. The rewrite must:\n"
+            "  - Preserve the user's original intent\n"
+            "  - Replace pronouns and vague references with explicit terms\n"
+            "  - Add domain context (e.g. cognitive load, assessment, modality) where implied\n"
+            "  - Stay under 30 words\n"
+            "  - Return ONLY the rewritten query, no preamble\n\n"
+            f"Original question: {question}\n\n"
+            "Rewritten query:"
+        )
+
     @mcp.resource(
         "lxd://corpus/{path*}",
         mime_type="text/markdown",
-        annotations=_READ_ONLY,
     )
     async def corpus_file(path: str, ctx: Context) -> str:
         """Return the raw text of a corpus file by relative path.
@@ -536,6 +591,49 @@ def create_server(
             corpus_root=lxd.app_context.config.paths.corpus_path,
             relative_path=path,
         )
+
+    @mcp.resource(
+        "lxd://entity/{entity_id}",
+        mime_type="application/json",
+    )
+    async def entity_profile(entity_id: str, ctx: Context) -> str:
+        """Return an entity's full profile as a JSON resource.
+
+        Same payload as ``get_entity_summary``, but exposed as a stable
+        resource URI clients can list, cache, and reference. Returns the
+        JSON object as a string; missing entities raise
+        :class:`FileNotFoundError`.
+        """
+        lxd = _lxd(ctx)
+        profile = await run_tool(
+            f"entity_profile:{entity_id}",
+            lambda: get_entity_summary_tool(lxd.app_context, entity_id),
+            timeout_secs=_tool_timeout(lxd),
+        )
+        if profile is None:
+            raise FileNotFoundError(f"Entity not found: {entity_id!r}")
+        return profile.model_dump_json()
+
+    @mcp.resource(
+        "lxd://community/{entity_id}",
+        mime_type="application/json",
+    )
+    async def community_report(entity_id: str, ctx: Context) -> str:
+        """Return the community report for an entity's community as a JSON resource.
+
+        Same payload as ``get_community_context``, exposed as a stable
+        resource. Resolves the community via the entity's ``community_id``
+        so callers don't need to know the community ID directly.
+        """
+        lxd = _lxd(ctx)
+        report = await run_tool(
+            f"community_report:{entity_id}",
+            lambda: get_community_context_tool(lxd.app_context, entity_id),
+            timeout_secs=_tool_timeout(lxd),
+        )
+        if report is None:
+            raise FileNotFoundError(f"No community report for entity {entity_id!r}")
+        return report.model_dump_json()
 
     return mcp
 
@@ -578,13 +676,35 @@ _CORPUS_RESOURCE_TEXT_SUFFIXES: frozenset[str] = frozenset(
 
 def main() -> None:
     """Run the module entrypoint."""
-    parser = argparse.ArgumentParser(description="LxD Machine MCP server (stdio transport).")
+    parser = argparse.ArgumentParser(description="LxD Machine MCP server.")
     parser.add_argument("--profile", help="Named config profile to load.")
     parser.add_argument("--config", help="Explicit path to a config YAML file.")
+    parser.add_argument(
+        "--transport",
+        choices=("stdio", "http", "sse"),
+        default="stdio",
+        help="Transport for the MCP server (default: stdio).",
+    )
+    parser.add_argument(
+        "--host",
+        default="127.0.0.1",
+        help="Bind host for http/sse transports (default: 127.0.0.1).",
+    )
+    parser.add_argument(
+        "--port",
+        type=int,
+        default=8000,
+        help="Bind port for http/sse transports (default: 8000).",
+    )
     args = parser.parse_args()
     config_path = Path(args.config).resolve() if args.config else None
     mcp = create_server(profile=args.profile, config_path=config_path)
-    mcp.run()
+
+    transport: Literal["stdio", "http", "sse"] = args.transport
+    if transport == "stdio":
+        mcp.run()
+    else:
+        mcp.run(transport=transport, host=args.host, port=args.port)
 
 
 if __name__ == "__main__":
