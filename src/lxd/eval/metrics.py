@@ -194,13 +194,13 @@ _QUESTION_GENERATION_PROMPT = """\
 You generate questions that an ANSWER could plausibly be answering.
 
 Given an ANSWER, return a JSON object with one key ``questions`` whose value
-is a list of N short natural-language questions. Each question must be:
+is a list of {N_QUESTIONS} short natural-language questions. Each question must be:
   - One sentence, ending with a question mark.
   - Self-contained: standalone, no pronouns referring to the answer.
   - Faithful: the answer must plausibly address it.
   - Distinct: questions should cover different angles where the answer is rich.
 
-Return exactly N questions.
+Return exactly {N_QUESTIONS} questions.
 """
 
 
@@ -240,7 +240,7 @@ async def compute_answer_relevance(
 
     try:
         raw = await call_openai_async(
-            system_prompt=_QUESTION_GENERATION_PROMPT.replace("N", str(n_generated)),
+            system_prompt=_QUESTION_GENERATION_PROMPT.replace("{N_QUESTIONS}", str(n_generated)),
             user_prompt=f"ANSWER:\n{answer}",
             model=judge_model,
             temperature=0.0,
@@ -439,7 +439,7 @@ def _safe_json(raw: str) -> dict[str, Any]:
     """Parse JSON; return empty dict on failure rather than raising."""
     try:
         payload = json.loads(raw)
-    except (json.JSONDecodeError, TypeError):
+    except json.JSONDecodeError, TypeError:
         return {}
     if not isinstance(payload, dict):
         return {}
