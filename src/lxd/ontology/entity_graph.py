@@ -1,7 +1,5 @@
 """Build combined entity graph from ontology + corpus relations and compute centrality."""
 
-from __future__ import annotations
-
 import sqlite3
 from collections import defaultdict
 from dataclasses import dataclass

@@ -5,8 +5,6 @@ this one runs the full answer pipeline and judges synthesis quality via
 LLM-graded faithfulness, answer relevance, and context precision.
 """
 
-from __future__ import annotations
-
 import asyncio
 from pathlib import Path
 

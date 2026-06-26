@@ -11,8 +11,6 @@ Design boundary:
     belongs in :mod:`lxd.stores.schema` migrations.
 """
 
-from __future__ import annotations
-
 BASE_SCHEMA_DDL = """
 CREATE TABLE IF NOT EXISTS corpus_manifest (
     source_rel_path TEXT PRIMARY KEY,

@@ -4,8 +4,6 @@ Provides lazy client singletons, async call-with-fallback, concurrent extraction
 with sub-batch commits, prompt caching expansion, and OpenAI Batch API helpers.
 """
 
-from __future__ import annotations
-
 import asyncio
 import json
 import os

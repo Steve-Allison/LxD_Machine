@@ -1,7 +1,5 @@
 """Tests for `estimate_run_cost` (B-STACK-10)."""
 
-from __future__ import annotations
-
 from pathlib import Path
 from types import SimpleNamespace
 

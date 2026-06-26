@@ -6,8 +6,6 @@ Schema migration v7→v8 changed both ``entity_communities`` and
 column to anchor the hierarchy. These tests pin the resulting invariants.
 """
 
-from __future__ import annotations
-
 import sqlite3
 from pathlib import Path
 

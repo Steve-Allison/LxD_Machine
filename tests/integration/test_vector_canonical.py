@@ -9,8 +9,6 @@ Covers:
 3. ``load_vectors_by_chunk_ids`` returns the vectors persisted to LanceDB.
 """
 
-from __future__ import annotations
-
 from pathlib import Path
 
 import pytest

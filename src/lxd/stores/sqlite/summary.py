@@ -1,7 +1,5 @@
 """Aggregate corpus / chunk / mention counters and the public summary builder."""
 
-from __future__ import annotations
-
 import sqlite3
 
 from lxd.stores._sqlite_rows import row_value

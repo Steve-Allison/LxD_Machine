@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from pathlib import Path
 
 from lxd.settings.loader import load_runtime_config, resolve_repo_root

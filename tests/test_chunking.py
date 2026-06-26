@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import tiktoken
 
 from lxd.ingest.chunking import TextChunk, chunk_document, split_chunk_for_context

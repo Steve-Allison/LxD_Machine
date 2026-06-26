@@ -10,8 +10,6 @@ NUL bytes or newlines are rejected because LanceDB's parser cannot handle
 them unambiguously and they almost always indicate corrupted input.
 """
 
-from __future__ import annotations
-
 from collections.abc import Iterable
 
 _FORBIDDEN_CHARS: tuple[str, ...] = ("\x00", "\r", "\n")

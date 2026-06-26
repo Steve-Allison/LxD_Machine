@@ -12,8 +12,6 @@ Covers:
    closes the connection on context exit even if the caller raises.
 """
 
-from __future__ import annotations
-
 import sqlite3
 from pathlib import Path
 

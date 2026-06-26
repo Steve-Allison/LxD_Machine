@@ -1,7 +1,5 @@
 """Launch the MCP server process for corpus tools."""
 
-from __future__ import annotations
-
 import argparse
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager

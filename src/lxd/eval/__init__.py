@@ -8,8 +8,6 @@ Public entry point is :func:`run_quality_eval` plus the dataclasses in
 :mod:`lxd.eval.models`. The CLI lives at ``lxd.cli.eval_quality``.
 """
 
-from __future__ import annotations
-
 from lxd.eval.metrics import (
     compute_answer_relevance,
     compute_context_precision,

@@ -33,8 +33,6 @@ Format expectations (validated against the live wiki, 144/147 pages):
       are deliberately ignored.
 """
 
-from __future__ import annotations
-
 import re
 from dataclasses import dataclass
 

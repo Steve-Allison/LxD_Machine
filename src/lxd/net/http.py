@@ -15,8 +15,6 @@ Key constraints:
       do not leak file descriptors or sockets.
 """
 
-from __future__ import annotations
-
 import atexit
 import threading
 from dataclasses import dataclass

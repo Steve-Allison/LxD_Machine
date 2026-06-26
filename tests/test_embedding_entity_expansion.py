@@ -1,7 +1,5 @@
 """Tests for the embedding-based entity expansion lane (B-KG-3)."""
 
-from __future__ import annotations
-
 from pathlib import Path
 from types import SimpleNamespace
 from typing import cast

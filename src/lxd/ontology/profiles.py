@@ -1,7 +1,5 @@
 """Build deterministic entity profiles and optional LLM enrichment."""
 
-from __future__ import annotations
-
 import asyncio
 import json
 import sqlite3

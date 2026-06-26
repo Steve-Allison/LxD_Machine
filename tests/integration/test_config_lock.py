@@ -1,7 +1,5 @@
 """Regression tests for Wave 9 ``config.lock`` reconciliation."""
 
-from __future__ import annotations
-
 import logging
 from pathlib import Path
 

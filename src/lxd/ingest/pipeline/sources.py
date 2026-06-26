@@ -1,7 +1,5 @@
 """Per-source pipeline body: chunk → embed → mention/relation detect → assemble records."""
 
-from __future__ import annotations
-
 from collections.abc import Callable
 
 from lxd.domain.status import LifecycleStatus, RetrievalStatus

@@ -1,7 +1,5 @@
 """Tests for graph context token-budget truncation (B-KG-4)."""
 
-from __future__ import annotations
-
 import tiktoken
 
 from lxd.retrieval import graph_routing as _graph_routing

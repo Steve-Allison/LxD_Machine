@@ -1,7 +1,5 @@
 """Tests for async claim extraction via llm_client."""
 
-from __future__ import annotations
-
 import json
 from typing import Any
 

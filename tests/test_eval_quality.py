@@ -6,8 +6,6 @@ that's most likely to regress silently: rank-weighted precision math,
 harmonic-mean aggregation, golden set validation.
 """
 
-from __future__ import annotations
-
 import json
 from pathlib import Path
 

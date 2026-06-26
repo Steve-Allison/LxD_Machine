@@ -1,7 +1,5 @@
 """Tests for entity disambiguation (B-KG-2)."""
 
-from __future__ import annotations
-
 from lxd.ingest.mentions import detect_mentions
 from lxd.ontology.ambiguity import ambiguous_surface_forms_with_candidates
 from lxd.ontology.disambiguator import context_window

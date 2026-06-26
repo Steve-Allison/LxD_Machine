@@ -1,7 +1,5 @@
 """Tests for `tool=<name>` contextvar binding in `run_tool` (B-STACK-8)."""
 
-from __future__ import annotations
-
 import io
 import json
 

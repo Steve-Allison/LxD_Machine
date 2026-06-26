@@ -14,8 +14,6 @@ Two scales of partitioning:
     level below. ``persist_hierarchical_communities`` writes every level.
 """
 
-from __future__ import annotations
-
 import sqlite3
 from collections import Counter
 from dataclasses import dataclass, field

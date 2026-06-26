@@ -1,7 +1,5 @@
 """Tests for the Aho-Corasick matcher disk cache (B-ROBUST-2)."""
 
-from __future__ import annotations
-
 from pathlib import Path
 
 import ahocorasick

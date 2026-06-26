@@ -1,7 +1,5 @@
 """Corpus manifest + asset_links + per-source delete."""
 
-from __future__ import annotations
-
 import sqlite3
 from collections import defaultdict
 

@@ -6,8 +6,6 @@ annotation, image embeds, pipe-aliased links) without inventing or losing
 sources.
 """
 
-from __future__ import annotations
-
 from lxd.ingest.wiki_metadata import (
     WikiPageMetadata,
     extract_wiki_links,

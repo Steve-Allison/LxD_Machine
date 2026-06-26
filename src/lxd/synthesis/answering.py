@@ -13,8 +13,6 @@ Two modes:
   and the SOTA-plan strike of item ``[#4]``).
 """
 
-from __future__ import annotations
-
 import re
 from collections.abc import Iterator
 from dataclasses import dataclass, field

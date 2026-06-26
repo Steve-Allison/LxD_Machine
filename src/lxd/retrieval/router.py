@@ -26,8 +26,6 @@ prompt makes the model justify it. The breadth knob is bounded; the
 the literal into integer depths the retrieval layer understands.
 """
 
-from __future__ import annotations
-
 import asyncio
 import json
 from typing import Any, Literal, assert_never

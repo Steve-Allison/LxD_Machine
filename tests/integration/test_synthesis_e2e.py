@@ -21,8 +21,6 @@ What this test verifies:
   evidence?" assertion.
 """
 
-from __future__ import annotations
-
 import socket
 from urllib.parse import urlparse
 

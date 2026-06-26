@@ -6,8 +6,6 @@ ids per chunk, and that chunks without graph data degrade gracefully
 (absent from the result, callers default-fill).
 """
 
-from __future__ import annotations
-
 import sqlite3
 from pathlib import Path
 

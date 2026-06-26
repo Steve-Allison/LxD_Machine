@@ -1,7 +1,5 @@
 """Define MCP tools that expose corpus and ontology operations."""
 
-from __future__ import annotations
-
 from itertools import pairwise
 
 import networkx as nx

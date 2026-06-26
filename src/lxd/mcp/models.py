@@ -5,8 +5,6 @@ structured, schema-discoverable responses instead of opaque dicts. Every model
 is frozen and forbids extra keys to catch silent shape drift at the boundary.
 """
 
-from __future__ import annotations
-
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field

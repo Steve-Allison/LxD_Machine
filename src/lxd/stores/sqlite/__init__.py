@@ -14,4 +14,3 @@ Callers import from the specific submodule that owns the function:
 - :mod:`lxd.stores.sqlite.kg_relations` — canonical relations, relation_evidence, graph_build_state, graph_metadata.
 """
 
-from __future__ import annotations

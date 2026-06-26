@@ -17,8 +17,6 @@ Updating the golden file:
     output. CI never writes the file; any drift fails the build.
 """
 
-from __future__ import annotations
-
 import json
 from pathlib import Path
 from typing import Any

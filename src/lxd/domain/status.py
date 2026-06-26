@@ -1,7 +1,5 @@
 """Define lifecycle status enums for ingest, retrieval, and synthesis."""
 
-from __future__ import annotations
-
 from enum import StrEnum
 
 

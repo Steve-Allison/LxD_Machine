@@ -1,7 +1,5 @@
 """Shared pytest configuration hooks for the LxD test suite."""
 
-from __future__ import annotations
-
 import pytest
 
 

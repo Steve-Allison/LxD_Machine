@@ -7,8 +7,6 @@ dropped, valid markers retained in order, sentence boundaries
 preserved, markers stripped from display text.
 """
 
-from __future__ import annotations
-
 import pytest
 from pydantic import ValidationError
 

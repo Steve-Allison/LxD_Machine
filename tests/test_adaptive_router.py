@@ -7,8 +7,6 @@ CI — it's covered by the integration smoke ``pixi run mcp`` + a
 manual route.
 """
 
-from __future__ import annotations
-
 import pytest
 from pydantic import ValidationError
 

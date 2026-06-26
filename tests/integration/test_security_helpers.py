@@ -1,7 +1,5 @@
 """Regression tests for the Wave 9 security helpers."""
 
-from __future__ import annotations
-
 import pytest
 
 from lxd.observability.logging import scrub_secrets

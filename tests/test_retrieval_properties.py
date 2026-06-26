@@ -6,8 +6,6 @@ that are easy to break inadvertently when the fusion code is touched
 `_unique_source_prefix`, completeness of `_diversify_by_community`).
 """
 
-from __future__ import annotations
-
 import math
 from pathlib import Path
 

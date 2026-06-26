@@ -1,7 +1,5 @@
 """Tests for the per-thread SQLite connection pool."""
 
-from __future__ import annotations
-
 import threading
 from collections.abc import Generator
 from pathlib import Path

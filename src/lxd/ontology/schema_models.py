@@ -21,8 +21,6 @@ Key constraints:
     * Module must stay import-cheap; no heavy dependencies beyond Pydantic.
 """
 
-from __future__ import annotations
-
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, ValidationError

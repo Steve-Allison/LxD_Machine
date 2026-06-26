@@ -7,8 +7,6 @@ at a transient ``chunk_rows_v2_legacy`` table, so every per-file delete
 cascade failed with ``no such table: main.chunk_rows_v2_legacy``.
 """
 
-from __future__ import annotations
-
 import sqlite3
 
 import pytest

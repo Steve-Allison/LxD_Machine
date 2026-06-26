@@ -1,7 +1,5 @@
 """Graph-aware query routing — augment synthesis context with entity and community data."""
 
-from __future__ import annotations
-
 import sqlite3
 from dataclasses import dataclass
 from operator import attrgetter

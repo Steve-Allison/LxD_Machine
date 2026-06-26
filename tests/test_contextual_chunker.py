@@ -9,8 +9,6 @@ The chunker has three integration points exercised here:
   real LanceDB table (project no-mocks rule for internal stores).
 """
 
-from __future__ import annotations
-
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Any, cast

@@ -1,7 +1,5 @@
 """Tests for HyDE (Hypothetical Document Embeddings) query rewriting."""
 
-from __future__ import annotations
-
 from types import SimpleNamespace
 from typing import Any, cast
 

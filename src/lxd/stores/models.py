@@ -1,7 +1,5 @@
 """Define typed store-layer records used across persistence boundaries."""
 
-from __future__ import annotations
-
 from dataclasses import dataclass
 from pathlib import Path
 

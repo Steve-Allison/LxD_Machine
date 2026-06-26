@@ -21,8 +21,6 @@ real wall-clock for no benefit. If concurrent ingest is added later, the
 counter must be guarded.
 """
 
-from __future__ import annotations
-
 from dataclasses import dataclass
 
 from lxd.ingest.scanner import ScannedCorpusFile

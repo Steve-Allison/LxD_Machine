@@ -26,8 +26,6 @@ Why not SQLite?
     LanceDB lets us return the raw float lists directly.
 """
 
-from __future__ import annotations
-
 from dataclasses import dataclass
 from typing import Any
 

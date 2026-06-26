@@ -11,8 +11,6 @@ fails gracefully — :func:`make_disambiguator` returns ``None`` and the
 caller falls back to first-match behaviour.
 """
 
-from __future__ import annotations
-
 from collections.abc import Callable
 
 import structlog

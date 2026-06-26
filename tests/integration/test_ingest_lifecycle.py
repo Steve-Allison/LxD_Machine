@@ -13,8 +13,6 @@ Covers:
   stable.
 """
 
-from __future__ import annotations
-
 from pathlib import Path
 
 from lxd.ingest.pipeline.moves import resolve_document_id

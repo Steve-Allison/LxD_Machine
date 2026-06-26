@@ -24,8 +24,6 @@ Key constraints:
       check — so a half-migrated DB cannot proceed silently into ingest.
 """
 
-from __future__ import annotations
-
 import shutil
 import sqlite3
 from collections.abc import Callable

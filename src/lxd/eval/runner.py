@@ -14,8 +14,6 @@ Aggregates into an :class:`EvalReport` and returns it. Persistence and
 console rendering live in :mod:`lxd.eval.report`.
 """
 
-from __future__ import annotations
-
 import json
 from datetime import UTC, datetime
 from pathlib import Path

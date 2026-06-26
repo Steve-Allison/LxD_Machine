@@ -6,8 +6,6 @@ threshold semantics (last-call-allowed vs first-call-refused),
 unbounded-when-None, snapshot shape.
 """
 
-from __future__ import annotations
-
 import pytest
 
 from lxd.ingest.budget import BudgetExceededError, IngestBudgetTracker

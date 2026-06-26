@@ -1,7 +1,5 @@
 """Consolidate extracted relations into canonical triples and build evidence provenance."""
 
-from __future__ import annotations
-
 import sqlite3
 from collections import defaultdict
 from operator import attrgetter

@@ -1,7 +1,5 @@
 """Ontology state, ingest config snapshot, and committed-state probes."""
 
-from __future__ import annotations
-
 import sqlite3
 
 from lxd.stores._sqlite_rows import row_value

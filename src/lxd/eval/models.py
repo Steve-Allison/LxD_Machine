@@ -1,7 +1,5 @@
 """Typed data model for quality eval inputs, per-metric outputs, and reports."""
 
-from __future__ import annotations
-
 from pydantic import BaseModel, ConfigDict, Field
 
 

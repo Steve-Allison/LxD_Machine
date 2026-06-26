@@ -22,8 +22,6 @@ flaky run that already saw 2 systemic failures can trip on the very
 next failure rather than starting fresh from zero.
 """
 
-from __future__ import annotations
-
 import sqlite3
 from datetime import UTC, datetime
 from enum import Enum

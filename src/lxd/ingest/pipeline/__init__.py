@@ -14,4 +14,3 @@ Callers import from the specific submodule that owns the function:
   `can_skip_unchanged_source`, `resolve_document_id`, `clone_source_records`.
 """
 
-from __future__ import annotations

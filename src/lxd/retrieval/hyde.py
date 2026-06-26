@@ -19,8 +19,6 @@ caller then falls back to embedding the literal question, so HyDE
 turns into a no-op rather than breaking retrieval.
 """
 
-from __future__ import annotations
-
 import re
 
 import ollama

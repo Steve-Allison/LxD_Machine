@@ -20,8 +20,6 @@ as entity-graph edges. The chunk-row column already carries them
 through to retrieval and synthesis.
 """
 
-from __future__ import annotations
-
 from collections.abc import Iterable, Mapping
 from dataclasses import dataclass, field
 from pathlib import Path

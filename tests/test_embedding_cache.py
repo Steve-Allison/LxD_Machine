@@ -4,8 +4,6 @@ Cache key is ``(chunk_hash, embedding_model, embedding_dims)``. Hits avoid
 the API call; misses go through the live embedder and are stored back.
 """
 
-from __future__ import annotations
-
 from pathlib import Path
 
 from lxd.ingest.embedding_cache import lookup, open_cache_table, store

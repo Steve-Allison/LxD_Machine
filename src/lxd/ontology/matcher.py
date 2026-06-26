@@ -1,7 +1,5 @@
 """Build matcher terms and automata from ontology entries."""
 
-from __future__ import annotations
-
 import json
 import pickle
 from collections.abc import Iterable

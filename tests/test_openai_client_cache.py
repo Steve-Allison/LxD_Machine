@@ -1,7 +1,5 @@
 """Tests for the OpenAI client process-wide cache."""
 
-from __future__ import annotations
-
 from collections.abc import Generator
 
 import pytest

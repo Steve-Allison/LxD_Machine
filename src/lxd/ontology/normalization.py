@@ -1,7 +1,5 @@
 """Normalize ontology and query text for matching."""
 
-from __future__ import annotations
-
 import re
 
 _WHITESPACE_RE = re.compile(r"\s+")

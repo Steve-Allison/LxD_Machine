@@ -1,7 +1,5 @@
 """Aggregate per-question results into a summary, format for humans, persist history."""
 
-from __future__ import annotations
-
 import json
 from pathlib import Path
 

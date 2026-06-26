@@ -17,8 +17,6 @@ These tests fail on the pre-fix code (every profile rebuilt on float
 noise; every entity re-embedded on every run; stale rows never evicted).
 """
 
-from __future__ import annotations
-
 import sqlite3
 from collections.abc import Generator
 from pathlib import Path

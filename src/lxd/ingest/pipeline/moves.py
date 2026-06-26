@@ -1,7 +1,5 @@
 """Move-detection, unchanged-source skip, document-id resolution, and chunk cloning."""
 
-from __future__ import annotations
-
 import sqlite3
 from typing import Any
 

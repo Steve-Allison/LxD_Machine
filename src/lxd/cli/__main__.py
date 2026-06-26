@@ -1,7 +1,5 @@
 """Expose the top-level CLI entrypoint."""
 
-from __future__ import annotations
-
 import typer
 
 from lxd.cli.eval import eval_command

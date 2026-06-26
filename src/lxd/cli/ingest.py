@@ -9,8 +9,6 @@ inside ``build_graph_command`` still fires when ``--full`` is set —
 the auto-chain inherits, not replaces, that gate.
 """
 
-from __future__ import annotations
-
 from pathlib import Path
 
 import typer

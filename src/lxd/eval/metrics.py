@@ -17,8 +17,6 @@ plus the OpenAI client's own retry policy. Errors are swallowed into the
 score's ``error`` field so a single bad question doesn't poison the run.
 """
 
-from __future__ import annotations
-
 import json
 import math
 from collections.abc import Callable

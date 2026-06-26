@@ -8,8 +8,6 @@ on first use; we don't pay that cost in CI. The tests here exercise:
   - the config-validation surface
 """
 
-from __future__ import annotations
-
 import pytest
 
 from lxd.retrieval.colbert_reranker import maxsim_score

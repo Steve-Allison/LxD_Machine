@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from pathlib import Path
 
 from lxd.ontology.graph import direct_neighbors

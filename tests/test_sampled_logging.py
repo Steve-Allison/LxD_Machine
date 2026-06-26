@@ -1,7 +1,5 @@
 """Tests for the sampled-logging structlog processor (B-STACK-9)."""
 
-from __future__ import annotations
-
 import pytest
 import structlog
 

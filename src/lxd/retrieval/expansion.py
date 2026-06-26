@@ -1,7 +1,5 @@
 """Expand user questions with ontology-aware rewrite terms."""
 
-from __future__ import annotations
-
 from collections import deque
 from dataclasses import dataclass
 from typing import Any

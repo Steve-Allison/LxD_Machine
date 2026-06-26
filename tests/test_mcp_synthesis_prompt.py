@@ -1,7 +1,5 @@
 """Tests for the `lxd_synthesis_preamble` MCP prompt and the shared preamble (B-STACK-5)."""
 
-from __future__ import annotations
-
 import pytest
 from mcp.types import TextContent
 

@@ -1,7 +1,5 @@
 """Embedding helpers: cache lookup, contextual augmentation, context refinement, reindex."""
 
-from __future__ import annotations
-
 from collections.abc import Callable
 
 from lxd.domain.ids import make_chunk_id

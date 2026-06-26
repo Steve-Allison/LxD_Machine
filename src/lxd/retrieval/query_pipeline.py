@@ -1,7 +1,5 @@
 """Run retrieval and answer synthesis orchestration pipelines."""
 
-from __future__ import annotations
-
 import sqlite3
 from dataclasses import dataclass, replace
 

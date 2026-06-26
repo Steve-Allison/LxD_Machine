@@ -1,7 +1,5 @@
 """Regression tests for the batched embedding path introduced in Wave 5."""
 
-from __future__ import annotations
-
 from dataclasses import dataclass, field
 from types import SimpleNamespace
 from typing import cast

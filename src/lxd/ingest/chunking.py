@@ -1,7 +1,5 @@
 """Chunk normalized documents into retrieval-ready text segments."""
 
-from __future__ import annotations
-
 import json
 import re
 from collections.abc import Callable

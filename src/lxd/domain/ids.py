@@ -1,7 +1,5 @@
 """Generate stable identifiers and content keys used across ingestion."""
 
-from __future__ import annotations
-
 import unicodedata
 
 from blake3 import blake3

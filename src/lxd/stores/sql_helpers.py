@@ -18,8 +18,6 @@ Key constraints:
     * The helpers are deterministic and side-effect free.
 """
 
-from __future__ import annotations
-
 from collections.abc import Sequence
 
 

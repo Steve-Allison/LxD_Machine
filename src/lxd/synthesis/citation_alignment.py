@@ -24,8 +24,6 @@ Robustness:
     ``citation_labels``.
 """
 
-from __future__ import annotations
-
 import re
 
 from pydantic import BaseModel, ConfigDict, Field

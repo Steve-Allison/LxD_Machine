@@ -1,7 +1,5 @@
 """Entity profiles, entity communities, and community reports."""
 
-from __future__ import annotations
-
 import sqlite3
 
 from lxd.stores._sqlite_rows import (

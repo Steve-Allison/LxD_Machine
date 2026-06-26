@@ -13,8 +13,6 @@ the result map: the disambiguation lane is opt-in per surface form, so
 unambiguous matches incur zero overhead.
 """
 
-from __future__ import annotations
-
 from collections import defaultdict
 from collections.abc import Iterable
 

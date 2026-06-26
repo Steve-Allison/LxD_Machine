@@ -1,7 +1,5 @@
 """Tests for the `lxd://corpus/{path*}` MCP resource (B-STACK-4)."""
 
-from __future__ import annotations
-
 from pathlib import Path
 
 import pytest

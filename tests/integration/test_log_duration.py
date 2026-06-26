@@ -1,7 +1,5 @@
 """Regression tests for the ``log_duration`` context manager (Wave 8)."""
 
-from __future__ import annotations
-
 from typing import Any, cast
 
 import pytest

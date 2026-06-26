@@ -1,7 +1,5 @@
 """Connect / build-paths / initialize-schema / reset for the SQLite store."""
 
-from __future__ import annotations
-
 import sqlite3
 from pathlib import Path
 

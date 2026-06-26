@@ -31,8 +31,6 @@ us, or that the code-review pass flagged as "no test exists". A passing
 against the live corpus.
 """
 
-from __future__ import annotations
-
 import sqlite3
 import textwrap
 from collections.abc import Iterator

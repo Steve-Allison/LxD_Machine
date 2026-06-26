@@ -4,8 +4,6 @@ Uses the shared llm_client for async concurrency, prompt caching,
 and OpenAI Batch API support.
 """
 
-from __future__ import annotations
-
 import asyncio
 import json
 import os

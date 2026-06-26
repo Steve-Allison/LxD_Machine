@@ -1,7 +1,5 @@
 """Tests for the shared LLM client service."""
 
-from __future__ import annotations
-
 import asyncio
 import json
 from pathlib import Path

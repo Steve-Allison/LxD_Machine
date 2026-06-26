@@ -1,7 +1,5 @@
 """Detect ontology mentions in chunk text spans."""
 
-from __future__ import annotations
-
 from collections.abc import Callable
 from dataclasses import dataclass, replace
 from operator import attrgetter

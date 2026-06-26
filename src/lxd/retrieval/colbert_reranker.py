@@ -30,8 +30,6 @@ Performance note:
     ships within scope.
 """
 
-from __future__ import annotations
-
 from dataclasses import dataclass
 from threading import Lock
 from typing import TYPE_CHECKING, Any

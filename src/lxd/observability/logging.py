@@ -24,8 +24,6 @@ Key constraints:
       ``anyio.run(...)`` boundaries.
 """
 
-from __future__ import annotations
-
 import logging
 import sys
 import threading

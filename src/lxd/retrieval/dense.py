@@ -1,7 +1,5 @@
 """Generate dense query embeddings for vector retrieval."""
 
-from __future__ import annotations
-
 from lxd.ingest.embedder import (
     EmbeddingContextError,
     ModelProbeResult,

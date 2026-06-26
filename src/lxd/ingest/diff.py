@@ -1,7 +1,5 @@
 """Compare corpus scans to detect created, updated, and deleted files."""
 
-from __future__ import annotations
-
 from dataclasses import dataclass
 
 from lxd.ingest.scanner import ScannedCorpusFile

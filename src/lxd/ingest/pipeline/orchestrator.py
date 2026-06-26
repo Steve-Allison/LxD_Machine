@@ -1,7 +1,5 @@
 """Top-level ingest run orchestrator: plan, execute, persist, finish."""
 
-from __future__ import annotations
-
 import contextlib
 import json
 import sqlite3

@@ -25,8 +25,6 @@ Key constraints:
       ``retry_backoff`` (seconds, element-wise indexed by attempt).
 """
 
-from __future__ import annotations
-
 import os
 import threading
 import time

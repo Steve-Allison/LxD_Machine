@@ -1,7 +1,5 @@
 """Claims insert / load / count."""
 
-from __future__ import annotations
-
 import sqlite3
 
 from lxd.stores._sqlite_rows import claim_from_row, row_value

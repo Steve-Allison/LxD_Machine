@@ -6,8 +6,6 @@ that the canonical-row view (:func:`chunk_from_row`) reconstructs the lists
 into typed tuples.
 """
 
-from __future__ import annotations
-
 import sqlite3
 from pathlib import Path
 

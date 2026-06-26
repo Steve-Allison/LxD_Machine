@@ -1,7 +1,5 @@
 """Ingest run lifecycle: begin / progress-update / finish."""
 
-from __future__ import annotations
-
 import json
 import sqlite3
 

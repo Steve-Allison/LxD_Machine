@@ -9,8 +9,6 @@ These tests lock in the Wave 4 contract:
 * a callable that raises has its exception propagated unchanged.
 """
 
-from __future__ import annotations
-
 import time
 
 import anyio

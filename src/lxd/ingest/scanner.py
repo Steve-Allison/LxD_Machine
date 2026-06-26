@@ -1,7 +1,5 @@
 """Scan filesystem sources and derive metadata for ingest candidates."""
 
-from __future__ import annotations
-
 import hashlib
 from collections.abc import Iterator
 from dataclasses import dataclass

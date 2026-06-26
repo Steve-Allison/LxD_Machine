@@ -1,7 +1,5 @@
 """Tests for `embedding_cache.lookup` defensive-copy behaviour (B-PERF-4)."""
 
-from __future__ import annotations
-
 from pathlib import Path
 
 import lancedb

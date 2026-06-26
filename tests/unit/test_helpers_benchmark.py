@@ -7,8 +7,6 @@ showed up in the Wave 5 / Wave 9 profiling: batch ID escaping for LanceDB,
 payloads used by ``config.lock``.
 """
 
-from __future__ import annotations
-
 import pytest
 
 from lxd.domain.ids import blake3_hex

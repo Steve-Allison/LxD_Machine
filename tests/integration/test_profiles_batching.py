@@ -1,7 +1,5 @@
 """Regression tests for the Wave 5 N+1 fixes in ``ontology.profiles``."""
 
-from __future__ import annotations
-
 import sqlite3
 from collections.abc import Generator
 

@@ -5,8 +5,6 @@ Covers:
     * :class:`OntologyFileModel` validation on representative payloads.
 """
 
-from __future__ import annotations
-
 import pytest
 
 from lxd.ontology.schema_models import OntologyFileModel, validate_ontology_file

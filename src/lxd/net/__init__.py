@@ -8,4 +8,3 @@ return module-level singletons keyed on the relevant connection axis
 same pool.
 """
 
-from __future__ import annotations

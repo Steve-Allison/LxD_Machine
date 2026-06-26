@@ -1,7 +1,5 @@
 """Tests for the wiki-link → entity-graph relation derivation."""
 
-from __future__ import annotations
-
 from lxd.ingest.wiki_relations import (
     build_slug_index,
     derive_wiki_link_relations,

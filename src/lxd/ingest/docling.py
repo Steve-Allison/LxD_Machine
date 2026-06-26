@@ -1,7 +1,5 @@
 """Load and normalize rich documents through the Docling pipeline."""
 
-from __future__ import annotations
-
 from pathlib import Path
 
 from docling_core.types.doc.document import DoclingDocument

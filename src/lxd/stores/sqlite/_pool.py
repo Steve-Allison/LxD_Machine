@@ -12,8 +12,6 @@ through ``asyncio.to_thread`` (see :mod:`lxd.mcp.async_runtime`), whose
 underlying executor reuses worker threads, so the pool stays warm.
 """
 
-from __future__ import annotations
-
 import contextlib
 import sqlite3
 import threading

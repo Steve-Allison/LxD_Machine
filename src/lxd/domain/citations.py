@@ -1,7 +1,5 @@
 """Build normalized citation labels for retrieval evidence."""
 
-from __future__ import annotations
-
 
 def make_citation_label(source_rel_path: str, page_no: int | None = None) -> str:
     """Build a stable citation label from source path and optional page number.
