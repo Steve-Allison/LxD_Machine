@@ -1,9 +1,10 @@
 """Normalize ontology and query text for matching."""
 
 import re
+from typing import Final
 
-_WHITESPACE_RE = re.compile(r"\s+")
-_QUOTE_TRANSLATION = str.maketrans(
+_WHITESPACE_RE: Final = re.compile(r"\s+")
+_QUOTE_TRANSLATION: Final = str.maketrans(
     {
         "\u2018": "'",
         "\u2019": "'",

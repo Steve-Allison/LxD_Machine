@@ -27,7 +27,7 @@ Storage:
 
 import re
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Final
 
 import ollama
 import pyarrow as pa
@@ -37,11 +37,11 @@ from lxd.ingest.llm_client import get_ollama_client
 from lxd.settings.models import RuntimeConfig
 from lxd.stores.lance_sql import in_clause
 
-_TABLE_NAME = "contextual_summary_cache"
-_THINK_BLOCK_PATTERN = re.compile(r"<think>.*?</think>", flags=re.DOTALL)
+_TABLE_NAME: Final = "contextual_summary_cache"
+_THINK_BLOCK_PATTERN: Final = re.compile(r"<think>.*?</think>", flags=re.DOTALL)
 _log = structlog.get_logger(__name__)
 
-_CONTEXT_PROMPT = """\
+_CONTEXT_PROMPT: Final = """\
 You are a documentation indexer. A user will search a knowledge base.
 
 Given a CHUNK from a larger document, write ONE concise sentence that

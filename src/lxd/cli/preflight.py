@@ -21,6 +21,7 @@ Use ``pixi run preflight`` before any expensive operation.
 
 import sqlite3
 from pathlib import Path
+from typing import Final
 
 import typer
 
@@ -37,8 +38,8 @@ from lxd.stores.schema import (
 )
 from lxd.stores.sqlite.connection import build_store_paths, connect_sqlite
 
-PROFILE_OPTION = typer.Option(None, "--profile")
-CONFIG_OPTION = typer.Option(None, "--config", dir_okay=False, resolve_path=True)
+PROFILE_OPTION: Final = typer.Option(None, "--profile")
+CONFIG_OPTION: Final = typer.Option(None, "--config", dir_okay=False, resolve_path=True)
 
 
 def preflight_command(
@@ -169,5 +170,5 @@ def _count_rows(table: object) -> int:
         return -1
     try:
         return int(counter())
-    except Exception:
+    except (TypeError, ValueError):
         return -1

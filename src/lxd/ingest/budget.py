@@ -22,6 +22,7 @@ counter must be guarded.
 """
 
 from dataclasses import dataclass
+from typing import Final
 
 from lxd.ingest.scanner import ScannedCorpusFile
 from lxd.settings.models import IngestBudget, RuntimeConfig
@@ -38,15 +39,15 @@ _OPENAI_PRICES_PER_MILLION_USD: dict[str, float] = {
 # Conservative average tokens per relation-extraction LLM call. Prompt
 # carries chunk text + entity list + system message; completion is a
 # small structured-relation list.
-_DEFAULT_RELATION_PROMPT_TOKENS = 2_000
-_DEFAULT_RELATION_COMPLETION_TOKENS = 500
+_DEFAULT_RELATION_PROMPT_TOKENS: Final = 2_000
+_DEFAULT_RELATION_COMPLETION_TOKENS: Final = 500
 
 # Char-per-token ratio for English-prose corpora; OpenAI's tokeniser
 # averages ~4 chars per token on natural English, slightly less on
 # Markdown headings and code blocks. We round to 4 for simplicity and
 # under-count by ~3-5% on pure prose, which leans the estimate
 # **upwards** on mixed content (safer for a "cost ceiling" framing).
-_CHARS_PER_TOKEN = 4
+_CHARS_PER_TOKEN: Final = 4
 
 
 @dataclass(frozen=True, slots=True)

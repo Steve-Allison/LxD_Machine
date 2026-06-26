@@ -7,6 +7,7 @@ LLM-graded faithfulness, answer relevance, and context precision.
 
 import asyncio
 from pathlib import Path
+from typing import Final
 
 import typer
 
@@ -19,21 +20,21 @@ from lxd.eval import (
 )
 from lxd.eval.report import write_report_json
 
-PROFILE_OPTION = typer.Option(None, "--profile")
-CONFIG_OPTION = typer.Option(None, "--config", dir_okay=False, resolve_path=True)
-GOLDEN_OPTION = typer.Option(
+PROFILE_OPTION: Final = typer.Option(None, "--profile")
+CONFIG_OPTION: Final = typer.Option(None, "--config", dir_okay=False, resolve_path=True)
+GOLDEN_OPTION: Final = typer.Option(
     None,
     "--golden",
     dir_okay=False,
     resolve_path=True,
     help="Path to the golden quality set (defaults to tests/eval/golden_quality_set.json).",
 )
-JUDGE_MODEL_OPTION = typer.Option(
+JUDGE_MODEL_OPTION: Final = typer.Option(
     "gpt-4o-mini",
     "--judge-model",
     help="OpenAI chat model used as the eval judge.",
 )
-OUT_OPTION = typer.Option(
+OUT_OPTION: Final = typer.Option(
     None,
     "--out",
     dir_okay=False,

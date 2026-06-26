@@ -3,7 +3,7 @@
 import sqlite3
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Final
 from uuid import uuid4
 
 import structlog
@@ -70,7 +70,7 @@ _log = structlog.get_logger(__name__)
 _console = Console()
 
 # Phase execution order (serial default)
-_PHASE_ORDER = [
+_PHASE_ORDER: Final = [
     "evidence",
     "claims",
     "entity_graph",
@@ -81,17 +81,17 @@ _PHASE_ORDER = [
     "complete",
 ]
 
-_LLM_ENRICHMENT_PHASE = "llm_enrichment"
+_LLM_ENRICHMENT_PHASE: Final = "llm_enrichment"
 
-_FULL_OPTION = typer.Option(False, "--full", help="Force regeneration of all phases")
-_ENRICH_OPTION = typer.Option(False, "--enrich", help="Include optional LLM enrichment")
-_DRY_RUN_OPTION = typer.Option(False, "--dry-run", help="Preview without writing")
-_BATCH_OPTION = typer.Option(
+_FULL_OPTION: Final = typer.Option(False, "--full", help="Force regeneration of all phases")
+_ENRICH_OPTION: Final = typer.Option(False, "--enrich", help="Include optional LLM enrichment")
+_DRY_RUN_OPTION: Final = typer.Option(False, "--dry-run", help="Preview without writing")
+_BATCH_OPTION: Final = typer.Option(
     False, "--batch", help="Submit claims to OpenAI Batch API instead of async"
 )
-_PHASE_OPTION = typer.Option(None, "--phase", help="Run only a specific phase")
-_PROFILE_OPTION = typer.Option(None, "--profile", help="Config profile name")
-_CONFIG_OPTION = typer.Option(None, "--config", help="Config file path")
+_PHASE_OPTION: Final = typer.Option(None, "--phase", help="Run only a specific phase")
+_PROFILE_OPTION: Final = typer.Option(None, "--profile", help="Config profile name")
+_CONFIG_OPTION: Final = typer.Option(None, "--config", help="Config file path")
 
 
 def build_graph_command(
@@ -657,7 +657,7 @@ def _compute_entity_embeddings(
 # Batch API commands
 # ---------------------------------------------------------------------------
 
-_BATCH_ID_ARG = typer.Argument(help="OpenAI batch ID to collect or check")
+_BATCH_ID_ARG: Final = typer.Argument(help="OpenAI batch ID to collect or check")
 
 
 def collect_batch_command(

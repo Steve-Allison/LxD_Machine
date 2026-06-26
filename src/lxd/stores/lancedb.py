@@ -2,7 +2,7 @@
 
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, Final
 
 import lancedb
 import pyarrow as pa
@@ -11,8 +11,8 @@ import structlog
 from lxd.stores.lance_sql import eq_clause, in_clause
 from lxd.stores.models import ChunkRecord, VectorSearchRecord
 
-_TABLE_NAME = "chunk_vectors"
-_FTS_FIELD = "text"
+_TABLE_NAME: Final = "chunk_vectors"
+_FTS_FIELD: Final = "text"
 _log = structlog.get_logger(__name__)
 
 
@@ -320,7 +320,7 @@ def _chunk_record_to_row(record: ChunkRecord) -> dict[str, object]:
 # Entity embeddings table
 # ---------------------------------------------------------------------------
 
-_ENTITY_TABLE_NAME = "entity_embeddings"
+_ENTITY_TABLE_NAME: Final = "entity_embeddings"
 
 
 def open_entity_table(database: Any, *, vector_size: int) -> Any:

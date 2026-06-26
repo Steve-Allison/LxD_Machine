@@ -16,6 +16,7 @@ Two modes:
 import re
 from collections.abc import Iterator
 from dataclasses import dataclass, field
+from typing import Final
 
 import ollama
 
@@ -24,14 +25,14 @@ from lxd.ingest.llm_client import get_ollama_client
 from lxd.settings.models import RuntimeConfig
 from lxd.synthesis.citation_alignment import SentenceCitation, align_citations
 
-_THINK_BLOCK_PATTERN = re.compile(r"<think>.*?</think>", flags=re.DOTALL)
+_THINK_BLOCK_PATTERN: Final = re.compile(r"<think>.*?</think>", flags=re.DOTALL)
 
 
 # Public, single source of truth for the synthesis preamble. Extracted so
 # the MCP Prompt resource (`mcp/prompts.py`) can surface the exact text
 # that gets prepended to every synthesis prompt without duplication —
 # clients auditing the system see the same instructions the model sees.
-SYNTHESIS_PREAMBLE_BASE = (
+SYNTHESIS_PREAMBLE_BASE: Final = (
     "Answer the question using only the evidence below.\n"
     "If the evidence is insufficient, say so plainly.\n"
     "Do not invent facts.\n"
@@ -43,14 +44,14 @@ SYNTHESIS_PREAMBLE_BASE = (
     '"X is Y [chunk_a] [chunk_b]."). A sentence with no citable evidence\n'
     "MUST end with no marker — never fabricate one to satisfy the format.\n"
 )
-SYNTHESIS_PREAMBLE_TRANSITIVE_SOURCES = (
+SYNTHESIS_PREAMBLE_TRANSITIVE_SOURCES: Final = (
     "\nEvidence chunks may include a ``Sources:`` line listing the underlying\n"
     "research files the chunk was synthesised from. When such sources are\n"
     "present, your citations should reference both the chunk citation label\n"
     "AND the underlying sources transitively, e.g.\n"
     '"[citation_label] (citing source_a.md, source_b.pdf)".\n'
 )
-SYNTHESIS_PREAMBLE_GRAPH_CONTEXT = (
+SYNTHESIS_PREAMBLE_GRAPH_CONTEXT: Final = (
     "\nThe graph context below provides structured knowledge about entities,\n"
     "communities, and claims relevant to the question. Use it to frame your\n"
     "answer but ground all facts in the source evidence.\n"

@@ -10,6 +10,7 @@ the auto-chain inherits, not replaces, that gate.
 """
 
 from pathlib import Path
+from typing import Final
 
 import typer
 
@@ -17,8 +18,8 @@ from lxd.app.bootstrap import bootstrap_app
 from lxd.cli.graph import build_graph_command
 from lxd.ingest.pipeline.orchestrator import run_ingest
 
-PROFILE_OPTION = typer.Option(None, "--profile")
-CONFIG_OPTION = typer.Option(None, "--config", dir_okay=False, resolve_path=True)
+PROFILE_OPTION: Final = typer.Option(None, "--profile")
+CONFIG_OPTION: Final = typer.Option(None, "--config", dir_okay=False, resolve_path=True)
 
 
 def ingest_command(

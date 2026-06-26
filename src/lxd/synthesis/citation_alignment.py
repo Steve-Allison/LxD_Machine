@@ -25,6 +25,7 @@ Robustness:
 """
 
 import re
+from typing import Final
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -47,13 +48,13 @@ class SentenceCitation(BaseModel):
 
 # Match anything resembling [label] where label is non-greedy and contains
 # no newline or nested brackets. We validate against the known set later.
-_CITATION_MARKER_RE = re.compile(r"\[([^\[\]\n]+)\]")
+_CITATION_MARKER_RE: Final = re.compile(r"\[([^\[\]\n]+)\]")
 
 # Sentence splitter: end-of-sentence punctuation followed by whitespace and
 # either end-of-text or a capital letter / opening bracket / digit. This
 # misses edge cases (e.g. abbreviations), but is good enough for
 # typical RAG-synthesised prose.
-_SENTENCE_SPLIT_RE = re.compile(r"(?<=[.!?])\s+(?=[A-Z\[\(0-9])")
+_SENTENCE_SPLIT_RE: Final = re.compile(r"(?<=[.!?])\s+(?=[A-Z\[\(0-9])")
 
 
 def align_citations(

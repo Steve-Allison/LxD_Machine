@@ -20,6 +20,7 @@ turns into a no-op rather than breaking retrieval.
 """
 
 import re
+from typing import Final
 
 import ollama
 import structlog
@@ -27,10 +28,10 @@ import structlog
 from lxd.ingest.llm_client import get_ollama_client
 from lxd.settings.models import RuntimeConfig
 
-_THINK_BLOCK_PATTERN = re.compile(r"<think>.*?</think>", flags=re.DOTALL)
+_THINK_BLOCK_PATTERN: Final = re.compile(r"<think>.*?</think>", flags=re.DOTALL)
 _log = structlog.get_logger(__name__)
 
-_HYDE_PROMPT = """\
+_HYDE_PROMPT: Final = """\
 You are answering a knowledge-base search query.
 
 Write a concise, plausible answer to the question below. Use the

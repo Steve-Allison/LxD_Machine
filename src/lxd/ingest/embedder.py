@@ -33,13 +33,14 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from itertools import batched, chain
 from operator import attrgetter
+from typing import Final
 
 import ollama
 import openai
 
 from lxd.settings.models import RuntimeConfig
 
-_OPENAI_RESPONSE_INDEX = attrgetter("index")
+_OPENAI_RESPONSE_INDEX: Final = attrgetter("index")
 
 _openai_client_cache: dict[str, openai.OpenAI] = {}
 _openai_client_lock = threading.Lock()

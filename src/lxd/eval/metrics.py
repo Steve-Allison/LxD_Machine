@@ -20,7 +20,7 @@ score's ``error`` field so a single bad question doesn't poison the run.
 import json
 import math
 from collections.abc import Callable
-from typing import Any
+from typing import Any, Final
 
 import structlog
 
@@ -43,7 +43,7 @@ _JSON_RESPONSE_FORMAT: dict[str, str] = {"type": "json_object"}
 # Faithfulness
 # ---------------------------------------------------------------------------
 
-_CLAIM_EXTRACTION_PROMPT = """\
+_CLAIM_EXTRACTION_PROMPT: Final = """\
 You decompose answers into atomic verifiable claims.
 
 Given an ANSWER, return a JSON object with a single key ``claims`` whose value
@@ -59,7 +59,7 @@ If the answer makes zero verifiable claims (e.g. "I don't know"), return
 ``{"claims": []}``.
 """
 
-_CLAIM_VERIFY_PROMPT = """\
+_CLAIM_VERIFY_PROMPT: Final = """\
 You judge whether a CLAIM is supported by a set of CONTEXT passages.
 
 Rules:
@@ -188,7 +188,7 @@ def _join_contexts(contexts: list[str]) -> str:
 # Answer relevance
 # ---------------------------------------------------------------------------
 
-_QUESTION_GENERATION_PROMPT = """\
+_QUESTION_GENERATION_PROMPT: Final = """\
 You generate questions that an ANSWER could plausibly be answering.
 
 Given an ANSWER, return a JSON object with one key ``questions`` whose value
@@ -309,7 +309,7 @@ def _cosine(a: list[float], b: list[float]) -> float:
 # Context precision
 # ---------------------------------------------------------------------------
 
-_CONTEXT_RELEVANCE_PROMPT = """\
+_CONTEXT_RELEVANCE_PROMPT: Final = """\
 You judge whether a CONTEXT passage is relevant to a QUESTION.
 
 A passage is "relevant" if it contains information that would help answer the

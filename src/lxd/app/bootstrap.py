@@ -3,6 +3,7 @@
 import json
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Final
 
 import structlog
 from dotenv import load_dotenv
@@ -14,7 +15,7 @@ from lxd.settings.models import RuntimeConfig
 
 _log = structlog.get_logger(__name__)
 
-_CONFIG_LOCK_FILENAME = "config.lock"
+_CONFIG_LOCK_FILENAME: Final = "config.lock"
 
 
 @dataclass(frozen=True, slots=True)

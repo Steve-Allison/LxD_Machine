@@ -25,6 +25,7 @@ next failure rather than starting fresh from zero.
 import sqlite3
 from datetime import UTC, datetime
 from enum import Enum
+from typing import Final
 
 
 class ErrorClass(Enum):
@@ -35,7 +36,7 @@ class ErrorClass(Enum):
     SYSTEMIC = "systemic"
 
 
-_SYSTEMIC_SQLITE_PATTERNS = (
+_SYSTEMIC_SQLITE_PATTERNS: Final = (
     "no such table",
     "no such column",
     "schema integrity check failed",
@@ -46,7 +47,7 @@ _SYSTEMIC_SQLITE_PATTERNS = (
     "no space left on device",
 )
 
-_TRANSIENT_OS_ERRNOS = frozenset(
+_TRANSIENT_OS_ERRNOS: Final = frozenset(
     {
         # Connection issues that look like network blips
         110,  # ETIMEDOUT
@@ -118,7 +119,7 @@ class CircuitBreakerTripped(RuntimeError):
         self.last_error = last_error
 
 
-_DEFAULT_SCOPE = "ingest_default"
+_DEFAULT_SCOPE: Final = "ingest_default"
 
 
 class PersistentCircuitBreaker:

@@ -4,7 +4,7 @@ import asyncio
 import json
 import sqlite3
 from datetime import UTC, datetime
-from typing import Any
+from typing import Any, Final
 
 import structlog
 
@@ -13,6 +13,7 @@ from lxd.ingest.llm_client import call_with_fallback_async, run_concurrent_extra
 from lxd.ontology.entity_graph import CentralityScores
 from lxd.settings.models import RuntimeConfig
 from lxd.stores.models import CommunityReportRecord, EntityProfileRecord
+from lxd.stores.sql_helpers import in_clause
 from lxd.stores.sqlite.chunks import load_entity_mention_stats
 from lxd.stores.sqlite.claims import load_claims_for_entities
 from lxd.stores.sqlite.kg_profiles import (
@@ -252,10 +253,10 @@ def build_community_reports(
         # re-enrichment on every report regardless of whether anything had
         # actually changed; the early skip stops the cascade.
         if sorted_members:
-            placeholders = ",".join("?" * len(sorted_members))
+            placeholders = in_clause(len(sorted_members))
             hash_rows = connection.execute(
                 f"SELECT entity_id, source_hash FROM entity_profiles "
-                f"WHERE entity_id IN ({placeholders})",
+                f"WHERE entity_id IN {placeholders}",
                 sorted_members,
             ).fetchall()
             member_hashes = [str(row["source_hash"]) for row in hash_rows]
@@ -298,12 +299,13 @@ def build_community_reports(
         top_claims = [{"claim_text": c.claim_text, "confidence": c.confidence} for c in claims[:5]]
 
         # Intra-community edge count
+        member_placeholders = in_clause(len(member_ids))
         intra_edges = connection.execute(
-            """
+            f"""
             SELECT COUNT(*) AS cnt FROM relations
-            WHERE subject_entity_id IN ({placeholders})
-              AND object_entity_id IN ({placeholders})
-            """.format(placeholders=",".join("?" * len(member_ids))),
+            WHERE subject_entity_id IN {member_placeholders}
+              AND object_entity_id IN {member_placeholders}
+            """,
             [*member_ids, *member_ids],
         ).fetchone()
         intra_edge_count = int(intra_edges["cnt"]) if intra_edges else 0
@@ -354,7 +356,7 @@ def enrich_entity_profiles_with_llm(
     return asyncio.run(_enrich_async(connection, config, force=force))
 
 
-_ENRICHMENT_SYSTEM_PROMPT = (
+_ENRICHMENT_SYSTEM_PROMPT: Final = (
     "You are an expert in instructional design and learning science. "
     "Write clear, informative summaries."
 )

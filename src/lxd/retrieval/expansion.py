@@ -1,5 +1,6 @@
 """Expand user questions with ontology-aware rewrite terms."""
 
+import sqlite3
 from collections import deque
 from dataclasses import dataclass
 from typing import Any
@@ -106,7 +107,9 @@ def _expand_from_corpus(config: RuntimeConfig, entity_ids: list[str]) -> list[st
             )
         finally:
             connection.close()
-    except Exception:
+    except sqlite3.DatabaseError:
+        # Corpus DB exists but is unreadable / mid-build / corrupted —
+        # treat the expansion as a no-op rather than failing the query.
         return []
 
 

@@ -18,10 +18,11 @@ Key constraints:
 import atexit
 import threading
 from dataclasses import dataclass
+from typing import Final
 
 import httpx
 
-_DEFAULT_LIMITS = httpx.Limits(
+_DEFAULT_LIMITS: Final = httpx.Limits(
     max_keepalive_connections=20,
     max_connections=40,
     keepalive_expiry=30.0,

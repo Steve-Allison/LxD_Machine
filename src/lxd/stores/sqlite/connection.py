@@ -2,11 +2,12 @@
 
 import sqlite3
 from pathlib import Path
+from typing import Final
 
 from lxd.stores.models import StorePaths
 from lxd.stores.schema import ensure_schema
 
-_SQLITE_FILENAME = "lxd.sqlite3"
+_SQLITE_FILENAME: Final = "lxd.sqlite3"
 
 
 def connect_sqlite(path: Path) -> sqlite3.Connection:

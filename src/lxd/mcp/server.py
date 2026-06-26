@@ -5,7 +5,7 @@ from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Annotated, Literal
+from typing import Annotated, Final, Literal
 
 from fastmcp import Context, FastMCP
 from mcp.types import ToolAnnotations
@@ -66,11 +66,11 @@ from lxd.synthesis.answering import synthesis_preamble
 #                 calls (ingest may run while the server is up).
 #   LLM         — open-world AND non-deterministic because answer synthesis
 #                 calls an LLM.
-_HINT_IDEMPOTENT = ToolAnnotations(readOnlyHint=True, idempotentHint=True, openWorldHint=False)
-_HINT_OPEN_WORLD = ToolAnnotations(readOnlyHint=True, idempotentHint=False, openWorldHint=True)
-_HINT_LLM = ToolAnnotations(readOnlyHint=True, idempotentHint=False, openWorldHint=True)
+_HINT_IDEMPOTENT: Final = ToolAnnotations(readOnlyHint=True, idempotentHint=True, openWorldHint=False)
+_HINT_OPEN_WORLD: Final = ToolAnnotations(readOnlyHint=True, idempotentHint=False, openWorldHint=True)
+_HINT_LLM: Final = ToolAnnotations(readOnlyHint=True, idempotentHint=False, openWorldHint=True)
 
-_LIFESPAN_KEY = "lxd"
+_LIFESPAN_KEY: Final = "lxd"
 
 
 @dataclass(frozen=True, slots=True)

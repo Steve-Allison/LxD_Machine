@@ -29,12 +29,13 @@ import sqlite3
 from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import Final
 
 from lxd.stores._base_ddl import BASE_SCHEMA_DDL
 
 Migration = Callable[[sqlite3.Connection], None]
 
-CURRENT_SCHEMA_VERSION = 9
+CURRENT_SCHEMA_VERSION: Final = 9
 
 
 class SchemaIntegrityError(sqlite3.DatabaseError):

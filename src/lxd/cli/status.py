@@ -2,6 +2,7 @@
 
 import json
 from pathlib import Path
+from typing import Final
 
 import typer
 
@@ -10,8 +11,8 @@ from lxd.app.status import load_committed_status
 from lxd.ingest.pipeline.orchestrator import build_ingest_plan
 from lxd.stores.sqlite.connection import build_store_paths, connect_sqlite, initialize_schema
 
-PROFILE_OPTION = typer.Option(None, "--profile")
-CONFIG_OPTION = typer.Option(None, "--config", dir_okay=False, resolve_path=True)
+PROFILE_OPTION: Final = typer.Option(None, "--profile")
+CONFIG_OPTION: Final = typer.Option(None, "--config", dir_okay=False, resolve_path=True)
 
 
 def status_command(

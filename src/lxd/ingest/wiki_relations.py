@@ -23,13 +23,13 @@ through to retrieval and synthesis.
 from collections.abc import Iterable, Mapping
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
+from typing import Any, Final
 
 from lxd.domain.ids import blake3_hex
 from lxd.stores.models import ChunkRecord, ExtractedRelationRecord
 
-_WIKI_REFERENCES_PREDICATE = "wiki_references"
-_WIKI_RELATION_MODEL = "wiki_metadata"
+_WIKI_REFERENCES_PREDICATE: Final = "wiki_references"
+_WIKI_RELATION_MODEL: Final = "wiki_metadata"
 
 
 @dataclass(frozen=True, slots=True)

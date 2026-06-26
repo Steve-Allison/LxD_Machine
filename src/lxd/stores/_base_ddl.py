@@ -1,3 +1,5 @@
+from typing import Final
+
 """Static DDL for the baseline LxD SQLite schema.
 
 Responsibility:
@@ -11,7 +13,7 @@ Design boundary:
     belongs in :mod:`lxd.stores.schema` migrations.
 """
 
-BASE_SCHEMA_DDL = """
+BASE_SCHEMA_DDL: Final = """
 CREATE TABLE IF NOT EXISTS corpus_manifest (
     source_rel_path TEXT PRIMARY KEY,
     absolute_path TEXT NOT NULL,

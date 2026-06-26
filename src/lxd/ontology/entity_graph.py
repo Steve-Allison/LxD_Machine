@@ -124,7 +124,9 @@ def _compute_centrality(graph: nx.MultiDiGraph) -> dict[str, CentralityScores]:
     _log.info("computing eigenvector centrality (numpy)")
     try:
         eigenvector: dict[Any, float] = nx.eigenvector_centrality_numpy(graph)
-    except Exception as exc:
+    except (nx.NetworkXException, ArithmeticError) as exc:
+        # nx raises PowerIterationFailedConvergence on degenerate graphs;
+        # NumPy/SciPy can raise LinAlgError → ArithmeticError on singular matrices.
         _log.warning("eigenvector centrality failed, using zeros: %s", exc)
         eigenvector = {node: 0.0 for node in graph.nodes()}
 

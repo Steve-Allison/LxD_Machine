@@ -1,14 +1,15 @@
 """Implement the CLI command for retrieval evaluation."""
 
 from pathlib import Path
+from typing import Final
 
 import typer
 
 from lxd.app.bootstrap import bootstrap_app
 from lxd.retrieval.eval import load_eval_cases, run_eval
 
-PROFILE_OPTION = typer.Option(None, "--profile")
-CONFIG_OPTION = typer.Option(None, "--config", dir_okay=False, resolve_path=True)
+PROFILE_OPTION: Final = typer.Option(None, "--profile")
+CONFIG_OPTION: Final = typer.Option(None, "--config", dir_okay=False, resolve_path=True)
 
 
 def eval_command(

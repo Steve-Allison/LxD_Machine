@@ -2,6 +2,7 @@
 
 import sqlite3
 from dataclasses import dataclass, replace
+from typing import Final
 
 import structlog
 
@@ -44,11 +45,11 @@ from lxd.synthesis.answering import (
 
 _log = structlog.get_logger(__name__)
 
-_MAX_LIMIT = 50
-_MIN_EVIDENCE_CHUNKS = 2
-_MIN_EVIDENCE_CHARS = 400
-_RRF_K = 20
-_FTS_OVERFETCH_MULTIPLIER = 3
+_MAX_LIMIT: Final = 50
+_MIN_EVIDENCE_CHUNKS: Final = 2
+_MIN_EVIDENCE_CHARS: Final = 400
+_RRF_K: Final = 20
+_FTS_OVERFETCH_MULTIPLIER: Final = 3
 
 
 @dataclass(frozen=True, slots=True)

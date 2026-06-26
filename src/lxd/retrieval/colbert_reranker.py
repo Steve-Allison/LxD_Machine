@@ -32,7 +32,7 @@ Performance note:
 
 from dataclasses import dataclass
 from threading import Lock
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Final
 
 import structlog
 
@@ -51,7 +51,7 @@ class ColbertScored:
     score: float
 
 
-_MODEL_CACHE_LOCK = Lock()
+_MODEL_CACHE_LOCK: Final = Lock()
 _MODEL_CACHE: dict[str, _ColbertModel] = {}
 
 

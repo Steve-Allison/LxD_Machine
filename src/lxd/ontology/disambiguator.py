@@ -91,7 +91,7 @@ def make_disambiguator(
             return None
         try:
             query_vector = embed_query(config, window_text)
-        except Exception as exc:
+        except (RuntimeError, ConnectionError, TimeoutError, ValueError) as exc:
             _log.debug("disambiguator_embed_failed", error=str(exc))
             return None
         try:

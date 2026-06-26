@@ -35,23 +35,24 @@ Format expectations (validated against the live wiki, 144/147 pages):
 
 import re
 from dataclasses import dataclass
+from typing import Final
 
-_FRONTMATTER_FIELD_RE = re.compile(
+_FRONTMATTER_FIELD_RE: Final = re.compile(
     r"^\*\*(?P<key>Summary|Scope|Sources|Last updated|Last reviewed)\*\*:\s*(?P<value>.*?)\s*$",
     re.MULTILINE,
 )
 
-_FILE_EXTENSION_GROUP = r"(?:\.md|\.pdf|\.docx|\.json|\.txt)"
+_FILE_EXTENSION_GROUP: Final = r"(?:\.md|\.pdf|\.docx|\.json|\.txt)"
 
 # Annotations only count when they FOLLOW a file extension — that's how the
 # wiki distinguishes "filename includes parens" (e.g. "x (LX) Design.pdf")
 # from "filename + post-citation note" (e.g. "x.md (source about VARK)").
-_PAREN_ANNOTATION_RE = re.compile(rf"({_FILE_EXTENSION_GROUP})\s*\([^)]*\)", re.IGNORECASE)
+_PAREN_ANNOTATION_RE: Final = re.compile(rf"({_FILE_EXTENSION_GROUP})\s*\([^)]*\)", re.IGNORECASE)
 
 # Match [[slug]] or [[slug|alias]] but NOT ![[file]] (image embed) or [[#anchor]].
 # - Negative lookbehind for "!" to skip image embeds.
 # - First captured chunk is the slug; alias after a pipe is ignored.
-_WIKILINK_RE = re.compile(r"(?<!\!)\[\[(?!#)([^\[\]\|#]+?)(?:\|[^\[\]]*)?\]\]")
+_WIKILINK_RE: Final = re.compile(r"(?<!\!)\[\[(?!#)([^\[\]\|#]+?)(?:\|[^\[\]]*)?\]\]")
 
 
 @dataclass(frozen=True, slots=True)

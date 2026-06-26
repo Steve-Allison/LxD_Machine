@@ -4,7 +4,7 @@ import re
 from collections import Counter
 from collections.abc import Mapping
 from dataclasses import dataclass
-from typing import Any, Literal
+from typing import Any, Final, Literal
 
 OntologyKeyClassification = Literal[
     "graph_input",
@@ -12,7 +12,7 @@ OntologyKeyClassification = Literal[
     "metadata_input",
 ]
 
-_GRAPH_PATH_PATTERNS = (
+_GRAPH_PATH_PATTERNS: Final = (
     re.compile(r"^_meta\.relationships(?:\.|$)"),
     re.compile(r"^file_relationships(?:\.|$)"),
     re.compile(r"^entity_relations(?:\.|$)"),
@@ -25,7 +25,7 @@ _GRAPH_PATH_PATTERNS = (
     re.compile(r"^entity_types\.[^.]+\.validate_against_taxonomy(?:\.|$)"),
 )
 
-_MATCHER_PATH_PATTERNS = (
+_MATCHER_PATH_PATTERNS: Final = (
     re.compile(r"^entity_types\.[^.]+\.canonical_id(?:\.|$)"),
     re.compile(r"^entity_types\.[^.]+\.aliases(?:\.|$)"),
     re.compile(r"^entity_types\.[^.]+\.indicators(?:\.|$)"),

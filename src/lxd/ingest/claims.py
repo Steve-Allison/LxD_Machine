@@ -9,7 +9,7 @@ import json
 import sqlite3
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, assert_never
+from typing import Any, Final, assert_never
 
 import structlog
 
@@ -29,9 +29,9 @@ from lxd.stores.sqlite.kg_relations import upsert_graph_metadata
 
 _log = structlog.get_logger(__name__)
 
-_VALID_CLAIM_TYPES = frozenset({"assertion", "definition", "comparison", "causal", "procedural"})
+_VALID_CLAIM_TYPES: Final = frozenset({"assertion", "definition", "comparison", "causal", "procedural"})
 
-_CLAIM_BASE_PROMPT = """You are a knowledge graph builder specialising in learning experience design (LxD), instructional design, and educational theory.
+_CLAIM_BASE_PROMPT: Final = """You are a knowledge graph builder specialising in learning experience design (LxD), instructional design, and educational theory.
 
 Given a text chunk and a list of entity IDs found in that text, extract factual assertions (claims).
 

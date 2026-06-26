@@ -28,7 +28,7 @@ the literal into integer depths the retrieval layer understands.
 
 import asyncio
 import json
-from typing import Any, Literal, assert_never
+from typing import Any, Final, Literal, assert_never
 
 import structlog
 from pydantic import BaseModel, ConfigDict, Field
@@ -72,7 +72,7 @@ class QueryRoute(BaseModel):
     )
 
 
-_ROUTER_SYSTEM_PROMPT = """\
+_ROUTER_SYSTEM_PROMPT: Final = """\
 You are a query router for a Retrieval-Augmented Generation system over an
 instructional-design knowledge base.
 

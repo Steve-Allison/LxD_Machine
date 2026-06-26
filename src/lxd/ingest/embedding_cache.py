@@ -27,14 +27,14 @@ Why not SQLite?
 """
 
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Final
 
 import pyarrow as pa
 import structlog
 
 from lxd.stores.lance_sql import in_clause
 
-_TABLE_NAME = "embedding_cache"
+_TABLE_NAME: Final = "embedding_cache"
 _log = structlog.get_logger(__name__)
 
 

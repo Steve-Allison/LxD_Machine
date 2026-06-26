@@ -9,7 +9,7 @@ from dataclasses import dataclass, replace
 from datetime import UTC, datetime
 from operator import itemgetter
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, assert_never
+from typing import TYPE_CHECKING, Any, Final, assert_never
 
 import httpx
 
@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 
 
 _probe_cache: dict[tuple[str, str, str, str, str], tuple[bool, str | None]] = {}
-_RUNTIME_DIRNAME = "runtime"
+_RUNTIME_DIRNAME: Final = "runtime"
 
 
 @dataclass(frozen=True, slots=True)

@@ -1,10 +1,11 @@
 """Generate stable identifiers and content keys used across ingestion."""
 
 import unicodedata
+from typing import Final
 
 from blake3 import blake3
 
-_SEP = b"\x00"
+_SEP: Final = b"\x00"
 
 
 def blake3_hex(*parts: str) -> str:

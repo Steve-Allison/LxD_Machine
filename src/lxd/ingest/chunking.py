@@ -4,7 +4,7 @@ import json
 import re
 from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Final
 
 import tiktoken
 from docling_core.transforms.chunker.hierarchical_chunker import HierarchicalChunker
@@ -404,8 +404,8 @@ def _find_boundary_near_midpoint(text: str, pattern: re.Pattern[str], midpoint: 
     return best_match.end()
 
 
-_PARAGRAPH_BOUNDARY = re.compile(r"\n\s*\n")
-_LINE_BOUNDARY = re.compile(r"\n")
-_SENTENCE_BOUNDARY = re.compile(r"(?<=[.!?])\s+")
-_CLAUSE_BOUNDARY = re.compile(r"(?<=[;:])\s+|,\s+")
-_WORD_BOUNDARY = re.compile(r"\s+")
+_PARAGRAPH_BOUNDARY: Final = re.compile(r"\n\s*\n")
+_LINE_BOUNDARY: Final = re.compile(r"\n")
+_SENTENCE_BOUNDARY: Final = re.compile(r"(?<=[.!?])\s+")
+_CLAUSE_BOUNDARY: Final = re.compile(r"(?<=[;:])\s+|,\s+")
+_WORD_BOUNDARY: Final = re.compile(r"\s+")

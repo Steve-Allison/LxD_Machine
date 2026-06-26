@@ -6,6 +6,7 @@ import sqlite3
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import Final
 
 import structlog
 
@@ -83,7 +84,7 @@ from lxd.stores.sqlite.summary import summarize_store
 
 _log = structlog.get_logger(__name__)
 
-_RECOVERABLE_SOURCE_ERRORS = (
+_RECOVERABLE_SOURCE_ERRORS: Final = (
     FileNotFoundError,
     OSError,
     RuntimeError,

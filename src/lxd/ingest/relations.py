@@ -10,7 +10,7 @@ import os
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, assert_never
+from typing import Any, Final, assert_never
 
 import httpx
 import ollama
@@ -44,7 +44,7 @@ _RELATION_LLM_ERRORS: tuple[type[BaseException], ...] = (
     ValueError,
 )
 
-_RELATION_BASE_PROMPT = """You are a knowledge graph builder specialising in learning experience design (LxD), instructional design, and educational theory.
+_RELATION_BASE_PROMPT: Final = """You are a knowledge graph builder specialising in learning experience design (LxD), instructional design, and educational theory.
 
 Given a text chunk and a list of entity IDs already identified in that text, extract semantic relationships between those entities.
 

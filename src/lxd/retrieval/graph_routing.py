@@ -3,6 +3,7 @@
 import sqlite3
 from dataclasses import dataclass
 from operator import attrgetter
+from typing import Final
 
 import structlog
 import tiktoken
@@ -14,7 +15,7 @@ from lxd.stores.sqlite.kg_profiles import load_community_report, load_entity_pro
 
 _log = structlog.get_logger(__name__)
 
-_TOKEN_ENCODING_NAME = "cl100k_base"
+_TOKEN_ENCODING_NAME: Final = "cl100k_base"
 
 
 @dataclass(frozen=True, slots=True)
