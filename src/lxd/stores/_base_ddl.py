@@ -297,4 +297,13 @@ CREATE TABLE IF NOT EXISTS circuit_breaker_state (
     last_success_at TEXT,
     tripped_at TEXT
 );
+
+CREATE TABLE IF NOT EXISTS entity_embedding_state (
+    entity_id TEXT PRIMARY KEY,
+    source_hash TEXT NOT NULL,
+    chunk_count INTEGER NOT NULL,
+    embedding_model TEXT NOT NULL,
+    embedding_dims INTEGER NOT NULL,
+    updated_at TEXT NOT NULL
+);
 """

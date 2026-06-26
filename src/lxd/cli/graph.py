@@ -14,6 +14,7 @@ from rich.console import Console
 from rich.table import Table
 
 from lxd.app.bootstrap import bootstrap_app
+from lxd.domain.ids import blake3_hex
 from lxd.ingest.claims import (
     collect_claims_batch,
     extract_claims_for_chunks,
@@ -39,8 +40,8 @@ from lxd.stores.lancedb import (
     connect_lancedb,
     fetch_vectors_by_chunk_ids,
     open_chunk_table,
-    replace_entity_embeddings,
-    reset_entity_table,
+    open_entity_table,
+    upsert_entity_embeddings,
 )
 from lxd.stores.sqlite.chunks import load_chunk_ids_for_entity
 from lxd.stores.sqlite.claims import count_claims
@@ -49,8 +50,11 @@ from lxd.stores.sqlite.kg_profiles import (
     count_communities,
     count_community_reports,
     count_entity_profiles,
+    delete_entity_embedding_state,
     delete_stale_community_reports,
     load_all_entity_profiles,
+    load_entity_embedding_state,
+    upsert_entity_embedding_state,
 )
 from lxd.stores.sqlite.kg_relations import (
     begin_graph_build,
@@ -542,29 +546,67 @@ def _compute_entity_embeddings(
     config: RuntimeConfig,
     store_paths: Any,
 ) -> int:
-    """Compute entity embeddings from chunk embeddings and store in LanceDB.
+    """Compute entity embeddings incrementally.
+
+    The mean-pooled L2-normalised vector for one entity is a pure function of
+    its (sorted chunk_ids, embedding_model, embedding_dims). When that tuple
+    is unchanged since the previous build, the existing LanceDB row is left
+    in place — no chunk-vector fetch, no mean-pool, no LanceDB write. Entities
+    whose mention count fell below ``entity_embedding_min_mentions`` are
+    evicted from both LanceDB and the state table.
 
     Returns:
-        Number of entity embeddings computed.
+        Number of entity embeddings (re)computed this run. Excludes skip-hits.
     """
     min_mentions = config.knowledge_graph.entity_embedding_min_mentions
     max_chunks = config.knowledge_graph.entity_summary_max_chunks
     vector_size = config.models.embed_dims
+    embedding_model = config.models.embed
 
     profiles = load_all_entity_profiles(connection)
     qualifying = [p for p in profiles if p.mention_count >= min_mentions]
 
+    db = connect_lancedb(store_paths.lancedb_path)
+    entity_table = open_entity_table(db, vector_size=vector_size)
+
+    existing_state = load_entity_embedding_state(connection)
+    qualifying_ids = {p.entity_id for p in qualifying}
+    stale_entity_ids = sorted(set(existing_state) - qualifying_ids)
+
+    if stale_entity_ids:
+        delete_entity_embedding_state(connection, stale_entity_ids)
+
     if not qualifying:
+        # Still evict stale LanceDB rows so the table reflects current truth.
+        if stale_entity_ids:
+            upsert_entity_embeddings(entity_table, [], removed_entity_ids=stale_entity_ids)
         return 0
 
-    db = connect_lancedb(store_paths.lancedb_path)
     chunk_table = open_chunk_table(db, vector_size=vector_size)
-    entity_table = reset_entity_table(db, vector_size=vector_size)
-
+    timestamp = datetime.now(UTC).isoformat()
     records: list[dict[str, object]] = []
+    pending_state: list[tuple[str, str, int]] = []  # (entity_id, source_hash, chunk_count)
+    skipped = 0
+
     for profile in qualifying:
         chunk_ids = load_chunk_ids_for_entity(connection, profile.entity_id, limit=max_chunks)
         if not chunk_ids:
+            continue
+
+        # Source hash is purely structural — sorted chunk_ids + model identity.
+        # The chunk vector itself is content-addressed in the embedding cache,
+        # so identical chunk_id always implies identical vector at the same
+        # (model, dims). Same source_hash here means the previous mean-pool is
+        # still correct.
+        sorted_chunk_ids = sorted(chunk_ids)
+        source_hash = blake3_hex(
+            embedding_model,
+            str(vector_size),
+            *sorted_chunk_ids,
+        )
+
+        if existing_state.get(profile.entity_id) == source_hash:
+            skipped += 1
             continue
 
         # Fetch vectors from LanceDB (native float arrays, no JSON parsing)
@@ -588,11 +630,28 @@ def _compute_entity_embeddings(
                 "vector": mean_vector,
             }
         )
+        pending_state.append((profile.entity_id, source_hash, len(sorted_chunk_ids)))
 
-    if records:
-        replace_entity_embeddings(entity_table, records)
+    if records or stale_entity_ids:
+        upsert_entity_embeddings(entity_table, records, removed_entity_ids=stale_entity_ids)
 
-    _log.info("entity embeddings computed", count=len(records))
+    for entity_id, source_hash, chunk_count in pending_state:
+        upsert_entity_embedding_state(
+            connection,
+            entity_id=entity_id,
+            source_hash=source_hash,
+            chunk_count=chunk_count,
+            embedding_model=embedding_model,
+            embedding_dims=vector_size,
+            updated_at=timestamp,
+        )
+
+    _log.info(
+        "entity embeddings computed",
+        recomputed=len(records),
+        skipped=skipped,
+        evicted=len(stale_entity_ids),
+    )
     return len(records)
 
 

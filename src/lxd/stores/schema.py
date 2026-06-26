@@ -36,7 +36,7 @@ from lxd.stores._base_ddl import BASE_SCHEMA_DDL
 
 Migration = Callable[[sqlite3.Connection], None]
 
-CURRENT_SCHEMA_VERSION = 8
+CURRENT_SCHEMA_VERSION = 9
 
 
 class SchemaIntegrityError(sqlite3.DatabaseError):
@@ -495,6 +495,33 @@ def _migration_0008_hierarchical_communities(connection: sqlite3.Connection) -> 
     )
 
 
+def _migration_0009_entity_embedding_state(connection: sqlite3.Connection) -> None:
+    """Create ``entity_embedding_state`` for incremental entity-embedding skip.
+
+    Before this migration ``_compute_entity_embeddings`` unconditionally
+    dropped and rebuilt the LanceDB entity table on every ``build-graph``
+    run, re-mean-pooling every qualifying entity's chunk vectors regardless
+    of whether anything had actually changed. This table holds the per-entity
+    source_hash (sorted chunk_ids + embedding model identity); a matching
+    hash lets the compute step skip the entity entirely.
+
+    Idempotent CREATE IF NOT EXISTS — composes cleanly with the base DDL on
+    fresh databases.
+    """
+    connection.executescript(
+        """
+        CREATE TABLE IF NOT EXISTS entity_embedding_state (
+            entity_id TEXT PRIMARY KEY,
+            source_hash TEXT NOT NULL,
+            chunk_count INTEGER NOT NULL,
+            embedding_model TEXT NOT NULL,
+            embedding_dims INTEGER NOT NULL,
+            updated_at TEXT NOT NULL
+        );
+        """
+    )
+
+
 _MIGRATIONS: dict[int, Migration] = {
     1: _migration_0001_baseline,
     2: _migration_0002_drop_chunk_vector_json,
@@ -504,6 +531,7 @@ _MIGRATIONS: dict[int, Migration] = {
     6: _migration_0006_chunk_rows_wiki_metadata,
     7: _migration_0007_circuit_breaker_state,
     8: _migration_0008_hierarchical_communities,
+    9: _migration_0009_entity_embedding_state,
 }
 
 

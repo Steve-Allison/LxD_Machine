@@ -339,22 +339,6 @@ def open_entity_table(database: Any, *, vector_size: int) -> Any:
         )
 
 
-def reset_entity_table(database: Any, *, vector_size: int) -> Any:
-    """Drop and recreate the entity embeddings table."""
-    try:
-        database.drop_table(_ENTITY_TABLE_NAME)
-    except FileNotFoundError:
-        pass
-    except ValueError as exc:
-        if not _is_missing_table_error(exc):
-            raise
-    return database.create_table(
-        _ENTITY_TABLE_NAME,
-        schema=_entity_table_schema(vector_size),
-        mode="create",
-    )
-
-
 def replace_entity_embeddings(
     table: Any,
     records: list[dict[str, object]],
@@ -362,6 +346,11 @@ def replace_entity_embeddings(
     """Replace all entity embeddings (full rebuild).
 
     Each record must have: entity_id, label, community_id, vector.
+
+    Reserved for callers that genuinely want "wipe and reload" semantics —
+    test fixtures and the ``build-graph --full`` path. Routine incremental
+    runs use :func:`upsert_entity_embeddings` instead so unchanged entities
+    keep their existing vectors.
 
     The delete-before-add is the canonical "replace-all" idiom against
     LanceDB's append-only storage. When the table has no prior rows, the
@@ -373,6 +362,34 @@ def replace_entity_embeddings(
         table.delete("entity_id IS NOT NULL")
     except (FileNotFoundError, ValueError) as exc:
         _log.debug("lancedb_entity_delete_skipped", error=str(exc))
+    if records:
+        table.add(records)
+
+
+def upsert_entity_embeddings(
+    table: Any,
+    records: list[dict[str, object]],
+    *,
+    removed_entity_ids: list[str] | None = None,
+) -> None:
+    """Replace only the named entity rows; leave the rest of the table alone.
+
+    Used by the incremental ``build-graph`` path so unchanged entities keep
+    their existing mean-pooled vectors and the LanceDB table is not wiped on
+    every run. ``records`` are the entities whose vector is being added or
+    updated; ``removed_entity_ids`` are entities that no longer qualify and
+    should be evicted entirely.
+
+    Delete-before-add is the LanceDB upsert idiom — the storage layer is
+    append-only, so an in-place row update is two operations.
+    """
+    to_delete = list(removed_entity_ids or [])
+    to_delete.extend(str(record["entity_id"]) for record in records)
+    if to_delete:
+        try:
+            table.delete(in_clause("entity_id", to_delete))
+        except (FileNotFoundError, ValueError) as exc:
+            _log.debug("lancedb_entity_delete_skipped", error=str(exc))
     if records:
         table.add(records)
 

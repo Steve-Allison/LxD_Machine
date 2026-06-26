@@ -6,7 +6,6 @@ import asyncio
 import json
 import sqlite3
 from datetime import UTC, datetime
-from operator import itemgetter
 from typing import Any
 
 import structlog
@@ -22,6 +21,7 @@ from lxd.stores.sqlite.kg_profiles import (
     load_all_community_reports,
     load_all_entity_profiles,
     load_community_members,
+    load_community_report_source_hashes,
     load_entity_profile_source_hashes,
     upsert_community_report,
     upsert_entity_profile,
@@ -48,6 +48,15 @@ def build_entity_profiles(
     mention_stats = load_entity_mention_stats(connection)
     existing_hashes = load_entity_profile_source_hashes(connection) if not force else {}
     chunk_ids_by_entity = _load_chunk_ids_by_entity(connection)
+
+    # Precompute rank dicts once. Profile source_hash uses ranks (small ints)
+    # rather than raw centrality floats, so imperceptible 4th-decimal score
+    # shifts that don't reshuffle the ranking don't trigger a profile rebuild
+    # (and the cascading LLM re-enrichment).
+    pr_ranks = _compute_ranks(centrality, "pagerank")
+    bt_ranks = _compute_ranks(centrality, "betweenness")
+    cl_ranks = _compute_ranks(centrality, "closeness")
+    total_entities = len(centrality)
 
     timestamp = datetime.now(UTC).isoformat()
     profiles_built = 0
@@ -98,15 +107,21 @@ def build_entity_profiles(
         chunk_ids = chunk_ids_by_entity.get(entity_id, [])
         claim_ids = sorted(c.claim_id for c in claims)
 
-        # Source hash per Section 3.2 definition
+        # Source hash composed of rank positions (small ints) rather than
+        # raw centrality floats. The rank position is what the deterministic
+        # summary and downstream LLM enrichment actually see; sub-rank float
+        # noise contributes nothing semantically but used to trigger a full
+        # profile + LLM enrichment rebuild on every graph update.
+        pr_rank = pr_ranks.get(entity_id, total_entities)
+        bt_rank = bt_ranks.get(entity_id, total_entities)
+        cl_rank = cl_ranks.get(entity_id, total_entities)
         source_hash = blake3_hex(
             *chunk_ids,
-            str(pagerank),
-            str(betweenness),
-            str(closeness),
+            str(pr_rank),
+            str(bt_rank),
+            str(cl_rank),
             str(in_degree),
             str(out_degree),
-            str(eigenvector),
             str(community_id),
             *claim_ids,
         )
@@ -114,12 +129,6 @@ def build_entity_profiles(
         # Incremental: skip if source hash unchanged
         if entity_id in existing_hashes and existing_hashes[entity_id] == source_hash:
             continue
-
-        # Deterministic summary
-        total_entities = len(entity_definitions)
-        pr_rank = _rank_position(entity_id, centrality, "pagerank")
-        bt_rank = _rank_position(entity_id, centrality, "betweenness")
-        cl_rank = _rank_position(entity_id, centrality, "closeness")
 
         # Community member count
         community_member_count = 0
@@ -230,12 +239,36 @@ def build_community_reports(
     for entity_id, community_id in community_assignments.items():
         communities.setdefault(community_id, []).append(entity_id)
 
+    existing_hashes = load_community_report_source_hashes(connection) if not force else {}
+
     timestamp = datetime.now(UTC).isoformat()
     reports_built = 0
     parent_lookup = parent_of or {}
 
     for community_id, member_ids in communities.items():
         sorted_members = sorted(member_ids)
+
+        # Compute source_hash *before* the deterministic-summary build so an
+        # unchanged community skips both the work and the upsert. The upsert
+        # clobbers llm_summary to NULL, which used to cascade an LLM
+        # re-enrichment on every report regardless of whether anything had
+        # actually changed; the early skip stops the cascade.
+        if sorted_members:
+            placeholders = ",".join("?" * len(sorted_members))
+            hash_rows = connection.execute(
+                f"SELECT entity_id, source_hash FROM entity_profiles "
+                f"WHERE entity_id IN ({placeholders})",
+                sorted_members,
+            ).fetchall()
+            member_hashes = [str(row["source_hash"]) for row in hash_rows]
+        else:
+            member_hashes = []
+
+        source_hash = blake3_hex(*sorted_members, *sorted(member_hashes))
+
+        report_key = (community_id, community_level)
+        if existing_hashes.get(report_key) == source_hash:
+            continue
 
         # Top entities by PageRank within community
         ranked = sorted(
@@ -276,21 +309,6 @@ def build_community_reports(
             [*member_ids, *member_ids],
         ).fetchone()
         intra_edge_count = int(intra_edges["cnt"]) if intra_edges else 0
-
-        # Member source hashes for staleness detection.
-        # Single IN(...) query to avoid N+1 SQLite round-trips per community.
-        if sorted_members:
-            placeholders = ",".join("?" * len(sorted_members))
-            hash_rows = connection.execute(
-                f"SELECT entity_id, source_hash FROM entity_profiles "
-                f"WHERE entity_id IN ({placeholders})",
-                sorted_members,
-            ).fetchall()
-            member_hashes = [str(row["source_hash"]) for row in hash_rows]
-        else:
-            member_hashes = []
-
-        source_hash = blake3_hex(*sorted_members, *sorted(member_hashes))
 
         # Deterministic summary
         member_labels = [eid.replace("_", " ").title() for eid in ranked[:5]]
@@ -466,18 +484,20 @@ async def _enrich_async(
     return enriched
 
 
-def _rank_position(
-    entity_id: str,
+def _compute_ranks(
     centrality: dict[str, CentralityScores],
     metric: str,
-) -> int:
-    """Return 1-based rank position for an entity on a given metric."""
-    values = sorted(
-        ((eid, getattr(scores, metric)) for eid, scores in centrality.items()),
-        key=itemgetter(1),
+) -> dict[str, int]:
+    """Return ``{entity_id: 1-based rank position}`` for one centrality metric.
+
+    Ties resolve in the underlying sort's stable order. Used by
+    :func:`build_entity_profiles` to feed rank positions into the profile
+    ``source_hash`` instead of raw floats — sub-rank float noise no longer
+    triggers a profile rebuild.
+    """
+    ranked = sorted(
+        centrality.items(),
+        key=lambda item: getattr(item[1], metric),
         reverse=True,
     )
-    for idx, (eid, _) in enumerate(values):
-        if eid == entity_id:
-            return idx + 1
-    return len(values)
+    return {entity_id: idx + 1 for idx, (entity_id, _) in enumerate(ranked)}

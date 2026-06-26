@@ -158,6 +158,19 @@ def load_entity_profile_source_hashes(
     return {str(row["entity_id"]): str(row["source_hash"]) for row in rows}
 
 
+def load_community_report_source_hashes(
+    connection: sqlite3.Connection,
+) -> dict[tuple[int, int], str]:
+    """Load (community_id, community_level) → source_hash for incremental rebuild."""
+    rows = connection.execute(
+        "SELECT community_id, community_level, source_hash FROM community_reports"
+    ).fetchall()
+    return {
+        (int(row["community_id"]), int(row["community_level"])): str(row["source_hash"])
+        for row in rows
+    }
+
+
 def replace_entity_communities(
     connection: sqlite3.Connection, records: list[EntityCommunityRecord]
 ) -> None:
@@ -360,3 +373,71 @@ def count_community_reports(connection: sqlite3.Connection) -> int:
     """Return total community report count."""
     row = connection.execute("SELECT COUNT(*) AS cnt FROM community_reports").fetchone()
     return int(row_value(row, "cnt"))
+
+
+def load_entity_embedding_state(
+    connection: sqlite3.Connection,
+) -> dict[str, str]:
+    """Load ``{entity_id: source_hash}`` for incremental entity-embedding skip.
+
+    The source_hash is composed of (sorted chunk_ids, embedding_model,
+    embedding_dims) by the caller. A matching hash means the mean-pooled
+    embedding LanceDB already holds for this entity is still correct.
+    """
+    rows = connection.execute(
+        "SELECT entity_id, source_hash FROM entity_embedding_state"
+    ).fetchall()
+    return {str(row["entity_id"]): str(row["source_hash"]) for row in rows}
+
+
+def upsert_entity_embedding_state(
+    connection: sqlite3.Connection,
+    *,
+    entity_id: str,
+    source_hash: str,
+    chunk_count: int,
+    embedding_model: str,
+    embedding_dims: int,
+    updated_at: str,
+) -> None:
+    """Insert or update a row in ``entity_embedding_state``."""
+    with connection:
+        connection.execute(
+            """
+            INSERT INTO entity_embedding_state (
+                entity_id, source_hash, chunk_count,
+                embedding_model, embedding_dims, updated_at
+            )
+            VALUES (?, ?, ?, ?, ?, ?)
+            ON CONFLICT(entity_id) DO UPDATE SET
+                source_hash = excluded.source_hash,
+                chunk_count = excluded.chunk_count,
+                embedding_model = excluded.embedding_model,
+                embedding_dims = excluded.embedding_dims,
+                updated_at = excluded.updated_at
+            """,
+            (
+                entity_id,
+                source_hash,
+                chunk_count,
+                embedding_model,
+                embedding_dims,
+                updated_at,
+            ),
+        )
+
+
+def delete_entity_embedding_state(
+    connection: sqlite3.Connection,
+    entity_ids: list[str],
+) -> int:
+    """Delete state rows for the given entity_ids; returns rows removed."""
+    if not entity_ids:
+        return 0
+    placeholders = ",".join("?" * len(entity_ids))
+    with connection:
+        cursor = connection.execute(
+            f"DELETE FROM entity_embedding_state WHERE entity_id IN ({placeholders})",
+            entity_ids,
+        )
+    return cursor.rowcount
