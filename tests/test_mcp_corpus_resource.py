@@ -6,7 +6,9 @@ from pathlib import Path
 
 import pytest
 
-from lxd.mcp.server import _read_corpus_file
+from lxd.mcp import server as _mcp_server
+
+_read_corpus_file = _mcp_server._read_corpus_file  # pyright: ignore[reportPrivateUsage]
 
 
 def _write(corpus: Path, rel: str, body: str) -> None:

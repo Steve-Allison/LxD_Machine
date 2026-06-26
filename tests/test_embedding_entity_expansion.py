@@ -4,9 +4,11 @@ from __future__ import annotations
 
 from pathlib import Path
 from types import SimpleNamespace
+from typing import cast
 
+from lxd.retrieval import query_pipeline as _query_pipeline
 from lxd.retrieval.expansion import ExpansionOutcome
-from lxd.retrieval.query_pipeline import _augment_with_embedding_neighbours
+from lxd.settings.models import RuntimeConfig
 from lxd.stores.lancedb import (
     connect_lancedb,
     open_entity_table,
@@ -14,11 +16,18 @@ from lxd.stores.lancedb import (
 )
 from lxd.stores.models import StorePaths
 
+_augment_with_embedding_neighbours = (
+    _query_pipeline._augment_with_embedding_neighbours  # pyright: ignore[reportPrivateUsage]
+)
 
-def _config(*, embed_dims: int, max_terms: int) -> SimpleNamespace:
-    return SimpleNamespace(
-        models=SimpleNamespace(embed_dims=embed_dims),
-        expansion=SimpleNamespace(max_terms=max_terms),
+
+def _config(*, embed_dims: int, max_terms: int) -> RuntimeConfig:
+    return cast(
+        "RuntimeConfig",
+        SimpleNamespace(
+            models=SimpleNamespace(embed_dims=embed_dims),
+            expansion=SimpleNamespace(max_terms=max_terms),
+        ),
     )
 
 

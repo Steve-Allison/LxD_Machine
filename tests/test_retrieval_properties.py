@@ -14,14 +14,16 @@ from pathlib import Path
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
-from lxd.retrieval.query_pipeline import (
-    RankedChunk,
-    _diversify_by_community,
-    _fuse_ranked_prefix,
-    _merge_ranked_prefix,
-    _rrf_score,
-    _unique_source_prefix,
-)
+from lxd.retrieval import query_pipeline as _query_pipeline
+from lxd.retrieval.query_pipeline import RankedChunk
+
+# Private helpers exercised by property tests for the same module's
+# fusion / diversification invariants.
+_diversify_by_community = _query_pipeline._diversify_by_community  # pyright: ignore[reportPrivateUsage]
+_fuse_ranked_prefix = _query_pipeline._fuse_ranked_prefix  # pyright: ignore[reportPrivateUsage]
+_merge_ranked_prefix = _query_pipeline._merge_ranked_prefix  # pyright: ignore[reportPrivateUsage]
+_rrf_score = _query_pipeline._rrf_score  # pyright: ignore[reportPrivateUsage]
+_unique_source_prefix = _query_pipeline._unique_source_prefix  # pyright: ignore[reportPrivateUsage]
 
 
 def _chunk(

@@ -2,14 +2,19 @@ from __future__ import annotations
 
 from pathlib import Path
 from types import SimpleNamespace
+from typing import Any, cast
 
 import networkx as nx
+import pytest
 
 from lxd.retrieval import expansion
+from lxd.settings.models import RuntimeConfig
 
 
-def test_expand_question_uses_query_mentions_and_entity_neighbors(monkeypatch) -> None:
-    graph = nx.MultiDiGraph()
+def test_expand_question_uses_query_mentions_and_entity_neighbors(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    graph: nx.MultiDiGraph[str] = nx.MultiDiGraph()
     graph.add_node("mayer_principle", node_type="entity")
     graph.add_node("coherence_principle", node_type="entity")
     graph.add_node("multimedia_learning", node_type="entity")
@@ -57,18 +62,21 @@ def test_expand_question_uses_query_mentions_and_entity_neighbors(monkeypatch) -
         },
     )
 
-    monkeypatch.setattr(expansion, "_ontology_runtime", lambda config: runtime)
-    monkeypatch.setattr(
-        expansion,
-        "detect_mentions",
-        lambda question, automaton: [
-            SimpleNamespace(entity_id="mayer_principle"),
-        ],
-    )
+    def _ontology_runtime(_config: RuntimeConfig) -> SimpleNamespace:
+        return runtime
 
-    config = SimpleNamespace(
-        expansion=SimpleNamespace(hops=2, max_terms=4),
-        paths=SimpleNamespace(data_path=Path("/nonexistent")),
+    def _detect_mentions(_question: str, _automaton: Any) -> list[SimpleNamespace]:
+        return [SimpleNamespace(entity_id="mayer_principle")]
+
+    monkeypatch.setattr(expansion, "_ontology_runtime", _ontology_runtime)
+    monkeypatch.setattr(expansion, "detect_mentions", _detect_mentions)
+
+    config = cast(
+        "RuntimeConfig",
+        SimpleNamespace(
+            expansion=SimpleNamespace(hops=2, max_terms=4),
+            paths=SimpleNamespace(data_path=Path("/nonexistent")),
+        ),
     )
 
     outcome = expansion.expand_question("What is Mayer's principle?", config)

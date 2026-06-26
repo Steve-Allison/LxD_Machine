@@ -14,10 +14,8 @@ from pathlib import Path
 import networkx as nx
 import pytest
 
-from lxd.ontology.communities import (
-    _majority_parent,
-    detect_hierarchical_communities,
-)
+from lxd.ontology import communities as _communities_module
+from lxd.ontology.communities import detect_hierarchical_communities
 from lxd.settings.models import (
     EmbeddingConfig,
     KnowledgeGraphConfig,
@@ -25,6 +23,8 @@ from lxd.settings.models import (
     RuntimeConfig,
 )
 from lxd.stores.schema import CURRENT_SCHEMA_VERSION, ensure_schema, get_schema_version
+
+_majority_parent = _communities_module._majority_parent  # pyright: ignore[reportPrivateUsage]
 
 pytestmark = [pytest.mark.unit]
 

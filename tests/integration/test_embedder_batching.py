@@ -4,11 +4,13 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from types import SimpleNamespace
+from typing import cast
 from unittest.mock import patch
 
 import pytest
 
 from lxd.ingest import embedder
+from lxd.settings.models import RuntimeConfig
 
 
 @dataclass
@@ -68,7 +70,7 @@ def test_embed_texts_batched_sends_single_ollama_call() -> None:
     stub = _StubClient([expected])
 
     with patch.object(embedder, "_ollama_client", return_value=stub):
-        vectors = embedder.embed_texts_batched(config, texts)
+        vectors = embedder.embed_texts_batched(cast("RuntimeConfig", config), texts)
 
     assert vectors == expected
     assert len(stub.calls) == 1
@@ -88,10 +90,14 @@ def test_embed_texts_batched_splits_by_batch_size() -> None:
     stub = _StubClient(batches)
 
     with patch.object(embedder, "_ollama_client", return_value=stub):
-        vectors = embedder.embed_texts_batched(config, texts)
+        vectors = embedder.embed_texts_batched(cast("RuntimeConfig", config), texts)
 
     assert vectors == [vec for batch in batches for vec in batch]
-    assert [list(call) for call in stub.calls] == [["a", "b"], ["c", "d"], ["e"]]
+    assert [list(cast("list[str]", call)) for call in stub.calls] == [
+        ["a", "b"],
+        ["c", "d"],
+        ["e"],
+    ]
 
 
 def test_embed_texts_batched_falls_back_on_context_error() -> None:
@@ -117,7 +123,7 @@ def test_embed_texts_batched_falls_back_on_context_error() -> None:
         patch.object(embedder, "_ollama_client", return_value=fake_client),
         pytest.raises(embedder.EmbeddingContextError),
     ):
-        embedder.embed_texts_batched(config, texts)
+        embedder.embed_texts_batched(cast("RuntimeConfig", config), texts)
 
     assert call_log[0] == texts
     assert call_log[1] == "short"

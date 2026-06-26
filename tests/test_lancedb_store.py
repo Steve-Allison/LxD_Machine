@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 from lxd.stores.lancedb import (
     connect_lancedb,
     replace_source_chunks,
@@ -9,7 +11,7 @@ from lxd.stores.lancedb import (
 from lxd.stores.models import ChunkRecord
 
 
-def test_lancedb_search_and_domain_filter(tmp_path) -> None:
+def test_lancedb_search_and_domain_filter(tmp_path: Path) -> None:
     database = connect_lancedb(tmp_path / "lancedb")
     table = reset_chunk_table(database, vector_size=3)
     replace_source_chunks(
@@ -66,7 +68,7 @@ def test_lancedb_search_and_domain_filter(tmp_path) -> None:
     assert [item.chunk_id for item in theory_hits] == ["chunk-theories"]
 
 
-def test_reset_chunk_table_creates_when_no_prior_table_exists(tmp_path) -> None:
+def test_reset_chunk_table_creates_when_no_prior_table_exists(tmp_path: Path) -> None:
     """``reset_chunk_table`` must succeed even when the table is missing —
     the underlying ``drop_table`` raises and that error is swallowed."""
     database = connect_lancedb(tmp_path / "lancedb")
@@ -76,7 +78,7 @@ def test_reset_chunk_table_creates_when_no_prior_table_exists(tmp_path) -> None:
     assert table.count_rows() == 0
 
 
-def test_search_chunks_fts_returns_bm25_ordering(tmp_path) -> None:
+def test_search_chunks_fts_returns_bm25_ordering(tmp_path: Path) -> None:
     """The FTS lane is BM25 over the ``text`` column, ordered by score."""
     from lxd.stores.lancedb import search_chunks_fts
 

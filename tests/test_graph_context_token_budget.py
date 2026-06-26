@@ -4,12 +4,11 @@ from __future__ import annotations
 
 import tiktoken
 
-from lxd.retrieval.graph_routing import (
-    GraphContext,
-    _trim_to_token_budget,
-    format_graph_context_prompt,
-)
+from lxd.retrieval import graph_routing as _graph_routing
+from lxd.retrieval.graph_routing import GraphContext, format_graph_context_prompt
 from lxd.stores.models import ClaimRecord, CommunityReportRecord, EntityProfileRecord
+
+_trim_to_token_budget = _graph_routing._trim_to_token_budget  # pyright: ignore[reportPrivateUsage]
 
 
 def _profile(entity_id: str, *, pagerank: float, summary: str) -> EntityProfileRecord:

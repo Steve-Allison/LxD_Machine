@@ -6,13 +6,14 @@ import json
 from types import SimpleNamespace
 from typing import Any
 
-from lxd.ingest.relations import (
-    _build_relation_records,
-    _build_user_prompt,
-    _parse_response,
-    _RawRelation,
-    build_valid_predicates,
-)
+from lxd.ingest import relations as _relations_module
+from lxd.ingest.relations import build_valid_predicates
+
+# Internal helpers exercised by tests in the same logical unit.
+_build_relation_records = _relations_module._build_relation_records  # pyright: ignore[reportPrivateUsage]
+_build_user_prompt = _relations_module._build_user_prompt  # pyright: ignore[reportPrivateUsage]
+_parse_response = _relations_module._parse_response  # pyright: ignore[reportPrivateUsage]
+_RawRelation = _relations_module._RawRelation  # pyright: ignore[reportPrivateUsage]
 
 # ---------------------------------------------------------------------------
 # _parse_response

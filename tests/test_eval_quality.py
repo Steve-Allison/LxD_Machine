@@ -14,7 +14,8 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
-from lxd.eval.metrics import _rank_weighted_precision
+from lxd.eval import metrics as _metrics_module
+from lxd.eval import report as _report_module
 from lxd.eval.models import (
     AnswerRelevanceScore,
     ClaimVerdict,
@@ -26,12 +27,11 @@ from lxd.eval.models import (
     GoldenQuestion,
     PerQuestionResult,
 )
-from lxd.eval.report import (
-    _harmonic_mean,
-    append_run_to_history,
-    summarise_report,
-)
+from lxd.eval.report import append_run_to_history, summarise_report
 from lxd.eval.runner import load_golden_set
+
+_rank_weighted_precision = _metrics_module._rank_weighted_precision  # pyright: ignore[reportPrivateUsage]
+_harmonic_mean = _report_module._harmonic_mean  # pyright: ignore[reportPrivateUsage]
 
 pytestmark = [pytest.mark.unit]
 

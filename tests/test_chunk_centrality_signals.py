@@ -8,6 +8,7 @@ ids per chunk, and that chunks without graph data degrade gracefully
 
 from __future__ import annotations
 
+import sqlite3
 from pathlib import Path
 
 from lxd.stores.models import (
@@ -23,7 +24,7 @@ from lxd.stores.sqlite.kg_profiles import upsert_entity_profile
 from lxd.stores.sqlite.manifest import upsert_manifest_record
 
 
-def _seed_manifest(connection, source_rel_path: str) -> None:
+def _seed_manifest(connection: sqlite3.Connection, source_rel_path: str) -> None:
     upsert_manifest_record(
         connection,
         ManifestRecord(

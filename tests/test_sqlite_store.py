@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 from lxd.stores.models import ChunkRecord, ManifestRecord, MentionRecord, OntologySnapshotRecord
 from lxd.stores.sqlite.chunks import (
     load_chunk_records_for_source,
@@ -17,7 +19,7 @@ from lxd.stores.sqlite.runs import (
 from lxd.stores.sqlite.summary import summarize_store
 
 
-def test_sqlite_store_round_trip(tmp_path) -> None:
+def test_sqlite_store_round_trip(tmp_path: Path) -> None:
     store_paths = build_store_paths(tmp_path)
     connection = connect_sqlite(store_paths.sqlite_path)
     try:
@@ -103,7 +105,7 @@ def test_sqlite_store_round_trip(tmp_path) -> None:
     assert summary.matcher_termset_hash == "matcher-hash"
 
 
-def test_ingest_run_progress_round_trip(tmp_path) -> None:
+def test_ingest_run_progress_round_trip(tmp_path: Path) -> None:
     store_paths = build_store_paths(tmp_path)
     connection = connect_sqlite(store_paths.sqlite_path)
     try:
@@ -172,7 +174,7 @@ def test_ingest_run_progress_round_trip(tmp_path) -> None:
     assert row["finished_at"] == "2026-03-10T00:05:00+00:00"
 
 
-def test_ontology_snapshot_round_trip_includes_validation_fields(tmp_path) -> None:
+def test_ontology_snapshot_round_trip_includes_validation_fields(tmp_path: Path) -> None:
     store_paths = build_store_paths(tmp_path)
     connection = connect_sqlite(store_paths.sqlite_path)
     try:

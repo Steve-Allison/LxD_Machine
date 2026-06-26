@@ -2,15 +2,19 @@ from __future__ import annotations
 
 from pathlib import Path
 from types import SimpleNamespace
+from typing import cast
 
 from lxd.app.status import current_ingest_config
-from lxd.retrieval.query_pipeline import (
-    RankedChunk,
-    _diversify_by_community,
-    _fuse_ranked_prefix,
-    _merge_ranked_prefix,
-    _unique_source_prefix,
-)
+from lxd.retrieval import query_pipeline as _query_pipeline
+from lxd.retrieval.query_pipeline import RankedChunk
+from lxd.settings.models import RuntimeConfig
+
+# Private helpers exercised intentionally — same logical unit as
+# query_pipeline; the tests below regress its retrieval shape.
+_diversify_by_community = _query_pipeline._diversify_by_community  # pyright: ignore[reportPrivateUsage]
+_fuse_ranked_prefix = _query_pipeline._fuse_ranked_prefix  # pyright: ignore[reportPrivateUsage]
+_merge_ranked_prefix = _query_pipeline._merge_ranked_prefix  # pyright: ignore[reportPrivateUsage]
+_unique_source_prefix = _query_pipeline._unique_source_prefix  # pyright: ignore[reportPrivateUsage]
 
 
 def _chunk(
@@ -156,7 +160,7 @@ def test_current_ingest_config_excludes_query_time_reranker_settings() -> None:
         ),
     )
 
-    snapshot = current_ingest_config(config)
+    snapshot = current_ingest_config(cast("RuntimeConfig", config))
 
     assert "models.rerank" not in snapshot
     assert "reranker.backend" not in snapshot

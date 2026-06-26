@@ -12,12 +12,11 @@ from __future__ import annotations
 import pytest
 from pydantic import ValidationError
 
-from lxd.synthesis.citation_alignment import (
-    SentenceCitation,
-    _extract_valid_labels,
-    _strip_markers,
-    align_citations,
-)
+from lxd.synthesis import citation_alignment as _citation_alignment
+from lxd.synthesis.citation_alignment import SentenceCitation, align_citations
+
+_extract_valid_labels = _citation_alignment._extract_valid_labels  # pyright: ignore[reportPrivateUsage]
+_strip_markers = _citation_alignment._strip_markers  # pyright: ignore[reportPrivateUsage]
 
 pytestmark = [pytest.mark.unit]
 

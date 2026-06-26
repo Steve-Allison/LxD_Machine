@@ -5,7 +5,12 @@ from __future__ import annotations
 import json
 from typing import Any
 
-from lxd.ingest.claims import _build_claim_records, _build_user_prompt, _parse_response
+from lxd.ingest import claims as _claims_module
+
+# Internal helpers exercised by tests in the same logical unit.
+_build_claim_records = _claims_module._build_claim_records  # pyright: ignore[reportPrivateUsage]
+_build_user_prompt = _claims_module._build_user_prompt  # pyright: ignore[reportPrivateUsage]
+_parse_response = _claims_module._parse_response  # pyright: ignore[reportPrivateUsage]
 
 # ---------------------------------------------------------------------------
 # _parse_response

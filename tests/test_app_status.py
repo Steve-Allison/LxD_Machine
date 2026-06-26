@@ -1,14 +1,20 @@
 from __future__ import annotations
 
+from pathlib import Path
 from types import SimpleNamespace
+from typing import cast
 
 from lxd.app.status import load_committed_status
+from lxd.ingest.pipeline.orchestrator import IngestPlan
+from lxd.settings.models import RuntimeConfig
 from lxd.stores.models import OntologySnapshotRecord
 from lxd.stores.sqlite.connection import build_store_paths, connect_sqlite, initialize_schema
 from lxd.stores.sqlite.ontology import replace_ontology_snapshot
 
 
-def test_load_committed_status_uses_live_plan_when_snapshot_lacks_coverage(tmp_path) -> None:
+def test_load_committed_status_uses_live_plan_when_snapshot_lacks_coverage(
+    tmp_path: Path,
+) -> None:
     store_paths = build_store_paths(tmp_path)
     connection = connect_sqlite(store_paths.sqlite_path)
     try:
@@ -61,10 +67,13 @@ def test_load_committed_status_uses_live_plan_when_snapshot_lacks_coverage(tmp_p
             )
         )
 
+        def _plan_provider() -> IngestPlan:
+            return cast("IngestPlan", plan)
+
         status_snapshot = load_committed_status(
             connection,
-            config=config,
-            plan_provider=lambda: plan,
+            config=cast("RuntimeConfig", config),
+            plan_provider=_plan_provider,
         )
     finally:
         connection.close()
@@ -75,7 +84,9 @@ def test_load_committed_status_uses_live_plan_when_snapshot_lacks_coverage(tmp_p
     assert status_snapshot.summary.ontology_snapshot_hash == "live-snapshot-hash"
 
 
-def test_load_committed_status_ignores_malformed_validation_issue_json(tmp_path) -> None:
+def test_load_committed_status_ignores_malformed_validation_issue_json(
+    tmp_path: Path,
+) -> None:
     store_paths = build_store_paths(tmp_path)
     connection = connect_sqlite(store_paths.sqlite_path)
     try:
@@ -127,10 +138,13 @@ def test_load_committed_status_ignores_malformed_validation_issue_json(tmp_path)
             )
         )
 
+        def _plan_provider() -> IngestPlan:
+            return cast("IngestPlan", plan)
+
         status_snapshot = load_committed_status(
             connection,
-            config=config,
-            plan_provider=lambda: plan,
+            config=cast("RuntimeConfig", config),
+            plan_provider=_plan_provider,
         )
     finally:
         connection.close()

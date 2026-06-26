@@ -6,11 +6,13 @@ the API call; misses go through the live embedder and are stored back.
 
 from __future__ import annotations
 
+from pathlib import Path
+
 from lxd.ingest.embedding_cache import lookup, open_cache_table, store
 from lxd.stores.lancedb import connect_lancedb
 
 
-def test_cache_round_trip_hit_and_miss(tmp_path) -> None:
+def test_cache_round_trip_hit_and_miss(tmp_path: Path) -> None:
     db = connect_lancedb(tmp_path / "lancedb")
     cache = open_cache_table(db, vector_size=3)
 
@@ -37,7 +39,7 @@ def test_cache_round_trip_hit_and_miss(tmp_path) -> None:
     assert result.misses_indices == [1]
 
 
-def test_cache_key_is_model_specific(tmp_path) -> None:
+def test_cache_key_is_model_specific(tmp_path: Path) -> None:
     """Same chunk_hash with a different model must miss — that's the whole
     point of the model+dims being part of the cache key."""
     db = connect_lancedb(tmp_path / "lancedb")
@@ -59,7 +61,7 @@ def test_cache_key_is_model_specific(tmp_path) -> None:
     assert result.miss_count == 1
 
 
-def test_cache_store_is_idempotent(tmp_path) -> None:
+def test_cache_store_is_idempotent(tmp_path: Path) -> None:
     """Re-storing the same key replaces, does not duplicate."""
     db = connect_lancedb(tmp_path / "lancedb")
     cache = open_cache_table(db, vector_size=3)
@@ -88,7 +90,7 @@ def test_cache_store_is_idempotent(tmp_path) -> None:
     assert result.hits[0] == [2.0, 0.0, 0.0]
 
 
-def test_cache_lookup_with_empty_input_returns_empty(tmp_path) -> None:
+def test_cache_lookup_with_empty_input_returns_empty(tmp_path: Path) -> None:
     db = connect_lancedb(tmp_path / "lancedb")
     cache = open_cache_table(db, vector_size=3)
     result = lookup(
@@ -101,7 +103,7 @@ def test_cache_lookup_with_empty_input_returns_empty(tmp_path) -> None:
     assert result.miss_count == 0
 
 
-def test_cache_skips_vectors_with_wrong_dims(tmp_path) -> None:
+def test_cache_skips_vectors_with_wrong_dims(tmp_path: Path) -> None:
     """If a caller passes a vector of the wrong length, it is skipped silently
     rather than corrupting the table. The fixed-size-list schema would
     reject it anyway; we'd rather drop the bad entry than fail the whole

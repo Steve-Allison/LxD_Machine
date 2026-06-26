@@ -12,13 +12,12 @@ from __future__ import annotations
 import pytest
 from pydantic import ValidationError
 
-from lxd.retrieval.router import (
-    QueryRoute,
-    _fallback_route,
-    _parse_route,
-    resolve_dense_top_k,
-)
+from lxd.retrieval import router as _router_module
+from lxd.retrieval.router import QueryRoute, resolve_dense_top_k
 from lxd.settings.models import AdaptiveRetrievalConfig
+
+_fallback_route = _router_module._fallback_route  # pyright: ignore[reportPrivateUsage]
+_parse_route = _router_module._parse_route  # pyright: ignore[reportPrivateUsage]
 
 pytestmark = [pytest.mark.unit]
 

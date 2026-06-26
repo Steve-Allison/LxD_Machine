@@ -13,8 +13,10 @@ from __future__ import annotations
 
 from pathlib import Path
 from types import SimpleNamespace
+from typing import Any, cast
 
 import lancedb
+import pytest
 
 from lxd.ingest import contextual_chunker
 from lxd.ingest.contextual_chunker import (
@@ -24,20 +26,31 @@ from lxd.ingest.contextual_chunker import (
     open_summary_cache_table,
     store_summaries,
 )
+from lxd.settings.models import RuntimeConfig
 
 
-def _config() -> SimpleNamespace:
-    return SimpleNamespace(
-        chunking=SimpleNamespace(
-            contextual_summary_enabled=True,
-            contextual_summary_model="qwen3:14b",
-            contextual_summary_temperature=0.0,
-            contextual_summary_timeout_secs=60,
-            contextual_summary_max_tokens=80,
+def _config() -> RuntimeConfig:
+    return cast(
+        "RuntimeConfig",
+        SimpleNamespace(
+            chunking=SimpleNamespace(
+                contextual_summary_enabled=True,
+                contextual_summary_model="qwen3:14b",
+                contextual_summary_temperature=0.0,
+                contextual_summary_timeout_secs=60,
+                contextual_summary_max_tokens=80,
+            ),
+            models=SimpleNamespace(llm_no_think=True),
+            ollama=SimpleNamespace(url="http://localhost:11434"),
         ),
-        models=SimpleNamespace(llm_no_think=True),
-        ollama=SimpleNamespace(url="http://localhost:11434"),
     )
+
+
+def _install_ollama_client(monkeypatch: pytest.MonkeyPatch, client: object) -> None:
+    def _factory(_url: str, _timeout: float) -> object:
+        return client
+
+    monkeypatch.setattr(contextual_chunker, "get_ollama_client", _factory)
 
 
 def test_augment_chunk_for_embedding_prepends_summary() -> None:
@@ -104,13 +117,13 @@ def test_summary_cache_keys_are_model_scoped(tmp_path: Path) -> None:
     assert different.misses_indices == [0]
 
 
-def test_generate_chunk_context_returns_first_line(monkeypatch) -> None:
+def test_generate_chunk_context_returns_first_line(monkeypatch: pytest.MonkeyPatch) -> None:
     """The Ollama response is post-processed: ``<think>`` blocks stripped,
     only the first non-empty line returned (some models emit a paragraph
     of commentary after the requested sentence)."""
 
     class FakeClient:
-        def generate(self, **kwargs):
+        def generate(self, **kwargs: Any) -> dict[str, str]:
             assert kwargs["model"] == "qwen3:14b"
             assert kwargs["options"]["temperature"] == 0.0
             return {
@@ -121,7 +134,7 @@ def test_generate_chunk_context_returns_first_line(monkeypatch) -> None:
                 )
             }
 
-    monkeypatch.setattr(contextual_chunker, "get_ollama_client", lambda url, timeout: FakeClient())
+    _install_ollama_client(monkeypatch, FakeClient())
     summary = generate_chunk_context(
         chunk_text="Backward design...",
         document_title="addie-model.md",
@@ -131,17 +144,18 @@ def test_generate_chunk_context_returns_first_line(monkeypatch) -> None:
     assert summary == "This chunk discusses backward design."
 
 
-def test_generate_chunk_context_returns_empty_string_on_failure(monkeypatch) -> None:
+def test_generate_chunk_context_returns_empty_string_on_failure(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """An offline Ollama yields ``""`` so the pipeline can fall back to
     embedding the chunk without context (graceful degradation)."""
 
     class FailingClient:
-        def generate(self, **kwargs):
+        def generate(self, **kwargs: Any) -> dict[str, str]:
+            del kwargs
             raise contextual_chunker.ollama.RequestError("connection refused")
 
-    monkeypatch.setattr(
-        contextual_chunker, "get_ollama_client", lambda url, timeout: FailingClient()
-    )
+    _install_ollama_client(monkeypatch, FailingClient())
     summary = generate_chunk_context(
         chunk_text="...",
         document_title="t.md",
@@ -151,18 +165,18 @@ def test_generate_chunk_context_returns_empty_string_on_failure(monkeypatch) -> 
     assert summary == ""
 
 
-def test_generate_chunk_context_handles_missing_document_summary(monkeypatch) -> None:
+def test_generate_chunk_context_handles_missing_document_summary(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """Empty document_summary must not crash the prompt builder."""
     captured_prompts: list[str] = []
 
     class CapturingClient:
-        def generate(self, **kwargs):
+        def generate(self, **kwargs: Any) -> dict[str, str]:
             captured_prompts.append(kwargs["prompt"])
             return {"response": "OK."}
 
-    monkeypatch.setattr(
-        contextual_chunker, "get_ollama_client", lambda url, timeout: CapturingClient()
-    )
+    _install_ollama_client(monkeypatch, CapturingClient())
     summary = generate_chunk_context(
         chunk_text="x",
         document_title="t.md",

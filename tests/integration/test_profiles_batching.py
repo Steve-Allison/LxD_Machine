@@ -3,14 +3,19 @@
 from __future__ import annotations
 
 import sqlite3
+from collections.abc import Generator
 
 import pytest
 
-from lxd.ontology.profiles import _load_chunk_ids_by_entity
+from lxd.ontology import profiles as _profiles_module
+
+_load_chunk_ids_by_entity = (
+    _profiles_module._load_chunk_ids_by_entity  # pyright: ignore[reportPrivateUsage]
+)
 
 
 @pytest.fixture()
-def mention_db(tmp_path) -> sqlite3.Connection:
+def mention_db() -> Generator[sqlite3.Connection]:
     conn = sqlite3.connect(":memory:")
     conn.row_factory = sqlite3.Row
     conn.executescript(

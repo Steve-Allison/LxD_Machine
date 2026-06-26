@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import pytest
+from mcp.types import TextContent
 
 from lxd.synthesis.answering import (
     SYNTHESIS_PREAMBLE_BASE,
@@ -60,7 +61,7 @@ async def test_mcp_prompt_returns_full_preamble_text() -> None:
 
     expected = synthesis_preamble(has_transitive_sources=True, has_graph_context=True)
     rendered_text = "\n".join(
-        msg.content.text for msg in rendered.messages if hasattr(msg.content, "text")
+        msg.content.text for msg in rendered.messages if isinstance(msg.content, TextContent)
     )
     assert expected in rendered_text, (
         f"Rendered prompt should contain the full preamble; saw:\n{rendered_text}\n"

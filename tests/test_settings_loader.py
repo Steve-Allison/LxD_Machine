@@ -17,7 +17,7 @@ def test_load_runtime_config_uses_default_config_yaml() -> None:
     assert config.paths.data_path == repo_root / "data" / "openai"
 
 
-def test_load_runtime_config_resolves_relative_paths_from_selected_file(tmp_path) -> None:
+def test_load_runtime_config_resolves_relative_paths_from_selected_file(tmp_path: Path) -> None:
     repo_root = tmp_path / "repo"
     repo_root.mkdir()
     config_file = repo_root / "portable.yaml"
@@ -111,7 +111,7 @@ def test_resolve_repo_root_finds_project_root() -> None:
     assert resolved == repo_root
 
 
-def test_load_runtime_config_normalizes_blank_query_instruction(tmp_path) -> None:
+def test_load_runtime_config_normalizes_blank_query_instruction(tmp_path: Path) -> None:
     repo_root = tmp_path / "repo"
     repo_root.mkdir()
     config_file = repo_root / "blank-query-instruction.yaml"
@@ -129,7 +129,7 @@ def test_load_runtime_config_normalizes_blank_query_instruction(tmp_path) -> Non
     assert config.embedding.query_instruction is None
 
 
-def test_load_runtime_config_rejects_openai_dim_mismatch(tmp_path) -> None:
+def test_load_runtime_config_rejects_openai_dim_mismatch(tmp_path: Path) -> None:
     repo_root = tmp_path / "repo"
     repo_root.mkdir()
     config_file = repo_root / "openai-dims-mismatch.yaml"

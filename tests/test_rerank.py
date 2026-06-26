@@ -3,8 +3,13 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 from types import SimpleNamespace
+from typing import Any, cast
+
+import pytest
 
 from lxd.retrieval import rerank
+from lxd.retrieval.query_pipeline import RankedChunk
+from lxd.settings.models import RuntimeConfig
 
 
 @dataclass(frozen=True)
@@ -26,8 +31,22 @@ class Candidate:
     score: float
 
 
-def test_rerank_chunks_uses_llama_cpp_backend(monkeypatch) -> None:
-    rerank._probe_cache.clear()
+def _as_ranked(candidates: list[Candidate]) -> list[RankedChunk]:
+    """Pyright cast: Candidate is structurally the prefix RankedChunk needs.
+
+    The production ``rerank_chunks`` only reads the fields declared on
+    ``Candidate``; the cast is honest at runtime.
+    """
+    return cast("list[RankedChunk]", candidates)
+
+
+def _as_config(ns: SimpleNamespace) -> RuntimeConfig:
+    """Pyright cast: RuntimeConfig stub for tests that only touch a subset."""
+    return cast("RuntimeConfig", ns)
+
+
+def test_rerank_chunks_uses_llama_cpp_backend(monkeypatch: pytest.MonkeyPatch) -> None:
+    rerank._probe_cache.clear()  # pyright: ignore[reportPrivateUsage]
     calls: list[tuple[str, dict[str, object]]] = []
 
     class FakeResponse:
@@ -46,7 +65,7 @@ def test_rerank_chunks_uses_llama_cpp_backend(monkeypatch) -> None:
         def __enter__(self) -> FakeClient:
             return self
 
-        def __exit__(self, exc_type, exc, tb) -> None:
+        def __exit__(self, exc_type: object, exc: object, tb: object) -> None:
             return None
 
         def post(self, path: str, json: dict[str, object]) -> FakeResponse:
@@ -62,27 +81,32 @@ def test_rerank_chunks_uses_llama_cpp_backend(monkeypatch) -> None:
                 }
             )
 
-    monkeypatch.setattr(rerank, "_client", lambda config: FakeClient())
+    def _client_factory(_config: RuntimeConfig) -> FakeClient:
+        return FakeClient()
 
-    config = SimpleNamespace(
-        models=SimpleNamespace(rerank="qwen3-reranker"),
-        reranker=SimpleNamespace(
-            backend="llama_cpp",
-            url="http://127.0.0.1:8012",
-            endpoint="/v1/rerank",
-            timeout_secs=30,
-            launch=SimpleNamespace(
-                auto_start=False,
-                executable="llama-server",
-                model_source="ollama_blob",
-                model_path=None,
-                host="127.0.0.1",
-                port=8012,
-                startup_timeout_secs=30,
-                extra_args=[],
+    monkeypatch.setattr(rerank, "_client", _client_factory)
+
+    config = _as_config(
+        SimpleNamespace(
+            models=SimpleNamespace(rerank="qwen3-reranker"),
+            reranker=SimpleNamespace(
+                backend="llama_cpp",
+                url="http://127.0.0.1:8012",
+                endpoint="/v1/rerank",
+                timeout_secs=30,
+                launch=SimpleNamespace(
+                    auto_start=False,
+                    executable="llama-server",
+                    model_source="ollama_blob",
+                    model_path=None,
+                    host="127.0.0.1",
+                    port=8012,
+                    startup_timeout_secs=30,
+                    extra_args=[],
+                ),
             ),
-        ),
-        paths=SimpleNamespace(data_path=Path("/tmp")),
+            paths=SimpleNamespace(data_path=Path("/tmp")),
+        )
     )
     candidates = [
         Candidate(
@@ -121,7 +145,7 @@ def test_rerank_chunks_uses_llama_cpp_backend(monkeypatch) -> None:
         ),
     ]
 
-    outcome = rerank.rerank_chunks("question", candidates, config)
+    outcome = rerank.rerank_chunks("question", _as_ranked(candidates), config)
 
     assert outcome.applied is True
     assert [item.chunk_id for item in outcome.ranked] == ["b", "a"]
@@ -130,17 +154,19 @@ def test_rerank_chunks_uses_llama_cpp_backend(monkeypatch) -> None:
 
 
 def test_rerank_chunks_falls_back_when_url_not_configured() -> None:
-    rerank._probe_cache.clear()
-    config = SimpleNamespace(
-        models=SimpleNamespace(rerank="qwen3-reranker"),
-        reranker=SimpleNamespace(
-            backend="llama_cpp",
-            url=None,
-            endpoint="/v1/rerank",
-            timeout_secs=30,
-            launch=None,
-        ),
-        paths=SimpleNamespace(data_path=Path("/tmp")),
+    rerank._probe_cache.clear()  # pyright: ignore[reportPrivateUsage]
+    config = _as_config(
+        SimpleNamespace(
+            models=SimpleNamespace(rerank="qwen3-reranker"),
+            reranker=SimpleNamespace(
+                backend="llama_cpp",
+                url=None,
+                endpoint="/v1/rerank",
+                timeout_secs=30,
+                launch=None,
+            ),
+            paths=SimpleNamespace(data_path=Path("/tmp")),
+        )
     )
     candidates = [
         Candidate(
@@ -162,15 +188,17 @@ def test_rerank_chunks_falls_back_when_url_not_configured() -> None:
         )
     ]
 
-    outcome = rerank.rerank_chunks("question", candidates, config)
+    outcome = rerank.rerank_chunks("question", _as_ranked(candidates), config)
 
     assert outcome.applied is False
     assert outcome.ranked == candidates
     assert outcome.warnings == ["reranker.url must be configured for the llama.cpp backend."]
 
 
-def test_probe_reranker_autostarts_llama_server_from_ollama_blob(monkeypatch, tmp_path) -> None:
-    rerank._probe_cache.clear()
+def test_probe_reranker_autostarts_llama_server_from_ollama_blob(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    rerank._probe_cache.clear()  # pyright: ignore[reportPrivateUsage]
     commands: list[list[str]] = []
     probe_results = iter(
         [
@@ -187,41 +215,46 @@ def test_probe_reranker_autostarts_llama_server_from_ollama_blob(monkeypatch, tm
         def poll(self) -> None:
             return None
 
-    def fake_probe(config) -> tuple[bool, str | None]:
+    def fake_probe(_config: RuntimeConfig) -> tuple[bool, str | None]:
         return next(probe_results)
 
-    def fake_popen(command, **kwargs) -> FakeProcess:
+    def fake_popen(command: list[str], **kwargs: Any) -> FakeProcess:
+        del kwargs
         commands.append(command)
         return FakeProcess()
 
+    def _resolve_executable(executable: str) -> str:
+        return executable
+
+    def _resolve_model_path(_model_name: str) -> Path:
+        return Path("/tmp/local-reranker.gguf")
+
     monkeypatch.setattr(rerank, "_probe_reranker_http", fake_probe)
-    monkeypatch.setattr(rerank, "_resolve_llama_server_executable", lambda executable: executable)
-    monkeypatch.setattr(
-        rerank,
-        "_resolve_ollama_blob_model_path",
-        lambda model_name: Path("/tmp/local-reranker.gguf"),
-    )
+    monkeypatch.setattr(rerank, "_resolve_llama_server_executable", _resolve_executable)
+    monkeypatch.setattr(rerank, "_resolve_ollama_blob_model_path", _resolve_model_path)
     monkeypatch.setattr(rerank.subprocess, "Popen", fake_popen)
 
-    config = SimpleNamespace(
-        models=SimpleNamespace(rerank="dengcao/Qwen3-Reranker-0.6B:F16"),
-        reranker=SimpleNamespace(
-            backend="llama_cpp",
-            url="http://127.0.0.1:8012",
-            endpoint="/v1/rerank",
-            timeout_secs=30,
-            launch=SimpleNamespace(
-                auto_start=True,
-                executable="llama-server",
-                model_source="ollama_blob",
-                model_path=None,
-                host="127.0.0.1",
-                port=8012,
-                startup_timeout_secs=2,
-                extra_args=["--threads", "4"],
+    config = _as_config(
+        SimpleNamespace(
+            models=SimpleNamespace(rerank="dengcao/Qwen3-Reranker-0.6B:F16"),
+            reranker=SimpleNamespace(
+                backend="llama_cpp",
+                url="http://127.0.0.1:8012",
+                endpoint="/v1/rerank",
+                timeout_secs=30,
+                launch=SimpleNamespace(
+                    auto_start=True,
+                    executable="llama-server",
+                    model_source="ollama_blob",
+                    model_path=None,
+                    host="127.0.0.1",
+                    port=8012,
+                    startup_timeout_secs=2,
+                    extra_args=["--threads", "4"],
+                ),
             ),
-        ),
-        paths=SimpleNamespace(data_path=tmp_path),
+            paths=SimpleNamespace(data_path=tmp_path),
+        )
     )
 
     supported, warning = rerank.probe_reranker(config)
@@ -306,8 +339,8 @@ def test_apply_rerank_payload_orders_by_descending_relevance() -> None:
         ),
     ]
 
-    reranked = rerank._apply_rerank_payload(
-        candidates,
+    reranked = rerank._apply_rerank_payload(  # pyright: ignore[reportPrivateUsage]
+        _as_ranked(candidates),
         {
             "results": [
                 {"index": 2, "relevance_score": 0.1},

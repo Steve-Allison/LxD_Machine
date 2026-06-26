@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, cast
 
 import pytest
 import structlog
+from structlog.stdlib import BoundLogger
 
 from lxd.observability.logging import log_duration
 
@@ -30,7 +31,7 @@ def test_log_duration_emits_started_and_completed() -> None:
     """A clean block produces a matched ``started``/``completed`` pair."""
     spy = _SpyLogger()
 
-    with log_duration("ingest.run", logger=spy, tenant="acme"):
+    with log_duration("ingest.run", logger=cast("BoundLogger", spy), tenant="acme"):
         pass
 
     assert [event for _, event, _ in spy.events] == [
@@ -47,7 +48,10 @@ def test_log_duration_reports_failure_and_reraises() -> None:
     """Exceptions produce a ``failed`` record and propagate unchanged."""
     spy = _SpyLogger()
 
-    with pytest.raises(ValueError, match="boom"), log_duration("ingest.run", logger=spy):
+    with (
+        pytest.raises(ValueError, match="boom"),
+        log_duration("ingest.run", logger=cast("BoundLogger", spy)),
+    ):
         raise ValueError("boom")
 
     events = [event for _, event, _ in spy.events]
@@ -62,7 +66,7 @@ def test_log_duration_mutable_fields_survive_to_completion() -> None:
     """Fields added mid-block are visible on the completion event."""
     spy = _SpyLogger()
 
-    with log_duration("ingest.run", logger=spy) as extras:
+    with log_duration("ingest.run", logger=cast("BoundLogger", spy)) as extras:
         extras["files_processed"] = 42
 
     assert spy.events[1][2]["files_processed"] == 42

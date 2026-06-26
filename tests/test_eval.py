@@ -4,7 +4,10 @@ import random
 
 import pytest
 
-from lxd.retrieval.eval import _normalize_expected, mrr_at_k, recall_at_k
+from lxd.retrieval import eval as _eval_module
+from lxd.retrieval.eval import mrr_at_k, recall_at_k
+
+_normalize_expected = _eval_module._normalize_expected  # pyright: ignore[reportPrivateUsage]
 
 
 def test_normalize_expected_rejects_ambiguous_basenames() -> None:

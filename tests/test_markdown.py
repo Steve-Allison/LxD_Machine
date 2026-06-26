@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 from lxd.ingest.chunking import chunk_document
 from lxd.ingest.markdown import extract_text_blocks, load_markdown_document
 
@@ -22,7 +24,7 @@ def test_extract_text_blocks_collapses_padding_whitespace() -> None:
     ]
 
 
-def test_load_markdown_document_uses_docling_and_native_chunking(tmp_path) -> None:
+def test_load_markdown_document_uses_docling_and_native_chunking(tmp_path: Path) -> None:
     source_path = tmp_path / "example.md"
     source_path.write_text(
         "# Title\n\nParagraph one.\n\n## Section\n\n- Item A\n- Item B\n",
@@ -48,7 +50,7 @@ def test_load_markdown_document_uses_docling_and_native_chunking(tmp_path) -> No
     assert "Title" in chunks[0].text
 
 
-def test_load_markdown_document_respects_source_type_override(tmp_path) -> None:
+def test_load_markdown_document_respects_source_type_override(tmp_path: Path) -> None:
     source_path = tmp_path / "example.docling.md"
     source_path.write_text("# Title\n\nContent.\n", encoding="utf-8")
 
@@ -60,7 +62,7 @@ def test_load_markdown_document_respects_source_type_override(tmp_path) -> None:
     assert document.docling_document is not None
 
 
-def test_load_markdown_document_defaults_to_markdown_source_type(tmp_path) -> None:
+def test_load_markdown_document_defaults_to_markdown_source_type(tmp_path: Path) -> None:
     source_path = tmp_path / "notes.md"
     source_path.write_text("# Notes\n\nSome content.\n", encoding="utf-8")
 

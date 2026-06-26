@@ -40,8 +40,8 @@ async def _collect_manifest() -> list[dict[str, Any]]:
     manifest: list[dict[str, Any]] = []
     for tool in tools:
         schema = dict(tool.parameters) if tool.parameters else {}
-        props = schema.get("properties", {}) if isinstance(schema, dict) else {}
-        required = list(schema.get("required", [])) if isinstance(schema, dict) else []
+        props = schema.get("properties", {})
+        required = list(schema.get("required", []))
         manifest.append(
             {
                 "name": tool.name,

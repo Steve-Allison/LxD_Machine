@@ -1,25 +1,44 @@
 from __future__ import annotations
 
 from types import SimpleNamespace
+from typing import cast
+
+import pytest
 
 from lxd.ingest import embedder as embedder_module
 from lxd.retrieval import dense
+from lxd.settings.models import RuntimeConfig
 
 
-def test_embed_texts_sends_one_checked_request_per_text(monkeypatch) -> None:
+def _install_ollama_client(monkeypatch: pytest.MonkeyPatch, client: object) -> None:
+    def _factory(_config: RuntimeConfig) -> object:
+        return client
+
+    monkeypatch.setattr(embedder_module, "_ollama_client", _factory)
+
+
+def test_embed_texts_sends_one_checked_request_per_text(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     calls: list[tuple[str, bool, int]] = []
 
     class FakeClient:
-        def embed(self, *, model: str, input: str, truncate: bool, dimensions: int):
+        def embed(
+            self, *, model: str, input: str, truncate: bool, dimensions: int
+        ) -> dict[str, list[list[float]]]:
+            del model
             calls.append((input, truncate, dimensions))
             return {"embeddings": [[float(len(calls))] * dimensions]}
 
-    monkeypatch.setattr(embedder_module, "_ollama_client", lambda config: FakeClient())
+    _install_ollama_client(monkeypatch, FakeClient())
 
-    config = SimpleNamespace(
-        ollama=SimpleNamespace(url="http://localhost:11434"),
-        models=SimpleNamespace(embed="nomic-embed-text", embed_dims=3, embed_backend="ollama"),
-        embedding=None,
+    config = cast(
+        "RuntimeConfig",
+        SimpleNamespace(
+            ollama=SimpleNamespace(url="http://localhost:11434"),
+            models=SimpleNamespace(embed="nomic-embed-text", embed_dims=3, embed_backend="ollama"),
+            embedding=None,
+        ),
     )
 
     vectors = dense.embed_texts(config, ["aaaa", "bbbb"])
@@ -31,24 +50,32 @@ def test_embed_texts_sends_one_checked_request_per_text(monkeypatch) -> None:
     ]
 
 
-def test_embed_query_applies_instruction_prefix(monkeypatch) -> None:
+def test_embed_query_applies_instruction_prefix(monkeypatch: pytest.MonkeyPatch) -> None:
     captured: list[str] = []
 
     class FakeClient:
-        def embed(self, *, model: str, input: str, truncate: bool, dimensions: int):
+        def embed(
+            self, *, model: str, input: str, truncate: bool, dimensions: int
+        ) -> dict[str, list[list[float]]]:
+            del model, truncate
             captured.append(input)
             return {"embeddings": [[0.0] * dimensions]}
 
-    monkeypatch.setattr(embedder_module, "_ollama_client", lambda config: FakeClient())
+    _install_ollama_client(monkeypatch, FakeClient())
 
-    config = SimpleNamespace(
-        ollama=SimpleNamespace(url="http://localhost:11434"),
-        models=SimpleNamespace(embed="qwen3-embedding:4b", embed_dims=3, embed_backend="ollama"),
-        embedding=SimpleNamespace(
-            query_instruction="Instruct: Test.\nQuery: ",
-            retry_attempts=1,
-            retry_backoff=[],
-            timeout_secs=30,
+    config = cast(
+        "RuntimeConfig",
+        SimpleNamespace(
+            ollama=SimpleNamespace(url="http://localhost:11434"),
+            models=SimpleNamespace(
+                embed="qwen3-embedding:4b", embed_dims=3, embed_backend="ollama"
+            ),
+            embedding=SimpleNamespace(
+                query_instruction="Instruct: Test.\nQuery: ",
+                retry_attempts=1,
+                retry_backoff=[],
+                timeout_secs=30,
+            ),
         ),
     )
 
@@ -57,24 +84,34 @@ def test_embed_query_applies_instruction_prefix(monkeypatch) -> None:
     assert captured == ["Instruct: Test.\nQuery: what is Bloom's taxonomy?"]
 
 
-def test_embed_query_no_prefix_when_instruction_is_none(monkeypatch) -> None:
+def test_embed_query_no_prefix_when_instruction_is_none(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     captured: list[str] = []
 
     class FakeClient:
-        def embed(self, *, model: str, input: str, truncate: bool, dimensions: int):
+        def embed(
+            self, *, model: str, input: str, truncate: bool, dimensions: int
+        ) -> dict[str, list[list[float]]]:
+            del model, truncate
             captured.append(input)
             return {"embeddings": [[0.0] * dimensions]}
 
-    monkeypatch.setattr(embedder_module, "_ollama_client", lambda config: FakeClient())
+    _install_ollama_client(monkeypatch, FakeClient())
 
-    config = SimpleNamespace(
-        ollama=SimpleNamespace(url="http://localhost:11434"),
-        models=SimpleNamespace(embed="text-embedding-3-small", embed_dims=3, embed_backend="ollama"),
-        embedding=SimpleNamespace(
-            query_instruction=None,
-            retry_attempts=1,
-            retry_backoff=[],
-            timeout_secs=30,
+    config = cast(
+        "RuntimeConfig",
+        SimpleNamespace(
+            ollama=SimpleNamespace(url="http://localhost:11434"),
+            models=SimpleNamespace(
+                embed="text-embedding-3-small", embed_dims=3, embed_backend="ollama"
+            ),
+            embedding=SimpleNamespace(
+                query_instruction=None,
+                retry_attempts=1,
+                retry_backoff=[],
+                timeout_secs=30,
+            ),
         ),
     )
 
