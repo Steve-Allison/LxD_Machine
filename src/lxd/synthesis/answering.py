@@ -15,7 +15,7 @@ Two modes:
 
 import re
 from collections.abc import Iterator
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import Final
 
 import ollama
@@ -24,6 +24,7 @@ from lxd.domain.status import QueryAnswerStatus
 from lxd.ingest.llm_client import get_ollama_client
 from lxd.settings.models import RuntimeConfig
 from lxd.synthesis.citation_alignment import SentenceCitation, align_citations
+from lxd.synthesis.sampler import Sampler, SamplerFailure, SamplerRequest
 
 _THINK_BLOCK_PATTERN: Final = re.compile(r"<think>.*?</think>", flags=re.DOTALL)
 
@@ -177,6 +178,7 @@ def synthesize_answer(
     config: RuntimeConfig,
     *,
     graph_context_prompt: str = "",
+    sampler: Sampler | None = None,
 ) -> AnswerEnvelope:
     """Synthesize an answer from retrieved evidence chunks.
 
@@ -185,12 +187,54 @@ def synthesize_answer(
         evidence: Evidence chunks used for synthesis.
         config: Runtime configuration object.
         graph_context_prompt: Optional graph context to prepend to the prompt.
+        sampler: Optional client-side sampler. When provided (the MCP
+            server passes one when ``mcp.synthesis_backend`` is set to
+            ``client_sampling``), the synthesis prompt is dispatched via
+            :func:`fastmcp.Context.sample` so the connected client's LLM
+            answers. On :class:`SamplerFailure` (client did not advertise
+            sampling capability, upstream error, empty response) the call
+            transparently falls back to the server-side Ollama path and
+            surfaces the reason as a warning on the resulting envelope.
 
     Returns:
         Answer envelope from synthesis or fallback.
     """
     citations = [chunk.citation_label for chunk in evidence]
     prompt = _build_prompt(question, evidence, graph_context_prompt=graph_context_prompt)
+    if sampler is not None:
+        request = SamplerRequest(
+            prompt=prompt,
+            temperature=config.synthesis.temperature,
+            max_tokens=config.synthesis.max_tokens,
+        )
+        try:
+            answer_text = _strip_thinking(sampler(request)).strip()
+        except SamplerFailure as exc:
+            fallback = _synthesize_answer_local(prompt=prompt, config=config, citations=citations)
+            warning = f"Client sampling unavailable ({exc}); answered via server LLM instead."
+            return replace(fallback, warnings=[*fallback.warnings, warning])
+        if not answer_text:
+            fallback = _synthesize_answer_local(prompt=prompt, config=config, citations=citations)
+            warning = "Client sampling returned an empty response; answered via server LLM instead."
+            return replace(fallback, warnings=[*fallback.warnings, warning])
+        return AnswerEnvelope(
+            answer_status=QueryAnswerStatus.ANSWERED,
+            answer_text=answer_text,
+            citations=citations,
+            warnings=[],
+            metadata={},
+            sentence_citations=align_citations(answer_text=answer_text, valid_labels=citations),
+        )
+    return _synthesize_answer_local(prompt=prompt, config=config, citations=citations)
+
+
+def _synthesize_answer_local(
+    *,
+    prompt: str,
+    config: RuntimeConfig,
+    citations: list[str],
+) -> AnswerEnvelope:
+    """Run synthesis on the server-side Ollama model (the default path)."""
     try:
         response = _client(config).generate(
             model=config.models.llm,

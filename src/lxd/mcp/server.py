@@ -59,6 +59,7 @@ from lxd.mcp.tools import (
     search_knowledge_tool,
 )
 from lxd.synthesis.answering import synthesis_preamble
+from lxd.synthesis.sampler import Sampler, SamplerFailure, SamplerRequest
 
 # Per-tool semantic hints. Every tool here is read-only; the split is:
 #   IDEMPOTENT  — ontology-bound; same inputs always yield the same outputs
@@ -67,8 +68,12 @@ from lxd.synthesis.answering import synthesis_preamble
 #                 calls (ingest may run while the server is up).
 #   LLM         — open-world AND non-deterministic because answer synthesis
 #                 calls an LLM.
-_HINT_IDEMPOTENT: Final = ToolAnnotations(readOnlyHint=True, idempotentHint=True, openWorldHint=False)
-_HINT_OPEN_WORLD: Final = ToolAnnotations(readOnlyHint=True, idempotentHint=False, openWorldHint=True)
+_HINT_IDEMPOTENT: Final = ToolAnnotations(
+    readOnlyHint=True, idempotentHint=True, openWorldHint=False
+)
+_HINT_OPEN_WORLD: Final = ToolAnnotations(
+    readOnlyHint=True, idempotentHint=False, openWorldHint=True
+)
 _HINT_LLM: Final = ToolAnnotations(readOnlyHint=True, idempotentHint=False, openWorldHint=True)
 
 _LIFESPAN_KEY: Final = "lxd"
@@ -123,6 +128,54 @@ def _make_phase_callback(ctx: Context, *, total: int):
         anyio.from_thread.run(ctx.report_progress, phase, total, message)
 
     return _emit
+
+
+def _make_client_sampler(ctx: Context) -> Sampler:
+    """Build a sync sampler that dispatches synthesis to the connected client.
+
+    The synthesis path runs in a worker thread (via ``run_tool``); the
+    client sampling call is async and lives on the MCP event loop. The
+    returned callable bridges the two via :func:`anyio.from_thread.run`,
+    same pattern as :func:`_make_phase_callback`. Any failure — no
+    sampling capability, upstream error, empty result — is normalised to
+    :class:`SamplerFailure` so the caller can transparently fall back to
+    the server-side Ollama path.
+    """
+
+    async def _do_sample(request: SamplerRequest) -> str:
+        result = await ctx.sample(
+            messages=request.prompt,
+            temperature=request.temperature,
+            max_tokens=request.max_tokens,
+        )
+        text = getattr(result, "text", None) or str(result)
+        return text
+
+    def _sample(request: SamplerRequest) -> str:
+        try:
+            return anyio.from_thread.run(_do_sample, request)
+        except SamplerFailure:
+            raise
+        except Exception as exc:
+            raise SamplerFailure(str(exc)) from exc
+
+    return _sample
+
+
+def _resolve_sampler(lxd: _LxDLifespan, ctx: Context) -> Sampler | None:
+    """Return the sampler to use for this synthesis call, or ``None`` for server LLM.
+
+    When ``mcp.synthesis_backend`` is set to ``client_sampling`` the
+    server builds a client-side sampler; otherwise synthesis stays on
+    the server's own Ollama model. When the connected client has not
+    advertised sampling capability the sampler still returns — the
+    fallback happens inside :func:`lxd.synthesis.answering.synthesize_answer`
+    on the first :class:`SamplerFailure`, so a single warning is added
+    to the answer rather than silently downgrading.
+    """
+    if lxd.app_context.config.mcp.synthesis_backend != "client_sampling":
+        return None
+    return _make_client_sampler(ctx)
 
 
 def create_server(
@@ -496,9 +549,12 @@ def create_server(
         lxd = _lxd(ctx)
         await ctx.report_progress(progress=0, total=3, message="retrieving evidence")
         on_phase = _make_phase_callback(ctx, total=3)
+        sampler = _resolve_sampler(lxd, ctx)
         result = await run_tool(
             "search_knowledge",
-            lambda: search_knowledge_tool(lxd.app_context, question, domain, on_phase=on_phase),
+            lambda: search_knowledge_tool(
+                lxd.app_context, question, domain, on_phase=on_phase, sampler=sampler
+            ),
             timeout_secs=_tool_timeout(lxd),
         )
         await ctx.report_progress(progress=3, total=3, message="answer ready")
@@ -525,10 +581,11 @@ def create_server(
         lxd = _lxd(ctx)
         await ctx.report_progress(progress=0, total=3, message="retrieving evidence")
         on_phase = _make_phase_callback(ctx, total=3)
+        sampler = _resolve_sampler(lxd, ctx)
         result = await run_tool(
             "search_knowledge_deep",
             lambda: search_knowledge_deep_tool(
-                lxd.app_context, question, domain, on_phase=on_phase
+                lxd.app_context, question, domain, on_phase=on_phase, sampler=sampler
             ),
             timeout_secs=_tool_timeout(lxd),
         )

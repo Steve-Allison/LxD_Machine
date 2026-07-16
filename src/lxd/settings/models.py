@@ -382,6 +382,19 @@ class MCPConfig(BaseModel):
     version: str
     async_tools_enabled: bool = True
     tool_timeout_secs: float = Field(default=60.0, ge=0.0)
+    synthesis_backend: Literal["server_llm", "client_sampling"] = Field(
+        default="server_llm",
+        description=(
+            "Which LLM answers the synthesis step for search_knowledge / "
+            "search_knowledge_deep. ``server_llm`` (default) calls the "
+            "server's own Ollama model — trust and cost boundary stays "
+            "server-side. ``client_sampling`` delegates to MCP "
+            "``Context.sample`` so the client's own LLM runs the "
+            "synthesis (client picks model, client pays for tokens); the "
+            "server falls back to ``server_llm`` automatically for any "
+            "client that has not advertised the sampling capability."
+        ),
+    )
 
 
 class LoggingConfig(BaseModel):

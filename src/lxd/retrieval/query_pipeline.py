@@ -7,8 +7,6 @@ from typing import Final
 
 import structlog
 
-PhaseCallback = Callable[[int, str], None]
-
 from lxd.app.status import config_drift_warnings
 from lxd.retrieval.dense import embed_query
 from lxd.retrieval.expansion import ExpansionOutcome, expand_question
@@ -45,6 +43,9 @@ from lxd.synthesis.answering import (
     no_retrieval_needed_answer,
     synthesize_answer,
 )
+from lxd.synthesis.sampler import Sampler
+
+PhaseCallback = Callable[[int, str], None]
 
 _log = structlog.get_logger(__name__)
 
@@ -219,6 +220,7 @@ def answer_question(
     config: RuntimeConfig,
     domain: str | None = None,
     on_phase: PhaseCallback | None = None,
+    sampler: Sampler | None = None,
 ) -> AnswerEnvelope:
     """Generate an answer envelope from retrieval evidence.
 
@@ -321,7 +323,11 @@ def answer_question(
             metadata=metadata,
         )
     answer = synthesize_answer(
-        question, evidence, config, graph_context_prompt=graph_context_prompt
+        question,
+        evidence,
+        config,
+        graph_context_prompt=graph_context_prompt,
+        sampler=sampler,
     )
     warnings = [*outcome.warnings, *outcome.config_drift_warnings, *answer.warnings]
     return AnswerEnvelope(

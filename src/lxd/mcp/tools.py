@@ -77,6 +77,7 @@ from lxd.stores.sqlite.kg_relations import (
     load_evidence_for_relation,
     load_graph_metadata,
 )
+from lxd.synthesis.sampler import Sampler
 
 
 def corpus_status_tool(app_context: AppContext, plan: IngestPlan) -> CorpusStatusResponse:
@@ -272,8 +273,7 @@ def get_entity_summary_tool(app_context: AppContext, entity_id: str) -> EntitySu
             for item in _decode_json_list(profile.top_predicates_json)
         ],
         top_claims=[
-            TopClaim.model_validate(item)
-            for item in _decode_json_list(profile.top_claims_json)
+            TopClaim.model_validate(item) for item in _decode_json_list(profile.top_claims_json)
         ],
         pagerank=profile.pagerank,
         betweenness=profile.betweenness,
@@ -305,12 +305,10 @@ def get_community_context_tool(app_context: AppContext, entity_id: str) -> Commu
         deterministic_summary=report.deterministic_summary,
         llm_summary=report.llm_summary,
         top_entities=[
-            TopEntity.model_validate(item)
-            for item in _decode_json_list(report.top_entities_json)
+            TopEntity.model_validate(item) for item in _decode_json_list(report.top_entities_json)
         ],
         top_claims=[
-            TopClaim.model_validate(item)
-            for item in _decode_json_list(report.top_claims_json)
+            TopClaim.model_validate(item) for item in _decode_json_list(report.top_claims_json)
         ],
         intra_community_edge_count=report.intra_community_edge_count,
     )
@@ -627,12 +625,17 @@ def search_knowledge_tool(
     question: str,
     domain: str | None = None,
     on_phase: PhaseCallback | None = None,
+    sampler: Sampler | None = None,
 ) -> KnowledgeAnswer:
     """Run the full answer pipeline with graph-augmented synthesis."""
     _require_non_empty(question, "question")
 
     envelope = answer_question(
-        question=question, config=app_context.config, domain=domain, on_phase=on_phase
+        question=question,
+        config=app_context.config,
+        domain=domain,
+        on_phase=on_phase,
+        sampler=sampler,
     )
     return KnowledgeAnswer(
         answer_status=envelope.answer_status.value,
@@ -652,12 +655,17 @@ def search_knowledge_deep_tool(
     question: str,
     domain: str | None = None,
     on_phase: PhaseCallback | None = None,
+    sampler: Sampler | None = None,
 ) -> KnowledgeAnswerDeep:
     """Run the full answer pipeline with graph context data returned alongside the answer."""
     _require_non_empty(question, "question")
 
     envelope = answer_question(
-        question=question, config=app_context.config, domain=domain, on_phase=on_phase
+        question=question,
+        config=app_context.config,
+        domain=domain,
+        on_phase=on_phase,
+        sampler=sampler,
     )
 
     matched_entity_ids = envelope.metadata.get("matched_entity_ids", [])
