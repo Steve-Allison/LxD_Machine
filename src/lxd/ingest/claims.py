@@ -29,7 +29,9 @@ from lxd.stores.sqlite.kg_relations import upsert_graph_metadata
 
 _log = structlog.get_logger(__name__)
 
-_VALID_CLAIM_TYPES: Final = frozenset({"assertion", "definition", "comparison", "causal", "procedural"})
+_VALID_CLAIM_TYPES: Final = frozenset(
+    {"assertion", "definition", "comparison", "causal", "procedural"}
+)
 
 _CLAIM_BASE_PROMPT: Final = """You are a knowledge graph builder specialising in learning experience design (LxD), instructional design, and educational theory.
 

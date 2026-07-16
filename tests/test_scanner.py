@@ -11,7 +11,9 @@ def test_classify_plain_markdown() -> None:
 
 
 def test_classify_docling_json() -> None:
-    assert classify_source_type(Path("report.docling.json"), _TEXT_EXTS, _ASSET_EXTS) == "docling_json"
+    assert (
+        classify_source_type(Path("report.docling.json"), _TEXT_EXTS, _ASSET_EXTS) == "docling_json"
+    )
 
 
 def test_classify_docling_md() -> None:

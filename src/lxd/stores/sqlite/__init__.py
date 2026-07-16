@@ -13,4 +13,3 @@ Callers import from the specific submodule that owns the function:
 - :mod:`lxd.stores.sqlite.kg_profiles` — entity_profiles, entity_communities, community_reports.
 - :mod:`lxd.stores.sqlite.kg_relations` — canonical relations, relation_evidence, graph_build_state, graph_metadata.
 """
-

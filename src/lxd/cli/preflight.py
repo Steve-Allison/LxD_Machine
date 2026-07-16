@@ -170,5 +170,5 @@ def _count_rows(table: object) -> int:
         return -1
     try:
         return int(counter())
-    except (TypeError, ValueError):
+    except TypeError, ValueError:
         return -1

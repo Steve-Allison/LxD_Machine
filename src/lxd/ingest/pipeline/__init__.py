@@ -13,4 +13,3 @@ Callers import from the specific submodule that owns the function:
 - :mod:`lxd.ingest.pipeline.moves` — move-detection: `find_move_source`,
   `can_skip_unchanged_source`, `resolve_document_id`, `clone_source_records`.
 """
-

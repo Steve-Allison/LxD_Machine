@@ -106,7 +106,9 @@ entity_types:
     assert result.validation_issues == []
 
     file_records = [record for record in result.metadata_records if record.record_kind == "file"]
-    entity_records = [record for record in result.metadata_records if record.record_kind == "entity"]
+    entity_records = [
+        record for record in result.metadata_records if record.record_kind == "entity"
+    ]
     assert len(file_records) == 4
     assert {record.entity_id for record in entity_records} == {"child_entity", "parent_entity"}
 
@@ -127,7 +129,9 @@ def test_real_yaml_tree_has_no_unclassified_ontology_paths() -> None:
     assert result.coverage_report.classification_counts["matcher_input"] > 0
     assert result.coverage_report.classification_counts["metadata_input"] > 0
     assert any(record.relation_type == "depends_on" for record in result.relation_records)
-    assert any(record.relation_type == "maps_to_taxonomy_value" for record in result.relation_records)
+    assert any(
+        record.relation_type == "maps_to_taxonomy_value" for record in result.relation_records
+    )
     assert any(record.relation_type == "references_taxonomy" for record in result.relation_records)
 
 
@@ -143,5 +147,11 @@ def test_real_yaml_graph_includes_file_level_relationships() -> None:
         and record.relation_type == "depends_on"
     ]
 
-    assert any(record.target_file_rel_path == "methodology/editorial_standards.yaml" for record in file_edges)
-    assert any(record.target_file_rel_path == "methodology/style_guide_standards.yaml" for record in file_edges)
+    assert any(
+        record.target_file_rel_path == "methodology/editorial_standards.yaml"
+        for record in file_edges
+    )
+    assert any(
+        record.target_file_rel_path == "methodology/style_guide_standards.yaml"
+        for record in file_edges
+    )
