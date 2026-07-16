@@ -29,6 +29,8 @@ _log = structlog.get_logger(__name__)
 
 _async_openai_clients: dict[str, openai.AsyncOpenAI] = {}
 _sync_openai_clients: dict[str, openai.OpenAI] = {}
+_async_ollama_compat_clients: dict[str, openai.AsyncOpenAI] = {}
+_sync_ollama_compat_clients: dict[str, openai.OpenAI] = {}
 _sync_ollama_clients: dict[tuple[str, float], ollama.Client] = {}
 
 # Bump above the SDK default of 2 so 429/5xx bursts (which the SDK backs off
@@ -83,6 +85,14 @@ def get_ollama_client(host: str, timeout: float) -> ollama.Client:
     The key ensures that two callers with different hosts or different
     per-request timeouts do not share a single client: the Ollama client
     captures both values at construction time.
+
+    Kept for callers that need Ollama-native features not exposed by the
+    OpenAI-compat surface (``generate`` with the ``think`` flag for
+    reasoning models, ``chat`` streaming with Ollama-specific options).
+    Extraction paths that only need ``chat`` with JSON output should use
+    :func:`get_async_ollama_compat_client` /
+    :func:`get_sync_ollama_compat_client` instead so both backends share
+    one client type and the SDK-native retry/backoff.
     """
     key = (host, float(timeout))
     cached = _sync_ollama_clients.get(key)
@@ -93,10 +103,59 @@ def get_ollama_client(host: str, timeout: float) -> ollama.Client:
     return client
 
 
+def _ollama_compat_v1(host: str) -> str:
+    return host.rstrip("/") + "/v1"
+
+
+def get_async_ollama_compat_client(host: str) -> openai.AsyncOpenAI:
+    """Return an async ``openai.AsyncOpenAI`` client pointed at Ollama's OpenAI-compat API.
+
+    Ollama exposes an OpenAI-compatible endpoint at ``{host}/v1`` that
+    accepts ``chat.completions.create`` with the standard OpenAI
+    request shape (including ``response_format={"type": "json_object"}``
+    for JSON-mode outputs). Using it here unifies the extraction path
+    on one client type — same async surface, same SDK-native retry
+    behaviour — instead of running Ollama through a separate sync SDK
+    wrapped in ``asyncio.to_thread``.
+
+    ``api_key`` is a required openai-SDK parameter but Ollama ignores
+    it; ``"ollama"`` is the conventional placeholder documented by the
+    Ollama project.
+    """
+    base_url = _ollama_compat_v1(host)
+    cached = _async_ollama_compat_clients.get(base_url)
+    if cached is not None:
+        return cached
+    client = openai.AsyncOpenAI(
+        base_url=base_url, api_key="ollama", max_retries=_OPENAI_MAX_RETRIES
+    )
+    _async_ollama_compat_clients[base_url] = client
+    return client
+
+
+def get_sync_ollama_compat_client(host: str) -> openai.OpenAI:
+    """Return a sync ``openai.OpenAI`` client pointed at Ollama's OpenAI-compat API.
+
+    Mirrors :func:`get_async_ollama_compat_client` for the extraction
+    fallback paths that stay synchronous.
+    """
+    base_url = _ollama_compat_v1(host)
+    cached = _sync_ollama_compat_clients.get(base_url)
+    if cached is not None:
+        return cached
+    client = openai.OpenAI(
+        base_url=base_url, api_key="ollama", max_retries=_OPENAI_MAX_RETRIES
+    )
+    _sync_ollama_compat_clients[base_url] = client
+    return client
+
+
 def reset_clients() -> None:
     """Reset client singletons (for testing)."""
     _async_openai_clients.clear()
     _sync_openai_clients.clear()
+    _async_ollama_compat_clients.clear()
+    _sync_ollama_compat_clients.clear()
     _sync_ollama_clients.clear()
 
 
@@ -137,7 +196,7 @@ async def call_openai_async(
     return response.choices[0].message.content or ""
 
 
-async def call_ollama_sync_in_thread(
+async def call_ollama_compat_async(
     *,
     system_prompt: str,
     user_prompt: str,
@@ -146,33 +205,31 @@ async def call_ollama_sync_in_thread(
     temperature: float = 0.0,
     timeout: float = 90.0,
     format_: str | None = "json",
+    max_tokens: int = 2000,
 ) -> str:
-    """Call Ollama synchronously, wrapped in asyncio.to_thread for async compat.
+    """Call Ollama via its OpenAI-compatible endpoint (async, native).
 
-    Returns the response content string.
+    Runs through :func:`get_async_ollama_compat_client` so both backends
+    share one client type. ``format_="json"`` maps to
+    ``response_format={"type": "json_object"}`` on the compat surface —
+    same semantic as Ollama-native ``format="json"``. Returns the
+    response content string.
     """
-
-    def _sync_call() -> str:
-        client = get_ollama_client(host, timeout)
-        kwargs: dict[str, Any] = {
-            "model": model,
-            "messages": [
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt},
-            ],
-            "options": {"temperature": temperature},
-        }
-        if format_ is not None:
-            kwargs["format"] = format_
-        response = client.chat(**kwargs)
-        content = (
-            response["message"]["content"]
-            if isinstance(response, dict)
-            else response.message.content
-        )
-        return content or ""
-
-    return await asyncio.to_thread(_sync_call)
+    client = get_async_ollama_compat_client(host)
+    kwargs: dict[str, Any] = {
+        "model": model,
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt},
+        ],
+        "temperature": temperature,
+        "max_tokens": max_tokens,
+        "timeout": timeout,
+    }
+    if format_ == "json":
+        kwargs["response_format"] = {"type": "json_object"}
+    response = await client.chat.completions.create(**kwargs)
+    return response.choices[0].message.content or ""
 
 
 async def call_with_fallback_async(
@@ -214,7 +271,7 @@ async def call_with_fallback_async(
                 if fallback_backend != "ollama":
                     return ""
                 try:
-                    return await call_ollama_sync_in_thread(
+                    return await call_ollama_compat_async(
                         system_prompt=system_prompt,
                         user_prompt=user_prompt,
                         model=ollama_model,
@@ -222,13 +279,14 @@ async def call_with_fallback_async(
                         temperature=temperature,
                         timeout=ollama_timeout,
                         format_=ollama_format,
+                        max_tokens=max_tokens,
                     )
                 except Exception as fallback_exc:
                     _log.warning("ollama_fallback_failed", error=str(fallback_exc))
                     return ""
         case "ollama":
             try:
-                return await call_ollama_sync_in_thread(
+                return await call_ollama_compat_async(
                     system_prompt=system_prompt,
                     user_prompt=user_prompt,
                     model=ollama_model,
@@ -236,6 +294,7 @@ async def call_with_fallback_async(
                     temperature=temperature,
                     timeout=ollama_timeout,
                     format_=ollama_format,
+                    max_tokens=max_tokens,
                 )
             except Exception as exc:
                 _log.warning("ollama_call_failed", error=str(exc))

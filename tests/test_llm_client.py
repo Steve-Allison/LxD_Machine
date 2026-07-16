@@ -114,7 +114,7 @@ async def test_fallback_uses_ollama_when_openai_fails():
             side_effect=RuntimeError("API down"),
         ),
         patch(
-            "lxd.ingest.llm_client.call_ollama_sync_in_thread",
+            "lxd.ingest.llm_client.call_ollama_compat_async",
             return_value='{"claims": []}',
         ) as mock_ollama,
     ):
@@ -138,7 +138,7 @@ async def test_fallback_returns_empty_when_all_fail():
             side_effect=RuntimeError("API down"),
         ),
         patch(
-            "lxd.ingest.llm_client.call_ollama_sync_in_thread",
+            "lxd.ingest.llm_client.call_ollama_compat_async",
             side_effect=RuntimeError("Ollama down"),
         ),
     ):
@@ -161,7 +161,7 @@ async def test_fallback_skips_ollama_when_fallback_is_none():
             side_effect=RuntimeError("API down"),
         ),
         patch(
-            "lxd.ingest.llm_client.call_ollama_sync_in_thread",
+            "lxd.ingest.llm_client.call_ollama_compat_async",
         ) as mock_ollama,
     ):
         result = await call_with_fallback_async(

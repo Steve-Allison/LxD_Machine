@@ -22,7 +22,7 @@ from lxd.ingest.llm_client import (
     build_cached_system_prompt,
     call_with_fallback_async,
     collect_batch_results,
-    get_ollama_client,
+    get_sync_ollama_compat_client,
     get_sync_openai_client,
     prepare_batch_jsonl,
     run_concurrent_extraction,
@@ -475,8 +475,8 @@ def _call_ollama_sync(
     config: RuntimeConfig,
 ) -> list[_RawRelation]:
     cfg = config.relation_extraction
-    client = get_ollama_client(str(config.ollama.url), float(cfg.timeout_secs))
-    response = client.chat(
+    client = get_sync_ollama_compat_client(str(config.ollama.url))
+    response = client.chat.completions.create(
         model=cfg.ollama_model,
         messages=[
             {"role": "system", "content": _RELATION_BASE_PROMPT},
@@ -485,13 +485,13 @@ def _call_ollama_sync(
                 "content": _build_user_prompt(chunk_text, entity_ids, valid_predicates),
             },
         ],
-        options={"temperature": cfg.temperature},
-        format="json",
+        temperature=cfg.temperature,
+        response_format={"type": "json_object"},
+        max_tokens=1000,
+        timeout=float(cfg.timeout_secs),
     )
-    content = (
-        response["message"]["content"] if isinstance(response, dict) else response.message.content
-    )
-    return _parse_response(content or "")
+    content = response.choices[0].message.content or ""
+    return _parse_response(content)
 
 
 # ---------------------------------------------------------------------------
