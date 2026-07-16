@@ -106,7 +106,7 @@ pixi run preflight       # Schema-integrity + corpus-readiness gate (run before 
 pixi run ingest          # Incremental corpus ingestion
 pixi run ingest --full   # Full rebuild (recreates SQLite + LanceDB tables)
 pixi run status          # Corpus and ontology status
-pixi run eval            # Retrieval evaluation against tests/eval/eval_set.json
+pixi run retrieval-check # Retrieval evaluation against tests/eval/eval_set.json (Recall@10, MRR@10)
 pixi run mcp             # Launch MCP server
 pixi run build-graph     # Build knowledge graph (incremental, resumable)
 pixi run graph-status    # Knowledge graph build state and statistics

@@ -40,6 +40,7 @@ src/lxd/
 ```
 
 Key directories outside `src/`:
+
 - `Knowledge_Base/` — corpus root (gitignored)
 - `Yamls/` — ontology definitions
 - `Plans/` — architecture and design specs
@@ -53,7 +54,7 @@ Key directories outside `src/`:
 pixi run ingest          # Incremental corpus ingestion
 pixi run ingest --full   # Full rebuild
 pixi run status          # Corpus and ontology status
-pixi run eval            # Retrieval evaluation against tests/eval/eval_set.json
+pixi run retrieval-check # Retrieval evaluation against tests/eval/eval_set.json (Recall@10, MRR@10)
 pixi run mcp             # Launch MCP server
 pixi run build-graph     # Build knowledge graph (incremental, resumable)
 pixi run graph-status    # Knowledge graph build state and statistics
@@ -123,6 +124,7 @@ The graph build is a resumable state machine (`pixi run build-graph`). Graph con
 ## Design Specs
 
 Detailed specifications live in `Plans/`:
+
 - `00_PURPOSE_AND_BACKGROUND.md` — scope, outcomes, constraints
 - `01_ARCHITECTURE.md` — system architecture and store design
 - `01b_CODEBASE_STRUCTURE.md` — module boundaries
