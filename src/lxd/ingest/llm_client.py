@@ -10,7 +10,7 @@ import os
 import time
 from collections.abc import Awaitable, Callable, Sequence
 from pathlib import Path
-from typing import Any, Literal, assert_never
+from typing import Any, Final, Literal, assert_never
 
 import ollama
 import openai
@@ -28,7 +28,14 @@ _log = structlog.get_logger(__name__)
 # timeouts, and returning a stale client would silently misroute calls.
 
 _async_openai_clients: dict[str, openai.AsyncOpenAI] = {}
+_sync_openai_clients: dict[str, openai.OpenAI] = {}
 _sync_ollama_clients: dict[tuple[str, float], ollama.Client] = {}
+
+# Bump above the SDK default of 2 so 429/5xx bursts (which the SDK backs off
+# through with Retry-After honouring) don't fail after two misses. Applies to
+# both sync and async clients so batch polling and hot extraction share the
+# same retry budget.
+_OPENAI_MAX_RETRIES: Final = 3
 
 
 def get_async_openai_client(api_key_env: str = "OPENAI_API_KEY") -> openai.AsyncOpenAI:
@@ -39,8 +46,34 @@ def get_async_openai_client(api_key_env: str = "OPENAI_API_KEY") -> openai.Async
     api_key = os.environ.get(api_key_env)
     if not api_key:
         raise RuntimeError(f"Environment variable {api_key_env!r} is not set.")
-    client = openai.AsyncOpenAI(api_key=api_key)
+    client = openai.AsyncOpenAI(api_key=api_key, max_retries=_OPENAI_MAX_RETRIES)
     _async_openai_clients[api_key_env] = client
+    return client
+
+
+def get_sync_openai_client(api_key_env: str = "OPENAI_API_KEY") -> openai.OpenAI:
+    """Return a lazily-initialised sync ``OpenAI`` client keyed on API key env.
+
+    Mirrors :func:`get_async_openai_client` for the code paths that must
+    stay synchronous (Batch API helpers, extraction fallbacks). Reusing
+    one client keeps the HTTP connection pool warm across the many small
+    calls a long-running batch poll issues; the previous pattern of
+    ``openai.OpenAI(api_key=...)`` per call paid a fresh TLS handshake
+    every time.
+
+    Per-call ``timeout`` overrides are still allowed at the request site
+    (e.g. ``client.chat.completions.create(..., timeout=X)``); this
+    constructor sets no default timeout so short polls are not throttled
+    to the same ceiling as long completions.
+    """
+    cached = _sync_openai_clients.get(api_key_env)
+    if cached is not None:
+        return cached
+    api_key = os.environ.get(api_key_env)
+    if not api_key:
+        raise RuntimeError(f"Environment variable {api_key_env!r} is not set.")
+    client = openai.OpenAI(api_key=api_key, max_retries=_OPENAI_MAX_RETRIES)
+    _sync_openai_clients[api_key_env] = client
     return client
 
 
@@ -63,6 +96,7 @@ def get_ollama_client(host: str, timeout: float) -> ollama.Client:
 def reset_clients() -> None:
     """Reset client singletons (for testing)."""
     _async_openai_clients.clear()
+    _sync_openai_clients.clear()
     _sync_ollama_clients.clear()
 
 
@@ -380,11 +414,7 @@ def submit_batch(
 
     Returns the batch ID.
     """
-    api_key = os.environ.get(api_key_env)
-    if not api_key:
-        raise RuntimeError(f"Environment variable {api_key_env!r} is not set.")
-
-    client = openai.OpenAI(api_key=api_key)
+    client = get_sync_openai_client(api_key_env)
 
     with jsonl_path.open("rb") as f:
         uploaded = client.files.create(file=f, purpose="batch")
@@ -422,11 +452,7 @@ def poll_batch(
     api_key_env: str = "OPENAI_API_KEY",
 ) -> dict[str, Any]:
     """Check batch status. Returns batch object as dict."""
-    api_key = os.environ.get(api_key_env)
-    if not api_key:
-        raise RuntimeError(f"Environment variable {api_key_env!r} is not set.")
-
-    client = openai.OpenAI(api_key=api_key)
+    client = get_sync_openai_client(api_key_env)
     batch = client.batches.retrieve(batch_id)
     return {
         "id": batch.id,
@@ -458,11 +484,7 @@ def collect_batch_results(
     Returns:
         List of parsed results from parse_fn.
     """
-    api_key = os.environ.get(api_key_env)
-    if not api_key:
-        raise RuntimeError(f"Environment variable {api_key_env!r} is not set.")
-
-    client = openai.OpenAI(api_key=api_key)
+    client = get_sync_openai_client(api_key_env)
     batch = client.batches.retrieve(batch_id)
 
     if batch.status != "completed":

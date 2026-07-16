@@ -6,7 +6,6 @@ and OpenAI Batch API support.
 
 import asyncio
 import json
-import os
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -23,6 +22,7 @@ from lxd.ingest.llm_client import (
     call_with_fallback_async,
     collect_batch_results,
     get_ollama_client,
+    get_sync_openai_client,
     prepare_batch_jsonl,
     run_concurrent_extraction,
     submit_batch,
@@ -411,11 +411,7 @@ def _call_openai_sync(
     cfg = config.relation_extraction
     openai_cfg = config.openai
     api_key_env = openai_cfg.api_key_env if openai_cfg else "OPENAI_API_KEY"
-    api_key = os.environ.get(api_key_env)
-    if not api_key:
-        raise RuntimeError(f"Environment variable {api_key_env!r} is not set.")
-
-    client = openai.OpenAI(api_key=api_key, timeout=float(cfg.timeout_secs))
+    client = get_sync_openai_client(api_key_env)
     response = client.chat.completions.create(
         model=cfg.openai_model,
         messages=[
@@ -428,6 +424,7 @@ def _call_openai_sync(
         temperature=cfg.temperature,
         response_format={"type": "json_object"},
         max_tokens=1000,
+        timeout=float(cfg.timeout_secs),
     )
     content = response.choices[0].message.content or ""
     return _parse_response(content)
