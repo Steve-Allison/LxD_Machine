@@ -130,6 +130,34 @@ def _make_phase_callback(ctx: Context, *, total: int):
     return _emit
 
 
+def _make_notice_callback(ctx: Context):
+    """Build a sync ``on_notice(level, message)`` callback that streams
+    tool-authored diagnostics to the client while the tool is still running.
+
+    ``Context.warning`` / ``Context.error`` post ``notifications/message``
+    notifications on the MCP session — a channel distinct from the
+    tool's return payload's buffered ``warnings`` list. Clients render
+    them live (progress ticker, toast, log stream) so degraded-but-
+    successful outcomes (reranker unavailable, graph context skipped,
+    router fallback, sampler falling back to server LLM) are visible as
+    they happen, not only after the whole call completes.
+
+    Same worker-thread → event-loop bridge as
+    :func:`_make_phase_callback`. Only ``warning`` and ``error`` levels
+    are forwarded; ``info`` is left to the buffered payload to avoid
+    flooding the notification stream with non-actionable status.
+    """
+
+    def _emit(level: Literal["info", "warning", "error"], message: str) -> None:
+        if level == "warning":
+            anyio.from_thread.run(ctx.warning, message)
+        elif level == "error":
+            anyio.from_thread.run(ctx.error, message)
+        # ``info`` intentionally not streamed — see docstring.
+
+    return _emit
+
+
 def _make_client_sampler(ctx: Context) -> Sampler:
     """Build a sync sampler that dispatches synthesis to the connected client.
 
@@ -549,11 +577,17 @@ def create_server(
         lxd = _lxd(ctx)
         await ctx.report_progress(progress=0, total=3, message="retrieving evidence")
         on_phase = _make_phase_callback(ctx, total=3)
+        on_notice = _make_notice_callback(ctx)
         sampler = _resolve_sampler(lxd, ctx)
         result = await run_tool(
             "search_knowledge",
             lambda: search_knowledge_tool(
-                lxd.app_context, question, domain, on_phase=on_phase, sampler=sampler
+                lxd.app_context,
+                question,
+                domain,
+                on_phase=on_phase,
+                on_notice=on_notice,
+                sampler=sampler,
             ),
             timeout_secs=_tool_timeout(lxd),
         )
@@ -581,11 +615,17 @@ def create_server(
         lxd = _lxd(ctx)
         await ctx.report_progress(progress=0, total=3, message="retrieving evidence")
         on_phase = _make_phase_callback(ctx, total=3)
+        on_notice = _make_notice_callback(ctx)
         sampler = _resolve_sampler(lxd, ctx)
         result = await run_tool(
             "search_knowledge_deep",
             lambda: search_knowledge_deep_tool(
-                lxd.app_context, question, domain, on_phase=on_phase, sampler=sampler
+                lxd.app_context,
+                question,
+                domain,
+                on_phase=on_phase,
+                on_notice=on_notice,
+                sampler=sampler,
             ),
             timeout_secs=_tool_timeout(lxd),
         )

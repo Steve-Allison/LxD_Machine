@@ -44,7 +44,12 @@ from lxd.mcp.models import (
 from lxd.ontology.graph import direct_neighbors
 from lxd.retrieval.expansion import expand_entity_ids
 from lxd.retrieval.graph_routing import build_graph_context
-from lxd.retrieval.query_pipeline import PhaseCallback, answer_question, search_chunks
+from lxd.retrieval.query_pipeline import (
+    NoticeCallback,
+    PhaseCallback,
+    answer_question,
+    search_chunks,
+)
 from lxd.stores.lancedb import (
     connect_lancedb,
     load_vectors_by_chunk_ids,
@@ -625,6 +630,7 @@ def search_knowledge_tool(
     question: str,
     domain: str | None = None,
     on_phase: PhaseCallback | None = None,
+    on_notice: NoticeCallback | None = None,
     sampler: Sampler | None = None,
 ) -> KnowledgeAnswer:
     """Run the full answer pipeline with graph-augmented synthesis."""
@@ -635,6 +641,7 @@ def search_knowledge_tool(
         config=app_context.config,
         domain=domain,
         on_phase=on_phase,
+        on_notice=on_notice,
         sampler=sampler,
     )
     return KnowledgeAnswer(
@@ -655,6 +662,7 @@ def search_knowledge_deep_tool(
     question: str,
     domain: str | None = None,
     on_phase: PhaseCallback | None = None,
+    on_notice: NoticeCallback | None = None,
     sampler: Sampler | None = None,
 ) -> KnowledgeAnswerDeep:
     """Run the full answer pipeline with graph context data returned alongside the answer."""
@@ -665,6 +673,7 @@ def search_knowledge_deep_tool(
         config=app_context.config,
         domain=domain,
         on_phase=on_phase,
+        on_notice=on_notice,
         sampler=sampler,
     )
 

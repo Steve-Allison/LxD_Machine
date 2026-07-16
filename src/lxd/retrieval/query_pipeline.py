@@ -3,7 +3,7 @@
 import sqlite3
 from collections.abc import Callable
 from dataclasses import dataclass, replace
-from typing import Final
+from typing import Final, Literal
 
 import structlog
 
@@ -45,6 +45,8 @@ from lxd.synthesis.answering import (
 from lxd.synthesis.sampler import Sampler
 
 PhaseCallback = Callable[[int, str], None]
+NoticeLevel = Literal["info", "warning", "error"]
+NoticeCallback = Callable[[NoticeLevel, str], None]
 
 _log = structlog.get_logger(__name__)
 
@@ -216,6 +218,7 @@ def answer_question(
     config: RuntimeConfig,
     domain: str | None = None,
     on_phase: PhaseCallback | None = None,
+    on_notice: NoticeCallback | None = None,
     sampler: Sampler | None = None,
 ) -> AnswerEnvelope:
     """Generate an answer envelope from retrieval evidence.
@@ -244,6 +247,15 @@ def answer_question(
     Returns:
         Synthesized answer with citations and route metadata.
     """
+    def _notice(level: NoticeLevel, message: str) -> None:
+        """Fan out one degradation notice to both the streaming callback (if
+        wired) and the envelope's buffered warnings list. Callers receive
+        both: the client sees the notice live during the tool call, and the
+        returned envelope carries the full list for post-hoc inspection.
+        """
+        if on_notice is not None and level in ("warning", "error"):
+            on_notice(level, message)
+
     route = route_query(question=question, config=config.adaptive_retrieval)
     route_metadata: dict[str, object] = {
         "router_retrieve": route.retrieve,
@@ -253,7 +265,9 @@ def answer_question(
     }
     route_warnings: list[str] = []
     if not route.routed:
-        route_warnings.append("Query router fell back to default route — see router_rationale.")
+        message = "Query router fell back to default route — see router_rationale."
+        route_warnings.append(message)
+        _notice("warning", message)
 
     if not route.retrieve:
         skipped = no_retrieval_needed_answer(route.rationale)
@@ -272,6 +286,10 @@ def answer_question(
     )
 
     outcome = search_chunks(question=question, config=config, domain=domain, limit=dense_top_k)
+    for warning in outcome.warnings:
+        _notice("warning", warning)
+    for warning in outcome.config_drift_warnings:
+        _notice("warning", warning)
     if on_phase is not None:
         on_phase(1, "evidence ranked")
 
@@ -325,6 +343,8 @@ def answer_question(
         graph_context_prompt=graph_context_prompt,
         sampler=sampler,
     )
+    for warning in answer.warnings:
+        _notice("warning", warning)
     warnings = [*outcome.warnings, *outcome.config_drift_warnings, *answer.warnings]
     return AnswerEnvelope(
         answer_status=answer.answer_status,
