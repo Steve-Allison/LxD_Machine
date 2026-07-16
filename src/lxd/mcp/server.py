@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Annotated, Final, Literal
 
+import anyio.from_thread
 from fastmcp import Context, FastMCP
 from mcp.types import ToolAnnotations
 from pydantic import Field
@@ -106,6 +107,22 @@ def _tool_timeout(lxd: _LxDLifespan) -> float:
     """Resolve the current tool timeout from the config, with a safe default."""
     mcp_cfg = lxd.app_context.config.mcp
     return float(mcp_cfg.tool_timeout_secs)
+
+
+def _make_phase_callback(ctx: Context, *, total: int):
+    """Build a sync ``on_phase(phase, message)`` callback that reports progress.
+
+    The retrieval pipeline runs inside a worker thread via
+    :func:`lxd.mcp.async_runtime.run_tool`; the ``Context.report_progress``
+    method is async and lives on the MCP event loop. Bridging the two
+    goes through :func:`anyio.from_thread.run`, which schedules the
+    awaitable back on the loop that started the worker.
+    """
+
+    def _emit(phase: int, message: str) -> None:
+        anyio.from_thread.run(ctx.report_progress, phase, total, message)
+
+    return _emit
 
 
 def create_server(
@@ -478,9 +495,10 @@ def create_server(
         """
         lxd = _lxd(ctx)
         await ctx.report_progress(progress=0, total=3, message="retrieving evidence")
+        on_phase = _make_phase_callback(ctx, total=3)
         result = await run_tool(
             "search_knowledge",
-            lambda: search_knowledge_tool(lxd.app_context, question, domain),
+            lambda: search_knowledge_tool(lxd.app_context, question, domain, on_phase=on_phase),
             timeout_secs=_tool_timeout(lxd),
         )
         await ctx.report_progress(progress=3, total=3, message="answer ready")
@@ -506,9 +524,12 @@ def create_server(
         """
         lxd = _lxd(ctx)
         await ctx.report_progress(progress=0, total=3, message="retrieving evidence")
+        on_phase = _make_phase_callback(ctx, total=3)
         result = await run_tool(
             "search_knowledge_deep",
-            lambda: search_knowledge_deep_tool(lxd.app_context, question, domain),
+            lambda: search_knowledge_deep_tool(
+                lxd.app_context, question, domain, on_phase=on_phase
+            ),
             timeout_secs=_tool_timeout(lxd),
         )
         await ctx.report_progress(progress=3, total=3, message="answer ready")

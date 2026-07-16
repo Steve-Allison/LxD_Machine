@@ -1,5 +1,6 @@
 """Define MCP tools that expose corpus and ontology operations."""
 
+import json
 from itertools import pairwise
 
 import networkx as nx
@@ -31,16 +32,19 @@ from lxd.mcp.models import (
     KnowledgeAnswerMetadata,
     PathBetweenEntities,
     PathEdge,
+    PredicateCount,
     RelationEvidence,
     SentenceCitationView,
     SimilarEntity,
+    TopClaim,
+    TopEntity,
     WeightedEdge,
     WeightedPath,
 )
 from lxd.ontology.graph import direct_neighbors
 from lxd.retrieval.expansion import expand_entity_ids
 from lxd.retrieval.graph_routing import build_graph_context
-from lxd.retrieval.query_pipeline import answer_question, search_chunks
+from lxd.retrieval.query_pipeline import PhaseCallback, answer_question, search_chunks
 from lxd.stores.lancedb import (
     connect_lancedb,
     load_vectors_by_chunk_ids,
@@ -256,15 +260,21 @@ def get_entity_summary_tool(app_context: AppContext, entity_id: str) -> EntitySu
         label=profile.label,
         entity_type=profile.entity_type,
         domain=profile.domain,
-        aliases=profile.aliases_json,
+        aliases=_decode_string_list(profile.aliases_json),
         deterministic_summary=profile.deterministic_summary,
         llm_summary=profile.llm_summary,
         chunk_count=profile.chunk_count,
         doc_count=profile.doc_count,
         mention_count=profile.mention_count,
         claim_count=profile.claim_count,
-        top_predicates=profile.top_predicates_json,
-        top_claims=profile.top_claims_json,
+        top_predicates=[
+            PredicateCount.model_validate(item)
+            for item in _decode_json_list(profile.top_predicates_json)
+        ],
+        top_claims=[
+            TopClaim.model_validate(item)
+            for item in _decode_json_list(profile.top_claims_json)
+        ],
         pagerank=profile.pagerank,
         betweenness=profile.betweenness,
         closeness=profile.closeness,
@@ -291,13 +301,57 @@ def get_community_context_tool(app_context: AppContext, entity_id: str) -> Commu
     return CommunityContext(
         community_id=report.community_id,
         member_count=report.member_count,
-        member_entity_ids=report.member_entity_ids_json,
+        member_entity_ids=_decode_string_list(report.member_entity_ids_json),
         deterministic_summary=report.deterministic_summary,
         llm_summary=report.llm_summary,
-        top_entities=report.top_entities_json,
-        top_claims=report.top_claims_json,
+        top_entities=[
+            TopEntity.model_validate(item)
+            for item in _decode_json_list(report.top_entities_json)
+        ],
+        top_claims=[
+            TopClaim.model_validate(item)
+            for item in _decode_json_list(report.top_claims_json)
+        ],
         intra_community_edge_count=report.intra_community_edge_count,
     )
+
+
+def _decode_json_list(value: str | None) -> list[dict[str, object]]:
+    """Parse a JSON-encoded list-of-objects field from a store record.
+
+    Missing / empty values yield ``[]``; anything else that fails to
+    decode as a list-of-objects also yields ``[]`` — the store rows are
+    the source of truth for the *content* of these fields, and the tool
+    boundary is not the place to hide upstream corruption. Malformed
+    rows should surface as an empty typed list rather than an MCP error;
+    the log line captures the incident for the operator.
+    """
+    if not value:
+        return []
+    try:
+        parsed = json.loads(value)
+    except json.JSONDecodeError:
+        return []
+    if not isinstance(parsed, list):
+        return []
+    return [item for item in parsed if isinstance(item, dict)]
+
+
+def _decode_string_list(value: str | None) -> list[str]:
+    """Parse a JSON-encoded list-of-strings field from a store record.
+
+    Same tolerant contract as :func:`_decode_json_list`: any input that
+    is not a JSON array of strings yields ``[]``.
+    """
+    if not value:
+        return []
+    try:
+        parsed = json.loads(value)
+    except json.JSONDecodeError:
+        return []
+    if not isinstance(parsed, list):
+        return []
+    return [item for item in parsed if isinstance(item, str)]
 
 
 def get_similar_entities_tool(
@@ -572,11 +626,14 @@ def search_knowledge_tool(
     app_context: AppContext,
     question: str,
     domain: str | None = None,
+    on_phase: PhaseCallback | None = None,
 ) -> KnowledgeAnswer:
     """Run the full answer pipeline with graph-augmented synthesis."""
     _require_non_empty(question, "question")
 
-    envelope = answer_question(question=question, config=app_context.config, domain=domain)
+    envelope = answer_question(
+        question=question, config=app_context.config, domain=domain, on_phase=on_phase
+    )
     return KnowledgeAnswer(
         answer_status=envelope.answer_status.value,
         answer_text=envelope.answer_text,
@@ -594,11 +651,14 @@ def search_knowledge_deep_tool(
     app_context: AppContext,
     question: str,
     domain: str | None = None,
+    on_phase: PhaseCallback | None = None,
 ) -> KnowledgeAnswerDeep:
     """Run the full answer pipeline with graph context data returned alongside the answer."""
     _require_non_empty(question, "question")
 
-    envelope = answer_question(question=question, config=app_context.config, domain=domain)
+    envelope = answer_question(
+        question=question, config=app_context.config, domain=domain, on_phase=on_phase
+    )
 
     matched_entity_ids = envelope.metadata.get("matched_entity_ids", [])
     graph_data = GraphContextData(level="none")

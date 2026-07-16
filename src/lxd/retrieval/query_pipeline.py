@@ -1,10 +1,13 @@
 """Run retrieval and answer synthesis orchestration pipelines."""
 
 import sqlite3
+from collections.abc import Callable
 from dataclasses import dataclass, replace
 from typing import Final
 
 import structlog
+
+PhaseCallback = Callable[[int, str], None]
 
 from lxd.app.status import config_drift_warnings
 from lxd.retrieval.dense import embed_query
@@ -215,6 +218,7 @@ def answer_question(
     question: str,
     config: RuntimeConfig,
     domain: str | None = None,
+    on_phase: PhaseCallback | None = None,
 ) -> AnswerEnvelope:
     """Generate an answer envelope from retrieval evidence.
 
@@ -231,6 +235,13 @@ def answer_question(
         question: User question text.
         config: Runtime configuration object.
         domain: Optional source domain filter.
+        on_phase: Optional progress callback. Called with ``(phase, message)``
+            at each internal boundary — ``1`` when retrieval + fusion are
+            complete, ``2`` when graph context has been built and synthesis
+            is about to run. Callers that report progress to an MCP client
+            wrap this with :func:`anyio.from_thread.run` so the sync
+            worker thread can post to the async :class:`fastmcp.Context`.
+            Never invoked on the ``no_retrieval_needed`` short-circuit.
 
     Returns:
         Synthesized answer with citations and route metadata.
@@ -263,9 +274,13 @@ def answer_question(
     )
 
     outcome = search_chunks(question=question, config=config, domain=domain, limit=dense_top_k)
+    if on_phase is not None:
+        on_phase(1, "evidence ranked")
 
     # Build graph context from matched entities (graceful degradation)
     graph_context_prompt = _build_graph_context_prompt(config, outcome.matched_entity_ids)
+    if on_phase is not None:
+        on_phase(2, "synthesising answer")
 
     metadata: dict[str, object] = {
         **route_metadata,

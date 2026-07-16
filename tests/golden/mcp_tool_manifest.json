@@ -494,38 +494,69 @@
                   "type": "integer"
                 },
                 "member_entity_ids": {
-                  "description": "JSON-encoded list of member entity IDs.",
-                  "type": "string"
+                  "description": "Entity IDs that belong to this community.",
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
                 },
                 "top_claims": {
-                  "anyOf": [
-                    {
-                      "type": "string"
+                  "description": "Top LLM-extracted claims across community members.",
+                  "items": {
+                    "additionalProperties": false,
+                    "description": "One claim in an entity's or community's top-claims list.\n\n``claim_type`` is populated for entity-level top claims (from\n:func:`lxd.ontology.profiles.build_entity_profile`); it is absent for\ncommunity-level top claims \u2014 that origin currently emits only\n``claim_text`` + ``confidence``, so the field remains ``None`` there.",
+                    "properties": {
+                      "claim_text": {
+                        "type": "string"
+                      },
+                      "claim_type": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ],
+                        "default": null
+                      },
+                      "confidence": {
+                        "type": "number"
+                      }
                     },
-                    {
-                      "type": "null"
-                    }
-                  ],
-                  "default": null,
-                  "description": "JSON-encoded top claims."
+                    "required": [
+                      "claim_text",
+                      "confidence"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
                 },
                 "top_entities": {
-                  "anyOf": [
-                    {
-                      "type": "string"
+                  "description": "Top entities in the community by PageRank.",
+                  "items": {
+                    "additionalProperties": false,
+                    "description": "One entity in a community's top-entities list, keyed by PageRank.",
+                    "properties": {
+                      "entity_id": {
+                        "type": "string"
+                      },
+                      "pagerank": {
+                        "type": "number"
+                      }
                     },
-                    {
-                      "type": "null"
-                    }
-                  ],
-                  "default": null,
-                  "description": "JSON-encoded top entities."
+                    "required": [
+                      "entity_id",
+                      "pagerank"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
                 }
               },
               "required": [
                 "community_id",
                 "member_count",
-                "member_entity_ids",
                 "intra_community_edge_count"
               ],
               "type": "object"
@@ -680,16 +711,11 @@
               "description": "Full entity profile returned by ``get_entity_summary``.",
               "properties": {
                 "aliases": {
-                  "anyOf": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ],
-                  "default": null,
-                  "description": "JSON-encoded list of aliases."
+                  "description": "Alias surface forms for the entity.",
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
                 },
                 "betweenness": {
                   "type": "number"
@@ -774,28 +800,57 @@
                   "type": "number"
                 },
                 "top_claims": {
-                  "anyOf": [
-                    {
-                      "type": "string"
+                  "description": "Top LLM-extracted claims for the entity.",
+                  "items": {
+                    "additionalProperties": false,
+                    "description": "One claim in an entity's or community's top-claims list.\n\n``claim_type`` is populated for entity-level top claims (from\n:func:`lxd.ontology.profiles.build_entity_profile`); it is absent for\ncommunity-level top claims \u2014 that origin currently emits only\n``claim_text`` + ``confidence``, so the field remains ``None`` there.",
+                    "properties": {
+                      "claim_text": {
+                        "type": "string"
+                      },
+                      "claim_type": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ],
+                        "default": null
+                      },
+                      "confidence": {
+                        "type": "number"
+                      }
                     },
-                    {
-                      "type": "null"
-                    }
-                  ],
-                  "default": null,
-                  "description": "JSON-encoded top claim payloads."
+                    "required": [
+                      "claim_text",
+                      "confidence"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
                 },
                 "top_predicates": {
-                  "anyOf": [
-                    {
-                      "type": "string"
+                  "description": "Top canonical predicates by frequency.",
+                  "items": {
+                    "additionalProperties": false,
+                    "description": "One row in an entity's top-predicates breakdown.",
+                    "properties": {
+                      "count": {
+                        "type": "integer"
+                      },
+                      "predicate": {
+                        "type": "string"
+                      }
                     },
-                    {
-                      "type": "null"
-                    }
-                  ],
-                  "default": null,
-                  "description": "JSON-encoded top predicates with counts."
+                    "required": [
+                      "predicate",
+                      "count"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
                 }
               },
               "required": [

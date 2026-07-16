@@ -92,6 +92,34 @@ class CorpusRelation(_Frozen):
     chunk_id: str
 
 
+class PredicateCount(_Frozen):
+    """One row in an entity's top-predicates breakdown."""
+
+    predicate: str
+    count: int
+
+
+class TopClaim(_Frozen):
+    """One claim in an entity's or community's top-claims list.
+
+    ``claim_type`` is populated for entity-level top claims (from
+    :func:`lxd.ontology.profiles.build_entity_profile`); it is absent for
+    community-level top claims — that origin currently emits only
+    ``claim_text`` + ``confidence``, so the field remains ``None`` there.
+    """
+
+    claim_text: str
+    confidence: float
+    claim_type: str | None = None
+
+
+class TopEntity(_Frozen):
+    """One entity in a community's top-entities list, keyed by PageRank."""
+
+    entity_id: str
+    pagerank: float
+
+
 class EntitySummary(_Frozen):
     """Full entity profile returned by ``get_entity_summary``."""
 
@@ -99,17 +127,21 @@ class EntitySummary(_Frozen):
     label: str
     entity_type: str
     domain: str | None = None
-    aliases: str | None = Field(default=None, description="JSON-encoded list of aliases.")
+    aliases: list[str] = Field(
+        default_factory=list, description="Alias surface forms for the entity."
+    )
     deterministic_summary: str | None = None
     llm_summary: str | None = None
     chunk_count: int
     doc_count: int
     mention_count: int
     claim_count: int
-    top_predicates: str | None = Field(
-        default=None, description="JSON-encoded top predicates with counts."
+    top_predicates: list[PredicateCount] = Field(
+        default_factory=list, description="Top canonical predicates by frequency."
     )
-    top_claims: str | None = Field(default=None, description="JSON-encoded top claim payloads.")
+    top_claims: list[TopClaim] = Field(
+        default_factory=list, description="Top LLM-extracted claims for the entity."
+    )
     pagerank: float
     betweenness: float
     closeness: float
@@ -124,11 +156,17 @@ class CommunityContext(_Frozen):
 
     community_id: int
     member_count: int
-    member_entity_ids: str = Field(description="JSON-encoded list of member entity IDs.")
+    member_entity_ids: list[str] = Field(
+        default_factory=list, description="Entity IDs that belong to this community."
+    )
     deterministic_summary: str | None = None
     llm_summary: str | None = None
-    top_entities: str | None = Field(default=None, description="JSON-encoded top entities.")
-    top_claims: str | None = Field(default=None, description="JSON-encoded top claims.")
+    top_entities: list[TopEntity] = Field(
+        default_factory=list, description="Top entities in the community by PageRank."
+    )
+    top_claims: list[TopClaim] = Field(
+        default_factory=list, description="Top LLM-extracted claims across community members."
+    )
     intra_community_edge_count: int
 
 
