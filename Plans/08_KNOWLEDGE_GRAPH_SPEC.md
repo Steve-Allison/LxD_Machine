@@ -22,7 +22,7 @@
 No performance or capacity claim is accepted until benchmarked on the real corpus:
 
 - Community detection algorithm (Leiden vs Louvain) benchmarked on the actual combined entity graph before committing
-- Centrality computation time measured on the real graph before committing to all 5 metrics
+- Centrality computation time measured on the real graph before committing to all 6 metrics (`pagerank`, `betweenness`, `closeness`, `in_degree`, `out_degree`, `eigenvector`)
 - Claim extraction pilot: 50 chunks through GPT-4o-mini before committing to full extraction — quality criteria defined in Step 1 acceptance
 - Entity summary deterministic generation verified against 10 entities before full build
 - Optional LLM enrichment measured on pilot batch of 10 entities for quality comparison
@@ -32,8 +32,8 @@ No performance or capacity claim is accepted until benchmarked on the real corpu
 
 ## 2. Tech Stack Additions
 
-- **`graspologic >=3.4`** for Leiden community detection (Rust-backed via `graspologic-native`, does NOT require igraph). If too heavy, fall back to `networkx.algorithms.community.louvain_communities` (zero new deps). Decision made in Step 3 benchmarking.
-- No other new runtime dependencies. NetworkX 3.6+ provides all centrality and path algorithms. LLM calls use existing OpenAI client with Ollama fallback.
+- **`graspologic` is optional and not in `pixi.toml`** — removed due to an irreconcilable dependency conflict with `fastmcp` (beartype version clash) per Section 1's Implementation Notes. Community detection defaults to `networkx.algorithms.community.louvain_communities` (zero new deps). The Leiden codepath remains in `ontology/communities.py` behind an `ImportError`-guarded import for operators who install graspologic manually into the pixi env.
+- No other new runtime dependencies. NetworkX 3.6+ provides all centrality and path algorithms. LLM calls use the existing shared OpenAI client (via the OpenAI-compat endpoint for Ollama fallback per `ingest/llm_client.py`) with schema-enforced `.parse()` on the sync path.
 
 ### Verified API Constraints
 
@@ -123,31 +123,35 @@ CREATE TABLE IF NOT EXISTS entity_profiles (
 - `community_id`: Denormalised from `entity_communities` for convenience. `entity_communities` is the authoritative source; this column is updated whenever community detection runs.
 - `in_degree` / `out_degree`: Raw degree counts (not normalised `degree_centrality()` which can exceed 1.0 on MultiDiGraph).
 - `doc_count`: `COUNT(DISTINCT source_rel_path)` across chunks that mention this entity (joined via `mention_rows`).
-- `source_hash`: `blake3(sorted(chunk_ids) + str(pagerank) + str(betweenness) + str(closeness) + str(in_degree) + str(out_degree) + str(eigenvector) + str(community_id) + sorted(claim_ids))`. Incorporates **all profile inputs** — chunk content, centrality, community assignment, and claims. If any input changes, the hash changes and the profile is rebuilt.
+- `source_hash`: `blake3(*chunk_ids, str(pr_rank), str(bt_rank), str(cl_rank), str(in_degree), str(out_degree), str(community_id), *claim_ids)`. Uses **rank positions** for the three float-valued centrality metrics (PageRank, betweenness, closeness) rather than the raw floats — this suppresses sub-rank float-noise rebuilds so the profile only regenerates when the entity's centrality actually reordered. Integer metrics (`in_degree`, `out_degree`) go in verbatim. `eigenvector` is intentionally omitted from the hash (it is unstable across small graph edits). If any hashed input changes, the profile is rebuilt.
 - Entity embeddings are stored in a dedicated **LanceDB table** (not SQLite JSON) — see Section 4.
 
 ### 3.3 `entity_communities`
 
 ```sql
 CREATE TABLE IF NOT EXISTS entity_communities (
-    entity_id TEXT PRIMARY KEY,
+    entity_id TEXT NOT NULL,
     community_id INTEGER NOT NULL,
     community_level INTEGER NOT NULL DEFAULT 0,
     modularity_class TEXT,
-    assigned_at TEXT NOT NULL
+    assigned_at TEXT NOT NULL,
+    PRIMARY KEY (entity_id, community_level)
 );
-CREATE INDEX IF NOT EXISTS idx_entity_communities_community_id
-ON entity_communities(community_id);
+CREATE INDEX IF NOT EXISTS idx_entity_communities_community_level
+ON entity_communities(community_id, community_level);
+CREATE INDEX IF NOT EXISTS idx_entity_communities_level
+ON entity_communities(community_level);
 ```
 
-**Authoritative source** for community assignments. `entity_profiles.community_id` is denormalised from this table.
+**Authoritative source** for community assignments. `entity_profiles.community_id` is denormalised from this table. Composite PK on `(entity_id, community_level)` supports the hierarchical-community path (Section 5 Step 3): one entity can appear at multiple levels of the community hierarchy.
 
 ### 3.4 `community_reports`
 
 ```sql
 CREATE TABLE IF NOT EXISTS community_reports (
-    community_id INTEGER PRIMARY KEY,
+    community_id INTEGER NOT NULL,
     community_level INTEGER NOT NULL DEFAULT 0,
+    parent_community_id INTEGER,
     member_count INTEGER NOT NULL,
     member_entity_ids_json TEXT NOT NULL,
     deterministic_summary TEXT NOT NULL,
@@ -156,9 +160,16 @@ CREATE TABLE IF NOT EXISTS community_reports (
     top_claims_json TEXT NOT NULL DEFAULT '[]',
     intra_community_edge_count INTEGER NOT NULL DEFAULT 0,
     source_hash TEXT NOT NULL,
-    generated_at TEXT NOT NULL
+    generated_at TEXT NOT NULL,
+    PRIMARY KEY (community_id, community_level)
 );
+CREATE INDEX IF NOT EXISTS idx_community_reports_level
+ON community_reports(community_level);
+CREATE INDEX IF NOT EXISTS idx_community_reports_parent
+ON community_reports(parent_community_id, community_level);
 ```
+
+Composite PK on `(community_id, community_level)` and the `parent_community_id` column support the hierarchical-community tree: level 0 is the finest partition; each higher level's report has its immediate-parent `community_id` recorded (`None` at the root).
 
 - `deterministic_summary`: Built from member entity names, top claims, and relationship types. No LLM.
 - `llm_summary`: Optional enrichment.
@@ -281,16 +292,23 @@ entity_embeddings_schema = pa.schema([
 ```
 
 **API pattern** (verified against LanceDB 0.21+):
-```python
-db = lancedb.connect(store_paths.lancedb_path)
-entity_table = db.create_table("entity_embeddings", schema=schema, mode="create", exist_ok=True)
-entity_table.add(entity_records)  # incremental
 
-# KNN query
-results = entity_table.search(query_vector).limit(k).to_list()
+```python
+# Actual write path lives in stores/lancedb.upsert_entity_embeddings,
+# using LanceDB merge_insert for atomic upsert on entity_id:
+db = lancedb.connect(store_paths.lancedb_path)
+entity_table = open_entity_table(db, vector_size=embed_dims)  # ensures BTree scalar index on entity_id
+(entity_table.merge_insert("entity_id")
+    .when_matched_update_all()
+    .when_not_matched_insert_all()
+    .execute(entity_records))
+
+# KNN query — actual path uses cosine similarity on the fully-async path
+# via search_similar_entities in stores/lancedb.py:
+results = search_similar_entities(entity_table, query_vector=query_vector, limit=k)
 ```
 
-Each entity embedding is the mean of the embeddings of the top N chunks (by mention frequency) that reference it. Reuses existing chunk embeddings from the chunks table — zero additional OpenAI API calls.
+Each entity embedding is the **L2-normalised** mean of the embeddings of up to `entity_summary_max_chunks` chunks that reference the entity (loaded via `load_chunk_ids_for_entity(..., limit=max_chunks)` in `cli/graph.py`). Chunk vectors are pulled from the existing `chunk_vectors` LanceDB table — zero additional OpenAI API calls. Full-replace uses `merge_insert(on="entity_id").when_matched_update_all().when_not_matched_insert_all().when_not_matched_by_source_delete()` so the full-rebuild path is a single atomic pass with no delete-then-add split-brain window.
 
 ---
 
@@ -301,6 +319,7 @@ Each entity embedding is the mean of the embeddings of the top N chunks (by ment
 Extract fine-grained assertions from chunks. Claims are the evidence layer that makes entity and community summaries meaningful.
 
 **Architecture decision:** Claim extraction runs as a **post-ingest graph build step** (not during ingest). Rationale:
+
 - Relations are lightweight (entity pairs + predicate) and cheap to extract at ingest time.
 - Claims require more context and produce more output — better suited to a dedicated build phase.
 - Claims depend on entity mentions being complete for the whole corpus, not just a single source file.
@@ -311,14 +330,22 @@ Extract fine-grained assertions from chunks. Claims are the evidence layer that 
 
 For each chunk with ≥1 entity mention, extract claims via GPT-4o-mini (with Ollama qwen3:14b fallback):
 
-```
+```text
 Given this text and these entities, extract factual assertions.
 Each claim should be a single statement that could be true or false.
 Link claims to subject/object entities where applicable.
 A claim may have only a subject entity, or no entity linkage if it states a general domain fact.
 
-Return JSON: {"claims": [{"claim_text": "...", "subject": "entity_id or null", "object": "entity_id or null", "confidence": 0.85}]}
+Return JSON (no markdown fences): {"claims": [{
+  "claim_text": "...",
+  "claim_type": "assertion" | "definition" | "comparison" | "causal" | "procedural",
+  "subject": "entity_id or null",
+  "object": "entity_id or null",
+  "confidence": 0.85    // 0.7-1.0 for well-supported; 0.4-0.69 for weaker
+}]}
 ```
+
+Actual prompt lives in `src/lxd/ingest/claims.py:_CLAIM_BASE_PROMPT` and includes additional LxD role framing plus the confidence-band rule and the no-markdown-fences rule. The persisted row on `claims` carries `claim_type` (defaulting to `assertion` if omitted) alongside the other fields.
 
 - Stored per-chunk with FK cascade on chunk delete
 - Per-chunk atomic commits
@@ -327,6 +354,7 @@ Return JSON: {"claims": [{"claim_text": "...", "subject": "entity_id or null", "
 **Cost estimate:** ~23,000 chunks with ≥1 entity mention (2.2M mentions across 23.6K chunks, average ~93 mentions/chunk — nearly all chunks qualify). At GPT-4o-mini pricing: **~$5–10** for full extraction.
 
 **Acceptance:**
+
 - Claims table populated for all qualifying chunks
 - Pilot batch of 50 chunks reviewed before full extraction with criteria:
   - ≥80% of claims are factually grounded in the chunk text (not hallucinated)
@@ -345,13 +373,15 @@ Merge ontology edges + corpus relations into one weighted `NetworkX.MultiDiGraph
 **Modified:** `src/lxd/stores/sqlite/kg_profiles.py`, `src/lxd/stores/sqlite/kg_relations.py`, `src/lxd/stores/models.py`
 
 **Entity graph construction:**
+
 - Load ontology `MultiDiGraph` (existing)
 - Load `extracted_relations` (per-chunk rows) where `confidence >= config.knowledge_graph.min_relation_confidence`
 - Group by `(subject_entity_id, predicate, object_entity_id)` — same grouping key as the canonical `relation_id` in Step 4
 - For each unique triple, add a single edge with `weight = max(confidence)` across all supporting rows, `origin_kind="corpus"`, `support_count = len(rows)`
 - This in-memory deduplication is consistent with but independent of Step 4's consolidation into the `relations` table (both phases can run in parallel because both read from the same source: `extracted_relations`)
 
-**Centrality computation (5 metrics on the directed MultiDiGraph):**
+**Centrality computation (6 metrics on the directed MultiDiGraph):**
+
 - **PageRank** (`networkx.pagerank`) — works natively on MultiDiGraph; multigraph edge weights are summed automatically
 - **Betweenness** (`networkx.betweenness_centrality`) — use **unweighted** (float weights are documented as unreliable); works on directed graphs
 - **Closeness** (`networkx.closeness_centrality`) — uses inward distance on directed graphs (Wasserman-Faust formula handles disconnected components)
@@ -390,6 +420,7 @@ Partition entities into communities. Store assignments.
 - Write `community_id` back to `entity_profiles` (denormalised)
 
 **Acceptance:**
+
 - Reproducible for same graph + resolution + seed
 - Every entity with ≥1 edge gets a community assignment
 - Isolated entities assigned to singleton communities
@@ -430,7 +461,7 @@ Truncate `relation_evidence` table, insert all evidence rows.
 
 **Lifecycle:** Both tables are **derived** — fully rebuilt from `extracted_relations` on each graph build. No incremental maintenance, no soft-delete. Between builds, FK CASCADE on `chunk_id` cleans up dangling evidence if a chunk is re-ingested.
 
-**Forward integration:** Modify `extract_relations_for_chunk` to also return surface forms at extraction time (currently discarded). This makes the evidence build cheaper on subsequent runs — surface forms are read from `extracted_relations` directly instead of re-derived from `mention_rows`.
+**Forward integration (not yet implemented):** the plan of the day was to have `extract_relations_for_chunk` also return surface forms at extraction time so the evidence build could read them directly from `extracted_relations`. Current code (`src/lxd/ingest/relations.py`) does not do this — surface forms continue to be derived from `mention_rows` at evidence-build time (`src/lxd/ontology/evidence.py`). Kept as a possible future optimisation; the current cost is one extra SQLite scan per build, which is negligible against the LLM-call cost of relation extraction itself.
 
 **Acceptance:**
 
@@ -462,7 +493,7 @@ Per entity, assemble deterministically:
 - `mention_count` (from `mention_rows`)
 - Deterministic summary template:
 
-```
+```text
 {label} is a {entity_type} entity in the {domain} domain.
 It has {mention_count} mentions across {chunk_count} chunks from {doc_count} source documents.
 Centrality: PageRank {rank}/{total} | Betweenness {rank}/{total} | Closeness {rank}/{total}.
@@ -475,6 +506,7 @@ Key claims: {top_3_claims_by_confidence}.
 - Incremental: skip entities whose `source_hash` hasn't changed
 
 **Entity embeddings (in LanceDB):**
+
 - For each entity with ≥`entity_embedding_min_mentions` mentions (default 3):
   - Retrieve embeddings of the top N chunks (by mention frequency) from the LanceDB chunks table
   - Compute mean embedding
@@ -482,6 +514,7 @@ Key claims: {top_3_claims_by_confidence}.
 - Enables `get_similar_entities` MCP tool via native LanceDB vector search
 
 **Acceptance:**
+
 - All 325 entities have deterministic profiles
 - Profiles are fully reproducible (same input = same output, always)
 - Entity embeddings computed for all entities with ≥3 mentions, stored in LanceDB
@@ -499,18 +532,21 @@ Generate richer prose summaries via GPT-4o-mini for entities and communities. **
 **Modified:** `src/lxd/ontology/profiles.py`, `src/lxd/stores/sqlite/kg_profiles.py`
 
 Per entity (where `llm_summary IS NULL` or `source_hash` changed):
-- Feed deterministic summary + top chunks + relations + claims to GPT-4o-mini (with Ollama qwen3:14b fallback)
+
+- Feed the entity's label + entity_type + domain + deterministic summary + top predicates + top claims to GPT-4o-mini (with Ollama qwen3:14b fallback). Chunk text is not passed in — the deterministic summary already carries the corpus-derived facts and passing chunks would inflate the prompt without measurable gain
 - Generate 150–300 word prose summary
 - Store in `entity_profiles.llm_summary`
 
 Per community (where `llm_summary IS NULL` or `source_hash` changed):
-- Feed member deterministic summaries + intra-community edges + top claims to GPT-4o-mini (with Ollama qwen3:14b fallback)
+
+- Feed the community's member deterministic summaries + top claims to GPT-4o-mini (with Ollama qwen3:14b fallback). Intra-community edges are surfaced through the deterministic summaries rather than passed as a separate prompt input
 - Generate 200–400 word community narrative
 - Store in `community_reports.llm_summary`
 
 **Cost:** 325 entity calls + 10–40 community calls ≈ ~365 calls, **~$0.45** total. Incremental: only changed entities.
 
 **Acceptance:**
+
 - System works identically with `llm_enrichment: false`
 - LLM summaries stored separately from deterministic ones (never overwritten)
 - Incremental rebuild skips unchanged entities/communities
@@ -540,7 +576,7 @@ Multi-layer context augmentation for synthesis. Graph context is **additive** �
 
 All queries execute chunk-level retrieval (unchanged baseline). Graph layers are appended to synthesis context based on entity matching:
 
-- Entity matching (Aho-Corasick) on the query identifies entities
+- Entity matching identifies entities two ways: (a) Aho-Corasick over the question surface text, then (b) `_augment_with_embedding_neighbours` widens the matched set with entities whose `entity_embeddings` vector is nearest to the query vector. The union is what feeds downstream expansion — semantic neighbours land alongside surface-form hits
 - **1+ entities matched:** Include top `max_entity_context` (default 5) entity profiles, ranked by PageRank, in synthesis context
 - **Matched entities span 2+ communities:** Also include top `max_community_context` (default 3) community reports, ranked by member PageRank sum
 - **Claims:** Include top `max_claim_context` (default 10) claims for matched entities, ranked by confidence
@@ -548,6 +584,7 @@ All queries execute chunk-level retrieval (unchanged baseline). Graph layers are
 - Edge weight filtering: only traverse corpus edges above `min_relation_confidence`
 
 **Modified `SearchOutcome`:**
+
 ```python
 graph_context_level: str                    # "none", "entity", "community"
 graph_entity_profiles: list[EntityProfile]  # matched entity profiles
@@ -599,8 +636,8 @@ The synthesis module (`src/lxd/synthesis/answering.py`) is updated to accept and
 | `get_similar_entities(entity_id, limit=10)` | Entity-level KNN via LanceDB vector search on entity embeddings |
 | `search_entities(query, limit=20)` | Entity name/alias substring search (SQLite `LIKE` on `label` + `aliases_json`), results ranked by PageRank. For 325 entities, no FTS needed. |
 | `inspect_evidence(relation_id)` | Audit trail: all evidence records for a canonical relation, including surface forms and chunk provenance |
-| `find_path_between_entities(source, target, max_hops=5)` | Shortest unweighted path + edge records. `max_hops` capped at `config.knowledge_graph.multi_hop_max`. |
-| `find_weighted_path(source, target)` | Confidence-weighted Dijkstra shortest path (weight = 1.0 − confidence). Dijkstra naturally terminates at shortest — no hop limit needed. |
+| `find_path_between_entities(source, target, max_hops=5)` | Shortest unweighted path + edge records. `max_hops` capped at `config.knowledge_graph.multi_hop_max`. Operates on `plan.ontology.graph` (the ontology-only graph loaded into memory at lifespan start), not the combined ontology+corpus graph. |
+| `find_weighted_path(source, target)` | Confidence-weighted Dijkstra shortest path (weight = 1.0 − confidence). Dijkstra naturally terminates at shortest — no hop limit needed. Same graph source as `find_path_between_entities`. |
 | `get_hub_entities(limit=20)` | Top entities by PageRank |
 | `find_bridge_entities(limit=20)` | Top entities by betweenness centrality |
 | `find_foundational_entities(limit=20)` | Top entities by closeness centrality |
@@ -616,7 +653,7 @@ All tools degrade gracefully when graph features aren't built (empty results, no
 
 **Build state machine:**
 
-```
+```text
 evidence → claims → entity_graph → centrality → communities → entity_profiles → community_reports → [optional: llm_enrichment] → complete
 ```
 
@@ -638,6 +675,7 @@ Note: `entity_profiles` phase includes entity embedding computation (stored in L
 **None of these require re-ingest or re-embedding.** The graph build pipeline operates on data already in SQLite and LanceDB.
 
 **Acceptance:**
+
 - `pixi run build-graph` completes end-to-end
 - Interrupting at any phase leaves previously completed phases intact
 - Restarting resumes from the interrupted phase
@@ -648,7 +686,7 @@ Note: `entity_profiles` phase includes entity embedding computation (stored in L
 
 ## 6. Dependency Graph
 
-```
+```text
 Step 1 (Claims)  ----------+
                                |
 Step 2 (Entity Graph)      |    Step 4 (Relations + Evidence)
@@ -790,9 +828,8 @@ All graph tables store exactly one row per entity/community/relation. Rebuilds o
 | Limitation | Status |
 |---|---|
 | **Entity disambiguation**: Aho-Corasick matches exact strings from ontology aliases. Variant forms not in the ontology are missed. | Accepted for V1. Mitigation: expand ontology aliases. Future: add fuzzy matching or NER. |
-| **No hierarchical communities**: Community detection runs at one level only. | Accepted for V1. `community_level` column reserved for future use. graspologic offers `hierarchical_leiden` when ready. |
-| **Entity embeddings are mean-pooled**: Simple average of chunk embeddings. | Accepted for V1. Mean pooling is the standard baseline. Future: TF-IDF or attention-weighted aggregation. |
-| **No fulltext search**: LanceDB FTS was deferred in Phase 4 and remains unimplemented. | Accepted. Graph routing partially compensates by adding structured context. FTS can be added independently. |
+| **Entity embeddings are mean-pooled**: L2-normalised mean of the top-N chunk embeddings referencing the entity. | Accepted. Mean pooling is the standard baseline. Future: TF-IDF or attention-weighted aggregation. |
+| **Fulltext search now landed**: previously deferred; the current retrieval path fuses dense k-NN and BM25 FTS inside LanceDB via `Table.search(query_type="hybrid").rerank(RRFReranker())` (commit `e80fd32`). Graph routing continues to add structured context on top of the hybrid retrieval, not in place of FTS. | Superseded — no longer a limitation. |
 | **Betweenness uses unweighted edges**: NetworkX docs warn float weights are unreliable for betweenness. | Accepted. Unweighted betweenness still identifies topological bridges correctly. |
 
 ---

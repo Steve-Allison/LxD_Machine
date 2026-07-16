@@ -33,7 +33,8 @@ The canonical module layout is:
 ```text
 src/lxd/
   app/
-    bootstrap.py              # AppContext, config_digest, config.lock reconciliation
+    bootstrap.py              # AppContext, bootstrap_app, config-digest + config.lock reconciliation
+    status.py                 # Committed status snapshot + config_drift_warnings
   settings/
     models.py                 # Pydantic v2 config models (incl. tenancy, observability)
     loader.py
@@ -59,42 +60,78 @@ src/lxd/
     diff.py
     markdown.py
     docling.py
+    wiki_metadata.py          # Frontmatter (**Sources**:, [[slug]]) parser
+    wiki_relations.py
     chunking.py
+    contextual_chunker.py     # Optional Anthropic-style per-chunk context preamble
     assets.py
     mentions.py
     relations.py              # LLM-based relation extraction
     claims.py                 # LLM-based claim extraction
     embedder.py               # Batched Ollama / OpenAI embedding with context-aware retry
-    llm_client.py             # Shared synchronous/async LLM client facade
-    pipeline.py
+    embedding_cache.py        # Content-addressed (chunk_hash, model, dims) cache in LanceDB
+    error_classification.py   # TRANSIENT / DATA / SYSTEMIC classifier + circuit breaker
+    budget.py                 # Per-run LLM-spend ceiling
+    llm_client.py             # Shared sync/async OpenAI + Ollama-via-OpenAI-compat clients + Batch API helpers
+    pipeline/                 # Sequential per-source orchestrator subpackage — NO re-export façade
+      __init__.py
+      orchestrator.py         # run_ingest, build_ingest_plan, IngestPlan, persist+commit loop
+      sources.py              # Per-source extract → chunk → embed → assemble records
+      embed.py                # Embedding cache + contextual augmentation + context refinement
+      moves.py                # Move detection, unchanged-source skip, document_id resolution, chunk cloning
   retrieval/
     dense.py
-    rerank.py
+    rerank.py                 # llama_cpp HTTP + in-process ColBERT backends
+    colbert_reranker.py       # In-process late-interaction (multi-vector) reranker
+    hyde.py                   # Hypothetical Document Embeddings (HyDE) query rewriter
+    router.py                 # Adaptive router (retrieve? / breadth: narrow|standard|broad)
+    expansion.py              # Ontology + entity-embedding-neighbour expansion
     graph_routing.py          # Graph context augmentation for synthesis
-    query_pipeline.py
-    eval.py
+    query_pipeline.py         # Retrieval orchestrator; PhaseCallback / NoticeCallback types
+    eval.py                   # Retrieval-quality harness (Recall@10, MRR@10)
   synthesis/
-    answering.py
+    answering.py              # synthesize_answer (Ollama or sampler-driven) + streaming
+    citation_alignment.py     # Sentence-level attribution parser
+    sampler.py                # SamplerRequest / Sampler / SamplerFailure — client-sampling seam
   stores/
     schema.py                 # Numbered migrations + ensure_schema; PRAGMA user_version
-    connection.py             # Pragma-tight SQLite connect + close hooks
-    sqlite.py                 # Query/upsert API (thin orchestrator, no DDL)
-    lancedb.py                # Canonical vector store (uses lance_sql helpers)
+    _base_ddl.py              # Authoritative CREATE TABLE / CREATE INDEX baseline DDL
+    _sqlite_rows.py           # Row-to-record adapters (module-private to stores)
+    sqlite/                   # Query/upsert subpackage — NO re-export façade
+      __init__.py
+      connection.py           # connect_sqlite, build_store_paths, initialize_schema
+      _pool.py                # Per-thread schema-initialised connection pool (MCP request path)
+      runs.py                 # Ingest-run lifecycle (begin / progress / finish)
+      manifest.py             # corpus_manifest upsert / load / hash-grouped queries
+      ontology.py             # Ontology snapshot, ingest-config snapshot, allowed-domain lookup
+      chunks.py               # Chunk + mention persist; entity-mention search; centrality signals
+      summary.py              # Aggregate counts + CorpusStatusSummary builder
+      claims.py               # Claim insert / load / count
+      kg_profiles.py          # Entity profiles, community assignments, community reports
+      kg_relations.py         # Canonical relations, relation evidence, graph metadata
+    lancedb.py                # Canonical vector store: chunk_vectors + entity_embeddings + native FTS + BTree scalar indexes
     lance_sql.py              # Safe LanceDB filter builders (eq_clause, in_clause)
     sql_helpers.py            # Safe SQLite `IN (?, ?, ...)` helpers
     llm_jobs.py               # Persistent LLM job queue API
     models.py                 # Typed store records
-    _sqlite_rows.py           # Row-to-record adapters (module-private)
-    _sqlite_legacy_migrations.py  # Pre-versioning upgrades (module-private)
-    _base_ddl.py
+  eval/                       # Answer-quality harness (LLM-judged topic coverage)
+    metrics.py
+    models.py
+    report.py
+    runner.py
   mcp/
-    server.py                 # FastMCP server + lifespan bundle
-    async_runtime.py          # run_tool: async wrapper + hard timeout for tool bodies
+    server.py                 # FastMCP server + lifespan bundle + phase/notice/sampler bridges
+    async_runtime.py          # run_tool: worker-thread wrapper + hard timeout for tool bodies
     tools.py                  # Tool orchestration helpers (still thin)
+    models.py                 # Pydantic output models for every MCP tool + resource + prompt
   cli/
+    __init__.py               # Typer app; command discovery
+    __main__.py               # `python -m lxd.cli` entry point
     ingest.py
     status.py
-    eval.py
+    preflight.py              # Schema-integrity + corpus-readiness gate
+    eval.py                   # Retrieval-quality harness (aliased as `pixi run retrieval-check`)
+    eval_quality.py           # Answer-quality harness
     graph.py                  # build-graph / graph-status commands
   observability/
     logging.py                # structlog config, log_duration, scrub_secrets processor
@@ -321,22 +358,20 @@ Rules:
 
 ## 8. Testing Layout
 
-Tests mirror the package layout and are tagged with pytest markers so the
-suite can be sliced by layer:
+Tests are tagged with pytest markers so the suite can be sliced by
+layer. Test files live flat under `tests/` and are named
+`test_<module_or_topic>.py`; only a few structural subdirectories
+exist. Per-package subdirectory mirroring was proposed as an
+aspiration but never adopted — the flat layout is what actually ships
+and what CI runs.
 
 ```text
 tests/
   conftest.py              # shared fixtures + --update-golden flag
   unit/                    # pure-logic tests (no disk, no network)
   integration/             # temp-dir SQLite/LanceDB + local FastMCP
-  golden/                  # golden transcripts (e.g. mcp_tool_manifest.json)
-  ontology/
-  ingest/
-  retrieval/
-  synthesis/
-  stores/
-  mcp/
-  eval/
+  golden/                  # golden transcripts (mcp_tool_manifest.json)
+  eval/                    # retrieval- and answer-quality gold sets (eval_set.json, golden_quality_set.json)
 ```
 
 Markers (registered in `pyproject.toml`):

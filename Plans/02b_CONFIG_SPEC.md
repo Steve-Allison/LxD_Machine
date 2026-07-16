@@ -67,10 +67,12 @@ Relative paths are resolved from the directory containing the selected config fi
 
 ```yaml
 reranker:
-  backend: llama_cpp
+  backend: llama_cpp             # or: colbert
   url: http://127.0.0.1:8012
   endpoint: /v1/rerank
   timeout_secs: 30
+  colbert_model: BAAI/bge-m3     # only consulted when backend=colbert
+  colbert_max_length: 512
   launch:
     auto_start: true
     executable: llama-server
@@ -81,7 +83,10 @@ reranker:
     extra_args: []
 ```
 
-`llama.cpp` reranking requires `llama-server` with a reranker model and reranking enabled. The documented aliases include `/reranking`, `/rerank`, `/v1/rerank`, and `/v1/reranking`; the checked-in default is `/v1/rerank`.
+Two backends are supported:
+
+- `llama_cpp` — cross-encoder reranker served by an external `llama-server` process; the documented endpoint aliases include `/reranking`, `/rerank`, `/v1/rerank`, and `/v1/reranking`; the checked-in default is `/v1/rerank`.
+- `colbert` — in-process late-interaction (multi-vector) reranker via `retrieval/colbert_reranker.py`; scores documents by MaxSim over token-level vectors, using the HuggingFace model named in `colbert_model` (default `BAAI/bge-m3`) with a per-document token cap of `colbert_max_length`. When `backend=colbert` the `url`, `endpoint`, and `launch` block are ignored.
 
 Autostart contract:
 
@@ -127,6 +132,17 @@ chunking:
   min_tokens: 20
   tokenizer_backend: tiktoken
   tokenizer_name: cl100k_base
+  # Optional contextual-summary preamble (Anthropic-style chunk-level
+  # context). When enabled the pipeline asks the local Ollama LLM for a
+  # 1-sentence summary of what each chunk is about within its document
+  # and prepends it to the chunk text before embedding only; the stored
+  # chunk text stays clean for citation rendering. Cache is keyed on
+  # (chunk_hash, model). Defaults off — opt in and re-ingest.
+  contextual_summary_enabled: false
+  contextual_summary_model: qwen3:14b
+  contextual_summary_temperature: 0.0
+  contextual_summary_timeout_secs: 60
+  contextual_summary_max_tokens: 80
 ```
 
 Tokenization must be explicit in config. No hidden tokenizer defaults are allowed.
@@ -160,13 +176,28 @@ mcp:
   server_name: lxd-machine
   version: 0.1.0
   async_tools_enabled: true
-  tool_timeout_secs: 60.0    # 0 disables the hard timeout (not recommended)
+  tool_timeout_secs: 60.0            # 0 disables the hard timeout (not recommended)
+  synthesis_backend: server_llm      # or: client_sampling
 ```
 
 All MCP tools are `async def`; synchronous bodies run in a worker thread
 under `lxd.mcp.async_runtime.run_tool`, which enforces `tool_timeout_secs`
 via `anyio.fail_after`. Timeouts and exceptions emit structured
 `mcp.tool.timeout` / `mcp.tool.error` log events.
+
+`synthesis_backend` chooses where the `search_knowledge` /
+`search_knowledge_deep` synthesis call runs:
+
+- `server_llm` (default) — the server calls its own Ollama model. Trust
+  and cost boundary stays server-side; the server owns the API keys.
+- `client_sampling` — the server dispatches the synthesis prompt via
+  `fastmcp.Context.sample` so the connected client's own LLM answers
+  (client picks the model, client pays for tokens). The server
+  transparently falls back to `server_llm` when the connected client
+  has not advertised the sampling capability or the sampling call
+  fails, and surfaces the reason as a single warning on the resulting
+  envelope's `warnings` list plus a streamed `notifications/message`
+  notice.
 
 ### Optional `tenancy` settings
 

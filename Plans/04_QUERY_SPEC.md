@@ -24,48 +24,43 @@ Domain validation rule:
 - do not hard-code the allowed domain list in application logic
 - if no committed corpus rows exist yet, domain validation may accept `None` only
 
-### Stage 2 — Expand
+### Stage 2 — Expand (mandatory)
 
-Deferred by default:
+Runs on every retrieval:
 
-- detect ontology entities in the question
-- add a small number of related terms
-
-This stage should stay off unless benchmarking shows it improves retrieval quality on the eval set.
-
-If expansion is weak, noisy, or unproven, query must still work without it.
+- detect ontology entities in the question via the Aho-Corasick matcher
+- widen the matched-entity set with the entities nearest to the query vector in the `entity_embeddings` LanceDB table (adds semantic neighbours, not just surface-form hits)
+- expand the widened set over the in-memory ontology graph with `config.expansion.hops` and `config.expansion.max_terms`
 
 Implementation rule:
 
-- query-time expansion uses the ontology matcher over the question text, then expands over the in-memory ontology graph with `config.expansion.hops` and `config.expansion.max_terms`
-- expansion terms must be surfaced in query metadata so retrieval changes are auditable
+- expansion is a mandatory feature (no `enabled` toggle) per `.claude/rules/mandatory-features.md`; it degrades gracefully — when the graph isn't built or the question matches no entities, the widening is a no-op
+- expansion terms and the matched entity IDs must be surfaced in query metadata so retrieval changes are auditable (`KnowledgeAnswerMetadata.matched_entity_ids` and `.expansion_terms`)
 
-### Stage 3 — Retrieve
+### Stage 3 — Retrieve (hybrid dense + BM25 via LanceDB native fuse)
 
-- dense search over vectors is required for V1
-- sparse text retrieval is optional and must not be assumed until it is implemented
-- fusion happens only when both retrieval modes are actually present
+- dense k-NN + BM25 FTS are always issued and fused inside LanceDB via `Table.search(query_type="hybrid")` fed to `RRFReranker`
+- `search_chunks_hybrid` (in `stores/lancedb.py`) returns one ordered stream keyed on `_relevance_score`; per-lane ranks are collapsed inside the engine
+- the previous split path (`search_chunks` dense-only + `search_chunks_fts` BM25 + Python-side lexical-lane fuser) is superseded — both helpers remain in the store layer as available APIs but are not called from the pipeline
 
 Implementation choice:
 
-- dense retrieval uses LanceDB vector search
-- dense retrieval must use cosine similarity
-- if a domain filter is supplied, apply it as a store-level filter on `source_domain`
-- if sparse retrieval is added, it should use LanceDB native FTS rather than a separate search system
+- dense retrieval uses cosine similarity via `distance_type("cosine")`
+- if a domain filter is supplied, apply it as a store-level filter on `source_domain` (BTree scalar index present)
+- the native FTS index is `create_index(config=FTS(with_position=False))` built by `open_chunk_table` / `refresh_fts_index`
 
 Eval contract:
 
-- `eval_set.json` maps each question to one or more expected `source_rel_path` values
-- dense retrieval quality is measured as `Recall@10` over expected `source_rel_path`
-- rerank quality is measured as `MRR@10` over the same expected `source_rel_path` targets using the configured query candidate set
+- `tests/eval/eval_set.json` maps each question to one or more expected `source_rel_path` values (basenames also accepted when unambiguous)
+- retrieval quality is measured as `Recall@10` and `MRR@10` over expected `source_rel_path` via `pixi run retrieval-check`; measured on the current 20-question set at Recall@10 = 1.000, MRR@10 = 0.713 after the native-hybrid adoption (commit `e80fd32`; prior 5-lane RRF baseline: MRR@10 = 0.669)
 
 Source-ranking rule:
 
 - query ranking must be source-aware, not chunk-naive
-- before reranking, dense candidates must be diversified to one representative chunk per `source_rel_path`
-- if the first dense fetch does not yield enough unique sources to satisfy the configured retrieval window, query must fetch more dense hits up to the query cap rather than silently reranking a duplicate-heavy prefix
-- final source ordering may fuse dense rank, lexical rank over source metadata, and rerank rank, but all fused inputs must come from committed corpus data
-- after source-aware ordering is produced, any remaining dense chunks may be appended behind the ranked source prefix
+- before reranking, hybrid candidates are diversified to one representative chunk per `source_rel_path`
+- if the first fetch does not yield enough unique sources, query fetches more up to `_MAX_LIMIT` rather than silently reranking a duplicate-heavy prefix
+- final ordering fuses hybrid rank, rerank rank, relation-membership rank, and centrality (PageRank) rank — a four-lane RRF, with `_rrf_score(rank) = 1.0 / (_RRF_K + rank)`. The lexical lane and its `lexical_fusion_weight` config knob are collapsed into the LanceDB hybrid call and are no longer a fuser input; the config field is vestigial
+- after source-aware ordering, any remaining hybrid chunks are appended behind the ranked source prefix
 
 ### Stage 4 — Rerank
 
@@ -117,11 +112,11 @@ That tool becomes far more useful once mention indexing is robust.
 - hierarchy links such as `parent_entity`
 - taxonomy links from `taxonomy_mapping`, `maps_to_taxonomy_types`, and `taxonomy_reference`
 
-`get_related_concepts` response contract:
+`get_related_concepts` response contract (current implementation — `mcp/models.py:EntityNeighbor`):
 
-- each neighbor record must expose both edge data and neighbor node data
-- neighbor node data must include at least `neighbor_node_id`, `neighbor_node_type`, `neighbor_entity_id`, `neighbor_label`, and `neighbor_metadata`
-- the tool must not pretend every neighbor is an entity; file and taxonomy neighbors are valid first-class graph results
+- each neighbour record is `EntityNeighbor { entity_id: str, relation: str, direction: "outgoing" | "incoming" }`
+- the shape is entity-centric: every neighbour is exposed by its canonical entity ID; file, taxonomy, and category nodes reachable via ontology edges are surfaced through the entity IDs they connect to, not as first-class typed nodes
+- if a future need surfaces for typed non-entity neighbours (file / taxonomy / category), the model would need extending — this is a known limitation of the current shape rather than a deliberate exclusion
 
 ---
 

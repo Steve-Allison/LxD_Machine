@@ -20,14 +20,7 @@ Default portable runtime:
 config.yaml
 ```
 
-Optional machine-specific variants:
-
-```bash
-config.m1max.yaml
-config.m4mini.yaml
-```
-
-Use `--profile m1max` or `--profile m4mini` to select a profile file explicitly.
+The `--profile <name>` CLI option is supported by `pixi run ingest`, `pixi run status`, and the MCP server — when set it resolves `config.<name>.yaml` in the project root. No profile files are shipped by default; the single `config.yaml` is authoritative. Add a profile file if you want to keep per-machine overrides (e.g. `config.m1max.yaml`) and select it via `--profile m1max`.
 
 ### 2.2 Install Environment
 

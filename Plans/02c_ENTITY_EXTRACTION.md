@@ -13,7 +13,7 @@ Rules:
 - add all normalized matcher terms before calling `make_automaton()`
 - finalize once with `make_automaton()` before any search
 - run matching with `iter()` over normalized unicode strings
-- do not persist pickled or saved automatons in V1; rebuild from ontology at startup because the upstream docs warn serialized formats are not safe for untrusted input
+- persist the built automaton to `<data_path>/matcher_cache/matcher-<hash>.pkl` via `pickle.dump`/`pickle.load` in `ontology/matcher.build_or_load_automaton`, keyed on the matcher term-set hash; the cache is safe because the only inputs are the project's own trusted YAMLs, not untrusted user data
 - do not use GLiNER, PyTorch, or any ML extraction runtime for the core system
 
 ## 2. Ontology Inputs

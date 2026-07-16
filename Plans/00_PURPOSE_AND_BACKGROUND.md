@@ -4,53 +4,46 @@
 
 - local-only
 - single-user
-- rebuildable from repo-local corpus and ontology inputs once runtime dependencies and local model artifacts are provisioned
-- `Knowledge_Base` is the full corpus boundary
-- every file under the corpus root is scanned; V1 durable handling covers `.md`, `.docling.json`, and `.png`
+- rebuildable from a configured corpus and ontology once runtime dependencies and local model artifacts are provisioned
+- the corpus boundary is whatever `paths.corpus_path` in `config.yaml` resolves to; the default is the curated wiki at `~/AI_Projects+Code/knowledge/wiki/` (~269 top-level pages), and the legacy raw corpus under `Knowledge_Base/` is retained only as an archive
+- every file under the resolved corpus root is scanned; V1 durable handling covers `.md`, `.docling.md`, `.docling.json`, and `.png`
 - MCP is the only external interface
 
 ## 2. Required Outcomes
 
-- scan every file under `/Users/steveallison/AI_Projects+Code/LxD_Machine/Knowledge_Base`
+- scan every file under the configured `paths.corpus_path`
 - durably ingest every V1-supported file type under that root
 - index text-bearing sources for retrieval and cited answering
 - register binary assets with durable provenance, even when they are not queryable evidence in V1
-- load the ontology from the full repo-local `Yamls` tree
-- expose corpus search, ontology lookup, status, and asset lookup through MCP
-- report committed ingest and ontology state
+- load the ontology from the full repo-local `Yamls/` tree
+- expose corpus search, ontology lookup, status, knowledge-graph tools, and full answer-synthesis through MCP
+- report committed ingest, ontology, and knowledge-graph state
 
 ## 3. Corpus And Ontology Inputs
 
-Corpus root:
+Corpus root (from `config.yaml :: paths.corpus_path`):
 
-- `/Users/steveallison/AI_Projects+Code/LxD_Machine/Knowledge_Base`
+- default: `~/AI_Projects+Code/knowledge/wiki/`
+- overridable per-machine via a `config.<profile>.yaml`
 
 Ontology root:
 
-- `/Users/steveallison/AI_Projects+Code/LxD_Machine/Yamls`
+- `<project_root>/Yamls`
 
 Entity source subtree:
 
-- `/Users/steveallison/AI_Projects+Code/LxD_Machine/Yamls/entities`
+- `<project_root>/Yamls/entities`
 
-Measured inventory in this repo on 2026-03-10:
-
-- text-bearing corpus files: `348`
-- markdown files: `302`
-- Docling JSON files: `46`
-- PNG asset files: `2160`
-- duplicate physical text-bearing files by content hash: `1`
-- ontology YAML files: `159`
-- entity YAML files: `27`
-- entity types: `318`
+Corpus / ontology counts are inventory-time facts, not spec facts, and drift as the wiki and ontology grow. Run `pixi run status` for the current committed counts on your machine; the wiki has grown from 262 → 269+ top-level pages over the SOTA sweep. The ontology tree carries ~158 YAML files across 27 entity YAMLs.
 
 ## 4. File Classes
 
-The corpus contains three file classes and the plan must treat them differently:
+The corpus contains four durable file classes and the pipeline treats them differently:
 
-- `markdown`: primary text source, chunked and searchable
-- `docling_json`: primary text source, chunked and searchable with structural provenance
-- `png`: binary corpus asset, durably registered and linked to a parent source when possible
+- `markdown` (`.md`): primary text source, chunked and searchable
+- `docling_json` (`.docling.json`): primary text source, chunked and searchable with structural provenance
+- `docling_md` (`.docling.md`): Markdown export from Docling, chunked and searchable
+- `image_png` (`.png`): binary corpus asset, durably registered with `retrieval_status=asset_only` and linked to a parent text source when possible
 
 V1 query answers cite only text-bearing chunk sources.
 
@@ -88,7 +81,7 @@ V1 excludes:
 
 ## 7. Success Conditions
 
-- every in-scope file under `Knowledge_Base` is represented in committed ingest state
+- every in-scope file under the configured `paths.corpus_path` is represented in committed ingest state
 - every markdown and Docling JSON source is either searchable or explicitly failed with a recorded error
 - every PNG asset is durably registered, even when it is not searchable
 - interrupted ingest leaves committed usable progress
@@ -107,3 +100,4 @@ These documents are the source of truth for the rewrite:
 - `04_QUERY_SPEC.md`
 - `05_MCP_SPEC.md`
 - `07_USER_GUIDE.md`
+- `08_KNOWLEDGE_GRAPH_SPEC.md`

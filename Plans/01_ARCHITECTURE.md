@@ -35,8 +35,8 @@ The system has four parts:
 
 Responsibilities:
 
-- scan every file under `Knowledge_Base`
-- classify each file as `markdown`, `docling_json`, or `image_png`
+- scan every file under the configured `paths.corpus_path` (default: the curated wiki at `~/AI_Projects+Code/knowledge/wiki/`)
+- classify each file as `markdown`, `docling_md`, `docling_json`, or `image_png`
 - assign durable manifest state to every file
 - chunk and embed text-bearing sources
 - register PNG assets with provenance links
@@ -44,8 +44,9 @@ Responsibilities:
 
 File handling rules:
 
-- `markdown` files are converted into a `DoclingDocument` using Docling's supported conversion path, then chunked, embedded, and made searchable
-- `docling_json` files are loaded as structured Docling documents, chunked, embedded, and made searchable
+- `markdown` (`.md`) files are loaded via `ingest/markdown.py`'s frontmatter-aware Markdown reader (Docling's `DocumentConverter` is not on the markdown path — the reader parses the `**Sources**:` and `[[slug]]` conventions and streams the body into the hybrid chunker directly)
+- `docling_md` (`.docling.md`) files use the same markdown reader
+- `docling_json` (`.docling.json`) files are loaded as structured Docling documents and chunked with the Docling `HybridChunker`
 - `image_png` files are registered as corpus assets; they are not embedded in V1, but they remain durable first-class corpus members
 
 ### 2.2 Ontology Load
@@ -61,9 +62,9 @@ Responsibilities:
 Ontology shape rules:
 
 - ontology inputs are every YAML file matched by `settings.ontology.include_globs` under `config.paths.ontology_path`
-- every resolved YAML key path must be explicitly classified as `graph_input`, `matcher_input`, `metadata_input`, `audit_only`, or `explicitly_ignored`
-- the loader must fail if any resolved YAML key path is unclassified
-- non-relational YAML data must be preserved in structured metadata records; no resolved YAML field may be silently dropped
+- every resolved YAML key path is classified as one of three categories by `ontology/inventory.classify_key_path`: `graph_input`, `matcher_input`, or `metadata_input`
+- unrecognised paths default to `metadata_input` — the classifier never fails a load on an unknown key; the default preserves structural data, at the cost of accepting new fields silently until they are explicitly promoted to `graph_input` or `matcher_input`
+- non-relational YAML data is preserved in structured metadata records via the `metadata_input` default; no resolved YAML field is silently dropped
 - graph nodes include entity nodes, ontology file nodes, taxonomy-derived nodes, and explicit unresolved-reference nodes when source data cannot be resolved to a known target
 - graph edges come from file-level `_meta.relationships`, per-entity `relates_to`, per-entity `parent_entity`, `taxonomy_mapping`, `maps_to_taxonomy_types`, and `taxonomy_reference` / `validate_against_taxonomy`
 - relation definitions in `file_relationships`, `entity_relations`, and `entity_relation_weights` must be consumed as validation schema for loaded graph edges
@@ -78,11 +79,13 @@ Ontology shape rules:
 Responsibilities:
 
 - validate input
-- retrieve from searchable chunk rows
-- optionally expand with ontology context
-- rerank retrieved candidates through the configured `llama.cpp` reranker backend when available
-- fall back to dense-only retrieval with an explicit warning when the reranker is unavailable
-- optionally synthesize a cited answer
+- route the query via the adaptive router (`retrieval/router.py`) — decide `retrieve?` and `breadth` (`narrow` | `standard` | `broad`); short-circuit meta / out-of-scope questions with `no_retrieval_needed`
+- expand the question with ontology entities (Aho-Corasick) plus entity-embedding nearest neighbours (mandatory feature, degrades gracefully when the graph isn't built)
+- retrieve via LanceDB native hybrid search (`Table.search(query_type="hybrid").rerank(RRFReranker())`) — engine issues one query, runs dense k-NN and BM25 FTS in parallel, fuses via RRF; the previous two-query split + Python-side lexical-lane fuse is superseded
+- rerank retrieved candidates through the configured backend (`llama_cpp` cross-encoder over HTTP or in-process ColBERT); when the reranker is unavailable the pipeline surfaces a live warning via `ctx.warning` AND records it in the buffered `warnings` list, then continues with the hybrid ranking
+- fuse rerank, relation-membership, and centrality lanes on top of the hybrid ranking via source-aware RRF; optionally community-diversify
+- build graph context (entity profiles + community reports + claims) additively for the synthesis prompt
+- synthesise a cited answer either against the server's Ollama model or, when `mcp.synthesis_backend=client_sampling`, via MCP `ctx.sample` (with server-LLM fallback on `SamplerFailure`)
 
 Query scope rule:
 
@@ -93,80 +96,64 @@ Query scope rule:
 
 Responsibilities:
 
-- expose thin tools for query, ontology lookup, status, and asset inspection
-- open SQLite per request
-- avoid embedding business logic in the server layer
+- expose 20 read-only tools spanning corpus operations, ontology lookup, knowledge-graph operations, status, and the full answer pipeline
+- expose 3 URI-templated resources (`lxd://corpus/{path*}`, `lxd://entity/{entity_id}`, `lxd://community/{entity_id}`) and 2 prompts (`lxd_synthesis_preamble`, `lxd_query_refinement`)
+- keep tool bodies thin: server-layer tools call lower-level query and store modules and add no business logic
+- use the per-thread SQLite connection pool (`stores/sqlite/_pool.pooled_connection`) instead of opening a fresh connection per request — the pool is initialised once per worker thread with the required PRAGMAs and reused for every subsequent tool call on that thread
 
 MCP runtime rules:
 
-- every registered tool is an `async def`; synchronous tool bodies run inside
-  worker threads via `lxd.mcp.async_runtime.run_tool`, which enforces a
-  per-tool hard timeout (`mcp.tool_timeout_secs`)
-- the lifespan bundle owns the `AppContext`, the ontology graph, the
-  LanceDB table handles, and the HTTP client factories; tools never
-  construct new clients per call
+- every registered tool is an `async def`; synchronous tool bodies run inside worker threads via `lxd.mcp.async_runtime.run_tool`, which enforces a per-tool hard timeout (`mcp.tool_timeout_secs`)
+- the lifespan bundle (`_LxDLifespan`) owns exactly two things: the `AppContext` (config, resolved paths, digests) and the `IngestPlan` (ontology graph, matcher, plan metadata). LanceDB table handles and HTTP client factories are NOT held on the lifespan; the two long-running LLM tools (`search_knowledge`, `search_knowledge_deep`) additionally take a phased-progress callback, a `Context.warning` streaming-notice callback, and (when `mcp.synthesis_backend=client_sampling`) an `anyio.from_thread.run`-bridged sampler that dispatches synthesis to `ctx.sample`
 
 ## 3. Stores
 
 ### 3.1 LanceDB
 
-Used for:
+Three tables under `<paths.data_path>/lancedb/`:
 
-- searchable chunk text
-- vector embeddings (canonical store for all chunk and entity vectors)
-- citation labels
-- chunk-level provenance
+- **`chunk_vectors`** — searchable chunk text, dense embeddings, citation labels, chunk-level provenance including transitive `cited_sources_json` (wiki `**Sources**:`) and `wiki_links_json` (`[[slug]]` cross-references). Native FTS index via `create_index(config=FTS(with_position=False))`. BTree scalar indexes on `source_rel_path`, `chunk_id`, `source_domain` for O(log N) filter lookups on the hot ingest/retrieval paths.
+- **`entity_embeddings`** — per-entity L2-normalised mean-pooled vectors written by the `build-graph` entity-embedding phase; used by `search_similar_entities` and by the query pipeline's `_augment_with_embedding_neighbours` (widens matched-entity set with semantic neighbours). BTree scalar index on `entity_id`.
+- **`embedding_cache`** — content-addressed cache keyed on `"{chunk_hash}|{embedding_model}|{embedding_dims}"`. Survives full rebuilds because identical text + identical model = identical vector. BTree scalar index on `cache_key`.
 
-LanceDB holds only text-bearing chunk rows.
+LanceDB is the single source of truth for vectors. The legacy `chunk_rows.vector_json` column in SQLite was dropped by schema migration `0002_drop_chunk_vector_json`; all vector reads must go through the LanceDB helpers in `lxd.stores.lancedb`.
 
-LanceDB is the single source of truth for vectors. The legacy
-`chunk_rows.vector_json` column in SQLite was dropped by schema migration
-`0002_drop_chunk_vector_json`; all vector reads must go through the
-LanceDB helpers in `lxd.stores.lancedb`.
+Writes to `entity_embeddings` and `embedding_cache` go through `merge_insert(...).when_matched_update_all().when_not_matched_insert_all()` — a single atomic upsert per key, no delete-then-add split-brain window. `replace_entity_embeddings` additionally uses `.when_not_matched_by_source_delete()` for full-replace semantics.
 
-All LanceDB filter expressions must be constructed through the helpers in
-`lxd.stores.lance_sql` (`eq_clause`, `in_clause`, `escape_string_literal`),
-which reject NUL/newline characters and enforce SQL-identifier column
-names.
+All LanceDB filter expressions must be constructed through the helpers in `lxd.stores.lance_sql` (`eq_clause`, `in_clause`, `escape_string_literal`), which reject NUL/newline characters and enforce SQL-identifier column names. LanceDB's Python API does not support parameter binding — string-composition is unavoidable and the helpers are the safe boundary.
 
 ### 3.2 SQLite
 
 Used for:
 
 - `corpus_manifest` — document metadata and content hashes
-- `chunk_rows` — chunked text with embeddings and provenance
+- `chunk_rows` — chunked text (embeddings live in LanceDB) with provenance
 - `mention_rows` — entity mentions detected per chunk
 - `extracted_relations` — LLM-extracted relations per chunk
 - `asset_links` — PNG/asset registration and parent inference
 - `ontology_sources` — ontology file tracking
 - `ontology_snapshot` — ontology state hash for drift detection
 - `ingest_config` — persisted ingest config snapshot
-- `ingest_runs` — ingest run history
+- `ingest_runs` — per-run bookkeeping (files, chunks, tokens, cost, cache hit-rate)
 - `relations` — canonical deduplicated relations (knowledge graph)
 - `relation_evidence` — provenance linking canonical relations to source chunks (knowledge graph)
 - `claims` — LLM-extracted factual claims per chunk (knowledge graph)
 - `entity_profiles` — deterministic entity summaries with centrality (knowledge graph)
-- `entity_communities` — community assignments per entity (knowledge graph)
-- `community_reports` — deterministic community summaries (knowledge graph)
+- `entity_communities` — community assignments per entity, composite PK `(entity_id, community_level)` supporting multi-level (hierarchical) communities
+- `community_reports` — deterministic community summaries, composite PK `(community_id, community_level)`, `parent_community_id` for hierarchy
 - `graph_metadata` — knowledge graph version and build timestamps
 - `graph_build_state` — resumable knowledge graph build state machine
+- `circuit_breaker_state` — systemic-error circuit-breaker persistence per scope
+- `entity_embedding_state` — per-entity source_hash + embedding_model bookkeeping for incremental entity-embedding rebuilds
 - `llm_jobs` — persistent LLM job queue (status, payload, result, attempts)
 
 SQLite is the source of truth for ingest state, recovery, asset registration, ontology snapshot tracking, the full knowledge graph, and persistent LLM job state.
 
-Schema evolution is tracked by SQLite's built-in `PRAGMA user_version`
-driven by numbered migrations in `lxd.stores.schema` (`0001_baseline`,
-`0002_drop_chunk_vector_json`, `0003_llm_jobs`). `ensure_schema` is
-idempotent and runs at startup from `lxd.app.bootstrap`. Legacy pre-version
-upgrades live in `lxd.stores._sqlite_legacy_migrations` and always run
-before the numbered migrations.
+Schema evolution is tracked by SQLite's built-in `PRAGMA user_version` and runs at startup from `lxd.app.bootstrap`. The authoritative baseline DDL lives in `lxd.stores._base_ddl.BASE_SCHEMA_DDL` and is applied on every `ensure_schema` call (idempotent — every statement uses `CREATE TABLE IF NOT EXISTS` / `CREATE INDEX IF NOT EXISTS`). Numbered migrations in `lxd.stores.schema` then lift older stores up to `CURRENT_SCHEMA_VERSION = 9`. Every destructive migration writes a `*.pre-migration-vN-to-vM-*.sqlite3.bak` backup before altering DDL. `ensure_schema` then verifies `foreign_key_check` and required tables/columns; a half-migrated DB raises `SchemaIntegrityError` and refuses writes. There is no `_sqlite_legacy_migrations` module — the pre-flight guard is `stores/sqlite/connection.assert_no_v2_legacy_tables` (asserts no leftover pre-numbered tables). See `02_DATA_SCHEMA.md §1b` for the full migration list (0001 through 0009).
 
 WAL mode is mandatory because ingest writes and MCP reads are expected to overlap.
 
-Connection PRAGMAs applied at every connect:
-`journal_mode=WAL`, `synchronous=NORMAL`, `foreign_keys=ON`,
-`busy_timeout=5000`, `temp_store=MEMORY`, `cache_size=-65536`. On close,
-`PRAGMA optimize` runs.
+Connection PRAGMAs applied at every connect through `stores/sqlite/connection.connect_sqlite`: `journal_mode=WAL`, `synchronous=NORMAL`, `foreign_keys=ON`, `busy_timeout=5000`, `temp_store=MEMORY`, `cache_size=-65536`. No close-time PRAGMA hook is installed.
 
 ### 3.3 In-Memory
 
@@ -235,31 +222,36 @@ SQLite committed state is the commit boundary.
 
 ## 6. Query Architecture
 
-The minimal working query path is:
+The working query path (single-source-of-truth: `retrieval/query_pipeline.py`) is:
 
-1. validate input
-2. retrieve dense candidates from searchable chunk rows
-3. expand query with ontology terms and rerank candidates
-4. synthesize from chunk evidence if requested
+1. validate input (`_validate_question`, `_validate_domain`, `_validate_limit`)
+2. route via the adaptive router — decide `retrieve?` and `breadth`; short-circuit meta questions with `no_retrieval_needed`
+3. expand: Aho-Corasick over the question + entity-embedding nearest neighbours (mandatory feature; degrades gracefully)
+4. embed the (possibly HyDE-rewritten) question
+5. retrieve via LanceDB native hybrid (`Table.search(query_type="hybrid").rerank(RRFReranker())`) — dense k-NN + BM25 FTS fused inside the engine
+6. attach centrality signals from `entity_profiles` per chunk
+7. diversify to one representative chunk per `source_rel_path`; rerank the representative prefix
+8. fuse the hybrid + rerank + relation-membership + centrality lanes via RRF; optionally community-diversify
+9. build additive graph context (entity profiles + community reports + claims) for the synthesis prompt
+10. synthesise a cited answer either via the server's Ollama model or, when `mcp.synthesis_backend=client_sampling`, via `ctx.sample` (with server-LLM fallback on `SamplerFailure`)
 
 Citation rules:
 
 - cite the chunk source's `citation_label`
-- markdown `citation_label = source_rel_path`
-- Docling `citation_label = source_rel_path#page=<page_no>` when `page_no` is available, otherwise `source_rel_path`
+- markdown `citation_label = <source_rel_path>#<chunk_index>`
+- Docling `citation_label = <source_rel_path>#<chunk_index>` (page numbers are carried in `metadata_json.page_no`, not in the citation label)
 - heading text may be returned separately as display metadata, but not inside canonical `citation_label`
 - PNG assets are never direct evidence in V1
 
 ## 7. MCP Architecture
 
-The MCP server should:
+The MCP server:
 
-- load settings once and compute a Blake3 `config_digest`; reconcile against
-  `<data_path>/config.lock` (seed on first run, warn on drift)
-- load ontology once at startup
-- hold the LanceDB table handle
-- open SQLite connections per request
-- call lower-level query and store modules
+- loads settings once and computes a Blake3 `config_digest`; reconciles against `<data_path>/config.lock` (seeds on first run, warns on drift without overwriting)
+- loads the ontology + matcher once at lifespan startup, holds them on `_LxDLifespan.ingest_plan`
+- opens SQLite connections through a per-thread pool (`stores/sqlite/_pool.pooled_connection`) rather than per-request — the pool is initialised once per worker thread with the required PRAGMAs and reused across every subsequent tool call on that thread
+- opens LanceDB tables per request inside tool bodies via `connect_lancedb` + `open_chunk_table` / `open_entity_table` — the table handles are cheap to open and are NOT held on the lifespan bundle
+- calls lower-level query and store modules; tool bodies remain thin
 
 The MCP layer should not own ingest, graph, or retrieval policy.
 
@@ -279,9 +271,8 @@ responsive under concurrent client load.
   timestamps, `contextvars`-propagated run IDs, a `log_duration` context
   manager for stage timing, and a `scrub_secrets` processor that redacts
   keys containing `api_key`, `token`, `authorization`, `password`, etc.
-  OpenTelemetry and Prometheus exporters are configurable via
-  `observability.otel_enabled` / `observability.prometheus_enabled` and
-  default to off.
+  Metrics-exporter integrations (OpenTelemetry, Prometheus) are not
+  currently wired — logging is the sole observability surface.
 - **Persistent LLM jobs.** Long-running LLM workloads (OpenAI Batch,
   background claim/relation extraction) are queued in `llm_jobs` via the
   idempotent helpers in `lxd.stores.llm_jobs`. Each job carries a stable
