@@ -15,6 +15,7 @@ import httpx
 import ollama
 import openai
 import structlog
+from pydantic import BaseModel, ConfigDict, Field
 
 from lxd.domain.ids import blake3_hex
 from lxd.ingest.llm_client import (
@@ -67,6 +68,33 @@ class _RawRelation:
     predicate: str
     object_: str
     confidence: float
+
+
+class _RelationItem(BaseModel):
+    """One relation row inside the LLM structured response.
+
+    ``object`` is the field the LLM sees (matches the ``(subject, predicate,
+    object)`` triple the prompt describes); the SDK maps it into ``object_``
+    on the Python side via the ``populate_by_name`` alias so the field name
+    does not shadow the ``object`` builtin at the boundary. ``confidence``
+    defaults to 0.5 when the model omits it, matching the historical
+    ``_parse_response`` behaviour.
+    """
+
+    model_config = ConfigDict(populate_by_name=True, extra="ignore")
+
+    subject: str
+    predicate: str
+    object_: str = Field(alias="object")
+    confidence: float = 0.5
+
+
+class _RelationsPayload(BaseModel):
+    """LLM structured response for a single-chunk relation extraction call."""
+
+    model_config = ConfigDict(extra="ignore")
+
+    relations: list[_RelationItem] = Field(default_factory=list)
 
 
 # ---------------------------------------------------------------------------
@@ -412,7 +440,7 @@ def _call_openai_sync(
     openai_cfg = config.openai
     api_key_env = openai_cfg.api_key_env if openai_cfg else "OPENAI_API_KEY"
     client = get_sync_openai_client(api_key_env)
-    response = client.chat.completions.create(
+    response = client.chat.completions.parse(
         model=cfg.openai_model,
         messages=[
             {"role": "system", "content": _RELATION_BASE_PROMPT},
@@ -422,12 +450,22 @@ def _call_openai_sync(
             },
         ],
         temperature=cfg.temperature,
-        response_format={"type": "json_object"},
+        response_format=_RelationsPayload,
         max_tokens=1000,
         timeout=float(cfg.timeout_secs),
     )
-    content = response.choices[0].message.content or ""
-    return _parse_response(content)
+    parsed = response.choices[0].message.parsed
+    if parsed is None:
+        return []
+    return [
+        _RawRelation(
+            subject=item.subject,
+            predicate=item.predicate,
+            object_=item.object_,
+            confidence=item.confidence,
+        )
+        for item in parsed.relations
+    ]
 
 
 def _call_ollama_sync(
