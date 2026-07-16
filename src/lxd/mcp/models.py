@@ -5,7 +5,7 @@ structured, schema-discoverable responses instead of opaque dicts. Every model
 is frozen and forbids extra keys to catch silent shape drift at the boundary.
 """
 
-from typing import Any
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -306,6 +306,60 @@ class SentenceCitationView(_Frozen):
     citation_labels: list[str] = Field(default_factory=list)
 
 
+class KnowledgeAnswerMetadata(_Frozen):
+    """Typed query-pipeline metadata returned alongside a knowledge answer.
+
+    The ``router_*`` fields are always populated (the router runs first,
+    on every call). The remaining fields are populated only when
+    retrieval + synthesis actually ran — the "no retrieval needed" branch
+    from the adaptive router returns just the four ``router_*`` values.
+    Absent-when-not-applicable is expressed as ``None`` (booleans / ints)
+    or an empty list (id / term collections) so the schema surface is
+    always the same shape.
+    """
+
+    router_retrieve: bool = Field(
+        description="Whether the router decided to run retrieval + synthesis."
+    )
+    router_breadth: Literal["narrow", "standard", "broad"] = Field(
+        description="Retrieval breadth knob the router picked (drives dense_top_k)."
+    )
+    router_rationale: str = Field(
+        description="One-line reason the router gave for its retrieve+breadth call."
+    )
+    router_routed: bool = Field(
+        description="True when the router LLM ran; false when we fell back to the default route."
+    )
+    reranking_applied: bool | None = Field(
+        default=None,
+        description="Whether the cross-encoder reranker ran. Null when retrieval was skipped.",
+    )
+    expansion_applied: bool | None = Field(
+        default=None,
+        description="Whether ontology expansion added terms. Null when retrieval was skipped.",
+    )
+    matched_entity_ids: list[str] = Field(
+        default_factory=list,
+        description="Ontology entities matched to the question after expansion.",
+    )
+    expansion_terms: list[str] = Field(
+        default_factory=list,
+        description="Terms added by the expansion pass.",
+    )
+    result_count: int | None = Field(
+        default=None,
+        description="Ranked chunk count after fusion. Null when retrieval was skipped.",
+    )
+    graph_context_applied: bool | None = Field(
+        default=None,
+        description="Whether graph context was prepended to synthesis. Null when skipped.",
+    )
+    dense_top_k: int | None = Field(
+        default=None,
+        description="Dense top-k the router picked for this call. Null when retrieval was skipped.",
+    )
+
+
 class KnowledgeAnswer(_Frozen):
     """Full answer envelope from ``search_knowledge``."""
 
@@ -316,7 +370,7 @@ class KnowledgeAnswer(_Frozen):
             "for grounded answer), ``synthesis_unavailable`` (LLM unreachable), "
             "or ``no_retrieval_needed`` (adaptive router classified the query "
             "as meta / out-of-scope and skipped retrieval — see the "
-            "``router_*`` keys in ``metadata`` for the route rationale)."
+            "``router_*`` fields in ``metadata`` for the route rationale)."
         )
     )
     answer_text: str
@@ -330,10 +384,7 @@ class KnowledgeAnswer(_Frozen):
         ),
     )
     warnings: list[str] = Field(default_factory=list)
-    metadata: dict[str, Any] = Field(
-        default_factory=dict,
-        description="Query-pipeline metadata: matched entities, expansion terms, fusion stats.",
-    )
+    metadata: KnowledgeAnswerMetadata
 
 
 class KnowledgeAnswerDeep(_Frozen):
@@ -344,5 +395,5 @@ class KnowledgeAnswerDeep(_Frozen):
     citations: list[str]
     sentence_citations: list[SentenceCitationView] = Field(default_factory=list)
     warnings: list[str] = Field(default_factory=list)
-    metadata: dict[str, Any] = Field(default_factory=dict)
+    metadata: KnowledgeAnswerMetadata
     graph_context: GraphContextData

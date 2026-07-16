@@ -1,21 +1,248 @@
 [
   {
+    "annotations": {
+      "idempotentHint": false,
+      "openWorldHint": true,
+      "readOnlyHint": true
+    },
     "has_description": true,
     "name": "corpus_status",
+    "output_schema": {
+      "additionalProperties": false,
+      "description": "Health snapshot returned by ``corpus_status``.",
+      "properties": {
+        "chunk_count": {
+          "type": "integer"
+        },
+        "config_drift_warnings": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "corpus_counts": {
+          "additionalProperties": false,
+          "description": "File-count breakdown for the corpus.",
+          "properties": {
+            "asset": {
+              "description": "Number of asset files (PNGs, etc.).",
+              "type": "integer"
+            },
+            "text": {
+              "description": "Number of text source files (Markdown, Docling JSON).",
+              "type": "integer"
+            },
+            "total": {
+              "description": "Total corpus files tracked (text + asset).",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "total",
+            "text",
+            "asset"
+          ],
+          "type": "object"
+        },
+        "entity_count": {
+          "type": "integer"
+        },
+        "matcher_term_count": {
+          "type": "integer"
+        },
+        "matcher_termset_hash": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "mention_count": {
+          "type": "integer"
+        },
+        "ontology_coverage_path_count": {
+          "type": "integer"
+        },
+        "ontology_file_count": {
+          "type": "integer"
+        },
+        "ontology_graph_relation_count": {
+          "type": "integer"
+        },
+        "ontology_snapshot_hash": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ontology_validation_issue_count": {
+          "type": "integer"
+        },
+        "ontology_validation_issue_samples": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "retrieval_role_counts": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "description": "Counts keyed by retrieval role: searchable / asset_only / not_searchable.",
+          "type": "object"
+        }
+      },
+      "required": [
+        "corpus_counts",
+        "retrieval_role_counts",
+        "chunk_count",
+        "mention_count",
+        "ontology_file_count",
+        "entity_count",
+        "matcher_term_count",
+        "ontology_snapshot_hash",
+        "matcher_termset_hash",
+        "ontology_coverage_path_count",
+        "ontology_graph_relation_count",
+        "ontology_validation_issue_count",
+        "ontology_validation_issue_samples",
+        "config_drift_warnings"
+      ],
+      "type": "object"
+    },
     "parameters": [],
     "required": []
   },
   {
+    "annotations": {
+      "idempotentHint": false,
+      "openWorldHint": true,
+      "readOnlyHint": true
+    },
     "has_description": true,
     "name": "find_bridge_entities",
+    "output_schema": {
+      "properties": {
+        "result": {
+          "items": {
+            "additionalProperties": false,
+            "description": "One entity in the top-betweenness list.",
+            "properties": {
+              "betweenness": {
+                "type": "number"
+              },
+              "community_id": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "entity_id": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "entity_id",
+              "label",
+              "betweenness",
+              "community_id"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "result"
+      ],
+      "type": "object",
+      "x-fastmcp-wrap-result": true
+    },
     "parameters": [
       "limit"
     ],
     "required": []
   },
   {
+    "annotations": {
+      "idempotentHint": false,
+      "openWorldHint": true,
+      "readOnlyHint": true
+    },
     "has_description": true,
     "name": "find_documents_for_concept",
+    "output_schema": {
+      "properties": {
+        "result": {
+          "items": {
+            "additionalProperties": false,
+            "description": "One chunk matched against an expanded entity set.",
+            "properties": {
+              "chunk_id": {
+                "type": "string"
+              },
+              "citation_label": {
+                "type": "string"
+              },
+              "document_id": {
+                "type": "string"
+              },
+              "entity_match_count": {
+                "type": "integer"
+              },
+              "matched_from_total": {
+                "description": "Number of entity IDs in the expansion set this chunk could match against.",
+                "type": "integer"
+              },
+              "metadata_json": {
+                "type": "string"
+              },
+              "score": {
+                "type": "number"
+              },
+              "source_rel_path": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "chunk_id",
+              "document_id",
+              "citation_label",
+              "source_rel_path",
+              "score",
+              "entity_match_count",
+              "matched_from_total",
+              "text",
+              "metadata_json"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "result"
+      ],
+      "type": "object",
+      "x-fastmcp-wrap-result": true
+    },
     "parameters": [
       "entity_id",
       "hops",
@@ -26,16 +253,126 @@
     ]
   },
   {
+    "annotations": {
+      "idempotentHint": false,
+      "openWorldHint": true,
+      "readOnlyHint": true
+    },
     "has_description": true,
     "name": "find_foundational_entities",
+    "output_schema": {
+      "properties": {
+        "result": {
+          "items": {
+            "additionalProperties": false,
+            "description": "One entity in the top-closeness list.",
+            "properties": {
+              "closeness": {
+                "type": "number"
+              },
+              "community_id": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "entity_id": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "entity_id",
+              "label",
+              "closeness",
+              "community_id"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "result"
+      ],
+      "type": "object",
+      "x-fastmcp-wrap-result": true
+    },
     "parameters": [
       "limit"
     ],
     "required": []
   },
   {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true
+    },
     "has_description": true,
     "name": "find_path_between_entities",
+    "output_schema": {
+      "additionalProperties": false,
+      "description": "Unweighted shortest-path response from ``find_path_between_entities``.",
+      "properties": {
+        "edges": {
+          "items": {
+            "additionalProperties": false,
+            "description": "One edge in an unweighted shortest-path result.",
+            "properties": {
+              "relation_type": {
+                "type": "string"
+              },
+              "source": {
+                "type": "string"
+              },
+              "target": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "source",
+              "target",
+              "relation_type"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "hops": {
+          "type": "integer"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "path": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "path",
+        "edges",
+        "hops"
+      ],
+      "type": "object"
+    },
     "parameters": [
       "max_hops",
       "source",
@@ -47,8 +384,59 @@
     ]
   },
   {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true
+    },
     "has_description": true,
     "name": "find_weighted_path",
+    "output_schema": {
+      "additionalProperties": false,
+      "description": "Confidence-weighted path response from ``find_weighted_path``.",
+      "properties": {
+        "edges": {
+          "items": {
+            "additionalProperties": false,
+            "description": "One edge in a confidence-weighted path result.",
+            "properties": {
+              "source": {
+                "type": "string"
+              },
+              "target": {
+                "type": "string"
+              },
+              "weight": {
+                "description": "1 - confidence (so Dijkstra minimises cost).",
+                "type": "number"
+              }
+            },
+            "required": [
+              "source",
+              "target",
+              "weight"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "path": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "total_weight": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "path",
+        "edges",
+        "total_weight"
+      ],
+      "type": "object"
+    },
     "parameters": [
       "source",
       "target"
@@ -59,8 +447,101 @@
     ]
   },
   {
+    "annotations": {
+      "idempotentHint": false,
+      "openWorldHint": true,
+      "readOnlyHint": true
+    },
     "has_description": true,
     "name": "get_community_context",
+    "output_schema": {
+      "properties": {
+        "result": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "description": "Community report returned by ``get_community_context``.",
+              "properties": {
+                "community_id": {
+                  "type": "integer"
+                },
+                "deterministic_summary": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null
+                },
+                "intra_community_edge_count": {
+                  "type": "integer"
+                },
+                "llm_summary": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null
+                },
+                "member_count": {
+                  "type": "integer"
+                },
+                "member_entity_ids": {
+                  "description": "JSON-encoded list of member entity IDs.",
+                  "type": "string"
+                },
+                "top_claims": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "description": "JSON-encoded top claims."
+                },
+                "top_entities": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "description": "JSON-encoded top entities."
+                }
+              },
+              "required": [
+                "community_id",
+                "member_count",
+                "member_entity_ids",
+                "intra_community_edge_count"
+              ],
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "result"
+      ],
+      "type": "object",
+      "x-fastmcp-wrap-result": true
+    },
     "parameters": [
       "entity_id"
     ],
@@ -69,8 +550,58 @@
     ]
   },
   {
+    "annotations": {
+      "idempotentHint": false,
+      "openWorldHint": true,
+      "readOnlyHint": true
+    },
     "has_description": true,
     "name": "get_corpus_relations",
+    "output_schema": {
+      "properties": {
+        "result": {
+          "items": {
+            "additionalProperties": false,
+            "description": "One extracted (subject, predicate, object) relation from the corpus.",
+            "properties": {
+              "chunk_id": {
+                "type": "string"
+              },
+              "confidence": {
+                "type": "number"
+              },
+              "object": {
+                "type": "string"
+              },
+              "predicate": {
+                "type": "string"
+              },
+              "source_rel_path": {
+                "type": "string"
+              },
+              "subject": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "subject",
+              "predicate",
+              "object",
+              "confidence",
+              "source_rel_path",
+              "chunk_id"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "result"
+      ],
+      "type": "object",
+      "x-fastmcp-wrap-result": true
+    },
     "parameters": [
       "entity_id",
       "limit"
@@ -80,14 +611,223 @@
     ]
   },
   {
+    "annotations": {
+      "idempotentHint": false,
+      "openWorldHint": true,
+      "readOnlyHint": true
+    },
     "has_description": true,
     "name": "get_entity_graph_stats",
+    "output_schema": {
+      "additionalProperties": false,
+      "description": "Counts-only graph statistics from ``get_entity_graph_stats``.",
+      "properties": {
+        "canonical_relations": {
+          "type": "integer"
+        },
+        "claims": {
+          "type": "integer"
+        },
+        "communities": {
+          "type": "integer"
+        },
+        "community_reports": {
+          "type": "integer"
+        },
+        "entity_profiles": {
+          "type": "integer"
+        },
+        "graph_version": {
+          "type": "integer"
+        },
+        "last_build_at": {
+          "default": "never",
+          "description": "ISO-8601 timestamp or 'never'.",
+          "type": "string"
+        },
+        "relation_evidence": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "graph_version",
+        "entity_profiles",
+        "communities",
+        "community_reports",
+        "canonical_relations",
+        "relation_evidence",
+        "claims"
+      ],
+      "type": "object"
+    },
     "parameters": [],
     "required": []
   },
   {
+    "annotations": {
+      "idempotentHint": false,
+      "openWorldHint": true,
+      "readOnlyHint": true
+    },
     "has_description": true,
     "name": "get_entity_summary",
+    "output_schema": {
+      "properties": {
+        "result": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "description": "Full entity profile returned by ``get_entity_summary``.",
+              "properties": {
+                "aliases": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "description": "JSON-encoded list of aliases."
+                },
+                "betweenness": {
+                  "type": "number"
+                },
+                "chunk_count": {
+                  "type": "integer"
+                },
+                "claim_count": {
+                  "type": "integer"
+                },
+                "closeness": {
+                  "type": "number"
+                },
+                "community_id": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "deterministic_summary": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null
+                },
+                "doc_count": {
+                  "type": "integer"
+                },
+                "domain": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null
+                },
+                "eigenvector": {
+                  "type": "number"
+                },
+                "entity_id": {
+                  "type": "string"
+                },
+                "entity_type": {
+                  "type": "string"
+                },
+                "in_degree": {
+                  "type": "integer"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "llm_summary": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null
+                },
+                "mention_count": {
+                  "type": "integer"
+                },
+                "out_degree": {
+                  "type": "integer"
+                },
+                "pagerank": {
+                  "type": "number"
+                },
+                "top_claims": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "description": "JSON-encoded top claim payloads."
+                },
+                "top_predicates": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "description": "JSON-encoded top predicates with counts."
+                }
+              },
+              "required": [
+                "entity_id",
+                "label",
+                "entity_type",
+                "chunk_count",
+                "doc_count",
+                "mention_count",
+                "claim_count",
+                "pagerank",
+                "betweenness",
+                "closeness",
+                "in_degree",
+                "out_degree",
+                "eigenvector",
+                "community_id"
+              ],
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "result"
+      ],
+      "type": "object",
+      "x-fastmcp-wrap-result": true
+    },
     "parameters": [
       "entity_id"
     ],
@@ -96,28 +836,193 @@
     ]
   },
   {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true
+    },
     "has_description": true,
     "name": "get_entity_types",
+    "output_schema": {
+      "properties": {
+        "result": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "result"
+      ],
+      "type": "object",
+      "x-fastmcp-wrap-result": true
+    },
     "parameters": [],
     "required": []
   },
   {
+    "annotations": {
+      "idempotentHint": false,
+      "openWorldHint": true,
+      "readOnlyHint": true
+    },
     "has_description": true,
     "name": "get_graph_overview",
+    "output_schema": {
+      "additionalProperties": false,
+      "description": "High-level graph overview from ``get_graph_overview``.",
+      "properties": {
+        "canonical_relations": {
+          "type": "integer"
+        },
+        "claims": {
+          "type": "integer"
+        },
+        "communities": {
+          "type": "integer"
+        },
+        "community_algorithm": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "community_reports": {
+          "type": "integer"
+        },
+        "entity_profiles": {
+          "type": "integer"
+        },
+        "graph_version": {
+          "type": "integer"
+        },
+        "last_build_at": {
+          "default": "never",
+          "type": "string"
+        },
+        "relation_evidence": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "graph_version",
+        "entity_profiles",
+        "communities",
+        "community_reports",
+        "canonical_relations",
+        "relation_evidence",
+        "claims"
+      ],
+      "type": "object"
+    },
     "parameters": [],
     "required": []
   },
   {
+    "annotations": {
+      "idempotentHint": false,
+      "openWorldHint": true,
+      "readOnlyHint": true
+    },
     "has_description": true,
     "name": "get_hub_entities",
+    "output_schema": {
+      "properties": {
+        "result": {
+          "items": {
+            "additionalProperties": false,
+            "description": "One entity in the top-PageRank list.",
+            "properties": {
+              "community_id": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "entity_id": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "pagerank": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "entity_id",
+              "label",
+              "pagerank",
+              "community_id"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "result"
+      ],
+      "type": "object",
+      "x-fastmcp-wrap-result": true
+    },
     "parameters": [
       "limit"
     ],
     "required": []
   },
   {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true
+    },
     "has_description": true,
     "name": "get_related_concepts",
+    "output_schema": {
+      "properties": {
+        "result": {
+          "items": {
+            "additionalProperties": false,
+            "description": "A single edge from the ontology graph.",
+            "properties": {
+              "direction": {
+                "description": "Edge direction: ``outgoing`` or ``incoming``.",
+                "type": "string"
+              },
+              "entity_id": {
+                "type": "string"
+              },
+              "relation": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "entity_id",
+              "relation",
+              "direction"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "result"
+      ],
+      "type": "object",
+      "x-fastmcp-wrap-result": true
+    },
     "parameters": [
       "entity_id"
     ],
@@ -126,8 +1031,58 @@
     ]
   },
   {
+    "annotations": {
+      "idempotentHint": false,
+      "openWorldHint": true,
+      "readOnlyHint": true
+    },
     "has_description": true,
     "name": "get_similar_entities",
+    "output_schema": {
+      "properties": {
+        "result": {
+          "items": {
+            "additionalProperties": false,
+            "description": "One entity returned by vector-similarity search.",
+            "properties": {
+              "community_id": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "entity_id": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "score": {
+                "description": "Cosine distance (lower = closer).",
+                "type": "number"
+              }
+            },
+            "required": [
+              "entity_id",
+              "label",
+              "community_id",
+              "score"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "result"
+      ],
+      "type": "object",
+      "x-fastmcp-wrap-result": true
+    },
     "parameters": [
       "entity_id",
       "limit"
@@ -137,8 +1092,67 @@
     ]
   },
   {
+    "annotations": {
+      "idempotentHint": false,
+      "openWorldHint": true,
+      "readOnlyHint": true
+    },
     "has_description": true,
     "name": "inspect_evidence",
+    "output_schema": {
+      "properties": {
+        "result": {
+          "items": {
+            "additionalProperties": false,
+            "description": "One evidence row for a canonical relation.",
+            "properties": {
+              "chunk_id": {
+                "type": "string"
+              },
+              "confidence": {
+                "type": "number"
+              },
+              "evidence_id": {
+                "type": "string"
+              },
+              "evidence_text": {
+                "description": "Trimmed to 500 chars at the tool boundary.",
+                "type": "string"
+              },
+              "extraction_model": {
+                "type": "string"
+              },
+              "relation_id": {
+                "type": "string"
+              },
+              "surface_object": {
+                "type": "string"
+              },
+              "surface_subject": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "evidence_id",
+              "relation_id",
+              "chunk_id",
+              "surface_subject",
+              "surface_object",
+              "evidence_text",
+              "confidence",
+              "extraction_model"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "result"
+      ],
+      "type": "object",
+      "x-fastmcp-wrap-result": true
+    },
     "parameters": [
       "relation_id"
     ],
@@ -147,8 +1161,63 @@
     ]
   },
   {
+    "annotations": {
+      "idempotentHint": false,
+      "openWorldHint": true,
+      "readOnlyHint": true
+    },
     "has_description": true,
     "name": "search_corpus",
+    "output_schema": {
+      "properties": {
+        "result": {
+          "items": {
+            "additionalProperties": false,
+            "description": "One ranked chunk returned by ``search_corpus``.",
+            "properties": {
+              "chunk_id": {
+                "type": "string"
+              },
+              "citation_label": {
+                "type": "string"
+              },
+              "document_id": {
+                "type": "string"
+              },
+              "metadata_json": {
+                "description": "Per-chunk metadata, JSON-encoded.",
+                "type": "string"
+              },
+              "score": {
+                "type": "number"
+              },
+              "source_rel_path": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "chunk_id",
+              "document_id",
+              "citation_label",
+              "source_rel_path",
+              "score",
+              "text",
+              "metadata_json"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "result"
+      ],
+      "type": "object",
+      "x-fastmcp-wrap-result": true
+    },
     "parameters": [
       "domain",
       "limit",
@@ -159,8 +1228,65 @@
     ]
   },
   {
+    "annotations": {
+      "idempotentHint": false,
+      "openWorldHint": true,
+      "readOnlyHint": true
+    },
     "has_description": true,
     "name": "search_entities",
+    "output_schema": {
+      "properties": {
+        "result": {
+          "items": {
+            "additionalProperties": false,
+            "description": "One entity returned by name/alias search.",
+            "properties": {
+              "community_id": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "entity_id": {
+                "type": "string"
+              },
+              "entity_type": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "mention_count": {
+                "type": "integer"
+              },
+              "pagerank": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "entity_id",
+              "label",
+              "entity_type",
+              "pagerank",
+              "community_id",
+              "mention_count"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "result"
+      ],
+      "type": "object",
+      "x-fastmcp-wrap-result": true
+    },
     "parameters": [
       "limit",
       "query"
@@ -170,8 +1296,177 @@
     ]
   },
   {
+    "annotations": {
+      "idempotentHint": false,
+      "openWorldHint": true,
+      "readOnlyHint": true
+    },
     "has_description": true,
     "name": "search_knowledge",
+    "output_schema": {
+      "additionalProperties": false,
+      "description": "Full answer envelope from ``search_knowledge``.",
+      "properties": {
+        "answer_status": {
+          "description": "One of: ``answered`` (synthesis ran), ``no_results`` (retrieval returned nothing), ``insufficient_evidence`` (results too weak for grounded answer), ``synthesis_unavailable`` (LLM unreachable), or ``no_retrieval_needed`` (adaptive router classified the query as meta / out-of-scope and skipped retrieval \u2014 see the ``router_*`` fields in ``metadata`` for the route rationale).",
+          "type": "string"
+        },
+        "answer_text": {
+          "type": "string"
+        },
+        "citations": {
+          "description": "Citation labels referenced by the answer.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "metadata": {
+          "additionalProperties": false,
+          "description": "Typed query-pipeline metadata returned alongside a knowledge answer.\n\nThe ``router_*`` fields are always populated (the router runs first,\non every call). The remaining fields are populated only when\nretrieval + synthesis actually ran \u2014 the \"no retrieval needed\" branch\nfrom the adaptive router returns just the four ``router_*`` values.\nAbsent-when-not-applicable is expressed as ``None`` (booleans / ints)\nor an empty list (id / term collections) so the schema surface is\nalways the same shape.",
+          "properties": {
+            "dense_top_k": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Dense top-k the router picked for this call. Null when retrieval was skipped."
+            },
+            "expansion_applied": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Whether ontology expansion added terms. Null when retrieval was skipped."
+            },
+            "expansion_terms": {
+              "description": "Terms added by the expansion pass.",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "graph_context_applied": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Whether graph context was prepended to synthesis. Null when skipped."
+            },
+            "matched_entity_ids": {
+              "description": "Ontology entities matched to the question after expansion.",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "reranking_applied": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Whether the cross-encoder reranker ran. Null when retrieval was skipped."
+            },
+            "result_count": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Ranked chunk count after fusion. Null when retrieval was skipped."
+            },
+            "router_breadth": {
+              "description": "Retrieval breadth knob the router picked (drives dense_top_k).",
+              "enum": [
+                "narrow",
+                "standard",
+                "broad"
+              ],
+              "type": "string"
+            },
+            "router_rationale": {
+              "description": "One-line reason the router gave for its retrieve+breadth call.",
+              "type": "string"
+            },
+            "router_retrieve": {
+              "description": "Whether the router decided to run retrieval + synthesis.",
+              "type": "boolean"
+            },
+            "router_routed": {
+              "description": "True when the router LLM ran; false when we fell back to the default route.",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "router_retrieve",
+            "router_breadth",
+            "router_rationale",
+            "router_routed"
+          ],
+          "type": "object"
+        },
+        "sentence_citations": {
+          "description": "Per-sentence attribution parsed from the inline ``[citation_label]`` markers the synthesis preamble required. Empty ``citation_labels`` on a sentence means the model could not attribute that claim.",
+          "items": {
+            "additionalProperties": false,
+            "description": "One sentence + the citation labels supporting it (MCP-facing shape).\n\nMirrors :class:`lxd.synthesis.citation_alignment.SentenceCitation` but\nlives in the MCP namespace so clients can import a typed model\nalongside the rest of the MCP surface. Sentences with empty\n``citation_labels`` are unattributed claims \u2014 surface them in UIs as\na hallucination risk signal.",
+            "properties": {
+              "citation_labels": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "text"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "answer_status",
+        "answer_text",
+        "citations",
+        "metadata"
+      ],
+      "type": "object"
+    },
     "parameters": [
       "domain",
       "question"
@@ -181,8 +1476,338 @@
     ]
   },
   {
+    "annotations": {
+      "idempotentHint": false,
+      "openWorldHint": true,
+      "readOnlyHint": true
+    },
     "has_description": true,
     "name": "search_knowledge_deep",
+    "output_schema": {
+      "additionalProperties": false,
+      "description": "Deep-search answer envelope with structured graph context.",
+      "properties": {
+        "answer_status": {
+          "type": "string"
+        },
+        "answer_text": {
+          "type": "string"
+        },
+        "citations": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "graph_context": {
+          "additionalProperties": false,
+          "description": "Structured graph context from ``search_knowledge_deep``.",
+          "properties": {
+            "claims": {
+              "items": {
+                "additionalProperties": false,
+                "description": "Claim included in deep-search graph context.",
+                "properties": {
+                  "claim_text": {
+                    "type": "string"
+                  },
+                  "claim_type": {
+                    "type": "string"
+                  },
+                  "confidence": {
+                    "type": "number"
+                  },
+                  "object_entity_id": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "subject_entity_id": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "claim_text",
+                  "claim_type",
+                  "confidence"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "community_reports": {
+              "items": {
+                "additionalProperties": false,
+                "description": "Community report included in deep-search graph context.",
+                "properties": {
+                  "community_id": {
+                    "type": "integer"
+                  },
+                  "deterministic_summary": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "llm_summary": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "member_count": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "community_id",
+                  "member_count"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "entity_profiles": {
+              "items": {
+                "additionalProperties": false,
+                "description": "Entity profile included in deep-search graph context.",
+                "properties": {
+                  "community_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "deterministic_summary": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "entity_id": {
+                    "type": "string"
+                  },
+                  "entity_type": {
+                    "type": "string"
+                  },
+                  "label": {
+                    "type": "string"
+                  },
+                  "llm_summary": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "pagerank": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "entity_id",
+                  "label",
+                  "entity_type",
+                  "pagerank",
+                  "community_id"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "level": {
+              "description": "``none`` / ``minimal`` / ``standard`` / ``deep``.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "level"
+          ],
+          "type": "object"
+        },
+        "metadata": {
+          "additionalProperties": false,
+          "description": "Typed query-pipeline metadata returned alongside a knowledge answer.\n\nThe ``router_*`` fields are always populated (the router runs first,\non every call). The remaining fields are populated only when\nretrieval + synthesis actually ran \u2014 the \"no retrieval needed\" branch\nfrom the adaptive router returns just the four ``router_*`` values.\nAbsent-when-not-applicable is expressed as ``None`` (booleans / ints)\nor an empty list (id / term collections) so the schema surface is\nalways the same shape.",
+          "properties": {
+            "dense_top_k": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Dense top-k the router picked for this call. Null when retrieval was skipped."
+            },
+            "expansion_applied": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Whether ontology expansion added terms. Null when retrieval was skipped."
+            },
+            "expansion_terms": {
+              "description": "Terms added by the expansion pass.",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "graph_context_applied": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Whether graph context was prepended to synthesis. Null when skipped."
+            },
+            "matched_entity_ids": {
+              "description": "Ontology entities matched to the question after expansion.",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "reranking_applied": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Whether the cross-encoder reranker ran. Null when retrieval was skipped."
+            },
+            "result_count": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Ranked chunk count after fusion. Null when retrieval was skipped."
+            },
+            "router_breadth": {
+              "description": "Retrieval breadth knob the router picked (drives dense_top_k).",
+              "enum": [
+                "narrow",
+                "standard",
+                "broad"
+              ],
+              "type": "string"
+            },
+            "router_rationale": {
+              "description": "One-line reason the router gave for its retrieve+breadth call.",
+              "type": "string"
+            },
+            "router_retrieve": {
+              "description": "Whether the router decided to run retrieval + synthesis.",
+              "type": "boolean"
+            },
+            "router_routed": {
+              "description": "True when the router LLM ran; false when we fell back to the default route.",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "router_retrieve",
+            "router_breadth",
+            "router_rationale",
+            "router_routed"
+          ],
+          "type": "object"
+        },
+        "sentence_citations": {
+          "items": {
+            "additionalProperties": false,
+            "description": "One sentence + the citation labels supporting it (MCP-facing shape).\n\nMirrors :class:`lxd.synthesis.citation_alignment.SentenceCitation` but\nlives in the MCP namespace so clients can import a typed model\nalongside the rest of the MCP surface. Sentences with empty\n``citation_labels`` are unattributed claims \u2014 surface them in UIs as\na hallucination risk signal.",
+            "properties": {
+              "citation_labels": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "text"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "answer_status",
+        "answer_text",
+        "citations",
+        "metadata",
+        "graph_context"
+      ],
+      "type": "object"
+    },
     "parameters": [
       "domain",
       "question"

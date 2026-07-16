@@ -28,6 +28,7 @@ from lxd.mcp.models import (
     HubEntity,
     KnowledgeAnswer,
     KnowledgeAnswerDeep,
+    KnowledgeAnswerMetadata,
     PathBetweenEntities,
     PathEdge,
     RelationEvidence,
@@ -585,7 +586,7 @@ def search_knowledge_tool(
             for sc in envelope.sentence_citations
         ],
         warnings=envelope.warnings,
-        metadata=dict(envelope.metadata),
+        metadata=KnowledgeAnswerMetadata.model_validate(envelope.metadata),
     )
 
 
@@ -651,7 +652,7 @@ def search_knowledge_deep_tool(
             for sc in envelope.sentence_citations
         ],
         warnings=envelope.warnings,
-        metadata=dict(envelope.metadata),
+        metadata=KnowledgeAnswerMetadata.model_validate(envelope.metadata),
         graph_context=graph_data,
     )
 

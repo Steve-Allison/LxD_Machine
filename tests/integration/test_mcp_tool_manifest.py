@@ -1,15 +1,20 @@
 """Golden-transcript regression test for the MCP tool manifest.
 
-Wave 10 introduces a simple but powerful guardrail: serialize the full
-(name, description-presence, input-schema) of every tool registered by
-:func:`lxd.mcp.server.create_server` into a JSON manifest, then diff
-against a committed ``tests/golden/mcp_tool_manifest.json``.
+Serialises the client-facing surface of every tool registered by
+:func:`lxd.mcp.server.create_server` — name, description-presence,
+input-schema parameter/required lists, output-schema, and semantic
+annotations — into a JSON manifest, then diffs against a committed
+``tests/golden/mcp_tool_manifest.json``.
 
 Rationale:
-    * Detects accidental tool removals, renames, or schema-shape changes
-      without needing a full MCP round-trip.
-    * The manifest captures parameter names and types only — not runtime
-      behaviour — so it is cheap, deterministic, and easy to review in PRs.
+    * Detects accidental tool removals, renames, input-schema changes,
+      output-schema changes, and annotation-hint drift without needing a
+      full MCP round-trip.
+    * Clients bind to *output* shape as tightly as to input names, so
+      output_schema drift is a breaking change the golden must catch.
+    * ToolAnnotations (readOnlyHint / idempotentHint / openWorldHint)
+      are part of the contract the client uses to reason about safety;
+      hint drift is a breaking change the golden must catch too.
 
 Updating the golden file:
     Run ``pytest tests/integration/test_mcp_tool_manifest.py
@@ -40,12 +45,19 @@ async def _collect_manifest() -> list[dict[str, Any]]:
         schema = dict(tool.parameters) if tool.parameters else {}
         props = schema.get("properties", {})
         required = list(schema.get("required", []))
+        output_schema = dict(tool.output_schema) if tool.output_schema else {}
+        annotations_model = getattr(tool, "annotations", None)
+        annotations: dict[str, Any] = (
+            annotations_model.model_dump(exclude_none=True) if annotations_model else {}
+        )
         manifest.append(
             {
                 "name": tool.name,
                 "has_description": bool((tool.description or "").strip()),
                 "parameters": sorted(props.keys()),
                 "required": sorted(required),
+                "output_schema": output_schema,
+                "annotations": annotations,
             }
         )
     manifest.sort(key=lambda item: item["name"])
