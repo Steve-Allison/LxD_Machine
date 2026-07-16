@@ -6,14 +6,32 @@ from typing import Any, Final
 
 import lancedb
 import pyarrow as pa
-import structlog
+from lancedb.index import FTS, BTree
 
 from lxd.stores.lance_sql import eq_clause, in_clause
 from lxd.stores.models import ChunkRecord, VectorSearchRecord
 
 _TABLE_NAME: Final = "chunk_vectors"
 _FTS_FIELD: Final = "text"
-_log = structlog.get_logger(__name__)
+_CHUNK_SCALAR_INDEX_COLUMNS: Final = ("source_rel_path", "chunk_id", "source_domain")
+
+
+def ensure_scalar_index(table: Any, column: str) -> None:
+    """Create a BTREE scalar index on ``column`` if one does not already exist.
+
+    Idempotent: safe to call on every table open. Uses the native LanceDB
+    ``create_index(config=BTree())`` API introduced in 0.25; the pre-0.25
+    ``create_scalar_index`` shim is deprecated.
+
+    Args:
+        table: LanceDB table handle.
+        column: Column name to index.
+    """
+    index_name = f"{column}_idx"
+    existing_names = {getattr(index, "name", None) for index in table.list_indices()}
+    if index_name in existing_names:
+        return
+    table.create_index(column, config=BTree(), name=index_name)
 
 
 def connect_lancedb(path: Path) -> Any:
@@ -56,6 +74,8 @@ def open_chunk_table(database: Any, *, vector_size: int) -> Any:
             mode="create",
         )
     refresh_fts_index(table)
+    for column in _CHUNK_SCALAR_INDEX_COLUMNS:
+        ensure_scalar_index(table, column)
     return table
 
 
@@ -82,6 +102,8 @@ def reset_chunk_table(database: Any, *, vector_size: int) -> Any:
         mode="create",
     )
     refresh_fts_index(table)
+    for column in _CHUNK_SCALAR_INDEX_COLUMNS:
+        ensure_scalar_index(table, column)
     return table
 
 
@@ -97,7 +119,13 @@ def refresh_fts_index(table: Any) -> None:
     Args:
         table: LanceDB chunk_vectors table.
     """
-    table.create_fts_index(_FTS_FIELD, use_tantivy=False, replace=True)
+    fts_index_name = f"{_FTS_FIELD}_fts_idx"
+    table.create_index(
+        _FTS_FIELD,
+        config=FTS(with_position=False),
+        name=fts_index_name,
+        replace=True,
+    )
 
 
 def replace_source_chunks(
@@ -326,15 +354,17 @@ _ENTITY_TABLE_NAME: Final = "entity_embeddings"
 def open_entity_table(database: Any, *, vector_size: int) -> Any:
     """Open the entity embeddings table, creating it when missing."""
     try:
-        return database.open_table(_ENTITY_TABLE_NAME)
+        table = database.open_table(_ENTITY_TABLE_NAME)
     except (FileNotFoundError, ValueError) as exc:
         if isinstance(exc, ValueError) and not _is_missing_table_error(exc):
             raise
-        return database.create_table(
+        table = database.create_table(
             _ENTITY_TABLE_NAME,
             schema=_entity_table_schema(vector_size),
             mode="create",
         )
+    ensure_scalar_index(table, "entity_id")
+    return table
 
 
 def replace_entity_embeddings(
@@ -350,18 +380,30 @@ def replace_entity_embeddings(
     runs use :func:`upsert_entity_embeddings` instead so unchanged entities
     keep their existing vectors.
 
-    The delete-before-add is the canonical "replace-all" idiom against
-    LanceDB's append-only storage. When the table has no prior rows, the
-    delete is a no-op but some LanceDB builds raise ``FileNotFoundError``
-    (empty-fragment lookup) or ``ValueError`` (no predicate match); both are
-    swallowed with a debug log so the caller sees a clean "replace" semantic.
+    Uses the native LanceDB ``merge_insert`` upsert with
+    ``when_not_matched_by_source_delete`` so the replace is a single atomic
+    operation: rows present in ``records`` are updated or inserted; rows
+    absent from ``records`` are evicted; the empty-table case is a
+    no-op-plus-insert with no exception path to smooth over.
     """
-    try:
-        table.delete("entity_id IS NOT NULL")
-    except (FileNotFoundError, ValueError) as exc:
-        _log.debug("lancedb_entity_delete_skipped", error=str(exc))
-    if records:
-        table.add(records)
+    if not records:
+        # Full wipe when the caller says "no entities at all" — a legitimate
+        # corner (empty ontology, initial bootstrap). Fall through to a
+        # merge_insert of an empty batch by way of an empty schema-shaped
+        # frame so the delete side still runs.
+        (
+            table.merge_insert("entity_id")
+            .when_not_matched_by_source_delete()
+            .execute(_empty_entity_frame(table))
+        )
+        return
+    (
+        table.merge_insert("entity_id")
+        .when_matched_update_all()
+        .when_not_matched_insert_all()
+        .when_not_matched_by_source_delete()
+        .execute(records)
+    )
 
 
 def upsert_entity_embeddings(
@@ -378,18 +420,27 @@ def upsert_entity_embeddings(
     updated; ``removed_entity_ids`` are entities that no longer qualify and
     should be evicted entirely.
 
-    Delete-before-add is the LanceDB upsert idiom — the storage layer is
-    append-only, so an in-place row update is two operations.
+    The record set uses the native LanceDB ``merge_insert`` upsert so each
+    row is atomically updated-or-inserted in one call — no delete-before-add
+    round-trip and no defensive try/except to smooth over an empty-fragment
+    quirk. Removed entities are evicted via an explicit ``delete`` because
+    they belong to a disjoint keyset the merge cannot see.
     """
-    to_delete = list(removed_entity_ids or [])
-    to_delete.extend(str(record["entity_id"]) for record in records)
-    if to_delete:
-        try:
-            table.delete(in_clause("entity_id", to_delete))
-        except (FileNotFoundError, ValueError) as exc:
-            _log.debug("lancedb_entity_delete_skipped", error=str(exc))
-    if records:
-        table.add(records)
+    if removed_entity_ids:
+        table.delete(in_clause("entity_id", removed_entity_ids))
+    if not records:
+        return
+    (
+        table.merge_insert("entity_id")
+        .when_matched_update_all()
+        .when_not_matched_insert_all()
+        .execute(records)
+    )
+
+
+def _empty_entity_frame(table: Any) -> pa.Table:
+    """Return an empty Arrow table matching the entity schema."""
+    return pa.Table.from_pylist([], schema=table.schema)
 
 
 def search_similar_entities(

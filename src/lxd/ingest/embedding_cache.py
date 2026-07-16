@@ -33,6 +33,7 @@ import pyarrow as pa
 import structlog
 
 from lxd.stores.lance_sql import in_clause
+from lxd.stores.lancedb import ensure_scalar_index
 
 _TABLE_NAME: Final = "embedding_cache"
 _log = structlog.get_logger(__name__)
@@ -78,15 +79,17 @@ def open_cache_table(database: Any, *, vector_size: int) -> Any:
         Opened or newly created cache table.
     """
     try:
-        return database.open_table(_TABLE_NAME)
+        table = database.open_table(_TABLE_NAME)
     except (FileNotFoundError, ValueError) as exc:
         if isinstance(exc, ValueError) and "was not found" not in str(exc):
             raise
-        return database.create_table(
+        table = database.create_table(
             _TABLE_NAME,
             schema=_cache_schema(vector_size),
             mode="create",
         )
+    ensure_scalar_index(table, "cache_key")
+    return table
 
 
 def lookup(
@@ -169,12 +172,11 @@ def store(
 ) -> int:
     """Persist embeddings to the cache.
 
-    Idempotent: existing entries with the same cache_key are deleted first,
-    so re-storing produces no duplicates. The cache_key is content-addressed
-    (chunk_hash + model + dims) so an "update" is only conceptually possible
-    if the embedding model changed its outputs for the same input — in which
-    case the model identifier should change too. Re-storing is otherwise a
-    no-op equivalent.
+    Idempotent by construction: the native LanceDB ``merge_insert`` upsert
+    updates on ``cache_key`` match and inserts otherwise, in one atomic
+    operation. Re-storing an existing key overwrites the vector (a no-op
+    for content-addressed keys) without a split-brain window between a
+    prior delete and a subsequent add.
 
     Args:
         cache_table: Cache table handle.
@@ -203,11 +205,6 @@ def store(
     if not deduped:
         return 0
 
-    try:
-        cache_table.delete(in_clause("cache_key", sorted(deduped)))
-    except (FileNotFoundError, ValueError) as exc:
-        _log.debug("embedding_cache_pre_delete_skipped", error=str(exc))
-
     rows = [
         {
             "cache_key": key,
@@ -218,8 +215,16 @@ def store(
         }
         for key, vector in deduped.items()
     ]
+    # The cache is a soft dependency of ingest: a write failure here must
+    # never block the pipeline. Swallow at this outer boundary so the caller
+    # sees an honest "0 rows written" and continues embedding uncached.
     try:
-        cache_table.add(rows)
+        (
+            cache_table.merge_insert("cache_key")
+            .when_matched_update_all()
+            .when_not_matched_insert_all()
+            .execute(rows)
+        )
     except (FileNotFoundError, ValueError, RuntimeError) as exc:
         _log.warning("embedding_cache_store_failed", error=str(exc))
         return 0
