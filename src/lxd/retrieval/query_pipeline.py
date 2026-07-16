@@ -19,10 +19,9 @@ from lxd.stores.lancedb import (
     connect_lancedb,
     open_chunk_table,
     open_entity_table,
-    search_chunks_fts,
+    search_chunks_hybrid,
     search_similar_entities,
 )
-from lxd.stores.lancedb import search_chunks as search_vector_chunks
 from lxd.stores.models import StorePaths
 from lxd.stores.sqlite.chunks import (
     load_chunk_centrality_signals,
@@ -53,7 +52,6 @@ _MAX_LIMIT: Final = 50
 _MIN_EVIDENCE_CHUNKS: Final = 2
 _MIN_EVIDENCE_CHARS: Final = 400
 _RRF_K: Final = 20
-_FTS_OVERFETCH_MULTIPLIER: Final = 3
 
 
 @dataclass(frozen=True, slots=True)
@@ -177,8 +175,9 @@ def search_chunks(
         config.retrieval.dense_top_k,
         config.retrieval.rerank_top_k,
     )
-    ranked = _dense_ranked_candidates(
+    ranked = _hybrid_ranked_candidates(
         table=table,
+        query=question,
         query_vector=query_vector,
         domain=domain,
         requested_limit=requested_limit,
@@ -191,12 +190,9 @@ def search_chunks(
     rerank_inputs = representative_candidates[:rerank_limit]
     reranked = rerank_chunks(question, rerank_inputs, config)
     relation_chunk_ids = _load_relation_chunk_ids(store_paths, expansion.matched_entity_ids)
-    lexical_rank = _fts_rank_map(table, question, domain, len(rerank_inputs))
     fused_prefix = _fuse_ranked_prefix(
         dense_prefix=rerank_inputs,
         reranked_prefix=reranked.ranked,
-        lexical_rank=lexical_rank,
-        lexical_fusion_weight=config.retrieval.lexical_fusion_weight,
         relation_fusion_weight=config.retrieval.relation_fusion_weight,
         relation_chunk_ids=relation_chunk_ids,
         centrality_fusion_weight=config.retrieval.centrality_fusion_weight,
@@ -393,20 +389,36 @@ def _validate_domain(domain: str | None, allowed_domains: set[str]) -> None:
         )
 
 
-def _dense_ranked_candidates(
+def _hybrid_ranked_candidates(
     *,
     table: object,
+    query: str,
     query_vector: list[float],
     domain: str | None,
     requested_limit: int,
     target_source_count: int,
     rerank_top_k: int,
 ) -> list[RankedChunk]:
+    """Fuse dense + BM25 candidates via LanceDB native hybrid search.
+
+    Uses ``Table.search(query_type="hybrid")`` with ``RRFReranker`` — the
+    engine issues one query, runs dense k-NN and BM25 FTS in parallel,
+    and fuses them internally on ``_relevance_score``. Result is a
+    single ordered stream; per-lane ranks are not exposed. The dense
+    ``score`` on the returned ``RankedChunk`` carries the fused
+    relevance (higher is better; the sign convention matches the
+    dense-only path's negated cosine).
+
+    Same overfetch-until-enough-unique-sources loop as the previous
+    dense-only variant, so the downstream unique-source prefix
+    guarantee is preserved.
+    """
     raw_limit = min(_MAX_LIMIT, max(requested_limit, rerank_top_k))
     ranked: list[RankedChunk] = []
     while True:
-        dense_hits = search_vector_chunks(
+        hits = search_chunks_hybrid(
             table,
+            query=query,
             query_vector=query_vector,
             domain=domain,
             limit=raw_limit,
@@ -427,11 +439,11 @@ def _dense_ranked_candidates(
                 text=item.text,
                 score_hint=item.score_hint,
                 metadata_json=item.metadata_json,
-                score=-item.score,
+                score=item.score,
                 cited_sources=item.cited_sources,
                 wiki_links=item.wiki_links,
             )
-            for item in dense_hits
+            for item in hits
         ]
         if len(_unique_source_prefix(ranked, target_source_count)) >= target_source_count:
             return ranked
@@ -542,18 +554,25 @@ def _fuse_ranked_prefix(
     *,
     dense_prefix: list[RankedChunk],
     reranked_prefix: list[RankedChunk],
-    lexical_rank: dict[str, int],
-    lexical_fusion_weight: float,
     relation_fusion_weight: float = 0.0,
     relation_chunk_ids: set[str] | None = None,
     centrality_fusion_weight: float = 0.0,
 ) -> list[RankedChunk]:
+    """Fuse the hybrid-ranked prefix with rerank, relation, and centrality lanes.
+
+    The dense+lexical fuse now lives inside LanceDB's native hybrid search
+    (see :func:`_hybrid_ranked_candidates`), so the incoming
+    ``dense_prefix`` order already carries the fused dense+BM25 signal on
+    ``item.score``. This fuser layers three remaining Python-side lanes on
+    top: cross-encoder rerank, matched-relation membership, and per-entity
+    PageRank. The lexical lane and its ``lexical_fusion_weight`` knob are
+    gone by construction.
+    """
     if not dense_prefix:
         return []
     _relation_chunk_ids = relation_chunk_ids or set()
     dense_rank = {item.chunk_id: index for index, item in enumerate(dense_prefix, start=1)}
     rerank_rank = {item.chunk_id: index for index, item in enumerate(reranked_prefix, start=1)}
-    fallback_lexical_rank = len(dense_prefix) + 1
     relation_ranked = sorted(
         dense_prefix,
         key=lambda c: (0 if c.chunk_id in _relation_chunk_ids else 1, dense_rank[c.chunk_id]),
@@ -571,10 +590,6 @@ def _fuse_ranked_prefix(
         key=lambda item: (
             -(
                 _rrf_score(dense_rank[item.chunk_id])
-                + (
-                    lexical_fusion_weight
-                    * _rrf_score(lexical_rank.get(item.chunk_id, fallback_lexical_rank))
-                )
                 + _rrf_score(rerank_rank.get(item.chunk_id, len(dense_prefix) + 1))
                 + (relation_fusion_weight * _rrf_score(relation_rank[item.chunk_id]))
                 + (centrality_fusion_weight * _rrf_score(centrality_rank[item.chunk_id]))
@@ -649,23 +664,6 @@ def _diversify_by_community(ranked: list[RankedChunk], limit: int) -> list[Ranke
         else:
             revisit.append(item)
     return [*first_pass, *revisit, *untagged_chunks][:limit]
-
-
-def _fts_rank_map(
-    table: object, question: str, domain: str | None, dense_prefix_size: int
-) -> dict[str, int]:
-    """Return ``chunk_id -> 1-based BM25 rank`` over the chunk_vectors FTS index.
-
-    Overfetches to give chunks outside the dense top-N a chance to surface
-    via the lexical lane. Chunks not in the BM25 result get an implicit
-    fallback rank inside :func:`_fuse_ranked_prefix`, so they contribute
-    nothing to the lexical RRF lane rather than blocking it.
-    """
-    if dense_prefix_size <= 0:
-        return {}
-    fts_limit = min(_MAX_LIMIT, max(dense_prefix_size, 1) * _FTS_OVERFETCH_MULTIPLIER)
-    fts_hits = search_chunks_fts(table, query=question, domain=domain, limit=fts_limit)
-    return {hit.chunk_id: index for index, hit in enumerate(fts_hits, start=1)}
 
 
 def _rrf_score(rank: int) -> float:

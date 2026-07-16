@@ -7,6 +7,7 @@ from typing import Any, Final
 import lancedb
 import pyarrow as pa
 from lancedb.index import FTS, BTree
+from lancedb.rerankers import RRFReranker
 
 from lxd.stores.lance_sql import eq_clause, in_clause
 from lxd.stores.models import ChunkRecord, VectorSearchRecord
@@ -180,6 +181,52 @@ def search_chunks(
     return [
         record
         for record in (_row_to_vector_search_record(row, score_field="_distance") for row in rows)
+        if record is not None
+    ]
+
+
+def search_chunks_hybrid(
+    table: Any,
+    *,
+    query: str,
+    query_vector: list[float],
+    domain: str | None,
+    limit: int,
+) -> list[VectorSearchRecord]:
+    """Hybrid dense + BM25 retrieval fused inside LanceDB via RRF.
+
+    ``Table.search(query_type="hybrid")`` runs the dense k-NN and the BM25
+    FTS index in one query and fuses them with the passed reranker
+    (Reciprocal Rank Fusion here). Returns a single ordered list keyed on
+    ``_relevance_score`` — the per-lane ranks are collapsed inside the
+    engine and are not surfaced to Python callers.
+
+    This is an alternative to the two-query + Python-side fuse path that
+    ``search_chunks`` + ``search_chunks_fts`` provide separately. Callers
+    that need independent per-lane weights (e.g. the current 5-lane RRF
+    in :mod:`lxd.retrieval.query_pipeline`) cannot use this shape; those
+    that just want dense+BM25 fused with default RRF can.
+    """
+    cleaned = query.strip()
+    if not cleaned:
+        # Fall back to dense-only when the query is empty — hybrid with an
+        # empty text query is undefined at the engine level.
+        return search_chunks(
+            table, query_vector=query_vector, domain=domain, limit=limit
+        )
+    hybrid = (
+        table.search(query_type="hybrid")
+        .vector(query_vector)
+        .text(cleaned)
+    )
+    if domain is not None:
+        hybrid = hybrid.where(eq_clause("source_domain", domain))
+    rows = hybrid.rerank(RRFReranker()).limit(limit).to_list()
+    return [
+        record
+        for record in (
+            _row_to_vector_search_record(row, score_field="_relevance_score") for row in rows
+        )
         if record is not None
     ]
 

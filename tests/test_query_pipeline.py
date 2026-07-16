@@ -109,8 +109,6 @@ def test_fuse_ranked_prefix_centrality_lane_promotes_high_pagerank_chunks() -> N
     no_lane = _fuse_ranked_prefix(
         dense_prefix=dense_prefix,
         reranked_prefix=[],
-        lexical_rank={},
-        lexical_fusion_weight=0.0,
         relation_fusion_weight=0.0,
         relation_chunk_ids=set(),
         centrality_fusion_weight=0.0,
@@ -118,8 +116,6 @@ def test_fuse_ranked_prefix_centrality_lane_promotes_high_pagerank_chunks() -> N
     with_lane = _fuse_ranked_prefix(
         dense_prefix=dense_prefix,
         reranked_prefix=[],
-        lexical_rank={},
-        lexical_fusion_weight=0.0,
         relation_fusion_weight=0.0,
         relation_chunk_ids=set(),
         centrality_fusion_weight=10.0,

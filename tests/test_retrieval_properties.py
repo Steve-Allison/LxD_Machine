@@ -169,7 +169,7 @@ def test_merge_ranked_prefix_starts_with_prefix(
 @st.composite
 def _fusion_inputs(
     draw: st.DrawFn,
-) -> tuple[list[RankedChunk], list[RankedChunk], dict[str, int], float]:
+) -> tuple[list[RankedChunk], list[RankedChunk], float]:
     n = draw(st.integers(min_value=0, max_value=10))
     dense = [
         _chunk(
@@ -190,24 +190,19 @@ def _fusion_inputs(
         )
     )
     reranked = [dense[i] for i in rerank_indices] if dense else []
-    lexical_rank = {
-        chunk.chunk_id: rank for rank, chunk in enumerate(dense, start=1) if draw(st.booleans())
-    }
     weight = draw(st.floats(min_value=0.0, max_value=10.0, allow_nan=False, allow_infinity=False))
-    return dense, reranked, lexical_rank, weight
+    return dense, reranked, weight
 
 
 @given(_fusion_inputs())
 @settings(max_examples=80, deadline=None)
 def test_fuse_ranked_prefix_output_is_a_permutation_of_dense_input(
-    inputs: tuple[list[RankedChunk], list[RankedChunk], dict[str, int], float],
+    inputs: tuple[list[RankedChunk], list[RankedChunk], float],
 ) -> None:
-    dense, reranked, lexical_rank, weight = inputs
+    dense, reranked, weight = inputs
     fused = _fuse_ranked_prefix(
         dense_prefix=dense,
         reranked_prefix=reranked,
-        lexical_rank=lexical_rank,
-        lexical_fusion_weight=weight,
         relation_fusion_weight=weight,
         relation_chunk_ids=set(),
         centrality_fusion_weight=weight,
