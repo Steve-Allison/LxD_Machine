@@ -197,13 +197,13 @@ def _searchable_source_rel_paths(config: RuntimeConfig) -> list[str]:
         initialize_schema(connection)
         rows = connection.execute(
             """
-            SELECT file_rel_path
+            SELECT source_rel_path
             FROM corpus_manifest
             WHERE lifecycle_status != 'deleted'
               AND retrieval_status = 'searchable'
-            ORDER BY file_rel_path
+            ORDER BY source_rel_path
             """
         ).fetchall()
-        return [str(row["file_rel_path"]) for row in rows]
+        return [str(row["source_rel_path"]) for row in rows]
     finally:
         connection.close()
