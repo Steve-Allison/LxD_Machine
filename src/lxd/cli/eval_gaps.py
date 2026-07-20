@@ -1,4 +1,10 @@
-"""Implement the CLI command for retrieval evaluation."""
+"""CLI command that turns retrieval-eval failures into gap tickets.
+
+Runs the same retrieval evaluation as `lxd.cli.eval`, persists the run to
+`retrieval_eval_runs.jsonl`, then writes one JSON gap ticket per failing
+case under `<data_path>/gaps/`. Never edits the wiki or ontology — tickets
+are for a human reviewer to triage.
+"""
 
 from pathlib import Path
 from typing import Final
@@ -7,6 +13,7 @@ import typer
 
 from lxd.app.bootstrap import bootstrap_app
 from lxd.domain.time import utc_now
+from lxd.eval.gaps import build_gap_tickets, write_gap_tickets
 from lxd.retrieval.eval import append_eval_run, build_eval_run, load_eval_cases, run_eval
 
 PROFILE_OPTION: Final = typer.Option(None, "--profile")
@@ -23,13 +30,13 @@ TAG_OPTION: Final = typer.Option(
 )
 
 
-def eval_command(
+def eval_gaps_command(
     profile: str | None = PROFILE_OPTION,
     config: Path | None = CONFIG_OPTION,
     persist: bool = PERSIST_OPTION,
     tag: str = TAG_OPTION,
 ) -> None:
-    """Run retrieval evaluation against the configured corpus.
+    """Run retrieval evaluation and write gap tickets for every failing case.
 
     Args:
         profile: Optional config profile name (`config.<profile>.yaml`).
@@ -41,9 +48,10 @@ def eval_command(
         typer.BadParameter: If the evaluation set file is missing.
 
     Side Effects:
-        Reads config and eval-set files, executes retrieval evaluation, writes
-        results to stdout, and (when `persist` is true) appends a run record
-        to `<data_path>/retrieval_eval_runs.jsonl`.
+        Reads config and eval-set files, executes retrieval evaluation,
+        (when `persist` is true) appends a run record to
+        `<data_path>/retrieval_eval_runs.jsonl`, and writes gap tickets to
+        `<data_path>/gaps/`.
     """
     context = bootstrap_app(Path.cwd(), profile=profile, config_path=config)
     eval_set = Path.cwd() / "tests" / "eval" / "eval_set.json"
@@ -59,22 +67,6 @@ def eval_command(
     typer.echo(f"Eval questions: {summary.question_count}")
     typer.echo(f"Mean Recall@10: {summary.mean_recall_at_10:.3f}")
     typer.echo(f"Mean MRR@10: {summary.mean_mrr_at_10:.3f}")
-    warning_count = sum(len(case.warnings) for case in summary.cases)
-    if warning_count:
-        typer.echo(f"Warnings: {warning_count}")
-    failures = [
-        case
-        for case in summary.cases
-        if case.recall_at_10 < 1.0 or case.mrr_at_10 == 0.0 or case.warnings
-    ]
-    if failures:
-        typer.echo("Failing cases:")
-        for case in failures:
-            typer.echo(f"- {case.question}")
-            typer.echo(f"  expected: {case.expected}")
-            typer.echo(f"  ranked[:5]: {case.ranked[:5]}")
-            if case.warnings:
-                typer.echo(f"  warnings: {case.warnings}")
 
     if persist:
         run = build_eval_run(
@@ -86,3 +78,10 @@ def eval_command(
         history_path = context.config.paths.data_path / "retrieval_eval_runs.jsonl"
         append_eval_run(run, history_path)
         typer.echo(f"History appended: {history_path}")
+
+    gaps_dir = context.config.paths.data_path / "gaps"
+    tickets = build_gap_tickets(summary)
+    written = write_gap_tickets(tickets, gaps_dir)
+
+    typer.echo(f"Gap tickets: {len(tickets)} derived, {len(written)} written (upserted)")
+    typer.echo(f"Gap tickets directory: {gaps_dir}")

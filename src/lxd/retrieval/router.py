@@ -28,6 +28,7 @@ the literal into integer depths the retrieval layer understands.
 
 import asyncio
 import json
+import re
 from typing import Any, Final, Literal, assert_never
 
 import structlog
@@ -70,6 +71,15 @@ class QueryRoute(BaseModel):
             "router bypass."
         ),
     )
+    router_path: Literal["heuristic", "llm", "fallback"] = Field(
+        default="llm",
+        description=(
+            "Which stage produced this route: ``heuristic`` for the cheap "
+            "pre-router pattern match, ``llm`` for a successfully parsed "
+            "router LLM call, ``fallback`` when the LLM call failed or the "
+            "question was empty and the safe default was used."
+        ),
+    )
 
 
 _ROUTER_SYSTEM_PROMPT: Final = """\
@@ -102,6 +112,64 @@ Given the user's QUESTION, return a JSON object with three keys:
 
 Return ONLY the JSON object — no preamble, no markdown fences."""
 
+# ---------------------------------------------------------------------------
+# Heuristic pre-router — cheap pattern matches that skip the LLM round-trip
+# for the common cases. Anything that doesn't clearly match falls through
+# to the LLM router unchanged.
+# ---------------------------------------------------------------------------
+
+_GREETING_OR_META_RE: Final = re.compile(
+    r"^(hi|hello|hey|thanks|thank you|cheers|good (morning|afternoon|evening))\b"
+    r"|\b(what can you do|how does this work|who (built|made) you|who are you)\b",
+    re.IGNORECASE,
+)
+_FACTUAL_PREFIX_RE: Final = re.compile(
+    r"^(what is|what's|define|who coined)\b",
+    re.IGNORECASE,
+)
+_SURVEY_CUE_RE: Final = re.compile(
+    r"\b(compare|versus|vs|which models|survey|across)\b",
+    re.IGNORECASE,
+)
+_FACTUAL_MAX_WORDS: Final = 12
+
+
+def _heuristic_route(question: str) -> QueryRoute | None:
+    """Try to classify ``question`` without an LLM call.
+
+    Returns ``None`` when the question doesn't clearly match a
+    heuristic bucket, signalling :func:`route_query` to fall through
+    to the LLM router. Never raises.
+    """
+    cleaned = question.strip()
+    if not cleaned:
+        return _fallback_route()
+    if _GREETING_OR_META_RE.search(cleaned):
+        return QueryRoute(
+            retrieve=False,
+            breadth="standard",
+            rationale="heuristic: greeting or meta question about the system",
+            routed=True,
+            router_path="heuristic",
+        )
+    if len(cleaned.split()) <= _FACTUAL_MAX_WORDS and _FACTUAL_PREFIX_RE.match(cleaned):
+        return QueryRoute(
+            retrieve=True,
+            breadth="narrow",
+            rationale="heuristic: short factual definition lookup",
+            routed=True,
+            router_path="heuristic",
+        )
+    if _SURVEY_CUE_RE.search(cleaned):
+        return QueryRoute(
+            retrieve=True,
+            breadth="broad",
+            rationale="heuristic: survey or comparison cue detected",
+            routed=True,
+            router_path="heuristic",
+        )
+    return None
+
 
 def route_query(
     *,
@@ -118,12 +186,19 @@ def route_query(
         api_key_env: Environment variable for the OpenAI API key.
 
     Returns:
-        Always returns a :class:`QueryRoute`. On any failure (LLM
-        timeout, malformed JSON, unknown breadth literal), returns the
-        default route ``retrieve=True, breadth=standard, routed=False``.
-        Never raises — synthesis bypass on a router glitch would be
-        worse than running standard retrieval.
+        Always returns a :class:`QueryRoute`. When
+        ``config.heuristic_router_enabled`` is set, a cheap pattern
+        match runs first and can short-circuit the LLM call entirely
+        (see :func:`_heuristic_route`). On any LLM failure (timeout,
+        malformed JSON, unknown breadth literal), returns the default
+        route ``retrieve=True, breadth=standard, routed=False``. Never
+        raises — synthesis bypass on a router glitch would be worse
+        than running standard retrieval.
     """
+    if config.heuristic_router_enabled:
+        heuristic = _heuristic_route(question)
+        if heuristic is not None:
+            return heuristic
     backend = config.router_backend
     if backend == "openai":
         return _route_openai(question=question, config=config, api_key_env=api_key_env)
@@ -177,6 +252,7 @@ def _fallback_route() -> QueryRoute:
         breadth="standard",
         rationale="router unavailable; defaulting to standard retrieval",
         routed=False,
+        router_path="fallback",
     )
 
 
@@ -198,13 +274,14 @@ def _parse_route(raw: str) -> QueryRoute:
         breadth=breadth,
         rationale=rationale[:300],
         routed=True,
+        router_path="llm",
     )
 
 
 def _safe_json(raw: str) -> dict[str, Any]:
     try:
         payload = json.loads(raw)
-    except json.JSONDecodeError, TypeError:
+    except (json.JSONDecodeError, TypeError):
         return {}
     if not isinstance(payload, dict):
         return {}

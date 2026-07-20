@@ -35,7 +35,7 @@ from lxd.stores._base_ddl import BASE_SCHEMA_DDL
 
 Migration = Callable[[sqlite3.Connection], None]
 
-CURRENT_SCHEMA_VERSION: Final = 9
+CURRENT_SCHEMA_VERSION: Final = 10
 
 
 class SchemaIntegrityError(sqlite3.DatabaseError):
@@ -536,6 +536,45 @@ def _migration_0009_entity_embedding_state(connection: sqlite3.Connection) -> No
     )
 
 
+def _migration_0010_sessions(connection: sqlite3.Connection) -> None:
+    """Create ``sessions`` and ``session_turns`` for the learner-brief product layer.
+
+    Phase 3 of the SOTA roadmap: multi-turn design/answer requests carry an
+    optional audience/modality/Bloom-target/constraints brief keyed on
+    ``session_id``. This is ephemeral product state, not corpus data, so it
+    is exempt from the "MCP is read-only w.r.t. the corpus" rule — the
+    tables are never populated from, or written back into, the wiki.
+
+    Idempotent ``CREATE IF NOT EXISTS`` — composes cleanly with the base
+    DDL on fresh databases (mirrors migration 0009's shape).
+    """
+    connection.executescript(
+        """
+        CREATE TABLE IF NOT EXISTS sessions (
+            session_id TEXT PRIMARY KEY,
+            audience TEXT,
+            modality TEXT,
+            bloom_target TEXT,
+            constraints_text TEXT,
+            created_at TEXT NOT NULL,
+            updated_at TEXT NOT NULL,
+            last_artefact_json TEXT NOT NULL DEFAULT '{}'
+        );
+
+        CREATE TABLE IF NOT EXISTS session_turns (
+            turn_id TEXT PRIMARY KEY,
+            session_id TEXT NOT NULL,
+            role TEXT NOT NULL,
+            content_json TEXT NOT NULL,
+            created_at TEXT NOT NULL,
+            FOREIGN KEY(session_id) REFERENCES sessions(session_id) ON DELETE CASCADE
+        );
+        CREATE INDEX IF NOT EXISTS idx_session_turns_session_id
+        ON session_turns(session_id, created_at);
+        """
+    )
+
+
 _MIGRATIONS: dict[int, Migration] = {
     1: _migration_0001_baseline,
     2: _migration_0002_drop_chunk_vector_json,
@@ -546,6 +585,7 @@ _MIGRATIONS: dict[int, Migration] = {
     7: _migration_0007_circuit_breaker_state,
     8: _migration_0008_hierarchical_communities,
     9: _migration_0009_entity_embedding_state,
+    10: _migration_0010_sessions,
 }
 
 
@@ -576,6 +616,8 @@ _REQUIRED_COLUMNS: dict[str, frozenset[str]] = {
     "ingest_runs": frozenset({"run_id", "status"}),
     "llm_jobs": frozenset({"job_id", "status"}),
     "circuit_breaker_state": frozenset({"scope", "consecutive_failures"}),
+    "sessions": frozenset({"session_id", "created_at", "updated_at", "last_artefact_json"}),
+    "session_turns": frozenset({"turn_id", "session_id", "role", "content_json"}),
 }
 
 

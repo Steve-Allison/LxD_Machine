@@ -28,6 +28,8 @@ from lxd.stores.models import (
     EntityProfileRecord,
     ManifestRecord,
     MentionRecord,
+    SessionRecord,
+    SessionTurnRecord,
 )
 
 
@@ -180,6 +182,30 @@ def chunk_from_row(row: sqlite3.Row) -> ChunkRecord:
         embedding_dims=int(row["embedding_dims"]),
         cited_sources=_parse_string_list(row, "cited_sources_json"),
         wiki_links=_parse_string_list(row, "wiki_links_json"),
+    )
+
+
+def session_from_row(row: sqlite3.Row) -> SessionRecord:
+    last_artefact = row["last_artefact_json"]
+    return SessionRecord(
+        session_id=str(row["session_id"]),
+        audience=optional_str(row["audience"]),
+        modality=optional_str(row["modality"]),
+        bloom_target=optional_str(row["bloom_target"]),
+        constraints_text=optional_str(row["constraints_text"]),
+        created_at=str(row["created_at"]),
+        updated_at=str(row["updated_at"]),
+        last_artefact_json=str(last_artefact) if last_artefact is not None else "{}",
+    )
+
+
+def session_turn_from_row(row: sqlite3.Row) -> SessionTurnRecord:
+    return SessionTurnRecord(
+        turn_id=str(row["turn_id"]),
+        session_id=str(row["session_id"]),
+        role=str(row["role"]),
+        content_json=str(row["content_json"]),
+        created_at=str(row["created_at"]),
     )
 
 

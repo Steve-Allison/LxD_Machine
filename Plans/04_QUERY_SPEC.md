@@ -59,8 +59,19 @@ Source-ranking rule:
 - query ranking must be source-aware, not chunk-naive
 - before reranking, hybrid candidates are diversified to one representative chunk per `source_rel_path`
 - if the first fetch does not yield enough unique sources, query fetches more up to `_MAX_LIMIT` rather than silently reranking a duplicate-heavy prefix
-- final ordering fuses hybrid rank, rerank rank, relation-membership rank, and centrality (PageRank) rank — a four-lane RRF, with `_rrf_score(rank) = 1.0 / (_RRF_K + rank)`. The lexical lane and its `lexical_fusion_weight` config knob are collapsed into the LanceDB hybrid call and are no longer a fuser input; the config field is vestigial
+- final ordering fuses hybrid rank, rerank rank, relation-membership rank, centrality (PageRank) rank, and an optional **graph lane** (claim-linked chunk IDs) — RRF with `_rrf_score(rank) = 1.0 / (_RRF_K + rank)`. The lexical lane and its `lexical_fusion_weight` config knob are collapsed into the LanceDB hybrid call and are no longer a fuser input; the config field is vestigial
 - after source-aware ordering, any remaining hybrid chunks are appended behind the ranked source prefix
+
+### Stage 2b — Multi-query + gated HyDE (SOTA Phase 1)
+
+- when `retrieval.multi_query_enabled`, generate `multi_query_count` paraphrases and embed each in parallel with the primary query; RRF-fuse hybrid candidate lists before centrality/rerank
+- when `retrieval.hyde_enabled`, generate a hypothetical answer and embed it **instead of** the literal expanded question for the primary lane, but only when routed breadth is at least `hyde_min_breadth` (default `standard`) — narrow factual lookups skip HyDE
+- both features degrade to no-ops on LLM failure
+
+### Stage 2a — Adaptive router with heuristic fast-path
+
+- heuristic pre-router (`adaptive_retrieval.heuristic_router_enabled`) classifies clear greetings/meta, short "what is X" (narrow), and survey/compare cues (broad) without an LLM call (`metadata.router_path = heuristic`)
+- ambiguous questions still use the Self-RAG/CRAG LLM router (`router_path = llm`); failures fall back to standard retrieval (`router_path = fallback`)
 
 ### Stage 4 — Rerank
 
@@ -68,11 +79,23 @@ Baseline:
 
 - shipped profiles enable reranking by default through a dedicated `llama.cpp` server
 - the reranker backend is independent from the Ollama embed/synthesis runtime
+- optional **ensemble** (`reranker.ensemble_enabled`, default false): primary backend + secondary scorer (typically ColBERT) fused via RRF; secondary failure keeps the primary ranking with a warning; primary failure still falls back to dense-only
 - if `reranker.launch.auto_start = true`, query may start `llama-server` from the configured local reranker source before the first rerank request
 - if the configured reranker is unavailable, query must fall back to dense-only retrieval and surface a warning in query metadata
 - alternative rerankers such as `FlashRank` are later optimizations, not the V1 baseline
 
-### Stage 5 — Synthesise
+### Stage 4b — Graph context + conflicts
+
+- entity profiles, community reports, and claims frame synthesis (token-bounded)
+- query-time `detect_claim_conflicts` surfaces opposing claims in a Conflicting Claims section; synthesis must present both sides with citations
+- path search remains on-demand MCP tools (`find_path_between_entities`, `find_weighted_path`) — not forced on every deep answer
+
+### Stage 5 — Learner brief (optional)
+
+- `search_knowledge` / `_deep` accept optional `audience`, `modality`, `bloom_target`, `constraints`, `session_id`
+- session state persists in SQLite `sessions` / `session_turns` (product state, not corpus)
+
+### Stage 6 — Synthesise
 
 For `search_knowledge` / `search_knowledge_deep` (legacy name: `query_lxd`):
 

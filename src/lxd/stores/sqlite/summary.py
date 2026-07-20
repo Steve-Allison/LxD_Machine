@@ -73,6 +73,29 @@ def _summarize_manifest(connection: sqlite3.Connection) -> dict[str, int]:
     }
 
 
+def count_image_asset_retrieval_status(connection: sqlite3.Connection) -> dict[str, int]:
+    """Return ``{"captioned": N, "asset_only": N}`` counts for PNG assets.
+
+    Distinguishes PNG assets that became searchable via a generated caption
+    (Phase 4 multimodal captioning) from those still ``asset_only``
+    (captioning disabled, caption generation failed, or not yet
+    backfilled). Excludes tombstoned (``deleted``) manifest rows.
+    """
+    row = connection.execute(
+        """
+        SELECT
+            SUM(CASE WHEN retrieval_status = 'searchable' THEN 1 ELSE 0 END) AS captioned,
+            SUM(CASE WHEN retrieval_status = 'asset_only' THEN 1 ELSE 0 END) AS asset_only
+        FROM corpus_manifest
+        WHERE source_type = 'image_png' AND lifecycle_status != 'deleted'
+        """
+    ).fetchone()
+    return {
+        "captioned": int(row_value(row, "captioned")),
+        "asset_only": int(row_value(row, "asset_only")),
+    }
+
+
 def _summarize_chunk_counts(connection: sqlite3.Connection) -> tuple[int, int]:
     """Return ``(chunk_count, mention_count)`` across the whole store."""
     chunk_row = connection.execute("SELECT COUNT(*) AS chunk_count FROM chunk_rows").fetchone()

@@ -435,3 +435,91 @@ class KnowledgeAnswerDeep(_Frozen):
     warnings: list[str] = Field(default_factory=list)
     metadata: KnowledgeAnswerMetadata
     graph_context: GraphContextData
+
+
+class EvalGapTicketView(_Frozen):
+    """One retrieval-eval gap ticket returned by ``list_eval_gaps``.
+
+    Mirrors :class:`lxd.eval.gaps.GapTicket` — a human-reviewed artefact
+    derived from a failing retrieval-eval case, never an auto-applied fix.
+    """
+
+    ticket_id: str = Field(description="BLAKE3 hash of the question and expected sources.")
+    question: str
+    expected_sources: list[str] = Field(default_factory=list)
+    ranked_top: list[str] = Field(
+        default_factory=list, description="Top-10 ranked source paths retrieval actually returned."
+    )
+    recall_at_10: float
+    mrr_at_10: float
+    gap_kind: Literal["missed_source", "weak_rank", "empty_results", "eval_warning"]
+    notes: str
+    created_at: str
+    status: Literal["open", "closed"]
+
+
+class LearningObjectivesView(_Frozen):
+    """Bloom's-aligned objectives (mirrors ``lxd.agents.artefacts.LearningObjectives``)."""
+
+    items: list[str] = Field(default_factory=list, description="Learning objective statements.")
+    citations: list[str] = Field(
+        default_factory=list, description="Citation labels grounding these objectives."
+    )
+
+
+class ModalityPlanView(_Frozen):
+    """Recommended delivery modality (mirrors ``lxd.agents.artefacts.ModalityPlan``)."""
+
+    text: str = Field(default="", description="Recommended modality and rationale.")
+    citations: list[str] = Field(
+        default_factory=list, description="Citation labels grounding this recommendation."
+    )
+
+
+class OutlineView(_Frozen):
+    """Ordered module headings (mirrors ``lxd.agents.artefacts.Outline``)."""
+
+    items: list[str] = Field(default_factory=list, description="Ordered outline headings.")
+    citations: list[str] = Field(
+        default_factory=list, description="Citation labels grounding the sequencing."
+    )
+
+
+class AssessmentBlueprintView(_Frozen):
+    """Assessment items (mirrors ``lxd.agents.artefacts.AssessmentBlueprint``)."""
+
+    items: list[str] = Field(default_factory=list, description="Assessment items.")
+    citations: list[str] = Field(
+        default_factory=list, description="Citation labels grounding the assessment design."
+    )
+
+
+class DesignArtefactBundleView(_Frozen):
+    """Full output of ``design_learning`` (mirrors ``lxd.agents.artefacts.DesignArtefactBundle``)."""
+
+    topic: str
+    objectives: LearningObjectivesView
+    modality_plan: ModalityPlanView
+    outline: OutlineView
+    assessment: AssessmentBlueprintView
+    steps_completed: int = Field(
+        description="How many of the agent's bounded steps actually ran (<= max_steps)."
+    )
+    warnings: list[str] = Field(default_factory=list)
+
+
+class CritiqueResultView(_Frozen):
+    """Output of ``critique_design`` (mirrors ``lxd.agents.artefacts.CritiqueResult``)."""
+
+    overall_score: float = Field(
+        description="Holistic 0.0-1.0 score, not necessarily the mean of dimension_scores."
+    )
+    dimension_scores: dict[str, float] = Field(
+        default_factory=dict,
+        description="Per-dimension 0.0-1.0 scores, e.g. objective_alignment, evidence_grounding.",
+    )
+    feedback: list[str] = Field(default_factory=list, description="Concise, actionable bullets.")
+    citations: list[str] = Field(
+        default_factory=list, description="Citation labels grounding the critique."
+    )
+    warnings: list[str] = Field(default_factory=list)

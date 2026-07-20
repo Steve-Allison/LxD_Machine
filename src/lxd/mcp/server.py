@@ -23,10 +23,13 @@ from lxd.mcp.models import (
     ConceptDocumentMatch,
     CorpusRelation,
     CorpusStatusResponse,
+    CritiqueResultView,
+    DesignArtefactBundleView,
     EntityGraphStats,
     EntityNeighbor,
     EntitySearchResult,
     EntitySummary,
+    EvalGapTicketView,
     FoundationalEntity,
     GraphOverview,
     HubEntity,
@@ -39,6 +42,8 @@ from lxd.mcp.models import (
 )
 from lxd.mcp.tools import (
     corpus_status_tool,
+    critique_design_tool,
+    design_learning_tool,
     find_bridge_entities_tool,
     find_documents_for_concept_tool,
     find_foundational_entities_tool,
@@ -54,6 +59,7 @@ from lxd.mcp.tools import (
     get_related_concepts_tool,
     get_similar_entities_tool,
     inspect_evidence_tool,
+    list_eval_gaps_tool,
     search_corpus_tool,
     search_entities_tool,
     search_knowledge_deep_tool,
@@ -263,7 +269,9 @@ def create_server(
         ``get_related_concepts`` and ``find_documents_for_concept``.
         """
         lxd = _lxd(ctx)
-        return await _invoke(ctx, "get_entity_types", lambda: get_entity_types_tool(lxd.ingest_plan))
+        return await _invoke(
+            ctx, "get_entity_types", lambda: get_entity_types_tool(lxd.ingest_plan)
+        )
 
     @mcp.tool(annotations=_HINT_IDEMPOTENT)
     async def get_related_concepts(
@@ -574,12 +582,44 @@ def create_server(
             str | None,
             Field(description="Optional domain filter. Pass null to search all domains."),
         ] = None,
+        audience: Annotated[
+            str | None,
+            Field(
+                description="Optional learner-brief field: target audience, e.g. "
+                "'new Adobe Analytics admins'."
+            ),
+        ] = None,
+        modality: Annotated[
+            str | None,
+            Field(
+                description="Optional learner-brief field: delivery modality, e.g. "
+                "'self-paced eLearning'."
+            ),
+        ] = None,
+        bloom_target: Annotated[
+            str | None,
+            Field(description="Optional learner-brief field: target Bloom's taxonomy level."),
+        ] = None,
+        constraints: Annotated[
+            str | None,
+            Field(description="Optional learner-brief field: free-text constraints."),
+        ] = None,
+        session_id: Annotated[
+            str | None,
+            Field(
+                description="Optional session ID. When set, this brief is merged with "
+                "(and persisted over) any brief already on file for the session."
+            ),
+        ] = None,
     ) -> KnowledgeAnswer:
         """Answer a question using semantic retrieval with graph-augmented synthesis.
 
         Performs dense vector search, reranking, ontology expansion, and
         graph context augmentation (entity profiles, community reports, claims)
-        before synthesising an answer via LLM.
+        before synthesising an answer via LLM. Optional learner-brief fields
+        (``audience`` / ``modality`` / ``bloom_target`` / ``constraints`` /
+        ``session_id``) tailor the answer's framing without weakening the
+        evidence-grounding requirement.
         """
         lxd = _lxd(ctx)
         await ctx.report_progress(progress=0, total=3, message="retrieving evidence")
@@ -595,6 +635,11 @@ def create_server(
                 on_phase=on_phase,
                 on_notice=on_notice,
                 sampler=sampler,
+                audience=audience,
+                modality=modality,
+                bloom_target=bloom_target,
+                constraints=constraints,
+                session_id=session_id,
             ),
             timeout_secs=_tool_timeout(lxd),
         )
@@ -612,12 +657,42 @@ def create_server(
             str | None,
             Field(description="Optional domain filter. Pass null to search all domains."),
         ] = None,
+        audience: Annotated[
+            str | None,
+            Field(
+                description="Optional learner-brief field: target audience, e.g. "
+                "'new Adobe Analytics admins'."
+            ),
+        ] = None,
+        modality: Annotated[
+            str | None,
+            Field(
+                description="Optional learner-brief field: delivery modality, e.g. "
+                "'self-paced eLearning'."
+            ),
+        ] = None,
+        bloom_target: Annotated[
+            str | None,
+            Field(description="Optional learner-brief field: target Bloom's taxonomy level."),
+        ] = None,
+        constraints: Annotated[
+            str | None,
+            Field(description="Optional learner-brief field: free-text constraints."),
+        ] = None,
+        session_id: Annotated[
+            str | None,
+            Field(
+                description="Optional session ID. When set, this brief is merged with "
+                "(and persisted over) any brief already on file for the session."
+            ),
+        ] = None,
     ) -> KnowledgeAnswerDeep:
         """Answer a question with full graph context returned alongside the answer.
 
         Like ``search_knowledge`` but also returns structured ``graph_context``
         data: entity profiles with centrality scores, community reports, and
-        claims for matched entities.
+        claims for matched entities. See ``search_knowledge`` for the
+        learner-brief parameters.
         """
         lxd = _lxd(ctx)
         await ctx.report_progress(progress=0, total=3, message="retrieving evidence")
@@ -633,10 +708,117 @@ def create_server(
                 on_phase=on_phase,
                 on_notice=on_notice,
                 sampler=sampler,
+                audience=audience,
+                modality=modality,
+                bloom_target=bloom_target,
+                constraints=constraints,
+                session_id=session_id,
             ),
             timeout_secs=_tool_timeout(lxd),
         )
         await ctx.report_progress(progress=3, total=3, message="answer ready")
+        return result
+
+    @mcp.tool(annotations=_HINT_LLM)
+    async def design_learning(
+        topic: Annotated[
+            str,
+            Field(
+                description="Learning goal / topic to design for, e.g. 'onboarding new "
+                "Adobe Analytics admins'."
+            ),
+        ],
+        ctx: Context,
+        audience: Annotated[
+            str | None,
+            Field(description="Optional learner-brief field: target audience."),
+        ] = None,
+        modality: Annotated[
+            str | None,
+            Field(description="Optional learner-brief field: delivery modality."),
+        ] = None,
+        bloom_target: Annotated[
+            str | None,
+            Field(description="Optional learner-brief field: target Bloom's taxonomy level."),
+        ] = None,
+        constraints: Annotated[
+            str | None,
+            Field(description="Optional learner-brief field: free-text constraints."),
+        ] = None,
+        session_id: Annotated[
+            str | None,
+            Field(
+                description="Optional session ID. When set, this brief is merged with "
+                "(and persisted over) any brief already on file for the session."
+            ),
+        ] = None,
+        max_steps: Annotated[
+            int | None,
+            Field(
+                description="Overrides the server's configured step budget "
+                "(config.design_agent.max_steps) for this call only.",
+                gt=0,
+                le=12,
+            ),
+        ] = None,
+    ) -> DesignArtefactBundleView:
+        """Draft a grounded learning-design artefact bundle for a topic.
+
+        Runs a bounded multi-step agent: retrieve pedagogy evidence from
+        the corpus, draft learning objectives / modality plan / outline /
+        assessment blueprint, then one critique pass. Every artefact
+        section carries the citation labels of the evidence that grounded
+        it; ``warnings`` surfaces any step that degraded (empty
+        retrieval, LLM failure, or the step budget running out).
+        """
+        lxd = _lxd(ctx)
+        result = await run_tool(
+            "design_learning",
+            lambda: design_learning_tool(
+                lxd.app_context,
+                topic,
+                audience=audience,
+                modality=modality,
+                bloom_target=bloom_target,
+                constraints=constraints,
+                session_id=session_id,
+                max_steps=max_steps,
+            ),
+            timeout_secs=_tool_timeout(lxd),
+        )
+        return result
+
+    @mcp.tool(annotations=_HINT_LLM)
+    async def critique_design(
+        artefact: Annotated[
+            str,
+            Field(
+                description="JSON string shaped like design_learning's output, or free "
+                "text describing the artefact to critique."
+            ),
+        ],
+        ctx: Context,
+        focus_question: Annotated[
+            str | None,
+            Field(
+                description="Optional question steering both the grounding retrieval and "
+                "the critique's attention. Falls back to the artefact's own topic."
+            ),
+        ] = None,
+    ) -> CritiqueResultView:
+        """Score a design artefact against fresh corpus evidence.
+
+        Runs one retrieval call grounded on ``focus_question`` (or the
+        artefact's own topic) and asks the design-agent LLM to score the
+        artefact's objective alignment, evidence grounding, assessment
+        validity, and clarity, with concise actionable feedback.
+        """
+        lxd = _lxd(ctx)
+        result = await run_tool(
+            "critique_design",
+            lambda: critique_design_tool(lxd.app_context, artefact, focus_question),
+            timeout_secs=_tool_timeout(lxd),
+        )
         return result
 
     @mcp.tool(annotations=_HINT_OPEN_WORLD)
@@ -652,6 +834,32 @@ def create_server(
         return await run_tool(
             "get_graph_overview",
             lambda: get_graph_overview_tool(lxd.app_context),
+            timeout_secs=_tool_timeout(lxd),
+        )
+
+    @mcp.tool(annotations=_HINT_OPEN_WORLD)
+    async def list_eval_gaps(
+        ctx: Context,
+        status: Annotated[
+            Literal["open", "closed"] | None,
+            Field(
+                description=(
+                    "Filter by ticket status. Pass null to return both open and closed tickets."
+                )
+            ),
+        ] = "open",
+    ) -> list[EvalGapTicketView]:
+        """List retrieval-eval gap tickets written by ``pixi run eval-gaps``.
+
+        Each ticket traces a failing retrieval-eval case (missed source,
+        weak ranking, empty results, or eval warnings) back to the question
+        and expected sources. Read-only: tickets are triaged by a human —
+        this tool never edits the wiki, ontology, or the tickets themselves.
+        """
+        lxd = _lxd(ctx)
+        return await run_tool(
+            "list_eval_gaps",
+            lambda: list_eval_gaps_tool(lxd.app_context, status),
             timeout_secs=_tool_timeout(lxd),
         )
 

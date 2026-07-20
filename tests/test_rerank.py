@@ -350,3 +350,143 @@ def test_apply_rerank_payload_orders_by_descending_relevance() -> None:
 
     assert reranked is not None
     assert [item.chunk_id for item in reranked] == ["a", "b", "c"]
+
+
+def test_rrf_fuse_rankings_prefers_shared_top() -> None:
+    primary = _as_ranked(
+        [
+            Candidate(
+                chunk_id="a",
+                document_id="d",
+                citation_label="a",
+                source_rel_path="a.md",
+                source_filename="a.md",
+                source_type="markdown",
+                source_domain="d",
+                source_hash="h",
+                chunk_index=0,
+                chunk_occurrence=0,
+                token_count=1,
+                text="a",
+                score_hint="",
+                metadata_json="{}",
+                score=0.9,
+            ),
+            Candidate(
+                chunk_id="b",
+                document_id="d",
+                citation_label="b",
+                source_rel_path="b.md",
+                source_filename="b.md",
+                source_type="markdown",
+                source_domain="d",
+                source_hash="h",
+                chunk_index=0,
+                chunk_occurrence=0,
+                token_count=1,
+                text="b",
+                score_hint="",
+                metadata_json="{}",
+                score=0.5,
+            ),
+        ]
+    )
+    secondary = _as_ranked(
+        [
+            Candidate(
+                chunk_id="b",
+                document_id="d",
+                citation_label="b",
+                source_rel_path="b.md",
+                source_filename="b.md",
+                source_type="markdown",
+                source_domain="d",
+                source_hash="h",
+                chunk_index=0,
+                chunk_occurrence=0,
+                token_count=1,
+                text="b",
+                score_hint="",
+                metadata_json="{}",
+                score=0.95,
+            ),
+            Candidate(
+                chunk_id="a",
+                document_id="d",
+                citation_label="a",
+                source_rel_path="a.md",
+                source_filename="a.md",
+                source_type="markdown",
+                source_domain="d",
+                source_hash="h",
+                chunk_index=0,
+                chunk_occurrence=0,
+                token_count=1,
+                text="a",
+                score_hint="",
+                metadata_json="{}",
+                score=0.4,
+            ),
+        ]
+    )
+    fused = rerank._rrf_fuse_rankings(  # pyright: ignore[reportPrivateUsage]
+        primary, secondary, secondary_weight=1.0
+    )
+    assert {item.chunk_id for item in fused} == {"a", "b"}
+    # Equal RRF when ranks are mirrored — order is stable by score tie-break;
+    # both must appear and scores must be positive.
+    assert all(item.score > 0 for item in fused)
+
+
+def test_ensemble_keeps_primary_when_secondary_fails(monkeypatch: pytest.MonkeyPatch) -> None:
+    rerank._probe_cache.clear()  # pyright: ignore[reportPrivateUsage]
+    primary_chunks = _as_ranked(
+        [
+            Candidate(
+                chunk_id="a",
+                document_id="d",
+                citation_label="a",
+                source_rel_path="a.md",
+                source_filename="a.md",
+                source_type="markdown",
+                source_domain="d",
+                source_hash="h",
+                chunk_index=0,
+                chunk_occurrence=0,
+                token_count=1,
+                text="a",
+                score_hint="",
+                metadata_json="{}",
+                score=0.2,
+            )
+        ]
+    )
+
+    def _fake_primary(
+        question: str, candidates: list[RankedChunk], config: RuntimeConfig
+    ) -> rerank.RerankOutcome:
+        return rerank.RerankOutcome(ranked=primary_chunks, warnings=[], applied=True)
+
+    def _fake_secondary(
+        question: str, candidates: list[RankedChunk], config: RuntimeConfig
+    ) -> rerank.RerankOutcome:
+        return rerank.RerankOutcome(
+            ranked=candidates, warnings=["colbert unavailable"], applied=False
+        )
+
+    monkeypatch.setattr(rerank, "_rerank_primary", _fake_primary)
+    monkeypatch.setattr(rerank, "_rerank_secondary", _fake_secondary)
+    config = _as_config(
+        SimpleNamespace(
+            reranker=SimpleNamespace(
+                backend="llama_cpp",
+                ensemble_enabled=True,
+                ensemble_secondary="colbert",
+                ensemble_secondary_weight=1.0,
+            )
+        )
+    )
+    outcome = rerank.rerank_chunks("q", primary_chunks, config)
+    assert outcome.applied is True
+    assert outcome.ranked[0].chunk_id == "a"
+    assert any("colbert unavailable" in w for w in outcome.warnings)

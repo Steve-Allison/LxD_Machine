@@ -66,6 +66,12 @@ assets:
   register_png: true
   infer_docling_parent: true
 
+multimodal:
+  captions_enabled: false
+  caption_model: gpt-4o-mini
+  caption_timeout_secs: 60
+  caption_max_tokens: 200
+
 ontology:
   include_globs:
     - "**/*.yaml"
@@ -76,12 +82,22 @@ retrieval:
   rerank_top_k: 20
   lexical_fusion_weight: 2.0
   relation_fusion_weight: 1.0
+  hyde_enabled: true
+  multi_query_enabled: true
+  multi_query_count: 2
+  graph_lane_enabled: true
+  graph_lane_fusion_weight: 1.0
+  max_graph_lane_hits: 10
 
 reranker:
   backend: llama_cpp
   url: http://127.0.0.1:8012
   endpoint: /v1/rerank
   timeout_secs: 30
+  # Opt-in second scorer (ColBERT) fused via RRF. Off by default — heavyweight.
+  ensemble_enabled: false
+  ensemble_secondary: colbert
+  ensemble_secondary_weight: 1.0
   launch:
     auto_start: true
     executable: llama-server

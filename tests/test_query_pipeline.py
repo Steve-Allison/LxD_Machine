@@ -12,6 +12,7 @@ from lxd.settings.models import RuntimeConfig
 _diversify_by_community = _query_pipeline._diversify_by_community  # pyright: ignore[reportPrivateUsage]
 _fuse_ranked_prefix = _query_pipeline._fuse_ranked_prefix  # pyright: ignore[reportPrivateUsage]
 _merge_ranked_prefix = _query_pipeline._merge_ranked_prefix  # pyright: ignore[reportPrivateUsage]
+_rrf_fuse_candidate_lists = _query_pipeline._rrf_fuse_candidate_lists  # pyright: ignore[reportPrivateUsage]
 _unique_source_prefix = _query_pipeline._unique_source_prefix  # pyright: ignore[reportPrivateUsage]
 
 
@@ -124,6 +125,43 @@ def test_fuse_ranked_prefix_centrality_lane_promotes_high_pagerank_chunks() -> N
     assert [item.chunk_id for item in no_lane] == ["low", "high"]
     # With a strong lane: high-PR chunk surfaces.
     assert [item.chunk_id for item in with_lane] == ["high", "low"]
+
+
+def test_rrf_fuse_candidate_lists_empty_input_yields_empty_output() -> None:
+    assert _rrf_fuse_candidate_lists([], cap=10) == []
+
+
+def test_rrf_fuse_candidate_lists_single_list_passes_through_capped() -> None:
+    ranked = [_chunk("a"), _chunk("b"), _chunk("c")]
+    fused = _rrf_fuse_candidate_lists([ranked], cap=2)
+    assert [item.chunk_id for item in fused] == ["a", "b"]
+
+
+def test_rrf_fuse_candidate_lists_promotes_chunk_seen_in_multiple_variants() -> None:
+    """A chunk ranked lower in every list but present in every list should
+    outrank a chunk that only tops a single variant's list once RRF scores
+    accumulate across variants."""
+    primary = [_chunk("only-in-primary"), _chunk("shared")]
+    paraphrase_one = [_chunk("shared"), _chunk("only-in-paraphrase-1")]
+    paraphrase_two = [_chunk("shared"), _chunk("only-in-paraphrase-2")]
+    fused = _rrf_fuse_candidate_lists([primary, paraphrase_one, paraphrase_two], cap=10)
+    assert fused[0].chunk_id == "shared"
+
+
+def test_rrf_fuse_candidate_lists_deduplicates_chunk_ids() -> None:
+    primary = [_chunk("a"), _chunk("b")]
+    paraphrase = [_chunk("b"), _chunk("a")]
+    fused = _rrf_fuse_candidate_lists([primary, paraphrase], cap=10)
+    chunk_ids = [item.chunk_id for item in fused]
+    assert sorted(chunk_ids) == ["a", "b"]
+    assert len(chunk_ids) == len(set(chunk_ids))
+
+
+def test_rrf_fuse_candidate_lists_respects_cap() -> None:
+    primary = [_chunk("a"), _chunk("b"), _chunk("c")]
+    paraphrase = [_chunk("d"), _chunk("e"), _chunk("f")]
+    fused = _rrf_fuse_candidate_lists([primary, paraphrase], cap=3)
+    assert len(fused) == 3
 
 
 def test_current_ingest_config_excludes_query_time_reranker_settings() -> None:

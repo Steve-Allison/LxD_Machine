@@ -20,6 +20,7 @@ from typing import Final
 
 import ollama
 
+from lxd.domain.brief import LearnerBrief
 from lxd.domain.status import QueryAnswerStatus
 from lxd.ingest.llm_client import get_ollama_client
 from lxd.retrieval.graph_routing import GraphContext
@@ -56,7 +57,9 @@ SYNTHESIS_PREAMBLE_TRANSITIVE_SOURCES: Final = (
 SYNTHESIS_PREAMBLE_GRAPH_CONTEXT: Final = (
     "\nThe graph context below provides structured knowledge about entities,\n"
     "communities, and claims relevant to the question. Use it to frame your\n"
-    "answer but ground all facts in the source evidence.\n"
+    "answer but ground all facts in the source evidence. If the graph context\n"
+    "includes a Conflicting Claims section, surface both sides of the\n"
+    "disagreement with their citations — never silently pick a winner.\n"
 )
 
 
@@ -180,6 +183,7 @@ def synthesize_answer(
     config: RuntimeConfig,
     *,
     graph_context_prompt: str = "",
+    brief: LearnerBrief | None = None,
     sampler: Sampler | None = None,
 ) -> AnswerEnvelope:
     """Synthesize an answer from retrieved evidence chunks.
@@ -189,6 +193,11 @@ def synthesize_answer(
         evidence: Evidence chunks used for synthesis.
         config: Runtime configuration object.
         graph_context_prompt: Optional graph context to prepend to the prompt.
+        brief: Optional learner brief (audience / modality / Bloom target /
+            constraints). When any field is set, the prompt gains a
+            ``## Learner Brief`` section instructing the model to tailor
+            framing and depth without overriding the evidence-grounding
+            requirement.
         sampler: Optional client-side sampler. When provided (the MCP
             server passes one when ``mcp.synthesis_backend`` is set to
             ``client_sampling``), the synthesis prompt is dispatched via
@@ -202,7 +211,9 @@ def synthesize_answer(
         Answer envelope from synthesis or fallback.
     """
     citations = [chunk.citation_label for chunk in evidence]
-    prompt = _build_prompt(question, evidence, graph_context_prompt=graph_context_prompt)
+    prompt = _build_prompt(
+        question, evidence, graph_context_prompt=graph_context_prompt, brief=brief
+    )
     if sampler is not None:
         request = SamplerRequest(
             prompt=prompt,
@@ -271,6 +282,7 @@ def stream_synthesize_answer(
     config: RuntimeConfig,
     *,
     graph_context_prompt: str = "",
+    brief: LearnerBrief | None = None,
 ) -> Iterator[StreamingTextDelta | AnswerEnvelope]:
     """Stream a synthesis answer from the local Ollama model.
 
@@ -286,7 +298,9 @@ def stream_synthesize_answer(
     ``QueryAnswerStatus.SYNTHESIS_UNAVAILABLE`` and stops.
     """
     citations = [chunk.citation_label for chunk in evidence]
-    prompt = _build_prompt(question, evidence, graph_context_prompt=graph_context_prompt)
+    prompt = _build_prompt(
+        question, evidence, graph_context_prompt=graph_context_prompt, brief=brief
+    )
     try:
         stream = _client(config).generate(
             model=config.models.llm,
@@ -374,7 +388,11 @@ def probe_synthesis_model(config: RuntimeConfig) -> tuple[bool, str | None]:
 
 
 def _build_prompt(
-    question: str, evidence: list[EvidenceChunk], *, graph_context_prompt: str = ""
+    question: str,
+    evidence: list[EvidenceChunk],
+    *,
+    graph_context_prompt: str = "",
+    brief: LearnerBrief | None = None,
 ) -> str:
     evidence_block = "\n\n".join(_format_evidence_chunk(item) for item in evidence)
     preamble = synthesis_preamble(
@@ -384,9 +402,37 @@ def _build_prompt(
     sections = [preamble]
     if graph_context_prompt:
         sections.append(graph_context_prompt)
+    brief_block = _format_learner_brief(brief)
+    if brief_block:
+        sections.append(brief_block)
     sections.append(f"Question:\n{question}\n")
     sections.append(f"Evidence:\n{evidence_block}\n")
     return "\n".join(sections)
+
+
+def _format_learner_brief(brief: LearnerBrief | None) -> str:
+    """Render the ``## Learner Brief`` prompt section, or ``""`` when empty.
+
+    Only the fields the caller actually set are listed — an absent field
+    means "no constraint", not "none". The trailing instruction keeps the
+    brief additive framing rather than a licence to ignore the evidence.
+    """
+    if brief is None or brief.is_empty():
+        return ""
+    lines = ["## Learner Brief"]
+    if brief.audience:
+        lines.append(f"- Audience: {brief.audience}")
+    if brief.modality:
+        lines.append(f"- Modality: {brief.modality}")
+    if brief.bloom_target:
+        lines.append(f"- Bloom target: {brief.bloom_target}")
+    if brief.constraints:
+        lines.append(f"- Constraints: {brief.constraints}")
+    lines.append(
+        "Tailor the answer's framing, depth, and examples to this brief "
+        "without ignoring the evidence-grounding requirement above.\n"
+    )
+    return "\n".join(lines)
 
 
 def _format_evidence_chunk(item: EvidenceChunk) -> str:

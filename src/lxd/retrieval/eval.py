@@ -1,6 +1,7 @@
 """Evaluate retrieval performance against labeled benchmark cases."""
 
-from dataclasses import dataclass
+import json
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
 from lxd.retrieval.query_pipeline import SearchOutcome, search_chunks
@@ -15,6 +16,7 @@ class EvalCase:
     question: str
     expected_source_files: list[str]
     domain: str | None
+    category: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -37,6 +39,40 @@ class EvalSummary:
     mean_recall_at_10: float
     mean_mrr_at_10: float
     cases: list[EvalCaseResult]
+
+
+@dataclass(frozen=True, slots=True)
+class RetrievalEvalCaseRecord:
+    """Persisted per-case record — mirrors :class:`EvalCaseResult` but caps ``ranked`` at 10.
+
+    Only the top-10 ranked sources are kept in the history file; the full
+    ranked list is only needed for the live console report.
+    """
+
+    question: str
+    recall_at_10: float
+    mrr_at_10: float
+    expected: list[str]
+    ranked: list[str]
+    warnings: list[str] = field(default_factory=list)
+
+
+@dataclass(frozen=True, slots=True)
+class RetrievalEvalRun:
+    """One persisted retrieval-eval run, mirroring the ``eval_quality_runs.jsonl`` pattern.
+
+    Written as one JSONL line per run to ``<data_path>/retrieval_eval_runs.jsonl``
+    so historical recall/MRR scores can be diffed between runs and gap
+    tickets can be derived from any given run.
+    """
+
+    run_tag: str
+    run_started_at: str
+    run_finished_at: str
+    question_count: int
+    mean_recall_at_10: float
+    mean_mrr_at_10: float
+    cases: list[RetrievalEvalCaseRecord] = field(default_factory=list)
 
 
 def recall_at_k(expected: set[str], ranked: list[str], k: int) -> float:
@@ -82,8 +118,6 @@ def load_eval_cases(path: Path) -> list[EvalCase]:
     Returns:
         Validated evaluation cases from disk.
     """
-    import json
-
     payload = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(payload, list):
         raise ValueError("Eval set must be a JSON array.")
@@ -94,6 +128,7 @@ def load_eval_cases(path: Path) -> list[EvalCase]:
         question = item.get("question")
         expected_source_files = item.get("expected_source_files")
         domain = item.get("domain")
+        category = item.get("category")
         if not isinstance(question, str) or not question.strip():
             raise ValueError("Each eval case requires a non-empty question.")
         if not isinstance(expected_source_files, list) or not all(
@@ -102,11 +137,14 @@ def load_eval_cases(path: Path) -> list[EvalCase]:
             raise ValueError("Each eval case requires expected_source_files as a list of strings.")
         if domain is not None and not isinstance(domain, str):
             raise ValueError("domain must be null or a string.")
+        if category is not None and not isinstance(category, str):
+            raise ValueError("category must be null or a string.")
         cases.append(
             EvalCase(
                 question=question,
-                expected_source_files=[str(item) for item in expected_source_files],
+                expected_source_files=[str(path) for path in expected_source_files],
                 domain=domain,
+                category=category,
             )
         )
     return cases
@@ -156,6 +194,60 @@ def run_eval(
         mean_mrr_at_10=mean_mrr,
         cases=results,
     )
+
+
+def build_eval_run(
+    summary: EvalSummary,
+    *,
+    run_started_at: str,
+    run_finished_at: str,
+    run_tag: str = "",
+) -> RetrievalEvalRun:
+    """Wrap an :class:`EvalSummary` into a persistable :class:`RetrievalEvalRun`.
+
+    Args:
+        summary: Aggregate result from :func:`run_eval`.
+        run_started_at: ISO-8601 UTC timestamp the run started.
+        run_finished_at: ISO-8601 UTC timestamp the run finished.
+        run_tag: Optional caller-supplied label for this run (defaults to empty).
+
+    Returns:
+        A run record ready to append to ``retrieval_eval_runs.jsonl``.
+    """
+    return RetrievalEvalRun(
+        run_tag=run_tag,
+        run_started_at=run_started_at,
+        run_finished_at=run_finished_at,
+        question_count=summary.question_count,
+        mean_recall_at_10=summary.mean_recall_at_10,
+        mean_mrr_at_10=summary.mean_mrr_at_10,
+        cases=[
+            RetrievalEvalCaseRecord(
+                question=case.question,
+                recall_at_10=case.recall_at_10,
+                mrr_at_10=case.mrr_at_10,
+                expected=case.expected,
+                ranked=case.ranked[:10],
+                warnings=case.warnings,
+            )
+            for case in summary.cases
+        ],
+    )
+
+
+def append_eval_run(run: RetrievalEvalRun, history_path: Path) -> None:
+    """Append one JSONL row per retrieval-eval run, latest at EOF.
+
+    Mirrors :func:`lxd.eval.report.append_run_to_history`: the history file
+    lives next to the data store and is gitignored, and each line is a
+    complete :class:`RetrievalEvalRun` so gap tickets can be rebuilt from
+    any given run.
+    """
+    history_path.parent.mkdir(parents=True, exist_ok=True)
+    payload = json.dumps(asdict(run), sort_keys=False)
+    with history_path.open("a", encoding="utf-8") as f:
+        f.write(payload)
+        f.write("\n")
 
 
 def _ranked_source_rel_paths(outcome: SearchOutcome) -> list[str]:

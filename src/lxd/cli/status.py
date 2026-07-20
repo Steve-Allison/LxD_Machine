@@ -10,6 +10,7 @@ from lxd.app.bootstrap import bootstrap_app
 from lxd.app.status import load_committed_status
 from lxd.ingest.pipeline.orchestrator import build_ingest_plan
 from lxd.stores.sqlite.connection import build_store_paths, connect_sqlite, initialize_schema
+from lxd.stores.sqlite.summary import count_image_asset_retrieval_status
 
 PROFILE_OPTION: Final = typer.Option(None, "--profile")
 CONFIG_OPTION: Final = typer.Option(None, "--config", dir_okay=False, resolve_path=True)
@@ -39,6 +40,7 @@ def status_command(
                 config=context.config,
                 plan_provider=lambda: build_ingest_plan(context.config),
             )
+            image_status = count_image_asset_retrieval_status(connection)
         finally:
             connection.close()
         if status_snapshot is not None:
@@ -54,6 +56,8 @@ def status_command(
             typer.echo(
                 f"Retrieval not_searchable: {summary.retrieval_role_counts['not_searchable']}"
             )
+            typer.echo(f"Images captioned (searchable): {image_status['captioned']}")
+            typer.echo(f"Images asset_only: {image_status['asset_only']}")
             typer.echo(f"Chunks stored: {summary.chunk_count}")
             typer.echo(f"Mentions stored: {summary.mention_count}")
             typer.echo(f"Ontology snapshot hash: {summary.ontology_snapshot_hash}")

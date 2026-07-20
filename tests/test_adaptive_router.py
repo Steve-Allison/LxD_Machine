@@ -11,10 +11,11 @@ import pytest
 from pydantic import ValidationError
 
 from lxd.retrieval import router as _router_module
-from lxd.retrieval.router import QueryRoute, resolve_dense_top_k
+from lxd.retrieval.router import QueryRoute, resolve_dense_top_k, route_query
 from lxd.settings.models import AdaptiveRetrievalConfig
 
 _fallback_route = _router_module._fallback_route  # pyright: ignore[reportPrivateUsage]
+_heuristic_route = _router_module._heuristic_route  # pyright: ignore[reportPrivateUsage]
 _parse_route = _router_module._parse_route  # pyright: ignore[reportPrivateUsage]
 
 pytestmark = [pytest.mark.unit]
@@ -51,6 +52,16 @@ def test_query_route_routed_defaults_true() -> None:
     assert route.routed is True
 
 
+def test_query_route_router_path_defaults_llm() -> None:
+    route = QueryRoute(retrieve=True)
+    assert route.router_path == "llm"
+
+
+def test_query_route_rejects_invalid_router_path() -> None:
+    with pytest.raises(ValidationError):
+        QueryRoute.model_validate({"retrieve": True, "router_path": "magic"})
+
+
 # ---------------------------------------------------------------------------
 # _parse_route — accepts well-formed JSON, falls back gracefully
 # ---------------------------------------------------------------------------
@@ -63,6 +74,7 @@ def test_parse_route_accepts_well_formed_json() -> None:
     assert route.breadth == "narrow"
     assert route.rationale == "specific concept"
     assert route.routed is True
+    assert route.router_path == "llm"
 
 
 def test_parse_route_falls_back_on_invalid_json() -> None:
@@ -189,4 +201,136 @@ def test_fallback_route_is_safe_default() -> None:
     assert fallback.retrieve is True
     assert fallback.breadth == "standard"
     assert fallback.routed is False
+    assert fallback.router_path == "fallback"
     assert "router unavailable" in fallback.rationale.lower()
+
+
+# ---------------------------------------------------------------------------
+# _heuristic_route — cheap pre-router pattern matching
+# ---------------------------------------------------------------------------
+
+
+def test_heuristic_route_empty_question_returns_fallback_shape() -> None:
+    route = _heuristic_route("   ")
+    assert route == _fallback_route()
+
+
+@pytest.mark.parametrize(
+    "question",
+    [
+        "hi",
+        "hello there",
+        "thanks!",
+        "thank you",
+        "what can you do?",
+        "how does this work?",
+        "who built you?",
+    ],
+)
+def test_heuristic_route_greeting_or_meta_skips_retrieval(question: str) -> None:
+    route = _heuristic_route(question)
+    assert route is not None
+    assert route.retrieve is False
+    assert route.breadth == "standard"
+    assert route.router_path == "heuristic"
+
+
+@pytest.mark.parametrize(
+    "question",
+    [
+        "What is scaffolding?",
+        "What's backward design?",
+        "Define cognitive load",
+        "Who coined the term andragogy?",
+    ],
+)
+def test_heuristic_route_short_factual_lookup_is_narrow(question: str) -> None:
+    route = _heuristic_route(question)
+    assert route is not None
+    assert route.retrieve is True
+    assert route.breadth == "narrow"
+    assert route.router_path == "heuristic"
+
+
+def test_heuristic_route_factual_prefix_but_long_question_falls_through() -> None:
+    """A 'what is' opener attached to a long, multi-clause question is not
+    a clean single-concept lookup — defer to the LLM router instead of
+    forcing narrow breadth."""
+    question = (
+        "What is the difference between backward design, ADDIE, and the "
+        "Kirkpatrick model when applied to a blended adult-learner programme?"
+    )
+    assert _heuristic_route(question) is None
+
+
+@pytest.mark.parametrize(
+    "question",
+    [
+        "Compare ADDIE and SAM",
+        "ADDIE versus SAM",
+        "backward design vs forward design",
+        "Which models address adult learners?",
+        "survey of instructional design frameworks",
+        "trends across the instructional design field",
+    ],
+)
+def test_heuristic_route_survey_cue_is_broad(question: str) -> None:
+    route = _heuristic_route(question)
+    assert route is not None
+    assert route.retrieve is True
+    assert route.breadth == "broad"
+    assert route.router_path == "heuristic"
+
+
+def test_heuristic_route_returns_none_for_unclear_question() -> None:
+    """A question that matches none of the heuristic buckets falls through
+    to the LLM router."""
+    assert _heuristic_route("How should I sequence a module on feedback loops?") is None
+
+
+# ---------------------------------------------------------------------------
+# route_query — heuristic short-circuit vs LLM fall-through
+# ---------------------------------------------------------------------------
+
+
+def test_route_query_uses_heuristic_when_enabled(monkeypatch: pytest.MonkeyPatch) -> None:
+    config = AdaptiveRetrievalConfig(heuristic_router_enabled=True)
+
+    def _fail_if_called(*_args: object, **_kwargs: object) -> QueryRoute:
+        raise AssertionError("LLM router should not be called for a heuristic match.")
+
+    monkeypatch.setattr(_router_module, "_route_openai", _fail_if_called)
+    route = route_query(question="hello", config=config)
+    assert route.router_path == "heuristic"
+    assert route.retrieve is False
+
+
+def test_route_query_falls_through_to_llm_when_heuristic_declines(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    config = AdaptiveRetrievalConfig(heuristic_router_enabled=True)
+    called = {"count": 0}
+
+    def _fake_route_openai(**_kwargs: object) -> QueryRoute:
+        called["count"] += 1
+        return QueryRoute(retrieve=True, breadth="standard", router_path="llm")
+
+    monkeypatch.setattr(_router_module, "_route_openai", _fake_route_openai)
+    route = route_query(
+        question="How should I sequence a module on feedback loops?", config=config
+    )
+    assert called["count"] == 1
+    assert route.router_path == "llm"
+
+
+def test_route_query_skips_heuristic_when_disabled(monkeypatch: pytest.MonkeyPatch) -> None:
+    config = AdaptiveRetrievalConfig(heuristic_router_enabled=False)
+    called = {"count": 0}
+
+    def _fake_route_openai(**_kwargs: object) -> QueryRoute:
+        called["count"] += 1
+        return QueryRoute(retrieve=True, breadth="standard", router_path="llm")
+
+    monkeypatch.setattr(_router_module, "_route_openai", _fake_route_openai)
+    route_query(question="hello", config=config)
+    assert called["count"] == 1

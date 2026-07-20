@@ -1,13 +1,14 @@
 """Graph-aware query routing — augment synthesis context with entity and community data."""
 
 import sqlite3
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from operator import attrgetter
 from typing import Final
 
 import structlog
 import tiktoken
 
+from lxd.retrieval.conflicts import ClaimConflict, detect_claim_conflicts
 from lxd.settings.models import RuntimeConfig
 from lxd.stores.models import ClaimRecord, CommunityReportRecord, EntityProfileRecord
 from lxd.stores.sqlite.claims import load_claims_for_entities
@@ -27,6 +28,7 @@ class GraphContext:
     community_reports: list[CommunityReportRecord]
     claims: list[ClaimRecord]
     expansion_hops: int
+    conflicts: list[ClaimConflict] = field(default_factory=list)
 
 
 def build_graph_context(
@@ -99,6 +101,10 @@ def build_graph_context(
         max_tokens=kg_cfg.max_graph_context_tokens,
     )
 
+    conflicts: list[ClaimConflict] = []
+    if kg_cfg.conflict_detection_enabled and claims:
+        conflicts = detect_claim_conflicts(claims, max_conflicts=kg_cfg.max_conflicts_in_context)
+
     level = "community" if reports else "entity"
 
     _log.info(
@@ -107,6 +113,7 @@ def build_graph_context(
         entity_profiles=len(profiles),
         community_reports=len(reports),
         claims=len(claims),
+        conflicts=len(conflicts),
     )
 
     return GraphContext(
@@ -115,6 +122,7 @@ def build_graph_context(
         community_reports=reports,
         claims=claims,
         expansion_hops=0,
+        conflicts=conflicts,
     )
 
 
@@ -144,6 +152,16 @@ def format_graph_context_prompt(context: GraphContext) -> str:
             sections.append(_format_claim_line(claim))
         sections.append("")
 
+    if context.conflicts:
+        sections.append("### Conflicting Claims\n")
+        sections.append(
+            "The claim pairs below appear to disagree. Surface both sides "
+            "with their citations — never silently pick a winner.\n"
+        )
+        for conflict in context.conflicts:
+            sections.append(_format_conflict_block(conflict))
+        sections.append("")
+
     return "\n".join(sections)
 
 
@@ -171,6 +189,14 @@ def _format_report_block(report: CommunityReportRecord) -> str:
 
 def _format_claim_line(claim: ClaimRecord) -> str:
     return f"- [{claim.claim_type}] {claim.claim_text} (confidence: {claim.confidence:.2f})"
+
+
+def _format_conflict_block(conflict: ClaimConflict) -> str:
+    return (
+        f"- Claim A: {conflict.claim_a_text}\n"
+        f"  Claim B: {conflict.claim_b_text}\n"
+        f"  Why they conflict: {conflict.reason}"
+    )
 
 
 def _trim_to_token_budget(

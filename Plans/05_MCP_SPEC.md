@@ -1,9 +1,9 @@
 # LxD Machine — MCP Specification
 
 This is the canonical specification for the MCP surface. The full
-inventory of 20 tools plus 3 resources and 2 prompts is in Section 2;
+inventory of **23 tools** plus resources and prompts is in Section 2;
 the knowledge-graph build pipeline behind the graph tools is described
-in `08_KNOWLEDGE_GRAPH_SPEC.md`.
+in `08_KNOWLEDGE_GRAPH_SPEC.md`. Product contract: `Plans/SOTA_PRODUCT_CONTRACT.md`.
 
 ---
 
@@ -27,7 +27,7 @@ Implementation choice:
 
 ## 2. Tools
 
-### Current tool inventory (20 tools)
+### Current tool inventory (23 tools)
 
 **Corpus tools:**
 
@@ -39,6 +39,7 @@ Implementation choice:
 | `search_corpus(terms, domain?, limit?)` | terms: str, domain: str \| None, limit: int | Semantic chunk search with ranked results |
 | `find_documents_for_concept(entity_id, hops?, limit?)` | entity_id: str, hops: int, limit: int | Chunks mentioning entity + graph neighbours |
 | `get_corpus_relations(entity_id, limit?)` | entity_id: str, limit: int | Corpus-extracted relations for an entity |
+| `list_eval_gaps(status?)` | status: open\|closed\|None | Read-only triage of retrieval-eval gap tickets |
 
 **Knowledge graph tools:**
 
@@ -56,28 +57,32 @@ Implementation choice:
 | `find_foundational_entities(limit?)` | limit: int | Top entities by closeness centrality |
 | `get_entity_graph_stats()` | — | KG statistics: counts, version, build time |
 
-**Full answer pipeline:**
+**Full answer + design agent pipeline:**
 
 | Tool | Parameters | Purpose |
 |---|---|---|
-| `search_knowledge(question, domain?)` | question: str, domain: str \| None | Graph-augmented answer synthesis |
-| `search_knowledge_deep(question, domain?)` | question: str, domain: str \| None | Same + structured graph context returned |
+| `search_knowledge(question, domain?, audience?, modality?, bloom_target?, constraints?, session_id?)` | … | Graph-augmented answer synthesis with optional learner brief |
+| `search_knowledge_deep(...)` | same + structured graph context | Same + `graph_context` returned |
+| `design_learning(topic, audience?, modality?, bloom_target?, constraints?, session_id?)` | … | Multi-step ID artefacts (objectives → modality → outline → assessment) |
+| `critique_design(artefact, focus_question?)` | artefact: str, focus?: str | Cited critique of a design artefact |
 | `get_graph_overview()` | — | KG health: version, build timestamp, all counts |
 
 ### Return shapes
 
-**`search_knowledge(question, domain?)`** returns:
+**`search_knowledge(...)`** returns:
 
 - `answer_status`: one of `answered`, `no_results`, `insufficient_evidence`, `synthesis_unavailable`, or `no_retrieval_needed` (adaptive router short-circuits meta / out-of-scope questions — see `router_*` fields in `metadata` for the route rationale)
 - `answer_text`
 - `citations` — flat list of citation labels the answer references
 - `sentence_citations` — per-sentence attribution parsed from inline `[citation_label]` markers; empty `citation_labels` on a sentence signals unattributed claim (hallucination risk)
-- `metadata` — typed `KnowledgeAnswerMetadata`, not `dict[str, Any]`: `router_retrieve` (bool), `router_breadth` (`narrow` | `standard` | `broad`), `router_rationale` (str), `router_routed` (bool) always populated; `reranking_applied`, `expansion_applied`, `matched_entity_ids`, `expansion_terms`, `result_count`, `graph_context_applied`, `dense_top_k` populated only when retrieval ran
+- `metadata` — typed `KnowledgeAnswerMetadata`, not `dict[str, Any]`: `router_retrieve` (bool), `router_breadth` (`narrow` | `standard` | `broad`), `router_rationale` (str), `router_routed` (bool), `router_path` (`heuristic` \| `llm` \| `fallback`) always populated when routed; `reranking_applied`, `expansion_applied`, `hyde_applied`, `multi_query_applied`, `matched_entity_ids`, `expansion_terms`, `result_count`, `graph_context_applied`, `dense_top_k` populated only when retrieval ran
 - `warnings` — buffered list of degradation notices returned in the payload; the same notices also stream live during the call over the MCP `notifications/message` channel via `Context.warning` (see Section 3 async runtime)
 
-**`search_knowledge_deep(question, domain?)`** returns everything above plus:
+**`search_knowledge_deep(...)`** returns everything above plus:
 
-- `graph_context`: structured `GraphContextData` with `level`, `entity_profiles` (with centrality scores), `community_reports`, and `claims`
+- `graph_context`: structured `GraphContextData` with `level`, `entity_profiles` (with centrality scores), `community_reports`, `claims`, and conflicting-claim pairs when detected
+
+**`design_learning` / `critique_design`** return typed artefact / critique envelopes with citation lists (see `src/lxd/agents/artefacts.py`).
 
 **`search_corpus(terms, domain?, limit?)`** returns:
 

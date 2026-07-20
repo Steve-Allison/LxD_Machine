@@ -346,6 +346,48 @@ def load_corpus_relations_for_entity(
     ]
 
 
+def load_chunk_record_by_id(
+    connection: sqlite3.Connection, chunk_id: str
+) -> ChunkRecord | None:
+    """Load a single persisted chunk record by ID, or ``None`` if absent.
+
+    Used by the graph-as-retrieval-lane path to hydrate the chunk text
+    and source metadata backing a claim, and by the query pipeline to
+    append a claim-linked chunk that fell outside the dense/rerank
+    prefix.
+    """
+    row = connection.execute(
+        """
+        SELECT
+            chunk_id,
+            document_id,
+            source_rel_path,
+            source_filename,
+            source_type,
+            source_domain,
+            source_hash,
+            citation_label,
+            chunk_index,
+            chunk_occurrence,
+            token_count,
+            text,
+            chunk_hash,
+            score_hint,
+            metadata_json,
+            embedding_model,
+            embedding_dims,
+            cited_sources_json,
+            wiki_links_json
+        FROM chunk_rows
+        WHERE chunk_id = ?
+        """,
+        (chunk_id,),
+    ).fetchone()
+    if row is None:
+        return None
+    return chunk_from_row(row)
+
+
 def load_relation_chunk_ids(
     connection: sqlite3.Connection,
     entity_ids: list[str],

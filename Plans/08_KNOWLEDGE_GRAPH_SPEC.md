@@ -607,11 +607,16 @@ graph_expansion_hops: int                   # actual hops used
 ### Related Claims
 {claims for matched entities, ranked by confidence, up to max_claim_context}
 
+### Conflicting Claims
+{query-time heuristic pairs — synthesis must surface both sides; never silently pick a winner}
+
 ## Source Evidence
-{ranked chunks from existing retrieval pipeline — unchanged}
+{ranked chunks from existing retrieval pipeline — may include claim-boosted graph-lane chunks}
 ```
 
-The synthesis module (`src/lxd/synthesis/answering.py`) is updated to accept and prepend graph context sections before the existing chunk evidence. `graph_routing.py` builds the context; `answering.py._build_prompt()` formats it. When no graph context is present, the prompt is identical to Phase 4.
+Claim-linked chunk IDs also participate in retrieval RRF as a **graph lane** (`retrieval.graph_lane_enabled`) — they are ranked candidates, not only prompt framing. Path-finding tools remain on-demand and are not forced into every deep answer.
+
+The synthesis module (`src/lxd/synthesis/answering.py`) prepends graph context before chunk evidence. `graph_routing.py` builds the context (including `detect_claim_conflicts`); `answering.py._build_prompt()` formats it. When no graph context is present, the prompt is identical to the graph-free baseline.
 
 **Acceptance:**
 

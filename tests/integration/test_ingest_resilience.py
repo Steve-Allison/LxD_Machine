@@ -31,6 +31,7 @@ us, or that the code-review pass flagged as "no test exists". A passing
 against the live corpus.
 """
 
+import base64
 import sqlite3
 import textwrap
 from collections.abc import Iterator
@@ -117,6 +118,7 @@ def _write_config(
     corpus_path: Path,
     data_path: Path,
     ontology_path: Path,
+    captions_enabled: bool = False,
 ) -> None:
     """Write a tmp config.yaml shaped exactly like the project's real
     ``config.yaml``, with paths swapped for tmp ones and the embed_dims set
@@ -165,6 +167,12 @@ def _write_config(
             "min_text_file_bytes": 1,
         },
         "assets": {"register_png": True, "infer_docling_parent": True},
+        "multimodal": {
+            "captions_enabled": captions_enabled,
+            "caption_model": "gpt-4o-mini",
+            "caption_timeout_secs": 60,
+            "caption_max_tokens": 200,
+        },
         "ontology": {"include_globs": ["**/*.yaml"], "ignore_names": []},
         "retrieval": {
             "dense_top_k": 5,
@@ -214,6 +222,20 @@ def _write_corpus_file(corpus_path: Path, rel: str, body: str) -> Path:
     full = corpus_path / rel
     full.parent.mkdir(parents=True, exist_ok=True)
     full.write_text(textwrap.dedent(body).strip() + "\n", encoding="utf-8")
+    return full
+
+
+# Minimal valid 1x1 transparent PNG, base64-encoded, for asset ingest tests.
+_MINIMAL_PNG_B64 = (
+    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk"
+    "YPhfz8BQzwAEjDAGACLbBQz9dGYNAAAAAElFTkSuQmCC"
+)
+
+
+def _write_png(corpus_path: Path, rel: str) -> Path:
+    full = corpus_path / rel
+    full.parent.mkdir(parents=True, exist_ok=True)
+    full.write_bytes(base64.b64decode(_MINIMAL_PNG_B64))
     return full
 
 
@@ -709,6 +731,92 @@ def test_lancedb_and_sqlite_chunk_id_sets_match_after_ingest(
     )
     # And neither is empty (would mean the test ingested nothing).
     assert len(sqlite_ids) > 0
+
+
+def test_uncaptioned_png_stays_asset_only_by_default(
+    tmp_corpus_env: dict[str, Path],
+    patched_embedder: _RecordingEmbedder,
+) -> None:
+    """Default config (``multimodal.captions_enabled=False``) leaves PNGs
+    ``asset_only`` with zero chunks — the pre-Phase-4 behaviour must be
+    unchanged for anyone who has not opted in.
+    """
+    _write_png(tmp_corpus_env["corpus"], "images/diagram.png")
+    config, _ = load_runtime_config(tmp_corpus_env["root"])
+    assert config.multimodal.captions_enabled is False
+
+    result = run_ingest(config, full_rebuild=False)
+
+    assert result.summary.retrieval_role_counts["asset_only"] == 1
+    assert result.summary.retrieval_role_counts["searchable"] == 0
+    assert result.summary.chunk_count == 0
+
+
+def test_captioned_png_becomes_a_searchable_chunk(
+    project_root_with_pixi: Path,
+    patched_embedder: _RecordingEmbedder,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """With ``multimodal.captions_enabled=True``, a PNG asset is captioned,
+    embedded, and persisted as one searchable chunk with an asset-labelled
+    citation. The vision call itself is monkeypatched — this test never
+    hits the network — only the embedder boundary is the shared
+    ``patched_embedder`` fixture already used by every other test here.
+    """
+    corpus = project_root_with_pixi / "corpus"
+    data = project_root_with_pixi / "data"
+    config_path = project_root_with_pixi / "config.yaml"
+    corpus.mkdir()
+    _write_config(
+        config_path=config_path,
+        corpus_path=corpus,
+        data_path=data,
+        ontology_path=ONTOLOGY_PATH,
+        captions_enabled=True,
+    )
+    _write_png(corpus, "images/diagram.png")
+    monkeypatch.setattr(
+        "lxd.ingest.captions.caption_png",
+        lambda _path, _config: "A diagram illustrating Bloom's taxonomy levels.",
+    )
+
+    config, _ = load_runtime_config(project_root_with_pixi)
+    assert config.multimodal.captions_enabled is True
+
+    result = run_ingest(config, full_rebuild=False)
+
+    assert result.summary.retrieval_role_counts["searchable"] == 1
+    assert result.summary.retrieval_role_counts["asset_only"] == 0
+    assert result.summary.chunk_count == 1
+
+    store_paths = build_store_paths(data)
+    conn = connect_sqlite(store_paths.sqlite_path)
+    try:
+        row = conn.execute(
+            "SELECT source_type, citation_label, text FROM chunk_rows"
+        ).fetchone()
+        manifest_row = conn.execute(
+            "SELECT retrieval_status, document_id FROM corpus_manifest "
+            "WHERE source_rel_path = 'images/diagram.png'"
+        ).fetchone()
+    finally:
+        conn.close()
+
+    assert row is not None
+    assert row["source_type"] == "image_png"
+    assert "image caption" in row["citation_label"]
+    assert "diagram.png" in row["citation_label"]
+    assert row["text"] == "A diagram illustrating Bloom's taxonomy levels."
+    assert manifest_row is not None
+    assert manifest_row["retrieval_status"] == "searchable"
+    assert manifest_row["document_id"] is not None
+
+    db = connect_lancedb(store_paths.lancedb_path)
+    table = open_chunk_table(db, vector_size=config.models.embed_dims)
+    lance_rows = (
+        table.search().where("source_rel_path = 'images/diagram.png'").to_list()
+    )
+    assert len(lance_rows) == 1
 
 
 def test_cache_table_is_separate_lancedb_table_not_chunk_vectors(

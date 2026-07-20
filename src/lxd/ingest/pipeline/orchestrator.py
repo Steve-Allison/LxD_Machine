@@ -14,6 +14,7 @@ from lxd.domain.status import LifecycleStatus, RetrievalStatus
 from lxd.domain.time import utc_now
 from lxd.ingest.assets import infer_asset_parent
 from lxd.ingest.budget import BudgetExceededError, IngestBudgetTracker
+from lxd.ingest.captions import caption_asset_source
 from lxd.ingest.contextual_chunker import open_summary_cache_table
 from lxd.ingest.embedder import probe_embedder
 from lxd.ingest.embedding_cache import open_cache_table
@@ -318,7 +319,13 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                     continue
 
                 if scanned.source_type == "image_png":
-                    manifest_record = build_manifest_record(
+                    asset_link = infer_asset_parent(scanned.relative_path)
+                    parent_manifest = (
+                        manifest_by_rel_path.get(asset_link.parent_rel_path)
+                        if asset_link.parent_rel_path
+                        else None
+                    )
+                    processing_manifest = build_manifest_record(
                         scanned=scanned,
                         document_id=None,
                         parent_source_rel_path=None,
@@ -328,31 +335,93 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                         retrieval_status=RetrievalStatus.ASSET_ONLY,
                         error_message=None,
                     )
-                    upsert_manifest_record(sqlite_connection, manifest_record)
-                    asset_link = infer_asset_parent(scanned.relative_path)
-                    parent_manifest = (
-                        manifest_by_rel_path.get(asset_link.parent_rel_path)
-                        if asset_link.parent_rel_path
-                        else None
-                    )
+                    upsert_manifest_record(sqlite_connection, processing_manifest)
+
+                    asset_document_id: str | None = None
+                    asset_retrieval_status = RetrievalStatus.ASSET_ONLY
+                    asset_chunk_count = 0
+                    if config.multimodal.captions_enabled:
+                        candidate_document_id = resolve_document_id(
+                            scanned, existing_by_path.get(scanned.relative_path), None
+                        )
+                        # Budget check happens before the call so a
+                        # BudgetExceededError aborts the run the same way it
+                        # does for relation extraction — caught by the outer
+                        # try/except around the whole per-source loop.
+                        budget_tracker.check()
+                        caption_chunk = None
+                        try:
+                            caption_chunk = caption_asset_source(
+                                absolute_path=scanned.absolute_path,
+                                source_rel_path=scanned.relative_path,
+                                source_type=scanned.source_type,
+                                source_domain=scanned.source_domain,
+                                content_hash=scanned.content_hash,
+                                document_id=candidate_document_id,
+                                config=config,
+                            )
+                        except _RECOVERABLE_SOURCE_ERRORS as exc:
+                            warnings.append(
+                                f"{scanned.relative_path}: caption generation failed "
+                                f"(falling back to asset_only): {exc}"
+                            )
+                        finally:
+                            budget_tracker.record_llm_call()
+
+                        if caption_chunk is not None:
+                            # LanceDB FIRST, same snapshot/restore invariant
+                            # as the text-source path below: a SQLite
+                            # failure must never leave a caption vector with
+                            # no matching SQLite row.
+                            prior_vectors = load_source_chunk_rows(
+                                vector_table, scanned.relative_path
+                            )
+                            replace_vector_source_chunks(
+                                vector_table, scanned.relative_path, [caption_chunk]
+                            )
+                            try:
+                                replace_sqlite_source_chunks(
+                                    sqlite_connection,
+                                    source_rel_path=scanned.relative_path,
+                                    chunk_records=[caption_chunk],
+                                    mention_records=[],
+                                    relation_records=[],
+                                )
+                            except sqlite3.Error as exc:
+                                with contextlib.suppress(
+                                    FileNotFoundError, ValueError, RuntimeError
+                                ):
+                                    restore_source_chunk_rows(
+                                        vector_table, scanned.relative_path, prior_vectors
+                                    )
+                                warnings.append(
+                                    f"{scanned.relative_path}: caption chunk persistence "
+                                    f"failed (falling back to asset_only): {exc}"
+                                )
+                            else:
+                                asset_document_id = candidate_document_id
+                                asset_retrieval_status = RetrievalStatus.SEARCHABLE
+                                asset_chunk_count = 1
+                                chunks_written += 1
+
                     committed_manifest = ManifestRecord(
-                        source_rel_path=manifest_record.source_rel_path,
-                        absolute_path=manifest_record.absolute_path,
-                        source_type=manifest_record.source_type,
-                        source_domain=manifest_record.source_domain,
-                        document_id=manifest_record.document_id,
-                        file_size_bytes=manifest_record.file_size_bytes,
-                        content_hash=manifest_record.content_hash,
+                        source_rel_path=processing_manifest.source_rel_path,
+                        absolute_path=processing_manifest.absolute_path,
+                        source_type=processing_manifest.source_type,
+                        source_domain=processing_manifest.source_domain,
+                        document_id=asset_document_id,
+                        file_size_bytes=processing_manifest.file_size_bytes,
+                        content_hash=processing_manifest.content_hash,
                         parent_source_rel_path=parent_manifest.source_rel_path
                         if parent_manifest
                         else None,
-                        chunk_count=manifest_record.chunk_count,
-                        last_seen_at=manifest_record.last_seen_at,
+                        chunk_count=asset_chunk_count,
+                        last_seen_at=processing_manifest.last_seen_at,
                         last_processed_at=timestamp,
                         last_committed_at=timestamp,
                         error_message=None,
                         lifecycle_status=LifecycleStatus.COMPLETE,
-                        retrieval_status=RetrievalStatus.ASSET_ONLY,
+                        retrieval_status=asset_retrieval_status,
                     )
                     upsert_manifest_record(sqlite_connection, committed_manifest)
                     upsert_asset_link(

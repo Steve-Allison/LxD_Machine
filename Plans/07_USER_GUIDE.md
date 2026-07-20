@@ -99,14 +99,34 @@ If you need a non-default config file, pass it explicitly at launch time.
 
 Minimal useful tools:
 
-- `search_knowledge` (graph-augmented answer synthesis; was `query_lxd`)
+- `search_knowledge` (graph-augmented answer synthesis; optional learner brief params)
 - `search_knowledge_deep` (same plus structured graph context)
+- `design_learning` / `critique_design` (multi-step instructional-design artefacts)
+- `list_eval_gaps` (triage retrieval-eval failures as human tickets)
 - `search_corpus`
 - `get_entity_types`
 - `get_related_concepts`
 - `corpus_status`
 
-See `05_MCP_SPEC.md` for the full list of 20 read-only tools.
+See `05_MCP_SPEC.md` for the full list of 23 tools.
+
+### Eval and gaps
+
+```bash
+pixi run retrieval-check   # Recall@10 / MRR@10; persists to data/.../retrieval_eval_runs.jsonl
+pixi run eval-gaps         # same + writes open tickets under data/.../gaps/
+pixi run eval-quality      # faithfulness / relevance / context precision
+```
+
+Gap tickets never auto-edit the wiki or ontology — close them by hand after curation, then re-ingest.
+
+### Multimodal captions (opt-in)
+
+PNG assets remain `asset_only` unless `multimodal.captions_enabled: true`. Backfill:
+
+```bash
+pixi run caption-assets --limit 20    # prints plan; requires --yes for larger runs
+```
 
 ---
 

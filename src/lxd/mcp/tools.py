@@ -4,13 +4,19 @@ import json
 from collections.abc import Callable
 from dataclasses import dataclass
 from itertools import pairwise
+from typing import Literal
 
 import networkx as nx
 
+from lxd.agents.critique import critique_design
+from lxd.agents.design import design_learning
 from lxd.app.bootstrap import AppContext
 from lxd.app.status import load_committed_status
+from lxd.domain.brief import LearnerBrief
+from lxd.eval.gaps import list_gap_tickets
 from lxd.ingest.pipeline.orchestrator import IngestPlan
 from lxd.mcp.models import (
+    AssessmentBlueprintView,
     BridgeEntity,
     ChunkSearchResult,
     CommunityContext,
@@ -18,10 +24,13 @@ from lxd.mcp.models import (
     CorpusCounts,
     CorpusRelation,
     CorpusStatusResponse,
+    CritiqueResultView,
+    DesignArtefactBundleView,
     EntityGraphStats,
     EntityNeighbor,
     EntitySearchResult,
     EntitySummary,
+    EvalGapTicketView,
     FoundationalEntity,
     GraphContextClaim,
     GraphContextCommunityReport,
@@ -32,6 +41,9 @@ from lxd.mcp.models import (
     KnowledgeAnswer,
     KnowledgeAnswerDeep,
     KnowledgeAnswerMetadata,
+    LearningObjectivesView,
+    ModalityPlanView,
+    OutlineView,
     PathBetweenEntities,
     PathEdge,
     PredicateCount,
@@ -623,8 +635,21 @@ def search_knowledge_tool(
     on_phase: PhaseCallback | None = None,
     on_notice: NoticeCallback | None = None,
     sampler: Sampler | None = None,
+    *,
+    audience: str | None = None,
+    modality: str | None = None,
+    bloom_target: str | None = None,
+    constraints: str | None = None,
+    session_id: str | None = None,
 ) -> KnowledgeAnswer:
-    """Run the full answer pipeline with graph-augmented synthesis."""
+    """Run the full answer pipeline with graph-augmented synthesis.
+
+    ``audience`` / ``modality`` / ``bloom_target`` / ``constraints`` /
+    ``session_id`` form the optional learner brief (see
+    :class:`lxd.domain.brief.LearnerBrief`); when ``session_id`` is set the
+    brief is merged with, and persisted alongside, any prior brief on file
+    for that session.
+    """
     _require_non_empty(question, "question")
 
     envelope = answer_question(
@@ -634,6 +659,11 @@ def search_knowledge_tool(
         on_phase=on_phase,
         on_notice=on_notice,
         sampler=sampler,
+        audience=audience,
+        modality=modality,
+        bloom_target=bloom_target,
+        constraints=constraints,
+        session_id=session_id,
     )
     return KnowledgeAnswer(
         answer_status=envelope.answer_status.value,
@@ -655,8 +685,17 @@ def search_knowledge_deep_tool(
     on_phase: PhaseCallback | None = None,
     on_notice: NoticeCallback | None = None,
     sampler: Sampler | None = None,
+    *,
+    audience: str | None = None,
+    modality: str | None = None,
+    bloom_target: str | None = None,
+    constraints: str | None = None,
+    session_id: str | None = None,
 ) -> KnowledgeAnswerDeep:
-    """Run the full answer pipeline with graph context data returned alongside the answer."""
+    """Run the full answer pipeline with graph context data returned alongside the answer.
+
+    See :func:`search_knowledge_tool` for the learner-brief parameters.
+    """
     _require_non_empty(question, "question")
 
     envelope = answer_question(
@@ -666,6 +705,11 @@ def search_knowledge_deep_tool(
         on_phase=on_phase,
         on_notice=on_notice,
         sampler=sampler,
+        audience=audience,
+        modality=modality,
+        bloom_target=bloom_target,
+        constraints=constraints,
+        session_id=session_id,
     )
 
     context = envelope.graph_context
@@ -721,6 +765,72 @@ def search_knowledge_deep_tool(
     )
 
 
+def design_learning_tool(
+    app_context: AppContext,
+    topic: str,
+    audience: str | None = None,
+    modality: str | None = None,
+    bloom_target: str | None = None,
+    constraints: str | None = None,
+    session_id: str | None = None,
+    max_steps: int | None = None,
+) -> DesignArtefactBundleView:
+    """Draft a grounded learning-design artefact bundle for ``topic``.
+
+    Runs the bounded design agent (see :mod:`lxd.agents.design`):
+    retrieve pedagogy evidence, draft objectives / modality plan /
+    outline / assessment, then one critique pass. Learner-brief fields
+    tailor the artefacts; when ``session_id`` is set, the brief is merged
+    with (and persisted over) any brief already on file for that session.
+    """
+    _require_non_empty(topic, "topic")
+    brief = LearnerBrief(
+        audience=audience,
+        modality=modality,
+        bloom_target=bloom_target,
+        constraints=constraints,
+        session_id=session_id,
+    )
+    bundle = design_learning(topic, brief, app_context.config, max_steps=max_steps)
+    return DesignArtefactBundleView(
+        topic=bundle.topic,
+        objectives=LearningObjectivesView(
+            items=bundle.objectives.items, citations=bundle.objectives.citations
+        ),
+        modality_plan=ModalityPlanView(
+            text=bundle.modality_plan.text, citations=bundle.modality_plan.citations
+        ),
+        outline=OutlineView(items=bundle.outline.items, citations=bundle.outline.citations),
+        assessment=AssessmentBlueprintView(
+            items=bundle.assessment.items, citations=bundle.assessment.citations
+        ),
+        steps_completed=bundle.steps_completed,
+        warnings=bundle.warnings,
+    )
+
+
+def critique_design_tool(
+    app_context: AppContext,
+    artefact: str,
+    focus_question: str | None = None,
+) -> CritiqueResultView:
+    """Score a design artefact (JSON bundle or free text) against fresh corpus evidence.
+
+    ``artefact`` accepts a JSON string shaped like ``design_learning``'s
+    output, or opaque free text — the critique is grounded against a
+    fresh ``search_chunks`` call either way.
+    """
+    _require_non_empty(artefact, "artefact")
+    result = critique_design(artefact, focus_question or "", app_context.config)
+    return CritiqueResultView(
+        overall_score=result.overall_score,
+        dimension_scores=result.dimension_scores,
+        feedback=result.feedback,
+        citations=result.citations,
+        warnings=result.warnings,
+    )
+
+
 def get_graph_overview_tool(app_context: AppContext) -> GraphOverview:
     """Return knowledge graph overview including stats and build state."""
     counts = _graph_counts(app_context)
@@ -740,8 +850,7 @@ def get_graph_overview_tool(app_context: AppContext) -> GraphOverview:
         graph_version=counts.graph_version,
         last_build_at=counts.last_build_at,
         community_algorithm=(
-            counts.community_algorithm
-            or app_context.config.knowledge_graph.community_algorithm
+            counts.community_algorithm or app_context.config.knowledge_graph.community_algorithm
         ),
         entity_profiles=counts.entity_profiles,
         communities=counts.communities,
@@ -750,6 +859,35 @@ def get_graph_overview_tool(app_context: AppContext) -> GraphOverview:
         relation_evidence=counts.relation_evidence,
         claims=counts.claims,
     )
+
+
+def list_eval_gaps_tool(
+    app_context: AppContext,
+    status: Literal["open", "closed"] | None = "open",
+) -> list[EvalGapTicketView]:
+    """List retrieval-eval gap tickets written by ``pixi run eval-gaps``.
+
+    Read-only: this tool never edits the wiki, ontology, or the tickets
+    themselves — it surfaces what ``lxd.eval.gaps.write_gap_tickets`` has
+    already persisted so a reviewer can triage from an MCP client.
+    """
+    gaps_dir = app_context.config.paths.data_path / "gaps"
+    tickets = list_gap_tickets(gaps_dir, status=status)
+    return [
+        EvalGapTicketView(
+            ticket_id=ticket.ticket_id,
+            question=ticket.question,
+            expected_sources=ticket.expected_sources,
+            ranked_top=ticket.ranked_top,
+            recall_at_10=ticket.recall_at_10,
+            mrr_at_10=ticket.mrr_at_10,
+            gap_kind=ticket.gap_kind,
+            notes=ticket.notes,
+            created_at=ticket.created_at,
+            status=ticket.status,
+        )
+        for ticket in tickets
+    ]
 
 
 def _require_non_empty(value: str, field_name: str) -> None:

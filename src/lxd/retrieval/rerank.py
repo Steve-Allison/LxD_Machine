@@ -56,6 +56,9 @@ def probe_reranker(config: RuntimeConfig) -> tuple[bool, str | None]:
     return outcome
 
 
+_RRF_K: Final = 20
+
+
 def rerank_chunks(
     question: str,
     candidates: list[RankedChunk],
@@ -70,16 +73,102 @@ def rerank_chunks(
 
     Returns:
         Reranked chunk candidates and rerank status.
+
+    When ``reranker.ensemble_enabled`` is true, the primary ``backend``
+    ranking is RRF-fused with the configured secondary scorer (typically
+    ColBERT). Primary failure still falls through to dense-only; secondary
+    failure keeps the primary ranking and surfaces a warning.
     """
     if not candidates:
         return RerankOutcome(ranked=[], warnings=[], applied=False)
 
+    primary = _rerank_primary(question, candidates, config)
+    ensemble_enabled = bool(getattr(config.reranker, "ensemble_enabled", False))
+    if not ensemble_enabled or not primary.applied:
+        return primary
+    secondary_name = getattr(config.reranker, "ensemble_secondary", "none")
+    if secondary_name == "none":
+        return primary
+
+    secondary = _rerank_secondary(question, candidates, config)
+    if not secondary.applied:
+        return RerankOutcome(
+            ranked=primary.ranked,
+            warnings=[*primary.warnings, *secondary.warnings],
+            applied=True,
+        )
+    fused = _rrf_fuse_rankings(
+        primary.ranked,
+        secondary.ranked,
+        secondary_weight=float(getattr(config.reranker, "ensemble_secondary_weight", 1.0)),
+    )
+    return RerankOutcome(
+        ranked=fused,
+        warnings=[*primary.warnings, *secondary.warnings],
+        applied=True,
+    )
+
+
+def _rerank_primary(
+    question: str,
+    candidates: list[RankedChunk],
+    config: RuntimeConfig,
+) -> RerankOutcome:
     backend = config.reranker.backend
     if backend == "colbert":
         return _rerank_via_colbert(question, candidates, config)
     if backend == "llama_cpp":
         return _rerank_via_llama_cpp(question, candidates, config)
     assert_never(backend)
+
+
+def _rerank_secondary(
+    question: str,
+    candidates: list[RankedChunk],
+    config: RuntimeConfig,
+) -> RerankOutcome:
+    secondary = getattr(config.reranker, "ensemble_secondary", "none")
+    if secondary == "colbert":
+        # Avoid double-running ColBERT when it is already the primary.
+        if config.reranker.backend == "colbert":
+            return RerankOutcome(
+                ranked=candidates,
+                warnings=["ensemble_secondary=colbert skipped because primary backend is colbert"],
+                applied=False,
+            )
+        return _rerank_via_colbert(question, candidates, config)
+    if secondary == "none":
+        return RerankOutcome(ranked=candidates, warnings=[], applied=False)
+    return RerankOutcome(
+        ranked=candidates,
+        warnings=[f"unsupported ensemble_secondary={secondary!r}"],
+        applied=False,
+    )
+
+
+def _rrf_fuse_rankings(
+    primary: list[RankedChunk],
+    secondary: list[RankedChunk],
+    *,
+    secondary_weight: float,
+) -> list[RankedChunk]:
+    """Reciprocal-rank fuse two reranker orderings, keyed by ``chunk_id``."""
+    primary_rank = {chunk.chunk_id: index for index, chunk in enumerate(primary, start=1)}
+    secondary_rank = {chunk.chunk_id: index for index, chunk in enumerate(secondary, start=1)}
+    by_id = {chunk.chunk_id: chunk for chunk in primary}
+    for chunk in secondary:
+        by_id.setdefault(chunk.chunk_id, chunk)
+
+    def _score(chunk_id: str) -> float:
+        p = primary_rank.get(chunk_id, len(primary) + 1)
+        s = secondary_rank.get(chunk_id, len(secondary) + 1)
+        return (1.0 / (_RRF_K + p)) + (secondary_weight * (1.0 / (_RRF_K + s)))
+
+    ordered_ids = sorted(by_id, key=_score, reverse=True)
+    return [
+        replace(by_id[chunk_id], score=_score(chunk_id))
+        for chunk_id in ordered_ids
+    ]
 
 
 def _rerank_via_colbert(
@@ -421,7 +510,7 @@ def _load_running_pid(pid_path: Path) -> int | None:
         return None
     try:
         payload = json.loads(pid_path.read_text(encoding="utf-8"))
-    except OSError, ValueError:
+    except (OSError, ValueError):
         pid_path.unlink(missing_ok=True)
         return None
     pid = payload.get("pid")

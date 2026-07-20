@@ -137,6 +137,24 @@ class AssetsConfig(BaseModel):
     infer_docling_parent: bool
 
 
+class MultimodalConfig(BaseModel):
+    """PNG asset captioning settings (caption-based, not full image embeddings).
+
+    Default off (``captions_enabled=False``) for safe rollout — the code
+    path is complete but does not spend API budget until an operator opts
+    in. When enabled, ``pixi run ingest`` captions new/changed PNG assets
+    inline and ``pixi run caption-assets`` backfills previously ingested
+    ``asset_only`` PNGs.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    captions_enabled: bool = False
+    caption_model: str = "gpt-4o-mini"
+    caption_timeout_secs: int = Field(default=60, gt=0)
+    caption_max_tokens: int = Field(default=200, gt=0)
+
+
 class OntologyConfig(BaseModel):
     """Ontology file inclusion and ignore filters."""
 
@@ -178,11 +196,33 @@ class RetrievalConfig(BaseModel):
     relation_fusion_weight: float = Field(default=1.0, ge=0.0)
     centrality_fusion_weight: float = Field(default=1.0, ge=0.0)
     community_diversity_enabled: bool = True
-    hyde_enabled: bool = False
+    hyde_enabled: bool = True
     hyde_model: str = "qwen3:14b"
     hyde_temperature: float = Field(default=0.0, ge=0.0)
     hyde_timeout_secs: int = Field(default=30, gt=0)
     hyde_max_tokens: int = Field(default=200, gt=0)
+    hyde_min_breadth: Literal["narrow", "standard", "broad"] = Field(
+        default="standard",
+        description=(
+            "HyDE only fires when the routed breadth is at least this "
+            "wide (narrow < standard < broad). Narrow factual lookups "
+            "already embed well as literal questions, so the default "
+            "skips HyDE there and saves the extra LLM call."
+        ),
+    )
+    multi_query_enabled: bool = True
+    multi_query_count: int = Field(
+        default=2,
+        ge=1,
+        le=5,
+        description="Number of LLM-generated paraphrases, excluding the original question.",
+    )
+    multi_query_model: str = "gpt-4o-mini"
+    multi_query_timeout_secs: float = Field(default=20.0, gt=0.0)
+    multi_query_temperature: float = Field(default=0.3, ge=0.0)
+    graph_lane_enabled: bool = True
+    graph_lane_fusion_weight: float = Field(default=1.0, ge=0.0)
+    max_graph_lane_hits: int = Field(default=10, gt=0, le=MAX_RETRIEVAL_LIMIT)
 
 
 class RerankerLaunchConfig(BaseModel):
@@ -224,6 +264,26 @@ class RerankerConfig(BaseModel):
         gt=0,
         le=8192,
         description="Token cap per document when encoding for late-interaction scoring.",
+    )
+    ensemble_enabled: bool = Field(
+        default=False,
+        description=(
+            "When true, run the configured primary ``backend`` and a secondary "
+            "scorer (``ensemble_secondary``), then RRF-fuse their rankings. "
+            "Default off — ColBERT loads a heavyweight model; enable when "
+            "latency budget allows. If the primary fails, dense-only fallback "
+            "is unchanged; if only the secondary fails, the primary ranking "
+            "is kept with a warning."
+        ),
+    )
+    ensemble_secondary: Literal["colbert", "none"] = Field(
+        default="colbert",
+        description="Secondary scorer for the ensemble. ``none`` disables the second lane.",
+    )
+    ensemble_secondary_weight: float = Field(
+        default=1.0,
+        ge=0.0,
+        description="RRF weight applied to the secondary ranking lane.",
     )
 
     @model_validator(mode="after")
@@ -331,6 +391,15 @@ class AdaptiveRetrievalConfig(BaseModel):
             "``retrieval.dense_top_k`` so synthesis can cover more ground."
         ),
     )
+    heuristic_router_enabled: bool = Field(
+        default=True,
+        description=(
+            "Try a cheap, deterministic heuristic route (greeting/meta "
+            "detection, short 'what is X' factual lookups, survey cues) "
+            "before falling through to the LLM router call. Saves the "
+            "router LLM round-trip for the common, easily classified cases."
+        ),
+    )
 
 
 class KnowledgeGraphConfig(BaseModel):
@@ -373,6 +442,45 @@ class KnowledgeGraphConfig(BaseModel):
     max_community_context: int = Field(default=3, gt=0)
     max_claim_context: int = Field(default=10, gt=0)
     max_graph_context_tokens: int = Field(default=1500, gt=0)
+
+    # Conflict detection
+    conflict_detection_enabled: bool = True
+    max_conflicts_in_context: int = Field(default=5, gt=0)
+
+
+class DesignAgentConfig(BaseModel):
+    """Multi-step design-artefact agent (``lxd.agents.design``) settings.
+
+    The agent is a bounded step machine (clarify → retrieve → draft
+    objectives/modality/outline/assessment → one critique+revise pass),
+    hard-capped at ``max_steps``. All LLM calls route through
+    :func:`lxd.ingest.llm_client.call_with_fallback_async` so the same
+    backend/fallback semantics used elsewhere in ingest apply here.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    backend: Literal["openai", "ollama"] = "openai"
+    fallback_backend: Literal["ollama", "none"] = "ollama"
+    openai_model: str = "gpt-4o-mini"
+    ollama_model: str = "qwen3:14b"
+    temperature: float = Field(default=0.2, ge=0.0)
+    timeout_secs: float = Field(default=60.0, gt=0.0)
+    max_tokens: int = Field(default=1500, gt=0)
+    max_steps: int = Field(
+        default=6,
+        gt=0,
+        le=12,
+        description="Hard cap on agent steps: clarify, retrieve, draft x4, critique+revise.",
+    )
+    retrieval_top_k: int = Field(default=8, gt=0, le=MAX_RETRIEVAL_LIMIT)
+    max_empty_retrievals: int = Field(
+        default=2,
+        gt=0,
+        description="Circuit breaker: stop and return the partial bundle after this many "
+        "consecutive empty retrievals.",
+    )
+    critique_retrieval_top_k: int = Field(default=6, gt=0, le=MAX_RETRIEVAL_LIMIT)
 
 
 class MCPConfig(BaseModel):
@@ -460,6 +568,7 @@ class RuntimeConfig(BaseModel):
     embedding: EmbeddingConfig
     corpus: CorpusConfig
     assets: AssetsConfig
+    multimodal: MultimodalConfig = Field(default_factory=MultimodalConfig)
     ontology: OntologyConfig
     retrieval: RetrievalConfig
     reranker: RerankerConfig
@@ -469,6 +578,7 @@ class RuntimeConfig(BaseModel):
     adaptive_retrieval: AdaptiveRetrievalConfig = Field(default_factory=AdaptiveRetrievalConfig)
     knowledge_graph: KnowledgeGraphConfig = Field(default_factory=KnowledgeGraphConfig)
     ingest_budget: IngestBudget = Field(default_factory=IngestBudget)
+    design_agent: DesignAgentConfig = Field(default_factory=DesignAgentConfig)
     mcp: MCPConfig
     logging: LoggingConfig
     openai: OpenAIEmbeddingConfig | None = None

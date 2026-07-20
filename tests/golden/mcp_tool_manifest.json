@@ -127,6 +127,194 @@
       "readOnlyHint": true
     },
     "has_description": true,
+    "name": "critique_design",
+    "output_schema": {
+      "additionalProperties": false,
+      "description": "Output of ``critique_design`` (mirrors ``lxd.agents.artefacts.CritiqueResult``).",
+      "properties": {
+        "citations": {
+          "description": "Citation labels grounding the critique.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "dimension_scores": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "description": "Per-dimension 0.0-1.0 scores, e.g. objective_alignment, evidence_grounding.",
+          "type": "object"
+        },
+        "feedback": {
+          "description": "Concise, actionable bullets.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "overall_score": {
+          "description": "Holistic 0.0-1.0 score, not necessarily the mean of dimension_scores.",
+          "type": "number"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "overall_score"
+      ],
+      "type": "object"
+    },
+    "parameters": [
+      "artefact",
+      "focus_question"
+    ],
+    "required": [
+      "artefact"
+    ]
+  },
+  {
+    "annotations": {
+      "idempotentHint": false,
+      "openWorldHint": true,
+      "readOnlyHint": true
+    },
+    "has_description": true,
+    "name": "design_learning",
+    "output_schema": {
+      "additionalProperties": false,
+      "description": "Full output of ``design_learning`` (mirrors ``lxd.agents.artefacts.DesignArtefactBundle``).",
+      "properties": {
+        "assessment": {
+          "additionalProperties": false,
+          "description": "Assessment items (mirrors ``lxd.agents.artefacts.AssessmentBlueprint``).",
+          "properties": {
+            "citations": {
+              "description": "Citation labels grounding the assessment design.",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "items": {
+              "description": "Assessment items.",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "modality_plan": {
+          "additionalProperties": false,
+          "description": "Recommended delivery modality (mirrors ``lxd.agents.artefacts.ModalityPlan``).",
+          "properties": {
+            "citations": {
+              "description": "Citation labels grounding this recommendation.",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "text": {
+              "default": "",
+              "description": "Recommended modality and rationale.",
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "objectives": {
+          "additionalProperties": false,
+          "description": "Bloom's-aligned objectives (mirrors ``lxd.agents.artefacts.LearningObjectives``).",
+          "properties": {
+            "citations": {
+              "description": "Citation labels grounding these objectives.",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "items": {
+              "description": "Learning objective statements.",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "outline": {
+          "additionalProperties": false,
+          "description": "Ordered module headings (mirrors ``lxd.agents.artefacts.Outline``).",
+          "properties": {
+            "citations": {
+              "description": "Citation labels grounding the sequencing.",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "items": {
+              "description": "Ordered outline headings.",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "steps_completed": {
+          "description": "How many of the agent's bounded steps actually ran (<= max_steps).",
+          "type": "integer"
+        },
+        "topic": {
+          "type": "string"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "topic",
+        "objectives",
+        "modality_plan",
+        "outline",
+        "assessment",
+        "steps_completed"
+      ],
+      "type": "object"
+    },
+    "parameters": [
+      "audience",
+      "bloom_target",
+      "constraints",
+      "max_steps",
+      "modality",
+      "session_id",
+      "topic"
+    ],
+    "required": [
+      "topic"
+    ]
+  },
+  {
+    "annotations": {
+      "idempotentHint": false,
+      "openWorldHint": true,
+      "readOnlyHint": true
+    },
+    "has_description": true,
     "name": "find_bridge_entities",
     "output_schema": {
       "properties": {
@@ -1222,6 +1410,96 @@
       "readOnlyHint": true
     },
     "has_description": true,
+    "name": "list_eval_gaps",
+    "output_schema": {
+      "properties": {
+        "result": {
+          "items": {
+            "additionalProperties": false,
+            "description": "One retrieval-eval gap ticket returned by ``list_eval_gaps``.\n\nMirrors :class:`lxd.eval.gaps.GapTicket` \u2014 a human-reviewed artefact\nderived from a failing retrieval-eval case, never an auto-applied fix.",
+            "properties": {
+              "created_at": {
+                "type": "string"
+              },
+              "expected_sources": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "gap_kind": {
+                "enum": [
+                  "missed_source",
+                  "weak_rank",
+                  "empty_results",
+                  "eval_warning"
+                ],
+                "type": "string"
+              },
+              "mrr_at_10": {
+                "type": "number"
+              },
+              "notes": {
+                "type": "string"
+              },
+              "question": {
+                "type": "string"
+              },
+              "ranked_top": {
+                "description": "Top-10 ranked source paths retrieval actually returned.",
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "recall_at_10": {
+                "type": "number"
+              },
+              "status": {
+                "enum": [
+                  "open",
+                  "closed"
+                ],
+                "type": "string"
+              },
+              "ticket_id": {
+                "description": "BLAKE3 hash of the question and expected sources.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "ticket_id",
+              "question",
+              "recall_at_10",
+              "mrr_at_10",
+              "gap_kind",
+              "notes",
+              "created_at",
+              "status"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "result"
+      ],
+      "type": "object",
+      "x-fastmcp-wrap-result": true
+    },
+    "parameters": [
+      "status"
+    ],
+    "required": []
+  },
+  {
+    "annotations": {
+      "idempotentHint": false,
+      "openWorldHint": true,
+      "readOnlyHint": true
+    },
+    "has_description": true,
     "name": "search_corpus",
     "output_schema": {
       "properties": {
@@ -1523,8 +1801,13 @@
       "type": "object"
     },
     "parameters": [
+      "audience",
+      "bloom_target",
+      "constraints",
       "domain",
-      "question"
+      "modality",
+      "question",
+      "session_id"
     ],
     "required": [
       "question"
@@ -1864,8 +2147,13 @@
       "type": "object"
     },
     "parameters": [
+      "audience",
+      "bloom_target",
+      "constraints",
       "domain",
-      "question"
+      "modality",
+      "question",
+      "session_id"
     ],
     "required": [
       "question"

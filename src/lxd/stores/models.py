@@ -378,3 +378,39 @@ class GraphMetadataRecord:
     key: str
     value: str
     updated_at: str
+
+
+# ---------------------------------------------------------------------------
+# Learner-brief session state (Phase 3 SOTA roadmap)
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True, slots=True)
+class SessionRecord:
+    """Persisted learner-brief session state.
+
+    ``last_artefact_json`` is a small JSON reference to the most recent
+    answer or design artefact produced for this session (citation labels,
+    answer status, or an artefact bundle id) — never the full payload, to
+    keep the row small. Defaults to ``'{}'`` for a session with no turns yet.
+    """
+
+    session_id: str
+    audience: str | None
+    modality: str | None
+    bloom_target: str | None
+    constraints_text: str | None
+    created_at: str
+    updated_at: str
+    last_artefact_json: str = "{}"
+
+
+@dataclass(frozen=True, slots=True)
+class SessionTurnRecord:
+    """One turn (user question or assistant artefact reference) in a session."""
+
+    turn_id: str
+    session_id: str
+    role: str
+    content_json: str
+    created_at: str
