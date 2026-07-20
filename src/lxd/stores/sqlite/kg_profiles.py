@@ -310,6 +310,29 @@ def load_community_report(
     return community_report_from_row(row)
 
 
+def update_community_report_llm_summary(
+    connection: sqlite3.Connection,
+    *,
+    community_id: int,
+    community_level: int,
+    llm_summary: str,
+) -> None:
+    """Persist an LLM summary for one ``(community_id, community_level)`` row.
+
+    Hierarchical Louvain reuses numeric ``community_id`` values across levels,
+    so the level must be part of the WHERE clause — filtering on
+    ``community_id`` alone would overwrite every level that shares the id.
+    """
+    connection.execute(
+        """
+        UPDATE community_reports
+        SET llm_summary = ?
+        WHERE community_id = ? AND community_level = ?
+        """,
+        (llm_summary, community_id, community_level),
+    )
+
+
 def load_all_community_reports(
     connection: sqlite3.Connection, *, community_level: int | None = None
 ) -> list[CommunityReportRecord]:

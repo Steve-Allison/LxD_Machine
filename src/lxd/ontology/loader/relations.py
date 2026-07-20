@@ -1,292 +1,27 @@
-"""Load ontology data and validate source metadata."""
+"""Relation schema extraction, relation records, and target resolution."""
 
-import json
 from collections import defaultdict
-from dataclasses import dataclass
-from operator import attrgetter
-from pathlib import Path, PurePosixPath
+from pathlib import PurePosixPath
 from typing import Any
 
-import yaml
-from blake3 import blake3
-
-from lxd.domain.ids import blake3_hex
-from lxd.ontology.graph import OntologyNodeRecord, RelationRecord, build_graph
-from lxd.ontology.inventory import OntologyCoverageReport, build_coverage_report, discover_key_paths
-from lxd.ontology.matcher import (
-    MatcherTermRecord,
-    canonical_matcher_term_records,
-    matcher_termset_hash,
+from lxd.ontology.graph import RelationRecord
+from lxd.ontology.loader.entities import (
+    coerce_required_str,
+    external_file_node_id,
+    file_node_id,
+    taxonomy_reference_node_id,
+    taxonomy_type_node_id,
+    taxonomy_value_node_id,
+    unresolved_entity_node_id,
+)
+from lxd.ontology.loader.types import (
+    OntologySource,
+    OntologyValidationIssue,
+    RelationSchema,
 )
 
 
-@dataclass(frozen=True, slots=True)
-class OntologySource:
-    """Loaded ontology source file and parsed payload."""
-
-    file_path: Path
-    file_rel_path: str
-    blake3_hash: str
-    data: Any
-
-
-@dataclass(frozen=True, slots=True)
-class OntologyMetadataRecord:
-    """Ontology metadata row derived from file or entity payload."""
-
-    record_kind: str
-    source_file_rel_path: str
-    entity_id: str | None
-    payload: dict[str, Any]
-
-
-@dataclass(frozen=True, slots=True)
-class OntologyValidationIssue:
-    """Validation issue found during ontology loading."""
-
-    issue_kind: str
-    source_file_rel_path: str
-    path: str
-    message: str
-
-
-@dataclass(frozen=True, slots=True)
-class OntologyLoadResult:
-    """All artifacts produced by ontology loading."""
-
-    sources: list[OntologySource]
-    entity_definitions: list[dict[str, Any]]
-    matcher_records: list[MatcherTermRecord]
-    matcher_termset_hash: str
-    snapshot_hash: str
-    relation_records: list[RelationRecord]
-    metadata_records: list[OntologyMetadataRecord]
-    coverage_report: OntologyCoverageReport
-    validation_issues: list[OntologyValidationIssue]
-    graph: Any
-
-
-@dataclass(frozen=True, slots=True)
-class _RelationSchema:
-    file_relation_types: dict[str, dict[str, Any]]
-    entity_relation_types: dict[str, dict[str, Any]]
-    entity_relation_weights: set[str]
-
-
-class _IncludeLoader(yaml.SafeLoader):
-    pass
-
-
-def _include_constructor(loader: _IncludeLoader, node: yaml.nodes.Node) -> Any:
-    if not isinstance(node, yaml.ScalarNode):
-        raise TypeError("!include expects a scalar path")
-    include_path = Path(loader.name).parent / loader.construct_scalar(node)
-    with include_path.open("r", encoding="utf-8") as handle:
-        child_loader = _IncludeLoader(handle)
-        child_loader.name = str(include_path)
-        try:
-            return child_loader.get_single_data()
-        finally:
-            child_loader.dispose()
-
-
-_IncludeLoader.add_constructor("!include", _include_constructor)
-
-
-def load_ontology(
-    root: Path, include_globs: list[str], ignore_names: list[str]
-) -> OntologyLoadResult:
-    """Load ontology sources and derive runtime artifacts.
-
-    Args:
-        root: Ontology root directory.
-        include_globs: Glob patterns selecting ontology files.
-        ignore_names: Filenames to ignore while loading.
-
-    Returns:
-        Loaded ontology artifacts and derived indexes.
-    """
-    sources = _load_sources(root, include_globs, ignore_names)
-    coverage_report = _coverage_report_for_sources(sources)
-    entity_definitions = _extract_entity_definitions(sources)
-    matcher_records = canonical_matcher_term_records(entity_definitions)
-    snapshot_hash = _snapshot_hash(sources)
-    metadata_records = _extract_metadata_records(sources, entity_definitions)
-    relation_schema = _extract_relation_schema(sources)
-    relation_records, validation_issues = _extract_relations(
-        sources, entity_definitions, relation_schema
-    )
-    graph = build_graph(
-        _build_node_records(sources, entity_definitions, relation_records),
-        relation_records,
-    )
-    return OntologyLoadResult(
-        sources=sources,
-        entity_definitions=entity_definitions,
-        matcher_records=matcher_records,
-        matcher_termset_hash=matcher_termset_hash(matcher_records),
-        snapshot_hash=snapshot_hash,
-        relation_records=relation_records,
-        metadata_records=metadata_records,
-        coverage_report=coverage_report,
-        validation_issues=validation_issues,
-        graph=graph,
-    )
-
-
-def _load_sources(
-    root: Path, include_globs: list[str], ignore_names: list[str]
-) -> list[OntologySource]:
-    seen: set[Path] = set()
-    collected: list[OntologySource] = []
-    for pattern in include_globs:
-        for path in sorted(root.glob(pattern)):
-            if not path.is_file() or path.name in ignore_names or path in seen:
-                continue
-            seen.add(path)
-            collected.append(
-                OntologySource(
-                    file_path=path,
-                    file_rel_path=str(path.relative_to(root)),
-                    blake3_hash=_file_hash(path),
-                    data=_load_yaml_with_includes(path),
-                )
-            )
-    return collected
-
-
-def _load_yaml_with_includes(path: Path) -> Any:
-    with path.open("r", encoding="utf-8") as handle:
-        loader = _IncludeLoader(handle)
-        loader.name = str(path)
-        try:
-            return loader.get_single_data()
-        finally:
-            loader.dispose()
-
-
-def _file_hash(path: Path) -> str:
-    hasher = blake3()
-    with path.open("rb") as handle:
-        while chunk := handle.read(8192):
-            hasher.update(chunk)
-    return hasher.hexdigest()
-
-
-def _snapshot_hash(sources: list[OntologySource]) -> str:
-    payload = "\n".join(
-        json.dumps(
-            {
-                "file_rel_path": source.file_rel_path,
-                "data": _canonicalize_for_hashing(source.data),
-            },
-            sort_keys=True,
-            separators=(",", ":"),
-            ensure_ascii=True,
-        )
-        for source in sorted(sources, key=attrgetter("file_rel_path"))
-    )
-    return blake3_hex(payload)
-
-
-def _canonicalize_for_hashing(value: Any) -> Any:
-    if isinstance(value, dict):
-        items = [
-            {
-                "key": _canonicalize_key(key),
-                "value": _canonicalize_for_hashing(child),
-            }
-            for key, child in sorted(value.items(), key=_mapping_item_sort_key)
-        ]
-        return {"__type__": "mapping", "items": items}
-    if isinstance(value, list):
-        return [_canonicalize_for_hashing(item) for item in value]
-    return value
-
-
-def _canonicalize_key(key: Any) -> str:
-    if isinstance(key, str):
-        return f"str:{key}"
-    if isinstance(key, bool):
-        return f"bool:{str(key).lower()}"
-    if key is None:
-        return "none:null"
-    if isinstance(key, int):
-        return f"int:{key}"
-    if isinstance(key, float):
-        return f"float:{key!r}"
-    return f"{type(key).__name__}:{key!r}"
-
-
-def _mapping_item_sort_key(item: tuple[Any, Any]) -> str:
-    return _canonicalize_key(item[0])
-
-
-def _coverage_report_for_sources(sources: list[OntologySource]) -> OntologyCoverageReport:
-    path_counts: dict[str, int] = defaultdict(int)
-    for source in sources:
-        discovered = discover_key_paths(source.data)
-        for path, count in discovered.items():
-            path_counts[path] += count
-    return build_coverage_report(path_counts)
-
-
-def _extract_entity_definitions(sources: list[OntologySource]) -> list[dict[str, Any]]:
-    entities: list[dict[str, Any]] = []
-    for source in sources:
-        data = source.data
-        if not isinstance(data, dict):
-            continue
-        entity_types = data.get("entity_types")
-        if not isinstance(entity_types, dict):
-            continue
-        source_meta = data.get("_meta") if isinstance(data.get("_meta"), dict) else {}
-        source_meta_id = source_meta.get("id") if isinstance(source_meta, dict) else None
-        for entity_id, payload in entity_types.items():
-            if not isinstance(payload, dict):
-                continue
-            merged = {
-                "canonical_id": entity_id,
-                **payload,
-                "source_file_rel_path": source.file_rel_path,
-                "source_meta_id": source_meta_id,
-            }
-            entities.append(merged)
-    return entities
-
-
-def _extract_metadata_records(
-    sources: list[OntologySource], entity_definitions: list[dict[str, Any]]
-) -> list[OntologyMetadataRecord]:
-    records: list[OntologyMetadataRecord] = []
-    for source in sources:
-        if isinstance(source.data, dict):
-            records.append(
-                OntologyMetadataRecord(
-                    record_kind="file",
-                    source_file_rel_path=source.file_rel_path,
-                    entity_id=None,
-                    payload=dict(source.data),
-                )
-            )
-    for entity in entity_definitions:
-        payload = {
-            key: value
-            for key, value in entity.items()
-            if key not in {"source_file_rel_path", "source_meta_id"}
-        }
-        records.append(
-            OntologyMetadataRecord(
-                record_kind="entity",
-                source_file_rel_path=_coerce_required_str(entity, "source_file_rel_path"),
-                entity_id=_coerce_required_str(entity, "canonical_id"),
-                payload=payload,
-            )
-        )
-    return records
-
-
-def _extract_relation_schema(sources: list[OntologySource]) -> _RelationSchema:
+def extract_relation_schema(sources: list[OntologySource]) -> RelationSchema:
     file_relation_types: dict[str, dict[str, Any]] = {}
     entity_relation_types: dict[str, dict[str, Any]] = {}
     entity_relation_weights: set[str] = set()
@@ -308,17 +43,17 @@ def _extract_relation_schema(sources: list[OntologySource]) -> _RelationSchema:
             for weight_name in relation_weights:
                 if isinstance(weight_name, str):
                     entity_relation_weights.add(weight_name)
-    return _RelationSchema(
+    return RelationSchema(
         file_relation_types=file_relation_types,
         entity_relation_types=entity_relation_types,
         entity_relation_weights=entity_relation_weights,
     )
 
 
-def _extract_relations(
+def extract_relations(
     sources: list[OntologySource],
     entity_definitions: list[dict[str, Any]],
-    relation_schema: _RelationSchema,
+    relation_schema: RelationSchema,
 ) -> tuple[list[RelationRecord], list[OntologyValidationIssue]]:
     relations: list[RelationRecord] = []
     issues: list[OntologyValidationIssue] = []
@@ -369,7 +104,7 @@ def _extract_relations(
 def _extract_file_relationships(
     *,
     source: OntologySource,
-    relation_schema: _RelationSchema,
+    relation_schema: RelationSchema,
     sources_by_rel_path: dict[str, OntologySource],
     sources_by_meta_id: dict[str, OntologySource],
     issues: list[OntologyValidationIssue],
@@ -381,7 +116,7 @@ def _extract_file_relationships(
     if not isinstance(relationships, list):
         return []
     records: list[RelationRecord] = []
-    source_node_id = _file_node_id(source.file_rel_path)
+    source_node_id = file_node_id(source.file_rel_path)
     for index, item in enumerate(relationships):
         origin_path = "_meta.relationships.*"
         if not isinstance(item, dict):
@@ -425,9 +160,9 @@ def _extract_file_relationships(
             sources_by_meta_id=sources_by_meta_id,
         )
         target_node_id = (
-            _file_node_id(resolved_target.file_rel_path)
+            file_node_id(resolved_target.file_rel_path)
             if resolved_target is not None
-            else _external_file_node_id(target)
+            else external_file_node_id(target)
         )
         records.append(
             RelationRecord(
@@ -461,7 +196,7 @@ def _extract_entity_relationships(
     payload: dict[str, Any],
     valid_entity_ids: set[str],
     entity_target_index: dict[str, str],
-    relation_schema: _RelationSchema,
+    relation_schema: RelationSchema,
     sources_by_meta_id: dict[str, OntologySource],
     top_level_key_index: dict[str, list[OntologySource]],
     issues: list[OntologyValidationIssue],
@@ -606,7 +341,7 @@ def _extract_entity_relationships(
 
 def _validate_entity_relation_schema(
     *,
-    relation_schema: _RelationSchema,
+    relation_schema: RelationSchema,
     source_file_rel_path: str,
     entity_id: str,
     relation_type: str,
@@ -677,7 +412,7 @@ def _entity_relation_record(
         source_node_id=entity_id,
         source_node_type="entity",
         source_entity_id=entity_id,
-        target_node_id=target_entity_id or _unresolved_entity_node_id(target_name),
+        target_node_id=target_entity_id or unresolved_entity_node_id(target_name),
         target_node_type="entity" if target_entity_id is not None else "unresolved_entity",
         target_entity_id=target_entity_id,
         target_file_rel_path=target_file_hint,
@@ -745,7 +480,7 @@ def _extract_taxonomy_mapping_relations(
                     source_node_id=entity_id,
                     source_node_type="entity",
                     source_entity_id=entity_id,
-                    target_node_id=_taxonomy_value_node_id(taxonomy_id, dimension, value),
+                    target_node_id=taxonomy_value_node_id(taxonomy_id, dimension, value),
                     target_node_type="taxonomy_value",
                     target_entity_id=None,
                     target_file_rel_path=taxonomy_source.file_rel_path if taxonomy_source else None,
@@ -796,7 +531,7 @@ def _extract_taxonomy_type_relations(
                 source_node_id=entity_id,
                 source_node_type="entity",
                 source_entity_id=entity_id,
-                target_node_id=_taxonomy_type_node_id(taxonomy_id or "unknown_taxonomy", value),
+                target_node_id=taxonomy_type_node_id(taxonomy_id or "unknown_taxonomy", value),
                 target_node_type="taxonomy_type",
                 target_entity_id=None,
                 target_file_rel_path=None,
@@ -832,9 +567,9 @@ def _extract_taxonomy_reference_relations(
         top_level_key_index=top_level_key_index,
     )
     target_node_id = (
-        _file_node_id(resolved_source.file_rel_path)
+        file_node_id(resolved_source.file_rel_path)
         if resolved_source is not None
-        else _taxonomy_reference_node_id(taxonomy_reference)
+        else taxonomy_reference_node_id(taxonomy_reference)
     )
     target_node_type = "ontology_file" if resolved_source is not None else "taxonomy_reference"
     target_file_rel_path = resolved_source.file_rel_path if resolved_source is not None else None
@@ -883,81 +618,6 @@ def _extract_taxonomy_reference_relations(
     return records
 
 
-def _build_node_records(
-    sources: list[OntologySource],
-    entity_definitions: list[dict[str, Any]],
-    relations: list[RelationRecord],
-) -> list[OntologyNodeRecord]:
-    nodes: dict[str, OntologyNodeRecord] = {}
-    for source in sources:
-        source_meta = source.data.get("_meta") if isinstance(source.data, dict) else None
-        label = None
-        metadata: dict[str, Any] = {"file_rel_path": source.file_rel_path}
-        if isinstance(source_meta, dict):
-            title = source_meta.get("title")
-            meta_id = source_meta.get("id")
-            label = (
-                title
-                if isinstance(title, str)
-                else meta_id
-                if isinstance(meta_id, str)
-                else source.file_rel_path
-            )
-            metadata.update(
-                {
-                    "meta_id": meta_id,
-                    "purpose": source_meta.get("purpose"),
-                    "domain": source_meta.get("domain"),
-                    "domain_type": source_meta.get("domain_type"),
-                }
-            )
-        nodes[_file_node_id(source.file_rel_path)] = OntologyNodeRecord(
-            node_id=_file_node_id(source.file_rel_path),
-            node_type="ontology_file",
-            source_file_rel_path=source.file_rel_path,
-            entity_id=None,
-            label=label or source.file_rel_path,
-            metadata=metadata,
-        )
-    for entity in entity_definitions:
-        canonical_id = _coerce_required_str(entity, "canonical_id")
-        label = entity.get("label")
-        nodes[canonical_id] = OntologyNodeRecord(
-            node_id=canonical_id,
-            node_type="entity",
-            source_file_rel_path=_coerce_required_str(entity, "source_file_rel_path"),
-            entity_id=canonical_id,
-            label=label if isinstance(label, str) else canonical_id,
-            metadata={
-                "entity_kind": entity.get("entity_kind"),
-                "family": entity.get("family"),
-                "source_meta_id": entity.get("source_meta_id"),
-            },
-        )
-    for relation in relations:
-        if relation.target_node_id in nodes:
-            continue
-        metadata = dict(relation.metadata)
-        label = relation.target_node_id
-        if relation.target_node_type in {"taxonomy_value", "taxonomy_type"}:
-            label = str(metadata.get("value") or relation.target_node_id)
-        elif relation.target_node_type == "taxonomy_reference":
-            label = str(metadata.get("taxonomy_reference") or relation.target_node_id)
-        elif relation.target_node_type == "external_file":
-            label = relation.target_node_id.removeprefix("external_file:")
-        elif relation.target_node_type == "unresolved_entity":
-            label = relation.target_node_id.removeprefix("unresolved_entity:")
-        nodes[relation.target_node_id] = OntologyNodeRecord(
-            node_id=relation.target_node_id,
-            node_type=relation.target_node_type,
-            source_file_rel_path=relation.target_file_rel_path,
-            entity_id=relation.target_entity_id,
-            label=label,
-            metadata=metadata,
-        )
-    return list(nodes.values())
-
-
 def _build_top_level_key_index(sources: list[OntologySource]) -> dict[str, list[OntologySource]]:
     index: dict[str, list[OntologySource]] = defaultdict(list)
     for source in sources:
@@ -973,7 +633,7 @@ def _build_entity_target_index(entity_definitions: list[dict[str, Any]]) -> dict
     index: dict[str, str] = {}
     folded_candidates: dict[str, set[str]] = defaultdict(set)
     for entity in entity_definitions:
-        canonical_id = _coerce_required_str(entity, "canonical_id")
+        canonical_id = coerce_required_str(entity, "canonical_id")
         for candidate in (
             canonical_id,
             entity.get("gliner_label"),
@@ -1059,34 +719,3 @@ def _infer_taxonomy_id(payload: dict[str, Any]) -> str | None:
 
 def _normalize_rel_path(value: str) -> str:
     return str(PurePosixPath(value))
-
-
-def _file_node_id(file_rel_path: str) -> str:
-    return f"file:{file_rel_path}"
-
-
-def _external_file_node_id(target: str) -> str:
-    return f"external_file:{target}"
-
-
-def _unresolved_entity_node_id(entity_name: str) -> str:
-    return f"unresolved_entity:{entity_name}"
-
-
-def _taxonomy_value_node_id(taxonomy_id: str, dimension: str, value: str) -> str:
-    return f"taxonomy_value:{taxonomy_id}:{dimension}:{value}"
-
-
-def _taxonomy_type_node_id(taxonomy_id: str, value: str) -> str:
-    return f"taxonomy_type:{taxonomy_id}:{value}"
-
-
-def _taxonomy_reference_node_id(reference_name: str) -> str:
-    return f"taxonomy_reference:{reference_name}"
-
-
-def _coerce_required_str(payload: dict[str, Any], key: str) -> str:
-    value = payload.get(key)
-    if not isinstance(value, str) or not value.strip():
-        raise ValueError(f"Missing required string field: {key}")
-    return value

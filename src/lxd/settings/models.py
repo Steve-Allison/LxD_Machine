@@ -13,6 +13,8 @@ from pydantic import (
     model_validator,
 )
 
+from lxd.domain.limits import MAX_RETRIEVAL_LIMIT
+
 
 def _normalize_query_instruction(value: str | None) -> str | None:
     """Treat a blank query instruction as ``None`` so config consumers see a single absent shape."""
@@ -170,8 +172,8 @@ class RetrievalConfig(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    dense_top_k: int = Field(gt=0)
-    rerank_top_k: int = Field(gt=0)
+    dense_top_k: int = Field(gt=0, le=MAX_RETRIEVAL_LIMIT)
+    rerank_top_k: int = Field(gt=0, le=MAX_RETRIEVAL_LIMIT)
     lexical_fusion_weight: float = Field(default=2.0, ge=0.0)
     relation_fusion_weight: float = Field(default=1.0, ge=0.0)
     centrality_fusion_weight: float = Field(default=1.0, ge=0.0)
@@ -314,7 +316,7 @@ class AdaptiveRetrievalConfig(BaseModel):
     narrow_dense_top_k: int = Field(
         default=8,
         gt=0,
-        le=200,
+        le=MAX_RETRIEVAL_LIMIT,
         description=(
             "Dense retrieval depth for narrow queries. Smaller than "
             "``retrieval.dense_top_k`` so synthesis sees a focused set."
@@ -323,7 +325,7 @@ class AdaptiveRetrievalConfig(BaseModel):
     broad_dense_top_k: int = Field(
         default=40,
         gt=0,
-        le=200,
+        le=MAX_RETRIEVAL_LIMIT,
         description=(
             "Dense retrieval depth for broad / survey queries. Larger than "
             "``retrieval.dense_top_k`` so synthesis can cover more ground."

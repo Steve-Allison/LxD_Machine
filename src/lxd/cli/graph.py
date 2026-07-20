@@ -36,7 +36,7 @@ from lxd.ontology.profiles import (
 from lxd.settings.models import RuntimeConfig
 from lxd.stores.lancedb import (
     connect_lancedb,
-    fetch_vectors_by_chunk_ids,
+    load_vectors_by_chunk_ids,
     open_chunk_table,
     open_entity_table,
     upsert_entity_embeddings,
@@ -608,7 +608,7 @@ def _compute_entity_embeddings(
             continue
 
         # Fetch vectors from LanceDB (native float arrays, no JSON parsing)
-        vectors_by_id = fetch_vectors_by_chunk_ids(chunk_table, chunk_ids)
+        vectors_by_id = load_vectors_by_chunk_ids(chunk_table, chunk_ids)
         vectors = [v for v in vectors_by_id.values() if len(v) == vector_size]
 
         if not vectors:

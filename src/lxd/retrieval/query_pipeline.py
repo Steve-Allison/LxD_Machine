@@ -8,30 +8,31 @@ from typing import Final, Literal
 import structlog
 
 from lxd.app.status import config_drift_warnings
+from lxd.domain.limits import MAX_RETRIEVAL_LIMIT
 from lxd.retrieval.dense import embed_query
 from lxd.retrieval.expansion import ExpansionOutcome, expand_question
-from lxd.retrieval.graph_routing import build_graph_context, format_graph_context_prompt
+from lxd.retrieval.graph_routing import (
+    GraphContext,
+    build_graph_context,
+    format_graph_context_prompt,
+)
 from lxd.retrieval.hyde import generate_hypothetical_answer
 from lxd.retrieval.rerank import rerank_chunks
 from lxd.retrieval.router import resolve_dense_top_k, route_query
+from lxd.retrieval.stores import open_retrieval_stores
 from lxd.settings.models import RuntimeConfig
 from lxd.stores.lancedb import (
     connect_lancedb,
-    open_chunk_table,
     open_entity_table,
     search_chunks_hybrid,
     search_similar_entities,
 )
-from lxd.stores.models import StorePaths
+from lxd.stores.models import StorePaths, VectorSearchRecord
 from lxd.stores.sqlite.chunks import (
     load_chunk_centrality_signals,
     load_relation_chunk_ids,
 )
-from lxd.stores.sqlite.connection import (
-    build_store_paths,
-    connect_sqlite,
-    initialize_schema,
-)
+from lxd.stores.sqlite.connection import build_store_paths, connect_sqlite
 from lxd.stores.sqlite.ontology import list_allowed_domains
 from lxd.stores.sqlite.summary import summarize_store
 from lxd.synthesis.answering import (
@@ -50,7 +51,7 @@ NoticeCallback = Callable[[NoticeLevel, str], None]
 
 _log = structlog.get_logger(__name__)
 
-_MAX_LIMIT: Final = 50
+_MAX_LIMIT: Final = MAX_RETRIEVAL_LIMIT
 _MIN_EVIDENCE_CHUNKS: Final = 2
 _MIN_EVIDENCE_CHARS: Final = 400
 _RRF_K: Final = 20
@@ -92,6 +93,37 @@ class RankedChunk:
     central_entity_score: float = 0.0
     community_ids: tuple[int, ...] = ()
 
+    @classmethod
+    def from_vector_hit(
+        cls,
+        item: VectorSearchRecord,
+        *,
+        central_entity_score: float = 0.0,
+        community_ids: tuple[int, ...] = (),
+    ) -> RankedChunk:
+        """Lift a LanceDB hit into a ranked chunk, optionally with KG signals."""
+        return cls(
+            chunk_id=item.chunk_id,
+            document_id=item.document_id,
+            citation_label=item.citation_label,
+            source_rel_path=item.source_rel_path,
+            source_filename=item.source_filename,
+            source_type=item.source_type,
+            source_domain=item.source_domain,
+            source_hash=item.source_hash,
+            chunk_index=item.chunk_index,
+            chunk_occurrence=item.chunk_occurrence,
+            token_count=item.token_count,
+            text=item.text,
+            score_hint=item.score_hint,
+            metadata_json=item.metadata_json,
+            score=item.score,
+            cited_sources=item.cited_sources,
+            wiki_links=item.wiki_links,
+            central_entity_score=central_entity_score,
+            community_ids=community_ids,
+        )
+
 
 @dataclass(frozen=True, slots=True)
 class SearchOutcome:
@@ -127,90 +159,82 @@ def search_chunks(
     requested_limit = config.retrieval.dense_top_k if limit is None else limit
     _validate_limit(requested_limit)
 
-    store_paths = build_store_paths(config.paths.data_path)
-    connection = connect_sqlite(store_paths.sqlite_path)
-    try:
-        initialize_schema(connection)
-        allowed_domains = list_allowed_domains(connection)
+    with open_retrieval_stores(config) as stores:
+        allowed_domains = list_allowed_domains(stores.sqlite)
         _validate_domain(domain, allowed_domains)
-        drift_warnings = config_drift_warnings(connection, config)
+        drift_warnings = config_drift_warnings(stores.sqlite, config)
         store_summary = summarize_store(
-            connection,
+            stores.sqlite,
             ontology_file_count=0,
             matcher_term_count=0,
             matcher_termset_hash=None,
             ontology_snapshot_hash=None,
             config_drift_warnings=drift_warnings,
         )
-    finally:
-        connection.close()
 
-    if store_summary.chunk_count == 0:
+        if store_summary.chunk_count == 0:
+            return SearchOutcome(
+                ranked=[],
+                warnings=["The searchable store is empty. Run ingest first."],
+                reranking_applied=False,
+                expansion_applied=False,
+                matched_entity_ids=[],
+                expansion_terms=[],
+                config_drift_warnings=drift_warnings,
+            )
+
+        expansion = expand_question(question.strip(), config)
+        embed_target = expansion.expanded_question
+        if config.retrieval.hyde_enabled:
+            hyde_text = generate_hypothetical_answer(expansion.expanded_question, config)
+            if hyde_text:
+                embed_target = hyde_text
+        query_vector = embed_query(config, embed_target)
+        expansion = _augment_with_embedding_neighbours(
+            expansion=expansion,
+            query_vector=query_vector,
+            store_paths=stores.paths,
+            config=config,
+        )
+        target_source_count = max(
+            requested_limit,
+            config.retrieval.dense_top_k,
+            config.retrieval.rerank_top_k,
+        )
+        ranked = _hybrid_ranked_candidates(
+            table=stores.chunk_table,
+            query=question,
+            query_vector=query_vector,
+            domain=domain,
+            requested_limit=requested_limit,
+            target_source_count=target_source_count,
+            rerank_top_k=config.retrieval.rerank_top_k,
+        )
+        ranked = _attach_centrality_signals(stores.sqlite, ranked)
+        representative_candidates = _unique_source_prefix(ranked, target_source_count)
+        rerank_limit = min(len(representative_candidates), config.retrieval.rerank_top_k)
+        rerank_inputs = representative_candidates[:rerank_limit]
+        reranked = rerank_chunks(question, rerank_inputs, config)
+        relation_chunk_ids = _relation_chunk_ids(stores.sqlite, expansion.matched_entity_ids)
+        fused_prefix = _fuse_ranked_prefix(
+            dense_prefix=rerank_inputs,
+            reranked_prefix=reranked.ranked,
+            relation_fusion_weight=config.retrieval.relation_fusion_weight,
+            relation_chunk_ids=relation_chunk_ids,
+            centrality_fusion_weight=config.retrieval.centrality_fusion_weight,
+        )
+        if config.retrieval.community_diversity_enabled:
+            fused_prefix = _diversify_by_community(fused_prefix, len(fused_prefix))
+        merged_ranked = _merge_ranked_prefix(ranked, fused_prefix)[:requested_limit]
         return SearchOutcome(
-            ranked=[],
-            warnings=["The searchable store is empty. Run ingest first."],
-            reranking_applied=False,
-            expansion_applied=False,
-            matched_entity_ids=[],
-            expansion_terms=[],
+            ranked=merged_ranked,
+            warnings=reranked.warnings,
+            reranking_applied=reranked.applied,
+            expansion_applied=bool(expansion.added_terms),
+            matched_entity_ids=expansion.matched_entity_ids,
+            expansion_terms=expansion.added_terms,
             config_drift_warnings=drift_warnings,
         )
-
-    expansion = expand_question(question.strip(), config)
-    embed_target = expansion.expanded_question
-    if config.retrieval.hyde_enabled:
-        hyde_text = generate_hypothetical_answer(expansion.expanded_question, config)
-        if hyde_text:
-            embed_target = hyde_text
-    query_vector = embed_query(config, embed_target)
-    expansion = _augment_with_embedding_neighbours(
-        expansion=expansion,
-        query_vector=query_vector,
-        store_paths=store_paths,
-        config=config,
-    )
-    table = open_chunk_table(
-        connect_lancedb(store_paths.lancedb_path), vector_size=config.models.embed_dims
-    )
-    target_source_count = max(
-        requested_limit,
-        config.retrieval.dense_top_k,
-        config.retrieval.rerank_top_k,
-    )
-    ranked = _hybrid_ranked_candidates(
-        table=table,
-        query=question,
-        query_vector=query_vector,
-        domain=domain,
-        requested_limit=requested_limit,
-        target_source_count=target_source_count,
-        rerank_top_k=config.retrieval.rerank_top_k,
-    )
-    ranked = _attach_centrality_signals(store_paths, ranked)
-    representative_candidates = _unique_source_prefix(ranked, target_source_count)
-    rerank_limit = min(len(representative_candidates), config.retrieval.rerank_top_k)
-    rerank_inputs = representative_candidates[:rerank_limit]
-    reranked = rerank_chunks(question, rerank_inputs, config)
-    relation_chunk_ids = _load_relation_chunk_ids(store_paths, expansion.matched_entity_ids)
-    fused_prefix = _fuse_ranked_prefix(
-        dense_prefix=rerank_inputs,
-        reranked_prefix=reranked.ranked,
-        relation_fusion_weight=config.retrieval.relation_fusion_weight,
-        relation_chunk_ids=relation_chunk_ids,
-        centrality_fusion_weight=config.retrieval.centrality_fusion_weight,
-    )
-    if config.retrieval.community_diversity_enabled:
-        fused_prefix = _diversify_by_community(fused_prefix, len(fused_prefix))
-    merged_ranked = _merge_ranked_prefix(ranked, fused_prefix)[:requested_limit]
-    return SearchOutcome(
-        ranked=merged_ranked,
-        warnings=reranked.warnings,
-        reranking_applied=reranked.applied,
-        expansion_applied=bool(expansion.added_terms),
-        matched_entity_ids=expansion.matched_entity_ids,
-        expansion_terms=expansion.added_terms,
-        config_drift_warnings=drift_warnings,
-    )
 
 
 def answer_question(
@@ -293,8 +317,10 @@ def answer_question(
     if on_phase is not None:
         on_phase(1, "evidence ranked")
 
-    # Build graph context from matched entities (graceful degradation)
-    graph_context_prompt = _build_graph_context_prompt(config, outcome.matched_entity_ids)
+    # Build graph context once — synthesis uses the prompt; deep MCP tools
+    # reuse the structured object without a second SQLite round-trip.
+    graph_context = _load_graph_context(config, outcome.matched_entity_ids)
+    graph_context_prompt = format_graph_context_prompt(graph_context) if graph_context else ""
     if on_phase is not None:
         on_phase(2, "synthesising answer")
 
@@ -316,6 +342,7 @@ def answer_question(
             citations=answer.citations,
             warnings=[*outcome.warnings, *outcome.config_drift_warnings],
             metadata=metadata,
+            graph_context=graph_context,
         )
 
     evidence = [
@@ -335,6 +362,7 @@ def answer_question(
             citations=[],
             warnings=[*outcome.warnings, *outcome.config_drift_warnings],
             metadata=metadata,
+            graph_context=graph_context,
         )
     answer = synthesize_answer(
         question,
@@ -352,25 +380,29 @@ def answer_question(
         citations=answer.citations,
         warnings=warnings,
         metadata=metadata,
+        sentence_citations=answer.sentence_citations,
+        graph_context=graph_context,
     )
 
 
-def _build_graph_context_prompt(config: RuntimeConfig, matched_entity_ids: list[str]) -> str:
-    """Build graph context prompt from matched entity IDs.
+def _load_graph_context(
+    config: RuntimeConfig, matched_entity_ids: list[str]
+) -> GraphContext | None:
+    """Load structured graph context for matched entities.
 
-    Returns empty string if no entities matched, store unavailable, or on any error.
+    Returns ``None`` if no entities matched, the store is unavailable, or
+    any error occurs (graceful degradation).
     """
     if not matched_entity_ids:
-        return ""
+        return None
     store_paths = build_store_paths(config.paths.data_path)
     if not store_paths.sqlite_path.exists():
-        return ""
+        return None
     try:
         connection = connect_sqlite(store_paths.sqlite_path)
         try:
             context = build_graph_context(connection, matched_entity_ids, config)
-            prompt = format_graph_context_prompt(context)
-            if prompt:
+            if context.level != "none":
                 _log.info(
                     "graph context added to synthesis",
                     level=context.level,
@@ -378,12 +410,12 @@ def _build_graph_context_prompt(config: RuntimeConfig, matched_entity_ids: list[
                     community_reports=len(context.community_reports),
                     claims=len(context.claims),
                 )
-            return prompt
+            return context
         finally:
             connection.close()
     except (sqlite3.DatabaseError, OSError) as exc:
         _log.warning("graph_context_building_failed", exc_info=True, error=str(exc))
-        return ""
+        return None
 
 
 def _validate_question(question: str) -> None:
@@ -444,25 +476,7 @@ def _hybrid_ranked_candidates(
             limit=raw_limit,
         )
         ranked = [
-            RankedChunk(
-                chunk_id=item.chunk_id,
-                document_id=item.document_id,
-                citation_label=item.citation_label,
-                source_rel_path=item.source_rel_path,
-                source_filename=item.source_filename,
-                source_type=item.source_type,
-                source_domain=item.source_domain,
-                source_hash=item.source_hash,
-                chunk_index=item.chunk_index,
-                chunk_occurrence=item.chunk_occurrence,
-                token_count=item.token_count,
-                text=item.text,
-                score_hint=item.score_hint,
-                metadata_json=item.metadata_json,
-                score=item.score,
-                cited_sources=item.cited_sources,
-                wiki_links=item.wiki_links,
-            )
+            RankedChunk.from_vector_hit(item)
             for item in hits
         ]
         if len(_unique_source_prefix(ranked, target_source_count)) >= target_source_count:
@@ -472,14 +486,19 @@ def _hybrid_ranked_candidates(
         raw_limit = min(_MAX_LIMIT, raw_limit + max(1, rerank_top_k))
 
 
-def _load_relation_chunk_ids(store_paths: object, entity_ids: list[str]) -> set[str]:
-    """Load chunk IDs that have extracted relations for any of the queried entities.
+def _relation_chunk_ids(connection: sqlite3.Connection, entity_ids: list[str]) -> set[str]:
+    """Load chunk IDs that have extracted relations for any of the queried entities."""
+    if not entity_ids:
+        return set()
+    try:
+        return load_relation_chunk_ids(connection, entity_ids)
+    except sqlite3.DatabaseError, OSError:
+        _log.warning("load_relation_chunk_ids_failed", exc_info=True)
+        return set()
 
-    Returns an empty set when the store file does not exist, when the caller
-    passed a non-``StorePaths`` value, or when SQLite reports a database-level
-    error while loading (schema missing, corruption, etc.). I/O errors are
-    logged with ``exc_info`` so the silent path is observable.
-    """
+
+def _load_relation_chunk_ids(store_paths: object, entity_ids: list[str]) -> set[str]:
+    """Load relation chunk IDs when only store paths are available (legacy callers)."""
     if not entity_ids or not isinstance(store_paths, StorePaths):
         return set()
     sqlite_path = store_paths.sqlite_path
@@ -488,7 +507,7 @@ def _load_relation_chunk_ids(store_paths: object, entity_ids: list[str]) -> set[
     try:
         connection = connect_sqlite(sqlite_path)
         try:
-            return load_relation_chunk_ids(connection, entity_ids)
+            return _relation_chunk_ids(connection, entity_ids)
         finally:
             connection.close()
     except sqlite3.DatabaseError, OSError:
@@ -619,28 +638,39 @@ def _fuse_ranked_prefix(
     )
 
 
-def _attach_centrality_signals(store_paths: object, ranked: list[RankedChunk]) -> list[RankedChunk]:
+def _attach_centrality_signals(
+    connection_or_paths: sqlite3.Connection | object, ranked: list[RankedChunk]
+) -> list[RankedChunk]:
     """Populate ``central_entity_score`` and ``community_ids`` on each chunk.
 
-    A chunk that mentions no profiled entity, or whose entities have no
-    community assignment yet (graph not built), keeps its default
-    ``(0.0, ())`` — the centrality lane and community-aware
-    diversification then become no-ops, so retrieval degrades gracefully.
+    Accepts an open SQLite connection (preferred — no reconnect) or a
+    :class:`StorePaths` for callers that only have paths. A chunk that
+    mentions no profiled entity, or whose entities have no community
+    assignment yet (graph not built), keeps its default ``(0.0, ())``.
     """
-    if not ranked or not isinstance(store_paths, StorePaths):
+    if not ranked:
         return ranked
-    if not store_paths.sqlite_path.exists():
+    connection: sqlite3.Connection | None
+    owns_connection = False
+    if isinstance(connection_or_paths, sqlite3.Connection):
+        connection = connection_or_paths
+    elif isinstance(connection_or_paths, StorePaths):
+        if not connection_or_paths.sqlite_path.exists():
+            return ranked
+        connection = connect_sqlite(connection_or_paths.sqlite_path)
+        owns_connection = True
+    else:
         return ranked
     chunk_ids = [item.chunk_id for item in ranked]
     try:
-        connection = connect_sqlite(store_paths.sqlite_path)
         try:
             signals = load_chunk_centrality_signals(connection, chunk_ids)
-        finally:
+        except sqlite3.DatabaseError, OSError:
+            _log.warning("attach_centrality_signals_failed", exc_info=True)
+            return ranked
+    finally:
+        if owns_connection:
             connection.close()
-    except sqlite3.DatabaseError, OSError:
-        _log.warning("attach_centrality_signals_failed", exc_info=True)
-        return ranked
     if not signals:
         return ranked
     return [

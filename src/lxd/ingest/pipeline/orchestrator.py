@@ -11,6 +11,7 @@ from typing import Final
 import structlog
 
 from lxd.domain.status import LifecycleStatus, RetrievalStatus
+from lxd.domain.time import utc_now
 from lxd.ingest.assets import infer_asset_parent
 from lxd.ingest.budget import BudgetExceededError, IngestBudgetTracker
 from lxd.ingest.contextual_chunker import open_summary_cache_table
@@ -38,8 +39,10 @@ from lxd.ontology.matcher import build_or_load_automaton
 from lxd.settings.models import RuntimeConfig
 from lxd.stores.lancedb import (
     connect_lancedb,
+    load_source_chunk_rows,
     open_chunk_table,
     refresh_fts_index,
+    restore_source_chunk_rows,
 )
 from lxd.stores.lancedb import delete_source as delete_vector_source
 from lxd.stores.lancedb import (
@@ -90,7 +93,51 @@ _RECOVERABLE_SOURCE_ERRORS: Final = (
     RuntimeError,
     ValueError,
     sqlite3.Error,
+    ExceptionGroup,
 )
+
+
+@dataclass(slots=True)
+class IngestRunCounters:
+    """Mutable progress counters for one ingest run."""
+
+    files_completed: int = 0
+    searchable_files_rebuilt: int = 0
+    asset_files_processed: int = 0
+    unchanged_files_skipped: int = 0
+    failed_files: int = 0
+    chunks_written: int = 0
+    cache_hit_total: int = 0
+    cache_miss_total: int = 0
+
+
+def _finish_ingest_run(
+    sqlite_connection: sqlite3.Connection,
+    *,
+    run_id: str,
+    status: str,
+    counters: IngestRunCounters,
+    notes: list[str],
+    failed_files_override: int | None = None,
+) -> None:
+    """Single finish path for success and abort/fail exits."""
+    finish_ingest_run(
+        sqlite_connection,
+        run_id=run_id,
+        finished_at=utc_now(),
+        status=status,
+        files_completed=counters.files_completed,
+        searchable_files_rebuilt=counters.searchable_files_rebuilt,
+        asset_files_processed=counters.asset_files_processed,
+        unchanged_files_skipped=counters.unchanged_files_skipped,
+        failed_files=(
+            counters.failed_files if failed_files_override is None else failed_files_override
+        ),
+        chunks_written=counters.chunks_written,
+        notes=notes,
+        embedding_cache_hits=counters.cache_hit_total,
+        embedding_cache_misses=counters.cache_miss_total,
+    )
 
 
 @dataclass(frozen=True, slots=True)
@@ -371,12 +418,10 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                             new_scanned=scanned,
                             document_id=document_id,
                         )
-                        delete_sqlite_source(sqlite_connection, move_source.source_rel_path)
-                        delete_vector_source(vector_table, move_source.source_rel_path)
-                        # The page's wiki_links travel with the cloned chunks, but
-                        # the subject (resolved from the new filename stem) may
-                        # change for cross-directory moves. Re-derive against the
-                        # current path so KG edges follow the file.
+                        # Write the NEW path first (LanceDB → SQLite with
+                        # snapshot compensate). Only delete the OLD path after
+                        # the new identity is durable in both stores — never
+                        # delete-before-write.
                         cloned_wiki = derive_wiki_link_relations(
                             chunk_records=cloned_chunks,
                             slug_index=slug_index,
@@ -384,16 +429,28 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                         )
                         wiki_dangling_total.update(cloned_wiki.dangling_slugs)
                         wiki_pages_without_subject_total.update(cloned_wiki.pages_without_subject)
-                        replace_sqlite_source_chunks(
-                            sqlite_connection,
-                            source_rel_path=scanned.relative_path,
-                            chunk_records=cloned_chunks,
-                            mention_records=cloned_mentions,
-                            relation_records=cloned_wiki.relations,
+                        prior_new_path = load_source_chunk_rows(
+                            vector_table, scanned.relative_path
                         )
                         replace_vector_source_chunks(
                             vector_table, scanned.relative_path, cloned_chunks
                         )
+                        try:
+                            replace_sqlite_source_chunks(
+                                sqlite_connection,
+                                source_rel_path=scanned.relative_path,
+                                chunk_records=cloned_chunks,
+                                mention_records=cloned_mentions,
+                                relation_records=cloned_wiki.relations,
+                            )
+                        except sqlite3.Error:
+                            with contextlib.suppress(FileNotFoundError, ValueError, RuntimeError):
+                                restore_source_chunk_rows(
+                                    vector_table, scanned.relative_path, prior_new_path
+                                )
+                            raise
+                        delete_sqlite_source(sqlite_connection, move_source.source_rel_path)
+                        delete_vector_source(vector_table, move_source.source_rel_path)
                         chunk_records = cloned_chunks
                         mention_records = cloned_mentions
                         reused_move_sources += 1
@@ -424,13 +481,14 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                         wiki_dangling_total.update(file_wiki_dangling)
                         wiki_pages_without_subject_total.update(file_wiki_no_subject)
 
-                        # LanceDB FIRST. If LanceDB succeeds and SQLite fails,
-                        # the LanceDB write is left in place — it's content-
-                        # addressed and a future re-ingest of the same file
-                        # will replace it cleanly. The compensating delete
-                        # below restores LanceDB to its pre-write state if
-                        # SQLite fails so query results stay consistent with
-                        # the (older) SQLite manifest.
+                        # LanceDB FIRST. Snapshot pre-write rows so a SQLite
+                        # failure can restore the prior vectors (re-ingest) or
+                        # leave the path empty (first ingest). A bare delete
+                        # would empty LanceDB while SQLite still held the old
+                        # chunk rows — false atomicity.
+                        prior_vectors = load_source_chunk_rows(
+                            vector_table, scanned.relative_path
+                        )
                         replace_vector_source_chunks(
                             vector_table, scanned.relative_path, chunk_records
                         )
@@ -443,12 +501,10 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                                 relation_records=relation_records,
                             )
                         except sqlite3.Error:
-                            # Compensate: undo the LanceDB write so the two
-                            # stores stay coherent. Best-effort — if the
-                            # delete itself fails we propagate the original
-                            # SQLite error.
                             with contextlib.suppress(FileNotFoundError, ValueError, RuntimeError):
-                                delete_vector_source(vector_table, scanned.relative_path)
+                                restore_source_chunk_rows(
+                                    vector_table, scanned.relative_path, prior_vectors
+                                )
                             raise
                         reembedded_text_sources += 1
 
@@ -518,20 +574,24 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                 summary=summary,
                 entity_count=len(plan.ontology.entity_definitions),
             )
-            finish_ingest_run(
+            def _counters() -> IngestRunCounters:
+                return IngestRunCounters(
+                    files_completed=files_completed,
+                    searchable_files_rebuilt=searchable_files_rebuilt,
+                    asset_files_processed=asset_files_processed,
+                    unchanged_files_skipped=unchanged_files_skipped,
+                    failed_files=failed_files,
+                    chunks_written=chunks_written,
+                    cache_hit_total=cache_hit_total,
+                    cache_miss_total=cache_miss_total,
+                )
+
+            _finish_ingest_run(
                 sqlite_connection,
                 run_id=run_id,
-                finished_at=utc_now(),
                 status="complete" if not warnings else "complete_with_warnings",
-                files_completed=files_completed,
-                searchable_files_rebuilt=searchable_files_rebuilt,
-                asset_files_processed=asset_files_processed,
-                unchanged_files_skipped=unchanged_files_skipped,
-                failed_files=failed_files,
-                chunks_written=chunks_written,
+                counters=_counters(),
                 notes=warnings,
-                embedding_cache_hits=cache_hit_total,
-                embedding_cache_misses=cache_miss_total,
             )
             # Native LanceDB FTS does not auto-include rows added after
             # index creation; rebuild the index once at the end of the run
@@ -561,20 +621,21 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                 f"aborted: circuit-breaker tripped after {exc.count} consecutive systemic errors",
                 f"last error: {type(exc.last_error).__name__}: {exc.last_error}",
             ]
-            finish_ingest_run(
+            _finish_ingest_run(
                 sqlite_connection,
                 run_id=run_id,
-                finished_at=utc_now(),
                 status="aborted",
-                files_completed=files_completed,
-                searchable_files_rebuilt=searchable_files_rebuilt,
-                asset_files_processed=asset_files_processed,
-                unchanged_files_skipped=unchanged_files_skipped,
-                failed_files=failed_files,
-                chunks_written=chunks_written,
+                counters=IngestRunCounters(
+                    files_completed=files_completed,
+                    searchable_files_rebuilt=searchable_files_rebuilt,
+                    asset_files_processed=asset_files_processed,
+                    unchanged_files_skipped=unchanged_files_skipped,
+                    failed_files=failed_files,
+                    chunks_written=chunks_written,
+                    cache_hit_total=cache_hit_total,
+                    cache_miss_total=cache_miss_total,
+                ),
                 notes=failure_notes,
-                embedding_cache_hits=cache_hit_total,
-                embedding_cache_misses=cache_miss_total,
             )
             raise
         except BudgetExceededError as exc:
@@ -583,38 +644,41 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                 f"aborted: {exc}",
                 f"llm_calls_at_abort={budget_tracker.llm_calls}",
             ]
-            finish_ingest_run(
+            _finish_ingest_run(
                 sqlite_connection,
                 run_id=run_id,
-                finished_at=utc_now(),
                 status="aborted_budget",
-                files_completed=files_completed,
-                searchable_files_rebuilt=searchable_files_rebuilt,
-                asset_files_processed=asset_files_processed,
-                unchanged_files_skipped=unchanged_files_skipped,
-                failed_files=failed_files,
-                chunks_written=chunks_written,
+                counters=IngestRunCounters(
+                    files_completed=files_completed,
+                    searchable_files_rebuilt=searchable_files_rebuilt,
+                    asset_files_processed=asset_files_processed,
+                    unchanged_files_skipped=unchanged_files_skipped,
+                    failed_files=failed_files,
+                    chunks_written=chunks_written,
+                    cache_hit_total=cache_hit_total,
+                    cache_miss_total=cache_miss_total,
+                ),
                 notes=failure_notes,
-                embedding_cache_hits=cache_hit_total,
-                embedding_cache_misses=cache_miss_total,
             )
             raise
         except _RECOVERABLE_SOURCE_ERRORS as exc:
             failure_notes = [*warnings, f"fatal: {exc}"]
-            finish_ingest_run(
+            _finish_ingest_run(
                 sqlite_connection,
                 run_id=run_id,
-                finished_at=utc_now(),
                 status="failed",
-                files_completed=files_completed,
-                searchable_files_rebuilt=searchable_files_rebuilt,
-                asset_files_processed=asset_files_processed,
-                unchanged_files_skipped=unchanged_files_skipped,
-                failed_files=failed_files + 1,
-                chunks_written=chunks_written,
+                counters=IngestRunCounters(
+                    files_completed=files_completed,
+                    searchable_files_rebuilt=searchable_files_rebuilt,
+                    asset_files_processed=asset_files_processed,
+                    unchanged_files_skipped=unchanged_files_skipped,
+                    failed_files=failed_files,
+                    chunks_written=chunks_written,
+                    cache_hit_total=cache_hit_total,
+                    cache_miss_total=cache_miss_total,
+                ),
                 notes=failure_notes,
-                embedding_cache_hits=cache_hit_total,
-                embedding_cache_misses=cache_miss_total,
+                failed_files_override=failed_files + 1,
             )
             raise
     finally:
@@ -703,7 +767,3 @@ def _config_snapshot_records(config: RuntimeConfig) -> list[IngestConfigSnapshot
     return [
         IngestConfigSnapshotRecord(key=key, value=value) for key, value in sorted(snapshot.items())
     ]
-
-
-def utc_now() -> str:
-    return datetime.now(UTC).isoformat()

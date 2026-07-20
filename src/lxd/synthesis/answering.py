@@ -22,6 +22,7 @@ import ollama
 
 from lxd.domain.status import QueryAnswerStatus
 from lxd.ingest.llm_client import get_ollama_client
+from lxd.retrieval.graph_routing import GraphContext
 from lxd.settings.models import RuntimeConfig
 from lxd.synthesis.citation_alignment import SentenceCitation, align_citations
 from lxd.synthesis.sampler import Sampler, SamplerFailure, SamplerRequest
@@ -113,6 +114,7 @@ class AnswerEnvelope:
     warnings: list[str]
     metadata: dict[str, object]
     sentence_citations: list[SentenceCitation] = field(default_factory=list)
+    graph_context: GraphContext | None = None
 
 
 @dataclass(frozen=True, slots=True)

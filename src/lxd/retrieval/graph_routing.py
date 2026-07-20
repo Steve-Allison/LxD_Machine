@@ -131,30 +131,46 @@ def format_graph_context_prompt(context: GraphContext) -> str:
     if context.entity_profiles:
         sections.append("### Entity Profiles\n")
         for profile in context.entity_profiles:
-            sections.append(f"**{profile.label}** ({profile.entity_type})")
-            sections.append(profile.deterministic_summary)
-            if profile.llm_summary:
-                sections.append(profile.llm_summary)
-            sections.append("")
+            sections.append(_format_profile_block(profile))
 
     if context.community_reports:
         sections.append("### Community Context\n")
         for report in context.community_reports:
-            sections.append(f"**Community {report.community_id}** ({report.member_count} members)")
-            sections.append(report.deterministic_summary)
-            if report.llm_summary:
-                sections.append(report.llm_summary)
-            sections.append("")
+            sections.append(_format_report_block(report))
 
     if context.claims:
         sections.append("### Related Claims\n")
         for claim in context.claims:
-            sections.append(
-                f"- [{claim.claim_type}] {claim.claim_text} (confidence: {claim.confidence:.2f})"
-            )
+            sections.append(_format_claim_line(claim))
         sections.append("")
 
     return "\n".join(sections)
+
+
+def _format_profile_block(profile: EntityProfileRecord) -> str:
+    lines = [
+        f"**{profile.label}** ({profile.entity_type})",
+        profile.deterministic_summary,
+    ]
+    if profile.llm_summary:
+        lines.append(profile.llm_summary)
+    lines.append("")
+    return "\n".join(lines)
+
+
+def _format_report_block(report: CommunityReportRecord) -> str:
+    lines = [
+        f"**Community {report.community_id}** ({report.member_count} members)",
+        report.deterministic_summary,
+    ]
+    if report.llm_summary:
+        lines.append(report.llm_summary)
+    lines.append("")
+    return "\n".join(lines)
+
+
+def _format_claim_line(claim: ClaimRecord) -> str:
+    return f"- [{claim.claim_type}] {claim.claim_text} (confidence: {claim.confidence:.2f})"
 
 
 def _trim_to_token_budget(
@@ -177,35 +193,34 @@ def _trim_to_token_budget(
 
     Truncation runs from low priority upward: claims first, then reports,
     then trailing profiles.
+
+    Formatting is shared with :func:`format_graph_context_prompt` via the
+    ``_format_*`` helpers so trim decisions cannot drift from the prompt
+    the synthesizer actually sees. Context sizes are small
+    (``max_entity_context`` / ``max_community_context`` /
+    ``max_claim_context``), so one exact encode per pop is fine.
     """
     encoder = tiktoken.get_encoding(_TOKEN_ENCODING_NAME)
+    sorted_claims = sorted(claims, key=lambda c: c.confidence, reverse=True)
+    n_p, n_r, n_c = len(profiles), len(reports), len(sorted_claims)
 
-    def fits(
-        p: list[EntityProfileRecord], r: list[CommunityReportRecord], c: list[ClaimRecord]
-    ) -> bool:
+    def exact_tokens() -> int:
         rendered = format_graph_context_prompt(
             GraphContext(
-                level="community" if r else "entity",
-                entity_profiles=p,
-                community_reports=r,
-                claims=c,
+                level="community" if n_r else "entity",
+                entity_profiles=profiles[:n_p],
+                community_reports=reports[:n_r],
+                claims=sorted_claims[:n_c],
                 expansion_hops=0,
             )
         )
-        return len(encoder.encode(rendered)) <= max_tokens
+        return len(encoder.encode(rendered)) if rendered else 0
 
-    sorted_claims = sorted(claims, key=lambda c: c.confidence, reverse=True)
+    while n_c > 0 and exact_tokens() > max_tokens:
+        n_c -= 1
+    while n_r > 0 and exact_tokens() > max_tokens:
+        n_r -= 1
+    while n_p > 1 and exact_tokens() > max_tokens:
+        n_p -= 1
 
-    while sorted_claims and not fits(profiles, reports, sorted_claims):
-        sorted_claims.pop()
-    if fits(profiles, reports, sorted_claims):
-        return profiles, reports, sorted_claims
-
-    while reports and not fits(profiles, reports, sorted_claims):
-        reports.pop()
-    if fits(profiles, reports, sorted_claims):
-        return profiles, reports, sorted_claims
-
-    while len(profiles) > 1 and not fits(profiles, reports, sorted_claims):
-        profiles.pop()
-    return profiles, reports, sorted_claims
+    return profiles[:n_p], reports[:n_r], sorted_claims[:n_c]

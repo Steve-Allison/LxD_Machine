@@ -48,18 +48,21 @@ def connect_lancedb(path: Path) -> Any:
     return lancedb.connect(str(path))
 
 
-def open_chunk_table(database: Any, *, vector_size: int) -> Any:
+def open_chunk_table(
+    database: Any, *, vector_size: int, refresh_fts: bool = False
+) -> Any:
     """Open the chunk vector table, creating it when missing.
 
-    Also ensures the native LanceDB FTS index over the ``text`` column is
-    present so retrieval can issue BM25 queries without per-call setup.
-    The index is replaced (rebuilt) on each open: native LanceDB FTS does
-    not auto-include rows added after index creation, so retrieval needs a
-    fresh index for fairness against the latest writes.
+    On the **read** path (default), ensure the native LanceDB FTS index
+    over ``text`` exists but do not rebuild it — ingest refreshes FTS once
+    after writes. On the **write** path, pass ``refresh_fts=True`` (or call
+    :func:`refresh_fts_index` after mutations) so BM25 sees newly added rows.
+    Native LanceDB FTS does not auto-include rows added after index creation.
 
     Args:
         database: Open LanceDB database handle.
         vector_size: Embedding vector length for schema creation.
+        refresh_fts: When True, rebuild the FTS index (write/ingest path).
 
     Returns:
         Opened or newly created chunk table.
@@ -74,7 +77,13 @@ def open_chunk_table(database: Any, *, vector_size: int) -> Any:
             schema=_chunk_table_schema(vector_size),
             mode="create",
         )
-    refresh_fts_index(table)
+        # Fresh table has no FTS yet — create it once.
+        refresh_fts_index(table)
+    else:
+        if refresh_fts:
+            refresh_fts_index(table)
+        else:
+            ensure_fts_index(table)
     for column in _CHUNK_SCALAR_INDEX_COLUMNS:
         ensure_scalar_index(table, column)
     return table
@@ -108,6 +117,25 @@ def reset_chunk_table(database: Any, *, vector_size: int) -> Any:
     return table
 
 
+def ensure_fts_index(table: Any) -> None:
+    """Create the native FTS index over ``text`` if it is absent.
+
+    Idempotent for the read path: an existing index is left untouched so
+    retrieval does not pay a full Tantivy rebuild on every query. Call
+    :func:`refresh_fts_index` after ingest writes so BM25 sees new rows.
+    """
+    fts_index_name = f"{_FTS_FIELD}_fts_idx"
+    existing_names = {getattr(index, "name", None) for index in table.list_indices()}
+    if fts_index_name in existing_names:
+        return
+    table.create_index(
+        _FTS_FIELD,
+        config=FTS(with_position=False),
+        name=fts_index_name,
+        replace=False,
+    )
+
+
 def refresh_fts_index(table: Any) -> None:
     """(Re)build the native LanceDB FTS index over the ``text`` column.
 
@@ -127,6 +155,81 @@ def refresh_fts_index(table: Any) -> None:
         name=fts_index_name,
         replace=True,
     )
+
+
+def load_source_chunk_rows(table: Any, source_rel_path: str) -> list[dict[str, object]]:
+    """Snapshot all LanceDB rows for one source path (pre-write compensate).
+
+    Returns raw table rows suitable for :func:`restore_source_chunk_rows`.
+    An empty list means the source had no vectors (first ingest / cleared).
+    """
+    rows = (
+        table.search()
+        .where(eq_clause("source_rel_path", source_rel_path))
+        .select(
+            [
+                "chunk_id",
+                "document_id",
+                "vector",
+                "source_rel_path",
+                "source_filename",
+                "source_type",
+                "source_domain",
+                "source_hash",
+                "citation_label",
+                "chunk_index",
+                "chunk_occurrence",
+                "token_count",
+                "text",
+                "score_hint",
+                "metadata_json",
+                "cited_sources_json",
+                "wiki_links_json",
+            ]
+        )
+        .to_list()
+    )
+    snapshot: list[dict[str, object]] = []
+    for row in rows:
+        vector = row.get("vector")
+        if vector is None:
+            continue
+        snapshot.append(
+            {
+                "chunk_id": str(row["chunk_id"]),
+                "document_id": str(row["document_id"]),
+                "vector": [float(v) for v in vector],
+                "source_rel_path": str(row["source_rel_path"]),
+                "source_filename": str(row["source_filename"]),
+                "source_type": str(row["source_type"]),
+                "source_domain": str(row["source_domain"]),
+                "source_hash": str(row["source_hash"]),
+                "citation_label": str(row["citation_label"]),
+                "chunk_index": int(row["chunk_index"]),
+                "chunk_occurrence": int(row["chunk_occurrence"]),
+                "token_count": int(row["token_count"]),
+                "text": str(row["text"]),
+                "score_hint": str(row["score_hint"]),
+                "metadata_json": str(row["metadata_json"]),
+                "cited_sources_json": str(row.get("cited_sources_json") or "[]"),
+                "wiki_links_json": str(row.get("wiki_links_json") or "[]"),
+            }
+        )
+    return snapshot
+
+
+def restore_source_chunk_rows(
+    table: Any, source_rel_path: str, snapshot: list[dict[str, object]]
+) -> None:
+    """Restore a source path to a previously captured LanceDB snapshot.
+
+    Deletes any current rows for ``source_rel_path``, then re-adds the
+    snapshot. An empty snapshot leaves the path empty — the correct
+    compensate outcome for a first-ingest failure.
+    """
+    delete_source(table, source_rel_path)
+    if snapshot:
+        table.add(snapshot)
 
 
 def replace_source_chunks(
@@ -317,6 +420,7 @@ def load_vectors_by_chunk_ids(table: Any, chunk_ids: list[str]) -> dict[str, lis
         table.search()
         .where(in_clause("chunk_id", chunk_ids))
         .select(["chunk_id", "vector"])
+        .limit(len(chunk_ids))
         .to_list()
     )
     result: dict[str, list[float]] = {}
@@ -326,6 +430,10 @@ def load_vectors_by_chunk_ids(table: Any, chunk_ids: list[str]) -> dict[str, lis
             continue
         result[str(row["chunk_id"])] = [float(v) for v in vector]
     return result
+
+
+# Back-compat alias — prefer :func:`load_vectors_by_chunk_ids`.
+fetch_vectors_by_chunk_ids = load_vectors_by_chunk_ids
 
 
 def _decode_string_list(value: object) -> tuple[str, ...]:
@@ -519,32 +627,6 @@ def search_similar_entities(
             }
         )
     return results
-
-
-def fetch_vectors_by_chunk_ids(
-    table: Any,
-    chunk_ids: list[str],
-) -> dict[str, list[float]]:
-    """Fetch raw vectors for specific chunk IDs from LanceDB.
-
-    Returns a mapping of chunk_id to vector. More efficient than parsing
-    JSON text from SQLite for large vector dimensions.
-    """
-    if not chunk_ids:
-        return {}
-    rows = (
-        table.search()
-        .where(in_clause("chunk_id", chunk_ids))
-        .select(["chunk_id", "vector"])
-        .limit(len(chunk_ids))
-        .to_list()
-    )
-    result: dict[str, list[float]] = {}
-    for row in rows:
-        vec = row.get("vector")
-        if vec is not None:
-            result[str(row["chunk_id"])] = [float(v) for v in vec]
-    return result
 
 
 def _entity_table_schema(vector_size: int) -> pa.Schema:

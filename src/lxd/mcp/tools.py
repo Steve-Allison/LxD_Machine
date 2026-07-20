@@ -1,6 +1,8 @@
 """Define MCP tools that expose corpus and ontology operations."""
 
 import json
+from collections.abc import Callable
+from dataclasses import dataclass
 from itertools import pairwise
 
 import networkx as nx
@@ -43,7 +45,6 @@ from lxd.mcp.models import (
 )
 from lxd.ontology.graph import direct_neighbors
 from lxd.retrieval.expansion import expand_entity_ids
-from lxd.retrieval.graph_routing import build_graph_context
 from lxd.retrieval.query_pipeline import (
     NoticeCallback,
     PhaseCallback,
@@ -57,6 +58,7 @@ from lxd.stores.lancedb import (
     open_entity_table,
     search_similar_entities,
 )
+from lxd.stores.models import EntityProfileRecord
 from lxd.stores.sqlite._pool import pooled_connection
 from lxd.stores.sqlite.chunks import (
     find_chunks_by_entity_mentions,
@@ -543,64 +545,55 @@ def find_weighted_path_tool(
 
 def get_hub_entities_tool(app_context: AppContext, limit: int = 20) -> list[HubEntity]:
     """Return top entities by PageRank."""
-    store_paths = build_store_paths(app_context.config.paths.data_path)
-    if not store_paths.sqlite_path.exists():
-        return []
-    with pooled_connection(store_paths.sqlite_path) as connection:
-        profiles = load_top_entities_by_pagerank(connection, limit=limit)
-    return [
-        HubEntity(
+    return _map_top_entities(
+        app_context,
+        load_top_entities_by_pagerank,
+        limit=limit,
+        mapper=lambda p: HubEntity(
             entity_id=p.entity_id,
             label=p.label,
             pagerank=p.pagerank,
             community_id=p.community_id,
-        )
-        for p in profiles
-    ]
+        ),
+    )
 
 
 def find_bridge_entities_tool(app_context: AppContext, limit: int = 20) -> list[BridgeEntity]:
     """Return top entities by betweenness centrality."""
-    store_paths = build_store_paths(app_context.config.paths.data_path)
-    if not store_paths.sqlite_path.exists():
-        return []
-    with pooled_connection(store_paths.sqlite_path) as connection:
-        profiles = load_top_entities_by_betweenness(connection, limit=limit)
-    return [
-        BridgeEntity(
+    return _map_top_entities(
+        app_context,
+        load_top_entities_by_betweenness,
+        limit=limit,
+        mapper=lambda p: BridgeEntity(
             entity_id=p.entity_id,
             label=p.label,
             betweenness=p.betweenness,
             community_id=p.community_id,
-        )
-        for p in profiles
-    ]
+        ),
+    )
 
 
 def find_foundational_entities_tool(
     app_context: AppContext, limit: int = 20
 ) -> list[FoundationalEntity]:
     """Return top entities by closeness centrality."""
-    store_paths = build_store_paths(app_context.config.paths.data_path)
-    if not store_paths.sqlite_path.exists():
-        return []
-    with pooled_connection(store_paths.sqlite_path) as connection:
-        profiles = load_top_entities_by_closeness(connection, limit=limit)
-    return [
-        FoundationalEntity(
+    return _map_top_entities(
+        app_context,
+        load_top_entities_by_closeness,
+        limit=limit,
+        mapper=lambda p: FoundationalEntity(
             entity_id=p.entity_id,
             label=p.label,
             closeness=p.closeness,
             community_id=p.community_id,
-        )
-        for p in profiles
-    ]
+        ),
+    )
 
 
 def get_entity_graph_stats_tool(app_context: AppContext) -> EntityGraphStats:
     """Return knowledge graph statistics."""
-    store_paths = build_store_paths(app_context.config.paths.data_path)
-    if not store_paths.sqlite_path.exists():
+    counts = _graph_counts(app_context)
+    if counts is None:
         return EntityGraphStats(
             graph_version=0,
             last_build_at="never",
@@ -611,18 +604,16 @@ def get_entity_graph_stats_tool(app_context: AppContext) -> EntityGraphStats:
             relation_evidence=0,
             claims=0,
         )
-    with pooled_connection(store_paths.sqlite_path) as connection:
-        metadata = load_graph_metadata(connection)
-        return EntityGraphStats(
-            graph_version=int(metadata.get("graph_version", "0")),
-            last_build_at=metadata.get("last_build_at", "never"),
-            entity_profiles=count_entity_profiles(connection),
-            communities=count_communities(connection),
-            community_reports=count_community_reports(connection),
-            canonical_relations=count_canonical_relations(connection),
-            relation_evidence=count_relation_evidence(connection),
-            claims=count_claims(connection),
-        )
+    return EntityGraphStats(
+        graph_version=counts.graph_version,
+        last_build_at=counts.last_build_at,
+        entity_profiles=counts.entity_profiles,
+        communities=counts.communities,
+        community_reports=counts.community_reports,
+        canonical_relations=counts.canonical_relations,
+        relation_evidence=counts.relation_evidence,
+        claims=counts.claims,
+    )
 
 
 def search_knowledge_tool(
@@ -677,48 +668,44 @@ def search_knowledge_deep_tool(
         sampler=sampler,
     )
 
-    matched_entity_ids = envelope.metadata.get("matched_entity_ids", [])
-    graph_data = GraphContextData(level="none")
-
-    if isinstance(matched_entity_ids, list) and matched_entity_ids:
-        store_paths = build_store_paths(app_context.config.paths.data_path)
-        if store_paths.sqlite_path.exists():
-            with pooled_connection(store_paths.sqlite_path) as connection:
-                context = build_graph_context(connection, matched_entity_ids, app_context.config)
-            graph_data = GraphContextData(
-                level=context.level,
-                entity_profiles=[
-                    GraphContextEntityProfile(
-                        entity_id=p.entity_id,
-                        label=p.label,
-                        entity_type=p.entity_type,
-                        deterministic_summary=p.deterministic_summary,
-                        llm_summary=p.llm_summary,
-                        pagerank=p.pagerank,
-                        community_id=p.community_id,
-                    )
-                    for p in context.entity_profiles
-                ],
-                community_reports=[
-                    GraphContextCommunityReport(
-                        community_id=r.community_id,
-                        member_count=r.member_count,
-                        deterministic_summary=r.deterministic_summary,
-                        llm_summary=r.llm_summary,
-                    )
-                    for r in context.community_reports
-                ],
-                claims=[
-                    GraphContextClaim(
-                        claim_text=c.claim_text,
-                        claim_type=c.claim_type,
-                        confidence=c.confidence,
-                        subject_entity_id=c.subject_entity_id,
-                        object_entity_id=c.object_entity_id,
-                    )
-                    for c in context.claims
-                ],
-            )
+    context = envelope.graph_context
+    if context is None:
+        graph_data = GraphContextData(level="none")
+    else:
+        graph_data = GraphContextData(
+            level=context.level,
+            entity_profiles=[
+                GraphContextEntityProfile(
+                    entity_id=p.entity_id,
+                    label=p.label,
+                    entity_type=p.entity_type,
+                    deterministic_summary=p.deterministic_summary,
+                    llm_summary=p.llm_summary,
+                    pagerank=p.pagerank,
+                    community_id=p.community_id,
+                )
+                for p in context.entity_profiles
+            ],
+            community_reports=[
+                GraphContextCommunityReport(
+                    community_id=r.community_id,
+                    member_count=r.member_count,
+                    deterministic_summary=r.deterministic_summary,
+                    llm_summary=r.llm_summary,
+                )
+                for r in context.community_reports
+            ],
+            claims=[
+                GraphContextClaim(
+                    claim_text=c.claim_text,
+                    claim_type=c.claim_type,
+                    confidence=c.confidence,
+                    subject_entity_id=c.subject_entity_id,
+                    object_entity_id=c.object_entity_id,
+                )
+                for c in context.claims
+            ],
+        )
 
     return KnowledgeAnswerDeep(
         answer_status=envelope.answer_status.value,
@@ -736,8 +723,8 @@ def search_knowledge_deep_tool(
 
 def get_graph_overview_tool(app_context: AppContext) -> GraphOverview:
     """Return knowledge graph overview including stats and build state."""
-    store_paths = build_store_paths(app_context.config.paths.data_path)
-    if not store_paths.sqlite_path.exists():
+    counts = _graph_counts(app_context)
+    if counts is None:
         return GraphOverview(
             graph_version=0,
             last_build_at="never",
@@ -749,15 +736,68 @@ def get_graph_overview_tool(app_context: AppContext) -> GraphOverview:
             relation_evidence=0,
             claims=0,
         )
+    return GraphOverview(
+        graph_version=counts.graph_version,
+        last_build_at=counts.last_build_at,
+        community_algorithm=(
+            counts.community_algorithm
+            or app_context.config.knowledge_graph.community_algorithm
+        ),
+        entity_profiles=counts.entity_profiles,
+        communities=counts.communities,
+        community_reports=counts.community_reports,
+        canonical_relations=counts.canonical_relations,
+        relation_evidence=counts.relation_evidence,
+        claims=counts.claims,
+    )
+
+
+def _require_non_empty(value: str, field_name: str) -> None:
+    if not value.strip():
+        raise ValueError(f"{field_name} must be non-empty.")
+
+
+@dataclass(frozen=True, slots=True)
+class _GraphCounts:
+    graph_version: int
+    last_build_at: str
+    community_algorithm: str | None
+    entity_profiles: int
+    communities: int
+    community_reports: int
+    canonical_relations: int
+    relation_evidence: int
+    claims: int
+
+
+def _map_top_entities[T](
+    app_context: AppContext,
+    loader: Callable[..., list[EntityProfileRecord]],
+    *,
+    limit: int,
+    mapper: Callable[[EntityProfileRecord], T],
+) -> list[T]:
+    """Load top entities via ``loader`` and map each profile through ``mapper``."""
+    store_paths = build_store_paths(app_context.config.paths.data_path)
+    if not store_paths.sqlite_path.exists():
+        return []
+    with pooled_connection(store_paths.sqlite_path) as connection:
+        profiles = loader(connection, limit=limit)
+    return [mapper(profile) for profile in profiles]
+
+
+def _graph_counts(app_context: AppContext) -> _GraphCounts | None:
+    """Shared count block for graph stats / overview tools. ``None`` if no store."""
+    store_paths = build_store_paths(app_context.config.paths.data_path)
+    if not store_paths.sqlite_path.exists():
+        return None
     with pooled_connection(store_paths.sqlite_path) as connection:
         metadata = load_graph_metadata(connection)
-        return GraphOverview(
+        algo = metadata.get("community_algorithm")
+        return _GraphCounts(
             graph_version=int(metadata.get("graph_version", "0")),
-            last_build_at=metadata.get("last_build_at", "never"),
-            community_algorithm=metadata.get(
-                "community_algorithm",
-                app_context.config.knowledge_graph.community_algorithm,
-            ),
+            last_build_at=str(metadata.get("last_build_at", "never")),
+            community_algorithm=str(algo) if algo else None,
             entity_profiles=count_entity_profiles(connection),
             communities=count_communities(connection),
             community_reports=count_community_reports(connection),
@@ -765,8 +805,3 @@ def get_graph_overview_tool(app_context: AppContext) -> GraphOverview:
             relation_evidence=count_relation_evidence(connection),
             claims=count_claims(connection),
         )
-
-
-def _require_non_empty(value: str, field_name: str) -> None:
-    if not value.strip():
-        raise ValueError(f"{field_name} must be non-empty.")

@@ -5,7 +5,7 @@ from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Annotated, Final, Literal
+from typing import Annotated, Any, Final, Literal
 
 import anyio.from_thread
 from fastmcp import Context, FastMCP
@@ -13,6 +13,7 @@ from mcp.types import ToolAnnotations
 from pydantic import Field
 
 from lxd.app.bootstrap import AppContext, bootstrap_app
+from lxd.domain.limits import MAX_RETRIEVAL_LIMIT
 from lxd.ingest.pipeline.orchestrator import IngestPlan, build_ingest_plan
 from lxd.mcp.async_runtime import run_tool
 from lxd.mcp.models import (
@@ -206,6 +207,12 @@ def _resolve_sampler(lxd: _LxDLifespan, ctx: Context) -> Sampler | None:
     return _make_client_sampler(ctx)
 
 
+async def _invoke(ctx: Context, name: str, fn: object) -> Any:
+    """Shared MCP tool invocation: resolve lifespan, run under timeout."""
+    lxd = _lxd(ctx)
+    return await run_tool(name, fn, timeout_secs=_tool_timeout(lxd))  # type: ignore[arg-type]
+
+
 def create_server(
     cwd: Path | None = None,
     profile: str | None = None,
@@ -242,10 +249,10 @@ def create_server(
         before running searches.
         """
         lxd = _lxd(ctx)
-        return await run_tool(
+        return await _invoke(
+            ctx,
             "corpus_status",
             lambda: corpus_status_tool(lxd.app_context, lxd.ingest_plan),
-            timeout_secs=_tool_timeout(lxd),
         )
 
     @mcp.tool(annotations=_HINT_IDEMPOTENT)
@@ -256,11 +263,7 @@ def create_server(
         ``get_related_concepts`` and ``find_documents_for_concept``.
         """
         lxd = _lxd(ctx)
-        return await run_tool(
-            "get_entity_types",
-            lambda: get_entity_types_tool(lxd.ingest_plan),
-            timeout_secs=_tool_timeout(lxd),
-        )
+        return await _invoke(ctx, "get_entity_types", lambda: get_entity_types_tool(lxd.ingest_plan))
 
     @mcp.tool(annotations=_HINT_IDEMPOTENT)
     async def get_related_concepts(
@@ -306,7 +309,11 @@ def create_server(
         ] = None,
         limit: Annotated[
             int,
-            Field(description="Maximum number of ranked chunks to return.", ge=1, le=100),
+            Field(
+                description="Maximum number of ranked chunks to return.",
+                ge=1,
+                le=MAX_RETRIEVAL_LIMIT,
+            ),
         ] = 10,
     ) -> list[ChunkSearchResult]:
         """Search the corpus using semantic similarity and return ranked text chunks.

@@ -132,33 +132,48 @@ def _backup_database_for_migration(
 ) -> None:
     """Snapshot the SQLite file before destructive migrations run.
 
-    Best-effort: if the backup fails for any reason we log via the connection
-    pragma logger and continue (a missing backup is not a reason to refuse to
-    migrate — but a present backup is a reason to feel calmer about it). The
-    backup lives next to the database with a timestamp suffix.
+    On-disk databases **must** be backed up successfully before migrations
+    proceed — a failed ``copy2`` raises :class:`SchemaIntegrityError` so we
+    never run destructive DDL without a restore point. In-memory / unnamed
+    databases (no file path) skip the backup; there is nothing to snapshot.
+
+    The backup lives next to the database with a timestamp suffix.
     """
     try:
         db_path_row = connection.execute("PRAGMA database_list;").fetchone()
-    except sqlite3.DatabaseError:
-        return
+    except sqlite3.DatabaseError as exc:
+        raise SchemaIntegrityError(
+            f"Refusing migration v{from_version}→v{to_version}: "
+            f"could not resolve database path for backup ({exc})."
+        ) from exc
     if db_path_row is None:
-        return
+        raise SchemaIntegrityError(
+            f"Refusing migration v{from_version}→v{to_version}: "
+            "PRAGMA database_list returned no rows."
+        )
     file_path_str = (
         db_path_row[2] if not isinstance(db_path_row, sqlite3.Row) else db_path_row["file"]
     )
     if not file_path_str:
+        # :memory: / temporary connections — nothing durable to back up.
         return
     db_path = Path(file_path_str)
     if not db_path.exists():
-        return
+        raise SchemaIntegrityError(
+            f"Refusing migration v{from_version}→v{to_version}: "
+            f"database file does not exist at {db_path}."
+        )
     timestamp = datetime.now(UTC).strftime("%Y%m%d-%H%M%S")
     backup_path = db_path.with_suffix(
         f".pre-migration-v{from_version}-to-v{to_version}-{timestamp}.sqlite3.bak"
     )
     try:
         shutil.copy2(db_path, backup_path)
-    except OSError:
-        return
+    except OSError as exc:
+        raise SchemaIntegrityError(
+            f"Refusing migration v{from_version}→v{to_version}: "
+            f"could not write backup to {backup_path} ({exc})."
+        ) from exc
 
 
 def _migration_0001_baseline(connection: sqlite3.Connection) -> None:

@@ -22,6 +22,7 @@ from lxd.stores.sqlite.kg_profiles import (
     load_community_members,
     load_community_report_source_hashes,
     load_entity_profile_source_hashes,
+    update_community_report_llm_summary,
     upsert_community_report,
     upsert_entity_profile,
 )
@@ -434,11 +435,14 @@ async def _enrich_async(
 
     if reports_to_enrich:
 
-        async def _enrich_report(report: CommunityReportRecord) -> tuple[int, str | None]:
+        async def _enrich_report(
+            report: CommunityReportRecord,
+        ) -> tuple[int, int, str | None]:
             prompt = (
                 f"Write a 200–400 word narrative summary of this entity community "
                 f"for instructional design professionals.\n\n"
-                f"Community {report.community_id} ({report.member_count} members)\n\n"
+                f"Community {report.community_id} (level {report.community_level}, "
+                f"{report.member_count} members)\n\n"
                 f"Context:\n{report.deterministic_summary}\n\n"
                 f"Top entities: {report.top_entities_json}\n"
                 f"Top claims: {report.top_claims_json}\n"
@@ -458,15 +462,17 @@ async def _enrich_async(
                 ollama_format=None,
             )
             summary = raw.strip() if raw else None
-            return (report.community_id, summary)
+            return (report.community_id, report.community_level, summary)
 
-        def _commit_reports(results: list[tuple[int, str | None]]) -> None:
+        def _commit_reports(results: list[tuple[int, int, str | None]]) -> None:
             nonlocal enriched
-            for community_id, summary in results:
+            for community_id, community_level, summary in results:
                 if summary:
-                    connection.execute(
-                        "UPDATE community_reports SET llm_summary = ? WHERE community_id = ?",
-                        (summary, community_id),
+                    update_community_report_llm_summary(
+                        connection,
+                        community_id=community_id,
+                        community_level=community_level,
+                        llm_summary=summary,
                     )
                     enriched += 1
             connection.commit()

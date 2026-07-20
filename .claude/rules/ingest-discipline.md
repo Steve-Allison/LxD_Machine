@@ -56,9 +56,12 @@ in-session approval per `~/.claude/CLAUDE.md` §7.
 
 ## The two stores are coupled — never edit one without the other
 
-Chunk persistence is **LanceDB-first, then SQLite**. The orchestrator runs a
-compensating `delete_vector_source` if the SQLite half fails so the two stores
-never diverge. When touching ingest code:
+Chunk persistence is **LanceDB-first, then SQLite**. Before the LanceDB write
+the orchestrator snapshots existing vectors for that source; if the SQLite
+half fails it restores the snapshot (empty for first ingest, prior vectors for
+re-ingest) so the two stores never diverge. Move detection writes the new path
+first, then deletes the old path — never delete-before-write. When touching
+ingest code:
 
 - Never write to `chunk_vectors` without a paired SQLite upsert in the same
   transaction-shaped block.

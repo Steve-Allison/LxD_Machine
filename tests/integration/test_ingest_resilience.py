@@ -400,12 +400,12 @@ def test_sqlite_persist_failure_compensates_lancedb_write(
     tmp_corpus_env: dict[str, Path],
     patched_embedder: _RecordingEmbedder,
 ) -> None:
-    """If SQLite persist raises, LanceDB rows for that file must be removed.
+    """If SQLite persist raises on a *first* ingest, LanceDB must end empty.
 
-    LanceDB-first ordering means a successful LanceDB write followed by a
-    SQLite failure leaves the two stores inconsistent. The compensating
-    delete in pipeline.py:431-437 must restore LanceDB to the pre-ingest
-    state for that file.
+    LanceDB-first ordering snapshots pre-write rows, writes new vectors, then
+    SQLite. On SQLite failure the snapshot is restored — empty for a first
+    ingest, which leaves LanceDB with zero rows for that path (matching the
+    rolled-back SQLite state).
     """
     _write_corpus_file(
         tmp_corpus_env["corpus"],
@@ -414,7 +414,7 @@ def test_sqlite_persist_failure_compensates_lancedb_write(
         # Will Fail
 
         This file's SQLite write will be sabotaged after the LanceDB write
-        succeeds, exercising the compensating delete path.
+        succeeds, exercising the compensating restore path.
         """,
     )
     config, _ = load_runtime_config(tmp_corpus_env["root"])
@@ -443,7 +443,7 @@ def test_sqlite_persist_failure_compensates_lancedb_write(
     # Restore the real persist for the verification queries below.
     assert orchestrator.replace_sqlite_source_chunks is real_replace
 
-    # Verify: LanceDB has zero rows for the failed source.
+    # Verify: LanceDB has zero rows for the failed source (empty snapshot).
     store_paths = build_store_paths(tmp_corpus_env["data"])
     db = connect_lancedb(store_paths.lancedb_path)
     table = open_chunk_table(db, vector_size=config.models.embed_dims)
@@ -454,8 +454,8 @@ def test_sqlite_persist_failure_compensates_lancedb_write(
         .to_list()
     )
     assert rows == [], (
-        f"Compensating delete did not run: LanceDB still has "
-        f"{len(rows)} rows for the failed source."
+        f"Compensating restore did not clear first-ingest failure: LanceDB "
+        f"still has {len(rows)} rows for the failed source."
     )
 
 

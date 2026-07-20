@@ -3,6 +3,7 @@
 from collections.abc import Callable
 
 from lxd.domain.status import LifecycleStatus, RetrievalStatus
+from lxd.domain.time import utc_now
 from lxd.ingest.budget import IngestBudgetTracker
 from lxd.ingest.chunking import chunk_document
 from lxd.ingest.docling import load_docling_document
@@ -153,8 +154,6 @@ def build_source_records(
         )
         if will_call_llm:
             budget_tracker.record_llm_call()
-    from lxd.ingest.pipeline.orchestrator import utc_now  # local import to avoid cycle
-
     wiki_outcome = derive_wiki_link_relations(
         chunk_records=chunk_records,
         slug_index=slug_index,
