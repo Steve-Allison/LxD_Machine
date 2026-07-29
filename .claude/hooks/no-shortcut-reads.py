@@ -21,10 +21,11 @@ Fails OPEN on any internal error: a broken guard must never wedge a session.
 from __future__ import annotations
 
 import json
-import os
 import re
 import shlex
 import sys
+from pathlib import Path
+
 
 # Text tools that can take a file operand.
 TOOLS = {
@@ -133,13 +134,18 @@ PATHISH = re.compile(
 def looks_like_path(token: str) -> bool:
     if token.startswith("-"):
         return False
-    if os.path.exists(token):
+    if Path(token).exists():
         return True
     return "/" in token or bool(PATHISH.search(token))
 
 
-def offending_tool(command: str) -> tuple[str, str] | None:
-    """Return (tool, path) for the first file-reading invocation, else None."""
+def offending_tool(command: str) -> tuple[str, str] | None:  # noqa: PLR0912
+    """Return (tool, path) for the first file-reading invocation, else None.
+
+    Deliberately one function: it walks every shell segment in order,
+    tracking pipe state as it goes, and splitting that into smaller
+    functions would scatter state that needs to stay together.
+    """
     if "<<" in command:  # heredoc: input, not a file read
         return None
 
@@ -165,16 +171,14 @@ def offending_tool(command: str) -> tuple[str, str] | None:
         except ValueError:
             argv = token.split()
         # Drop leading env assignments and wrappers.
-        while argv and (
-            "=" in argv[0].split("/")[-1][:1] or argv[0] in {"sudo", "command", "time"}
-        ):
+        while argv and ("=" in argv[0].split("/")[-1][:1] or argv[0] in {"sudo", "command", "time"}):
             argv = argv[1:]
         while argv and re.match(r"^[A-Za-z_][A-Za-z0-9_]*=", argv[0]):
             argv = argv[1:]
         if not argv:
             continue
 
-        tool = os.path.basename(argv[0])
+        tool = Path(argv[0]).name
         if tool not in TOOLS:
             continue
 
@@ -195,16 +199,16 @@ def main() -> int:
     try:
         data = json.load(sys.stdin)
         command = (data.get("tool_input") or {}).get("command") or ""
-    except Exception:
-        return 0  # fail open
+    except Exception:  # noqa: BLE001 - fail open: a broken guard must not wedge a session
+        return 0
 
     if not command:
         return 0
 
     try:
         hit = offending_tool(command)
-    except Exception:
-        return 0  # fail open
+    except Exception:  # noqa: BLE001 - fail open: a broken guard must not wedge a session
+        return 0
 
     if not hit:
         return 0
@@ -217,13 +221,12 @@ def main() -> int:
         if tool in GREP_FAMILY
         else ""
     )
-    print(
+    sys.stderr.write(
         f"BLOCKED: `{tool}` is reading the file {path!r}.\n"
         f"A partial view is not a read. Use the Read tool on {path!r} (whole file, "
         f"tracked).\n"
         f"{locate}"
-        f"Piping command OUTPUT through {tool} (e.g. `cmd | {tool} ...`) is still allowed.",
-        file=sys.stderr,
+        f"Piping command OUTPUT through {tool} (e.g. `cmd | {tool} ...`) is still allowed.\n"
     )
     return 2
 

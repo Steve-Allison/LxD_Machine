@@ -31,6 +31,7 @@ from __future__ import annotations
 import json
 import sys
 
+
 CONTENT_FREE = {"files_with_matches", "count"}
 
 REASON = """BLOCKED: Grep may locate, but may not read.
@@ -50,15 +51,15 @@ def main() -> int:
     try:
         data = json.load(sys.stdin)
         tool_input = data.get("tool_input") or {}
-    except Exception:
-        return 0  # fail open: broken guard must not wedge the session
+    except Exception:  # noqa: BLE001 - deliberately broad: fail open, never wedge a session
+        return 0
 
     mode = tool_input.get("output_mode")
 
     if isinstance(mode, str) and mode in CONTENT_FREE:
         return 0
 
-    print(REASON.format(mode=mode), file=sys.stderr)
+    sys.stderr.write(REASON.format(mode=mode))
     return 2
 
 
