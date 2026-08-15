@@ -1,0 +1,650 @@
+id: https://steve-allison.github.io/Central_Configs/ontology/schema/stewardship
+name: coe_stewardship
+title: Central Configs Mission and Migration Stewardship Model
+description: >-
+  Governs the mission, consumers, proposed domain model, and lossless migration
+  accountability for completing Central Configs v4. These records govern the
+  active working version and must be resolved before v4 is released.
+version: 1.0.0
+default_prefix: coe
+default_range: string
+prefixes:
+  coe: https://steve-allison.github.io/Central_Configs/ontology/
+  dcterms: http://purl.org/dc/terms/
+  linkml: https://w3id.org/linkml/
+imports:
+  - linkml:types
+  - ./modules/core.linkml
+
+classes:
+  MissionCapability:
+    description: One durable capability that gives Central Configs intrinsic value as a shared authority.
+    attributes:
+      capability_id:
+        description: Capability id for this record.
+        identifier: true
+        required: true
+        range: uriorcurie
+      label:
+        description: Label for this record.
+        required: true
+      outcome:
+        description: Outcome for this record.
+        required: true
+      authoritative_content:
+        description: Authoritative content for this record.
+        required: true
+        minimum_cardinality: 1
+        multivalued: true
+      proof_requirement:
+        description: Proof requirement for this record.
+        required: true
+
+  MissionPrinciple:
+    description: One invariant governing how the mission is delivered.
+    attributes:
+      principle_id:
+        description: Principle id for this record.
+        identifier: true
+        required: true
+        range: uriorcurie
+      label:
+        description: Label for this record.
+        required: true
+      statement:
+        description: Statement for this record.
+        required: true
+      rationale:
+        description: Rationale for this record.
+        required: true
+
+  MissionCompletionCondition:
+    description: A mandatory condition for declaring the working v4 ontology complete.
+    attributes:
+      condition_id:
+        description: Condition id for this record.
+        identifier: true
+        required: true
+        range: uriorcurie
+      label:
+        description: Label for this record.
+        required: true
+      requirement:
+        description: Requirement for this record.
+        required: true
+      proof_required:
+        description: Proof required for this record.
+        required: true
+      blocks_v4_completion:
+        description: Whether failure blocks a claim that v4 is complete.
+        required: true
+        range: boolean
+
+  MissionCharter:
+    description: Machine-readable statement of why Central Configs exists and how success is judged.
+    attributes:
+      charter_id:
+        description: Charter id for this record.
+        identifier: true
+        required: true
+        range: uriorcurie
+      version:
+        description: Version for this record.
+        required: true
+        pattern: ^\d+\.\d+\.\d+$
+        slot_uri: dcterms:hasVersion
+      status:
+        description: Status for this record.
+        required: true
+        range: CharterStatusEnum
+      effective_date:
+        description: Effective date for this record.
+        required: true
+        range: Date
+      mission:
+        description: Mission for this record.
+        required: true
+      problem_statement:
+        description: Problem statement for this record.
+        required: true
+      change_question:
+        description: Change question for this record.
+        required: true
+      beneficiaries:
+        description: Beneficiaries for this record.
+        required: true
+        minimum_cardinality: 1
+        multivalued: true
+      authoritative_scope:
+        description: Authoritative scope for this record.
+        required: true
+        minimum_cardinality: 1
+        multivalued: true
+      exclusions:
+        description: Exclusions for this record.
+        required: true
+        minimum_cardinality: 1
+        multivalued: true
+      capabilities:
+        description: Capabilities for this record.
+        required: true
+        minimum_cardinality: 1
+        range: MissionCapability
+        multivalued: true
+        inlined_as_list: true
+      principles:
+        description: Principles for this record.
+        required: true
+        minimum_cardinality: 1
+        range: MissionPrinciple
+        multivalued: true
+        inlined_as_list: true
+      completion_conditions:
+        description: Conditions that must be met before the working v4 ontology is complete.
+        required: true
+        minimum_cardinality: 1
+        range: MissionCompletionCondition
+        multivalued: true
+        inlined_as_list: true
+      success_definition:
+        description: Success definition for this record.
+        required: true
+
+  Consumer:
+    description: A known downstream project with an evidenced dependency on original or working Central Configs assets.
+    attributes:
+      consumer_id:
+        description: Consumer id for this record.
+        identifier: true
+        required: true
+        range: uriorcurie
+      label:
+        description: Label for this record.
+        required: true
+      repository:
+        description: Repository for this record.
+        required: true
+      status:
+        description: Status for this record.
+        required: true
+        range: ConsumerStatusEnum
+      consumption_modes:
+        description: Consumption modes for this record.
+        required: true
+        minimum_cardinality: 1
+        range: ConsumptionModeEnum
+        multivalued: true
+      capability_ids:
+        description: Capability ids for this record.
+        required: true
+        minimum_cardinality: 1
+        range: uriorcurie
+        multivalued: true
+      evidence_locations:
+        description: Evidence locations for this record.
+        required: true
+        minimum_cardinality: 1
+        multivalued: true
+      application_profile_path:
+        description: Consumer-owned LinkML application profile, when one exists.
+      current_central_version_claim:
+        description: >-
+          Central Configs version label referenced by the consumer. This is not
+          evidence that the upstream version was completed or released.
+      dependency_summary:
+        description: What Central knowledge or configuration the project historically or currently depends upon.
+        required: true
+      migration_requirement:
+        description: What the v4 LinkML migration must preserve for this dependency.
+        required: true
+      notes:
+        description: Notes for this record.
+        multivalued: true
+
+  ConsumerRegistry:
+    description: >-
+      Evidenced inventory of projects that establish the historical and intended
+      dependency context of Central assets. It does not determine Central's worth,
+      ontology scope, domain model, or v4 completeness.
+    attributes:
+      registry_id:
+        description: Registry id for this record.
+        identifier: true
+        required: true
+        range: uriorcurie
+      version:
+        description: Version for this record.
+        required: true
+        pattern: ^\d+\.\d+\.\d+$
+        slot_uri: dcterms:hasVersion
+      status:
+        description: Status for this record.
+        required: true
+        range: RegistryStatusEnum
+      as_of:
+        description: As of for this record.
+        required: true
+        range: Date
+      authority:
+        description: Authority for this record.
+        required: true
+      consumers:
+        description: Consumers for this record.
+        required: true
+        minimum_cardinality: 1
+        range: Consumer
+        multivalued: true
+        inlined_as_list: true
+      completion_rule:
+        description: Completion rule for this record.
+        required: true
+
+  DomainAdmissionCriterion:
+    description: A question a proposed domain must pass before ratification.
+    attributes:
+      criterion_id:
+        description: Criterion id for this record.
+        identifier: true
+        required: true
+        range: uriorcurie
+      label:
+        description: Label for this record.
+        required: true
+      question:
+        description: Question for this record.
+        required: true
+      rationale:
+        description: Rationale for this record.
+        required: true
+      mandatory:
+        description: Mandatory for this record.
+        required: true
+        range: boolean
+
+  DomainAssessment:
+    description: Evidence-based result of applying all eight admission criteria to one domain candidate.
+    attributes:
+      coherent_subject:
+        description: Result for the coherent-subject criterion.
+        required: true
+        range: CriterionResultEnum
+      independent_boundary:
+        description: Result for the independent-boundary criterion.
+        required: true
+        range: CriterionResultEnum
+      include_exclude:
+        description: Result for the include-exclude criterion.
+        required: true
+        range: CriterionResultEnum
+      durable_ownership:
+        description: Result for the durable-ownership criterion.
+        required: true
+        range: CriterionResultEnum
+      shared_authority_relevance:
+        description: Result for the shared-authority-relevance criterion.
+        required: true
+        range: CriterionResultEnum
+      no_axis_conflation:
+        description: Result for the no-axis-conflation criterion.
+        required: true
+        range: CriterionResultEnum
+      no_dumping_ground:
+        description: Result for the no-dumping-ground criterion.
+        required: true
+        range: CriterionResultEnum
+      single_home_compatible:
+        description: Result for the single-home-compatible criterion.
+        required: true
+        range: CriterionResultEnum
+      evidence:
+        description: Representative inventory or consumer evidence supporting the results.
+        required: true
+        minimum_cardinality: 1
+        multivalued: true
+      conclusion:
+        description: Concise interpretation of the eight results and remaining work.
+        required: true
+
+  DomainDefinition:
+    description: A current or proposed semantic ownership domain under explicit review.
+    attributes:
+      domain_id:
+        description: Domain id for this record.
+        identifier: true
+        required: true
+        range: uriorcurie
+      key:
+        description: Key for this record.
+        required: true
+        pattern: ^[a-z][a-z0-9_]*$
+      label:
+        description: Label for this record.
+        required: true
+      kind:
+        description: Kind for this record.
+        required: true
+        range: DomainKindEnum
+      review_status:
+        description: Review status for this record.
+        required: true
+        range: DomainReviewStatusEnum
+      recommended_action:
+        description: Recommended action for this record.
+        required: true
+        range: DomainActionEnum
+      proposed_key:
+        description: Proposed key for this record.
+        pattern: ^[a-z][a-z0-9_]*$
+      proposed_label:
+        description: Proposed label for this record.
+      definition:
+        description: Definition for this record.
+        required: true
+      boundary_test:
+        description: Boundary test for this record.
+        required: true
+      includes:
+        description: Includes for this record.
+        required: true
+        minimum_cardinality: 1
+        multivalued: true
+      excludes:
+        description: Excludes for this record.
+        required: true
+        minimum_cardinality: 1
+        multivalued: true
+      must_not_be_used_for:
+        description: Must not be used for for this record.
+        required: true
+        minimum_cardinality: 1
+        multivalued: true
+      current_bundle_path:
+        description: Current bundle path for this record.
+      legacy_asset_count:
+        description: Legacy asset count for this record.
+        range: integer
+        minimum_value: 0
+      decision_required:
+        description: Decision required for this record.
+        required: true
+      assessment:
+        description: Current evidence-based application of every domain admission criterion.
+        required: true
+        range: DomainAssessment
+        inlined: true
+      notes:
+        description: Notes for this record.
+        multivalued: true
+
+  DomainRegistry:
+    description: Reviewable registry of domain candidates and their boundary tests.
+    attributes:
+      registry_id:
+        description: Registry id for this record.
+        identifier: true
+        required: true
+        range: uriorcurie
+      version:
+        description: Version for this record.
+        required: true
+        pattern: ^\d+\.\d+\.\d+$
+        slot_uri: dcterms:hasVersion
+      status:
+        description: Status for this record.
+        required: true
+        range: RegistryStatusEnum
+      as_of:
+        description: As of for this record.
+        required: true
+        range: Date
+      governing_question:
+        description: Governing question for this record.
+        required: true
+      admission_criteria:
+        description: Admission criteria for this record.
+        required: true
+        minimum_cardinality: 1
+        range: DomainAdmissionCriterion
+        multivalued: true
+        inlined_as_list: true
+      domains:
+        description: Domains for this record.
+        required: true
+        minimum_cardinality: 1
+        range: DomainDefinition
+        multivalued: true
+        inlined_as_list: true
+      ratification_rule:
+        description: Ratification rule for this record.
+        required: true
+
+  MigrationEntry:
+    description: Accountable mapping from one pre-v4 focused asset to its present target.
+    unique_keys:
+      legacy_path_key:
+        description: Each pre-v4 focused asset may appear only once.
+        unique_key_slots:
+          - legacy_path
+      target_id_key:
+        description: This baseline requires a one-to-one mapping to unique v4 target assets.
+        unique_key_slots:
+          - target_id
+    attributes:
+      migration_id:
+        description: Migration id for this record.
+        identifier: true
+        required: true
+        range: uriorcurie
+      legacy_path:
+        description: Legacy path for this record.
+        required: true
+      legacy_commit:
+        description: Legacy commit for this record.
+        required: true
+        pattern: ^[0-9a-f]{7,40}\^?$
+      legacy_id:
+        description: Legacy id for this record.
+        required: true
+      legacy_declared_domain:
+        description: Legacy declared domain for this record.
+      target_id:
+        description: Target id for this record.
+        required: true
+        range: uriorcurie
+      target_path:
+        description: Target path for this record.
+        required: true
+      target_asset_type:
+        description: Target asset type for this record.
+        required: true
+        range: AssetTypeEnum
+      target_bundle_domain:
+        description: Target bundle domain for this record.
+        required: true
+      mapping_basis:
+        description: Mapping basis for this record.
+        required: true
+        range: MappingBasisEnum
+      disposition:
+        description: Disposition for this record.
+        required: true
+        range: MigrationDispositionEnum
+      parity_status:
+        description: Parity status for this record.
+        required: true
+        range: MigrationParityStatusEnum
+      domain_decision_status:
+        description: Domain decision status for this record.
+        required: true
+        range: DomainDecisionStatusEnum
+      notes:
+        description: Notes for this record.
+        multivalued: true
+
+  MigrationCrosswalk:
+    description: Exhaustive migration ledger for every focused asset present immediately before v4 replacement.
+    attributes:
+      crosswalk_id:
+        description: Crosswalk id for this record.
+        identifier: true
+        required: true
+        range: uriorcurie
+      version:
+        description: Version for this record.
+        required: true
+        pattern: ^\d+\.\d+\.\d+$
+        slot_uri: dcterms:hasVersion
+      status:
+        description: Status for this record.
+        required: true
+        range: RegistryStatusEnum
+      as_of:
+        description: As of for this record.
+        required: true
+        range: Date
+      source_commit:
+        description: Source commit for this record.
+        required: true
+        pattern: ^[0-9a-f]{7,40}\^?$
+      target_release:
+        description: Target release for this record.
+        required: true
+      total_legacy_assets:
+        description: Total legacy assets for this record.
+        required: true
+        range: integer
+        minimum_value: 184
+        maximum_value: 184
+      entries:
+        description: Entries for this record.
+        required: true
+        minimum_cardinality: 184
+        maximum_cardinality: 184
+        range: MigrationEntry
+        multivalued: true
+        inlined_as_list: true
+      completion_rule:
+        description: Completion rule for this record.
+        required: true
+
+enums:
+  CharterStatusEnum:
+    description: Permitted values for CharterStatusEnum.
+    permissible_values:
+      canonical: null
+      draft: null
+      superseded: null
+
+  RegistryStatusEnum:
+    description: Permitted values for RegistryStatusEnum.
+    permissible_values:
+      baseline: null
+      under_review: null
+      ratified: null
+      superseded: null
+
+  ConsumerStatusEnum:
+    description: Permitted values for ConsumerStatusEnum.
+    permissible_values:
+      working_v4_integration: null
+      evidenced_legacy_consumer: null
+      historical_evidence_only: null
+      intended_consumer: null
+      retired: null
+
+  ConsumptionModeEnum:
+    description: Permitted values for ConsumptionModeEnum.
+    permissible_values:
+      candidate_release_snapshot: null
+      application_profile: null
+      direct_source_reference: null
+      terminology_conformance: null
+      knowledge_asset_reference: null
+      generated_snapshot: null
+      runtime_configuration: null
+
+  DomainKindEnum:
+    description: Permitted values for DomainKindEnum.
+    permissible_values:
+      foundation: null
+      organisation: null
+      subject: null
+      craft: null
+      learning: null
+      delivery: null
+      infrastructure: null
+      context: null
+
+  DomainReviewStatusEnum:
+    description: Permitted values for DomainReviewStatusEnum.
+    permissible_values:
+      current_v4_under_review: null
+      candidate_v4: null
+      proposed_v4: null
+      ratified_v4: null
+      rejected: null
+      deprecated: null
+
+  CriterionResultEnum:
+    description: Evidence state for one mandatory domain admission criterion.
+    permissible_values:
+      pass: null
+      conditional_pass: null
+      fail: null
+      pending: null
+
+  DomainActionEnum:
+    description: Permitted values for DomainActionEnum.
+    permissible_values:
+      add: null
+      retain: null
+      retain_and_narrow: null
+      rename: null
+      rename_and_broaden: null
+      rename_and_narrow: null
+      retire_as_domain: null
+      split: null
+      undecided: null
+
+  AssetTypeEnum:
+    description: Permitted values for AssetTypeEnum.
+    permissible_values:
+      entity_collection: null
+      taxonomy: null
+      methodology: null
+      creation_guide: null
+      scoring_model: null
+      reference: null
+      corpus: null
+
+  MappingBasisEnum:
+    description: Permitted values for MappingBasisEnum.
+    permissible_values:
+      exact_id: null
+      normalized_id: null
+      reviewed_rename: null
+
+  MigrationDispositionEnum:
+    description: Permitted values for MigrationDispositionEnum.
+    permissible_values:
+      embedded_in_v4_bundle: null
+      preserved_as_focused_asset: null
+      intentionally_retired: null
+      omitted: null
+
+  MigrationParityStatusEnum:
+    description: Permitted values for MigrationParityStatusEnum.
+    permissible_values:
+      not_assessed: null
+      verified_equivalent: null
+      partial: null
+      not_preserved: null
+      not_applicable: null
+
+  DomainDecisionStatusEnum:
+    description: Permitted values for DomainDecisionStatusEnum.
+    permissible_values:
+      pending: null
+      candidate_reassignment: null
+      confirmed: null
+      intentionally_retired: null

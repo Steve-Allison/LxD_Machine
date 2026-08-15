@@ -1,0 +1,2532 @@
+bundle_id: coe:domain/delivery/presence_rubrics
+domain: delivery
+version: 4.0.0
+entity_collections:
+- id: coe:artifact/delivery/presence_rubrics
+  label: Physical Presence & Executive Gravitas
+  description: Facilitation models, body language, audience engagement.
+  version: 4.0.0
+  last_updated: '2026-08-15'
+  entities:
+  - aliases:
+    - instructional format
+    - learning modality
+    - training format
+    recognition_patterns:
+    - (instructor[- ]led|virtual[- ]instructor[- ]led) training
+    - (ILT|VILT|eLearning|e-learning)
+    - (blended|hybrid|self[- ]paced|on[- ]demand) (learning|course|programme|training)
+    - virtual classroom
+    edges:
+    - subject_id: coe:entity/delivery_modality
+      predicate: coe:specialises
+      object_id: coe:entity/delivery_modality_marker
+      relationship_weight: expected
+      description: Live presentation vs. read-ahead Slidument are distinct delivery modalities; the Canonical Lifecycle requires
+        the format decision before design begins (Canonical Presentation Methodology)
+    - subject_id: coe:entity/delivery_modality
+      predicate: coe:contains
+      object_id: coe:entity/course_format
+      relationship_weight: expected
+      description: Delivery modality contains course format decisions determining whether content is delivered as ILT workshop,
+        VILT modules over weeks, or blended self-paced combinations
+    - subject_id: coe:entity/delivery_modality
+      predicate: coe:contains
+      object_id: coe:entity/pause_marker
+      relationship_weight: expected
+      description: 'The YAML evaluation config defines pause_duration thresholds (strategic_pause_min_ms: 2000) as a core
+        delivery modality metric for elite speech (Architecture of Influence, Part 2 Section 3)'
+    - subject_id: coe:entity/delivery_modality
+      predicate: coe:contains
+      object_id: coe:entity/session_structure_marker
+      relationship_weight: required
+      description: Each delivery modality imposes distinct session structure requirements; ILT uses full-day structures with
+        physical breaks while VILT requires shorter segmented sessions
+    - subject_id: coe:entity/delivery_modality
+      predicate: coe:enables
+      object_id: coe:entity/content_structure_marker
+      relationship_weight: expected
+      description: Delivery modality constrains content architecture; keynotes require sparse high-contrast visuals while
+        read-ahead formats require dense rigorous logic layouts
+    - subject_id: coe:entity/delivery_modality
+      predicate: coe:enables
+      object_id: coe:entity/engagement_cue
+      relationship_weight: expected
+      description: 'Delivery modality selection triggers engagement cues: mobile notifications for Gen Z, in-CRM pop-ups for
+        Sales Directors, peer community alerts for Millennials per Learner Persona Research'
+    - subject_id: coe:entity/delivery_modality
+      predicate: coe:enables
+      object_id: coe:entity/facilitation_technique
+      relationship_weight: expected
+      description: Delivery modality enables specific facilitation techniques; ILT supports gallery walks and physical activities
+        while VILT enables chat storms and breakout room discussions
+    - subject_id: coe:entity/delivery_modality
+      predicate: coe:enables
+      object_id: coe:entity/instructional_strategy
+      relationship_weight: expected
+      description: FPI principles are validated across delivery modalities including eLearning MOOCs immersive VR VILT and
+        blended learning per Merrill
+    - subject_id: coe:entity/delivery_modality
+      predicate: coe:enables
+      object_id: coe:entity/layout_pattern
+      relationship_weight: expected
+      description: Delivery modality enables specific layout patterns; keynotes use large fonts and sparse visuals while read-aheads
+        use dense layouts with smaller fonts for detail
+    - subject_id: coe:entity/delivery_modality
+      predicate: coe:enables
+      object_id: coe:entity/nonverbal_cue
+      relationship_weight: expected
+      description: Live delivery modalities enable the full range of nonverbal cues (gesture, posture, eye contact) while
+        virtual and asynchronous modalities constrain them per Ethos and Physicality research
+    - subject_id: coe:entity/delivery_modality
+      predicate: coe:enables
+      object_id: coe:entity/progressive_disclosure_marker
+      relationship_weight: expected
+      description: Card-based digital delivery enables progressive disclosure through nested scrollable content
+    - subject_id: coe:entity/delivery_modality
+      predicate: coe:enables
+      object_id: coe:entity/virtual_platform_feature
+      relationship_weight: expected
+      description: VILT delivery modality enables virtual platform features like breakout rooms, polls, whiteboards, and annotation
+        tools that replicate classroom interactivity per ILT&VILT Best Practice
+    - subject_id: coe:entity/delivery_modality
+      predicate: coe:bridges
+      object_id: coe:entity/delivery_mode
+      relationship_weight: expected
+      description: Pedagogical delivery mode bridges to performance delivery modality, as the research organises all activities
+        by synchronous vs asynchronous delivery modes (Best-Practice Learning Activities) | Performance delivery modality
+        bridges to pedagogical delivery mode, as all 35+ activities are explicitly organised by synchronous vs asynchronous
+        delivery (Best-Practice Learning Activities)
+    - subject_id: coe:entity/delivery_modality
+      predicate: coe:limits
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: expected
+      description: Delivery modality design manages extraneous cognitive load; live presentation demands sparse visuals reducing
+        load while VILT combats Zoom fatigue through segmented sessions
+    - subject_id: coe:entity/delivery_modality
+      predicate: coe:limits
+      object_id: coe:entity/summative_assessment
+      relationship_weight: expected
+      description: Delivery modality constrains summative assessment options — online delivery requires proctoring solutions
+        while face-to-face enables direct observation of performance per innovative learning experiments
+    - subject_id: coe:entity/delivery_modality
+      predicate: coe:triggers
+      object_id: coe:entity/vocal_quality_issue
+      relationship_weight: expected
+      description: Audio quality is more critical than video quality for learning (Nass & Reeves 1996); poor audio has a significantly
+        detrimental effect on learning and retention — prioritise audio fidelity across all delivery modalities per Clark
+        LxD
+    - subject_id: coe:entity/delivery_modality
+      predicate: coe:supports
+      object_id: coe:entity/assessment_item_type
+      relationship_weight: expected
+      description: Assessment item types must match delivery modality — automated MCQ for e-learning, observation checklists
+        for ILT, polls for VILT
+    - subject_id: coe:entity/delivery_modality
+      predicate: coe:supports
+      object_id: coe:entity/collaborative_activity
+      relationship_weight: expected
+      description: Collaborative activities depend on delivery modality configuration for synchronous group interaction
+    - subject_id: coe:entity/delivery_modality
+      predicate: coe:supports
+      object_id: coe:entity/enablement_format
+      relationship_weight: optional
+      description: Enablement assets must work across multiple distribution channels including intranet portals, mobile devices,
+        and print formats
+    - subject_id: coe:entity/delivery_modality
+      predicate: coe:supports
+      object_id: coe:entity/feedback_modality
+      relationship_weight: expected
+      description: 'Feedback must match persona delivery preferences: data-driven coaching via Gong for Sales Directors, peer
+        validation for Millennials, just-in-time for Gen X per Learner Persona Research'
+    - subject_id: coe:entity/delivery_modality
+      predicate: coe:supports
+      object_id: coe:entity/formative_assessment
+      relationship_weight: expected
+      description: Formative assessment methods must adapt to delivery modality — polls in VILT, embedded quizzes in e-learning,
+        exit tickets in ILT
+    - subject_id: coe:entity/delivery_modality
+      predicate: coe:supports
+      object_id: coe:entity/job_aid_format
+      relationship_weight: optional
+      description: Job aids serve as performance support tools within blended delivery approaches; framework identifies them
+        as post-session reinforcement materials supporting just-in-time access per Comprehensive Learning Design Framework
+    - subject_id: coe:entity/delivery_modality
+      predicate: coe:supports
+      object_id: coe:entity/microlearning_format
+      relationship_weight: expected
+      description: Microlearning requires mobile-first responsive delivery modality designed for phones and tablets with offline
+        caching capability
+    - subject_id: coe:entity/delivery_modality
+      predicate: coe:supports
+      object_id: coe:entity/roleplay_activity
+      relationship_weight: expected
+      description: Delivery modality determines roleplay format — ILT enables face-to-face roleplay while VILT requires breakout
+        rooms and adapted observation protocols per roleplay research
+    id: coe:entity/delivery_modality
+    label: Delivery Modality
+    description: Training delivery formats and modality types
+    home_domain: delivery
+    status: canonical
+    ner_label: DELIVERY_MODALITY
+    examples:
+    - instructor-led training (ILT)
+    - virtual instructor-led training (VILT)
+    - self-paced eLearning
+    - blended learning programme
+    - hybrid classroom
+    - on-demand module
+    - cohort-based online course
+    anti_examples:
+    - delivery service
+    - virtual reality
+    confidence_threshold: 0.8
+  - aliases:
+    - engagement strategy
+    - facilitation method
+    - instructor technique
+    recognition_patterns:
+    - (Socratic|guided|open) questioning
+    - think[- ]pair[- ]share
+    - (gallery|learning) walk
+    - (fishbowl|jigsaw|snowball|carousel) (discussion|method|activity)
+    - (parking lot|round[- ]robin|world café)
+    edges:
+    - subject_id: coe:entity/facilitation_technique
+      predicate: coe:specialises
+      object_id: coe:entity/discussion_activity
+      relationship_weight: expected
+      description: Techniques like fishbowl, Socratic questioning, and world café specialise general discussion into structured
+        facilitated interactions with observer feedback and debrief
+    - subject_id: coe:entity/facilitation_technique
+      predicate: coe:enables
+      object_id: coe:entity/call_to_action
+      relationship_weight: optional
+      description: Facilitation techniques enable behavioural calls to action by converting narrative CTAs into audience behaviour
+        through structured interaction and practice activities
+    - subject_id: coe:entity/facilitation_technique
+      predicate: coe:enables
+      object_id: coe:entity/collaborative_activity
+      relationship_weight: expected
+      description: Facilitation techniques enable collaborative activities — think-pair-share, breakout room management, circulating
+        to coach, and structured debrief require skilled facilitation (Gold Standard Structure)
+    - subject_id: coe:entity/facilitation_technique
+      predicate: coe:enables
+      object_id: coe:entity/engagement_cue
+      relationship_weight: expected
+      description: Facilitation techniques enable engagement cues by creating interactive contexts in which participation
+        prompts like polls, quizzes, and breakout discussions are deployed
+    - subject_id: coe:entity/facilitation_technique
+      predicate: coe:enables
+      object_id: coe:entity/engagement_marker
+      relationship_weight: expected
+      description: Facilitation techniques enable engagement markers through active listening, insightful questioning, and
+        collaborative dialogue that draw audience participation per Personal Branding Framework
+    - subject_id: coe:entity/facilitation_technique
+      predicate: coe:enables
+      object_id: coe:entity/formative_assessment
+      relationship_weight: expected
+      description: Facilitation techniques enable formative assessment — Socratic questioning reveals misconceptions in real
+        time, think-pair-share provides observable performance evidence, and gallery walks enable peer evaluation per Corporate
+        Learning Assessment research
+    - subject_id: coe:entity/facilitation_technique
+      predicate: coe:enables
+      object_id: coe:entity/nonverbal_cue
+      relationship_weight: expected
+      description: Facilitation techniques enable effective nonverbal cues — maintaining eye contact, open body language,
+        looking into camera for virtual eye contact, and nodding to show engagement per ILT&VILT Best Practice
+    - subject_id: coe:entity/facilitation_technique
+      predicate: coe:enables
+      object_id: coe:entity/reflection_activity
+      relationship_weight: expected
+      description: FPI Integration phase requires facilitation techniques like post-VR debriefs teach-back scheduling and
+        action plan guidance per Merrill
+    - subject_id: coe:entity/facilitation_technique
+      predicate: coe:enables
+      object_id: coe:entity/roleplay_activity
+      relationship_weight: expected
+      description: Facilitation techniques enable roleplay activities by structuring assigned roles, observer feedback, and
+        debrief cycles that make simulation-based practice effective
+    - subject_id: coe:entity/facilitation_technique
+      predicate: coe:bridges
+      object_id: coe:entity/session_structure_marker
+      relationship_weight: expected
+      description: Facilitation techniques bridge session structure markers by providing interactive methods used within each
+        structural segment from icebreakers to closing debriefs
+    - subject_id: coe:entity/facilitation_technique
+      predicate: coe:limits
+      object_id: coe:entity/presentation_anxiety_marker
+      relationship_weight: optional
+      description: Gradual exposure through low-stakes speaking opportunities and audience interaction desensitises anxiety
+        by distributing attention across the group reducing sole scrutiny
+    - subject_id: coe:entity/facilitation_technique
+      predicate: coe:triggers
+      object_id: coe:entity/germane_load_marker
+      relationship_weight: expected
+      description: Active audience engagement techniques convert passive receivers to active processors, creating germane
+        load per Slide Deck Design Playbook
+    - subject_id: coe:entity/facilitation_technique
+      predicate: coe:resolves
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: optional
+      description: Facilitation techniques like verbal signalling (pause, slower speech, 'The key point is...'), guiding discovery
+        cues, and steering discussions back on-topic resolve extraneous load in live delivery (Applying_Learning_Theory_Practical_Checklist)
+    - subject_id: coe:entity/facilitation_technique
+      predicate: coe:resolves
+      object_id: coe:entity/vocal_quality_issue
+      relationship_weight: optional
+      description: Facilitation techniques like voice modulation, varied tone/volume/pace resolve vocal quality issues — use
+        your voice as a tool to maintain interest per ILT&VILT Best Practice
+    - subject_id: coe:entity/facilitation_technique
+      predicate: coe:supports
+      object_id: coe:entity/confidence_technique
+      relationship_weight: expected
+      description: Facilitation techniques directly support confidence techniques — creating safe environments, validating
+        contributions, and handling wrong answers tactfully builds presenter and learner confidence per ILT&VILT Best Practice
+    - subject_id: coe:entity/facilitation_technique
+      predicate: coe:supports
+      object_id: coe:entity/ethos_appeal
+      relationship_weight: expected
+      description: Perceived expertise increases retention; an expert voice with informal, natural delivery is preferred over
+        over-produced audio — authentic delivery signals credibility per Clark LxD
+    - subject_id: coe:entity/facilitation_technique
+      predicate: coe:supports
+      object_id: coe:entity/instructional_event
+      relationship_weight: expected
+      description: Instructional events in synchronous delivery are supported by facilitation techniques — psychological safety
+        setting, breakout room practice, volunteer showcases with group feedback (Essentials_Course_Gold_Structure) | Facilitation
+        techniques directly execute Gagné's instructional events including scaffolding (Event 5), coaching questions (Event
+        6), and structured debriefing (Event 7) per theory_gagne_s_nine_events_of_instruction
+    - subject_id: coe:entity/facilitation_technique
+      predicate: coe:supports
+      object_id: coe:entity/progressive_disclosure_marker
+      relationship_weight: expected
+      description: Facilitation build-and-reveal techniques support progressive disclosure of slide content by controlling
+        information flow during live delivery per slide deck design playbook
+    - subject_id: coe:entity/facilitation_technique
+      predicate: coe:supports
+      object_id: coe:entity/scenario_activity
+      relationship_weight: required
+      description: SBT requires nuanced facilitation balancing realism with psychological safety; facilitators act as coach
+        using verbal sign-posting and open-ended probing questions per SBT guide
+    - subject_id: coe:entity/facilitation_technique
+      predicate: coe:supports
+      object_id: coe:entity/webinar_format
+      relationship_weight: required
+      description: Webinars rely on facilitation techniques like calling participants by name, dedicated moderator roles,
+        and real-time audience reading
+    id: coe:entity/facilitation_technique
+    label: Facilitation Technique
+    description: Named facilitation methods and instructor techniques for live delivery
+    home_domain: delivery
+    status: canonical
+    ner_label: FACILITATION_TECHNIQUE
+    examples:
+    - Socratic questioning
+    - cold calling
+    - think-pair-share
+    - gallery walk
+    - parking lot technique
+    - round-robin check-in
+    - fishbowl discussion
+    - jigsaw method
+    anti_examples:
+    - cold weather
+    - parking lot space
+    confidence_threshold: 0.75
+  - aliases:
+    - interaction cue
+    - participation prompt
+    recognition_patterns:
+    - raise (your|a) hand
+    - (type|put|drop) (in|into) the chat
+    - show of hands
+    - (quick|live) poll
+    - who (can|wants to) (tell|share|explain)
+    - turn to (your|a) (partner|neighbour)
+    edges:
+    - subject_id: coe:entity/engagement_cue
+      predicate: coe:bridges
+      object_id: coe:entity/engagement_marker
+      relationship_weight: expected
+      description: Engagement markers bridge to engagement cues in delivery; verbal engagement patterns connect to nonverbal
+        engagement signals like the Duchenne smile and eyebrow flash per Anatomy of Presence research
+    - subject_id: coe:entity/engagement_cue
+      predicate: coe:limits
+      object_id: coe:entity/delivery_rate_issue
+      relationship_weight: expected
+      description: Optimal speaking rate for learning is 185-254 wpm (Mayer 2008; Brame 2006); use personal pronouns and avoid
+        reading from script to maintain conversational engagement per Clark LxD
+    - subject_id: coe:entity/engagement_cue
+      predicate: coe:limits
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: optional
+      description: Frequent small engagement interactions every 5-10 minutes reset the attention clock and keep learners mentally
+        present, limiting extraneous cognitive load from monotony
+    - subject_id: coe:entity/engagement_cue
+      predicate: coe:limits
+      object_id: coe:entity/presentation_anxiety_marker
+      relationship_weight: optional
+      description: Audience connection through engagement cues shifts focus outward reducing self-focused anxiety; tuning
+        into nods, smiles, and reactions replaces inward fear with dialogue
+    - subject_id: coe:entity/engagement_cue
+      predicate: coe:triggers
+      object_id: coe:entity/germane_load_marker
+      relationship_weight: expected
+      description: The 2-minute rule and verbal signposting re-engage audience attention and create active processing (germane
+        load) per Slide Deck Design Playbook
+    - subject_id: coe:entity/engagement_cue
+      predicate: coe:supports
+      object_id: coe:entity/delivery_mode
+      relationship_weight: expected
+      description: Live modes (vILT, webinar) require frequent engagement cues; asynchronous modes need visual signposting
+    - subject_id: coe:entity/engagement_cue
+      predicate: coe:supports
+      object_id: coe:entity/engagement_dimension
+      relationship_weight: expected
+      description: LSM warmth score (target 0.85) and inclusive pronoun usage are measurable proxies for audience engagement
+        quality in the evaluation framework (Architecture of Influence, Part 2 Section 3) | Vocal engagement cues — pitch
+        variability >3.0 semitones SD, prosodic variation — directly support engagement scoring by keeping the listener's
+        auditory cortex active through change detection per Unified Performance Framework
+    - subject_id: coe:entity/engagement_cue
+      predicate: coe:supports
+      object_id: coe:entity/formative_assessment
+      relationship_weight: expected
+      description: Engagement cues support formative assessment by providing real-time participation signals — poll responses,
+        chat answers, and hand-raise patterns serve as informal knowledge checks per Corporate Learning Assessment research
+    - subject_id: coe:entity/engagement_cue
+      predicate: coe:supports
+      object_id: coe:entity/instructional_event
+      relationship_weight: expected
+      description: Engagement cues directly support Gagné's Event 1 (Gain Attention) and Event 6 (Elicit Performance) by prompting
+        audience interaction through polls, questions, and participation activities per theory_gagne_s_nine_events_of_instruction
+    - subject_id: coe:entity/engagement_cue
+      predicate: coe:supports
+      object_id: coe:entity/pathos_appeal
+      relationship_weight: expected
+      description: Engagement cues support pathos appeal; Duchenne smiles create lower social distance and greater willingness
+        to interact, directly serving the emotional connection that pathos requires per Anatomy of Presence research
+    - subject_id: coe:entity/engagement_cue
+      predicate: coe:supports
+      object_id: coe:entity/roleplay_activity
+      relationship_weight: expected
+      description: Engagement cues support roleplay by establishing participation norms and emotional safety before interpersonal
+        practice activities per roleplay research
+    - subject_id: coe:entity/engagement_cue
+      predicate: coe:precedes
+      object_id: coe:entity/pause_marker
+      relationship_weight: optional
+      description: Engagement cues precede intentional pauses; after posing a question or participation prompt facilitators
+        must allow longer silence for participants to unmute or type responses
+    - subject_id: coe:entity/engagement_cue
+      predicate: coe:contrasts_with
+      object_id: coe:entity/vocal_quality_issue
+      relationship_weight: expected
+      description: Monotone pitch and few pauses lead to low warmth while elite speakers oscillate between soft sell and hard
+        sell voices for engagement per Elite Speaker Linguistic Analysis
+    id: coe:entity/engagement_cue
+    label: Engagement Cue
+    description: Verbal and structural cues used to maintain learner engagement during live delivery
+    home_domain: delivery
+    status: canonical
+    ner_label: ENGAGEMENT_CUE
+    examples:
+    - raise your hand if
+    - type in the chat
+    - show of hands
+    - quick poll
+    - chat waterfall
+    - emoji reaction
+    - energy check
+    - who can tell me
+    anti_examples:
+    - hand sanitiser
+    - chat application
+    confidence_threshold: 0.65
+  - aliases:
+    - class structure
+    - session element
+    recognition_patterns:
+    - (icebreaker|warm[- ]up|check[- ]in|check[- ]out) (activity|exercise|round)
+    - (agenda|ground rules|housekeeping) review
+    - (comfort|bio|stretch) break
+    - (debrief|recap|closing|action items|next steps)
+    edges:
+    - subject_id: coe:entity/session_structure_marker
+      predicate: coe:contains
+      object_id: coe:entity/bluf_hook
+      relationship_weight: optional
+      description: Session structure contains BLUF (Bottom Line Up Front) hooks placed immediately after SCQA setup to respect
+        executive time and frame subsequent content as evidence
+    - subject_id: coe:entity/session_structure_marker
+      predicate: coe:contains
+      object_id: coe:entity/engagement_cue
+      relationship_weight: expected
+      description: Session structure includes planned re-engagement cues every 7-10 minutes through questions, stories, or
+        visual resets per Slide Deck Design Playbook
+    - subject_id: coe:entity/session_structure_marker
+      predicate: coe:contains
+      object_id: coe:entity/formative_assessment
+      relationship_weight: expected
+      description: Session structure contains formative assessment points with knowledge checks, polls, and recap quizzes
+        embedded at transitions between structural segments
+    - subject_id: coe:entity/session_structure_marker
+      predicate: coe:contains
+      object_id: coe:entity/pause_marker
+      relationship_weight: expected
+      description: Session structure markers contain pause types; TED talk analysis identifies Landing Pauses (after key points)
+        and Transition Pauses (between sections) as structural markers that delineate session segments per Anatomy of Presence
+        research
+    - subject_id: coe:entity/session_structure_marker
+      predicate: coe:enables
+      object_id: coe:entity/confidence_technique
+      relationship_weight: optional
+      description: Session structural elements like warm-up activities and agenda review create space for confidence techniques
+        such as grounding exercises and breathing before delivery
+    - subject_id: coe:entity/session_structure_marker
+      predicate: coe:enables
+      object_id: coe:entity/narrative_tension
+      relationship_weight: expected
+      description: Session structure markers enable narrative tension by providing the structural framework (setup/confrontation/resolution)
+        within which tension operates per Analyzing Story for Business Communication
+    - subject_id: coe:entity/session_structure_marker
+      predicate: coe:enables
+      object_id: coe:entity/pedagogical_sequence_marker
+      relationship_weight: expected
+      description: Session structure enables pedagogical sequencing with gate criteria preventing phase advancement; Welcome-Module-Break-Review-Closing
+        scaffolds the learning progression
+    - subject_id: coe:entity/session_structure_marker
+      predicate: coe:bridges
+      object_id: coe:entity/transition_marker
+      relationship_weight: expected
+      description: Session structure markers bridge narrative transition markers; phase gates between SOAR stages mark both
+        structural and narrative boundaries in presentation flow
+    - subject_id: coe:entity/session_structure_marker
+      predicate: coe:bridges
+      object_id: coe:entity/transition_phrase
+      relationship_weight: optional
+      description: Transition phrases bridge between session structure segments connecting intro to body to conclusion (Best
+        Video Script Prompts)
+    - subject_id: coe:entity/session_structure_marker
+      predicate: coe:limits
+      object_id: coe:entity/presentation_anxiety_marker
+      relationship_weight: expected
+      description: Clear session structure with pre-presentation routines and venue familiarisation creates predictability
+        and control that reduces last-minute jitters and anxiety
+    - subject_id: coe:entity/session_structure_marker
+      predicate: coe:supports
+      object_id: coe:entity/instructional_event
+      relationship_weight: expected
+      description: Instructional events (Engage-Educate-Apply sequence) are supported by session structure markers that organize
+        when each event occurs within the training timeline per ILT&VILT Best Practice
+    - subject_id: coe:entity/session_structure_marker
+      predicate: coe:supports
+      object_id: coe:entity/progressive_disclosure_marker
+      relationship_weight: optional
+      description: Progressive disclosure is directly supported by clear session structure — breaking presentations into well-organized
+        chunks and sticking to few key points enables gradual content reveal per Public Speaking research
+    - subject_id: coe:entity/session_structure_marker
+      predicate: coe:supports
+      object_id: coe:entity/roleplay_activity
+      relationship_weight: expected
+      description: Session structure supports roleplay with pre-briefing (ground rules, safety), practice execution, and structured
+        debrief phases per roleplay research
+    - subject_id: coe:entity/session_structure_marker
+      predicate: coe:supports
+      object_id: coe:entity/scenario_activity
+      relationship_weight: required
+      description: 'SBT delivery follows a three-phase session structure: pre-briefing (fiction contract, ground rules, scaffolding),
+        scenario execution, and structured debriefing per SBT guide'
+    - subject_id: coe:entity/session_structure_marker
+      predicate: coe:supports
+      object_id: coe:entity/structure_dimension
+      relationship_weight: expected
+      description: Structure quality scoring informed by session structure markers delineating intro body conclusion (Best
+        Video Script Prompts)
+    - subject_id: coe:entity/session_structure_marker
+      predicate: coe:precedes
+      object_id: coe:entity/objective_stem
+      relationship_weight: expected
+      description: Session opening and agenda segments precede learning objective statements; facilitators outline what learners
+        will achieve and how they will apply it on the job
+    id: coe:entity/session_structure_marker
+    label: Session Structure Marker
+    description: Structural elements of a live training session including openings, transitions, and closings
+    home_domain: delivery
+    status: canonical
+    ner_label: SESSION_STRUCTURE
+    examples:
+    - icebreaker activity
+    - agenda review
+    - comfort break
+    - mid-session debrief
+    - recap and review
+    - closing circle
+    - action items review
+    - next steps summary
+    anti_examples:
+    - ice cream
+    - session timeout
+    confidence_threshold: 0.7
+  - aliases:
+    - platform tool
+    - virtual feature
+    recognition_patterns:
+    - breakout room
+    - (virtual|digital|shared) whiteboard
+    - screen shar(e|ing)
+    - (annotation|drawing) tool
+    - (session|meeting|class) recording
+    - (live|auto|closed) caption
+    edges:
+    - subject_id: coe:entity/virtual_platform_feature
+      predicate: coe:enables
+      object_id: coe:entity/accessibility_feature
+      relationship_weight: expected
+      description: Virtual platform features enable accessibility features — closed captioning, live transcripts, dial-in
+        alternatives, and assistive technology support are platform-dependent capabilities per ILT&VILT Best Practice
+    - subject_id: coe:entity/virtual_platform_feature
+      predicate: coe:enables
+      object_id: coe:entity/delivery_modality
+      relationship_weight: expected
+      description: VILT delivery mode is enabled by breakout rooms for small group work, digital whiteboards, collaboration
+        tools, and recording capability for review (Comprehensive Learning Design Framework)
+    - subject_id: coe:entity/virtual_platform_feature
+      predicate: coe:enables
+      object_id: coe:entity/facilitation_technique
+      relationship_weight: expected
+      description: Virtual platform features enable facilitation techniques in online contexts; breakout rooms enable small-group
+        discussions, whiteboards enable brainstorming, annotations enable collaboration
+    - subject_id: coe:entity/virtual_platform_feature
+      predicate: coe:enables
+      object_id: coe:entity/quiz_activity
+      relationship_weight: expected
+      description: Virtual platform features enable quiz activities — built-in polling, embedded LMS quizzes, and gamified
+        quiz platforms integrate directly with VILT sessions for real-time knowledge checks per Corporate Learning Assessment
+        research
+    - subject_id: coe:entity/virtual_platform_feature
+      predicate: coe:enables
+      object_id: coe:entity/roleplay_activity
+      relationship_weight: expected
+      description: Virtual platform features enable roleplay in VILT contexts through breakout rooms for paired practice and
+        video for observation and feedback per roleplay research
+    - subject_id: coe:entity/virtual_platform_feature
+      predicate: coe:limits
+      object_id: coe:entity/missing_alt_indicator
+      relationship_weight: optional
+      description: Virtual platform features with closed captioning, screen reader support, and assistive technology compatibility
+        limit accessibility gaps when properly configured
+    - subject_id: coe:entity/virtual_platform_feature
+      predicate: coe:limits
+      object_id: coe:entity/nonverbal_cue
+      relationship_weight: expected
+      description: Virtual platforms limit nonverbal cue transmission; digital thin-slicing constrains presence to camera
+        angle, background, lighting, and posture — eliminating haptic, olfactory, and proxemic channels per Anatomy of Presence
+        research
+    - subject_id: coe:entity/virtual_platform_feature
+      predicate: coe:triggers
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: optional
+      description: Virtual platform features can trigger extraneous cognitive load when overused; too much on-screen information
+        and grid-of-faces fatigue create unique VILT cognitive strain
+    - subject_id: coe:entity/virtual_platform_feature
+      predicate: coe:triggers
+      object_id: coe:entity/presentation_anxiety_marker
+      relationship_weight: optional
+      description: Virtual platforms create catastrophic failure potential — audio dropouts, feedback loops, chaotic breakout
+        groups — directly triggering presenter anxiety per Clark LxD
+    - subject_id: coe:entity/virtual_platform_feature
+      predicate: coe:supports
+      object_id: coe:entity/confidence_technique
+      relationship_weight: optional
+      description: Confidence techniques include familiarising with venue logistics — testing microphones, projectors, clickers,
+        and software in advance to reduce technical anxiety (Mastering Presentation Nerves)
+    - subject_id: coe:entity/virtual_platform_feature
+      predicate: coe:supports
+      object_id: coe:entity/engagement_cue
+      relationship_weight: expected
+      description: Engagement cues are supported by virtual platform features including polls, chat waterfalls, emoji reactions,
+        and hand-raise mechanisms that deliver cues in VILT contexts
+    - subject_id: coe:entity/virtual_platform_feature
+      predicate: coe:supports
+      object_id: coe:entity/ethos_appeal
+      relationship_weight: optional
+      description: Virtual platform features support ethos appeal when optimised; camera angle looking up at the speaker simulates
+        a power angle, and background/lighting function as digital attire for credibility signaling per Anatomy of Presence
+        research
+    - subject_id: coe:entity/virtual_platform_feature
+      predicate: coe:supports
+      object_id: coe:entity/formative_assessment
+      relationship_weight: expected
+      description: Virtual platform features support formative assessment through automated response collection, instant result
+        aggregation, and learner analytics dashboards that enable real-time assessment during VILT delivery per Corporate
+        Learning Assessment research
+    - subject_id: coe:entity/virtual_platform_feature
+      predicate: coe:supports
+      object_id: coe:entity/microlearning_format
+      relationship_weight: expected
+      description: LMS integration with SSO, content embedding, real-time progress sync, and platforms like EdApp/Axonify
+        enable microlearning delivery features per AI Microlearning Guide
+    - subject_id: coe:entity/virtual_platform_feature
+      predicate: coe:supports
+      object_id: coe:entity/webinar_format
+      relationship_weight: required
+      description: Webinar delivery depends on platform features including polls, breakout rooms, whiteboards, chat, and live
+        annotation tools
+    id: coe:entity/virtual_platform_feature
+    label: Virtual Platform Feature
+    description: Virtual meeting platform features used for instructional delivery
+    home_domain: delivery
+    status: canonical
+    ner_label: VIRTUAL_PLATFORM
+    examples:
+    - breakout rooms
+    - virtual whiteboard
+    - screen sharing
+    - annotation tools
+    - session recording
+    - waiting room
+    - hand raise feature
+    - live captioning
+    anti_examples:
+    - break room
+    - white board marker
+    confidence_threshold: 0.75
+  - aliases:
+    - performance nerves
+    - speaking anxiety
+    - stage fright
+    recognition_patterns:
+    - (stage|performance|presentation|public speaking) (fright|anxiety|nerves)
+    - (glossophobia|imposter syndrome)
+    - fight[- ]or[- ]flight
+    - (breathing|grounding|centering) (technique|exercise)
+    edges:
+    - subject_id: coe:entity/presentation_anxiety_marker
+      predicate: coe:limits
+      object_id: coe:entity/engagement_cue
+      relationship_weight: optional
+      description: Anxious facilitators rush to fill silence after posing questions rather than allowing wait time and may
+        avoid interactive techniques, limiting learner participation
+    - subject_id: coe:entity/presentation_anxiety_marker
+      predicate: coe:triggers
+      object_id: coe:entity/delivery_rate_issue
+      relationship_weight: expected
+      description: Adrenaline from presentation anxiety makes speakers talk too fast; the stress-hormone response directly
+        triggers delivery rate issues and rushed pacing
+    - subject_id: coe:entity/presentation_anxiety_marker
+      predicate: coe:triggers
+      object_id: coe:entity/filler_word
+      relationship_weight: expected
+      description: Presentation anxiety triggers filler word usage as speakers fumble, rush, and fill silence with unnecessary
+        words due to nervousness and fear of judgment
+    - subject_id: coe:entity/presentation_anxiety_marker
+      predicate: coe:triggers
+      object_id: coe:entity/nonverbal_cue
+      relationship_weight: required
+      description: 'Presentation anxiety triggers observable nonverbal leakage: self-adaptor rate >5.5/min, postural sway
+        >3.25cm², and contractive posture (abduction <10 degrees) per Unified Performance Framework'
+    - subject_id: coe:entity/presentation_anxiety_marker
+      predicate: coe:triggers
+      object_id: coe:entity/uptalk_indicator
+      relationship_weight: expected
+      description: Presentation anxiety triggers uptalk; upward inflection signals uncertainty and submission, which are direct
+        manifestations of anxiety in vocal delivery per Anatomy of Presence research
+    - subject_id: coe:entity/presentation_anxiety_marker
+      predicate: coe:triggers
+      object_id: coe:entity/vocal_hedge_marker
+      relationship_weight: optional
+      description: Self-doubt and fear of judgment from presentation anxiety trigger hedging language and tentative phrasing
+        that undermines speaker authority and credibility
+    - subject_id: coe:entity/presentation_anxiety_marker
+      predicate: coe:triggers
+      object_id: coe:entity/vocal_quality_issue
+      relationship_weight: expected
+      description: Presentation anxiety triggers vocal quality degradation including trembling voice, shaky delivery, and
+        breathlessness through the fight-or-flight physiological response
+    - subject_id: coe:entity/presentation_anxiety_marker
+      predicate: coe:supports
+      object_id: coe:entity/apology_opener
+      relationship_weight: expected
+      description: Apology openers are verbal manifestations of presentation anxiety; they function as cognitive offloading
+        of anxiety through pre-emptive face-saving per Ethos research
+    - subject_id: coe:entity/presentation_anxiety_marker
+      predicate: coe:supports
+      object_id: coe:entity/confidence_technique
+      relationship_weight: required
+      description: Confidence techniques directly address presentation anxiety. Physical grounding, breathing exercises, and
+        positive visualization reduce anxiety markers (tremor, rushed speech, shallow breathing) and improve delivery quality.
+    id: coe:entity/presentation_anxiety_marker
+    label: Presentation Anxiety Marker
+    description: Terms and indicators related to public speaking anxiety and nervousness management
+    home_domain: delivery
+    status: canonical
+    ner_label: ANXIETY_MARKER
+    examples:
+    - stage fright
+    - presentation nerves
+    - glossophobia
+    - butterflies in stomach
+    - fight-or-flight response
+    - performance anxiety
+    - imposter syndrome
+    anti_examples:
+    - anxiety medication
+    - stage design
+    confidence_threshold: 0.7
+  - aliases:
+    - anxiety management
+    - confidence builder
+    recognition_patterns:
+    - (power|confident) pose
+    - (box|diaphragmatic|deep) breathing
+    - (mental|physical|dress) rehearsal
+    - (grounding|centering|anchoring|visualisation) (exercise|technique)
+    - headline first
+    edges:
+    - subject_id: coe:entity/confidence_technique
+      predicate: coe:contains
+      object_id: coe:entity/pause_marker
+      relationship_weight: expected
+      description: Confidence techniques include strategic pausing with higher silence ratios per voice metric research
+    - subject_id: coe:entity/confidence_technique
+      predicate: coe:enables
+      object_id: coe:entity/authority_opener
+      relationship_weight: optional
+      description: Confidence techniques enable authority openers by establishing the vocal presence needed for authoritative
+        opening statements per voice enhancements research
+    - subject_id: coe:entity/confidence_technique
+      predicate: coe:enables
+      object_id: coe:entity/boost_marker
+      relationship_weight: expected
+      description: Confidence techniques enable stance boosting through pressed phonation and controlled delivery per Voice
+        Quality Metric Research
+    - subject_id: coe:entity/confidence_technique
+      predicate: coe:enables
+      object_id: coe:entity/engagement_cue
+      relationship_weight: expected
+      description: Confidence techniques enable engagement cues by shifting focus outward to audience reactions — making eye
+        contact with individuals and reading nods and smiles rather than viewing the crowd as a monolith (Mastering Presentation
+        Nerves)
+    - subject_id: coe:entity/confidence_technique
+      predicate: coe:enables
+      object_id: coe:entity/ethos_appeal
+      relationship_weight: expected
+      description: Confidence techniques (power posing, physiological sigh, mental rehearsal) build the physical and vocal
+        authority that directly enables ethos credibility per Ethos and Physicality research
+    - subject_id: coe:entity/confidence_technique
+      predicate: coe:enables
+      object_id: coe:entity/facilitation_technique
+      relationship_weight: optional
+      description: Facilitator composure and confidence underpin adaptability; mental rehearsal and grounding prepare facilitators
+        to manage difficult group dynamics effectively
+    - subject_id: coe:entity/confidence_technique
+      predicate: coe:enables
+      object_id: coe:entity/nonverbal_cue
+      relationship_weight: expected
+      description: Power posing, upright posture, deliberate gestures, and eye contact as confidence techniques enable effective
+        nonverbal delivery that projects authority and engagement
+    - subject_id: coe:entity/confidence_technique
+      predicate: coe:resolves
+      object_id: coe:entity/delivery_rate_issue
+      relationship_weight: expected
+      description: Intentional pace slowing and strategic pause insertion as confidence techniques resolve adrenaline-driven
+        delivery rate issues and rushed speaking patterns
+    - subject_id: coe:entity/confidence_technique
+      predicate: coe:resolves
+      object_id: coe:entity/presentation_anxiety_marker
+      relationship_weight: expected
+      description: Confidence techniques (grounding, breathing, visualisation) directly counteract and resolve presentation
+        anxiety symptoms per Ethos and Physicality research
+    - subject_id: coe:entity/confidence_technique
+      predicate: coe:resolves
+      object_id: coe:entity/vocal_quality_issue
+      relationship_weight: expected
+      description: Diaphragmatic breathing, progressive muscle relaxation, and pace control directly resolve anxiety-driven
+        vocal quality issues like trembling voice and breathlessness
+    - subject_id: coe:entity/confidence_technique
+      predicate: coe:supports
+      object_id: coe:entity/story_hook
+      relationship_weight: optional
+      description: Opening with a story you know well gives the speaker a confident start — story hooks are directly supported
+        by confidence technique per Public Speaking research
+    - subject_id: coe:entity/confidence_technique
+      predicate: coe:contrasts_with
+      object_id: coe:entity/uptalk_indicator
+      relationship_weight: expected
+      description: Uptalk's rising intonation on declaratives directly contrasts with confident declarative delivery marked
+        by falling terminal pitch per Unified Performance Framework
+    id: coe:entity/confidence_technique
+    label: Confidence Technique
+    description: Methods and techniques for building presenter confidence and managing delivery anxiety
+    home_domain: delivery
+    status: canonical
+    ner_label: CONFIDENCE_TECHNIQUE
+    examples:
+    - power pose
+    - box breathing
+    - visualisation technique
+    - grounding exercise
+    - mental rehearsal
+    - anchoring technique
+    - progressive muscle relaxation
+    - positive self-talk
+    anti_examples:
+    - power outage
+    - box set
+    confidence_threshold: 0.7
+  - aliases:
+    - delivery notes
+    - presenter notes
+    - speaker notes
+    recognition_patterns:
+    - (speaker|presenter|delivery) notes
+    - \[(PAUSE|CLICK|ASK|SLOW)\b
+    edges:
+    - subject_id: coe:entity/presentation_speaker_notes
+      predicate: coe:contains
+      object_id: coe:entity/pause_marker
+      relationship_weight: expected
+      description: Speaker notes contain pause markers for timing cues per Slide Deck Design Playbook
+    - subject_id: coe:entity/presentation_speaker_notes
+      predicate: coe:contains
+      object_id: coe:entity/vocal_emphasis_marker
+      relationship_weight: expected
+      description: Speaker notes contain emphasis markers for vocal stress placement per Slide Deck Design Playbook
+    id: coe:entity/presentation_speaker_notes
+    label: Presentation Speaker Notes
+    description: The other half of the Minimalist presentation — text removed from slides (to obey Redundancy Principle) moves
+      to speaker notes
+    home_domain: delivery
+    status: canonical
+    ner_label: PRESENTATION_SPEAKER_NOTES
+    examples:
+    - speaker notes with delivery cues and narrative beats
+    - keyword-based notes with pause markers
+    anti_examples:
+    - verbatim script read aloud from notes
+    confidence_threshold: 0.65
+  - aliases:
+    - slide timing
+    - visual-verbal sync
+    recognition_patterns:
+    - (slide|visual)[- ](speech|verbal) (alignment|sync|synchronization)
+    - (click|reveal) (and|then) (talk|speak|explain)
+    edges:
+    - subject_id: coe:entity/slide_speech_alignment
+      predicate: coe:triggers
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: expected
+      description: Misaligned slide-speech timing triggers extraneous cognitive load as audience holds info in working memory
+        per Slide Deck Design Playbook
+    id: coe:entity/slide_speech_alignment
+    label: Slide Speech Alignment
+    description: The live application of Temporal Contiguity Principle — the click to reveal a new slide or build must be
+      perfectly synchronized with the start of spoken words describing it
+    home_domain: delivery
+    status: canonical
+    ner_label: SLIDE_SPEECH_ALIGNMENT
+    examples:
+    - click to reveal aligned with spoken explanation
+    - the animation must sync with the narration
+    anti_examples:
+    - the speech was well-aligned with the topic
+    confidence_threshold: 0.65
+  - aliases:
+    - channel opening
+    - format-specific opener
+    recognition_patterns:
+    - (cold|visual) open
+    - above[- ]the[- ]fold
+    - (bold|opening|first) slide
+    - (hook|grab) in (title|first sentence)
+    edges:
+    - subject_id: coe:entity/channel_specific_opening
+      predicate: coe:enables
+      object_id: coe:entity/engagement_cue
+      relationship_weight: expected
+      description: Channel-adapted openings enable immediate engagement by meeting audience expectations for each delivery
+        format per Crafting Powerful Opening Plays
+    - subject_id: coe:entity/channel_specific_opening
+      predicate: coe:supports
+      object_id: coe:entity/authority_opener
+      relationship_weight: expected
+      description: Channel-specific opening techniques support authority openers by ensuring the delivery format amplifies
+        rather than undermines the speaker's declarative opening per Crafting Powerful Opening Plays
+    id: coe:entity/channel_specific_opening
+    label: Channel Specific Opening
+    description: Opening delivery techniques adapted for different presentation channels — each channel has distinct constraints
+      on how a hook is delivered and perceived
+    home_domain: delivery
+    status: canonical
+    ner_label: CHANNEL_OPENING
+    examples:
+    - bold opening slide with single statistic
+    - video cold open with action shot
+    - written brief with hook in title
+    anti_examples:
+    - agenda slide as opener
+    - video starting with logo animation
+    confidence_threshold: 0.65
+  - aliases:
+    - energiser
+    - session opener
+    - warm-up activity
+    recognition_patterns:
+    - ice[- ]?breaker (activity|opening|exercise)
+    - (warm[- ]up|energiser|opener) (activity|exercise)
+    id: coe:entity/ice_breaker_opening
+    label: Ice Breaker Opening
+    description: References to ice-breaker activities used at the start of synchronous sessions to gain attention and build
+      rapport
+    home_domain: delivery
+    status: canonical
+    edges: []
+    ner_label: ICE_BREAKER_OPENING
+    examples:
+    - ice-breaker activity
+    - team trivia warm-up
+    - session opening energiser
+    - introduction round
+    anti_examples:
+    - ice breaker ship
+    confidence_threshold: 0.7
+  - aliases:
+    - rotating demo
+    - sequential presentation
+    recognition_patterns:
+    - round[- ]robin (demo|presentation|exercise)
+    - rotating (demo|presentation) (session|exercise)
+    id: coe:entity/round_robin_demo
+    label: Round Robin Demo
+    description: References to round-robin format demonstrations where each participant presents in turn with structured peer
+      feedback
+    home_domain: delivery
+    status: canonical
+    edges: []
+    ner_label: ROUND_ROBIN_DEMO
+    examples:
+    - round-robin demo session
+    - rotating presentation exercise
+    - each person presents then receives feedback
+    anti_examples:
+    - robin bird
+    confidence_threshold: 0.75
+  - aliases:
+    - group debrief
+    - lessons learned
+    - post-activity reflection
+    recognition_patterns:
+    - (structured|post[- ]activity|group) debrief
+    - (lessons learned|reflection) (session|discussion)
+    id: coe:entity/debrief_discussion
+    label: Debrief Discussion
+    description: References to structured post-activity debrief discussions for extracting lessons learned and consolidating
+      learning
+    home_domain: delivery
+    status: canonical
+    edges: []
+    ner_label: DEBRIEF_DISCUSSION
+    examples:
+    - post-activity debrief
+    - structured debrief discussion
+    - lessons learned session
+    - group reflection after exercise
+    anti_examples:
+    - security debriefing
+    confidence_threshold: 0.7
+  - aliases:
+    - fading scaffold
+    - graduated difficulty
+    - progressive challenge
+    recognition_patterns:
+    - scaffolded (difficulty|challenge) (progression|sequence)
+    - (graduated|progressive|fading) (difficulty|challenge|support|scaffold)
+    id: coe:entity/scaffolded_difficulty_progression
+    label: Scaffolded Difficulty Progression
+    description: References to deliberate progression of activity difficulty from supported to independent across a learning
+      sequence
+    home_domain: delivery
+    status: canonical
+    edges: []
+    ner_label: SCAFFOLDED_DIFFICULTY_PROGRESSION
+    examples:
+    - scaffolded difficulty across modules
+    - graduated challenge progression
+    - from guided practice to independent application
+    - fading support across sessions
+    anti_examples:
+    - building scaffolding on construction site
+    confidence_threshold: 0.7
+  - id: coe:entity/elite_delivery_metrics
+    label: Elite Delivery Metrics
+    description: Empirical delivery metrics with thresholds distinguishing elite from average speakers
+    home_domain: delivery
+    status: canonical
+    recognition_patterns:
+    - (?i)\bElite\s+Delivery\s+Metrics\b
+    edges: []
+    ner_label: ELITE_DELIVERY_METRICS
+  - id: coe:entity/say_show_support_model
+    label: Say Show Support Model
+    description: '3-deliverable approach: verbal script (Say) + cinematic aid (Show) + detailed document (Support).'
+    home_domain: delivery
+    status: canonical
+    recognition_patterns:
+    - (?i)\bSay\s+Show\s+Support\s+Model\b
+    edges: []
+    ner_label: SAY_SHOW_SUPPORT
+  - id: coe:entity/pre_wire_strategy
+    label: Pre Wire Strategy
+    description: Practice of calling key stakeholders individually before a high-stakes meeting to understand and address
+      their concerns.
+    home_domain: delivery
+    status: canonical
+    recognition_patterns:
+    - (?i)\bPre\s+Wire\s+Strategy\b
+    edges: []
+    ner_label: PRE_WIRE
+  - id: coe:entity/semantic_color_coding
+    label: Semantic Color Coding
+    description: 'Standardized color schema for visual facilitation: Black (Structure), Blue (Process), Red (Pain), Green
+      (Success).'
+    home_domain: delivery
+    status: canonical
+    recognition_patterns:
+    - (?i)\bSemantic\s+Color\s+Coding\b
+    edges: []
+    ner_label: COLOR_SCHEMA
+  - aliases:
+    - disfluency
+    - hesitation
+    - verbal filler
+    recognition_patterns:
+    - \bum\b
+    - \buh\b
+    - \ber\b
+    - you know
+    - kind of
+    - sort of
+    - I mean
+    edges:
+    - subject_id: coe:entity/filler_word
+      predicate: coe:limits
+      object_id: coe:entity/ethos_appeal
+      relationship_weight: expected
+      description: Filled pauses (um, uh, like) signal anxiety and lack of preparation, actively reducing speaker credibility
+        and perceived competence per Ethos and Physicality research
+    - subject_id: coe:entity/filler_word
+      predicate: coe:limits
+      object_id: coe:entity/performance_tier
+      relationship_weight: expected
+      description: Filler word density differentiates speaker tiers; elite speakers eliminate fillers while novice speakers
+        default to disfluencies per Ethos and Physicality research
+    - subject_id: coe:entity/filler_word
+      predicate: coe:limits
+      object_id: coe:entity/working_memory_marker
+      relationship_weight: required
+      description: Filler words directly consume working memory bandwidth — listeners must process meaningless sounds competing
+        with content comprehension, with optimal filler rate of 0-2 per minute per Research_Corpus_Public_Speaking_Full
+    - subject_id: coe:entity/filler_word
+      predicate: coe:triggers
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: expected
+      description: Filler words add extraneous cognitive load to spoken delivery
+    - subject_id: coe:entity/filler_word
+      predicate: coe:triggers
+      object_id: coe:entity/vocal_quality_issue
+      relationship_weight: expected
+      description: Excessive filler words trigger vocal quality degradation — rushed speech interspersed with um/uh undermines
+        clarity and perceived confidence in personal brand delivery per Personal Branding Framework
+    - subject_id: coe:entity/filler_word
+      predicate: coe:rebuts
+      object_id: coe:entity/confidence_technique
+      relationship_weight: expected
+      description: Filler words directly undermine confidence techniques; the master protocol requires speaking on the exhale
+        with downward inflection, which is incompatible with filler-laden speech per Anatomy of Presence research
+    - subject_id: coe:entity/filler_word
+      predicate: coe:contrasts_with
+      object_id: coe:entity/pause_marker
+      relationship_weight: required
+      description: Elite speakers replace filler words with emphatic pauses of 250-600ms; silence is the antithesis of disfluency
+        per Unified Performance Framework and Ethos research | Strategic pauses are the antithesis of filler words; elite
+        speakers replace um/uh disfluencies with emphatic silence of 250-600ms per Unified Performance Framework
+    - subject_id: coe:entity/filler_word
+      predicate: coe:contrasts_with
+      object_id: coe:entity/power_verb
+      relationship_weight: expected
+      description: Elite speakers replace low-agency stative verbs and filler-prone hedging with high-dynamism power verbs;
+        power verbs signal competence while fillers undermine it (Architecture of Influence, Sections 1.2, 1.4)
+    id: coe:entity/filler_word
+    label: Filler Word
+    description: Verbal disfluencies that interrupt speech flow and undermine authority
+    home_domain: delivery
+    status: canonical
+    ner_label: FILLER_WORD
+    examples:
+    - um
+    - uh
+    - like
+    - you know
+    - kind of
+    - sort of
+    - I mean
+    - basically
+    - actually
+    - right
+    anti_examples:
+    - I like this approach
+    - What kind of solution
+    - Sort the results
+    confidence_threshold: 0.8
+  - aliases:
+    - hedging
+    - qualifier
+    - weakener
+    recognition_patterns:
+    - I (think|guess|suppose)
+    - (maybe|perhaps|probably) \w+
+    - it (seems|appears) (like|that)
+    - might be
+    - could be
+    edges:
+    - subject_id: coe:entity/vocal_hedge_marker
+      predicate: coe:limits
+      object_id: coe:entity/ethos_appeal
+      relationship_weight: expected
+      description: Excessive hedging undermines perceived ethos and executive presence; gravitas requires decisiveness and
+        certainty rather than weakened assertions
+    - subject_id: coe:entity/vocal_hedge_marker
+      predicate: coe:supports
+      object_id: coe:entity/negative_qualifier
+      relationship_weight: optional
+      description: Hedge markers in vocal delivery directly support negative scoring qualification by signalling lack of commitment
+        and reduced assertiveness per Voice Quality Metric Research
+    id: coe:entity/vocal_hedge_marker
+    label: Vocal Hedge Marker
+    description: Language that weakens assertions and undermines speaker certainty
+    home_domain: delivery
+    status: canonical
+    ner_label: HEDGE_MARKER
+    examples:
+    - maybe we could
+    - I think probably
+    - it might be possible
+    - I guess
+    - perhaps
+    - sort of like
+    - it seems like
+    anti_examples:
+    - I think therefore I am
+    - Maybe is a song title
+    confidence_threshold: 0.7
+  - aliases:
+    - vocal pathology
+    - voice concern
+    - voice problem
+    recognition_patterns:
+    - (hoarse|breathy|strained|nasal|creaky|thin|weak|raspy) (voice|quality|tone|delivery)
+    - vocal (fry|strain|fatigue|tension)
+    edges:
+    - subject_id: coe:entity/vocal_quality_issue
+      predicate: coe:limits
+      object_id: coe:entity/clarity_dimension
+      relationship_weight: required
+      description: Vocal quality issues directly degrade clarity scoring — low CPP/CPPS (<9dB in speech) and HNR <15dB indicate
+        dysphonic voice that reduces intelligibility per Voice Quality Metric Research
+    - subject_id: coe:entity/vocal_quality_issue
+      predicate: coe:limits
+      object_id: coe:entity/engagement_dimension
+      relationship_weight: expected
+      description: Monotone or dysphonic vocal quality directly reduces audience engagement as shown by 'The Drone' archetype
+        per voice metric research
+    - subject_id: coe:entity/vocal_quality_issue
+      predicate: coe:limits
+      object_id: coe:entity/ethos_appeal
+      relationship_weight: expected
+      description: Vocal quality issues (cracking, breathiness, monotone) undermine perceived competence and authority, directly
+        limiting ethos appeal per Ethos and Physicality research
+    - subject_id: coe:entity/vocal_quality_issue
+      predicate: coe:triggers
+      object_id: coe:entity/delivery_rate_issue
+      relationship_weight: expected
+      description: Vocal quality issues like breathiness/roughness correlate with speech rate anomalies per voice metric research
+    - subject_id: coe:entity/vocal_quality_issue
+      predicate: coe:triggers
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: expected
+      description: Robotic or monotonous narration requires extra effort to decode increasing extraneous load per Applying
+        Mayer's Principles Practical Checklist
+    - subject_id: coe:entity/vocal_quality_issue
+      predicate: coe:triggers
+      object_id: coe:entity/filler_word
+      relationship_weight: expected
+      description: Vocal quality degradation co-occurs with increased filler word usage as speakers lose fine motor phonatory
+        control per voice metric research
+    - subject_id: coe:entity/vocal_quality_issue
+      predicate: coe:triggers
+      object_id: coe:entity/negative_qualifier
+      relationship_weight: expected
+      description: Pathological voice quality indicators (high jitter >1.04%, low HNR <12dB) trigger negative scoring qualifiers
+        per Voice Quality Metric Research
+    - subject_id: coe:entity/vocal_quality_issue
+      predicate: coe:triggers
+      object_id: coe:entity/performance_tier
+      relationship_weight: required
+      description: Vocal quality issues (jitter >1.04%, shimmer >3.81%, HNR <20dB) directly determine performance tier placement
+        per Unified Performance Framework diagnostic thresholds
+    id: coe:entity/vocal_quality_issue
+    label: Vocal Quality Issue
+    description: Terms indicating voice quality problems requiring coaching or clinical attention
+    home_domain: delivery
+    status: canonical
+    ner_label: VOCAL_QUALITY_ISSUE
+    examples:
+    - hoarse voice
+    - breathy quality
+    - strained delivery
+    - vocal fry
+    - nasal tone
+    - creaky voice
+    - thin voice
+    - weak projection
+    anti_examples:
+    - voice of the customer
+    - brand voice
+    - vocal supporter
+    confidence_threshold: 0.75
+  - aliases:
+    - pacing issue
+    - rate problem
+    - tempo concern
+    recognition_patterns:
+    - (too|very) (fast|slow|quiet|loud)
+    - (rushed|monotone|flat|mumbling)
+    - trailing off
+    - hard to hear
+    - volume (drop|drops|dropped)
+    edges:
+    - subject_id: coe:entity/delivery_rate_issue
+      predicate: coe:bridges
+      object_id: coe:entity/nonverbal_cue
+      relationship_weight: expected
+      description: Rushed delivery rate correlates with restricted gesture range and frozen posture; optimal rate enables
+        full use of the Power Box gesture space per Ethos research | Restricted gesture range correlates with rushed delivery;
+        frozen posture and rapid speech co-occur as anxiety indicators per Unified Performance Framework
+    - subject_id: coe:entity/delivery_rate_issue
+      predicate: coe:limits
+      object_id: coe:entity/engagement_dimension
+      relationship_weight: expected
+      description: Delivery rate issues directly limit engagement scoring — both >180 WPM (cognitive backlog, 17-25% comprehension
+        drop) and monotone pitch (<3 ST sigma) measurably reduce audience engagement per Voice Quality Metric Research
+    - subject_id: coe:entity/delivery_rate_issue
+      predicate: coe:limits
+      object_id: coe:entity/logos_appeal
+      relationship_weight: expected
+      description: Delivery rate issues limit logos appeal; speaking too fast (>170 WPM) exceeds the listener's processing
+        capacity, reducing retention of logical arguments per Vocal Profiling research
+    - subject_id: coe:entity/delivery_rate_issue
+      predicate: coe:limits
+      object_id: coe:entity/performance_tier
+      relationship_weight: expected
+      description: Novice speakers have fast rate above 160 wpm due to anxiety while elite speakers speak at 100-120 wpm per
+        Elite Speaker Linguistic Analysis
+    - subject_id: coe:entity/delivery_rate_issue
+      predicate: coe:limits
+      object_id: coe:entity/working_memory_marker
+      relationship_weight: expected
+      description: Excessive speech rate overwhelms auditory processing loop and listener working memory capacity per voice
+        metric research
+    - subject_id: coe:entity/delivery_rate_issue
+      predicate: coe:triggers
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: expected
+      description: Excessive speech rate (>170 WPM) overloads audience processing capacity creating extraneous cognitive load
+        per dual-channel processing theory
+    - subject_id: coe:entity/delivery_rate_issue
+      predicate: coe:triggers
+      object_id: coe:entity/vocal_quality_issue
+      relationship_weight: expected
+      description: Excessive speech rate (>6 syllables/sec) triggers vocal quality issues — vowel centralization and spectral
+        reduction degrade intelligibility and acoustic clarity per Voice Coaching and Clinical Analysis
+    - subject_id: coe:entity/delivery_rate_issue
+      predicate: coe:supports
+      object_id: coe:entity/clarity_dimension
+      relationship_weight: expected
+      description: Clarity scoring affected by delivery rate — controlled rate supports intelligibility per Clear Speaker
+        archetype
+    - subject_id: coe:entity/delivery_rate_issue
+      predicate: coe:supports
+      object_id: coe:entity/cognitive_load_dimension
+      relationship_weight: expected
+      description: Cognitive load scoring informed by speech rate metrics; rates above 180 WPM cause 17-25% comprehension
+        drops per voice metric research
+    - subject_id: coe:entity/delivery_rate_issue
+      predicate: coe:supports
+      object_id: coe:entity/intrinsic_load_marker
+      relationship_weight: optional
+      description: Intrinsic load perception is affected by delivery rate; slower-than-baseline speech allows processing of
+        inherently complex material without overwhelming working memory per Anatomy of Presence research
+    - subject_id: coe:entity/delivery_rate_issue
+      predicate: coe:contrasts_with
+      object_id: coe:entity/filler_word
+      relationship_weight: required
+      description: Filler words (um, uh, er) are the inverse of strategic pausing. While strategic pauses create gravitas
+        and processing time, filler words signal uncertainty and planning load. Elite speakers replace filler words with silence.
+    id: coe:entity/delivery_rate_issue
+    label: Delivery Rate Issue
+    description: Speech rate and pacing problems identified in coaching feedback
+    home_domain: delivery
+    status: canonical
+    ner_label: DELIVERY_RATE_ISSUE
+    examples:
+    - speaking too fast
+    - rushed delivery
+    - monotone presentation
+    - flat affect
+    - trailing off at sentence ends
+    - mumbling
+    - hard to hear
+    - swallowed syllables
+    anti_examples:
+    - fast track project
+    - delivery service
+    - flat design
+    confidence_threshold: 0.7
+  - aliases:
+    - action verb
+    - impact verb
+    - leadership verb
+    recognition_patterns:
+    - (spearheaded|ignited|transformed|mobilized|propelled|championed|orchestrated) \w+
+    - (catalyzed|revolutionized|pioneered|galvanized|architected|forged|unleashed) \w+
+    edges:
+    - subject_id: coe:entity/power_verb
+      predicate: coe:enables
+      object_id: coe:entity/pathos_appeal
+      relationship_weight: expected
+      description: Dynamic action verbs (ignite, shatter, unleash) activate emotional imagery and visceral response, directly
+        enabling pathos appeal per Ethos and Physicality research
+    - subject_id: coe:entity/power_verb
+      predicate: coe:enables
+      object_id: coe:entity/performance_tier
+      relationship_weight: expected
+      description: Level 4 Visionary speakers show high verb dynamism with discourse organizer bundles while Level 1 Novice
+        speakers show low passive verb dynamism per Elite Speaker Linguistic Analysis
+    - subject_id: coe:entity/power_verb
+      predicate: coe:limits
+      object_id: coe:entity/delivery_rate_issue
+      relationship_weight: optional
+      description: Optimal elite speech rate of 100-120 wpm constrains power verb density; slower pacing allows each power
+        verb to land with emphasis (Architecture of Influence, Sections 1.2, 1.4)
+    - subject_id: coe:entity/power_verb
+      predicate: coe:supports
+      object_id: coe:entity/action_marker
+      relationship_weight: expected
+      description: Power verbs map directly to sales action markers; verbs like accelerated, captured, transformed serve dual
+        rhetorical and sales narrative functions per SOAR framework
+    - subject_id: coe:entity/power_verb
+      predicate: coe:supports
+      object_id: coe:entity/authority_opener
+      relationship_weight: expected
+      description: Power verbs support authority openers; vocal anchoring with downward inflection and command language signals
+        certainty and authority in initial interactions per Anatomy of Presence research
+    - subject_id: coe:entity/power_verb
+      predicate: coe:supports
+      object_id: coe:entity/bluf_hook
+      relationship_weight: expected
+      description: Power verbs support BLUF hooks by providing the decisive, action-oriented language that makes bottom-line
+        opening statements authoritative and impactful per Crafting Powerful Opening Plays
+    - subject_id: coe:entity/power_verb
+      predicate: coe:supports
+      object_id: coe:entity/boost_marker
+      relationship_weight: expected
+      description: Booster stance markers are directly reinforced by power verb usage that adds lexical certainty to prosodic
+        emphasis per voice enhancements research | Active verbs in brand statements (thrive, lead, drive, bridge) amplify
+        confidence and assertiveness, directly supporting boost markers in personal brand messaging per Personal Branding
+        Framework
+    - subject_id: coe:entity/power_verb
+      predicate: coe:supports
+      object_id: coe:entity/call_to_action
+      relationship_weight: expected
+      description: The Agency Protocol prescribes replacing stative verbs with dynamic action verbs to increase perceived
+        competence, directly strengthening calls to action (Architecture of Influence, Section 1.2)
+    - subject_id: coe:entity/power_verb
+      predicate: coe:supports
+      object_id: coe:entity/ethos_appeal
+      relationship_weight: expected
+      description: Ethos appeal is supported by power verbs (spearheaded, ignited, transformed) that project authority and
+        competence; dynamic verb usage primes audiences to view the speaker as an agent of change per elite_speaker_taxonomy
+        | Power verbs (launched, transformed, spearheaded) construct ethos through agency language; decisive action vocabulary
+        signals executive presence per Canonical Methodology
+    - subject_id: coe:entity/power_verb
+      predicate: coe:supports
+      object_id: coe:entity/rhetorical_pattern
+      relationship_weight: required
+      description: Power verbs (launched, transformed, spearheaded) form the foundation of dynamic rhetorical patterns. They
+        create agency in discourse and signal action-orientation. Patterns of power verbs throughout a presentation establish
+        a consistent voice of authority and agency.
+    - subject_id: coe:entity/power_verb
+      predicate: coe:supports
+      object_id: coe:entity/value_proposition
+      relationship_weight: expected
+      description: Verb-Agency Link research shows perceived leadership competence correlates with high-dynamism verbs; value
+        propositions gain authority through action verbs like 'spearheaded', 'maximized' (Architecture of Influence, Section
+        1.2) | Power verbs directly strengthen value proposition impact — 'transform' vs 'help' signals decisive action and
+        authority per Best-Practice Elevator Pitches
+    id: coe:entity/power_verb
+    label: Power Verb
+    description: High-impact action verbs that convey authority and leadership
+    home_domain: delivery
+    status: canonical
+    ner_label: POWER_VERB
+    examples:
+    - spearheaded the initiative
+    - ignited a transformation
+    - mobilized the team
+    - propelled growth
+    - championed the cause
+    - orchestrated the rollout
+    - catalyzed innovation
+    anti_examples:
+    - spearhead mint plant
+    - ignited the fire
+    confidence_threshold: 0.65
+  - aliases:
+    - figure of speech
+    - oratory device
+    - persuasion technique
+    recognition_patterns:
+    - (\w+ ){2,}\. \1
+    - not just \w+ .+ but \w+
+    edges:
+    - subject_id: coe:entity/rhetorical_pattern
+      predicate: coe:contains
+      object_id: coe:entity/anaphora
+      relationship_weight: required
+      description: Rhetorical patterns subsume named figures of speech; anaphora (repetition of opening words) is a core component
+        of rhetorical patterning per elite speaker analysis
+    - subject_id: coe:entity/rhetorical_pattern
+      predicate: coe:contains
+      object_id: coe:entity/antithesis
+      relationship_weight: expected
+      description: Rhetorical patterns contain antithesis as a specific contrast device juxtaposing opposing ideas for persuasive
+        effect per Analyzing Story for Business Communication
+    - subject_id: coe:entity/rhetorical_pattern
+      predicate: coe:contains
+      object_id: coe:entity/chiasmus
+      relationship_weight: expected
+      description: Chiasmus (reversed parallel structure AB-BA) is an advanced rhetorical pattern used by elite speakers to
+        create memorable contrasts per Canonical Methodology
+    - subject_id: coe:entity/rhetorical_pattern
+      predicate: coe:contains
+      object_id: coe:entity/epistrophe
+      relationship_weight: expected
+      description: Epistrophe (repetition of closing words) is the complement to anaphora and frequently appears in high-impact
+        rhetorical sequences
+    - subject_id: coe:entity/rhetorical_pattern
+      predicate: coe:contains
+      object_id: coe:entity/pause_marker
+      relationship_weight: expected
+      description: Rhetorical patterns structurally contain strategic pauses marking syntactic boundaries and emphasis points
+        per voice metric research
+    - subject_id: coe:entity/rhetorical_pattern
+      predicate: coe:contains
+      object_id: coe:entity/rhetorical_question
+      relationship_weight: expected
+      description: Rhetorical patterns contain rhetorical questions as an engagement technique great speakers employ alongside
+        storytelling per Public Speaking research
+    - subject_id: coe:entity/rhetorical_pattern
+      predicate: coe:contains
+      object_id: coe:entity/speaker_bundle
+      relationship_weight: expected
+      description: Elite discourse uses formulaic sequences as rhetorical tools with lexical bundles functioning as discourse
+        organizers per Elite Speaker Linguistic Analysis
+    - subject_id: coe:entity/rhetorical_pattern
+      predicate: coe:contains
+      object_id: coe:entity/tricolon
+      relationship_weight: required
+      description: Tricolon (rule of three parallel phrases) is a foundational rhetorical pattern that creates rhythm and
+        memorability in persuasive speech
+    - subject_id: coe:entity/rhetorical_pattern
+      predicate: coe:enables
+      object_id: coe:entity/narrative_hook
+      relationship_weight: expected
+      description: Rhetorical patterns create compelling narrative hooks; tricolon and anaphora are primary devices for crafting
+        memorable opening statements per Canonical Methodology
+    - subject_id: coe:entity/rhetorical_pattern
+      predicate: coe:enables
+      object_id: coe:entity/performance_tier
+      relationship_weight: expected
+      description: Rhetorical patterns (anaphora, tricolon, metaphor density) enable higher performance tiers — the Visionary
+        tier is defined by masterful use of discourse architecture (elite_speaker_taxonomy)
+    - subject_id: coe:entity/rhetorical_pattern
+      predicate: coe:supports
+      object_id: coe:entity/claim
+      relationship_weight: expected
+      description: Rhetorical patterns (anaphora, tricolon, antithesis) support claims by providing persuasive delivery structure
+        — Action Titles are declarative claims that rhetorical patterns amplify per Canonical Presentation Methodology
+    - subject_id: coe:entity/rhetorical_pattern
+      predicate: coe:supports
+      object_id: coe:entity/engagement_cue
+      relationship_weight: expected
+      description: Rhetorical patterns support engagement cues; the staircase intonation pattern (step-wise pitch changes)
+        signals structured persuasive argumentation that holds attention per Vocal Profiling research
+    - subject_id: coe:entity/rhetorical_pattern
+      predicate: coe:supports
+      object_id: coe:entity/ethos_appeal
+      relationship_weight: expected
+      description: Rhetorical patterns support ethos appeal; Quintilian argued Actio was the dominant factor in persuasion
+        — a mediocre speech delivered with superb physical rhetoric outperforms a brilliant speech delivered poorly per Anatomy
+        of Presence research
+    id: coe:entity/rhetorical_pattern
+    label: Rhetorical Pattern
+    description: Named rhetorical devices used for persuasive impact in speeches
+    home_domain: delivery
+    status: canonical
+    ner_label: RHETORICAL_PATTERN
+    examples:
+    - We will fight. We will win. We will prevail.
+    - Not just good — great. Not just great — transformative.
+    - Ask not what your country can do for you
+    - I have a dream... I have a dream... I have a dream
+    - Government of the people, by the people, for the people
+    anti_examples:
+    - Please repeat your answer
+    - The pattern in the data
+    confidence_threshold: 0.6
+  - aliases:
+    - formulaic sequence
+    - set phrase
+    - stock phrase
+    recognition_patterns:
+    - I want to (tell|show|share)
+    - here's (the thing|what)
+    - let me (show|tell|be)
+    - the (truth|fact|reality) is
+    - make no mistake
+    edges:
+    - subject_id: coe:entity/speaker_bundle
+      predicate: coe:contains
+      object_id: coe:entity/academic_bundle
+      relationship_weight: required
+      description: Academic bundles ('In the context of...', 'On the other hand...') are a specific functional class of lexical
+        bundles identified in academic lecture corpus analysis (Architecture of Influence, Part 3)
+    - subject_id: coe:entity/speaker_bundle
+      predicate: coe:contains
+      object_id: coe:entity/visionary_bundle
+      relationship_weight: expected
+      description: Elite speakers dominate use of discourse organizer bundles such as I want to show you and Let me tell you
+        which are a type of lexical bundle per Elite Speaker Linguistic Analysis
+    - subject_id: coe:entity/speaker_bundle
+      predicate: coe:enables
+      object_id: coe:entity/bluf_hook
+      relationship_weight: expected
+      description: Lexical bundles provide the syntactic scaffolding for BLUF (Bottom Line Up Front) openings; 'Here is what
+        you need to know' is both a bundle and a BLUF delivery mechanism
+    - subject_id: coe:entity/speaker_bundle
+      predicate: coe:supports
+      object_id: coe:entity/authority_opener
+      relationship_weight: expected
+      description: Lexical bundles like 'Let me be clear' and 'Make no mistake' function as authority opener signals establishing
+        speaker command per Canonical Methodology research | Authority openers leverage formulaic bundles like 'Make no mistake'
+        and 'Let me be direct' as syntactic scaffolding for declarative first statements
+    - subject_id: coe:entity/speaker_bundle
+      predicate: coe:supports
+      object_id: coe:entity/engagement_marker
+      relationship_weight: expected
+      description: Engagement markers are supported by elite lexical bundles — discourse organizers like 'I want to show you'
+        and 'If you look at' simulate dialogue with the audience (elite_speaker_taxonomy) | Lexical bundles such as 'what
+        I want to tell you' and 'if you look at' function as engagement markers that simulate dialogue and force active audience
+        participation per elite_speaker_taxonomy
+    - subject_id: coe:entity/speaker_bundle
+      predicate: coe:supports
+      object_id: coe:entity/ethos_appeal
+      relationship_weight: expected
+      description: Formulaic bundles construct ethos through discourse organiser patterns; bundles like 'The truth is' and
+        'Here is what I know' signal directness and credibility
+    - subject_id: coe:entity/speaker_bundle
+      predicate: coe:supports
+      object_id: coe:entity/rhetorical_pattern
+      relationship_weight: expected
+      description: Lexical bundles support rhetorical patterns by providing recurring multi-word sequences that create the
+        staircase intonation structure of persuasive speech per Vocal Profiling research
+    - subject_id: coe:entity/speaker_bundle
+      predicate: coe:supports
+      object_id: coe:entity/working_memory_marker
+      relationship_weight: expected
+      description: Frame markers reduce listener anxiety by providing a roadmap aligning with chunking limitations of human
+        working memory per Elite Speaker Linguistic Analysis
+    id: coe:entity/speaker_bundle
+    label: Speaker Bundle
+    description: Multi-word formulaic sequences characteristic of elite speakers
+    home_domain: delivery
+    status: canonical
+    ner_label: LEXICAL_BUNDLE
+    examples:
+    - I want to tell you
+    - Here's the thing
+    - Let me show you
+    - What I've learned is
+    - The truth is
+    - Here's what I know
+    - Let me be clear
+    - Make no mistake
+    anti_examples:
+    - bundle of sticks
+    - product bundle
+    confidence_threshold: 0.65
+  - aliases:
+    - beat marker
+    - dramatic pause
+    - silence notation
+    recognition_patterns:
+    - \[pause\]
+    - \[beat\]
+    - \[silence\]
+    - \.\.\.
+    - \[\d+-second pause\]
+    edges:
+    - subject_id: coe:entity/pause_marker
+      predicate: coe:enables
+      object_id: coe:entity/germane_load_marker
+      relationship_weight: expected
+      description: Strategic pauses provide cognitive room — audience processing time that supports germane (meaning-making)
+        load by allowing reflection and integration (Architecture of Influence, Section 1.4)
+    - subject_id: coe:entity/pause_marker
+      predicate: coe:enables
+      object_id: coe:entity/nonverbal_cue
+      relationship_weight: expected
+      description: Pauses create space for deliberate gesture and movement; the beat pause enables gestural emphasis within
+        the Power Box per Ethos and Physicality research
+    - subject_id: coe:entity/pause_marker
+      predicate: coe:enables
+      object_id: coe:entity/performance_tier
+      relationship_weight: expected
+      description: Mastery of strategic pausing differentiates speaker tiers; elite speakers use 500-600ms pauses for emphasis
+        while novices fill silence with disfluencies
+    - subject_id: coe:entity/pause_marker
+      predicate: coe:enables
+      object_id: coe:entity/rhetorical_pattern
+      relationship_weight: expected
+      description: Strategic pauses punctuate rhetorical devices; pauses before and after tricolons and anaphora amplify their
+        rhythmic and persuasive impact
+    - subject_id: coe:entity/pause_marker
+      predicate: coe:enables
+      object_id: coe:entity/tricolon
+      relationship_weight: expected
+      description: Strategic pauses before and after tricolon elements create the rhythmic separation that makes three-part
+        structures land with full impact per Ethos and Physicality research
+    - subject_id: coe:entity/pause_marker
+      predicate: coe:resolves
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: expected
+      description: Effective pausing resolves extraneous cognitive load by breaking information into digestible chunks that
+        improve retention by 22% per Vocal Profiling research
+    - subject_id: coe:entity/pause_marker
+      predicate: coe:resolves
+      object_id: coe:entity/working_memory_marker
+      relationship_weight: expected
+      description: Strategic pauses provide cognitive processing time that resolves working memory overload; 500ms pauses
+        allow audience consolidation per dual-channel theory
+    - subject_id: coe:entity/pause_marker
+      predicate: coe:supports
+      object_id: coe:entity/clarity_dimension
+      relationship_weight: expected
+      description: Deliberate pauses at syntactic boundaries enhance perceived clarity and fluency; 250ms+ cognitive pauses
+        allow audience information encoding per Voice Quality Metric Research
+    - subject_id: coe:entity/pause_marker
+      predicate: coe:supports
+      object_id: coe:entity/delivery_rate_issue
+      relationship_weight: required
+      description: Strategic pause insertion is the primary mechanism for controlling delivery rate; optimal 500-600ms pauses
+        reduce WPM from conversational 150-160 to elite 100-120 per Unified Performance Framework | Strategic pausing is a
+        core tool for managing delivery rate. Pauses reduce actual WPM and create cognitive headroom for audiences. The optimal
+        speech rate (100-120 wpm for elite speakers, 150-160 for conversational) is achieved through strategic pause placement.
+    - subject_id: coe:entity/pause_marker
+      predicate: coe:supports
+      object_id: coe:entity/emphasis_marker
+      relationship_weight: required
+      description: Strategic pauses enable emphasis. A pause after a key statement signals its importance to the audience.
+        The pause provides time for cognitive consolidation and emotional resonance of emphasized content.
+    - subject_id: coe:entity/pause_marker
+      predicate: coe:supports
+      object_id: coe:entity/engagement_cue
+      relationship_weight: expected
+      description: Engagement cues are supported by strategic pauses which give the audience processing time to formulate
+        responses after participation prompts per Elite Speaker Linguistic Analysis
+    - subject_id: coe:entity/pause_marker
+      predicate: coe:supports
+      object_id: coe:entity/engagement_dimension
+      relationship_weight: expected
+      description: Engagement scoring benefits from strategic pause usage and varied silence ratio per voice metric research
+    - subject_id: coe:entity/pause_marker
+      predicate: coe:supports
+      object_id: coe:entity/facilitation_technique
+      relationship_weight: expected
+      description: Facilitation techniques are supported by pause markers; the talk-to-listen ratio of 43:57 requires strategic
+        silence to allow space for audience processing and participation per Vocal Profiling research
+    - subject_id: coe:entity/pause_marker
+      predicate: coe:supports
+      object_id: coe:entity/logos_appeal
+      relationship_weight: expected
+      description: Logos appeal is enhanced by pause markers that allow audience to process evidence and follow logical structure
+        of arguments per World-Class Public Speaking Research
+    - subject_id: coe:entity/pause_marker
+      predicate: coe:supports
+      object_id: coe:entity/narrative_tension
+      relationship_weight: expected
+      description: Strategic pauses amplify narrative tension by creating anticipatory silence before key reveals — the pause
+        forces the audience to lean in per Ethos and Physicality research | Strategic pauses support narrative tension by
+        creating anticipatory silence that amplifies the emotional weight of key statements and revelations per Crafting Powerful
+        Opening Plays
+    - subject_id: coe:entity/pause_marker
+      predicate: coe:supports
+      object_id: coe:entity/structure_dimension
+      relationship_weight: optional
+      description: Cognitive/rhetorical pauses at syntactic boundaries contribute to perceived structural organization of
+        speech delivery
+    - subject_id: coe:entity/pause_marker
+      predicate: coe:supports
+      object_id: coe:entity/transition_marker
+      relationship_weight: expected
+      description: Transition markers are reinforced by pause markers — power pauses of 2 seconds after transition phrases
+        like 'Therefore' signal structural shifts per World-Class Public Speaking Research
+    - subject_id: coe:entity/pause_marker
+      predicate: coe:supports
+      object_id: coe:entity/vocal_emphasis_marker
+      relationship_weight: required
+      description: Emphasis markers depend on adjacent pauses for maximum impact; a pre-emphasis pause creates anticipation
+        while a post-emphasis pause allows cognitive consolidation
+    id: coe:entity/pause_marker
+    label: Pause Marker
+    description: Notations indicating strategic or problematic pauses in speech
+    home_domain: delivery
+    status: canonical
+    ner_label: PAUSE_MARKER
+    examples:
+    - '[pause]'
+    - '[long pause]'
+    - '[beat]'
+    - '[silence]'
+    - '...'
+    - (pause for effect)
+    - '[2-second pause]'
+    anti_examples:
+    - pause the video
+    - press pause
+    confidence_threshold: 0.85
+  - aliases:
+    - body language
+    - gesture
+    - physical cue
+    recognition_patterns:
+    - (pointing|leaning|slouching|pacing|fidgeting)
+    - (open|closed) (hands|fists|arms)
+    - (eye contact|looking down|scanning audience)
+    - head (tilt|nod|shake)
+    edges:
+    - subject_id: coe:entity/nonverbal_cue
+      predicate: coe:enables
+      object_id: coe:entity/confidence_technique
+      relationship_weight: expected
+      description: Expansive nonverbal cues (shoulder abduction >30 degrees, stable COP, Duchenne smiles) directly enable
+        perception of confidence by observers per Unified Performance Framework
+    - subject_id: coe:entity/nonverbal_cue
+      predicate: coe:enables
+      object_id: coe:entity/engagement_cue
+      relationship_weight: expected
+      description: Synchronized gesture-speech timing per McNeill's Window facilitates lexical access and comprehension enabling
+        engagement per voice metric research
+    - subject_id: coe:entity/nonverbal_cue
+      predicate: coe:enables
+      object_id: coe:entity/pathos_appeal
+      relationship_weight: expected
+      description: Facial expression and gesture are primary vehicles for emotional appeal; thin-slicing research shows audiences
+        read pathos through nonverbal channels first
+    - subject_id: coe:entity/nonverbal_cue
+      predicate: coe:bridges
+      object_id: coe:entity/pause_marker
+      relationship_weight: expected
+      description: Strategic pauses create space for deliberate gesture transition; beat pauses enable gestural emphasis within
+        the Power Box framework per Ethos research
+    - subject_id: coe:entity/nonverbal_cue
+      predicate: coe:bridges
+      object_id: coe:entity/vocal_quality_issue
+      relationship_weight: expected
+      description: Vocal quality (breathiness, strain, vocal fry) co-occurs with physical tension patterns; physiological
+        sigh breathing addresses both vocal and postural control per Ethos research | Nonverbal tension (shoulder elevation,
+        jaw clenching) co-occurs with vocal quality issues; both stem from physical tension patterns per Ethos and Physicality
+        research
+    - subject_id: coe:entity/nonverbal_cue
+      predicate: coe:triggers
+      object_id: coe:entity/performance_tier
+      relationship_weight: expected
+      description: Nonverbal behaviour is a primary differentiator across performance tiers; self-adaptor frequency >5.5/min
+        indicates anxiety tier per Unified Performance Framework
+    - subject_id: coe:entity/nonverbal_cue
+      predicate: coe:supports
+      object_id: coe:entity/authority_opener
+      relationship_weight: expected
+      description: Authority openers require congruent nonverbal delivery; open posture, sustained eye contact, and grounded
+        stance within the first 7 seconds per thin-slicing research
+    - subject_id: coe:entity/nonverbal_cue
+      predicate: coe:supports
+      object_id: coe:entity/engagement_dimension
+      relationship_weight: expected
+      description: Engagement scoring is directly supported by nonverbal cues — gesture-speech synchrony (stroke preceding
+        speech peak by 100-300ms per McNeill's Window) and dynamic pitch variation (4-6 ST sigma) per Voice Quality Metric
+        Research | Synchronized nonverbal cues enhance audience engagement assessment scores per Voice Quality Metric Research
+    - subject_id: coe:entity/nonverbal_cue
+      predicate: coe:supports
+      object_id: coe:entity/ethos_appeal
+      relationship_weight: required
+      description: Ethos credibility is physically embodied through posture, gesture, and eye contact — confident nonverbal
+        cues directly reinforce perceived authority per Ethos and Physicality research | Nonverbal cues (gesture, posture,
+        eye contact, facial expression) are primary vehicles for establishing ethos. Audiences form judgments about credibility
+        within 7 seconds based on nonverbal signals before processing verbal content.
+    - subject_id: coe:entity/nonverbal_cue
+      predicate: coe:supports
+      object_id: coe:entity/facilitation_technique
+      relationship_weight: expected
+      description: 'Social facilitation best practice: act as ''Guide on the Side''; facilitator posts increase contributions;
+        use techniques (repeat, restate, juxtapose, contrast, clarify); early praise damages interaction by stopping further
+        contributions per Clark LxD'
+    - subject_id: coe:entity/nonverbal_cue
+      predicate: coe:supports
+      object_id: coe:entity/logos_appeal
+      relationship_weight: expected
+      description: Logos appeal is supported by nonverbal cues; biomechanical efficiency, symmetry of movement, and economy
+        of gesture signal control and predictability per Anatomy of Presence research | Nonverbal cues support logos appeal;
+        biomechanical efficiency, symmetry of movement, and economy of gesture signal control and predictability per Anatomy
+        of Presence research
+    - subject_id: coe:entity/nonverbal_cue
+      predicate: coe:supports
+      object_id: coe:entity/narrative_hook
+      relationship_weight: expected
+      description: Narrative hooks gain impact through delivery — raised eyebrows, leaning forward, dramatic pause before
+        the hook all physically amplify the hook's attention-grabbing effect per Ethos and Physicality research
+    - subject_id: coe:entity/nonverbal_cue
+      predicate: coe:supports
+      object_id: coe:entity/presentation_anxiety_marker
+      relationship_weight: expected
+      description: Self-adaptor frequency correlates strongly with state anxiety (r=0.95) serving as measurable anxiety indicators
+        per voice metric research
+    - subject_id: coe:entity/nonverbal_cue
+      predicate: coe:supports
+      object_id: coe:entity/rhetorical_pattern
+      relationship_weight: expected
+      description: Rhetorical patterns are amplified through coordinated gesture and movement; the Power Box gesture space
+        supports parallel structure delivery per Ethos research
+    - subject_id: coe:entity/nonverbal_cue
+      predicate: coe:supports
+      object_id: coe:entity/vocal_emphasis_marker
+      relationship_weight: expected
+      description: Deliberate gesture (palm-down authority, open-palm inclusion) amplifies vocal emphasis creating dual-channel
+        reinforcement per Ethos and Physicality research | Vocal emphasis is amplified through coordinated gesture; palm-down
+        authority gestures and forward lean reinforce stressed content per dual coding theory
+    - subject_id: coe:entity/nonverbal_cue
+      predicate: coe:supports
+      object_id: coe:entity/working_memory_marker
+      relationship_weight: expected
+      description: Nonverbal cues (spatial anchoring gestures, deictic pointing) support working memory by providing multimodal
+        encoding that disambiguates pronoun references and reduces cognitive load per elite_speaker_taxonomy
+    id: coe:entity/nonverbal_cue
+    label: Nonverbal Cue
+    description: Descriptions of body language, gestures, and physical presence in speaker notes
+    home_domain: delivery
+    status: canonical
+    ner_label: NONVERBAL_CUE
+    examples:
+    - open hand gesture
+    - pointing at the screen
+    - crossed arms
+    - fidgeting with pen
+    - leaning forward
+    - slouching
+    - pacing back and forth
+    - making eye contact
+    - looking at slides
+    - head tilt
+    anti_examples:
+    - nonverbal agreement
+    - cue the music
+    - cue card
+    confidence_threshold: 0.65
+  - aliases:
+    - HRT
+    - question intonation
+    - rising intonation
+    recognition_patterns:
+    - \w+\?
+    - (right|yeah|okay)\?
+    edges:
+    - subject_id: coe:entity/uptalk_indicator
+      predicate: coe:bridges
+      object_id: coe:entity/vocal_hedge_marker
+      relationship_weight: expected
+      description: Hedging language and uptalk both encode uncertainty; uptalk is the prosodic equivalent of lexical hedging
+        and they frequently co-occur in low-authority delivery | Uptalk is the prosodic equivalent of lexical hedging; rising
+        intonation on declaratives and hedge words frequently co-occur in low-authority delivery patterns
+    - subject_id: coe:entity/uptalk_indicator
+      predicate: coe:bridges
+      object_id: coe:entity/vocal_quality_issue
+      relationship_weight: expected
+      description: Vocal fry and uptalk both signal reduced vocal authority; they co-occur as dual credibility killers per
+        Presentation Delivery Ethos research | Uptalk and vocal fry co-occur as dual credibility killers; both signal reduced
+        vocal authority and undermine perceived competence per Ethos research
+    - subject_id: coe:entity/uptalk_indicator
+      predicate: coe:limits
+      object_id: coe:entity/ethos_appeal
+      relationship_weight: expected
+      description: Uptalk undermines perceived ethos by converting authoritative claims into approval-seeking questions; it
+        signals low status in executive communication contexts
+    - subject_id: coe:entity/uptalk_indicator
+      predicate: coe:limits
+      object_id: coe:entity/performance_tier
+      relationship_weight: expected
+      description: Persistent uptalk caps speaker at developing tier regardless of content quality; elite speakers use falling
+        terminal intonation on key claims per Ethos research
+    - subject_id: coe:entity/uptalk_indicator
+      predicate: coe:supports
+      object_id: coe:entity/hedge_marker
+      relationship_weight: expected
+      description: Hedging stance prosodically signalled by uptalk and breathy phonation with steep spectral tilt per Voice
+        Quality Metric Research | Upward pitch contour at statement endings functions as vocal hedging device signaling uncertainty
+        per prosodic research
+    id: coe:entity/uptalk_indicator
+    label: Uptalk Indicator
+    description: Markers of High Rising Terminal (HRT) that undermine speaker authority
+    home_domain: delivery
+    status: canonical
+    ner_label: UPTALK_INDICATOR
+    examples:
+    - We launched the product?
+    - The results were positive?
+    - I'm the project lead?
+    - right?
+    - yeah?
+    - you know?
+    anti_examples:
+    - What did you launch?
+    - Were the results positive?
+    confidence_threshold: 0.7
+  - aliases:
+    - coaching category
+    - performance level
+    - speaker tier
+    recognition_patterns:
+    - (Elite|Proficient|Developing) Speaker
+    - Needs Coaching
+    - (Excellent|Good|Acceptable) Voice Quality
+    - Voice Quality Concern
+    edges:
+    - subject_id: coe:entity/performance_tier
+      predicate: coe:specialises
+      object_id: coe:entity/proficiency_level
+      relationship_weight: expected
+      description: Performance tiers (Elite, Proficient, Developing, Needs Coaching) are domain-specific specialisations of
+        generic proficiency level descriptors for speaker assessment
+    - subject_id: coe:entity/performance_tier
+      predicate: coe:contains
+      object_id: coe:entity/delivery_rate_issue
+      relationship_weight: expected
+      description: Performance tier assessment includes delivery rate evaluation; WPM ranges map to diagnostic archetypes
+        (The Manic >170, The Drone <100) per Unified Performance Framework
+    - subject_id: coe:entity/performance_tier
+      predicate: coe:contains
+      object_id: coe:entity/nonverbal_cue
+      relationship_weight: expected
+      description: Performance tier assessment encompasses nonverbal behaviour evaluation; self-adaptor frequency and gesture
+        range are tier-differentiating metrics per Unified Performance Framework
+    - subject_id: coe:entity/performance_tier
+      predicate: coe:contains
+      object_id: coe:entity/vocal_quality_issue
+      relationship_weight: expected
+      description: Performance tier assessment subsumes vocal quality evaluation; jitter, shimmer, and HNR thresholds map
+        directly to tier placement per Unified Performance Framework
+    - subject_id: coe:entity/performance_tier
+      predicate: coe:supports
+      object_id: coe:entity/clarity_dimension
+      relationship_weight: expected
+      description: Performance tiers map to measurable voice clarity metrics including CPP/CPPS thresholds and HNR levels
+        per voice metric research
+    - subject_id: coe:entity/performance_tier
+      predicate: coe:supports
+      object_id: coe:entity/ethos_appeal
+      relationship_weight: expected
+      description: Perceived credibility (ethos) is directly supported by vocal performance tier — charismatic vocal quality
+        (wide F0 range, high Alpha Ratio, strategic pausing) correlates with leadership perception per Voice Coaching and
+        Clinical Analysis
+    - subject_id: coe:entity/performance_tier
+      predicate: coe:supports
+      object_id: coe:entity/structure_dimension
+      relationship_weight: required
+      description: Performance tiers (Novice, Technocrat, Performer, Visionary) each have characteristic structures. Visionary
+        tier requires mastery of discourse architecture; Novice tier typically exhibits disorganized structure. Performance
+        tier strongly correlates with structure dimension scores.
+    id: coe:entity/performance_tier
+    label: Performance Tier
+    description: Labels from the performance scoring framework indicating speaker level
+    home_domain: delivery
+    status: canonical
+    ner_label: PERFORMANCE_TIER
+    examples:
+    - Elite Speaker
+    - Proficient Speaker
+    - Developing Speaker
+    - Needs Coaching
+    - Excellent Voice Quality
+    - Good Voice Quality
+    - Acceptable Voice Quality
+    - Voice Quality Concern
+    anti_examples:
+    - elite membership
+    - developing country
+    confidence_threshold: 0.9
+  - aliases:
+    - emphasis notation
+    - stress marker
+    recognition_patterns:
+    - '[A-Z]{4,}'
+    - \*\*\w+\*\*
+    - \*\w+\*
+    - __\w+__
+    edges:
+    - subject_id: coe:entity/vocal_emphasis_marker
+      predicate: coe:enables
+      object_id: coe:entity/engagement_cue
+      relationship_weight: expected
+      description: Pitch dynamics (4-6 semitone sigma) and spectral brightness variation directly enable audience engagement
+        per voice metrics research
+    - subject_id: coe:entity/vocal_emphasis_marker
+      predicate: coe:enables
+      object_id: coe:entity/rhetorical_pattern
+      relationship_weight: expected
+      description: Emphasis markers signal the key words within rhetorical patterns; stressed delivery of tricolon peaks and
+        anaphora openings amplifies their persuasive effect
+    - subject_id: coe:entity/vocal_emphasis_marker
+      predicate: coe:limits
+      object_id: coe:entity/delivery_rate_issue
+      relationship_weight: expected
+      description: Excessive speech rate prevents effective emphasis delivery; rushed speakers flatten emphasis markers by
+        eliminating the pitch and duration variation they require
+    - subject_id: coe:entity/vocal_emphasis_marker
+      predicate: coe:supports
+      object_id: coe:entity/call_to_action
+      relationship_weight: expected
+      description: Calls to action require vocal emphasis (volume increase, deliberate pacing, pitch change) to signal their
+        importance and drive audience response per Ethos and Physicality research
+    - subject_id: coe:entity/vocal_emphasis_marker
+      predicate: coe:supports
+      object_id: coe:entity/engagement_dimension
+      relationship_weight: expected
+      description: Pitch variability 4-6 semitones and dynamic spectral emphasis sustain listener engagement per Voice Quality
+        Metric Research
+    - subject_id: coe:entity/vocal_emphasis_marker
+      predicate: coe:supports
+      object_id: coe:entity/germane_load_marker
+      relationship_weight: expected
+      description: Germane load is supported by emphasis markers; pitch and intensity variability direct the listener's attention
+        to key points, facilitating meaningful processing per Vocal Profiling research | Strategic pauses (500-600ms) support
+        germane cognitive processing by enabling semantic chunking and memory encoding — 15-20% silence ratio is optimal for
+        audience digestion per World-Class Public Speaking research
+    - subject_id: coe:entity/vocal_emphasis_marker
+      predicate: coe:supports
+      object_id: coe:entity/narrative_tension
+      relationship_weight: expected
+      description: Narrative tension is acoustically signaled through emphasis markers — pitch and intensity variation builds
+        tension through escalating contours per World-Class Public Speaking Research
+    - subject_id: coe:entity/vocal_emphasis_marker
+      predicate: coe:supports
+      object_id: coe:entity/pathos_appeal
+      relationship_weight: expected
+      description: Pathos appeal is supported by emphasis markers (intensity/pitch variability); the Steve Jobs Effect shows
+        extreme dynamic range is the acoustic signature of passion per Vocal Profiling research
+    - subject_id: coe:entity/vocal_emphasis_marker
+      predicate: coe:supports
+      object_id: coe:entity/power_verb
+      relationship_weight: expected
+      description: Power verbs gain impact through vocal emphasis; stressed delivery of action verbs amplifies their authority
+        signalling effect per Ethos and Physicality research
+    - subject_id: coe:entity/vocal_emphasis_marker
+      predicate: coe:supports
+      object_id: coe:entity/speaker_bundle
+      relationship_weight: required
+      description: Emphasis markers highlight discourse organizer bundles and key propositions. Bundles like 'I want to show
+        you' or 'If you look at' gain power through vocal emphasis and strategic pausing that marks them as important.
+    id: coe:entity/vocal_emphasis_marker
+    label: Vocal Emphasis Marker
+    description: Text formatting indicating vocal emphasis in speaker scripts
+    home_domain: delivery
+    status: canonical
+    ner_label: EMPHASIS_MARKER
+    examples:
+    - CRITICAL point here
+    - '**this matters**'
+    - '*absolutely essential*'
+    - __key takeaway__
+    - NEVER do this
+    anti_examples:
+    - README file
+    - API_KEY constant
+    confidence_threshold: 0.75
+  - aliases:
+    - authority-first opening
+    - declarative opener
+    - strong opener
+    recognition_patterns:
+    - here is (what|the|a) \w+
+    - make no mistake
+    - let me be (direct|clear|honest)
+    - the most (important|critical|significant) \w+
+    - I am (here to|going to) (tell|show)
+    edges:
+    - subject_id: coe:entity/authority_opener
+      predicate: coe:specialises
+      object_id: coe:entity/narrative_hook
+      relationship_weight: expected
+      description: Authority openers specialise narrative hooks — a confident declarative opening is a specific type of attention-grabbing
+        hook that uses assertion and credibility rather than story or question (Mastering Presentation Nerves)
+    - subject_id: coe:entity/authority_opener
+      predicate: coe:enables
+      object_id: coe:entity/call_to_action
+      relationship_weight: expected
+      description: Strong authority openers create the credibility frame that enables effective calls to action; audiences
+        respond to CTAs from speakers who established authority early
+    - subject_id: coe:entity/authority_opener
+      predicate: coe:limits
+      object_id: coe:entity/vocal_quality_issue
+      relationship_weight: expected
+      description: Vocal quality issues (breathiness, vocal fry, volume drop) undermine authority openers; strong openers
+        require full vocal projection and resonance per Ethos research
+    - subject_id: coe:entity/authority_opener
+      predicate: coe:rebuts
+      object_id: coe:entity/uptalk_indicator
+      relationship_weight: required
+      description: Authority openers are incompatible with uptalk; rising terminal intonation converts a declarative authority
+        statement into an implicit question, negating its impact
+    - subject_id: coe:entity/authority_opener
+      predicate: coe:supports
+      object_id: coe:entity/bluf_hook
+      relationship_weight: expected
+      description: Authority openers function as BLUF (Bottom Line Up Front) delivery mechanisms; leading with the key message
+        rather than context aligns with both opening strategies
+    - subject_id: coe:entity/authority_opener
+      predicate: coe:supports
+      object_id: coe:entity/boost_marker
+      relationship_weight: expected
+      description: Boosting stance reinforced by authority openers employing pressed phonation for dominance per Voice Quality
+        Metric Research | Authority openers employ pressed phonation and shallow spectral tilt boosting speaker dominance
+        per Voice Quality Metric Research
+    - subject_id: coe:entity/authority_opener
+      predicate: coe:supports
+      object_id: coe:entity/ethos_appeal
+      relationship_weight: expected
+      description: Authority openers are the primary mechanism for establishing immediate ethos; the first 15 seconds define
+        the audience authority frame for the entire presentation
+    - subject_id: coe:entity/authority_opener
+      predicate: coe:precedes
+      object_id: coe:entity/scqa_marker
+      relationship_weight: optional
+      description: Authority openers can precede SCQA (Situation-Complication-Question-Answer) structure; a strong declarative
+        opening anchors the subsequent narrative architecture
+    - subject_id: coe:entity/authority_opener
+      predicate: coe:precedes
+      object_id: coe:entity/situation_marker
+      relationship_weight: optional
+      description: Authority openers precede situation-setting in SOAR/SCQA narratives; the opening declaration anchors the
+        audience before contextual detail is introduced
+    - subject_id: coe:entity/authority_opener
+      predicate: coe:contrasts_with
+      object_id: coe:entity/hedging_marker
+      relationship_weight: required
+      description: Hedging markers (it is important to note, it might be argued that, it is likely that) reduce authority
+        perception. Elite speakers avoid hedging in key assertions but may use strategic hedging for humility without sacrificing
+        competence. Hedging undermines authority openers.
+    - subject_id: coe:entity/authority_opener
+      predicate: coe:contrasts_with
+      object_id: coe:entity/vocal_hedge_marker
+      relationship_weight: expected
+      description: Academic stance bundles that hedge claims contrast with elite agentic discourse organizers like I want
+        to show you per Elite Speaker Linguistic Analysis
+    id: coe:entity/authority_opener
+    label: Authority Opener
+    description: Strong, declarative opening statement that immediately establishes speaker authority — no throat-clearing,
+      no apology, no agenda preamble
+    home_domain: delivery
+    status: canonical
+    ner_label: AUTHORITY_OPENER
+    examples:
+    - Here is what you need to know.
+    - I am going to tell you something that will change how you think about this.
+    - The answer is simple. The execution is not.
+    - Make no mistake — this decision matters.
+    - 'Let me be direct: we have a 90-day window.'
+    - 'The most important thing in this room today is this:'
+    - You are about to see something you have not seen before.
+    - This is the most significant shift in our market in a decade.
+    anti_examples:
+    - Thank you for having me
+    - Good morning everyone
+    - I'm going to be covering...
+    - Sorry if the slides are a bit...
+    confidence_threshold: 0.7
+  - aliases:
+    - apologetic opener
+    - throat clearing opener
+    - weak opener
+    recognition_patterns:
+    - I('m| am) (sorry|apologise|afraid)
+    - bear with (me|us)
+    - I('ll| will) try (to be brief|not to|to rush)
+    - I know (we're|we are) (running|short)
+    - (sorry|apologies) if \w+
+    edges:
+    - subject_id: coe:entity/apology_opener
+      predicate: coe:bridges
+      object_id: coe:entity/filler_word
+      relationship_weight: expected
+      description: Apology openers cluster with filler words (um, so, basically); both signal planning load and low confidence
+        in the opening seconds of delivery
+    - subject_id: coe:entity/apology_opener
+      predicate: coe:bridges
+      object_id: coe:entity/nonverbal_cue
+      relationship_weight: expected
+      description: Apology openers co-occur with submissive nonverbal cues (shoulder hunching, gaze aversion, self-touching)
+        that compound the authority loss per thin-slicing research
+    - subject_id: coe:entity/apology_opener
+      predicate: coe:bridges
+      object_id: coe:entity/uptalk_indicator
+      relationship_weight: expected
+      description: Apology openers frequently feature uptalk intonation; apologetic phrasing with rising terminal creates
+        double uncertainty signalling per Ethos and Physicality research
+    - subject_id: coe:entity/apology_opener
+      predicate: coe:limits
+      object_id: coe:entity/ethos_appeal
+      relationship_weight: expected
+      description: Apology openers undermine ethos before content delivery begins; apologising signals low status and reduces
+        perceived competence per Architecture of Influence research
+    - subject_id: coe:entity/apology_opener
+      predicate: coe:limits
+      object_id: coe:entity/performance_tier
+      relationship_weight: expected
+      description: Apologetic openings signal the struggling speaker profile with high self-consciousness that limits performance
+        tier per Elite Speaker Linguistic Analysis
+    - subject_id: coe:entity/apology_opener
+      predicate: coe:triggers
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: expected
+      description: Apology openers add extraneous cognitive load by forcing audiences to process status-negotiation language
+        instead of content per cognitive load theory
+    - subject_id: coe:entity/apology_opener
+      predicate: coe:supports
+      object_id: coe:entity/hedge_marker
+      relationship_weight: expected
+      description: Hedging stance reinforced by apology openers using breathy phonation associated with submission per Voice
+        Quality Metric Research | Apology openers employ breathy phonation associated with hedging and submission signals
+        per Voice Quality Metric Research
+    - subject_id: coe:entity/apology_opener
+      predicate: coe:contrasts_with
+      object_id: coe:entity/authority_opener
+      relationship_weight: required
+      description: Authority openers (strong) vs apology openers (weak) — opposing opening strategies | Apology openers (weak)
+        vs authority openers (strong)
+    - subject_id: coe:entity/apology_opener
+      predicate: coe:contrasts_with
+      object_id: coe:entity/opener_slide_design
+      relationship_weight: expected
+      description: Clean opener slides contrast with apology openers — a bold visual signals confidence while a cluttered
+        or apologetic slide compounds weak opening delivery
+    id: coe:entity/apology_opener
+    label: Apology Opener
+    description: Anti-pattern — apologetic, self-deprecating, or preamble-heavy opening that signals low speaker confidence
+      and reduces audience attention before the content begins
+    home_domain: delivery
+    status: canonical
+    ner_label: APOLOGY_OPENER
+    examples:
+    - I'm sorry if some of you have seen this before.
+    - Bear with me while I find the right slide.
+    - I know we're a bit short on time so I'll try to be brief.
+    - I apologise if this is a bit basic for some of you.
+    - Sorry, I'm not great at these things.
+    - I'll try not to take too long.
+    - I know there's a lot to cover so let me rush through...
+    - I apologise, this slide is a bit busy.
+    anti_examples:
+    - Let me get straight to it.
+    - Here is the core issue.
+    confidence_threshold: 0.75
+  - aliases:
+    - embodied delivery
+    - gestural emphasis
+    recognition_patterns:
+    - (embodied|gestural) (cognition|emphasis|delivery)
+    - gaze (cue|anchor|direction)
+    edges:
+    - subject_id: coe:entity/embodied_cognition_presentation
+      predicate: coe:supports
+      object_id: coe:entity/slide_speech_alignment
+      relationship_weight: expected
+      description: Embodied delivery techniques support slide-speech alignment by cueing physical movement to visual transitions
+        per Slide Deck Design Playbook
+    id: coe:entity/embodied_cognition_presentation
+    label: Embodied Cognition Presentation
+    description: Speaking and movement aid memory encoding in delivery (Goldin-Meadow, 2014)
+    home_domain: delivery
+    status: canonical
+    ner_label: EMBODIED_COGNITION_PRESENTATION
+    examples:
+    - using gestures to reinforce key points
+    - gaze anchoring to direct audience attention
+    anti_examples:
+    - cognitive embodiment theory discussion
+    confidence_threshold: 0.65
+  - aliases:
+    - first slide rules
+    - opening slide design
+    recognition_patterns:
+    - (opening|first|opener) slide
+    - (bold|clean|high[- ]contrast) (visual|slide|design)
+    - (no|avoid|never) agenda slide
+    edges:
+    - subject_id: coe:entity/opener_slide_design
+      predicate: coe:resolves
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: expected
+      description: Minimalist opener slides resolve extraneous cognitive load by presenting one idea through one visual channel
+        per Crafting Powerful Opening Plays
+    - subject_id: coe:entity/opener_slide_design
+      predicate: coe:supports
+      object_id: coe:entity/authority_opener
+      relationship_weight: expected
+      description: Opener slide design supports authority openers by providing a visual anchor that amplifies the spoken declarative
+        statement per Crafting Powerful Opening Plays
+    id: coe:entity/opener_slide_design
+    label: Opener Slide Design
+    description: Visual design micro-rules for opening slides that support speaker authority and audience attention — the
+      slide must amplify the spoken hook, not compete with it
+    home_domain: delivery
+    status: canonical
+    ner_label: OPENER_SLIDE_DESIGN
+    examples:
+    - full-bleed image with single statistic overlay
+    - black slide with one large number
+    - bold typographic statement slide
+    anti_examples:
+    - agenda or table of contents slide
+    - company logo splash page
+    confidence_threshold: 0.65
+  - aliases:
+    - fishbowl format
+    - observation rotation
+    recognition_patterns:
+    - fishbowl (facilitation|format|technique)
+    - (inner|outer) circle (observ|perform|discuss)
+    id: coe:entity/fishbowl_facilitation
+    label: Fishbowl Facilitation
+    description: Facilitation technique where an inner group performs or discusses while an outer group observes and provides
+      structured critique, then roles rotate
+    home_domain: delivery
+    status: canonical
+    edges: []
+    ner_label: FISHBOWL_FACILITATION
+    examples:
+    - fishbowl facilitation technique
+    - inner circle performs while outer circle observes
+    - rotating fishbowl exercise
+    anti_examples:
+    - fishbowl aquarium display
+    confidence_threshold: 0.75
+  - aliases:
+    - facilitated peer review
+    - structured peer critique
+    recognition_patterns:
+    - (peer|structured) (feedback|critique) (moderation|session|exchange)
+    - rubric[- ]guided (peer|feedback) (review|critique)
+    id: coe:entity/peer_feedback_moderation
+    label: Peer Feedback Moderation
+    description: Facilitation technique where the instructor manages structured peer feedback exchanges using rubrics, protocols,
+      or guided prompts
+    home_domain: delivery
+    status: canonical
+    edges: []
+    ner_label: PEER_FEEDBACK_MODERATION
+    examples:
+    - facilitator-moderated peer feedback
+    - structured peer critique session
+    - rubric-guided peer review
+    anti_examples:
+    - content moderation on social media
+    confidence_threshold: 0.7
+  - aliases:
+    - role-play management
+    - scenario facilitation
+    recognition_patterns:
+    - simulation (role|scenario) (management|facilitation)
+    - (role|scenario) (assignment|management) (during|for) (simulation|exercise)
+    id: coe:entity/simulation_role_management
+    label: Simulation Role Management
+    description: Facilitation technique for managing participant roles, scenario progression, and debrief during simulation-based
+      learning activities
+    home_domain: delivery
+    status: canonical
+    edges: []
+    ner_label: SIMULATION_ROLE_MANAGEMENT
+    examples:
+    - managing roles during simulation exercise
+    - facilitating scenario role assignments
+    - controlling simulation progression and debrief
+    anti_examples:
+    - role management in HR
+    confidence_threshold: 0.7
+  - id: coe:entity/stereotype_content_model
+    label: Stereotype Content Model
+    description: Stereotype Content Model (SCM) speaker evaluation framework — two primary perception dimensions that determine
+      audience response
+    home_domain: delivery
+    status: canonical
+    recognition_patterns:
+    - (?i)\bStereotype\s+Content\s+Model\b
+    edges: []
+    ner_label: STEREOTYPE_CONTENT_MODEL
+  - id: coe:entity/acoustic_leadership_pillars
+    label: Acoustic Leadership Pillars
+    description: 'Four core pillars of executive presence measurable through digital signal processing: Authority, Engagement,
+      Clarity, and Empathy.'
+    home_domain: delivery
+    status: canonical
+    recognition_patterns:
+    - (?i)\bAcoustic\s+Leadership\s+Pillars\b
+    edges: []
+    ner_label: ACOUSTIC_PILLARS
+  - id: coe:entity/jitter_metric
+    label: Jitter Metric
+    description: Frequency perturbation measuring cycle-to-cycle variation in vocal fold vibration; benchmark for authority
+      is < 1.04%.
+    home_domain: delivery
+    status: canonical
+    recognition_patterns:
+    - (?i)\bJitter\s+Metric\b
+    edges: []
+    ner_label: JITTER
+  - id: coe:entity/shimmer_metric
+    label: Shimmer Metric
+    description: Amplitude perturbation measuring cycle-to-cycle variation in intensity; benchmark for authority is < 3.81%.
+    home_domain: delivery
+    status: canonical
+    recognition_patterns:
+    - (?i)\bShimmer\s+Metric\b
+    edges: []
+    ner_label: SHIMMER
+  - id: coe:entity/modality_conflict_marker
+    label: Modality Conflict Marker
+    description: Detection of non-congruent signals across audio and video (e.g., authoritative voice with nervous visual
+      tics), indicating inauthenticity.
+    home_domain: delivery
+    status: canonical
+    recognition_patterns:
+    - (?i)\bModality\s+Conflict\s+Marker\b
+    edges: []
+    ner_label: MODALITY_CONFLICT

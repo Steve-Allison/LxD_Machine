@@ -1,0 +1,1515 @@
+bundle_id: coe:domain/learning/assessment_rubrics
+domain: learning
+version: 4.0.0
+scoring_models:
+- dimensions:
+  - id: coe:artifact/pedagogical/accessibility_rubric/dimension/wcag_level_compliance
+    label: wcag_level_compliance
+    description: Compliance with WCAG 2.2 conformance levels (A, AA, AAA) for presentation accessibility
+    home_domain: learning
+    status: canonical
+    score_levels:
+    - id: coe:artifact/pedagogical/accessibility_rubric/dimension/wcag_level_compliance/level/0
+      label: 'Level 0: non_compliant'
+      score: 0
+      level_label: non_compliant
+      criteria: Fails WCAG Level A requirements — fundamental accessibility barriers present
+    - id: coe:artifact/pedagogical/accessibility_rubric/dimension/wcag_level_compliance/level/1
+      label: 'Level 1: partial'
+      score: 1
+      level_label: partial
+      criteria: Meets Level A but fails Level AA — minimum compliance only
+    - id: coe:artifact/pedagogical/accessibility_rubric/dimension/wcag_level_compliance/level/2
+      label: 'Level 2: compliant'
+      score: 2
+      level_label: compliant
+      criteria: Meets Level AA — industry-standard accessibility for professional presentations
+    - id: coe:artifact/pedagogical/accessibility_rubric/dimension/wcag_level_compliance/level/3
+      label: 'Level 3: exemplary'
+      score: 3
+      level_label: exemplary
+      criteria: Meets Level AAA — gold standard inclusive design
+  - id: coe:artifact/pedagogical/accessibility_rubric/dimension/color_contrast
+    label: color_contrast
+    description: Color contrast ratios for text and non-text elements per WCAG 2.2 success criteria
+    home_domain: learning
+    status: canonical
+    score_levels:
+    - id: coe:artifact/pedagogical/accessibility_rubric/dimension/color_contrast/level/0
+      label: 'Level 0: failing'
+      score: 0
+      level_label: failing
+      criteria: Contrast ratios below 3:1 for large text or 4.5:1 for normal text
+    - id: coe:artifact/pedagogical/accessibility_rubric/dimension/color_contrast/level/1
+      label: 'Level 1: borderline'
+      score: 1
+      level_label: borderline
+      criteria: Meets minimum ratios but inconsistently across slide elements
+    - id: coe:artifact/pedagogical/accessibility_rubric/dimension/color_contrast/level/2
+      label: 'Level 2: passing'
+      score: 2
+      level_label: passing
+      criteria: All text and non-text elements meet WCAG AA contrast requirements
+    - id: coe:artifact/pedagogical/accessibility_rubric/dimension/color_contrast/level/3
+      label: 'Level 3: optimal'
+      score: 3
+      level_label: optimal
+      criteria: Exceeds AA requirements; contrast supports low-vision and colour-blind users
+  - id: coe:artifact/pedagogical/accessibility_rubric/dimension/violation_severity
+    label: violation_severity
+    description: Severity classification of detected accessibility violations
+    home_domain: learning
+    status: canonical
+    score_levels:
+    - id: coe:artifact/pedagogical/accessibility_rubric/dimension/violation_severity/level/0
+      label: 'Level 0: critical'
+      score: 0
+      level_label: critical
+      criteria: Critical violations that block access for users with disabilities
+    - id: coe:artifact/pedagogical/accessibility_rubric/dimension/violation_severity/level/1
+      label: 'Level 1: serious'
+      score: 1
+      level_label: serious
+      criteria: Serious violations that significantly impair usability
+    - id: coe:artifact/pedagogical/accessibility_rubric/dimension/violation_severity/level/2
+      label: 'Level 2: moderate'
+      score: 2
+      level_label: moderate
+      criteria: Moderate violations that create friction but do not block access
+    - id: coe:artifact/pedagogical/accessibility_rubric/dimension/violation_severity/level/3
+      label: 'Level 3: minor_or_none'
+      score: 3
+      level_label: minor_or_none
+      criteria: Minor or no violations — best practice adherence throughout
+  thresholds:
+  - id: coe:artifact/pedagogical/accessibility_rubric/threshold/min_contrast_small_text
+    label: Min Contrast Small Text
+    description: min_contrast_small_text threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '4.5'
+  - id: coe:artifact/pedagogical/accessibility_rubric/threshold/min_contrast_large_text
+    label: Min Contrast Large Text
+    description: min_contrast_large_text threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '3.0'
+  - id: coe:artifact/pedagogical/accessibility_rubric/threshold/min_contrast_ui
+    label: Min Contrast Ui
+    description: min_contrast_ui threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '3.0'
+  - id: coe:artifact/pedagogical/accessibility_rubric/threshold/min_font_size
+    label: Min Font Size
+    description: min_font_size threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '18'
+  - id: coe:artifact/pedagogical/accessibility_rubric/threshold/min_line_spacing
+    label: Min Line Spacing
+    description: min_line_spacing threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '1.2'
+  - id: coe:artifact/pedagogical/accessibility_rubric/threshold/max_flash_per_second
+    label: Max Flash Per Second
+    description: max_flash_per_second threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '3'
+  - id: coe:artifact/pedagogical/accessibility_rubric/threshold/optimal_line_length_chars
+    label: Optimal Line Length Chars
+    description: optimal_line_length_chars threshold.
+    home_domain: learning
+    status: canonical
+    target_value: 50-75 CPL
+  - id: coe:artifact/pedagogical/accessibility_rubric/threshold/line_length_sweet_spot_chars
+    label: Line Length Sweet Spot Chars
+    description: line_length_sweet_spot_chars threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '66'
+  - id: coe:artifact/pedagogical/accessibility_rubric/threshold/line_length_upper_failure_chars
+    label: Line Length Upper Failure Chars
+    description: line_length_upper_failure_chars threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '80'
+  - id: coe:artifact/pedagogical/accessibility_rubric/threshold/max_paragraph_lines
+    label: Max Paragraph Lines
+    description: max_paragraph_lines threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '10'
+  - id: coe:artifact/pedagogical/accessibility_rubric/threshold/heading_density_words
+    label: Heading Density Words
+    description: heading_density_words threshold.
+    home_domain: learning
+    status: canonical
+    target_value: 200-300 words between subheadings
+  - id: coe:artifact/pedagogical/accessibility_rubric/threshold/max_heading_depth
+    label: Max Heading Depth
+    description: max_heading_depth threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '3'
+  - id: coe:artifact/pedagogical/accessibility_rubric/threshold/readability_grade_general
+    label: Readability Grade General
+    description: readability_grade_general threshold.
+    home_domain: learning
+    status: canonical
+    target_value: 8-10 (Flesch-Kincaid)
+  - id: coe:artifact/pedagogical/accessibility_rubric/threshold/readability_grade_technical
+    label: Readability Grade Technical
+    description: readability_grade_technical threshold.
+    home_domain: learning
+    status: canonical
+    target_value: 12 (Flesch-Kincaid)
+  version: 1.6.2
+  last_updated: '2026-08-12'
+  id: coe:artifact/pedagogical/accessibility_rubric
+  label: Accessibility Rubric
+  description: Accessibility standards for presentations (WCAG 2.2 Level AA) and cognitive accessibility criteria derived
+    from UX design research
+  home_domain: learning
+  status: canonical
+- dimensions:
+  - id: coe:artifact/pedagogical/assessment_scoring_frameworks_rubric/dimension/evaluation_level
+    label: evaluation_level
+    description: Kirkpatrick-Phillips model level (L1-L5) determining evaluation depth and ROI measurement
+    home_domain: learning
+    status: canonical
+    score_levels:
+    - id: coe:artifact/pedagogical/assessment_scoring_frameworks_rubric/dimension/evaluation_level/level/0
+      label: 'Level 0: no_evaluation'
+      score: 0
+      level_label: no_evaluation
+      criteria: No formal evaluation planned or conducted
+    - id: coe:artifact/pedagogical/assessment_scoring_frameworks_rubric/dimension/evaluation_level/level/1
+      label: 'Level 1: reaction_only'
+      score: 1
+      level_label: reaction_only
+      criteria: Level 1 reaction/satisfaction data collected only
+    - id: coe:artifact/pedagogical/assessment_scoring_frameworks_rubric/dimension/evaluation_level/level/2
+      label: 'Level 2: learning_and_behavior'
+      score: 2
+      level_label: learning_and_behavior
+      criteria: Levels 1-3 assessed — reaction, knowledge gain, and behavior transfer measured
+    - id: coe:artifact/pedagogical/assessment_scoring_frameworks_rubric/dimension/evaluation_level/level/3
+      label: 'Level 3: full_roi'
+      score: 3
+      level_label: full_roi
+      criteria: All five levels assessed including business results and ROI calculation
+  - id: coe:artifact/pedagogical/assessment_scoring_frameworks_rubric/dimension/assessment_timing
+    label: assessment_timing
+    description: Alignment of assessment events to learning milestones (pre, during, post, transfer)
+    home_domain: learning
+    status: canonical
+    score_levels:
+    - id: coe:artifact/pedagogical/assessment_scoring_frameworks_rubric/dimension/assessment_timing/level/0
+      label: 'Level 0: absent'
+      score: 0
+      level_label: absent
+      criteria: No assessment timing strategy defined
+    - id: coe:artifact/pedagogical/assessment_scoring_frameworks_rubric/dimension/assessment_timing/level/1
+      label: 'Level 1: post_only'
+      score: 1
+      level_label: post_only
+      criteria: Post-training assessment only — no pre-test or transfer measurement
+    - id: coe:artifact/pedagogical/assessment_scoring_frameworks_rubric/dimension/assessment_timing/level/2
+      label: 'Level 2: pre_and_post'
+      score: 2
+      level_label: pre_and_post
+      criteria: Pre- and post-training assessment with knowledge gain measurement
+    - id: coe:artifact/pedagogical/assessment_scoring_frameworks_rubric/dimension/assessment_timing/level/3
+      label: 'Level 3: longitudinal'
+      score: 3
+      level_label: longitudinal
+      criteria: Pre, immediate, 30/60/90-day follow-up, and transfer assessments in place
+  - id: coe:artifact/pedagogical/assessment_scoring_frameworks_rubric/dimension/rubric_design_quality
+    label: rubric_design_quality
+    description: Adherence to rubric design standards for objectivity, clarity, and inter-rater reliability
+    home_domain: learning
+    status: canonical
+    score_levels:
+    - id: coe:artifact/pedagogical/assessment_scoring_frameworks_rubric/dimension/rubric_design_quality/level/0
+      label: 'Level 0: absent'
+      score: 0
+      level_label: absent
+      criteria: No rubric or assessment criteria defined
+    - id: coe:artifact/pedagogical/assessment_scoring_frameworks_rubric/dimension/rubric_design_quality/level/1
+      label: 'Level 1: basic'
+      score: 1
+      level_label: basic
+      criteria: Criteria defined but vague; low inter-rater reliability
+    - id: coe:artifact/pedagogical/assessment_scoring_frameworks_rubric/dimension/rubric_design_quality/level/2
+      label: 'Level 2: structured'
+      score: 2
+      level_label: structured
+      criteria: Clear criteria with behavioural anchors; acceptable reliability
+    - id: coe:artifact/pedagogical/assessment_scoring_frameworks_rubric/dimension/rubric_design_quality/level/3
+      label: 'Level 3: exemplary'
+      score: 3
+      level_label: exemplary
+      criteria: Validated rubric with anchor examples, calibration, and demonstrated reliability
+  - id: coe:artifact/pedagogical/assessment_scoring_frameworks_rubric/dimension/modality_specification
+    label: modality_specification
+    description: Assessment design appropriateness for delivery modality (elearning, ILT, blended)
+    home_domain: learning
+    status: canonical
+    score_levels:
+    - id: coe:artifact/pedagogical/assessment_scoring_frameworks_rubric/dimension/modality_specification/level/0
+      label: 'Level 0: misaligned'
+      score: 0
+      level_label: misaligned
+      criteria: Assessment method incompatible with delivery modality
+    - id: coe:artifact/pedagogical/assessment_scoring_frameworks_rubric/dimension/modality_specification/level/1
+      label: 'Level 1: generic'
+      score: 1
+      level_label: generic
+      criteria: Generic assessment applied without modality-specific adaptation
+    - id: coe:artifact/pedagogical/assessment_scoring_frameworks_rubric/dimension/modality_specification/level/2
+      label: 'Level 2: adapted'
+      score: 2
+      level_label: adapted
+      criteria: Assessment adapted for delivery modality with appropriate methods
+    - id: coe:artifact/pedagogical/assessment_scoring_frameworks_rubric/dimension/modality_specification/level/3
+      label: 'Level 3: optimised'
+      score: 3
+      level_label: optimised
+      criteria: Assessment fully optimised for modality with technology-enhanced features
+  version: 1.5.2
+  last_updated: '2026-08-12'
+  id: coe:artifact/pedagogical/assessment_scoring_frameworks_rubric
+  label: Assessment Frameworks
+  description: Kirkpatrick-Phillips L1-L5 evaluation model, assessment timing patterns, modality-specific specifications,
+    rubric design standards, and quality metrics for corporate learning assessment.
+  home_domain: learning
+  status: canonical
+- dimensions:
+  - id: coe:artifact/pedagogical/cognitive_load_rubric/dimension/intrinsic_load_management
+    label: intrinsic_load_management
+    description: Management of inherent content complexity through sequencing, chunking, and element count control
+    home_domain: learning
+    status: canonical
+    score_levels:
+    - id: coe:artifact/pedagogical/cognitive_load_rubric/dimension/intrinsic_load_management/level/0
+      label: 'Level 0: overloaded'
+      score: 0
+      level_label: overloaded
+      criteria: Element count exceeds 7±2 threshold; no chunking strategy applied
+    - id: coe:artifact/pedagogical/cognitive_load_rubric/dimension/intrinsic_load_management/level/1
+      label: 'Level 1: high'
+      score: 1
+      level_label: high
+      criteria: Element count near threshold; partial chunking applied inconsistently
+    - id: coe:artifact/pedagogical/cognitive_load_rubric/dimension/intrinsic_load_management/level/2
+      label: 'Level 2: managed'
+      score: 2
+      level_label: managed
+      criteria: Elements within Miller/Cowan limits; logical chunking evident
+    - id: coe:artifact/pedagogical/cognitive_load_rubric/dimension/intrinsic_load_management/level/3
+      label: 'Level 3: optimised'
+      score: 3
+      level_label: optimised
+      criteria: Minimal element count with progressive disclosure; cognitive pacing throughout
+  - id: coe:artifact/pedagogical/cognitive_load_rubric/dimension/extraneous_load_reduction
+    label: extraneous_load_reduction
+    description: Reduction of unnecessary cognitive effort via text density, typography, and reading physiology standards
+    home_domain: learning
+    status: canonical
+    score_levels:
+    - id: coe:artifact/pedagogical/cognitive_load_rubric/dimension/extraneous_load_reduction/level/0
+      label: 'Level 0: high_extraneous'
+      score: 0
+      level_label: high_extraneous
+      criteria: Dense text, poor typography, no visual scanning patterns — maximises unnecessary load
+    - id: coe:artifact/pedagogical/cognitive_load_rubric/dimension/extraneous_load_reduction/level/1
+      label: 'Level 1: elevated'
+      score: 1
+      level_label: elevated
+      criteria: Some text density or typography issues creating friction
+    - id: coe:artifact/pedagogical/cognitive_load_rubric/dimension/extraneous_load_reduction/level/2
+      label: 'Level 2: acceptable'
+      score: 2
+      level_label: acceptable
+      criteria: Text density and typography meet standards; scanning patterns supported
+    - id: coe:artifact/pedagogical/cognitive_load_rubric/dimension/extraneous_load_reduction/level/3
+      label: 'Level 3: minimal'
+      score: 3
+      level_label: minimal
+      criteria: Exemplary text discipline; typography optimises saccade and fixation patterns
+  - id: coe:artifact/pedagogical/cognitive_load_rubric/dimension/germane_load_facilitation
+    label: germane_load_facilitation
+    description: Active schema formation supported by Mayer's multimedia principles and progressive disclosure
+    home_domain: learning
+    status: canonical
+    score_levels:
+    - id: coe:artifact/pedagogical/cognitive_load_rubric/dimension/germane_load_facilitation/level/0
+      label: 'Level 0: none'
+      score: 0
+      level_label: none
+      criteria: No multimedia learning principles applied; no progressive disclosure
+    - id: coe:artifact/pedagogical/cognitive_load_rubric/dimension/germane_load_facilitation/level/1
+      label: 'Level 1: partial'
+      score: 1
+      level_label: partial
+      criteria: Some Mayer principles applied; limited schema-building support
+    - id: coe:artifact/pedagogical/cognitive_load_rubric/dimension/germane_load_facilitation/level/2
+      label: 'Level 2: adequate'
+      score: 2
+      level_label: adequate
+      criteria: Majority of applicable Mayer principles met; disclosure layering present
+    - id: coe:artifact/pedagogical/cognitive_load_rubric/dimension/germane_load_facilitation/level/3
+      label: 'Level 3: exemplary'
+      score: 3
+      level_label: exemplary
+      criteria: Full Mayer principle compliance; systematic progressive disclosure throughout
+  - id: coe:artifact/pedagogical/cognitive_load_rubric/dimension/visual_organisation
+    label: visual_organisation
+    description: Gestalt principles, information architecture, and structural affordances applied to reduce cognitive effort
+    home_domain: learning
+    status: canonical
+    score_levels:
+    - id: coe:artifact/pedagogical/cognitive_load_rubric/dimension/visual_organisation/level/0
+      label: 'Level 0: disorganised'
+      score: 0
+      level_label: disorganised
+      criteria: No evident gestalt grouping or visual hierarchy
+    - id: coe:artifact/pedagogical/cognitive_load_rubric/dimension/visual_organisation/level/1
+      label: 'Level 1: partial'
+      score: 1
+      level_label: partial
+      criteria: Some grouping and hierarchy but inconsistent
+    - id: coe:artifact/pedagogical/cognitive_load_rubric/dimension/visual_organisation/level/2
+      label: 'Level 2: organised'
+      score: 2
+      level_label: organised
+      criteria: Clear gestalt application and Minto/SCQA information architecture
+    - id: coe:artifact/pedagogical/cognitive_load_rubric/dimension/visual_organisation/level/3
+      label: 'Level 3: exemplary'
+      score: 3
+      level_label: exemplary
+      criteria: Optimal information architecture with consistent gestalt and structural affordances
+  - id: coe:artifact/pedagogical/cognitive_load_rubric/dimension/compliance_and_checks
+    label: compliance_and_checks
+    description: Adherence to ISO 24495-1 plain language standard and quantitative threshold compliance
+    home_domain: learning
+    status: canonical
+    score_levels:
+    - id: coe:artifact/pedagogical/cognitive_load_rubric/dimension/compliance_and_checks/level/0
+      label: 'Level 0: non_compliant'
+      score: 0
+      level_label: non_compliant
+      criteria: Fails plain language thresholds; multiple quantitative violations
+    - id: coe:artifact/pedagogical/cognitive_load_rubric/dimension/compliance_and_checks/level/1
+      label: 'Level 1: partial'
+      score: 1
+      level_label: partial
+      criteria: Some threshold violations; plain language partially applied
+    - id: coe:artifact/pedagogical/cognitive_load_rubric/dimension/compliance_and_checks/level/2
+      label: 'Level 2: compliant'
+      score: 2
+      level_label: compliant
+      criteria: Meets quantitative thresholds and plain language standard
+    - id: coe:artifact/pedagogical/cognitive_load_rubric/dimension/compliance_and_checks/level/3
+      label: 'Level 3: exemplary'
+      score: 3
+      level_label: exemplary
+      criteria: All thresholds met with bonuses; ISO 24495-1 fully applied
+  thresholds:
+  - id: coe:artifact/pedagogical/cognitive_load_rubric/threshold/max_elements_per_slide
+    label: Max Elements Per Slide
+    description: max_elements_per_slide threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '7'
+  - id: coe:artifact/pedagogical/cognitive_load_rubric/threshold/max_words_per_slide
+    label: Max Words Per Slide
+    description: max_words_per_slide threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '36'
+  - id: coe:artifact/pedagogical/cognitive_load_rubric/threshold/max_bullets_per_slide
+    label: Max Bullets Per Slide
+    description: max_bullets_per_slide threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '6'
+  - id: coe:artifact/pedagogical/cognitive_load_rubric/threshold/min_mayer_principles_met
+    label: Min Mayer Principles Met
+    description: min_mayer_principles_met threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '8'
+  - id: coe:artifact/pedagogical/cognitive_load_rubric/threshold/min_critical_principles_met
+    label: Min Critical Principles Met
+    description: min_critical_principles_met threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '3'
+  - id: coe:artifact/pedagogical/cognitive_load_rubric/threshold/line_length_optimal_cpl
+    label: Line Length Optimal Cpl
+    description: line_length_optimal_cpl threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '66'
+  - id: coe:artifact/pedagogical/cognitive_load_rubric/threshold/line_length_max_cpl
+    label: Line Length Max Cpl
+    description: line_length_max_cpl threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '75'
+  - id: coe:artifact/pedagogical/cognitive_load_rubric/threshold/line_length_failure_cpl
+    label: Line Length Failure Cpl
+    description: line_length_failure_cpl threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '80'
+  - id: coe:artifact/pedagogical/cognitive_load_rubric/threshold/paragraph_max_lines
+    label: Paragraph Max Lines
+    description: paragraph_max_lines threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '6'
+  - id: coe:artifact/pedagogical/cognitive_load_rubric/threshold/heading_frequency_max_words
+    label: Heading Frequency Max Words
+    description: heading_frequency_max_words threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '300'
+  - id: coe:artifact/pedagogical/cognitive_load_rubric/threshold/max_heading_depth
+    label: Max Heading Depth
+    description: max_heading_depth threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '3'
+  - id: coe:artifact/pedagogical/cognitive_load_rubric/threshold/wall_of_text_word_threshold
+    label: Wall Of Text Word Threshold
+    description: wall_of_text_word_threshold threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '50'
+  - id: coe:artifact/pedagogical/cognitive_load_rubric/threshold/bullet_hell_threshold
+    label: Bullet Hell Threshold
+    description: bullet_hell_threshold threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '8'
+  - id: coe:artifact/pedagogical/cognitive_load_rubric/threshold/table_max_columns
+    label: Table Max Columns
+    description: table_max_columns threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '10'
+  - id: coe:artifact/pedagogical/cognitive_load_rubric/threshold/table_max_rows
+    label: Table Max Rows
+    description: table_max_rows threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '20'
+  version: 1.8.1
+  last_updated: '2026-08-12'
+  id: coe:artifact/pedagogical/cognitive_load_rubric
+  label: Cognitive Load Rubric
+  description: Cognitive load assessment rubric based on CLT (Sweller), Mayer's 15 Principles, reading physiology, typographic
+    standards, and document design for corporate presentations and learning materials.
+  home_domain: learning
+  status: canonical
+- dimensions:
+  - id: coe:artifact/pedagogical/instructional_design_rubric/dimension/objective_alignment
+    label: Objective Alignment
+    description: Evaluates whether learning objectives are observable, measurable, and set at the correct Bloom's taxonomy
+      level for the intended job performance. Applies Mager's ABCD framework (Audience, Behavior, Conditions, Degree) and
+      distinguishes terminal from enabling objectives.
+    home_domain: learning
+    status: canonical
+  - id: coe:artifact/pedagogical/instructional_design_rubric/dimension/activity_mapping
+    label: Activity-Objective Mapping (Constructive Alignment)
+    description: Evaluates whether activities engage the cognitive process demanded by the objective's Bloom's verb. A 'remember'
+      objective maps to recall activities; an 'evaluate' objective demands critique and judgment tasks. Activities that fall
+      below the objective's Bloom's level constitute the primary constructive misalignment failure.
+    home_domain: learning
+    status: canonical
+  - id: coe:artifact/pedagogical/instructional_design_rubric/dimension/assessment_validity
+    label: Assessment Validity
+    description: Evaluates whether the assessment instruments can validly measure what the objective demands, whether formative
+      and summative checkpoints are balanced, and whether the design creates a pathway to Kirkpatrick Level 3 (behaviour transfer)
+      rather than stopping at Level 2 (learning).
+    home_domain: learning
+    status: canonical
+  - id: coe:artifact/pedagogical/instructional_design_rubric/dimension/scaffold_progression
+    label: Scaffold Progression
+    description: Evaluates whether the instructional sequence builds competence incrementally from simple to complex whole
+      tasks (Merrill's Pebble-in-the-Pond), explicitly manages prerequisite knowledge, and applies the FPI cycle. Integration
+      (Principle 5) is the most commonly omitted principle in corporate L&D and is weighted heavily.
+    home_domain: learning
+    status: canonical
+  - id: coe:artifact/pedagogical/instructional_design_rubric/dimension/learner_engagement
+    label: Learner Engagement
+    description: 'Evaluates the ratio of active to passive learning, the variety of interaction types, the presence of retrieval
+      practice mechanisms, and the application of Self-Determination Theory (autonomy, competence, relatedness) as motivational
+      scaffolding. Interaction frequency benchmark: every 3-5 minutes of content.'
+    home_domain: learning
+    status: canonical
+  thresholds:
+  - id: coe:artifact/pedagogical/instructional_design_rubric/threshold/min_active_learning_ratio
+    label: Min Active Learning Ratio
+    description: min_active_learning_ratio threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '0.4'
+  - id: coe:artifact/pedagogical/instructional_design_rubric/threshold/target_active_learning_ratio
+    label: Target Active Learning Ratio
+    description: target_active_learning_ratio threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '0.6'
+  - id: coe:artifact/pedagogical/instructional_design_rubric/threshold/max_engagement_interval_minutes
+    label: Max Engagement Interval Minutes
+    description: max_engagement_interval_minutes threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '5'
+  - id: coe:artifact/pedagogical/instructional_design_rubric/threshold/target_engagement_interval_minutes
+    label: Target Engagement Interval Minutes
+    description: target_engagement_interval_minutes threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '3'
+  - id: coe:artifact/pedagogical/instructional_design_rubric/threshold/min_formative_checks_per_module
+    label: Min Formative Checks Per Module
+    description: min_formative_checks_per_module threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '3'
+  - id: coe:artifact/pedagogical/instructional_design_rubric/threshold/target_formative_checks_per_module
+    label: Target Formative Checks Per Module
+    description: target_formative_checks_per_module threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '5'
+  - id: coe:artifact/pedagogical/instructional_design_rubric/threshold/min_interaction_types
+    label: Min Interaction Types
+    description: min_interaction_types threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '2'
+  - id: coe:artifact/pedagogical/instructional_design_rubric/threshold/target_interaction_types
+    label: Target Interaction Types
+    description: target_interaction_types threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '3'
+  - id: coe:artifact/pedagogical/instructional_design_rubric/threshold/exemplary_interaction_types
+    label: Exemplary Interaction Types
+    description: exemplary_interaction_types threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '5'
+  - id: coe:artifact/pedagogical/instructional_design_rubric/threshold/max_objectives_per_lesson
+    label: Max Objectives Per Lesson
+    description: max_objectives_per_lesson threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '2'
+  - id: coe:artifact/pedagogical/instructional_design_rubric/threshold/max_objectives_per_module
+    label: Max Objectives Per Module
+    description: max_objectives_per_module threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '3'
+  - id: coe:artifact/pedagogical/instructional_design_rubric/threshold/max_objectives_per_course
+    label: Max Objectives Per Course
+    description: max_objectives_per_course threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '5'
+  - id: coe:artifact/pedagogical/instructional_design_rubric/threshold/bloom_min_level_skill_content
+    label: Bloom Min Level Skill Content
+    description: bloom_min_level_skill_content threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '3'
+  - id: coe:artifact/pedagogical/instructional_design_rubric/threshold/kirkpatrick_min_level
+    label: Kirkpatrick Min Level
+    description: kirkpatrick_min_level threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '2'
+  - id: coe:artifact/pedagogical/instructional_design_rubric/threshold/kirkpatrick_target_level
+    label: Kirkpatrick Target Level
+    description: kirkpatrick_target_level threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '3'
+  - id: coe:artifact/pedagogical/instructional_design_rubric/threshold/min_fpi_principles_present
+    label: Min Fpi Principles Present
+    description: min_fpi_principles_present threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '4'
+  - id: coe:artifact/pedagogical/instructional_design_rubric/threshold/pass_threshold_percent
+    label: Pass Threshold Percent
+    description: pass_threshold_percent threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '80'
+  - id: coe:artifact/pedagogical/instructional_design_rubric/threshold/module_duration_max_minutes
+    label: Module Duration Max Minutes
+    description: module_duration_max_minutes threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '45'
+  - id: coe:artifact/pedagogical/instructional_design_rubric/threshold/topic_duration_max_minutes
+    label: Topic Duration Max Minutes
+    description: topic_duration_max_minutes threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '15'
+  - id: coe:artifact/pedagogical/instructional_design_rubric/threshold/card_duration_max_seconds
+    label: Card Duration Max Seconds
+    description: card_duration_max_seconds threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '90'
+  - id: coe:artifact/pedagogical/instructional_design_rubric/threshold/spaced_review_days
+    label: Spaced Review Days
+    description: spaced_review_days threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '[1, 7, 30]'
+  - id: coe:artifact/pedagogical/instructional_design_rubric/threshold/max_continuous_lecture_ilt_minutes
+    label: Max Continuous Lecture Ilt Minutes
+    description: max_continuous_lecture_ilt_minutes threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '15'
+  - id: coe:artifact/pedagogical/instructional_design_rubric/threshold/max_video_segment_minutes
+    label: Max Video Segment Minutes
+    description: max_video_segment_minutes threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '7'
+  - id: coe:artifact/pedagogical/instructional_design_rubric/threshold/microlearning_unit_max_minutes
+    label: Microlearning Unit Max Minutes
+    description: microlearning_unit_max_minutes threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '5'
+  - id: coe:artifact/pedagogical/instructional_design_rubric/threshold/microlearning_unit_min_minutes
+    label: Microlearning Unit Min Minutes
+    description: microlearning_unit_min_minutes threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '3'
+  version: 1.11.2
+  last_updated: '2026-08-12'
+  id: coe:artifact/pedagogical/instructional_design_rubric
+  label: Instructional Design Rubric
+  description: Scoring rubric for instructional design quality covering objective alignment, activity-objective mapping, assessment
+    validity, scaffold progression, and learner engagement strategies
+  home_domain: learning
+  status: canonical
+- dimensions:
+  - id: coe:artifact/pedagogical/master_scoring_framework_rubric/dimension/narrative_quality
+    label: narrative_quality
+    description: SOAR narrative arc balance, rhetorical device application, and narrative archetype alignment
+    home_domain: learning
+    status: canonical
+    score_levels:
+    - id: coe:artifact/pedagogical/master_scoring_framework_rubric/dimension/narrative_quality/level/0
+      label: 'Level 0: absent'
+      score: 0
+      level_label: absent
+      criteria: No discernible narrative arc or SOAR structure
+    - id: coe:artifact/pedagogical/master_scoring_framework_rubric/dimension/narrative_quality/level/1
+      label: 'Level 1: partial'
+      score: 1
+      level_label: partial
+      criteria: Partial narrative arc; SOAR elements present but unbalanced
+    - id: coe:artifact/pedagogical/master_scoring_framework_rubric/dimension/narrative_quality/level/2
+      label: 'Level 2: structured'
+      score: 2
+      level_label: structured
+      criteria: Clear SOAR narrative with appropriate rhetorical balance
+    - id: coe:artifact/pedagogical/master_scoring_framework_rubric/dimension/narrative_quality/level/3
+      label: 'Level 3: exemplary'
+      score: 3
+      level_label: exemplary
+      criteria: Masterful SOAR narrative with archetype alignment and LitVISTA axis balance
+  - id: coe:artifact/pedagogical/master_scoring_framework_rubric/dimension/argument_quality
+    label: argument_quality
+    description: Toulmin argumentation completeness, claim-evidence linking, and rhetorical coherence
+    home_domain: learning
+    status: canonical
+    score_levels:
+    - id: coe:artifact/pedagogical/master_scoring_framework_rubric/dimension/argument_quality/level/0
+      label: 'Level 0: absent'
+      score: 0
+      level_label: absent
+      criteria: Claims without evidence; no Toulmin structure evident
+    - id: coe:artifact/pedagogical/master_scoring_framework_rubric/dimension/argument_quality/level/1
+      label: 'Level 1: weak'
+      score: 1
+      level_label: weak
+      criteria: Some evidence links present but Toulmin components incomplete
+    - id: coe:artifact/pedagogical/master_scoring_framework_rubric/dimension/argument_quality/level/2
+      label: 'Level 2: structured'
+      score: 2
+      level_label: structured
+      criteria: Complete Toulmin structure with adequate evidence-claim links
+    - id: coe:artifact/pedagogical/master_scoring_framework_rubric/dimension/argument_quality/level/3
+      label: 'Level 3: exemplary'
+      score: 3
+      level_label: exemplary
+      criteria: Full Toulmin argumentation with strong evidence, backing, and rebuttals
+  - id: coe:artifact/pedagogical/master_scoring_framework_rubric/dimension/discourse_coherence
+    label: discourse_coherence
+    description: RST relation quality, discourse marker usage, and latent structural coherence
+    home_domain: learning
+    status: canonical
+    score_levels:
+    - id: coe:artifact/pedagogical/master_scoring_framework_rubric/dimension/discourse_coherence/level/0
+      label: 'Level 0: incoherent'
+      score: 0
+      level_label: incoherent
+      criteria: Disconnected segments; no discourse relations evident
+    - id: coe:artifact/pedagogical/master_scoring_framework_rubric/dimension/discourse_coherence/level/1
+      label: 'Level 1: partial'
+      score: 1
+      level_label: partial
+      criteria: Some discourse structure but topic drift or coreference gaps
+    - id: coe:artifact/pedagogical/master_scoring_framework_rubric/dimension/discourse_coherence/level/2
+      label: 'Level 2: coherent'
+      score: 2
+      level_label: coherent
+      criteria: Clear discourse relations; minimal coreference or topicality gaps
+    - id: coe:artifact/pedagogical/master_scoring_framework_rubric/dimension/discourse_coherence/level/3
+      label: 'Level 3: exemplary'
+      score: 3
+      level_label: exemplary
+      criteria: Optimal discourse structure with strong cohesion across all segments
+  - id: coe:artifact/pedagogical/master_scoring_framework_rubric/dimension/text_descriptives
+    label: text_descriptives
+    description: Readability complexity thresholds, sentence diversity, and connective density
+    home_domain: learning
+    status: canonical
+    score_levels:
+    - id: coe:artifact/pedagogical/master_scoring_framework_rubric/dimension/text_descriptives/level/0
+      label: 'Level 0: non_compliant'
+      score: 0
+      level_label: non_compliant
+      criteria: Text complexity outside acceptable thresholds; poor sentence variation
+    - id: coe:artifact/pedagogical/master_scoring_framework_rubric/dimension/text_descriptives/level/1
+      label: 'Level 1: borderline'
+      score: 1
+      level_label: borderline
+      criteria: Some text metrics within range; connective density low
+    - id: coe:artifact/pedagogical/master_scoring_framework_rubric/dimension/text_descriptives/level/2
+      label: 'Level 2: compliant'
+      score: 2
+      level_label: compliant
+      criteria: Text descriptives within expected thresholds; adequate connective use
+    - id: coe:artifact/pedagogical/master_scoring_framework_rubric/dimension/text_descriptives/level/3
+      label: 'Level 3: exemplary'
+      score: 3
+      level_label: exemplary
+      criteria: Optimal readability with rich connective density and sentence diversity
+  - id: coe:artifact/pedagogical/master_scoring_framework_rubric/dimension/aggregation_confidence
+    label: aggregation_confidence
+    description: Confidence and completeness of lens-level scoring and Master Story Score aggregation
+    home_domain: learning
+    status: canonical
+    score_levels:
+    - id: coe:artifact/pedagogical/master_scoring_framework_rubric/dimension/aggregation_confidence/level/0
+      label: 'Level 0: insufficient'
+      score: 0
+      level_label: insufficient
+      criteria: Required lenses missing or below minimum confidence threshold
+    - id: coe:artifact/pedagogical/master_scoring_framework_rubric/dimension/aggregation_confidence/level/1
+      label: 'Level 1: partial'
+      score: 1
+      level_label: partial
+      criteria: Most required lenses present but some below confidence threshold
+    - id: coe:artifact/pedagogical/master_scoring_framework_rubric/dimension/aggregation_confidence/level/2
+      label: 'Level 2: adequate'
+      score: 2
+      level_label: adequate
+      criteria: All required lenses above confidence threshold; aggregation reliable
+    - id: coe:artifact/pedagogical/master_scoring_framework_rubric/dimension/aggregation_confidence/level/3
+      label: 'Level 3: high_confidence'
+      score: 3
+      level_label: high_confidence
+      criteria: All lenses above threshold with fail-fast checks passed; MSS fully valid
+  version: 1.5.2
+  last_updated: '2026-08-12'
+  id: coe:artifact/pedagogical/master_scoring_framework_rubric
+  label: Scoring Configuration
+  description: Lens category mapping, aggregation rules, and scoring configurations for Master Story Score including narrative,
+    argument, discourse, latent coherence, and text descriptive assessment.
+  home_domain: learning
+  status: canonical
+- dimensions:
+  - id: coe:artifact/pedagogical/narrative_quality_rubric/dimension/coverage
+    label: Coverage
+    description: SOAR framework completeness - all narrative elements present
+    home_domain: learning
+    status: canonical
+  - id: coe:artifact/pedagogical/narrative_quality_rubric/dimension/coherence
+    label: Coherence
+    description: Logical flow, transitions, and narrative structure
+    home_domain: learning
+    status: canonical
+  - id: coe:artifact/pedagogical/narrative_quality_rubric/dimension/clarity
+    label: Clarity
+    description: Plain language, one idea per section, readability
+    home_domain: learning
+    status: canonical
+  - id: coe:artifact/pedagogical/narrative_quality_rubric/dimension/audience_fit
+    label: Audience Fit
+    description: WIIFM focus and persona relevance
+    home_domain: learning
+    status: canonical
+  - id: coe:artifact/pedagogical/narrative_quality_rubric/dimension/evidence
+    label: Evidence
+    description: Proof points, metrics, and credibility
+    home_domain: learning
+    status: canonical
+  - id: coe:artifact/pedagogical/narrative_quality_rubric/dimension/reusability
+    label: Reusability
+    description: Template compliance and lexicon adherence
+    home_domain: learning
+    status: canonical
+  thresholds:
+  - id: coe:artifact/pedagogical/narrative_quality_rubric/threshold/min_soar_confidence
+    label: Min Soar Confidence
+    description: min_soar_confidence threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '0.55'
+  - id: coe:artifact/pedagogical/narrative_quality_rubric/threshold/min_outline_sections
+    label: Min Outline Sections
+    description: min_outline_sections threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '4'
+  - id: coe:artifact/pedagogical/narrative_quality_rubric/threshold/max_jargon_ratio
+    label: Max Jargon Ratio
+    description: max_jargon_ratio threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '0.18'
+  - id: coe:artifact/pedagogical/narrative_quality_rubric/threshold/min_result_evidence_late_stage
+    label: Min Result Evidence Late Stage
+    description: min_result_evidence_late_stage threshold.
+    home_domain: learning
+    status: canonical
+  - id: coe:artifact/pedagogical/narrative_quality_rubric/threshold/optimal_results_metric_count
+    label: Optimal Results Metric Count
+    description: optimal_results_metric_count threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '2'
+  - id: coe:artifact/pedagogical/narrative_quality_rubric/threshold/max_results_metric_count
+    label: Max Results Metric Count
+    description: max_results_metric_count threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '3'
+  - id: coe:artifact/pedagogical/narrative_quality_rubric/threshold/approach_step_range
+    label: Approach Step Range
+    description: approach_step_range threshold.
+    home_domain: learning
+    status: canonical
+  - id: coe:artifact/pedagogical/narrative_quality_rubric/threshold/loop_closure_confidence
+    label: Loop Closure Confidence
+    description: loop_closure_confidence threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '0.7'
+  - id: coe:artifact/pedagogical/narrative_quality_rubric/threshold/emotional_arc_minimum_signals
+    label: Emotional Arc Minimum Signals
+    description: emotional_arc_minimum_signals threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '1'
+  version: 2.14.3
+  last_updated: '2026-08-12'
+  id: coe:artifact/pedagogical/narrative_quality_rubric
+  label: Narrative Quality Rubric
+  description: Rubric for narrative quality assessment covering SOAR coverage, coherence, clarity, audience fit, evidence,
+    and reusability
+  home_domain: learning
+  status: canonical
+- dimensions:
+  - id: coe:artifact/pedagogical/presentation_profiles_rubric/dimension/structure
+    label: Structure
+    description: Presentation framework and narrative architecture
+    home_domain: learning
+    status: canonical
+  - id: coe:artifact/pedagogical/presentation_profiles_rubric/dimension/content
+    label: Content
+    description: Message clarity, evidence quality, and audience alignment
+    home_domain: learning
+    status: canonical
+  - id: coe:artifact/pedagogical/presentation_profiles_rubric/dimension/visual
+    label: Visual
+    description: Visual design effectiveness and cognitive load management
+    home_domain: learning
+    status: canonical
+  - id: coe:artifact/pedagogical/presentation_profiles_rubric/dimension/delivery
+    label: Delivery
+    description: Facilitation readiness and pacing
+    home_domain: learning
+    status: canonical
+  - id: coe:artifact/pedagogical/presentation_profiles_rubric/dimension/credibility
+    label: Credibility
+    description: Authority, proof points, and trust signals
+    home_domain: learning
+    status: canonical
+  thresholds:
+  - id: coe:artifact/pedagogical/presentation_profiles_rubric/threshold/min_transformation_confidence
+    label: Min Transformation Confidence
+    description: min_transformation_confidence threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '0.7'
+  - id: coe:artifact/pedagogical/presentation_profiles_rubric/threshold/min_vertical_flow_score
+    label: Min Vertical Flow Score
+    description: min_vertical_flow_score threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '0.75'
+  - id: coe:artifact/pedagogical/presentation_profiles_rubric/threshold/min_action_title_percentage
+    label: Min Action Title Percentage
+    description: min_action_title_percentage threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '0.8'
+  - id: coe:artifact/pedagogical/presentation_profiles_rubric/threshold/max_topic_label_percentage
+    label: Max Topic Label Percentage
+    description: max_topic_label_percentage threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '0.2'
+  - id: coe:artifact/pedagogical/presentation_profiles_rubric/threshold/min_framework_completeness
+    label: Min Framework Completeness
+    description: min_framework_completeness threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '1.0'
+  - id: coe:artifact/pedagogical/presentation_profiles_rubric/threshold/min_timing_feasibility
+    label: Min Timing Feasibility
+    description: min_timing_feasibility threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '0.8'
+  - id: coe:artifact/pedagogical/presentation_profiles_rubric/threshold/min_accessibility_score
+    label: Min Accessibility Score
+    description: min_accessibility_score threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '0.9'
+  - id: coe:artifact/pedagogical/presentation_profiles_rubric/threshold/bluf_max_slide_position
+    label: Bluf Max Slide Position
+    description: bluf_max_slide_position threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '5'
+  - id: coe:artifact/pedagogical/presentation_profiles_rubric/threshold/live_sales_deck_slide_max
+    label: Live Sales Deck Slide Max
+    description: live_sales_deck_slide_max threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '15'
+  - id: coe:artifact/pedagogical/presentation_profiles_rubric/threshold/leave_behind_slide_target
+    label: Leave Behind Slide Target
+    description: leave_behind_slide_target threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '30'
+  - id: coe:artifact/pedagogical/presentation_profiles_rubric/threshold/calibrated_pace_min_seconds
+    label: Calibrated Pace Min Seconds
+    description: calibrated_pace_min_seconds threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '90'
+  - id: coe:artifact/pedagogical/presentation_profiles_rubric/threshold/calibrated_pace_max_seconds
+    label: Calibrated Pace Max Seconds
+    description: calibrated_pace_max_seconds threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '120'
+  - id: coe:artifact/pedagogical/presentation_profiles_rubric/threshold/whitespace_target_min_pct
+    label: Whitespace Target Min Pct
+    description: whitespace_target_min_pct threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '40'
+  - id: coe:artifact/pedagogical/presentation_profiles_rubric/threshold/whitespace_target_max_pct
+    label: Whitespace Target Max Pct
+    description: whitespace_target_max_pct threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '60'
+  - id: coe:artifact/pedagogical/presentation_profiles_rubric/threshold/cognitive_intent_max_seconds
+    label: Cognitive Intent Max Seconds
+    description: cognitive_intent_max_seconds threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '2'
+  - id: coe:artifact/pedagogical/presentation_profiles_rubric/threshold/recall_after_5min_target_pct
+    label: Recall After 5Min Target Pct
+    description: recall_after_5min_target_pct threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '90'
+  version: 1.4.2
+  last_updated: '2026-08-12'
+  id: coe:artifact/pedagogical/presentation_profiles_rubric
+  label: Presentation Profiles Rubric
+  description: Presentation type-specific rubric weights for executive, training, sales, thought leadership, and slidument
+    contexts
+  home_domain: learning
+  status: canonical
+- dimensions:
+  - id: coe:artifact/pedagogical/scoring_weights_rubric/dimension/cognitive_load_score
+    label: cognitive_load_score
+    description: Penalty and bonus weights for cognitive load violations and pacing compliance
+    home_domain: learning
+    status: canonical
+    score_levels:
+    - id: coe:artifact/pedagogical/scoring_weights_rubric/dimension/cognitive_load_score/level/0
+      label: 'Level 0: critical_violations'
+      score: 0
+      level_label: critical_violations
+      criteria: Maximum penalty applied; overloaded slides throughout with no rest points
+    - id: coe:artifact/pedagogical/scoring_weights_rubric/dimension/cognitive_load_score/level/1
+      label: 'Level 1: elevated_load'
+      score: 1
+      level_label: elevated_load
+      criteria: Partial penalties applied; cognitive variance above threshold
+    - id: coe:artifact/pedagogical/scoring_weights_rubric/dimension/cognitive_load_score/level/2
+      label: 'Level 2: managed'
+      score: 2
+      level_label: managed
+      criteria: Penalties below threshold; rest point bonuses partially earned
+    - id: coe:artifact/pedagogical/scoring_weights_rubric/dimension/cognitive_load_score/level/3
+      label: 'Level 3: optimised'
+      score: 3
+      level_label: optimised
+      criteria: Minimal penalties; maximum rest point bonuses; cognitive debt cleared
+  - id: coe:artifact/pedagogical/scoring_weights_rubric/dimension/headline_effectiveness
+    label: headline_effectiveness
+    description: Action title formula compliance, three-second rule, and Dot-Dash test penalties
+    home_domain: learning
+    status: canonical
+    score_levels:
+    - id: coe:artifact/pedagogical/scoring_weights_rubric/dimension/headline_effectiveness/level/0
+      label: 'Level 0: label_titles'
+      score: 0
+      level_label: label_titles
+      criteria: All or most headlines are label titles; action title formula not applied
+    - id: coe:artifact/pedagogical/scoring_weights_rubric/dimension/headline_effectiveness/level/1
+      label: 'Level 1: partial'
+      score: 1
+      level_label: partial
+      criteria: Some action titles but inconsistent; three-second rule often violated
+    - id: coe:artifact/pedagogical/scoring_weights_rubric/dimension/headline_effectiveness/level/2
+      label: 'Level 2: mostly_compliant'
+      score: 2
+      level_label: mostly_compliant
+      criteria: Majority of headlines meet action title formula and three-second rule
+    - id: coe:artifact/pedagogical/scoring_weights_rubric/dimension/headline_effectiveness/level/3
+      label: 'Level 3: exemplary'
+      score: 3
+      level_label: exemplary
+      criteria: All headlines are action titles passing the Dot-Dash test
+  - id: coe:artifact/pedagogical/scoring_weights_rubric/dimension/engagement_and_flow
+    label: engagement_and_flow
+    description: Neurochemical engagement, sparkline arc, and flow coherence weights
+    home_domain: learning
+    status: canonical
+    score_levels:
+    - id: coe:artifact/pedagogical/scoring_weights_rubric/dimension/engagement_and_flow/level/0
+      label: 'Level 0: flat'
+      score: 0
+      level_label: flat
+      criteria: No emotional arc variation; neurochemical engagement absent
+    - id: coe:artifact/pedagogical/scoring_weights_rubric/dimension/engagement_and_flow/level/1
+      label: 'Level 1: partial'
+      score: 1
+      level_label: partial
+      criteria: Some engagement signals but sparkline arc incomplete
+    - id: coe:artifact/pedagogical/scoring_weights_rubric/dimension/engagement_and_flow/level/2
+      label: 'Level 2: adequate'
+      score: 2
+      level_label: adequate
+      criteria: Neurochemical density within targets; arc alignment present
+    - id: coe:artifact/pedagogical/scoring_weights_rubric/dimension/engagement_and_flow/level/3
+      label: 'Level 3: exemplary'
+      score: 3
+      level_label: exemplary
+      criteria: Full sparkline arc with STAR moment; maximum engagement bonuses
+  - id: coe:artifact/pedagogical/scoring_weights_rubric/dimension/data_and_visual_quality
+    label: data_and_visual_quality
+    description: Data visualisation and visual hierarchy score contributions
+    home_domain: learning
+    status: canonical
+    score_levels:
+    - id: coe:artifact/pedagogical/scoring_weights_rubric/dimension/data_and_visual_quality/level/0
+      label: 'Level 0: poor'
+      score: 0
+      level_label: poor
+      criteria: Chart category caps exceeded; no action captions; poor visual hierarchy
+    - id: coe:artifact/pedagogical/scoring_weights_rubric/dimension/data_and_visual_quality/level/1
+      label: 'Level 1: basic'
+      score: 1
+      level_label: basic
+      criteria: Some charts within caps; partial labeling; inconsistent hierarchy
+    - id: coe:artifact/pedagogical/scoring_weights_rubric/dimension/data_and_visual_quality/level/2
+      label: 'Level 2: good'
+      score: 2
+      level_label: good
+      criteria: Direct labeling applied; action captions on charts; visual hierarchy clear
+    - id: coe:artifact/pedagogical/scoring_weights_rubric/dimension/data_and_visual_quality/level/3
+      label: 'Level 3: exemplary'
+      score: 3
+      level_label: exemplary
+      criteria: All charts labeled; action captions annotate takeaways; three-second scan rule met
+  - id: coe:artifact/pedagogical/scoring_weights_rubric/dimension/accessibility_compliance
+    label: accessibility_compliance
+    description: WCAG 2.2 AA compliance weights for color contrast, font size, alt text, and color encoding
+    home_domain: learning
+    status: canonical
+    score_levels:
+    - id: coe:artifact/pedagogical/scoring_weights_rubric/dimension/accessibility_compliance/level/0
+      label: 'Level 0: non_compliant'
+      score: 0
+      level_label: non_compliant
+      criteria: Multiple WCAG failures; color used as sole indicator; contrast below AA
+    - id: coe:artifact/pedagogical/scoring_weights_rubric/dimension/accessibility_compliance/level/1
+      label: 'Level 1: partial'
+      score: 1
+      level_label: partial
+      criteria: Some WCAG checks passing; critical issues remain
+    - id: coe:artifact/pedagogical/scoring_weights_rubric/dimension/accessibility_compliance/level/2
+      label: 'Level 2: compliant'
+      score: 2
+      level_label: compliant
+      criteria: All core WCAG AA checks pass; alt text and contrast meet standard
+    - id: coe:artifact/pedagogical/scoring_weights_rubric/dimension/accessibility_compliance/level/3
+      label: 'Level 3: exemplary'
+      score: 3
+      level_label: exemplary
+      criteria: Full WCAG compliance with bonuses; inclusive design best practices applied
+  version: 1.5.2
+  last_updated: '2026-08-12'
+  id: coe:artifact/pedagogical/scoring_weights_rubric
+  label: Scoring Weights
+  description: Research-backed penalty and bonus weights for scoring analyzers covering cognitive load, headline coherence,
+    engagement metrics, data visualization, visual hierarchy, and accessibility.
+  home_domain: learning
+  status: canonical
+- dimensions:
+  - id: coe:artifact/pedagogical/synthesis_weights_rubric/dimension/editorial
+    label: Editorial
+    description: Quality of written/spoken content
+    home_domain: learning
+    status: canonical
+  - id: coe:artifact/pedagogical/synthesis_weights_rubric/dimension/visual
+    label: Visual
+    description: Quality of visual design and data presentation
+    home_domain: learning
+    status: canonical
+  - id: coe:artifact/pedagogical/synthesis_weights_rubric/dimension/pedagogical
+    label: Pedagogical
+    description: Quality of instructional design
+    home_domain: learning
+    status: canonical
+  - id: coe:artifact/pedagogical/synthesis_weights_rubric/dimension/accessibility
+    label: Accessibility
+    description: WCAG compliance and inclusive design
+    home_domain: learning
+    status: canonical
+  version: 2.4.2
+  last_updated: '2026-08-12'
+  id: coe:artifact/pedagogical/synthesis_weights_rubric
+  label: Synthesis Weights
+  description: Weighting logic for synthesising the final 'Story Score' based on content profile, including formulas, rationale,
+    calibration guidance, and score band anchors.
+  home_domain: learning
+  status: canonical
+- dimensions:
+  - id: coe:artifact/pedagogical/visual_design_rubric/dimension/visual_hierarchy
+    label: visual_hierarchy
+    description: Use of size, weight, color, and position to guide viewer attention and establish information priority
+    home_domain: learning
+    status: canonical
+    score_levels:
+    - id: coe:artifact/pedagogical/visual_design_rubric/dimension/visual_hierarchy/level/0
+      label: 'Level 0: absent'
+      score: 0
+      level_label: absent
+      criteria: No visual hierarchy; all elements appear equal in weight
+    - id: coe:artifact/pedagogical/visual_design_rubric/dimension/visual_hierarchy/level/1
+      label: 'Level 1: partial'
+      score: 1
+      level_label: partial
+      criteria: Some hierarchy elements present but inconsistent or weak
+    - id: coe:artifact/pedagogical/visual_design_rubric/dimension/visual_hierarchy/level/2
+      label: 'Level 2: clear'
+      score: 2
+      level_label: clear
+      criteria: Clear size and weight hierarchy with consistent scanning pattern
+    - id: coe:artifact/pedagogical/visual_design_rubric/dimension/visual_hierarchy/level/3
+      label: 'Level 3: exemplary'
+      score: 3
+      level_label: exemplary
+      criteria: Optimal hierarchy with three-second scan rule met; information priority crystal clear. Passes the Squint Test
+        — when squinting until text blurs, the focal point remains obvious. If the slide becomes a grey wash with no clear
+        emphasis, it fails contrast requirements.
+  - id: coe:artifact/pedagogical/visual_design_rubric/dimension/contrast_and_accessibility
+    label: contrast_and_accessibility
+    description: Color contrast ratios and accessibility compliance for inclusive visual design
+    home_domain: learning
+    status: canonical
+    score_levels:
+    - id: coe:artifact/pedagogical/visual_design_rubric/dimension/contrast_and_accessibility/level/0
+      label: 'Level 0: failing'
+      score: 0
+      level_label: failing
+      criteria: Contrast ratios below WCAG AA minimum; multiple accessibility failures
+    - id: coe:artifact/pedagogical/visual_design_rubric/dimension/contrast_and_accessibility/level/1
+      label: 'Level 1: partial'
+      score: 1
+      level_label: partial
+      criteria: Some contrast issues; AA compliance inconsistent
+    - id: coe:artifact/pedagogical/visual_design_rubric/dimension/contrast_and_accessibility/level/2
+      label: 'Level 2: compliant'
+      score: 2
+      level_label: compliant
+      criteria: WCAG AA contrast requirements met throughout
+    - id: coe:artifact/pedagogical/visual_design_rubric/dimension/contrast_and_accessibility/level/3
+      label: 'Level 3: exemplary'
+      score: 3
+      level_label: exemplary
+      criteria: Exceeds AA requirements; colour-blind safe palette; alt text on all images
+  - id: coe:artifact/pedagogical/visual_design_rubric/dimension/gestalt_and_layout
+    label: gestalt_and_layout
+    description: Application of gestalt principles and grid-based layout for perceptual organisation
+    home_domain: learning
+    status: canonical
+    score_levels:
+    - id: coe:artifact/pedagogical/visual_design_rubric/dimension/gestalt_and_layout/level/0
+      label: 'Level 0: disorganised'
+      score: 0
+      level_label: disorganised
+      criteria: No gestalt grouping; arbitrary element placement
+    - id: coe:artifact/pedagogical/visual_design_rubric/dimension/gestalt_and_layout/level/1
+      label: 'Level 1: partial'
+      score: 1
+      level_label: partial
+      criteria: Some proximity and alignment applied inconsistently
+    - id: coe:artifact/pedagogical/visual_design_rubric/dimension/gestalt_and_layout/level/2
+      label: 'Level 2: organised'
+      score: 2
+      level_label: organised
+      criteria: Consistent gestalt grouping with grid alignment
+    - id: coe:artifact/pedagogical/visual_design_rubric/dimension/gestalt_and_layout/level/3
+      label: 'Level 3: exemplary'
+      score: 3
+      level_label: exemplary
+      criteria: Expert gestalt application with figure-ground and continuity perfectly balanced. 12-column grid applied to
+        16:9 aspect ratio — all elements snap to grid lines. Supports 2-column (50/50), 3-column (33/33/33), 4-column (25/25/25/25),
+        and asymmetric (1/3 vs 2/3) layouts. This invisible structure creates visual harmony, reducing subconscious anxiety
+        caused by misalignment.
+  - id: coe:artifact/pedagogical/visual_design_rubric/dimension/typography_quality
+    label: typography_quality
+    description: 'Font selection, hierarchy, line length, and readability adherence. Text readability scoring factors: font
+      count (max 3), text colour (black on white preferred), text placement (never on patterned backgrounds), justification
+      (left-justified body), case (no all-caps body), animation (no animated text), column width, block size, and spatial
+      contiguity (Clark LxD).'
+    home_domain: learning
+    status: canonical
+    score_levels:
+    - id: coe:artifact/pedagogical/visual_design_rubric/dimension/typography_quality/level/0
+      label: 'Level 0: poor'
+      score: 0
+      level_label: poor
+      criteria: Typography violates readability standards; multiple font families (4+); no hierarchy; text on patterned backgrounds;
+        all-caps body text; animated text present
+    - id: coe:artifact/pedagogical/visual_design_rubric/dimension/typography_quality/level/1
+      label: 'Level 1: basic'
+      score: 1
+      level_label: basic
+      criteria: Single font family used; hierarchy partially defined; some text readability issues (centre-justified body,
+        low-contrast text colour)
+    - id: coe:artifact/pedagogical/visual_design_rubric/dimension/typography_quality/level/2
+      label: 'Level 2: good'
+      score: 2
+      level_label: good
+      criteria: Clear typographic hierarchy meeting size and weight standards; left-justified body text; max 3 fonts; black
+        on white or high-contrast text
+    - id: coe:artifact/pedagogical/visual_design_rubric/dimension/typography_quality/level/3
+      label: 'Level 3: exemplary'
+      score: 3
+      level_label: exemplary
+      criteria: Optimal typography with correct line length, leading, and heading hierarchy; all text readability criteria
+        met; no animated text; spatial contiguity between labels and referents
+  - id: coe:artifact/pedagogical/visual_design_rubric/dimension/visual_simplicity_and_purpose
+    label: visual_simplicity_and_purpose
+    description: Every visual element serves a learning purpose; no decorative distractions
+    home_domain: learning
+    status: canonical
+    score_levels:
+    - id: coe:artifact/pedagogical/visual_design_rubric/dimension/visual_simplicity_and_purpose/level/0
+      label: 'Level 0: absent'
+      score: 0
+      level_label: absent
+      criteria: Multiple decorative elements with no learning purpose; cluttered layouts
+    - id: coe:artifact/pedagogical/visual_design_rubric/dimension/visual_simplicity_and_purpose/level/1
+      label: 'Level 1: partial'
+      score: 1
+      level_label: partial
+      criteria: Some purposeful elements but decorative distractions remain
+    - id: coe:artifact/pedagogical/visual_design_rubric/dimension/visual_simplicity_and_purpose/level/2
+      label: 'Level 2: purposeful'
+      score: 2
+      level_label: purposeful
+      criteria: Every element serves a clear purpose; minimal extraneous material
+    - id: coe:artifact/pedagogical/visual_design_rubric/dimension/visual_simplicity_and_purpose/level/3
+      label: 'Level 3: exemplary'
+      score: 3
+      level_label: exemplary
+      criteria: Optimal simplicity — every element purposeful; accessibility-compliant; culturally appropriate
+  - id: coe:artifact/pedagogical/visual_design_rubric/dimension/data_visualisation_quality
+    label: data_visualisation_quality
+    description: Chart type appropriateness, labeling standards, action captions, and data-ink ratio
+    home_domain: learning
+    status: canonical
+    score_levels:
+    - id: coe:artifact/pedagogical/visual_design_rubric/dimension/data_visualisation_quality/level/0
+      label: 'Level 0: poor'
+      score: 0
+      level_label: poor
+      criteria: Inappropriate chart types; no direct labeling; labels missing
+    - id: coe:artifact/pedagogical/visual_design_rubric/dimension/data_visualisation_quality/level/1
+      label: 'Level 1: basic'
+      score: 1
+      level_label: basic
+      criteria: Appropriate chart types but legends used instead of direct labels
+    - id: coe:artifact/pedagogical/visual_design_rubric/dimension/data_visualisation_quality/level/2
+      label: 'Level 2: good'
+      score: 2
+      level_label: good
+      criteria: Direct labeling applied; action captions present on key charts
+    - id: coe:artifact/pedagogical/visual_design_rubric/dimension/data_visualisation_quality/level/3
+      label: 'Level 3: exemplary'
+      score: 3
+      level_label: exemplary
+      criteria: Optimal data-ink ratio; all charts directly labeled with insight-driven action captions
+  - id: coe:artifact/pedagogical/visual_design_rubric/dimension/semiotic_effectiveness
+    label: semiotic_effectiveness
+    description: Semiotic metafunction alignment (representational, interpersonal, compositional) and narrative architecture
+      coherence
+    home_domain: learning
+    status: canonical
+    score_levels:
+    - id: coe:artifact/pedagogical/visual_design_rubric/dimension/semiotic_effectiveness/level/0
+      label: 'Level 0: absent'
+      score: 0
+      level_label: absent
+      criteria: No coherent visual rhetoric; images decorative only
+    - id: coe:artifact/pedagogical/visual_design_rubric/dimension/semiotic_effectiveness/level/1
+      label: 'Level 1: partial'
+      score: 1
+      level_label: partial
+      criteria: Some semiotic intentionality but metafunctions misaligned
+    - id: coe:artifact/pedagogical/visual_design_rubric/dimension/semiotic_effectiveness/level/2
+      label: 'Level 2: structured'
+      score: 2
+      level_label: structured
+      criteria: Clear representational and compositional metafunctions applied
+    - id: coe:artifact/pedagogical/visual_design_rubric/dimension/semiotic_effectiveness/level/3
+      label: 'Level 3: exemplary'
+      score: 3
+      level_label: exemplary
+      criteria: All three metafunctions optimised with narrative architecture supporting the story arc
+  thresholds:
+  - id: coe:artifact/pedagogical/visual_design_rubric/threshold/min_headline_size
+    label: Min Headline Size
+    description: min_headline_size threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '32'
+  - id: coe:artifact/pedagogical/visual_design_rubric/threshold/min_body_size
+    label: Min Body Size
+    description: min_body_size threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '18'
+  - id: coe:artifact/pedagogical/visual_design_rubric/threshold/min_white_space
+    label: Min White Space
+    description: min_white_space threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '0.3'
+  - id: coe:artifact/pedagogical/visual_design_rubric/threshold/max_colors_per_slide
+    label: Max Colors Per Slide
+    description: max_colors_per_slide threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '5'
+  - id: coe:artifact/pedagogical/visual_design_rubric/threshold/min_contrast_ratio
+    label: Min Contrast Ratio
+    description: min_contrast_ratio threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '4.5'
+  - id: coe:artifact/pedagogical/visual_design_rubric/threshold/max_fonts
+    label: Max Fonts
+    description: max_fonts threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '2'
+  - id: coe:artifact/pedagogical/visual_design_rubric/threshold/max_chart_categories
+    label: Max Chart Categories
+    description: max_chart_categories threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '6'
+  - id: coe:artifact/pedagogical/visual_design_rubric/threshold/max_annotation_levels
+    label: Max Annotation Levels
+    description: max_annotation_levels threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '3'
+  - id: coe:artifact/pedagogical/visual_design_rubric/threshold/salience_check_threshold_sec
+    label: Salience Check Threshold Sec
+    description: salience_check_threshold_sec threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '3'
+  - id: coe:artifact/pedagogical/visual_design_rubric/threshold/given_new_compliance
+    label: Given New Compliance
+    description: given_new_compliance threshold.
+    home_domain: learning
+    status: canonical
+    target_value: '1.0'
+  - id: coe:artifact/pedagogical/visual_design_rubric/threshold/color_semantic_uniqueness
+    label: Color Semantic Uniqueness
+    description: color_semantic_uniqueness threshold.
+    home_domain: learning
+    status: canonical
+    target_value: 'True'
+  version: 1.10.2
+  last_updated: '2026-08-12'
+  id: coe:artifact/pedagogical/visual_design_rubric
+  label: Visual Design Rubric
+  description: Visual design quality assessment for presentation slides, incorporating semiotic metafunctions, narrative architecture,
+    cognitive accessibility, and advanced data visualization standards
+  home_domain: learning
+  status: canonical

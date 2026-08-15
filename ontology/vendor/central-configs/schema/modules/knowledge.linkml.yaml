@@ -1,0 +1,332 @@
+id: https://steve-allison.github.io/Central_Configs/ontology/schema/knowledge
+name: coe_knowledge
+title: Central Configs Knowledge Model
+version: 4.0.0
+default_prefix: coe
+default_range: string
+prefixes:
+  coe: https://steve-allison.github.io/Central_Configs/ontology/
+  dcterms: http://purl.org/dc/terms/
+  linkml: https://w3id.org/linkml/
+  skos: http://www.w3.org/2004/02/skos/core#
+imports:
+- linkml:types
+- ./core.linkml
+- ./terminology.linkml
+slots:
+  in_scheme:
+    domain: Concept
+    range: ConceptScheme
+    inlined: false
+    slot_uri: skos:inScheme
+    description: Concept scheme that owns this concept.
+  broader:
+    domain: Concept
+    range: Concept
+    multivalued: true
+    inlined: false
+    inverse: narrower
+    slot_uri: skos:broader
+    description: Directly broader concepts.
+  narrower:
+    domain: Concept
+    range: Concept
+    multivalued: true
+    inlined: false
+    inverse: broader
+    slot_uri: skos:narrower
+    description: Directly narrower concepts derived as the inverse of broader.
+classes:
+  KnowledgeArtifact:
+    abstract: true
+    is_a: IdentifiedThing
+    mixins:
+      - Versioned
+    description: Shared metadata for one typed authored knowledge artifact.
+    attributes:
+      last_updated:
+        required: true
+        range: Date
+        slot_uri: dcterms:modified
+        description: Last updated for this record.
+      sections:
+        range: StructuredNode
+        multivalued: true
+        inlined_as_list: true
+        slot_uri: coe:section
+        description: Sections for this record.
+      edges:
+        range: SemanticEdge
+        multivalued: true
+        inlined_as_list: true
+        slot_uri: coe:edge
+        description: Edges for this record.
+  EntityCollection:
+    is_a: KnowledgeArtifact
+    class_uri: coe:EntityCollection
+    attributes:
+      entities:
+        required: true
+        range: OntologyEntity
+        multivalued: true
+        inlined_as_list: true
+        slot_uri: dcterms:hasPart
+        description: Entities for this entitycollection.
+  ConceptScheme:
+    is_a: IdentifiedThing
+    class_uri: skos:ConceptScheme
+    attributes:
+      concepts:
+        required: true
+        range: Concept
+        multivalued: true
+        inlined_as_list: true
+        slot_uri: skos:hasTopConcept
+        description: Concepts for this conceptscheme.
+  Concept:
+    is_a: IdentifiedThing
+    class_uri: skos:Concept
+    slots:
+      - properties
+      - in_scheme
+      - broader
+      - narrower
+    slot_usage:
+      in_scheme:
+        required: true
+  Taxonomy:
+    is_a: KnowledgeArtifact
+    class_uri: coe:Taxonomy
+    attributes:
+      schemes:
+        required: true
+        range: ConceptScheme
+        multivalued: true
+        inlined_as_list: true
+        slot_uri: dcterms:hasPart
+        description: Schemes for this taxonomy.
+  Rule:
+    is_a: IdentifiedThing
+    class_uri: coe:Rule
+    slots:
+      - properties
+    attributes:
+      statement:
+        required: true
+        slot_uri: coe:statement
+        description: Statement for this rule.
+      rationale:
+        slot_uri: coe:rationale
+        description: Rationale for this rule.
+  Pattern:
+    is_a: Rule
+    class_uri: coe:Pattern
+  MethodologyStage:
+    is_a: IdentifiedThing
+    class_uri: coe:MethodologyStage
+    slots:
+      - properties
+    attributes:
+      sequence:
+        range: integer
+        minimum_value: 0
+        slot_uri: coe:sequence
+        description: Sequence for this methodologystage.
+      rules:
+        range: Rule
+        multivalued: true
+        inlined_as_list: true
+        slot_uri: coe:rule
+        description: Rules for this methodologystage.
+  Methodology:
+    is_a: KnowledgeArtifact
+    class_uri: coe:Methodology
+    attributes:
+      stages:
+        range: MethodologyStage
+        multivalued: true
+        inlined_as_list: true
+        slot_uri: coe:stage
+        description: Stages for this methodology.
+      rules:
+        range: Rule
+        multivalued: true
+        inlined_as_list: true
+        slot_uri: coe:rule
+        description: Rules for this methodology.
+      patterns:
+        range: Pattern
+        multivalued: true
+        inlined_as_list: true
+        slot_uri: coe:pattern
+        description: Patterns for this methodology.
+  CreationRule:
+    is_a: Rule
+    class_uri: coe:CreationRule
+  CreationGuide:
+    is_a: KnowledgeArtifact
+    class_uri: coe:CreationGuide
+    attributes:
+      rules:
+        range: CreationRule
+        multivalued: true
+        inlined_as_list: true
+        slot_uri: coe:rule
+        description: Rules for this creationguide.
+  Criterion:
+    is_a: IdentifiedThing
+    class_uri: coe:Criterion
+    slots:
+      - properties
+    attributes:
+      weight:
+        range: float
+        minimum_value: 0
+        slot_uri: coe:weight
+        description: Weight for this criterion.
+      minimum_score:
+        range: float
+        slot_uri: coe:minimumScore
+        description: Minimum score for this criterion.
+      maximum_score:
+        range: float
+        slot_uri: coe:maximumScore
+        description: Maximum score for this criterion.
+  ScoreLevel:
+    is_a: IdentifiedThing
+    class_uri: coe:ScoreLevel
+    attributes:
+      score:
+        range: integer
+        slot_uri: coe:scoreValue
+        description: Numeric score level.
+      level_label:
+        range: string
+        slot_uri: rdfs:label
+        description: Label for this score level.
+      criteria:
+        range: string
+        slot_uri: dcterms:description
+        description: Detailed evaluation criteria.
+  ScoringDimension:
+    is_a: Criterion
+    class_uri: coe:ScoringDimension
+    attributes:
+      score_levels:
+        range: ScoreLevel
+        multivalued: true
+        inlined_as_list: true
+        slot_uri: coe:scoreLevel
+        description: Discrete score levels for this dimension.
+      criteria:
+        range: Criterion
+        multivalued: true
+        inlined_as_list: true
+        slot_uri: coe:criterion
+        description: Criteria for this scoringdimension.
+  Threshold:
+    is_a: IdentifiedThing
+    class_uri: coe:Threshold
+    slots:
+      - properties
+    attributes:
+      target_value:
+        range: string
+        slot_uri: coe:targetValue
+        description: Target or nominal threshold value.
+      minimum_value:
+        range: float
+        slot_uri: coe:minimumValue
+        description: Minimum value for this threshold.
+      maximum_value:
+        range: float
+        slot_uri: coe:maximumValue
+        description: Maximum value for this threshold.
+  ScoringModel:
+    is_a: KnowledgeArtifact
+    class_uri: coe:ScoringModel
+    attributes:
+      dimensions:
+        range: ScoringDimension
+        multivalued: true
+        inlined_as_list: true
+        slot_uri: coe:dimension
+        description: Dimensions for this scoringmodel.
+      thresholds:
+        range: Threshold
+        multivalued: true
+        inlined_as_list: true
+        slot_uri: coe:threshold
+        description: Thresholds for this scoringmodel.
+  ReferenceRecord:
+    is_a: KnowledgeArtifact
+    class_uri: coe:ReferenceRecord
+  CorpusRecord:
+    is_a: KnowledgeArtifact
+    class_uri: coe:CorpusRecord
+  DomainBundle:
+    tree_root: true
+    class_uri: coe:DomainBundle
+    mixins:
+      - Versioned
+    description: Complete authoritative knowledge bundle for exactly one canonical home domain.
+    attributes:
+      bundle_id:
+        identifier: true
+        required: true
+        range: uriorcurie
+        slot_uri: dcterms:identifier
+        description: Bundle id for this domainbundle.
+      domain:
+        required: true
+        range: OntologyDomainEnum
+        slot_uri: coe:homeDomain
+        description: Domain for this domainbundle.
+      entity_collections:
+        range: EntityCollection
+        multivalued: true
+        inlined_as_list: true
+        slot_uri: coe:entityCollection
+        description: Entity collections for this domainbundle.
+      taxonomies:
+        range: Taxonomy
+        multivalued: true
+        inlined_as_list: true
+        slot_uri: coe:taxonomy
+        description: Taxonomies for this domainbundle.
+      methodologies:
+        range: Methodology
+        multivalued: true
+        inlined_as_list: true
+        slot_uri: coe:methodology
+        description: Methodologies for this domainbundle.
+      creation_guides:
+        range: CreationGuide
+        multivalued: true
+        inlined_as_list: true
+        slot_uri: coe:creationGuide
+        description: Creation guides for this domainbundle.
+      scoring_models:
+        range: ScoringModel
+        multivalued: true
+        inlined_as_list: true
+        slot_uri: coe:scoringModel
+        description: Scoring models for this domainbundle.
+      references:
+        range: ReferenceRecord
+        multivalued: true
+        inlined_as_list: true
+        slot_uri: coe:reference
+        description: References for this domainbundle.
+      corpora:
+        range: CorpusRecord
+        multivalued: true
+        inlined_as_list: true
+        slot_uri: coe:corpus
+        description: Corpora for this domainbundle.
+      terms:
+        range: Term
+        multivalued: true
+        inlined_as_list: true
+        slot_uri: coe:term
+        description: Terms for this domainbundle.

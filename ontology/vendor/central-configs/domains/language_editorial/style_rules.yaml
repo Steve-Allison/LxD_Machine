@@ -1,0 +1,630 @@
+bundle_id: coe:domain/language_editorial/style_rules
+domain: language_editorial
+version: 4.0.0
+entity_collections:
+- entities:
+  - id: coe:entity/inclusive_language_issue
+    label: Inclusive Language Issue
+    description: Exclusionary language bias gendered ableist racist stereotypical discriminatory inappropriate terminology
+    home_domain: language_editorial
+    status: canonical
+    recognition_patterns:
+    - (?i)\bInclusive\s+Language\s+Issue\b
+    edges: []
+    ner_label: INCLUSION_ISSUE
+    examples:
+    - Using 'guys' to address mixed groups
+    - Using 'blind spot' as a metaphor
+    - Using 'master/slave' in technical docs
+    confidence_threshold: 0.7
+  - id: coe:entity/cultural_sensitivity_issue
+    label: Cultural Sensitivity Issue
+    description: Cultural appropriation insensitivity stereotype regional assumption localisation problem global audience
+    home_domain: language_editorial
+    status: canonical
+    recognition_patterns:
+    - (?i)\bCultural\s+Sensitivity\s+Issue\b
+    edges: []
+    ner_label: CULTURAL_ISSUE
+    examples:
+    - USA-centric pop culture references
+    - Assuming Western calendar/holidays
+    - Sports metaphors (baseball, cricket)
+    confidence_threshold: 0.65
+  - id: coe:entity/accessibility_violation
+    label: Accessibility Violation
+    description: WCAG violation accessibility barrier screen reader keyboard caption alt text contrast colour blindness
+    home_domain: language_editorial
+    status: canonical
+    recognition_patterns:
+    - (?i)\bAccessibility\s+Violation\b
+    edges: []
+    ner_label: ACCESSIBILITY_ISSUE
+    examples:
+    - Image without alt text
+    - Colour-only information
+    - Insufficient contrast
+    confidence_threshold: 0.8
+  version: 3.3.2
+  last_updated: '2026-08-12'
+  id: coe:artifact/writing/inclusion_standards_entities
+  label: Inclusion Standards
+  description: Comprehensive standards for inclusive language, cultural intelligence, accessibility, and diverse representation
+    in content.
+  home_domain: language_editorial
+  status: canonical
+- entities:
+  - aliases:
+    - academic tone
+    - formal language
+    recognition_patterns:
+    - (furthermore|moreover|notwithstanding|henceforth|hereby|accordingly)
+    - pursuant to
+    - it is (incumbent|imperative|essential) (upon|that)
+    - in accordance with
+    edges:
+    - subject_id: coe:entity/formal_register
+      predicate: coe:contains
+      object_id: coe:entity/jargon_marker
+      relationship_weight: optional
+      description: Formal register contains industry-standard technical terms but connective language must remain plain per
+        ISO 24495-1
+    - subject_id: coe:entity/formal_register
+      predicate: coe:limits
+      object_id: coe:entity/mayer_generative_principle
+      relationship_weight: optional
+      description: Formal impersonal style reduces social engagement and deeper processing per personalization principle per
+        Applying Mayer's Principles Practical Checklist
+    - subject_id: coe:entity/formal_register
+      predicate: coe:supports
+      object_id: coe:entity/academic_bundle
+      relationship_weight: optional
+      description: Formal register supports academic bundles — formal language patterns correlate with stance bundles and
+        hedging that characterize academic/Technocrat speech (elite_speaker_taxonomy)
+    id: coe:entity/formal_register
+    label: Formal Register
+    description: Language markers indicating formal or academic tone in corporate writing
+    home_domain: language_editorial
+    status: canonical
+    ner_label: FORMAL_REGISTER
+    examples:
+    - furthermore, the analysis demonstrates
+    - pursuant to our agreement
+    - notwithstanding the challenges
+    - it is incumbent upon
+    - henceforth all submissions
+    anti_examples:
+    - furthermore is a long word
+    - moreover brand name
+    confidence_threshold: 0.7
+  - aliases:
+    - casual style
+    - informal tone
+    recognition_patterns:
+    - (okay|alright),? so
+    - here's (the deal|the thing|what)
+    - let's (dive in|be real|get started|break this down)
+    - you know what
+    edges:
+    - subject_id: coe:entity/conversational_register
+      predicate: coe:contains
+      object_id: coe:entity/inclusive_we
+      relationship_weight: expected
+      description: Conversational register naturally incorporates inclusive 'we' language (let's, we're, our) as part of its
+        informal, audience-bridging style per Ethos and Physicality research
+    - subject_id: coe:entity/conversational_register
+      predicate: coe:enables
+      object_id: coe:entity/engagement_cue
+      relationship_weight: expected
+      description: Conversational register directly enables audience engagement cues — informal language patterns (contractions,
+        rhetorical questions, direct address) create participatory tone per Best Practices for Writing
+    - subject_id: coe:entity/conversational_register
+      predicate: coe:enables
+      object_id: coe:entity/mayer_generative_principle
+      relationship_weight: expected
+      description: Personalization principle shows conversational style activates social responses for deeper processing per
+        Applying Mayer's Principles Practical Checklist
+    - subject_id: coe:entity/conversational_register
+      predicate: coe:enables
+      object_id: coe:entity/narrative_hook
+      relationship_weight: expected
+      description: Conversational tone enables effective video hooks by making openings feel like natural speech (Best Video
+        Script Prompts)
+    - subject_id: coe:entity/conversational_register
+      predicate: coe:bridges
+      object_id: coe:entity/formal_register
+      relationship_weight: expected
+      description: The tone guide prescribes a voice that is 'formal but never stuffy' and 'reads like a conversation with
+        an expert' — directly bridging formal and conversational registers per tone_of_voice_guide
+    - subject_id: coe:entity/conversational_register
+      predicate: coe:supports
+      object_id: coe:entity/motivation_element
+      relationship_weight: expected
+      description: Mayer's personalization principle shows conversational tone increases learner motivation per Applying Mayer's
+        Principles Practical Checklist
+    - subject_id: coe:entity/conversational_register
+      predicate: coe:supports
+      object_id: coe:entity/readability_flag
+      relationship_weight: expected
+      description: Reading scripts aloud to check flow links readability directly to maintaining conversational register (Best
+        Video Script Prompts)
+    - subject_id: coe:entity/conversational_register
+      predicate: coe:supports
+      object_id: coe:entity/visionary_bundle
+      relationship_weight: expected
+      description: Conversational register supports visionary bundles — elite speakers use participant-oriented bundles ('Let
+        me tell you') that simulate casual dialogue (elite_speaker_taxonomy)
+    - subject_id: coe:entity/conversational_register
+      predicate: coe:contrasts_with
+      object_id: coe:entity/passive_voice_marker
+      relationship_weight: expected
+      description: Passive voice contrasts with conversational register — active voice is more natural, tighter, and concise;
+        learning designers should default to active per Clark LxD
+    id: coe:entity/conversational_register
+    label: Conversational Register
+    description: Informal or conversational language patterns in corporate content
+    home_domain: language_editorial
+    status: canonical
+    ner_label: CONVERSATIONAL_REGISTER
+    examples:
+    - okay, so let's dive in
+    - here's the deal
+    - check this out
+    - you know what works?
+    - let's be real
+    - the thing is
+    anti_examples:
+    - deal closed
+    - check the box
+    confidence_threshold: 0.65
+  - aliases:
+    - passive construction
+    - passive phrasing
+    recognition_patterns:
+    - (was|were|been|being) (done|made|completed|identified|determined|approved|decided|considered|reviewed)
+    - it was \w+ed that
+    - has been \w+ed
+    - \w+ (is|are) \w+ed (using|by)
+    edges:
+    - subject_id: coe:entity/passive_voice_marker
+      predicate: coe:limits
+      object_id: coe:entity/claim
+      relationship_weight: expected
+      description: The Phase 2 Gate requires Action Titles to use active verbs; passive voice limits claim effectiveness by
+        weakening the declarative force of the insight statement (Canonical Presentation Methodology)
+    - subject_id: coe:entity/passive_voice_marker
+      predicate: coe:limits
+      object_id: coe:entity/ethos_appeal
+      relationship_weight: expected
+      description: Passive voice limits ethos — it erases the agent and is negatively correlated with leadership perception
+        and can signal passivity (elite_speaker_taxonomy)
+    - subject_id: coe:entity/passive_voice_marker
+      predicate: coe:limits
+      object_id: coe:entity/performance_tier
+      relationship_weight: expected
+      description: Passive auxiliary verbs are negatively correlated with leadership perception and novice speakers show low
+        verb dynamism through passive voice per Elite Speaker Linguistic Analysis
+    - subject_id: coe:entity/passive_voice_marker
+      predicate: coe:triggers
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: optional
+      description: Vague passive constructions ('improvements were made') increase cognitive processing effort compared to
+        active declarative titles per Slide Deck Design Playbook
+    - subject_id: coe:entity/passive_voice_marker
+      predicate: coe:triggers
+      object_id: coe:entity/readability_flag
+      relationship_weight: expected
+      description: Passive voice constructions trigger readability flags — passive phrasing increases sentence complexity
+        and reduces directness per Best Practices for Writing
+    - subject_id: coe:entity/passive_voice_marker
+      predicate: coe:contrasts_with
+      object_id: coe:entity/power_verb
+      relationship_weight: expected
+      description: Power verbs contrast with passive voice — elite speakers use high dynamic-to-stative verb ratios while
+        passive auxiliary verbs correlate negatively with leadership perception (elite_speaker_taxonomy) | Passive voice contrasts
+        with power verbs — passive auxiliary verbs (was/were) correlate negatively with leadership perception while dynamic
+        verbs signal agency (elite_speaker_taxonomy)
+    id: coe:entity/passive_voice_marker
+    label: Passive Voice Marker
+    description: Passive voice constructions that may reduce clarity and directness
+    home_domain: language_editorial
+    status: canonical
+    ner_label: PASSIVE_VOICE
+    examples:
+    - the report was completed by the team
+    - mistakes were made
+    - the decision has been reached
+    - it was determined that
+    - is being considered
+    anti_examples:
+    - the team was large
+    - she was happy
+    confidence_threshold: 0.75
+  - aliases:
+    - abstract noun
+    - zombie noun
+    recognition_patterns:
+    - the (\w+isation|\w+tion|\w+ment) of
+    - (utilisation|implementation|facilitation|optimisation|determination)
+    edges:
+    - subject_id: coe:entity/nominalisation_marker
+      predicate: coe:specialises
+      object_id: coe:entity/nominalisation
+      relationship_weight: expected
+      description: Writing-level nominalisation marker specialises discourse-level nominalisation
+    - subject_id: coe:entity/nominalisation_marker
+      predicate: coe:triggers
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: expected
+      description: Nominalisations increase extraneous load by adding syllables and obscuring action; ISO 24495-1 'Understandable'
+        principle requires plain language that nominalisations violate (Cognitive Interface, §5.1)
+    id: coe:entity/nominalisation_marker
+    label: Nominalisation Marker
+    description: Verbs converted to nouns that add unnecessary abstraction and reduce readability
+    home_domain: language_editorial
+    status: canonical
+    ner_label: NOMINALISATION
+    examples:
+    - the utilisation of resources
+    - the implementation of the strategy
+    - facilitation of the meeting
+    - the optimisation of workflows
+    - the determination of outcomes
+    anti_examples:
+    - implementation details
+    - API utilisation metrics
+    confidence_threshold: 0.7
+  - aliases:
+    - business jargon
+    - buzzword
+    - corporate speak
+    recognition_patterns:
+    - (leverage|synergy|synergies|paradigm shift|ideate|ideation)
+    - (move the needle|boil the ocean|circle back|take.+offline)
+    - (low-hanging fruit|value-add|net-net)
+    - (innovative|revolutionary|cutting-edge|scalable|streamline)
+    edges:
+    - subject_id: coe:entity/jargon_marker
+      predicate: coe:enables
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: required
+      description: Constant jargon and novel syntax cause predictive error too high leading to cognitive overload per Elite
+        Speaker Linguistic Analysis
+    - subject_id: coe:entity/jargon_marker
+      predicate: coe:limits
+      object_id: coe:entity/claim
+      relationship_weight: optional
+      description: Technical terminology can cause semantic ambiguity and equivocation — terms that shift meaning between
+        premises undermine argument clarity per a-guide-to-good-reasoning
+    - subject_id: coe:entity/jargon_marker
+      predicate: coe:limits
+      object_id: coe:entity/ethos_appeal
+      relationship_weight: expected
+      description: Excessive jargon undermines speaker credibility with non-specialist audiences by creating comprehension
+        barriers that erode perceived trustworthiness per Ethos and Physicality research
+    - subject_id: coe:entity/jargon_marker
+      predicate: coe:limits
+      object_id: coe:entity/performance_tier
+      relationship_weight: expected
+      description: Jargon limits performance tier — the Technocrat tier is characterized by high surprisal jargon that creates
+        high cognitive load for the audience (elite_speaker_taxonomy)
+    - subject_id: coe:entity/jargon_marker
+      predicate: coe:limits
+      object_id: coe:entity/readability_flag
+      relationship_weight: required
+      description: Orwell Rule 1 'Never use jargon when plain English will do' — jargon directly limits readability by replacing
+        accessible terms with specialised ones per tone_of_voice_guide
+    id: coe:entity/jargon_marker
+    label: Jargon Marker
+    description: Industry jargon, buzzwords, or unnecessarily complex terminology
+    home_domain: language_editorial
+    status: canonical
+    ner_label: JARGON_MARKER
+    examples:
+    - leverage our synergies
+    - paradigm shift in the market
+    - let's ideate on this
+    - move the needle
+    - boil the ocean
+    - circle back on this
+    - take this offline
+    anti_examples:
+    - leverage the crane
+    - ocean temperature
+    confidence_threshold: 0.65
+  - aliases:
+    - overused phrase
+    - stock phrase
+    recognition_patterns:
+    - at the end of the day
+    - (think|thinking) outside the box
+    - going forward
+    - (game|life) changer
+    - (best|world) in class
+    - it goes without saying
+    - (Introduction to|The history of|Background to) \w
+    edges:
+    - subject_id: coe:entity/cliche_marker
+      predicate: coe:limits
+      object_id: coe:entity/readability_flag
+      relationship_weight: expected
+      description: Clichés limit effective communication by dulling impact — 'If it's been said a thousand times, say it differently'
+        per tone_of_voice_guide
+    id: coe:entity/cliche_marker
+    label: Cliche Marker
+    description: Overused phrases and clichés that weaken impact in professional writing
+    home_domain: language_editorial
+    status: canonical
+    ner_label: CLICHE_MARKER
+    examples:
+    - at the end of the day
+    - think outside the box
+    - going forward
+    - game changer
+    - best in class
+    - cutting edge
+    - it goes without saying
+    anti_examples:
+    - end of the day shift
+    - outside the box dimensions
+    confidence_threshold: 0.7
+  - aliases:
+    - production cue
+    - speaker note
+    - stage direction
+    recognition_patterns:
+    - \[(CUT TO|SHOW|B-ROLL|LOWER THIRD|MUSIC|SFX|GRAPHIC|SLIDE|TRANSITION)
+    - \(pause[^)]*\)
+    - '\[\w+:'
+    edges:
+    - subject_id: coe:entity/script_direction
+      predicate: coe:contains
+      object_id: coe:entity/pause_marker
+      relationship_weight: expected
+      description: Script directions directly contain pause marker notations that guide vocal delivery timing per voice enhancements
+        research
+    - subject_id: coe:entity/script_direction
+      predicate: coe:contains
+      object_id: coe:entity/vocal_emphasis_marker
+      relationship_weight: expected
+      description: Script directions directly contain emphasis marker notations that guide vocal stress placement per voice
+        enhancements research
+    - subject_id: coe:entity/script_direction
+      predicate: coe:bridges
+      object_id: coe:entity/storyboard_element
+      relationship_weight: expected
+      description: Script directions bridge narration to visual planning by specifying what appears on screen alongside spoken
+        content (Best Video Script Prompts)
+    - subject_id: coe:entity/script_direction
+      predicate: coe:triggers
+      object_id: coe:entity/video_shot_type
+      relationship_weight: optional
+      description: Script directions trigger specific shot type selections like screen recordings or B-roll (Best Video Script
+        Prompts)
+    - subject_id: coe:entity/script_direction
+      predicate: coe:supports
+      object_id: coe:entity/delivery_modality
+      relationship_weight: expected
+      description: Script directions provide narrative cues ('[dry smile]', '[pause]', '[reflective tone]') that directly
+        support delivery execution across modalities per tone_of_voice_guide
+    - subject_id: coe:entity/script_direction
+      predicate: coe:supports
+      object_id: coe:entity/facilitation_technique
+      relationship_weight: expected
+      description: Script directions provide narrative cues for facilitation ('[dry smile]', '[pause]', '[reflective tone]')
+        guiding delivery nuance per tone_of_voice_guide
+    id: coe:entity/script_direction
+    label: Script Direction
+    description: Stage directions, speaker notes, or production cues embedded in script content
+    home_domain: language_editorial
+    status: canonical
+    ner_label: SCRIPT_DIRECTION
+    examples:
+    - '[CUT TO: product demo]'
+    - '[SHOW GRAPHIC: comparison chart]'
+    - (pause for emphasis)
+    - '[B-ROLL: office footage]'
+    - '[LOWER THIRD: Speaker Name]'
+    - '[MUSIC: upbeat transition]'
+    anti_examples:
+    - cut the budget
+    - show me the data
+    confidence_threshold: 0.85
+  - aliases:
+    - complexity flag
+    - comprehension barrier
+    - readability issue
+    recognition_patterns:
+    - (readability|Flesch|grade level|comprehension)
+    - (overlong|padding|repetitive phrasing|unnecessary words)
+    - (waffly|waffling|waffle) (introduction|opening|preamble)
+    edges:
+    - subject_id: coe:entity/readability_flag
+      predicate: coe:enables
+      object_id: coe:entity/value_proposition
+      relationship_weight: expected
+      description: Readability enables value proposition clarity — personal brand statements must use concrete, jargon-free
+        language that anyone outside the field could understand per Personal Branding Framework
+    - subject_id: coe:entity/readability_flag
+      predicate: coe:limits
+      object_id: coe:entity/claim
+      relationship_weight: optional
+      description: Argument clarity is prerequisite for evaluation — wordiness, slanted language, and ambiguity reduce readability
+        and must be eliminated before assessing soundness per a-guide-to-good-reasoning
+    - subject_id: coe:entity/readability_flag
+      predicate: coe:limits
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: expected
+      description: Readability improvements (shorter sentences, simpler vocabulary, chunked paragraphs) directly limit extraneous
+        cognitive load by reducing processing demands per Best Practices for Writing
+    - subject_id: coe:entity/readability_flag
+      predicate: coe:triggers
+      object_id: coe:entity/working_memory_marker
+      relationship_weight: optional
+      description: Poor readability can overload working memory
+    - subject_id: coe:entity/readability_flag
+      predicate: coe:supports
+      object_id: coe:entity/accessibility_dimension
+      relationship_weight: expected
+      description: Accessibility scoring supported by ISO 24495-1 readability compliance (Relevant, Findable, Understandable,
+        Usable)
+    - subject_id: coe:entity/readability_flag
+      predicate: coe:supports
+      object_id: coe:entity/clarity_dimension
+      relationship_weight: expected
+      description: Clarity scoring supported by readability metrics; Flesch-Kincaid Grade 8-10 as concrete audit check | Readability
+        flags directly inform clarity scoring by detecting language complexity in scripts meant to be spoken aloud (Best Video
+        Script Prompts)
+    id: coe:entity/readability_flag
+    label: Readability Flag
+    description: Indicators of readability issues including long sentences, complex words, and dense paragraphs
+    home_domain: language_editorial
+    status: canonical
+    ner_label: READABILITY_FLAG
+    examples:
+    - sentence exceeding 30 words with multiple subordinate clauses
+    - polysyllabic terminology without definition
+    - paragraph exceeding 150 words without visual break
+    anti_examples:
+    - readable font size
+    - flag the issue
+    confidence_threshold: 0.6
+  - aliases:
+    - flow marker
+    - section bridge
+    recognition_patterns:
+    - (in summary|to summarise|in conclusion|to wrap up)
+    - (now let's|moving on|turning to|building on)
+    - now that we've \w+
+    - with that in mind
+    edges:
+    - subject_id: coe:entity/transition_phrase
+      predicate: coe:specialises
+      object_id: coe:entity/transition_marker
+      relationship_weight: expected
+      description: Writing transition phrases specialise narrative transition markers
+    - subject_id: coe:entity/transition_phrase
+      predicate: coe:supports
+      object_id: coe:entity/cause_marker
+      relationship_weight: expected
+      description: Transition phrases include inference indicators ('since', 'therefore', 'so', 'because') that signal premise-conclusion
+        relationships in written arguments per a-guide-to-good-reasoning
+    - subject_id: coe:entity/transition_phrase
+      predicate: coe:supports
+      object_id: coe:entity/content_structure_marker
+      relationship_weight: expected
+      description: Transition phrases support content structure by signalling logical progression between sections — explicit
+        flow markers (in summary, moving on, building on this) reinforce structural coherence per Best Practices for Writing
+    - subject_id: coe:entity/transition_phrase
+      predicate: coe:supports
+      object_id: coe:entity/readability_flag
+      relationship_weight: expected
+      description: Scannable structure with short paragraphs, bullets, headings, and sentence variety — mix short and long
+        sentences for rhythm — transitions support readability flow per tone_of_voice_guide
+    id: coe:entity/transition_phrase
+    label: Transition Phrase
+    description: Phrases that signal structural transitions between content sections
+    home_domain: language_editorial
+    status: canonical
+    ner_label: TRANSITION_PHRASE
+    examples:
+    - in summary
+    - now let's look at
+    - now that we've covered
+    - with that in mind
+    - moving on to
+    - building on this
+    - to wrap up
+    anti_examples:
+    - summary report
+    - moving furniture
+    confidence_threshold: 0.7
+  - aliases:
+    - hype term
+    - marketing puffery
+    - superlative claim
+    recognition_patterns:
+    - (world(-| )leading|industry(-| )leading|market(-| )leading)
+    - (most advanced|most powerful|best-in-class|best-ever)
+    - (unparalleled|unrivalled|next-generation|innovative solution)
+    edges:
+    - subject_id: coe:entity/marketing_superlative
+      predicate: coe:specialises
+      object_id: coe:entity/hyperbole
+      relationship_weight: expected
+      description: Marketing superlatives are a commercial form of hyperbole
+    - subject_id: coe:entity/marketing_superlative
+      predicate: coe:limits
+      object_id: coe:entity/readability_flag
+      relationship_weight: expected
+      description: Marketing superlatives undermine credibility and clarity without adding informational value, directly limiting
+        readability (Best-Practice Product Descriptions)
+    id: coe:entity/marketing_superlative
+    label: Marketing Superlative
+    description: Evaluative claims or superlative adjectives used to imply exceptional quality without factual substantiation
+      — typical of marketing copy and hype writing
+    home_domain: language_editorial
+    status: canonical
+    ner_label: MARKETING_SUPERLATIVE
+    examples:
+    - best-in-class analytics platform
+    - world-leading enterprise solution
+    - revolutionary approach to learning
+    - industry-leading performance
+    - our most powerful tool yet
+    - next-generation content creation
+    anti_examples:
+    - supports a wide range of formats
+    - allows users to retouch digital images
+    - rated highest by G2 users in 2024
+    confidence_threshold: 0.75
+  - aliases:
+    - action title
+    - conclusion-led title
+    - insight headline
+    recognition_patterns:
+    - (action|insight|conclusion[- ]led) (title|headline)
+    - slide (title|headline|heading)
+    edges:
+    - subject_id: coe:entity/presentation_headline_writing
+      predicate: coe:supports
+      object_id: coe:entity/claim
+      relationship_weight: expected
+      description: Conclusion-led titles are the surface realization of narrative claims — each slide title should state the
+        insight per Slide Deck Design Playbook
+    - subject_id: coe:entity/presentation_headline_writing
+      predicate: coe:supports
+      object_id: coe:entity/readability_flag
+      relationship_weight: expected
+      description: Strong action titles improve readability by making the point immediately visible — topic-only titles force
+        readers to search for the insight per Slide Deck Design Playbook
+    id: coe:entity/presentation_headline_writing
+    label: Presentation Headline Writing
+    description: Headline/title writing for presentations — conclusion-led titles
+    home_domain: language_editorial
+    status: canonical
+    ner_label: PRESENTATION_HEADLINE_WRITING
+    examples:
+    - Pipeline velocity up 18% YoY
+    - Personalized campaigns drove +32% ROI
+    anti_examples:
+    - Marketing Results
+    - Architecture Overview
+    confidence_threshold: 0.7
+  - id: coe:entity/linguistic_style_metrics
+    label: Linguistic Style Metrics
+    description: Quantitative linguistic style metrics for writing/speech craft derived from elite speaker corpus analysis
+    home_domain: language_editorial
+    status: canonical
+    recognition_patterns:
+    - (?i)\bLinguistic\s+Style\s+Metrics\b
+    edges: []
+    ner_label: LINGUISTIC_STYLE_METRICS
+  version: 3.0.1
+  last_updated: '2026-08-12'
+  id: coe:artifact/writing/writing_entities
+  label: Writing Entities
+  description: NER entity definitions for content writing analysis including tone registers, editorial markers, script format
+    cues, readability indicators, and style pattern detection.
+  home_domain: language_editorial
+  status: canonical

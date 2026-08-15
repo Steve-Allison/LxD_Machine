@@ -1,0 +1,204 @@
+id: https://steve-allison.github.io/Central_Configs/ontology/schema/governance
+name: coe_governance
+title: Central Configs Release Governance Model
+version: 4.0.0
+default_prefix: coe
+default_range: string
+prefixes:
+  coe: https://steve-allison.github.io/Central_Configs/ontology/
+  dcterms: http://purl.org/dc/terms/
+  linkml: https://w3id.org/linkml/
+imports:
+- linkml:types
+- ./core.linkml
+slots:
+  namespace:
+    required: true
+    range: uri
+    slot_uri: coe:namespace
+    description: Canonical namespace URI for a release or external vocabulary.
+classes:
+  ProjectionRequirement:
+    description: One generated representation required by a named consumer.
+    attributes:
+      projection:
+        required: true
+        range: ProjectionEnum
+        description: Projection for this record.
+      consumers:
+        required: true
+        multivalued: true
+        description: Consumers for this record.
+  ExternalVocabulary:
+    description: Version-pinned external semantic vocabulary used by the release.
+    slots:
+      - namespace
+    attributes:
+      vocabulary_id:
+        identifier: true
+        required: true
+        range: uriorcurie
+        description: Canonical identifier for the external vocabulary declaration.
+      prefix:
+        required: true
+        description: Prefix for this record.
+      version:
+        required: true
+        slot_uri: dcterms:hasVersion
+        description: Version for this record.
+  OntologyRelease:
+    class_uri: coe:OntologyRelease
+    description: >-
+      Declarative v4 release contract for the sole ontology authority. The
+      contract is mutable while working and becomes immutable only when its
+      lifecycle status is released.
+    mixins:
+      - Versioned
+    slots:
+      - namespace
+    attributes:
+      release_id:
+        identifier: true
+        required: true
+        range: uriorcurie
+        slot_uri: dcterms:identifier
+        description: Release id for this ontologyrelease.
+      release_status:
+        required: true
+        range: ReleaseStatusEnum
+        description: Lifecycle state; only released identifies a published immutable release.
+      authority:
+        required: true
+        range: OntologyAuthorityEnum
+        description: Authority for this ontologyrelease.
+      schema_path:
+        required: true
+        description: Schema path for this ontologyrelease.
+      domain_bundle_paths:
+        required: true
+        multivalued: true
+        description: Domain bundle paths for this ontologyrelease.
+      projections:
+        required: true
+        range: ProjectionRequirement
+        multivalued: true
+        inlined_as_list: true
+        description: Projections for this ontologyrelease.
+      external_vocabularies:
+        range: ExternalVocabulary
+        multivalued: true
+        inlined_as_list: true
+        description: External vocabularies for this ontologyrelease.
+      network_required_at_runtime:
+        required: true
+        range: boolean
+        description: Network required at runtime for this ontologyrelease.
+  ResourceMeta:
+    class_uri: coe:ResourceMeta
+    description: Standard frontmatter metadata block for authored configuration, task, lookup, and domain files.
+    mixins:
+      - Versioned
+    attributes:
+      id:
+        identifier: true
+        required: true
+        range: uriorcurie
+        slot_uri: dcterms:identifier
+        description: Canonical identifier for this resource.
+      title:
+        required: true
+        slot_uri: dcterms:title
+        description: Human-readable title of this resource.
+      schema_version:
+        required: true
+        description: Version of the structure or schema this resource conforms to.
+      last_updated:
+        required: true
+        range: date
+        slot_uri: dcterms:modified
+        description: ISO 8601 date of the latest semantic modification.
+      authority:
+        required: true
+        range: ResourceAuthorityEnum
+        description: Upstream master authority owning this resource.
+      status:
+        required: true
+        range: ResourceLifecycleStatusEnum
+        description: Lifecycle release status of this resource.
+      domain:
+        description: CoE domain category.
+      ontology_domain:
+        range: OntologyDomainEnum
+        description: Canonical Central_Configs domain this resource belongs to.
+      ontology_version:
+        description: Version of Central_Configs ontology this resource is bound to (default 4.0.0).
+      governing_schema:
+        description: Conceptual LinkML class or schema archetype governing this resource.
+      purpose:
+        description: Functional role or usage archetype.
+      description:
+        slot_uri: dcterms:description
+        description: Brief summary of the resource purpose and scope.
+      changelog:
+        multivalued: true
+        description: Chronological release notes.
+      research_sources:
+        multivalued: true
+        description: Evidence grounding sources.
+enums:
+  ResourceAuthorityEnum:
+    permissible_values:
+      Central_Configs:
+        description: Upstream ontology, LinkML schema, or shared domain authority.
+      AI_Skills:
+        description: Master agent skills, skill tasks, lookups, and contracts.
+      Design_Methodology:
+        description: Master human instructional design and SOAR framework guides.
+      Deck_Creation_Machine:
+        description: Deck creation machine project local configuration.
+      Knowledge_Machine:
+        description: Knowledge machine project local configuration.
+      LxD_Machine:
+        description: LxD machine project local configuration.
+      Content_Creation_Machine:
+        description: Content creation machine project local configuration.
+      Content_Structuring_Machine:
+        description: Content structuring machine project local configuration.
+  ResourceLifecycleStatusEnum:
+    permissible_values:
+      draft:
+        description: In-progress or proposed resource.
+      candidate:
+        description: Candidate undergoing verification.
+      released:
+        description: Immutable released standard.
+      deprecated:
+        description: Superseded or retired resource.
+  OntologyAuthorityEnum:
+    permissible_values:
+      Central_Configs:
+        description: Sole shared ontology authority.
+  ReleaseStatusEnum:
+    permissible_values:
+      working:
+        description: Mutable, incomplete version under active authoring and migration.
+      release_candidate:
+        description: Complete candidate undergoing final release and consumer acceptance gates.
+      released:
+        description: Published immutable release that passed all release gates.
+      superseded:
+        description: Previously released version replaced by a later release.
+  ProjectionEnum:
+    permissible_values:
+      linkml: null
+      json_schema: null
+      yaml: null
+      json: null
+      jsonld_context: null
+      jsonld: null
+      rdf: null
+      owl: null
+      shacl: null
+      documentation: null
+      erdiagram: null
+

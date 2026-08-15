@@ -1,0 +1,87 @@
+bundle_id: coe:domain/business/commercial_rubrics
+domain: business
+version: 4.0.0
+scoring_models:
+- dimensions:
+  - id: coe:artifact/business/elevator_pitch_rubric/dimension/time_to_value
+    label: Time to Value
+    description: 'Measures how quickly the pitch communicates its core value proposition. The best pitches follow BLUF (Bottom
+      Line Up Front): the listener should understand what the product does and why it matters within the first two sentences.
+      Source: Best-Practice Elevator Pitches.md'
+    home_domain: business
+    status: canonical
+  - id: coe:artifact/business/elevator_pitch_rubric/dimension/core_message_clarity
+    label: Core Message Clarity
+    description: 'Evaluates whether the pitch communicates a single, coherent message in plain language tailored to the audience.
+      Cognitive load theory requires one core idea per elevator pitch; multiple ideas compete and all lose. Source: Best-Practice
+      Elevator Pitches.md; Best-Practice Product Descriptions.md'
+    home_domain: business
+    status: canonical
+  - id: coe:artifact/business/elevator_pitch_rubric/dimension/differentiation
+    label: Differentiation
+    description: 'Assesses whether the pitch clearly establishes what makes the offering distinct from alternatives. Generic
+      pitches that apply equally to any competitor provide no reason to choose. Differentiation must be specific, benefit-tied,
+      and credible. Source: Best-Practice Elevator Pitches.md; Best-Practice Product Descriptions.md'
+    home_domain: business
+    status: canonical
+  - id: coe:artifact/business/elevator_pitch_rubric/dimension/cta_quality
+    label: Call-to-Action Quality
+    description: 'Evaluates whether the pitch closes with a clear, specific, low-friction next step appropriate to the pitch
+      context. The CTA should feel logically implied by the pitch — earned, not bolted on. Nudge theory applies: present a
+      choice architecture where the easy option is to agree to a follow-up. Source: Best-Practice Elevator Pitches.md; Research
+      - Using SOAR Storytelling most effectively.md'
+    home_domain: business
+    status: canonical
+  - id: coe:artifact/business/elevator_pitch_rubric/dimension/memorability
+    label: Memorability
+    description: 'Assesses whether the pitch uses language, structure, and story elements that make it stick after the conversation
+      ends. Based on Heath & Heath (2007) SUCCESs framework: Simple, Unexpected, Concrete, Credible, Emotional, Stories. A
+      pitch that is forgotten fails regardless of quality. Source: Best-Practice Elevator Pitches.md; Research - Using SOAR
+      Storytelling most effectively.md'
+    home_domain: business
+    status: canonical
+  thresholds:
+  - id: coe:artifact/business/elevator_pitch_rubric/threshold/word_counts
+    label: Word Counts
+    description: word_counts threshold.
+    home_domain: business
+    status: canonical
+  - id: coe:artifact/business/elevator_pitch_rubric/threshold/bluf_position
+    label: Bluf Position
+    description: Value proposition or primary benefit must appear within first 30 words
+    home_domain: business
+    status: canonical
+  - id: coe:artifact/business/elevator_pitch_rubric/threshold/jargon_limits
+    label: Jargon Limits
+    description: jargon_limits threshold.
+    home_domain: business
+    status: canonical
+  - id: coe:artifact/business/elevator_pitch_rubric/threshold/proof_points
+    label: Proof Points
+    description: Exceeding proof point limits creates data overload and buries the CTA
+    home_domain: business
+    status: canonical
+  - id: coe:artifact/business/elevator_pitch_rubric/threshold/value_prop_sentence
+    label: Value Prop Sentence
+    description: The core value proposition sentence must be 25 words or fewer to be instantly comprehensible
+    home_domain: business
+    status: canonical
+  - id: coe:artifact/business/elevator_pitch_rubric/threshold/cta_specificity
+    label: Cta Specificity
+    description: cta_specificity threshold.
+    home_domain: business
+    status: canonical
+  - id: coe:artifact/business/elevator_pitch_rubric/threshold/success_criteria_minimum
+    label: Success Criteria Minimum
+    description: success_criteria_minimum threshold.
+    home_domain: business
+    status: canonical
+    target_value: '2'
+  version: 1.2.3
+  last_updated: '2026-08-12'
+  id: coe:artifact/business/elevator_pitch_rubric
+  label: Elevator Pitch Rubric
+  description: Scoring rubric for elevator pitch and value proposition quality covering time-to-value, core message clarity,
+    differentiation, call-to-action quality, and memorability
+  home_domain: business
+  status: canonical

@@ -1,0 +1,218 @@
+id: https://steve-allison.github.io/Central_Configs/ontology/schema/relations
+name: coe_relations
+title: Central Configs Canonical Relation Hierarchy
+description: >-
+  Single source of truth for the canonical predicate hierarchy. Predicates are
+  a slot hierarchy rooted at related_to, typed over OntologyEntity and carrying
+  their logical characteristics (symmetric, transitive, inverse) and external
+  mappings directly. SemanticEdge and Assertion constrain authored predicates
+  through AuthoredPredicateEnum in core, whose permissible values resolve by
+  meaning URI to the canonical-direction slots declared here. Inverse-direction
+  slots are generation metadata for graph projections only and are never
+  authored as duplicate edges.
+version: 4.0.0
+default_prefix: coe
+default_range: string
+prefixes:
+  coe: https://steve-allison.github.io/Central_Configs/ontology/
+  linkml: https://w3id.org/linkml/
+  dcterms: http://purl.org/dc/terms/
+  skos: http://www.w3.org/2004/02/skos/core#
+  cito: http://purl.org/spar/cito/
+  schema: http://schema.org/
+  RO: http://purl.obolibrary.org/obo/RO_
+  BFO: http://purl.obolibrary.org/obo/BFO_
+imports:
+  - linkml:types
+  - ./core.linkml
+slots:
+  related_to:
+    abstract: true
+    domain: OntologyEntity
+    range: OntologyEntity
+    multivalued: true
+    slot_uri: coe:related_to
+    description: Root of the canonical predicate hierarchy; never authored directly.
+    close_mappings:
+      - skos:semanticRelation
+  supports:
+    is_a: related_to
+    domain: OntologyEntity
+    range: OntologyEntity
+    multivalued: true
+    slot_uri: coe:supports
+    inverse: supported_by
+    description: Directly supplies evidence, rationale, or capability for another entity.
+    close_mappings:
+      - cito:supports
+  supported_by:
+    is_a: related_to
+    domain: OntologyEntity
+    range: OntologyEntity
+    multivalued: true
+    slot_uri: coe:supported_by
+    inverse: supports
+    description: Generated inverse of supports; never authored.
+  bridges:
+    is_a: related_to
+    domain: OntologyEntity
+    range: OntologyEntity
+    multivalued: true
+    slot_uri: coe:bridges
+    symmetric: true
+    description: Directly connects two otherwise distinct semantic areas.
+  limits:
+    is_a: related_to
+    domain: OntologyEntity
+    range: OntologyEntity
+    multivalued: true
+    slot_uri: coe:limits
+    inverse: limited_by
+    description: Directly constrains the scope, applicability, or effect of another entity.
+  limited_by:
+    is_a: related_to
+    domain: OntologyEntity
+    range: OntologyEntity
+    multivalued: true
+    slot_uri: coe:limited_by
+    inverse: limits
+    description: Generated inverse of limits; never authored.
+  rebuts:
+    is_a: related_to
+    domain: OntologyEntity
+    range: OntologyEntity
+    multivalued: true
+    slot_uri: coe:rebuts
+    inverse: rebutted_by
+    description: Directly counters or refutes another entity.
+    close_mappings:
+      - cito:disputes
+  rebutted_by:
+    is_a: related_to
+    domain: OntologyEntity
+    range: OntologyEntity
+    multivalued: true
+    slot_uri: coe:rebutted_by
+    inverse: rebuts
+    description: Generated inverse of rebuts; never authored.
+  contains:
+    is_a: related_to
+    domain: OntologyEntity
+    range: OntologyEntity
+    multivalued: true
+    slot_uri: coe:contains
+    inverse: contained_by
+    transitive: true
+    description: Directly includes another entity as a semantic part.
+    close_mappings:
+      - dcterms:hasPart
+      - schema:hasPart
+  contained_by:
+    is_a: related_to
+    domain: OntologyEntity
+    range: OntologyEntity
+    multivalued: true
+    slot_uri: coe:contained_by
+    inverse: contains
+    transitive: true
+    description: Generated inverse of contains; never authored.
+  triggers:
+    is_a: related_to
+    domain: OntologyEntity
+    range: OntologyEntity
+    multivalued: true
+    slot_uri: coe:triggers
+    inverse: triggered_by
+    description: Directly initiates or activates another entity.
+  triggered_by:
+    is_a: related_to
+    domain: OntologyEntity
+    range: OntologyEntity
+    multivalued: true
+    slot_uri: coe:triggered_by
+    inverse: triggers
+    description: Generated inverse of triggers; never authored.
+  resolves:
+    is_a: related_to
+    domain: OntologyEntity
+    range: OntologyEntity
+    multivalued: true
+    slot_uri: coe:resolves
+    inverse: resolved_by
+    description: Directly addresses or settles another entity.
+  resolved_by:
+    is_a: related_to
+    domain: OntologyEntity
+    range: OntologyEntity
+    multivalued: true
+    slot_uri: coe:resolved_by
+    inverse: resolves
+    description: Generated inverse of resolves; never authored.
+  precedes:
+    is_a: related_to
+    domain: OntologyEntity
+    range: OntologyEntity
+    multivalued: true
+    slot_uri: coe:precedes
+    inverse: follows
+    transitive: true
+    description: Directly occurs before another entity in a semantic sequence.
+    close_mappings:
+      - BFO:0000063
+  follows:
+    is_a: related_to
+    domain: OntologyEntity
+    range: OntologyEntity
+    multivalued: true
+    slot_uri: coe:follows
+    inverse: precedes
+    transitive: true
+    description: Generated inverse of precedes; never authored.
+  specialises:
+    is_a: related_to
+    domain: OntologyEntity
+    range: OntologyEntity
+    multivalued: true
+    slot_uri: coe:specialises
+    inverse: generalises
+    transitive: true
+    description: Directly narrows another entity into a more specific concept.
+    close_mappings:
+      - skos:broader
+  generalises:
+    is_a: related_to
+    domain: OntologyEntity
+    range: OntologyEntity
+    multivalued: true
+    slot_uri: coe:generalises
+    inverse: specialises
+    transitive: true
+    description: Generated inverse of specialises; never authored.
+    close_mappings:
+      - skos:narrower
+  enables:
+    is_a: related_to
+    domain: OntologyEntity
+    range: OntologyEntity
+    multivalued: true
+    slot_uri: coe:enables
+    inverse: enabled_by
+    description: Directly makes another entity possible or operational.
+    close_mappings:
+      - RO:0002327
+  enabled_by:
+    is_a: related_to
+    domain: OntologyEntity
+    range: OntologyEntity
+    multivalued: true
+    slot_uri: coe:enabled_by
+    inverse: enables
+    description: Generated inverse of enables; never authored.
+  contrasts_with:
+    is_a: related_to
+    domain: OntologyEntity
+    range: OntologyEntity
+    multivalued: true
+    slot_uri: coe:contrasts_with
+    symmetric: true
+    description: Directly distinguishes two entities through meaningful opposition.

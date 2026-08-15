@@ -1,0 +1,164 @@
+bundle_id: coe:domain/learning/learner_personas
+domain: learning
+version: 4.0.0
+entity_collections:
+- id: coe:artifact/learning/learner_personas
+  label: Authoritative Learner Personas & Cognitive Ladders
+  description: Comprehensive UK K-12, adult professional, executive profiles and depth target ladders.
+  version: 4.0.0
+  last_updated: '2026-08-15'
+  entities:
+  - id: coe:entity/learning/learner_ks3_foundation_explorer
+    label: KS3 Foundation Explorer
+    description: UK Learner Profile for KS3 Foundation Explorer.
+    home_domain: learning
+    status: canonical
+    ner_label: LEARNER_PERSONA
+    recognition_patterns:
+    - (?i)\bKS3 Foundation Explorer\b
+    - (?i)\bks3 foundation explorer\b
+    edges:
+    - subject_id: coe:entity/learning/learner_ks3_foundation_explorer
+      predicate: coe:supports
+      object_id: coe:entity/language_editorial/register_interactive_workshop
+      relationship_weight: required
+      description: KS3 foundation learners are supported by an interactive workshop register with guided scaffolding.
+  - id: coe:entity/learning/learner_ks4_gcse_academic_achiever
+    label: KS4 GCSE Academic Achiever
+    description: UK Learner Profile for KS4 GCSE Academic Achiever.
+    home_domain: learning
+    status: canonical
+    ner_label: LEARNER_PERSONA
+    recognition_patterns:
+    - (?i)\bKS4 GCSE Academic Achiever\b
+    - (?i)\bks4 gcse academic achiever\b
+    edges:
+    - subject_id: coe:entity/learning/learner_ks4_gcse_academic_achiever
+      predicate: coe:supports
+      object_id: coe:entity/language_editorial/register_formal_academic
+      relationship_weight: required
+      description: GCSE and Advanced academic specialists are supported by formal academic register aligned to syllabus specifications.
+  - id: coe:entity/learning/learner_ks4_5_applied_vocational_learner
+    label: Applied & Vocational Learner
+    description: UK Learner Profile for Applied & Vocational Learner.
+    home_domain: learning
+    status: canonical
+    ner_label: LEARNER_PERSONA
+    recognition_patterns:
+    - (?i)\bApplied \& Vocational Learner\b
+    - (?i)\bks4 5 applied vocational learner\b
+    edges: []
+  - id: coe:entity/learning/learner_ks5_academic_specialist
+    label: KS5 Academic Specialist
+    description: UK Learner Profile for KS5 Academic Specialist.
+    home_domain: learning
+    status: canonical
+    ner_label: LEARNER_PERSONA
+    recognition_patterns:
+    - (?i)\bKS5 Academic Specialist\b
+    - (?i)\bks5 academic specialist\b
+    edges:
+    - subject_id: coe:entity/learning/learner_ks5_academic_specialist
+      predicate: coe:supports
+      object_id: coe:entity/language_editorial/register_formal_academic
+      relationship_weight: required
+      description: GCSE and Advanced academic specialists are supported by formal academic register aligned to syllabus specifications.
+  - id: coe:entity/learning/learner_supported_diverse_learner
+    label: Supported Diverse Learner
+    description: UK Learner Profile for Supported Diverse Learner.
+    home_domain: learning
+    status: canonical
+    ner_label: LEARNER_PERSONA
+    recognition_patterns:
+    - (?i)\bSupported Diverse Learner\b
+    - (?i)\bsupported diverse learner\b
+    edges:
+    - subject_id: coe:entity/learning/learner_supported_diverse_learner
+      predicate: coe:enables
+      object_id: coe:entity/mayer_signaling_principle
+      relationship_weight: required
+      description: Instruction for supported diverse learners enables high visual signaling and dual-coding clarity.
+  - id: coe:entity/learning/learner_ks2_lower_primary_explorer
+    label: KS2 Lower Primary Explorer
+    description: UK Learner Profile for KS2 Lower Primary Explorer.
+    home_domain: learning
+    status: canonical
+    ner_label: LEARNER_PERSONA
+    recognition_patterns:
+    - (?i)\bKS2 Lower Primary Explorer\b
+    - (?i)\bks2 lower primary explorer\b
+    edges:
+    - subject_id: coe:entity/learning/learner_ks2_lower_primary_explorer
+      predicate: coe:supports
+      object_id: coe:entity/language_editorial/stance_conversational
+      relationship_weight: required
+      description: Primary learners are supported by an approachable conversational stance with explicit vocabulary scaffolding.
+  - id: coe:entity/learning/learner_ks2_upper_primary_achiever
+    label: KS2 Upper Primary Achiever
+    description: UK Learner Profile for KS2 Upper Primary Achiever.
+    home_domain: learning
+    status: canonical
+    ner_label: LEARNER_PERSONA
+    recognition_patterns:
+    - (?i)\bKS2 Upper Primary Achiever\b
+    - (?i)\bks2 upper primary achiever\b
+    edges:
+    - subject_id: coe:entity/learning/learner_ks2_upper_primary_achiever
+      predicate: coe:supports
+      object_id: coe:entity/language_editorial/stance_conversational
+      relationship_weight: required
+      description: Primary learners are supported by an approachable conversational stance with explicit vocabulary scaffolding.
+  - id: coe:entity/learning/depth_none
+    label: 'Cognitive Depth: None'
+    description: 'Target cognitive depth capability attainment level: None.'
+    home_domain: learning
+    status: canonical
+    ner_label: COGNITIVE_DEPTH_LEVEL
+    recognition_patterns:
+    - (?i)\bNone\b
+    edges: []
+  - id: coe:entity/learning/depth_awareness
+    label: 'Cognitive Depth: Awareness'
+    description: 'Target cognitive depth capability attainment level: Awareness.'
+    home_domain: learning
+    status: canonical
+    ner_label: COGNITIVE_DEPTH_LEVEL
+    recognition_patterns:
+    - (?i)\bAwareness\b
+    edges: []
+  - id: coe:entity/learning/depth_comprehension
+    label: 'Cognitive Depth: Comprehension'
+    description: 'Target cognitive depth capability attainment level: Comprehension.'
+    home_domain: learning
+    status: canonical
+    ner_label: COGNITIVE_DEPTH_LEVEL
+    recognition_patterns:
+    - (?i)\bComprehension\b
+    edges: []
+  - id: coe:entity/learning/depth_application
+    label: 'Cognitive Depth: Application'
+    description: 'Target cognitive depth capability attainment level: Application.'
+    home_domain: learning
+    status: canonical
+    ner_label: COGNITIVE_DEPTH_LEVEL
+    recognition_patterns:
+    - (?i)\bApplication\b
+    edges: []
+  - id: coe:entity/learning/depth_fluency
+    label: 'Cognitive Depth: Fluency'
+    description: 'Target cognitive depth capability attainment level: Fluency.'
+    home_domain: learning
+    status: canonical
+    ner_label: COGNITIVE_DEPTH_LEVEL
+    recognition_patterns:
+    - (?i)\bFluency\b
+    edges: []
+  - id: coe:entity/learning/depth_mastery
+    label: 'Cognitive Depth: Mastery'
+    description: 'Target cognitive depth capability attainment level: Mastery.'
+    home_domain: learning
+    status: canonical
+    ner_label: COGNITIVE_DEPTH_LEVEL
+    recognition_patterns:
+    - (?i)\bMastery\b
+    edges: []

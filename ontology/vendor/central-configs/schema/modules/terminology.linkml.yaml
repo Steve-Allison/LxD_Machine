@@ -1,0 +1,110 @@
+id: https://steve-allison.github.io/Central_Configs/ontology/schema/terminology
+name: coe_terminology
+title: Central Configs Terminology and Sense Model
+description: >-
+  Delivers the charter's canonical-identity-and-terminology capability, which
+  the v4 schema could not previously represent. An ambiguous surface term (for
+  example, audience) resolves to explicit TermSense records, each denoting a
+  distinct entity or concept, so meaning never depends on surrounding
+  application context. Synonyms are typed and scoped rather than a flat alias
+  list, and deprecation carries a successor and a reason.
+version: 4.0.0
+default_prefix: coe
+default_range: string
+prefixes:
+  coe: https://steve-allison.github.io/Central_Configs/ontology/
+  linkml: https://w3id.org/linkml/
+  dcterms: http://purl.org/dc/terms/
+  skos: http://www.w3.org/2004/02/skos/core#
+  skosxl: http://www.w3.org/2008/05/skos-xl#
+imports:
+  - linkml:types
+  - ./core.linkml
+classes:
+  Term:
+    is_a: IdentifiedThing
+    class_uri: skosxl:Label
+    description: >-
+      One surface form used in the shared vocabulary. A term with multiple
+      meanings owns one TermSense per meaning; a term with one meaning still
+      owns exactly one sense so resolution is uniform.
+    attributes:
+      surface_form:
+        required: true
+        slot_uri: skosxl:literalForm
+        description: The exact written form of the term.
+      senses:
+        required: true
+        minimum_cardinality: 1
+        range: TermSense
+        multivalued: true
+        inlined_as_list: true
+        slot_uri: coe:sense
+        description: Every distinct recorded meaning of this term.
+  TermSense:
+    is_a: IdentifiedThing
+    class_uri: coe:TermSense
+    description: One explicit meaning of a term, resolvable without application context.
+    attributes:
+      definition:
+        required: true
+        slot_uri: skos:definition
+        description: Complete definition of this sense, sufficient to distinguish it from sibling senses.
+      denotes:
+        range: IdentifiedThing
+        inlined: false
+        slot_uri: coe:denotes
+        description: The entity or concept this sense resolves to, when one exists.
+      distinguished_from:
+        range: TermSense
+        multivalued: true
+        inlined: false
+        slot_uri: coe:distinguishedFrom
+        description: Sibling senses this sense must never be conflated with.
+      usage_note:
+        slot_uri: skos:scopeNote
+        description: When to use this sense rather than its siblings.
+      recognition_patterns:
+        multivalued: true
+        slot_uri: coe:recognitionPattern
+        description: Surface recognition patterns for this sense; successor home of entity-level
+          recognition patterns.
+      synonyms:
+        range: Synonym
+        multivalued: true
+        inlined_as_list: true
+        slot_uri: coe:synonym
+        description: Typed alternative surface forms for this sense.
+  Synonym:
+    class_uri: coe:Synonym
+    description: One typed, scoped alternative surface form for a term sense.
+    attributes:
+      synonym_id:
+        identifier: true
+        required: true
+        range: uriorcurie
+        slot_uri: dcterms:identifier
+        description: Identifier for this synonym record.
+      literal:
+        required: true
+        slot_uri: skosxl:literalForm
+        description: The alternative surface form.
+      synonym_scope:
+        required: true
+        range: SynonymScopeEnum
+        slot_uri: coe:synonymScope
+        description: How this alternative form relates to the canonical surface form.
+enums:
+  SynonymScopeEnum:
+    description: Permitted synonym scopes, following established synonym-typing practice.
+    permissible_values:
+      exact:
+        description: Interchangeable with the canonical form in every governed context.
+      broad:
+        description: Names a broader meaning that includes this sense.
+      narrow:
+        description: Names a narrower meaning included in this sense.
+      acronym:
+        description: Initialism or acronym of the canonical form.
+      deprecated_form:
+        description: Formerly used surface form that must no longer be authored.

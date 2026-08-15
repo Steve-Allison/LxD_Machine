@@ -1,0 +1,3123 @@
+bundle_id: coe:domain/visual_communication/slide_archetypes
+domain: visual_communication
+version: 4.0.0
+entity_collections:
+- id: coe:artifact/visual_communication/slide_archetypes
+  label: Visual Layout & Slide Archetypes
+  description: Slide composition patterns, visual hierarchy, grid structures.
+  version: 4.0.0
+  last_updated: '2026-08-15'
+  entities:
+  - edges:
+    - subject_id: coe:entity/color_only_indicator
+      predicate: coe:specialises
+      object_id: coe:entity/color_reference
+      relationship_weight: optional
+      description: Color-only indicator is a specific accessibility-violation subset of general color usage in visual design
+        per WCAG 1.4.1
+    - subject_id: coe:entity/color_only_indicator
+      predicate: coe:bridges
+      object_id: coe:entity/low_contrast_text
+      relationship_weight: optional
+      description: Color-only encoding and low contrast both stem from visual-channel-only design requiring semantic text
+        layer separation | Low contrast and color-only encoding are co-occurring visual accessibility failures requiring non-visual
+        semantic alternatives
+    - subject_id: coe:entity/color_only_indicator
+      predicate: coe:limits
+      object_id: coe:entity/chart_type
+      relationship_weight: expected
+      description: Color-coded chart series without non-color differentiators like dash patterns or symbols fail accessibility
+        for colorblind users
+    - subject_id: coe:entity/color_only_indicator
+      predicate: coe:triggers
+      object_id: coe:entity/accessibility_dimension
+      relationship_weight: required
+      description: Color-only violations trigger accessibility dimension scoring deductions per WCAG 1.4.1 Level A compliance
+        requirements
+    - subject_id: coe:entity/color_only_indicator
+      predicate: coe:triggers
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: expected
+      description: Color-only encoding generates extraneous cognitive load as users must decode ambiguous color signals without
+        redundant textual cues
+    - subject_id: coe:entity/color_only_indicator
+      predicate: coe:rebuts
+      object_id: coe:entity/design_principle
+      relationship_weight: expected
+      description: Color-only encoding rebuts inclusive design principles; Gestalt Law of Similarity requires consistent redundant
+        non-color affordances
+    id: coe:entity/color_only_indicator
+    label: Color Only Indicator
+    description: Information conveyed by color alone (WCAG 1.4.1 violation)
+    home_domain: visual_communication
+    status: canonical
+    recognition_patterns:
+    - (?i)\bColor\s+Only\s+Indicator\b
+    ner_label: COLOR_ONLY
+    examples:
+    - red fields are required
+    - green indicates success
+    - color-coded by status
+    - red for errors, yellow for warnings
+    - blue links
+    - see the green line
+    - orange section
+    - highlighted in yellow
+    - the red bars represent deficits
+    - use the green category
+    confidence_threshold: 0.7
+  - edges:
+    - subject_id: coe:entity/missing_alt_indicator
+      predicate: coe:limits
+      object_id: coe:entity/chart_type
+      relationship_weight: expected
+      description: Static data visualisations without extended descriptions via aria-describedby violate WCAG 1.1.1 Non-text
+        Content requirements
+    - subject_id: coe:entity/missing_alt_indicator
+      predicate: coe:limits
+      object_id: coe:entity/image_asset_type
+      relationship_weight: expected
+      description: Missing alt text on images violates Dual Coding Theory; all image assets require verbal channel equivalents
+        per multimedia principle
+    - subject_id: coe:entity/missing_alt_indicator
+      predicate: coe:limits
+      object_id: coe:entity/mayer_essential_principle
+      relationship_weight: expected
+      description: Missing alt text prevents screen reader access to multimedia content required by modality principle per
+        Applying Mayer's Principles Practical Checklist
+    - subject_id: coe:entity/missing_alt_indicator
+      predicate: coe:limits
+      object_id: coe:entity/storyboard_element
+      relationship_weight: optional
+      description: Storyboard visuals with text baked into canvas or WebGL are invisible to screen readers without separate
+        semantic text layer
+    - subject_id: coe:entity/missing_alt_indicator
+      predicate: coe:limits
+      object_id: coe:entity/visual_element
+      relationship_weight: expected
+      description: Missing alt text limits visual element effectiveness — images, diagrams, and charts without text alternatives
+        exclude screen reader users and break dual coding per Visualisation Techniques research
+    - subject_id: coe:entity/missing_alt_indicator
+      predicate: coe:triggers
+      object_id: coe:entity/accessibility_dimension
+      relationship_weight: required
+      description: Missing alt text triggers highest-severity accessibility scoring deduction per WCAG 1.1.1 Non-text Content
+        Level A failure
+    - subject_id: coe:entity/missing_alt_indicator
+      predicate: coe:triggers
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: expected
+      description: Missing alt text forces split-attention effect as readers search for contextual meaning of undescribed
+        visuals, generating extraneous load
+    id: coe:entity/missing_alt_indicator
+    label: Missing Alt Indicator
+    description: Visual content without text alternative (WCAG 1.1.1 violation)
+    home_domain: visual_communication
+    status: canonical
+    recognition_patterns:
+    - (?i)\bMissing\s+Alt\s+Indicator\b
+    ner_label: MISSING_ALT
+    examples:
+    - see image
+    - shown in figure
+    - refer to diagram
+    - as illustrated
+    - see chart
+    - view the graphic
+    - look at the visualization
+    - screenshot shows
+    - image depicts
+    - the infographic above
+    - see the visual
+    confidence_threshold: 0.65
+  - edges:
+    - subject_id: coe:entity/low_contrast_text
+      predicate: coe:enables
+      object_id: coe:entity/text_density_marker
+      relationship_weight: expected
+      description: Low contrast text creates cognitive debt by forcing repeated fixations and visual fatigue as readers struggle
+        to decode poorly differentiated text from background per slide design research monograph part 4
+    - subject_id: coe:entity/low_contrast_text
+      predicate: coe:bridges
+      object_id: coe:entity/text_size_violation
+      relationship_weight: optional
+      description: Small text compounds contrast failures since smaller glyphs require higher contrast ratios; both are WCAG
+        perceivability barriers | Undersized text at low contrast compounds legibility barriers exponentially; both are WCAG
+        perceivability violations
+    - subject_id: coe:entity/low_contrast_text
+      predicate: coe:limits
+      object_id: coe:entity/design_principle
+      relationship_weight: expected
+      description: Insufficient contrast violates WCAG 2.2 AA accessibility standards per Applying Mayer's Principles Practical
+        Checklist
+    - subject_id: coe:entity/low_contrast_text
+      predicate: coe:limits
+      object_id: coe:entity/typography_element
+      relationship_weight: required
+      description: Low contrast undermines the typographic hierarchy that enables scanning; visual hierarchy requires sufficient
+        contrast differentiation
+    - subject_id: coe:entity/low_contrast_text
+      predicate: coe:triggers
+      object_id: coe:entity/accessibility_dimension
+      relationship_weight: required
+      description: Contrast violations trigger accessibility dimension scoring deductions per WCAG 1.4.3 Contrast Minimum
+        Level AA requirement
+    - subject_id: coe:entity/low_contrast_text
+      predicate: coe:triggers
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: expected
+      description: Low contrast forces repeated fixations and regressive saccades as the eye struggles to decode text, increasing
+        extraneous cognitive load
+    - subject_id: coe:entity/low_contrast_text
+      predicate: coe:supports
+      object_id: coe:entity/readability_flag
+      relationship_weight: expected
+      description: Low contrast text compounds readability issues; eye-tracking research shows regression rate spikes when
+        visual clarity fails
+    id: coe:entity/low_contrast_text
+    label: Low Contrast Text
+    description: Text that fails minimum contrast ratio requirements (WCAG 1.4.3 violation)
+    home_domain: visual_communication
+    status: canonical
+    recognition_patterns:
+    - (?i)\bLow\s+Contrast\s+Text\b
+    ner_label: CONTRAST_VIOLATION
+    examples:
+    - light gray text on white background
+    - subtle contrast for secondary text
+    - hard to read against the background
+    - gray text on light gray
+    - white text on pale yellow
+    - faint watermark text
+    - barely visible caption
+    confidence_threshold: 0.68
+  - edges:
+    - subject_id: coe:entity/text_size_violation
+      predicate: coe:enables
+      object_id: coe:entity/text_density_marker
+      relationship_weight: expected
+      description: Text size violations create cognitive debt by forcing physical strain, reducing working memory available
+        for germane processing
+    - subject_id: coe:entity/text_size_violation
+      predicate: coe:limits
+      object_id: coe:entity/layout_pattern
+      relationship_weight: optional
+      description: Text size violations result from cramming content into dense layouts like the God Table anti-pattern with
+        undersized fonts
+    - subject_id: coe:entity/text_size_violation
+      predicate: coe:limits
+      object_id: coe:entity/typography_element
+      relationship_weight: required
+      description: Text size violations break the typographic hierarchy system; UxD prescribes minimum sizes by delivery context
+        for legibility
+    - subject_id: coe:entity/text_size_violation
+      predicate: coe:triggers
+      object_id: coe:entity/accessibility_dimension
+      relationship_weight: required
+      description: Font sizes below minimum thresholds trigger accessibility scoring penalties per WCAG perceivability and
+        legibility guidelines
+    - subject_id: coe:entity/text_size_violation
+      predicate: coe:triggers
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: expected
+      description: Undersized text increases extraneous load by forcing effortful decoding; small text reduces the foveal
+        visual span per fixation
+    id: coe:entity/text_size_violation
+    label: Text Size Violation
+    description: Font size below minimum legibility threshold for the delivery context
+    home_domain: visual_communication
+    status: canonical
+    recognition_patterns:
+    - (?i)\bText\s+Size\s+Violation\b
+    ner_label: TEXT_SIZE_ISSUE
+    examples:
+    - small print disclaimer
+    - 8pt footnote
+    - very small text in the corner
+    - fine print at the bottom
+    - text too small to read from the back
+    - tiny label on the chart axis
+    - 6pt caption
+    confidence_threshold: 0.65
+  - edges:
+    - subject_id: coe:entity/animation_only_carrier
+      predicate: coe:enables
+      object_id: coe:entity/text_density_marker
+      relationship_weight: expected
+      description: Animation-only content delivery creates cognitive debt by forcing audiences to reconstruct temporal sequences
+        from memory rather than processing visible static information per slide design research monograph part 4
+    - subject_id: coe:entity/animation_only_carrier
+      predicate: coe:bridges
+      object_id: coe:entity/missing_alt_indicator
+      relationship_weight: expected
+      description: Animation-only content and missing alt text both lock essential information behind visual-only channels
+        inaccessible to AT users
+    - subject_id: coe:entity/animation_only_carrier
+      predicate: coe:limits
+      object_id: coe:entity/delivery_modality
+      relationship_weight: expected
+      description: Animation-only content fails across delivery modalities including PDF exports, printed handouts, and static
+        viewers
+    - subject_id: coe:entity/animation_only_carrier
+      predicate: coe:limits
+      object_id: coe:entity/slide_transition
+      relationship_weight: required
+      description: Animation-only carriers violate progressive disclosure for static documents; content must be accessible
+        at all layers without interaction
+    - subject_id: coe:entity/animation_only_carrier
+      predicate: coe:triggers
+      object_id: coe:entity/accessibility_dimension
+      relationship_weight: required
+      description: Animation-only content triggers critical accessibility scoring penalties as the highest-severity anti-pattern
+        blocking essential content access
+    - subject_id: coe:entity/animation_only_carrier
+      predicate: coe:triggers
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: expected
+      description: Animation-only content generates extraneous load by hiding essential information behind temporal sequences
+        rather than structural affordances
+    - subject_id: coe:entity/animation_only_carrier
+      predicate: coe:rebuts
+      object_id: coe:entity/accessibility_feature
+      relationship_weight: required
+      description: Dual-structure and aria-live patterns exist because animation-only delivery directly violates accessible
+        narrative architecture
+    - subject_id: coe:entity/animation_only_carrier
+      predicate: coe:contrasts_with
+      object_id: coe:entity/progressive_disclosure_marker
+      relationship_weight: expected
+      description: Animation-only carriers misuse progressive disclosure; proper layering reveals information through structural
+        hierarchy not animation gates
+    id: coe:entity/animation_only_carrier
+    label: Animation Only Carrier
+    description: Essential information that can only be accessed via animation — inaccessible to static reading (anti-pattern)
+    home_domain: visual_communication
+    status: canonical
+    recognition_patterns:
+    - (?i)\bAnimation\s+Only\s+Carrier\b
+    ner_label: ANIMATION_ONLY_CARRIER
+    examples:
+    - the key point appears on click
+    - final conclusion reveals after animation completes
+    - this only shows after the build sequence
+    - the recommendation is hidden until the last click
+    - reveals progressively through animations
+    confidence_threshold: 0.7
+  - edges:
+    - subject_id: coe:entity/baked_text_in_image
+      predicate: coe:bridges
+      object_id: coe:entity/missing_alt_indicator
+      relationship_weight: expected
+      description: Both missing alt and baked text render content invisible to assistive technology; dual-structure pattern
+        resolves both violations | Baked text is structurally identical to missing alt; rasterised text is invisible to screen
+        readers, search indexing, and translation
+    - subject_id: coe:entity/baked_text_in_image
+      predicate: coe:limits
+      object_id: coe:entity/chart_type
+      relationship_weight: required
+      description: Text baked into canvas/WebGL visualization layers (labels drawn as pixels rather than DOM text) makes chart
+        text invisible to screen readers, violating the DOM Rule separation requirement per Narrative Visualization research
+    - subject_id: coe:entity/baked_text_in_image
+      predicate: coe:limits
+      object_id: coe:entity/image_asset_type
+      relationship_weight: expected
+      description: Baked text prevents Dual Coding by collapsing verbal and visual channels into a single non-extractable
+        visual stream
+    - subject_id: coe:entity/baked_text_in_image
+      predicate: coe:limits
+      object_id: coe:entity/storyboard_element
+      relationship_weight: optional
+      description: On-screen text in storyboard frames must reserve accessibility zones to avoid baked-text violations — caption
+        and interpreter spaces must be planned from the start per Research - Storyboard Best Practices
+    - subject_id: coe:entity/baked_text_in_image
+      predicate: coe:limits
+      object_id: coe:entity/typography_element
+      relationship_weight: expected
+      description: Baked text cannot participate in typographic hierarchy; rasterised text defeats visual hierarchy for scanning
+        and Layer Cake patterns
+    - subject_id: coe:entity/baked_text_in_image
+      predicate: coe:limits
+      object_id: coe:entity/visual_element
+      relationship_weight: expected
+      description: Baked text in images limits visual element effectiveness — rasterised text prevents reflow, zoom, and contrast
+        adjustment that learners need per Visualisation Techniques research
+    - subject_id: coe:entity/baked_text_in_image
+      predicate: coe:triggers
+      object_id: coe:entity/accessibility_dimension
+      relationship_weight: required
+      description: Baked text triggers accessibility dimension scoring deductions per WCAG 1.4.5 Images of Text Level AA violation
+    - subject_id: coe:entity/baked_text_in_image
+      predicate: coe:triggers
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: expected
+      description: Baked text generates extraneous load by preventing text reflow, zoom, and contrast adjustment that readers
+        need for cognitive load management
+    - subject_id: coe:entity/baked_text_in_image
+      predicate: coe:triggers
+      object_id: coe:entity/readability_flag
+      relationship_weight: expected
+      description: Baked text in images cannot be assessed by readability tools and evades the readability audit required
+        by UxD compliance frameworks
+    - subject_id: coe:entity/baked_text_in_image
+      predicate: coe:rebuts
+      object_id: coe:entity/accessibility_feature
+      relationship_weight: required
+      description: Dual-structure pattern mandates separating semantic text from visual layer; baked text directly violates
+        this accessible architecture
+    id: coe:entity/baked_text_in_image
+    label: Baked Text In Image
+    description: Text embedded within a raster image rather than as real selectable text (WCAG 1.4.5 violation)
+    home_domain: visual_communication
+    status: canonical
+    recognition_patterns:
+    - (?i)\bBaked\s+Text\s+In\s+Image\b
+    ner_label: BAKED_TEXT
+    examples:
+    - text embedded in the infographic
+    - labels baked into the screenshot
+    - annotations burned into the image
+    - text inside the JPEG
+    - the quote is part of the photograph
+    - title text rendered as image
+    - rasterised text block
+    confidence_threshold: 0.65
+  - recognition_patterns:
+    - mouse-only interaction
+    - drag and drop required
+    - hover to reveal
+    id: coe:entity/keyboard_inaccessibility
+    label: Keyboard Inaccessibility
+    description: Interactive content that cannot be operated through a keyboard interface.
+    home_domain: visual_communication
+    status: canonical
+    edges: []
+    ner_label: KEYBOARD_INACCESSIBILITY
+    confidence_threshold: 0.7
+  - aliases:
+    - camera shot
+    - framing type
+    - shot composition
+    recognition_patterns:
+    - (close-up|wide|medium|establishing|aerial) shot
+    - medium close-up
+    - over-the-shoulder
+    - point-of-view
+    - (B-roll|cutaway|screen capture|talking head)
+    - (pan|zoom|tilt|dolly|tracking) (shot|in|out)
+    edges:
+    - subject_id: coe:entity/video_shot_type
+      predicate: coe:enables
+      object_id: coe:entity/engagement_dimension
+      relationship_weight: expected
+      description: Varied shot types (close-up for emotional connection, wide for context, medium for dialogue) directly enable
+        engagement scoring by maintaining visual interest and audience attention per Visualisation Techniques research
+    - subject_id: coe:entity/video_shot_type
+      predicate: coe:enables
+      object_id: coe:entity/image_prompt_element
+      relationship_weight: expected
+      description: AI storyboard prompts require explicit camera details including shot type and angle to generate accurate
+        concept frames
+    - subject_id: coe:entity/video_shot_type
+      predicate: coe:enables
+      object_id: coe:entity/layout_pattern
+      relationship_weight: expected
+      description: Video shot type selection enables layout patterns — wider shots leave space for graphic overlays while
+        close-ups focus attention on speaker expressions per Visual Best Practices for Corporate Learning Videos
+    - subject_id: coe:entity/video_shot_type
+      predicate: coe:enables
+      object_id: coe:entity/video_edit_transition
+      relationship_weight: expected
+      description: Shot variety across wide, medium, and close-up enables meaningful edit transitions at natural breakpoints
+        every 8-15 seconds
+    - subject_id: coe:entity/video_shot_type
+      predicate: coe:limits
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: expected
+      description: Varied shot framing prevents visual monotony that increases extraneous processing and reduces cognitive
+        load on learners
+    - subject_id: coe:entity/video_shot_type
+      predicate: coe:triggers
+      object_id: coe:entity/engagement_cue
+      relationship_weight: expected
+      description: Cycling between wide, medium, and close-up frames breaks visual monotony and maintains viewer engagement
+        and interest
+    - subject_id: coe:entity/video_shot_type
+      predicate: coe:supports
+      object_id: coe:entity/content_slide
+      relationship_weight: expected
+      description: Content slides are supported by video shot types — side-by-side lecture framing places the presenter alongside
+        keyed-in slide content per Visual Best Practices for Corporate Learning Videos
+    - subject_id: coe:entity/video_shot_type
+      predicate: coe:supports
+      object_id: coe:entity/data_proof_slide
+      relationship_weight: expected
+      description: Data proof slides are supported by specific video shot types — green screen compositing shows charts and
+        graphs behind the presenter who can gesture toward data points per Visual Best Practices for Corporate Learning Videos
+    - subject_id: coe:entity/video_shot_type
+      predicate: coe:supports
+      object_id: coe:entity/quality_indicator
+      relationship_weight: expected
+      description: Quality indicators like sharp focus, good contrast, crisp audio, and even lighting are directly supported
+        by proper video shot type execution using professional techniques per Visual Best Practices for Corporate Learning
+        Videos
+    - subject_id: coe:entity/video_shot_type
+      predicate: coe:supports
+      object_id: coe:entity/visual_narrative_element
+      relationship_weight: expected
+      description: Shot types control point of view and psychological distance between viewer and story calibrating empathy
+        per Visual Communication and Storytelling
+    id: coe:entity/video_shot_type
+    label: Video Shot Type
+    description: Camera shot types and framing conventions used in video production
+    home_domain: visual_communication
+    status: canonical
+    ner_label: VIDEO_SHOT_TYPE
+    examples:
+    - close-up of the speaker
+    - wide establishing shot
+    - medium shot
+    - over-the-shoulder angle
+    - B-roll footage
+    - cutaway to product
+    - screen capture
+    - talking head
+    anti_examples:
+    - shot of espresso
+    - take a shot
+    confidence_threshold: 0.75
+  - aliases:
+    - edit type
+    - transition effect
+    recognition_patterns:
+    - (hard|jump|match|L|J)[- ]cut
+    - fade (to black|in|out)
+    - (cross[- ]fade|dissolve|wipe|montage)
+    - split screen
+    edges:
+    - subject_id: coe:entity/video_edit_transition
+      predicate: coe:bridges
+      object_id: coe:entity/video_shot_type
+      relationship_weight: expected
+      description: Transitions connect sequential shot types in storyboard sequences, linking consecutive visual panels in
+        frame-by-frame flow
+    - subject_id: coe:entity/video_edit_transition
+      predicate: coe:limits
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: expected
+      description: Consistent transition style makes chapter breaks predictable and reduces extraneous processing; coherence
+        principle prohibits elaborate transitions
+    - subject_id: coe:entity/video_edit_transition
+      predicate: coe:supports
+      object_id: coe:entity/content_structure_marker
+      relationship_weight: expected
+      description: Title cards and slide transitions signal structural shifts between segments; transition style reinforces
+        content chunking into logical chapters
+    - subject_id: coe:entity/video_edit_transition
+      predicate: coe:supports
+      object_id: coe:entity/progressive_disclosure_marker
+      relationship_weight: expected
+      description: Progressive disclosure is supported by video edit transitions that chunk content into 1-3 minute chapters
+        with title cards and verbal cues between segments per Visual Best Practices for Corporate Learning Videos | Video
+        edit transitions support progressive disclosure by segmenting content into logical chapters with title cards and consistent
+        transition styles between sections per Visual Best Practices for Corporate Learning Videos
+    - subject_id: coe:entity/video_edit_transition
+      predicate: coe:supports
+      object_id: coe:entity/visual_narrative_element
+      relationship_weight: expected
+      description: Edit transitions control pacing and rhythm of narrative flow compressing time via montage sequences per
+        Visual Communication and Storytelling
+    - subject_id: coe:entity/video_edit_transition
+      predicate: coe:supports
+      object_id: coe:entity/working_memory_marker
+      relationship_weight: expected
+      description: Well-paced video edit transitions allowing 3-6 seconds per bullet point and natural pauses for micro-reflection
+        prevent working memory overload per Visual Best Practices for Corporate Learning Videos
+    id: coe:entity/video_edit_transition
+    label: Video Edit Transition
+    description: Post-production transition and editing techniques between video segments
+    home_domain: visual_communication
+    status: canonical
+    ner_label: VIDEO_TRANSITION
+    examples:
+    - hard cut
+    - dissolve transition
+    - fade to black
+    - cross-fade
+    - jump cut
+    - montage sequence
+    - split screen
+    - wipe transition
+    anti_examples:
+    - cut the cord
+    - fade away
+    confidence_threshold: 0.75
+  - aliases:
+    - audio component
+    - sound element
+    recognition_patterns:
+    - (voiceover|voice-over|VO) narration
+    - (background|underscore|ambient) (music|audio)
+    - sound effect|SFX
+    - audio (sting|bed|cue)
+    edges:
+    - subject_id: coe:entity/audio_element
+      predicate: coe:enables
+      object_id: coe:entity/narrative_hook
+      relationship_weight: optional
+      description: Monroe's Motivated Sequence attention step and engaging narrative hooks are delivered through narration
+        audio in the opening
+    - subject_id: coe:entity/audio_element
+      predicate: coe:enables
+      object_id: coe:entity/video_edit_transition
+      relationship_weight: expected
+      description: J-cuts and L-cuts use audio flow to enable seamless visual transitions between scenes and camera angles
+    - subject_id: coe:entity/audio_element
+      predicate: coe:bridges
+      object_id: coe:entity/video_shot_type
+      relationship_weight: expected
+      description: Temporal contiguity principle requires aligning visual shot framing with narration pacing and audio cues
+        for coherent delivery | Temporal contiguity principle mandates synchronising audio narration with on-screen visuals
+        across shot type changes
+    - subject_id: coe:entity/audio_element
+      predicate: coe:limits
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: expected
+      description: Modality and redundancy principles require audio to complement rather than duplicate on-screen text, reducing
+        extraneous cognitive load
+    - subject_id: coe:entity/audio_element
+      predicate: coe:triggers
+      object_id: coe:entity/delivery_rate_issue
+      relationship_weight: optional
+      description: Narration speed deviating from recommended 120-150 words per minute triggers pacing and delivery rate problems
+    - subject_id: coe:entity/audio_element
+      predicate: coe:triggers
+      object_id: coe:entity/missing_alt_indicator
+      relationship_weight: expected
+      description: Absent audio descriptions and missing captions or transcripts trigger accessibility violations per mandatory
+        accessibility requirements
+    - subject_id: coe:entity/audio_element
+      predicate: coe:supports
+      object_id: coe:entity/accessibility_feature
+      relationship_weight: expected
+      description: Audio elements — specifically data sonification mapping y-axis values to musical pitch — support accessibility
+        by providing non-visual perception of data shape and trends per Narrative Visualization research
+    - subject_id: coe:entity/audio_element
+      predicate: coe:supports
+      object_id: coe:entity/engagement_cue
+      relationship_weight: expected
+      description: Enthusiastic speaker delivery with expressive tone holds attention better than flat monotone, directly
+        driving learner engagement
+    - subject_id: coe:entity/audio_element
+      predicate: coe:supports
+      object_id: coe:entity/quality_indicator
+      relationship_weight: expected
+      description: Crisp audio is cited as essential for professional production quality in learning videos — audio quality
+        directly supports overall quality indicators per Visual Best Practices for Corporate Learning Videos
+    id: coe:entity/audio_element
+    label: Audio Element
+    description: Audio production elements including voiceover, music, and sound design
+    home_domain: visual_communication
+    status: canonical
+    ner_label: AUDIO_ELEMENT
+    examples:
+    - voiceover narration
+    - background music bed
+    - sound effect (SFX)
+    - ambient audio
+    - underscore music
+    - audio sting
+    - transition sound
+    - podcast narration
+    anti_examples:
+    - audio settings
+    - sound system
+    confidence_threshold: 0.75
+  - aliases:
+    - animated style
+    - motion type
+    recognition_patterns:
+    - (motion|kinetic|whiteboard|2D|3D|stop[- ]motion) (graphics|typography|animation)
+    - animated (infographic|explainer|diagram)
+    - (keyframe|parallax|ease[- ](in|out))
+    edges:
+    - subject_id: coe:entity/animation_type
+      predicate: coe:enables
+      object_id: coe:entity/progressive_disclosure_marker
+      relationship_weight: optional
+      description: Segmenting principle uses animation to enable progressive reveal of complex content through bite-sized
+        sequential segments
+    - subject_id: coe:entity/animation_type
+      predicate: coe:bridges
+      object_id: coe:entity/slide_transition
+      relationship_weight: expected
+      description: Media production animation_type (motion graphics) and visual_elements slide_transition are related motion
+        concepts in different analytical frames
+    - subject_id: coe:entity/animation_type
+      predicate: coe:bridges
+      object_id: coe:entity/video_shot_type
+      relationship_weight: expected
+      description: Green-screen compositing layers animated charts beside the presenter during specific shot framings, integrating
+        animation with composition
+    - subject_id: coe:entity/animation_type
+      predicate: coe:limits
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: expected
+      description: Coherence principle requires animations to directly serve learning objectives; gratuitous animation adds
+        extraneous cognitive load
+    - subject_id: coe:entity/animation_type
+      predicate: coe:supports
+      object_id: coe:entity/image_asset_type
+      relationship_weight: expected
+      description: Animated infographics and motion graphics enhance static image assets into dynamic learning visuals per
+        multimedia principle
+    id: coe:entity/animation_type
+    label: Animation Type
+    description: Animation styles and motion graphics techniques used in learning content
+    home_domain: visual_communication
+    status: canonical
+    ner_label: ANIMATION_TYPE
+    examples:
+    - motion graphics
+    - kinetic typography
+    - whiteboard animation
+    - 2D character animation
+    - 3D rendering
+    - stop motion
+    - explainer animation
+    - animated infographic
+    anti_examples:
+    - animated discussion
+    - 3D printing
+    confidence_threshold: 0.75
+  - aliases:
+    - pre-production element
+    - storyboard component
+    recognition_patterns:
+    - storyboard (panel|frame|sequence)
+    - (scene|shot) (description|list|breakdown)
+    - (timing|action|camera) (annotation|note|direction)
+    - (animatic|thumbnail|rough cut)
+    edges:
+    - subject_id: coe:entity/storyboard_element
+      predicate: coe:specialises
+      object_id: coe:entity/planning_artefact_marker
+      relationship_weight: required
+      description: Storyboards are explicitly distinguished from scripts and wireframes as a specialised planning artefact
+        with frame-by-frame visual detail
+    - subject_id: coe:entity/storyboard_element
+      predicate: coe:contains
+      object_id: coe:entity/accessibility_feature
+      relationship_weight: expected
+      description: Storyboard templates require accessibility notes as a mandatory field including captions, audio descriptions,
+        and colour contrast checks per Creating Learning Videos guide
+    - subject_id: coe:entity/storyboard_element
+      predicate: coe:contains
+      object_id: coe:entity/animation_type
+      relationship_weight: expected
+      description: Action and animation cues are a required storyboard template field specifying motion graphics and animated
+        sequences per scene
+    - subject_id: coe:entity/storyboard_element
+      predicate: coe:contains
+      object_id: coe:entity/audio_element
+      relationship_weight: required
+      description: Storyboard templates require concise narration and audio script alongside visual panels for temporal contiguity
+        compliance
+    - subject_id: coe:entity/storyboard_element
+      predicate: coe:contains
+      object_id: coe:entity/chart_type
+      relationship_weight: expected
+      description: Storyboard elements for scrollytelling narratives contain specific chart types (network graphs, Sankey
+        diagrams, simulations) sequenced across narrative scroll positions per Narrative Visualization research
+    - subject_id: coe:entity/storyboard_element
+      predicate: coe:contains
+      object_id: coe:entity/image_asset_type
+      relationship_weight: expected
+      description: Visual panels contain illustrations, sketches, or AI-generated frames; storyboard frames serve as containers
+        for image asset specifications
+    - subject_id: coe:entity/storyboard_element
+      predicate: coe:contains
+      object_id: coe:entity/video_edit_transition
+      relationship_weight: expected
+      description: Storyboard frame components include technical specifications with transitions; AI prompt templates include
+        dedicated transition fields
+    - subject_id: coe:entity/storyboard_element
+      predicate: coe:contains
+      object_id: coe:entity/video_shot_type
+      relationship_weight: required
+      description: Storyboard frames include camera specifications with shot type, angle, and movement cues as required annotations
+        per each panel
+    - subject_id: coe:entity/storyboard_element
+      predicate: coe:enables
+      object_id: coe:entity/image_prompt_element
+      relationship_weight: expected
+      description: Storyboard annotations feed directly into AI image generation prompts via the structured prompt template
+        for concept frames
+    - subject_id: coe:entity/storyboard_element
+      predicate: coe:bridges
+      object_id: coe:entity/visual_element
+      relationship_weight: optional
+      description: Visual elements used in sketchnoting (connectors, containers, icons, shadow/color) serve as rapid prototyping
+        components that bridge to formal storyboard elements for high-fidelity visualization per Narrative Visualization research
+    - subject_id: coe:entity/storyboard_element
+      predicate: coe:limits
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: expected
+      description: Mayer's coherence principle applied to storyboard design requires removing irrelevant detail from frames
+        to reduce extraneous load
+    - subject_id: coe:entity/storyboard_element
+      predicate: coe:supports
+      object_id: coe:entity/content_slide
+      relationship_weight: optional
+      description: Storyboard frames with visual panels, on-screen text, and annotations serve as blueprints for content slide
+        design per Research - Storyboard Best Practices
+    - subject_id: coe:entity/storyboard_element
+      predicate: coe:supports
+      object_id: coe:entity/script_direction
+      relationship_weight: required
+      description: Script directions are supported by storyboard elements — storyboards contain full on-screen text, voice-over
+        scripts, navigation instructions, and developer guidance notes per course-creation-flow
+    - subject_id: coe:entity/storyboard_element
+      predicate: coe:supports
+      object_id: coe:entity/visual_narrative_element
+      relationship_weight: expected
+      description: Storyboard elements support visual narrative by pre-planning the visual storytelling arc including action
+        titles, annotations, and dot-dash logic per Visualisation Techniques research | Visual narrative elements like recurring
+        icons, visual mnemonics, and metaphorical imagery are planned through storyboard elements that sequence their appearance
+        per Visual Best Practices for Corporate Learning Videos
+    id: coe:entity/storyboard_element
+    label: Storyboard Element
+    description: Components of storyboard documents used in pre-production planning
+    home_domain: visual_communication
+    status: canonical
+    ner_label: STORYBOARD_ELEMENT
+    examples:
+    - storyboard panel
+    - scene description
+    - shot list
+    - timing annotation
+    - action note
+    - camera direction
+    - dialogue line
+    - visual reference
+    anti_examples:
+    - story time
+    - board meeting
+    confidence_threshold: 0.7
+  - aliases:
+    - graphic type
+    - visual asset
+    recognition_patterns:
+    - (stock|hero|banner) (photo|image|graphic)
+    - (custom|hand-drawn|AI-generated) illustration
+    - (process|flow|architecture|network) diagram
+    - (bar|line|pie|scatter|Gantt) chart
+    edges:
+    - subject_id: coe:entity/image_asset_type
+      predicate: coe:specialises
+      object_id: coe:entity/visual_content_format
+      relationship_weight: optional
+      description: Image assets such as illustrations, diagrams, and AI-generated frames are specialised types of visual content
+        used in production
+    - subject_id: coe:entity/image_asset_type
+      predicate: coe:specialises
+      object_id: coe:entity/visual_element
+      relationship_weight: expected
+      description: Image asset types specialise visual elements — icons, diagrams, and background images serve as specific
+        visual assets placed on screen to accompany narration per Visual Best Practices for Corporate Learning Videos
+    - subject_id: coe:entity/image_asset_type
+      predicate: coe:limits
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: expected
+      description: Coherence principle requires only including graphics that directly support the learning objective; decorative
+        assets increase extraneous load
+    - subject_id: coe:entity/image_asset_type
+      predicate: coe:triggers
+      object_id: coe:entity/low_contrast_text
+      relationship_weight: optional
+      description: Image assets with baked text may trigger colour contrast violations requiring consistent accessibility
+        checks for readability
+    - subject_id: coe:entity/image_asset_type
+      predicate: coe:supports
+      object_id: coe:entity/visual_narrative_element
+      relationship_weight: expected
+      description: Image assets directly constitute the visual narrative — photographs, illustrations, icons, and diagrams
+        create the implicit visual story through metaphors, emotional arc, and symbolic progression per visual_narrative_flow_pass
+    id: coe:entity/image_asset_type
+    label: Image Asset Type
+    description: Types of visual assets used in learning and presentation content
+    home_domain: visual_communication
+    status: canonical
+    ner_label: IMAGE_ASSET_TYPE
+    examples:
+    - stock photograph
+    - custom illustration
+    - icon set
+    - process diagram
+    - annotated screenshot
+    - infographic
+    - data chart
+    - hero image
+    anti_examples:
+    - image quality
+    - asset management
+    confidence_threshold: 0.7
+  - aliases:
+    - AI art directive
+    - image generation parameter
+    recognition_patterns:
+    - (photorealistic|isometric|flat|minimal|sketch)[- ](style|design|illustration)
+    - (cinematic|studio|natural|dramatic) lighting
+    - \d+:\d+ aspect ratio
+    - (negative|positive) prompt
+    edges:
+    - subject_id: coe:entity/image_prompt_element
+      predicate: coe:specialises
+      object_id: coe:entity/prompt_technique
+      relationship_weight: expected
+      description: AI image prompt engineering is a specialised prompting discipline with style locking, negative prompts,
+        fixed seeds, and ControlNet
+    - subject_id: coe:entity/image_prompt_element
+      predicate: coe:contains
+      object_id: coe:entity/generation_parameter
+      relationship_weight: required
+      description: Image prompts contain seeds, aspect ratios, control modules, negative prompts, and model versions as generation
+        parameters
+    - subject_id: coe:entity/image_prompt_element
+      predicate: coe:contains
+      object_id: coe:entity/video_shot_type
+      relationship_weight: expected
+      description: AI prompt template composition section requires explicit shot type, angle, framing, and perspective as
+        prompt components
+    - subject_id: coe:entity/image_prompt_element
+      predicate: coe:enables
+      object_id: coe:entity/image_asset_type
+      relationship_weight: expected
+      description: Prompt parameters including style, composition, lighting, and aspect ratio directly determine the output
+        visual asset type
+    - subject_id: coe:entity/image_prompt_element
+      predicate: coe:limits
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: optional
+      description: Negative prompts within image generation specifically prevent extraneous visual detail per the coherence
+        principle requirements
+    - subject_id: coe:entity/image_prompt_element
+      predicate: coe:supports
+      object_id: coe:entity/storyboard_element
+      relationship_weight: optional
+      description: Image prompt elements support storyboard planning by generating visual assets described in script direction
+        (Best Video Script Prompts)
+    id: coe:entity/image_prompt_element
+    label: Image Prompt Element
+    description: Components of AI image generation prompts including style, composition, and technical parameters
+    home_domain: visual_communication
+    status: canonical
+    ner_label: IMAGE_PROMPT_ELEMENT
+    examples:
+    - photorealistic style
+    - isometric illustration
+    - flat design aesthetic
+    - cinematic lighting
+    - 16:9 aspect ratio
+    - negative prompt
+    - seed value
+    - high resolution 4K
+    anti_examples:
+    - style guide
+    - flat tire
+    confidence_threshold: 0.7
+  - aliases:
+    - diagram slide
+    - flow slide
+    - structural diagram
+    recognition_patterns:
+    - (architecture|technology|platform) (stack|layers?) (slide|diagram)
+    - (hub[- ]and[- ]spoke|hub[- ]spoke|radial) (slide|diagram|layout)
+    - (cycle|circular|loop|iterative) (slide|diagram|process)
+    - (process|workflow|pipeline) (flow|slide|diagram)
+    - (hierarchy|org chart|tree) (slide|diagram|structure)
+    - (timeline|roadmap|milestone) (slide|diagram|view)
+    - (flowchart|flow chart) (slide|diagram|page)
+    - (current[- ]state|future[- ]state) (slide|diagram|view)
+    - (market map|strategic map) (slide|diagram)
+    edges:
+    - subject_id: coe:entity/structural_slide
+      predicate: coe:contains
+      object_id: coe:entity/layout_pattern
+      relationship_weight: required
+      description: Structural slides contain specific layout patterns that define their visual organisation per slide design
+        research monograph
+    - subject_id: coe:entity/structural_slide
+      predicate: coe:enables
+      object_id: coe:entity/content_structure_marker
+      relationship_weight: expected
+      description: Section divider slides use Repetition principle to build navigation structure per Slide Deck Design Playbook
+    - subject_id: coe:entity/structural_slide
+      predicate: coe:bridges
+      object_id: coe:entity/video_edit_transition
+      relationship_weight: expected
+      description: Structural slides bridge with video edit transitions — title cards and chapter headings appear at transition
+        points between video segments as visual signposts per Visual Best Practices for Corporate Learning Videos
+    - subject_id: coe:entity/structural_slide
+      predicate: coe:supports
+      object_id: coe:entity/narrative_hook
+      relationship_weight: expected
+      description: Narrative hooks are supported by structural slides which provide the visual scaffolding (agenda, section
+        dividers) that contextualise the hook within the broader presentation arc per slide design research monograph part
+        3
+    - subject_id: coe:entity/structural_slide
+      predicate: coe:supports
+      object_id: coe:entity/progressive_disclosure_marker
+      relationship_weight: expected
+      description: Progressive disclosure is supported by structural slides that serve as chapter headings and visual signposts
+        between content segments per Visual Best Practices for Corporate Learning Videos | Structural slides support progressive
+        disclosure by segmenting content into labelled chapters that signal topic shifts and provide mental rest points per
+        Visual Best Practices for Corporate Learning Videos
+    - subject_id: coe:entity/structural_slide
+      predicate: coe:supports
+      object_id: coe:entity/session_structure_marker
+      relationship_weight: required
+      description: Structural slides (agenda slides, section dividers, roadmap slides) serve as scaffolding that reduces listener
+        anxiety. They provide the session structure markers that signal what to expect and when major transitions occur.
+    - subject_id: coe:entity/structural_slide
+      predicate: coe:supports
+      object_id: coe:entity/situation_marker
+      relationship_weight: expected
+      description: Structural slides with Bento Grid serve SOAR Situation phase for contextual grounding
+    - subject_id: coe:entity/structural_slide
+      predicate: coe:supports
+      object_id: coe:entity/transition_marker
+      relationship_weight: expected
+      description: Transition markers are supported by structural slides which provide the visual counterpart to verbal transitions
+        — section dividers and agenda slides reinforce topic shifts per slide design research monograph part 3
+    id: coe:entity/structural_slide
+    label: Structural Slide
+    description: References to structural diagram slides including architecture stacks, hub-spoke, cycles, process flows,
+      hierarchies, and timelines
+    home_domain: visual_communication
+    status: canonical
+    ner_label: STRUCTURAL_SLIDE
+    examples:
+    - add an architecture stack slide
+    - create a hub-and-spoke diagram
+    - include a process flow showing the workflow
+    - we need a timeline slide for the roadmap
+    - insert a cycle diagram for the iterative process
+    - add an org chart hierarchy
+    - create a current state / future state flowchart
+    - add a market map diagram showing the competitive landscape
+    anti_examples:
+    - the structure of the argument
+    - process improvement project
+    - timeline of events
+    confidence_threshold: 0.7
+  - aliases:
+    - data slide
+    - metrics slide
+    - proof point slide
+    recognition_patterns:
+    - (stats|metrics|KPI|numbers?) (slide|page)
+    - (ROI|business impact|value|benefit) (slide|page)
+    - (comparison|before[- ]and[- ]after|vs) (slide|page)
+    - (chart|graph|data|trend|forecast) (slide|page|visualisation)
+    - (customer|client|testimonial|case study|proof) (slide|page)
+    - (competitive|market|landscape|quadrant) (slide|page|map)
+    - (problem|pain point|challenge) (slide|page)
+    - (solution|resolution|answer) (slide|page)
+    - (TAM|SAM|SOM|market size|market sizing) (slide|page|chart|diagram)
+    - (revenue|growth|traction) (slide|page|chart)
+    - (evidence|proof point|supporting data|validation) (slide|page)
+    edges:
+    - subject_id: coe:entity/data_proof_slide
+      predicate: coe:contains
+      object_id: coe:entity/chart_type
+      relationship_weight: required
+      description: Data proof slides contain chart types as the primary mechanism for visual data representation and storytelling
+        per Visual Communication and Storytelling
+    - subject_id: coe:entity/data_proof_slide
+      predicate: coe:contains
+      object_id: coe:entity/data_statistic
+      relationship_weight: required
+      description: Data proof slides contain data statistics transformed into compelling visual narratives for decision-making
+        per Visual Communication and Storytelling
+    - subject_id: coe:entity/data_proof_slide
+      predicate: coe:triggers
+      object_id: coe:entity/text_density_marker
+      relationship_weight: expected
+      description: Data proof slides with excessive data series, chartjunk, or missing action titles trigger cognitive debt
+        by overwhelming the audience with unstructured quantitative information per slide design research monograph part 4
+    - subject_id: coe:entity/data_proof_slide
+      predicate: coe:supports
+      object_id: coe:entity/before_after_comparison
+      relationship_weight: expected
+      description: Before/after comparisons require visual proof showing contrast between old and new states per Slide Deck
+        Design Playbook
+    - subject_id: coe:entity/data_proof_slide
+      predicate: coe:supports
+      object_id: coe:entity/claim
+      relationship_weight: required
+      description: Data proof slides serve as the Dashes that prove the Dot (action title claim) — each chart or statistic
+        must explicitly substantiate the slide's headline assertion per slide deck design playbook
+    - subject_id: coe:entity/data_proof_slide
+      predicate: coe:supports
+      object_id: coe:entity/evidence
+      relationship_weight: required
+      description: Data/proof slides provide evidence via charts, statistics, or research to substantiate claims
+    - subject_id: coe:entity/data_proof_slide
+      predicate: coe:supports
+      object_id: coe:entity/result_marker
+      relationship_weight: expected
+      description: Data proof slides with Hero Card serve Results phase validating approach with focal statistics
+    - subject_id: coe:entity/data_proof_slide
+      predicate: coe:supports
+      object_id: coe:entity/value_proposition
+      relationship_weight: expected
+      description: Value propositions are supported by data proof slides which provide the statistical evidence and business
+        impact metrics that substantiate benefit claims per slide design research monograph part 2
+    id: coe:entity/data_proof_slide
+    label: Data Proof Slide
+    description: References to data-driven and proof slides including statistics, ROI, comparisons, charts, testimonials,
+      and competitive landscapes
+    home_domain: visual_communication
+    status: canonical
+    ner_label: DATA_PROOF_SLIDE
+    examples:
+    - add a stats slide with the key metrics
+    - include an ROI slide showing business impact
+    - create a before-and-after comparison slide
+    - we need a chart slide for the data
+    - add a customer testimonial slide
+    - insert a competitive landscape quadrant
+    - add a problem slide showing the market gap
+    - create a TAM/SAM/SOM market sizing slide
+    - include a solution slide after the problem
+    - include an evidence slide to support the recommendation
+    anti_examples:
+    - the data shows
+    - compare the two approaches
+    - customer feedback email
+    - the problem with our strategy
+    - the solution to the inefficiency
+    confidence_threshold: 0.7
+  - aliases:
+    - detail slide
+    - information slide
+    - text slide
+    recognition_patterns:
+    - (content|service|solution|use case) (cards?|grid|tiles?) (slide|page)
+    - (bullet|text|summary|key points?|highlights?) (slide|page)
+    - (framework|pillar|principle|foundation) (slide|page)
+    - (feature|capability|release) (map|slide|page)
+    - (glossary|reference|definition|terminology) (slide|page)
+    - (two[- ]column|split|side[- ]by[- ]side) (slide|page|layout)
+    - (table|matrix|pricing|specification) (slide|page)
+    - (key (takeaway|message|point)|summary|synthesis) (slide|page)
+    - (recommendation|SCQA|BLUF|bottom line up front) (slide|page)
+    - (situation|complication|question|answer) (slide|page|frame)
+    edges:
+    - subject_id: coe:entity/content_slide
+      predicate: coe:contains
+      object_id: coe:entity/typography_element
+      relationship_weight: expected
+      description: Content slides contain typography elements (headlines, body text, captions, bullet points) as their primary
+        information carriers per Visualisation Techniques research
+    - subject_id: coe:entity/content_slide
+      predicate: coe:supports
+      object_id: coe:entity/action_marker
+      relationship_weight: expected
+      description: Content slides with process flow layouts serve Approach phase demonstrating logical progression
+    - subject_id: coe:entity/content_slide
+      predicate: coe:supports
+      object_id: coe:entity/clarity_dimension
+      relationship_weight: required
+      description: Content slides must prioritize clarity through minimalist design, clear hierarchy, and focused messaging.
+        The primary purpose of content slides is semantic clarity; excessive visual decoration reduces clarity scores.
+    id: coe:entity/content_slide
+    label: Content Slide
+    description: References to content-rich slides including card grids, bullet points, framework pillars, feature maps, glossaries,
+      two-column layouts, and tables
+    home_domain: visual_communication
+    status: canonical
+    ner_label: CONTENT_SLIDE
+    examples:
+    - add a content cards grid showing the services
+    - create a bullet point summary slide
+    - include a three-pillar framework slide
+    - we need a feature map slide
+    - add a glossary reference slide
+    - create a two-column detail slide
+    - insert a comparison table
+    - add a summary slide after the data section
+    - we need a key takeaway slide at the end
+    - create a recommendation slide with the BLUF answer
+    - add an SCQA framework slide for the opening argument
+    anti_examples:
+    - the content of the presentation
+    - bullet-proof strategy
+    - reference document
+    - summarize the meeting
+    - the key message is that...
+    confidence_threshold: 0.7
+  - aliases:
+    - demo slide
+    - screenshot slide
+    - UI slide
+    recognition_patterns:
+    - (screenshot|screen capture|UI|interface) (slide|page)
+    - (product|software|app|demo) (slide|page|walkthrough)
+    - (walkthrough|demo) (slide|page|screen)
+    edges: []
+    id: coe:entity/product_slide
+    label: Product Slide
+    description: References to product demonstration slides including screenshots, UI walkthroughs, and live demo captures
+    home_domain: visual_communication
+    status: canonical
+    ner_label: PRODUCT_SLIDE
+    examples:
+    - add a screenshot slide showing the dashboard
+    - include a product demo walkthrough
+    - create a UI screenshot slide
+    - we need a software interface slide
+    anti_examples:
+    - demo the product live
+    - take a screenshot
+    confidence_threshold: 0.75
+  - aliases:
+    - intro slide
+    - opening slide
+    - team slide
+    recognition_patterns:
+    - (title|cover|opening|intro|introduction) (slide|page)
+    - (brand|vision|mission|purpose|tagline) (slide|page)
+    - (photo[- ]led|hero image|full[- ]bleed) (slide|page)
+    - (agenda|table of contents|outline|topics?) (slide|page)
+    - (team|presenter|speaker|panelist|bio) (slide|page)
+    - (hook|opening hook|attention[- ]grabber) (slide|page)
+    - (call to adventure|inciting incident) (slide|page)
+    - (what is|what could be|future state vision) (slide|page)
+    - (keynote|vision statement|change management) (slide|page|cover)
+    - (hyperlinked|interactive|navigation) (agenda|contents) (slide|page)
+    edges:
+    - subject_id: coe:entity/narrative_slide
+      predicate: coe:contains
+      object_id: coe:entity/call_to_action
+      relationship_weight: expected
+      description: Narrative slides in the Apple keynote model culminate with a call to action after emotional priming, problem
+        framing, and demonstration per Slide Deck Design Playbook
+    - subject_id: coe:entity/narrative_slide
+      predicate: coe:contains
+      object_id: coe:entity/claim
+      relationship_weight: required
+      description: Narrative slides structure arguments using claims that advance the main message
+    - subject_id: coe:entity/narrative_slide
+      predicate: coe:contains
+      object_id: coe:entity/customer_story
+      relationship_weight: expected
+      description: Narrative slides present case studies and customer stories with metric + quote + timeline structure per
+        Slide Deck Design Playbook
+    - subject_id: coe:entity/narrative_slide
+      predicate: coe:contains
+      object_id: coe:entity/narrative_hook
+      relationship_weight: expected
+      description: Visual hierarchy in narrative slides directs viewer's eye first to the hook element before context and
+        CTA per Visual Communication and Storytelling
+    - subject_id: coe:entity/narrative_slide
+      predicate: coe:contains
+      object_id: coe:entity/value_proposition
+      relationship_weight: expected
+      description: Narrative slides contain value propositions as core messaging elements — the customer success story slide
+        type combines metric, quote, and timeline to convey value per slide deck design playbook
+    - subject_id: coe:entity/narrative_slide
+      predicate: coe:contains
+      object_id: coe:entity/visual_narrative_element
+      relationship_weight: required
+      description: Narrative slides contain visual narrative elements that synchronize plot visual and emotional arcs per
+        Visual Communication and Storytelling
+    - subject_id: coe:entity/narrative_slide
+      predicate: coe:enables
+      object_id: coe:entity/narrative_tension
+      relationship_weight: expected
+      description: Narrative slides enable narrative tension through SCR complication structure — the visual arc oscillates
+        between 'what is' and 'what could be' per Visual Analysis of Slide Decks
+    - subject_id: coe:entity/narrative_slide
+      predicate: coe:supports
+      object_id: coe:entity/opportunity_marker
+      relationship_weight: expected
+      description: Narrative slides with metaphorical imagery serve Obstacle phase highlighting the gap
+    id: coe:entity/narrative_slide
+    label: Narrative Slide
+    description: References to narrative and framing slides including title covers, brand vision, photo-led, agenda, and presenter/team
+      introductions
+    home_domain: visual_communication
+    status: canonical
+    ner_label: NARRATIVE_SLIDE
+    examples:
+    - add a title slide for the opening
+    - create a brand vision slide
+    - include a photo-led slide with the hero image
+    - we need an agenda slide
+    - add a team introduction slide
+    - insert a cover slide
+    - add a hook slide for the opening
+    - create a 'what could be' vision slide
+    - we need a keynote-style opening slide with a bold visual and minimal text
+    - create a vision statement slide for the change management deck
+    anti_examples:
+    - the narrative arc
+    - cover the topic
+    - team meeting agenda
+    - hook the audience with data
+    - slidument
+    - read-ahead document
+    confidence_threshold: 0.7
+  - aliases:
+    - closing slide
+    - divider slide
+    - transition slide
+    recognition_patterns:
+    - (section|topic) (break|divider|transition) (slide|page)
+    - (Q&A|Q and A|questions?|discussion) (slide|page)
+    - (thank[- ]you|closing|wrap[- ]up) (slide|page)
+    - (resource|CTA|call to action|contact|next steps?) (slide|page|card)
+    - (breather|reset|pacing|interlude) (slide|page)
+    edges:
+    - subject_id: coe:entity/functional_slide
+      predicate: coe:supports
+      object_id: coe:entity/call_to_action
+      relationship_weight: expected
+      description: Calls to action are supported by functional slides which provide the interactive mechanisms (QR codes,
+        forms, links) that enable audience response per slide design research monograph part 2
+    id: coe:entity/functional_slide
+    label: Functional Slide
+    description: References to functional utility slides including section dividers, Q&A slides, thank-you slides, and resource/CTA
+      cards
+    home_domain: visual_communication
+    status: canonical
+    ner_label: FUNCTIONAL_SLIDE
+    examples:
+    - add a section divider slide
+    - insert a Q&A slide
+    - include a thank-you slide
+    - we need a resources slide with links
+    - add a CTA slide with next steps
+    - create a section break between topics
+    - insert a breather slide to give the audience a moment to process
+    anti_examples:
+    - break for lunch
+    - next steps in the process
+    - thank the customer
+    - the leave-behind document
+    - slidument format
+    - boardroom read-ahead packet
+    confidence_threshold: 0.75
+  - aliases:
+    - dashboard slide
+    - overview slide
+    - summary dashboard
+    recognition_patterns:
+    - (dashboard|multi[- ]zone|executive summary) (slide|page|view)
+    - (at[- ]a[- ]glance|snapshot|status) (slide|page|overview)
+    - (control tower|KPI summary|performance overview) (slide|page)
+    - (slidument|dense slide|information[- ]rich) (slide|page|layout)
+    id: coe:entity/complex_slide
+    label: Complex Slide
+    description: References to complex multi-zone and dashboard-style slides combining multiple content types
+    home_domain: visual_communication
+    status: canonical
+    edges: []
+    ner_label: COMPLEX_SLIDE
+    examples:
+    - add a dashboard slide with all KPIs
+    - create a multi-zone executive summary
+    - we need an at-a-glance status slide
+    - insert a snapshot dashboard
+    - add a control tower overview slide
+    - create a dense executive summary slidument for the appendix
+    anti_examples:
+    - complex topic
+    - the dashboard application
+    - status update email
+    - the presentation was dense
+    confidence_threshold: 0.75
+  - id: coe:entity/speaker_led_cinematic
+    label: Speaker Led Cinematic
+    description: Performance-oriented medium where slides serve as 'glance media' billboards, decoded in < 3 seconds.
+    home_domain: visual_communication
+    status: canonical
+    recognition_patterns:
+    - (?i)\bSpeaker\s+Led\s+Cinematic\b
+    edges: []
+    ner_label: CINEMATIC_DECK
+  - id: coe:entity/duarte_slidedoc
+    label: Duarte Slidedoc
+    description: Visual document intended to be read instead of projected; uses the IA of a book to facilitate skimmability.
+    home_domain: visual_communication
+    status: canonical
+    recognition_patterns:
+    - (?i)\bDuarte\s+Slidedoc\b
+    edges: []
+    ner_label: SLIDEDOC
+  - id: coe:entity/slopegraph
+    label: Slopegraph
+    description: Data visualization tool optimized for showing 'rate of change' and aberrant trends between two discrete points.
+    home_domain: visual_communication
+    status: canonical
+    recognition_patterns:
+    - (?i)\bSlopegraph\b
+    edges: []
+    ner_label: SLOPEGRAPH
+  - aliases:
+    - data_viz
+    - diagram
+    - graph
+    - visualization
+    recognition_patterns:
+    - \w+ chart
+    - \w+ graph
+    - \w+ plot
+    - \w+ diagram
+    edges:
+    - subject_id: coe:entity/chart_type
+      predicate: coe:enables
+      object_id: coe:entity/clarity_dimension
+      relationship_weight: expected
+      description: Well-designed data visualisations with clear labels, appropriate chart type selection, and data-ink optimisation
+        enable clarity scoring per Visualisation Techniques research
+    - subject_id: coe:entity/chart_type
+      predicate: coe:limits
+      object_id: coe:entity/working_memory_marker
+      relationship_weight: expected
+      description: Complex or poorly chosen chart types with excessive data series overwhelm working memory capacity by demanding
+        simultaneous comparison of too many visual elements per slide design research monograph part 4
+    - subject_id: coe:entity/chart_type
+      predicate: coe:triggers
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: expected
+      description: Complex chart types with decorative elements (3D effects, gradient fills, unnecessary gridlines) trigger
+        extraneous cognitive load per Visualisation Techniques research
+    - subject_id: coe:entity/chart_type
+      predicate: coe:triggers
+      object_id: coe:entity/text_density_marker
+      relationship_weight: expected
+      description: Charts with chartjunk (3D effects, backgrounds, legends) create cognitive debt by forcing viewers to process
+        non-data ink per Slide Deck Design Playbook
+    - subject_id: coe:entity/chart_type
+      predicate: coe:supports
+      object_id: coe:entity/before_after_comparison
+      relationship_weight: expected
+      description: Before/after comparisons are most effective when visualised through chart types (bar charts, line graphs)
+        that clearly show the baseline-to-result contrast per Visualisation Techniques research
+    - subject_id: coe:entity/chart_type
+      predicate: coe:supports
+      object_id: coe:entity/claim
+      relationship_weight: required
+      description: Claims are supported by chart types that provide visual evidence — bar charts, line graphs, and scatter
+        plots make quantitative claims tangible and verifiable per Visualisation Techniques research | Charts serve as the
+        Dashes (supporting evidence) that prove the Dot (Action Title claim) — the relationship is hierarchical and the chart
+        data must explicitly prove the claim per Canonical Presentation Methodology
+    - subject_id: coe:entity/chart_type
+      predicate: coe:supports
+      object_id: coe:entity/data_proof_slide
+      relationship_weight: required
+      description: Chart types are the primary visual carrier for data proof slides. The choice of chart (bar, line, scatter,
+        pie) determines how effectively quantitative evidence is communicated. Chart type selection directly impacts the effectiveness
+        of proof-based narrative.
+    - subject_id: coe:entity/chart_type
+      predicate: coe:supports
+      object_id: coe:entity/data_statistic
+      relationship_weight: required
+      description: Data statistics require chart type visualizations to transform raw numbers into comprehensible data stories
+        per Visual Communication and Storytelling
+    - subject_id: coe:entity/chart_type
+      predicate: coe:supports
+      object_id: coe:entity/evidence
+      relationship_weight: expected
+      description: Evidence presentation supported by appropriate chart type selection per Cognitive Fit Theory
+    - subject_id: coe:entity/chart_type
+      predicate: coe:supports
+      object_id: coe:entity/intrinsic_load_marker
+      relationship_weight: expected
+      description: 'Cognitive Fit Theory dictates chart selection: tables for lookup, line charts for trends, reducing intrinsic
+        load'
+    - subject_id: coe:entity/chart_type
+      predicate: coe:supports
+      object_id: coe:entity/logos_appeal
+      relationship_weight: expected
+      description: Logos appeals in data storytelling are supported by chart types that transform raw data into interpretable
+        visual evidence per Visual Communication and Storytelling
+    - subject_id: coe:entity/chart_type
+      predicate: coe:supports
+      object_id: coe:entity/visual_quality_dimension
+      relationship_weight: expected
+      description: Visual quality scoring supported by Tufte Data-Ink Ratio and Cognitive Fit chart selection
+    id: coe:entity/chart_type
+    label: Chart Type
+    description: Data visualization chart types and graph formats
+    home_domain: visual_communication
+    status: canonical
+    ner_label: CHART_TYPE
+    examples:
+    - bar chart
+    - line graph
+    - pie chart
+    - scatter plot
+    - treemap
+    - waterfall chart
+    - funnel chart
+    - Gantt chart
+    - heatmap
+    - bubble chart
+    - area chart
+    - donut chart
+    - radar chart
+    - Sankey diagram
+    - sunburst chart
+    - chord diagram
+    - network diagram
+    - parallel coordinates plot
+    - box plot
+    - lollipop chart
+    - step chart
+    confidence_threshold: 0.8
+  - aliases:
+    - arrangement
+    - composition
+    - layout
+    - structure
+    recognition_patterns:
+    - \w+-column layout
+    - \w+ slide
+    - \w+ layout
+    - \w+ pattern
+    edges:
+    - subject_id: coe:entity/layout_pattern
+      predicate: coe:enables
+      object_id: coe:entity/content_structure_marker
+      relationship_weight: expected
+      description: Layout patterns establish the visual structure that content architecture markers detect per slide design
+        research monograph
+    - subject_id: coe:entity/layout_pattern
+      predicate: coe:limits
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: expected
+      description: Grid-based layouts with whitespace, alignment, and clear section boundaries directly limit extraneous cognitive
+        load by creating visual order and preventing clutter per Infographics research
+    - subject_id: coe:entity/layout_pattern
+      predicate: coe:supports
+      object_id: coe:entity/chart_type
+      relationship_weight: expected
+      description: Chart types depend on layout patterns for proper spatial positioning and sizing within slide compositions
+        per Visualisation Techniques research | Layout patterns (force-directed, clustering, ego-centric expansion) organize
+        chart elements spatially to enable narrative reading of network and multi-dimensional data per Narrative Visualization
+        research
+    - subject_id: coe:entity/layout_pattern
+      predicate: coe:supports
+      object_id: coe:entity/data_proof_slide
+      relationship_weight: expected
+      description: Data proof slides require layout patterns that leave appropriate space for data visualisation while maintaining
+        presenter visibility per Visual Best Practices for Corporate Learning Videos
+    - subject_id: coe:entity/layout_pattern
+      predicate: coe:supports
+      object_id: coe:entity/job_aid_format
+      relationship_weight: expected
+      description: Job aids use scannable formats including step-by-step numbered lists, decision trees, annotated diagrams,
+        and bullet points
+    - subject_id: coe:entity/layout_pattern
+      predicate: coe:supports
+      object_id: coe:entity/microlearning_format
+      relationship_weight: expected
+      description: High-definition graphics optimised for mobile viewing, consistent visual hierarchy, and spatial contiguity
+        are specified layout requirements for microlearning per AI Microlearning Guide
+    - subject_id: coe:entity/layout_pattern
+      predicate: coe:supports
+      object_id: coe:entity/slide_type
+      relationship_weight: required
+      description: Layout patterns (1-column, 2-column, 3-pillar, hero+detail) directly determine which slide types can be
+        effectively rendered per Slide Deck Design Playbook
+    - subject_id: coe:entity/layout_pattern
+      predicate: coe:supports
+      object_id: coe:entity/storyboard_element
+      relationship_weight: expected
+      description: Layout patterns using foreground/midground/background spatial language structure the composition of storyboard
+        frames for visual clarity per Sketch Style for Wireframes and Storyboards
+    - subject_id: coe:entity/layout_pattern
+      predicate: coe:supports
+      object_id: coe:entity/tricolon
+      relationship_weight: optional
+      description: Tricolon (rule of three) is visually supported by the 3-pillar layout pattern with equal-width columns
+        for icons + labels + descriptions per Slide Deck Design Playbook
+    - subject_id: coe:entity/layout_pattern
+      predicate: coe:supports
+      object_id: coe:entity/visual_content_format
+      relationship_weight: required
+      description: Visual content formats require specific layout patterns (1-column insight, 2-column comparison, 3-pillar
+        benefits) matched to cognitive purpose per Slide Deck Design Playbook
+    - subject_id: coe:entity/layout_pattern
+      predicate: coe:supports
+      object_id: coe:entity/visual_quality_dimension
+      relationship_weight: required
+      description: Visual quality scoring is directly supported by layout pattern adherence to design grid principles per
+        slide design research monograph | Layout patterns directly impact visual quality assessment. Proper grid systems,
+        alignment consistency, and spatial organization are measurable components of visual quality scoring.
+    id: coe:entity/layout_pattern
+    label: Layout Pattern
+    description: Slide and page layout structures
+    home_domain: visual_communication
+    status: canonical
+    ner_label: LAYOUT_PATTERN
+    examples:
+    - title slide
+    - two-column layout
+    - full-bleed image
+    - split screen
+    - grid layout
+    - asymmetrical layout
+    - Z-pattern
+    - F-pattern
+    - golden ratio
+    - rule of thirds
+    anti_examples:
+    - behavior pattern
+    - design pattern (software)
+    confidence_threshold: 0.7
+  - aliases:
+    - asset
+    - component
+    - element
+    - graphic
+    recognition_patterns:
+    - \w+ icon
+    - \w+ graphic
+    - \w+ illustration
+    edges:
+    - subject_id: coe:entity/visual_element
+      predicate: coe:enables
+      object_id: coe:entity/germane_load_marker
+      relationship_weight: expected
+      description: Well-designed visual elements enable germane cognitive processing by activating dual coding (verbal + visual
+        channels) which doubles encoding pathways per Visualisation Techniques research
+    - subject_id: coe:entity/visual_element
+      predicate: coe:limits
+      object_id: coe:entity/working_memory_marker
+      relationship_weight: expected
+      description: Excessive visual elements limit working memory capacity — only graphics that directly support the learning
+        objective should be included per the coherence principle per Visual Best Practices for Corporate Learning Videos
+    - subject_id: coe:entity/visual_element
+      predicate: coe:triggers
+      object_id: coe:entity/cognitive_load_dimension
+      relationship_weight: required
+      description: Visual elements directly trigger cognitive load responses. High visual density creates extraneous load;
+        well-organized visual hierarchies reduce intrinsic load. The choice of visual_elements (color, typography, layout)
+        determines whether viewers experience germane (productive) or extraneous (wasteful) cognitive processing.
+    - subject_id: coe:entity/visual_element
+      predicate: coe:triggers
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: expected
+      description: Excessive visual elements (chartjunk, decorative graphics) increase extraneous cognitive load per Tufte
+        principles
+    - subject_id: coe:entity/visual_element
+      predicate: coe:supports
+      object_id: coe:entity/analogy
+      relationship_weight: expected
+      description: Analogies are supported by visual elements — visual metaphors, diagrams, and illustrations make abstract
+        comparisons concrete and memorable through dual coding per Visualisation Techniques research
+    - subject_id: coe:entity/visual_element
+      predicate: coe:supports
+      object_id: coe:entity/call_to_action
+      relationship_weight: expected
+      description: Calls to action are supported by visual elements — prominent buttons, directional cues, and high-contrast
+        visual treatments make CTAs visually distinct and actionable per Visualisation Techniques research
+    - subject_id: coe:entity/visual_element
+      predicate: coe:supports
+      object_id: coe:entity/clarity_dimension
+      relationship_weight: expected
+      description: Visual elements directly contribute to the clarity scoring dimension when properly designed per slide design
+        research monograph
+    - subject_id: coe:entity/visual_element
+      predicate: coe:supports
+      object_id: coe:entity/engagement_dimension
+      relationship_weight: expected
+      description: Engagement scoring is supported by visual elements — well-designed icons, photographs, diagrams, and infographics
+        sustain audience attention through dual coding and visual variety per Visualisation Techniques research
+    - subject_id: coe:entity/visual_element
+      predicate: coe:supports
+      object_id: coe:entity/narrative_hook
+      relationship_weight: expected
+      description: Visual hierarchy directs the viewer's eye first to the hook then context then call to action in static
+        media per Visual Communication and Storytelling
+    - subject_id: coe:entity/visual_element
+      predicate: coe:supports
+      object_id: coe:entity/storyboard_element
+      relationship_weight: optional
+      description: Storyboard elements for high-fidelity digital narratives are supported by low-fidelity sketchnote visual
+        elements (CLDs, icons, connectors) that serve as rapid prototyping precursors per Narrative Visualization research
+    - subject_id: coe:entity/visual_element
+      predicate: coe:supports
+      object_id: coe:entity/visual_narrative_element
+      relationship_weight: required
+      description: Visual elements (composition, framing, symbolism) are the tools used to express narrative story elements
+        visually per Visual Communication and Storytelling
+    id: coe:entity/visual_element
+    label: Visual Element
+    description: Individual design elements and components
+    home_domain: visual_communication
+    status: canonical
+    ner_label: VISUAL_ELEMENT
+    examples:
+    - icon
+    - logo
+    - photograph
+    - illustration
+    - infographic
+    - screenshot
+    - diagram
+    - flowchart
+    - timeline
+    - callout box
+    - pull quote
+    - data table
+    confidence_threshold: 0.75
+  - aliases:
+    - color
+    - colour
+    - palette
+    - scheme
+    recognition_patterns:
+    - \w+ color
+    - \w+ palette
+    - \w+ gradient
+    - '#[0-9A-Fa-f]{6}'
+    - rgb\(\d+
+    edges:
+    - subject_id: coe:entity/color_reference
+      predicate: coe:specialises
+      object_id: coe:entity/nonverbal_cue
+      relationship_weight: optional
+      description: Color functions as a specialised nonverbal cue; attire colour choices signal specific psychological associations
+        (navy=trust, black=authority, red=power) that perceivers process through thin-slicing per Anatomy of Presence research
+    - subject_id: coe:entity/color_reference
+      predicate: coe:enables
+      object_id: coe:entity/pathos_appeal
+      relationship_weight: expected
+      description: Color is a potent driver of emotion and behavior with cultural and contextual associations evoking specific
+        feelings per Visual Communication and Storytelling
+    - subject_id: coe:entity/color_reference
+      predicate: coe:limits
+      object_id: coe:entity/color_only_indicator
+      relationship_weight: expected
+      description: Color must never be the only means of conveying information; must be paired with labels, icons, or patterns
+        per Slide Deck Design Playbook
+    - subject_id: coe:entity/color_reference
+      predicate: coe:triggers
+      object_id: coe:entity/low_contrast_text
+      relationship_weight: required
+      description: Color references with insufficient contrast ratios directly trigger low contrast accessibility violations
+        per slide design research monograph
+    - subject_id: coe:entity/color_reference
+      predicate: coe:supports
+      object_id: coe:entity/accessibility_feature
+      relationship_weight: expected
+      description: Color choices must support accessibility through adequate contrast and consideration of color vision deficiency
+    - subject_id: coe:entity/color_reference
+      predicate: coe:supports
+      object_id: coe:entity/brand_element
+      relationship_weight: required
+      description: Color choices reinforce brand elements. Consistent color palettes across presentations strengthen brand
+        recognition and coherence. Brand colors become visual anchors that aid audience memory and emotional association.
+    - subject_id: coe:entity/color_reference
+      predicate: coe:supports
+      object_id: coe:entity/chart_type
+      relationship_weight: expected
+      description: Charts rely on color encoding to distinguish data series, categories, and values; color choice directly
+        affects chart readability per Visualisation Techniques research
+    - subject_id: coe:entity/color_reference
+      predicate: coe:supports
+      object_id: coe:entity/ethos_appeal
+      relationship_weight: optional
+      description: Color references support ethos appeal; navy signals trust/calm, black signals authority/sophistication,
+        grey signals neutrality, and red signals power — serving credibility establishment through enclothed cognition per
+        Anatomy of Presence research
+    - subject_id: coe:entity/color_reference
+      predicate: coe:supports
+      object_id: coe:entity/narrative_tension
+      relationship_weight: expected
+      description: Color progression (warm-to-cool, dark-to-bright) directly supports narrative tension by creating visual
+        emotional pacing across the slide sequence per visual_narrative_flow_pass
+    id: coe:entity/color_reference
+    label: Color Reference
+    description: Color names, values, and palette references
+    home_domain: visual_communication
+    status: canonical
+    ner_label: COLOR_REFERENCE
+    examples:
+    - brand blue
+    - primary color
+    - accent color
+    - gradient
+    - monochromatic
+    - complementary colors
+    - warm palette
+    - cool palette
+    - high contrast
+    - muted tones
+    confidence_threshold: 0.7
+  - aliases:
+    - copy
+    - font
+    - text
+    - type
+    recognition_patterns:
+    - \w+ text
+    - \w+ font
+    - \w+ headline
+    edges:
+    - subject_id: coe:entity/typography_element
+      predicate: coe:triggers
+      object_id: coe:entity/low_contrast_text
+      relationship_weight: expected
+      description: Typography choices in size weight and contrast with background directly affect legibility and can trigger
+        contrast violations per Visual Communication and Storytelling
+    - subject_id: coe:entity/typography_element
+      predicate: coe:triggers
+      object_id: coe:entity/readability_flag
+      relationship_weight: expected
+      description: Typography choices directly trigger readability flags when font size, weight or spacing violate legibility
+        thresholds per slide design research monograph
+    - subject_id: coe:entity/typography_element
+      predicate: coe:triggers
+      object_id: coe:entity/text_size_violation
+      relationship_weight: required
+      description: Typography elements below minimum size thresholds directly trigger small font size accessibility violations
+        per slide design research monograph
+    - subject_id: coe:entity/typography_element
+      predicate: coe:resolves
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: expected
+      description: Typographic hierarchy (H1 24-30pt, H2 18-20pt, H3 14-16pt, Body 10-12pt) reduces extraneous load by signaling
+        importance levels and enabling scanning without reading all content (Cognitive Interface, §2.2.1)
+    - subject_id: coe:entity/typography_element
+      predicate: coe:supports
+      object_id: coe:entity/accessibility_feature
+      relationship_weight: required
+      description: Typography choices (font size, weight, contrast) are critical accessibility features. Sans-serif fonts,
+        adequate contrast, and minimum 18pt sizes support visual accessibility for diverse audiences including those with
+        low vision.
+    - subject_id: coe:entity/typography_element
+      predicate: coe:supports
+      object_id: coe:entity/brand_element
+      relationship_weight: expected
+      description: Typefaces possess distinct personalities and communicate brand voice beyond the words they spell per Visual
+        Communication and Storytelling
+    - subject_id: coe:entity/typography_element
+      predicate: coe:supports
+      object_id: coe:entity/clarity_dimension
+      relationship_weight: expected
+      description: Clarity scoring is directly supported by typography element quality including legibility and hierarchy
+        per slide design research monograph | Typographic hierarchy supports clarity by enabling scanning behavior and signaling
+        information importance
+    - subject_id: coe:entity/typography_element
+      predicate: coe:supports
+      object_id: coe:entity/working_memory_marker
+      relationship_weight: expected
+      description: Working memory constraints are managed by typography elements — font size hierarchy, weight contrast, and
+        spacing create visual chunking that reduces cognitive load per slide design research monograph part 2
+    id: coe:entity/typography_element
+    label: Typography Element
+    description: Font and text styling references
+    home_domain: visual_communication
+    status: canonical
+    ner_label: TYPOGRAPHY_ELEMENT
+    examples:
+    - headline
+    - body text
+    - caption
+    - pull quote
+    - callout
+    - label
+    - title
+    - subtitle
+    - bullet point
+    - numbered list
+    confidence_threshold: 0.75
+  - aliases:
+    - concept
+    - guideline
+    - principle
+    - rule
+    recognition_patterns:
+    - visual \w+
+    - \w+ principle
+    - \w+ space
+    - given[/-]new
+    - ideal[/-]real
+    edges:
+    - subject_id: coe:entity/design_principle
+      predicate: coe:contains
+      object_id: coe:entity/color_reference
+      relationship_weight: expected
+      description: Design principles like contrast and hierarchy are implemented through color manipulation as a primary visual
+        tool per Visual Communication and Storytelling
+    - subject_id: coe:entity/design_principle
+      predicate: coe:contains
+      object_id: coe:entity/layout_pattern
+      relationship_weight: expected
+      description: Mayer's spatial contiguity requires layout patterns with labels adjacent to diagram elements per Applying
+        Mayer's Principles Practical Checklist
+    - subject_id: coe:entity/design_principle
+      predicate: coe:contains
+      object_id: coe:entity/typography_element
+      relationship_weight: expected
+      description: Design principles like hierarchy and emphasis are implemented through typography variations in size weight
+        and color per Visual Communication and Storytelling
+    - subject_id: coe:entity/design_principle
+      predicate: coe:enables
+      object_id: coe:entity/accessibility_feature
+      relationship_weight: expected
+      description: The Squint Test and 3-Second Rule ensure the focal point is cognitively accessible; design principles of
+        contrast and hierarchy enable accessibility of key information (Canonical Presentation Methodology)
+    - subject_id: coe:entity/design_principle
+      predicate: coe:enables
+      object_id: coe:entity/brand_element
+      relationship_weight: expected
+      description: CRAP Repetition principle establishes brand identity by repeating consistent fonts, colours, and styles
+        throughout designs, building visual cohesion and recognition per theory_crap_design_principles
+    - subject_id: coe:entity/design_principle
+      predicate: coe:enables
+      object_id: coe:entity/clarity_dimension
+      relationship_weight: required
+      description: Design principles (hierarchy, contrast, proximity, alignment, whitespace) are the foundational tools for
+        achieving clarity. They control perception and guide viewer attention sequentially through content. Without adherence
+        to design principles, clarity scores cannot be optimized.
+    - subject_id: coe:entity/design_principle
+      predicate: coe:enables
+      object_id: coe:entity/nonverbal_cue
+      relationship_weight: optional
+      description: Design principles enable nonverbal communication; in virtual contexts, background composition, lighting
+        design, and camera angle function as environmental design elements that carry credibility signals per Anatomy of Presence
+        research
+    - subject_id: coe:entity/design_principle
+      predicate: coe:enables
+      object_id: coe:entity/semiotic_arrangement
+      relationship_weight: expected
+      description: Design principles provide the compositional grammar through which semiotic signs construct meaning per
+        Visual Communication and Storytelling
+    - subject_id: coe:entity/design_principle
+      predicate: coe:enables
+      object_id: coe:entity/visual_quality_dimension
+      relationship_weight: required
+      description: Application of design principles (contrast, alignment, proximity, repetition) enables high visual quality
+    - subject_id: coe:entity/design_principle
+      predicate: coe:bridges
+      object_id: coe:entity/progressive_disclosure_marker
+      relationship_weight: expected
+      description: Design principles of progressive disclosure in visualization (ego-centric graph expansion, scrollytelling
+        chunking) directly instantiate the progressive disclosure cognitive load pattern per Narrative Visualization research
+    - subject_id: coe:entity/design_principle
+      predicate: coe:limits
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: expected
+      description: Effective design principles reduce extraneous cognitive load by organizing visual information for efficient
+        processing per Visual Communication and Storytelling
+    - subject_id: coe:entity/design_principle
+      predicate: coe:limits
+      object_id: coe:entity/text_density_marker
+      relationship_weight: optional
+      description: Design principles like progressive disclosure and annotative scaffolding limit cognitive debt by preventing
+        information overload when users encounter unfamiliar visualization grammars per Narrative Visualization research
+    - subject_id: coe:entity/design_principle
+      predicate: coe:supports
+      object_id: coe:entity/animation_type
+      relationship_weight: expected
+      description: Consistent clean on-brand graphic style with legible fonts and high-contrast colours are design principles
+        governing animation quality
+    - subject_id: coe:entity/design_principle
+      predicate: coe:supports
+      object_id: coe:entity/chart_type
+      relationship_weight: expected
+      description: Chart design must follow Tufte's data-ink ratio principle and CRAP framework for visual clarity per Slide
+        Deck Design Playbook
+    - subject_id: coe:entity/design_principle
+      predicate: coe:supports
+      object_id: coe:entity/cognitive_load_dimension
+      relationship_weight: expected
+      description: Cognitive load dimension scoring is supported by design principles (C.R.A.P. — Contrast, Repetition, Alignment,
+        Proximity) which manage the audience's attention economy and reduce processing burden per Canonical Presentation Methodology
+    - subject_id: coe:entity/design_principle
+      predicate: coe:supports
+      object_id: coe:entity/contrast_marker
+      relationship_weight: expected
+      description: Discourse contrast markers map to visual contrast principles using perceptual opposites to make elements
+        stand out per Visual Communication and Storytelling
+    - subject_id: coe:entity/design_principle
+      predicate: coe:supports
+      object_id: coe:entity/data_proof_slide
+      relationship_weight: expected
+      description: Multimedia principle requires data slides pair visual charts with verbal explanation for dual coding per
+        Applying Mayer's Principles Practical Checklist
+    - subject_id: coe:entity/design_principle
+      predicate: coe:supports
+      object_id: coe:entity/image_asset_type
+      relationship_weight: expected
+      description: Legible fonts, high-contrast colours, and simple clean style are design principles governing image asset
+        visual quality and consistency
+    - subject_id: coe:entity/design_principle
+      predicate: coe:supports
+      object_id: coe:entity/image_prompt_element
+      relationship_weight: optional
+      description: Consistent visual style, high contrast, and clean design principles should be encoded in image prompt style
+        parameters
+    - subject_id: coe:entity/design_principle
+      predicate: coe:supports
+      object_id: coe:entity/microlearning_format
+      relationship_weight: expected
+      description: Minimalist approach with coherence, signalling, and spatial contiguity reduces cognitive load while maintaining
+        engagement through clean, mobile-optimised layouts per AI Microlearning Guide
+    - subject_id: coe:entity/design_principle
+      predicate: coe:supports
+      object_id: coe:entity/storyboard_element
+      relationship_weight: expected
+      description: Design principles of clarity, simplicity, and consistency govern storyboard frame composition — minimal
+        shading, clean outlines, and spatial hierarchy ensure frames communicate layout and action without unnecessary detail
+        per Sketch Style for Wireframes and Storyboards
+    - subject_id: coe:entity/design_principle
+      predicate: coe:supports
+      object_id: coe:entity/video_shot_type
+      relationship_weight: expected
+      description: Rule-of-thirds composition, three-point lighting, and headroom framing are design principles governing
+        shot type selection
+    - subject_id: coe:entity/design_principle
+      predicate: coe:supports
+      object_id: coe:entity/visual_content_format
+      relationship_weight: expected
+      description: All visuals must serve instructional purpose per coherence principle; decorative images reduce recall with
+        negative effect size (d=-0.30)
+    - subject_id: coe:entity/design_principle
+      predicate: coe:supports
+      object_id: coe:entity/visual_element
+      relationship_weight: expected
+      description: Visual elements are governed by Gestalt principles (proximity, similarity, closure, figure-ground) and
+        dual coding theory for effective multimodal communication per Visualisation Techniques research
+    - subject_id: coe:entity/design_principle
+      predicate: coe:supports
+      object_id: coe:entity/working_memory_marker
+      relationship_weight: expected
+      description: Working memory limitations are managed by design principles (Contrast, Repetition, Alignment, Proximity,
+        Balance) which reduce cognitive load through visual consistency and hierarchy per Canonical Presentation Methodology
+    id: coe:entity/design_principle
+    label: Design Principle
+    description: Visual design principles and concepts
+    home_domain: visual_communication
+    status: canonical
+    ner_label: DESIGN_PRINCIPLE
+    examples:
+    - visual hierarchy
+    - white space
+    - alignment
+    - contrast
+    - repetition
+    - proximity
+    - balance
+    - emphasis
+    - unity
+    - gestalt
+    - Given/New
+    - Ideal/Real
+    - reading gravity
+    - Z-pattern reading
+    - F-pattern reading
+    anti_examples:
+    - guiding principle
+    - first principle
+    - business principle
+    confidence_threshold: 0.7
+  - aliases:
+    - animation
+    - effect
+    - motion
+    - transition
+    recognition_patterns:
+    - fade \w+
+    - slide \w+
+    - \w+ transition
+    - \w+ animation
+    edges:
+    - subject_id: coe:entity/slide_transition
+      predicate: coe:enables
+      object_id: coe:entity/progressive_disclosure_marker
+      relationship_weight: expected
+      description: Build animations and staged reveals enable progressive disclosure by controlling information flow rate
+        to manage cognitive load per Visualisation Techniques research
+    - subject_id: coe:entity/slide_transition
+      predicate: coe:bridges
+      object_id: coe:entity/video_edit_transition
+      relationship_weight: expected
+      description: Animation types bridge with video edit transitions as coordinated visual movement elements — animated chart
+        overlays appear alongside camera cuts during topic shifts per Visual Best Practices for Corporate Learning Videos
+    - subject_id: coe:entity/slide_transition
+      predicate: coe:limits
+      object_id: coe:entity/accessibility_feature
+      relationship_weight: expected
+      description: Animation types must be constrained by accessibility requirements — motion-sensitive users need reduced-motion
+        alternatives and essential content must remain accessible without animation per slide design research monograph part
+        4
+    - subject_id: coe:entity/slide_transition
+      predicate: coe:limits
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: expected
+      description: Animation principles mimicking real-world physics reduce cognitive load by making motion feel familiar
+        and intuitive per Visual Communication and Storytelling
+    - subject_id: coe:entity/slide_transition
+      predicate: coe:triggers
+      object_id: coe:entity/keyboard_inaccessibility
+      relationship_weight: optional
+      description: Animation-driven narratives that require mouse-hover or slider interaction create keyboard inaccessibility
+        barriers for users who cannot operate mouse-dependent controls per Narrative Visualization research
+    - subject_id: coe:entity/slide_transition
+      predicate: coe:supports
+      object_id: coe:entity/animation_only_carrier
+      relationship_weight: expected
+      description: Animation-only information carriers (flow particles showing rate, ghosting showing comparison, simulation
+        playback showing outcomes) require non-visual counterparts like ARIA live regions and sonification per Narrative Visualization
+        research
+    - subject_id: coe:entity/slide_transition
+      predicate: coe:supports
+      object_id: coe:entity/brand_element
+      relationship_weight: expected
+      description: Animation personality principles (anticipation, exaggeration, appeal) anthropomorphize interfaces to match
+        brand voice per Visual Communication and Storytelling
+    - subject_id: coe:entity/slide_transition
+      predicate: coe:supports
+      object_id: coe:entity/engagement_cue
+      relationship_weight: optional
+      description: Engagement cues in live delivery can be supported by purposeful animation types that direct audience attention
+        per slide design research monograph
+    - subject_id: coe:entity/slide_transition
+      predicate: coe:supports
+      object_id: coe:entity/slide_type
+      relationship_weight: optional
+      description: Animation types (reveal animations, motion graphics, transitions) should reinforce slide type function.
+        Data proof slides may use progressive reveal; narrative slides use transitions to signal scene shifts. Animation choice
+        depends on slide purpose.
+    - subject_id: coe:entity/slide_transition
+      predicate: coe:supports
+      object_id: coe:entity/visual_narrative_element
+      relationship_weight: expected
+      description: Animation types (flow particles, path-pulse animation, ghosting past values) serve as narrative devices
+        that make temporal dynamics and system behavior visible in interactive visualizations per Narrative Visualization
+        research
+    id: coe:entity/slide_transition
+    label: Slide Transition
+    description: Motion and transition types
+    home_domain: visual_communication
+    status: canonical
+    ner_label: ANIMATION_TYPE
+    examples:
+    - fade in
+    - slide in
+    - zoom
+    - morph
+    - wipe
+    - dissolve
+    - bounce
+    - ease in
+    - ease out
+    - parallax
+    confidence_threshold: 0.75
+  - aliases:
+    - frame
+    - page
+    - slide
+    recognition_patterns:
+    - \w+ slide
+    - \w+ page
+    - section \w+
+    edges:
+    - subject_id: coe:entity/slide_type
+      predicate: coe:bridges
+      object_id: coe:entity/video_shot_type
+      relationship_weight: expected
+      description: Slide types bridge with video shot types — green-screen compositing places slide content behind or beside
+        the presenter, requiring coordinated framing for each slide style per Visual Best Practices for Corporate Learning
+        Videos
+    - subject_id: coe:entity/slide_type
+      predicate: coe:supports
+      object_id: coe:entity/delivery_modality
+      relationship_weight: expected
+      description: The Live vs Leave-Behind delivery modality decision determines all subsequent design rules including font
+        size, density, and layout per Slide Deck Design Playbook
+    id: coe:entity/slide_type
+    label: Slide Type
+    description: Common presentation slide categories
+    home_domain: visual_communication
+    status: canonical
+    ner_label: SLIDE_TYPE
+    examples:
+    - title slide
+    - agenda slide
+    - section divider
+    - content slide
+    - comparison slide
+    - quote slide
+    - data slide
+    - thank you slide
+    - Q&A slide
+    - appendix slide
+    confidence_threshold: 0.8
+  - aliases:
+    - brand
+    - branding
+    - identity
+    recognition_patterns:
+    - brand \w+
+    - \w+ identity
+    - \w+ guidelines
+    edges:
+    - subject_id: coe:entity/brand_element
+      predicate: coe:limits
+      object_id: coe:entity/design_principle
+      relationship_weight: expected
+      description: Brand guidelines constrain design principle application — brand-mandated colors, fonts, and layouts override
+        general design best practices per Visualisation Techniques research
+    - subject_id: coe:entity/brand_element
+      predicate: coe:supports
+      object_id: coe:entity/image_asset_type
+      relationship_weight: expected
+      description: Explicit visual style guides for colours, fonts, and graphics ensure consistent branding across all image
+        assets in production
+    - subject_id: coe:entity/brand_element
+      predicate: coe:supports
+      object_id: coe:entity/storyboard_element
+      relationship_weight: expected
+      description: Brand style bibles and consistent color/character references prevent generic visuals in storyboards — brand
+        elements govern storyboard visual coherence per Research - Storyboard Best Practices
+    id: coe:entity/brand_element
+    label: Brand Element
+    description: Brand identity components
+    home_domain: visual_communication
+    status: canonical
+    ner_label: BRAND_ELEMENT
+    examples:
+    - logo
+    - wordmark
+    - brand colors
+    - brand fonts
+    - tagline
+    - brand guidelines
+    - visual identity
+    - brand assets
+    - style guide
+    confidence_threshold: 0.75
+  - aliases:
+    - a11y
+    - accessibility
+    - inclusive_design
+    recognition_patterns:
+    - alt \w+
+    - \w+ contrast
+    - WCAG \w+
+    - screen reader
+    edges:
+    - subject_id: coe:entity/accessibility_feature
+      predicate: coe:bridges
+      object_id: coe:entity/color_reference
+      relationship_weight: required
+      description: Color choices must work with accessibility features. High contrast color combinations support accessibility;
+        color-only information becomes inaccessible. Color decisions bridge visual design intent with inclusive design requirements.
+    - subject_id: coe:entity/accessibility_feature
+      predicate: coe:limits
+      object_id: coe:entity/typography_element
+      relationship_weight: expected
+      description: Accessibility requirements constrain typography choices — minimum font sizes, sufficient line spacing,
+        and sans-serif defaults ensure readability for all users per slide deck design playbook
+    - subject_id: coe:entity/accessibility_feature
+      predicate: coe:triggers
+      object_id: coe:entity/quality_indicator
+      relationship_weight: expected
+      description: Accessibility features trigger quality indicators — accessibility compliance checking is a defined quality
+        gate activity during development per course-creation-flow
+    - subject_id: coe:entity/accessibility_feature
+      predicate: coe:resolves
+      object_id: coe:entity/keyboard_inaccessibility
+      relationship_weight: required
+      description: Accessibility features (focus management, Tab-navigable data points, ARIA live regions) directly resolve
+        keyboard inaccessibility barriers in interactive data visualizations per Narrative Visualization research
+    - subject_id: coe:entity/accessibility_feature
+      predicate: coe:resolves
+      object_id: coe:entity/missing_alt_indicator
+      relationship_weight: required
+      description: Accessibility features including extended descriptions (aria-describedby), shadow DOM structures, and data
+        sonification resolve missing alt-text barriers for complex data visualizations per Narrative Visualization research
+    - subject_id: coe:entity/accessibility_feature
+      predicate: coe:supports
+      object_id: coe:entity/accessibility_dimension
+      relationship_weight: required
+      description: Accessibility scoring dimension is supported by accessibility features including WCAG contrast ratios and
+        cognitive accessibility guidelines per Visual Communication and Storytelling
+    - subject_id: coe:entity/accessibility_feature
+      predicate: coe:supports
+      object_id: coe:entity/chart_type
+      relationship_weight: expected
+      description: Charts require accessibility features (alt text descriptions, colour-blind safe palettes, pattern fills)
+        to be perceivable by all audiences per Visualisation Techniques research
+    - subject_id: coe:entity/accessibility_feature
+      predicate: coe:supports
+      object_id: coe:entity/complex_slide
+      relationship_weight: expected
+      description: Complex slides containing interactive visualizations (simulations, network explorers) require accessibility
+        features including dual-structure patterns, ARIA live regions, and keyboard focus management per Narrative Visualization
+        research
+    - subject_id: coe:entity/accessibility_feature
+      predicate: coe:supports
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: expected
+      description: Extraneous load is reduced by accessibility features — neurodiversity accommodations (ADHD-friendly, dyslexia-friendly
+        modes) directly strip extraneous processing demands per module-integration-strategy
+    - subject_id: coe:entity/accessibility_feature
+      predicate: coe:supports
+      object_id: coe:entity/job_aid_format
+      relationship_weight: expected
+      description: Job aids must be accessible and distributable with digital versions for mobile tapping and paper versions
+        printable at standard size
+    - subject_id: coe:entity/accessibility_feature
+      predicate: coe:supports
+      object_id: coe:entity/learner_characteristic
+      relationship_weight: required
+      description: Accessibility features support learner characteristics — neurodiversity accommodations (ADHD-friendly,
+        autism-friendly, dyslexia-friendly) are generated based on learner profiles per module-integration-strategy
+    - subject_id: coe:entity/accessibility_feature
+      predicate: coe:supports
+      object_id: coe:entity/microlearning_format
+      relationship_weight: required
+      description: 'WCAG 2.1 Level AA compliance is mandatory for microlearning: 4.5:1 contrast, keyboard nav, screen reader
+        compatibility, 200% text resizing per AI Microlearning Guide | WCAG 2.1 AA compliance, keyboard navigation, screen
+        reader compatibility, 200% text resizing, and neurodiversity accommodations are mandatory for microlearning per AI
+        Microlearning Guide'
+    - subject_id: coe:entity/accessibility_feature
+      predicate: coe:supports
+      object_id: coe:entity/visual_content_format
+      relationship_weight: expected
+      description: WCAG 2.1 AA compliance required for visual content including 4.5:1 contrast ratios, alt text, captions,
+        and mobile optimisation
+    - subject_id: coe:entity/accessibility_feature
+      predicate: coe:contrasts_with
+      object_id: coe:entity/color_only_indicator
+      relationship_weight: expected
+      description: Color-only encoding is the inverse of proper accessibility features; UxD mandates multi-channel redundancy
+        for navigation markers
+    id: coe:entity/accessibility_feature
+    label: Accessibility Feature
+    description: Accessibility-related visual elements
+    home_domain: visual_communication
+    status: canonical
+    ner_label: ACCESSIBILITY_FEATURE
+    examples:
+    - alt text
+    - color contrast
+    - screen reader
+    - WCAG compliance
+    - keyboard navigation
+    - focus indicator
+    - aria label
+    - reading order
+    confidence_threshold: 0.7
+  - aliases:
+    - fidelity
+    - quality
+    - resolution
+    recognition_patterns:
+    - high \w+
+    - low \w+
+    - \w+ quality
+    - \w+ resolution
+    edges:
+    - subject_id: coe:entity/quality_indicator
+      predicate: coe:resolves
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: expected
+      description: Tufte's Data-Ink Ratio quality indicator drives removal of chart junk (gridlines, 3D effects, backgrounds)
+        that generates extraneous cognitive load (Cognitive Interface, §4.1)
+    - subject_id: coe:entity/quality_indicator
+      predicate: coe:supports
+      object_id: coe:entity/chart_type
+      relationship_weight: expected
+      description: Chart selection quality is governed by Cognitive Fit Theory — tables for symbolic/lookup tasks, line charts
+        for trends, bar charts for comparison; misfit degrades comprehension (Cognitive Interface, §4.2)
+    - subject_id: coe:entity/quality_indicator
+      predicate: coe:supports
+      object_id: coe:entity/data_proof_slide
+      relationship_weight: expected
+      description: Data proof slide quality is measured by Tufte's Data-Ink Ratio — removal of gridlines, 3D effects, and
+        chart junk maximizes data communication (Cognitive Interface, §4.1)
+    - subject_id: coe:entity/quality_indicator
+      predicate: coe:supports
+      object_id: coe:entity/engagement_dimension
+      relationship_weight: expected
+      description: Quality indicators (image resolution, design consistency, visual polish) support engagement scoring by
+        sustaining audience attention through professional visual presentation per slide design research monograph part 2
+    - subject_id: coe:entity/quality_indicator
+      predicate: coe:supports
+      object_id: coe:entity/visual_quality_dimension
+      relationship_weight: required
+      description: Quality indicators (image resolution, design consistency, polish, attention to detail) directly support
+        visual quality dimension assessment. Presentations with high quality indicators score well on visual quality metrics.
+    id: coe:entity/quality_indicator
+    label: Quality Indicator
+    description: Visual quality assessment markers
+    home_domain: visual_communication
+    status: canonical
+    ner_label: QUALITY_INDICATOR
+    examples:
+    - high resolution
+    - pixelated
+    - blurry
+    - crisp
+    - professional
+    - polished
+    - rough draft
+    - stock photo
+    - custom illustration
+    confidence_threshold: 0.65
+  - aliases:
+    - compositional structure
+    - spatial arrangement
+    - visual grammar
+    recognition_patterns:
+    - (left|right) (panel|column|side)
+    - (upper|top|lower|bottom) (section|half|panel)
+    - before.+left.+after.+right
+    - current state.+left.+future.+right
+    edges:
+    - subject_id: coe:entity/semiotic_arrangement
+      predicate: coe:specialises
+      object_id: coe:entity/metaphor
+      relationship_weight: expected
+      description: Symbolic signs where signifier has no logical connection to signified represent learned cultural metaphorical
+        meaning per Visual Communication and Storytelling
+    - subject_id: coe:entity/semiotic_arrangement
+      predicate: coe:enables
+      object_id: coe:entity/semiotic_coherence_dimension
+      relationship_weight: expected
+      description: Intentional semiotic arrangements using visual grammar directly enable semiotic coherence scoring by providing
+        assessable compositional structure per Visualisation Techniques research
+    - subject_id: coe:entity/semiotic_arrangement
+      predicate: coe:enables
+      object_id: coe:entity/visual_narrative_element
+      relationship_weight: required
+      description: Semiotics is the explicit bridge connecting visual communication to visual storytelling through sign encoding
+        and decoding per Visual Communication and Storytelling
+    - subject_id: coe:entity/semiotic_arrangement
+      predicate: coe:limits
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: expected
+      description: Effective semiotic composition (intersemiotic complementarity using Elaboration and Extension modes) directly
+        limits extraneous cognitive load; semiotic conflicts and decorative images increase it per Visual Analysis of Slide
+        Decks
+    - subject_id: coe:entity/semiotic_arrangement
+      predicate: coe:limits
+      object_id: coe:entity/working_memory_marker
+      relationship_weight: expected
+      description: Overloaded semiotic arrangements limit working memory when too many symbolic elements compete for processing
+        — arrangement must stay purposeful and coherent per Visual Best Practices for Corporate Learning Videos
+    - subject_id: coe:entity/semiotic_arrangement
+      predicate: coe:supports
+      object_id: coe:entity/analogy
+      relationship_weight: expected
+      description: Analogies leverage semiotic iconic signs where the signifier resembles the signified to make abstract concepts
+        concrete per Visual Communication and Storytelling
+    - subject_id: coe:entity/semiotic_arrangement
+      predicate: coe:supports
+      object_id: coe:entity/brand_element
+      relationship_weight: expected
+      description: A brand is a symbol with mission and values coded into semiotic signifiers that audiences decode culturally
+        per Visual Communication and Storytelling
+    - subject_id: coe:entity/semiotic_arrangement
+      predicate: coe:supports
+      object_id: coe:entity/germane_load_marker
+      relationship_weight: expected
+      description: Effective semiotic arrangements (Elaboration and Extension modes) directly support germane processing by
+        helping viewers build mental models through visual structure per Visual Analysis of Slide Decks | Dual-coded semiotic
+        arrangements (text + visuals) support germane processing by creating two memory pathways — verbal and visual — doubling
+        recall chances per Infographics research on dual coding theory
+    - subject_id: coe:entity/semiotic_arrangement
+      predicate: coe:supports
+      object_id: coe:entity/visual_demonstration
+      relationship_weight: expected
+      description: Visual demonstrations depend on semiotic arrangement for structural meaning — Elaboration mode clarifies
+        while Extension mode adds new information; Decoration mode adds no evidential value per Visual Analysis of Slide Decks
+    id: coe:entity/semiotic_arrangement
+    label: Semiotic Arrangement
+    description: Spatial arrangement signal reflecting Kress & van Leeuwen's visual grammar — Given/New (left/right axis)
+      and Ideal/Real (top/bottom axis) positioning as meaning-making structures
+    home_domain: visual_communication
+    status: canonical
+    ner_label: SEMIOTIC_ARRANGEMENT
+    examples:
+    - The 'before' state on the left, the 'after' state on the right.
+    - Aspirational vision at the top, operational detail below.
+    - Given information in the left panel; new information on the right.
+    - Ideal outcome framed in the upper section.
+    - Current state left, future state right.
+    - Headline promise at top; evidence below the fold.
+    - Problem in the upper-left; solution in the lower-right.
+    confidence_threshold: 0.65
+  - aliases:
+    - CLT violation
+    - cognitive overload
+    - redundancy effect
+    - split-attention
+    recognition_patterns:
+    - wall of text
+    - too many (bullets|points)
+    - text[- ]heavy \w+
+    - dense (content|slide|paragraph)
+    - split[- ]attention
+    - duplicat(es|ing) \w+
+    edges:
+    - subject_id: coe:entity/text_density_marker
+      predicate: coe:specialises
+      object_id: coe:entity/extraneous_load_marker
+      relationship_weight: expected
+      description: Visual cognitive debt specialises extraneous load — rapid-fire edits, busy backgrounds, and redundant on-screen
+        text create visual cognitive debt that compounds over time per Visual Best Practices for Corporate Learning Videos
+    - subject_id: coe:entity/text_density_marker
+      predicate: coe:limits
+      object_id: coe:entity/clarity_dimension
+      relationship_weight: required
+      description: Cognitive debt markers (wall of text, split attention, bullet overload) directly limit clarity dimension
+        scores by obscuring the presenter's core message under visual noise per slide design research monograph part 4
+    - subject_id: coe:entity/text_density_marker
+      predicate: coe:limits
+      object_id: coe:entity/clt_compliance_dimension
+      relationship_weight: required
+      description: Cognitive debt markers (poorly explained concepts, missing context, excessive jargon) accumulate during
+        presentations and reduce clt_compliance scores. Audiences with high cognitive debt cannot process subsequent complex
+        information.
+    - subject_id: coe:entity/text_density_marker
+      predicate: coe:limits
+      object_id: coe:entity/quality_indicator
+      relationship_weight: expected
+      description: Cognitive debt directly degrades slide quality scores — slides scoring below 34/50 on the Slide Cognitive
+        Score indicate redesign-level debt per Slide Deck Design Playbook
+    - subject_id: coe:entity/text_density_marker
+      predicate: coe:resolves
+      object_id: coe:entity/design_principle
+      relationship_weight: expected
+      description: CRAP design principles (Contrast, Alignment, Proximity) resolve cognitive debt — Proximity prevents scattered
+        layouts, Alignment eliminates unstructured placement, Contrast prevents difficult-to-read content per theory_crap_design_principles
+    - subject_id: coe:entity/text_density_marker
+      predicate: coe:resolves
+      object_id: coe:entity/progressive_disclosure_marker
+      relationship_weight: expected
+      description: Progressive disclosure techniques (layered builds, staged reveals) resolve accumulated cognitive debt by
+        breaking dense content into sequenced digestible units per slide design research monograph part 4
+    id: coe:entity/text_density_marker
+    label: Text Density Marker
+    description: Visual anti-patterns that increase cognitive load — detectable signals of split-attention, redundancy effect,
+      wall-of-text, and bullet overload violations of Cognitive Load Theory
+    home_domain: visual_communication
+    status: canonical
+    ner_label: COGNITIVE_DEBT
+    examples:
+    - Wall of text — no visual relief.
+    - 12 bullets on one slide.
+    - Speaker notes duplicating slide text verbatim.
+    - Chart without label, label without chart (split-attention).
+    - Dense paragraph content without visual hierarchy.
+    - Every point in paragraph form instead of structured format.
+    - Text box repeating the chart title word for word.
+    - Slide with 8 data points and no clear hierarchy.
+    confidence_threshold: 0.68
+  - aliases:
+    - action title
+    - dot-dash label
+    - insight headline
+    - narrative annotation
+    recognition_patterns:
+    - the (takeaway|insight|implication) (is|:)
+    - \w+ — \w+ (since|after|in \d+)
+    - this is the (inflection|critical|turning) point
+    edges:
+    - subject_id: coe:entity/visual_narrative_element
+      predicate: coe:contains
+      object_id: coe:entity/chart_type
+      relationship_weight: expected
+      description: Action captions transform chart types into visual narrative elements per Tufte's evidence-based approach
+    - subject_id: coe:entity/visual_narrative_element
+      predicate: coe:contains
+      object_id: coe:entity/claim
+      relationship_weight: required
+      description: Visual narrative elements (action titles, insight labels) contain claims as their core argumentative content
+        — the action title IS the claim made visible per slide design research monograph part 3
+    - subject_id: coe:entity/visual_narrative_element
+      predicate: coe:enables
+      object_id: coe:entity/clarity_dimension
+      relationship_weight: required
+      description: Visual narrative elements (action titles, dot-dash logic) with full result-mechanism-timeframe structure
+        enable high clarity scores by making the presenter's argument visually explicit per slide design research monograph
+        part 4
+    - subject_id: coe:entity/visual_narrative_element
+      predicate: coe:enables
+      object_id: coe:entity/narrative_quality_dimension
+      relationship_weight: expected
+      description: Visual narrative elements (action titles, dot-dash annotations, insight labels) directly enable narrative
+        quality scoring by providing assessable narrative structure per Visualisation Techniques research
+    - subject_id: coe:entity/visual_narrative_element
+      predicate: coe:triggers
+      object_id: coe:entity/germane_load_marker
+      relationship_weight: expected
+      description: Visual narrative elements that require users to interpret clusters, trace paths, or run simulations trigger
+        germane cognitive load — productive processing that builds mental models of the data per Narrative Visualization research
+    - subject_id: coe:entity/visual_narrative_element
+      predicate: coe:triggers
+      object_id: coe:entity/narrative_tension
+      relationship_weight: expected
+      description: The visual arc uses contrast (dissonant colors, angular lines, asymmetry) to build narrative tension during
+        conflict phase per Visual Communication and Storytelling
+    - subject_id: coe:entity/visual_narrative_element
+      predicate: coe:triggers
+      object_id: coe:entity/resolution_signal
+      relationship_weight: expected
+      description: The visual arc returns to affinity (harmonious colors, balanced compositions) to signal narrative resolution
+        per Visual Communication and Storytelling
+    - subject_id: coe:entity/visual_narrative_element
+      predicate: coe:supports
+      object_id: coe:entity/narrative_hook
+      relationship_weight: expected
+      description: Narrative hooks are visually supported through hierarchy that directs viewer attention to the hook first
+        per Visual Communication and Storytelling | Visual narrative elements such as story-driven simulation prompts ('What
+        if we double R&D budget?') function as narrative hooks that draw users into interactive data exploration per Narrative
+        Visualization research
+    - subject_id: coe:entity/visual_narrative_element
+      predicate: coe:supports
+      object_id: coe:entity/narrative_slide
+      relationship_weight: expected
+      description: Visual narrative elements are the defining content components of narrative slide types per slide design
+        research monograph
+    - subject_id: coe:entity/visual_narrative_element
+      predicate: coe:supports
+      object_id: coe:entity/pathos_appeal
+      relationship_weight: expected
+      description: Pathos appeals are manufactured through synchronized visual and emotional arcs creating emotional resonance
+        in audiences per Visual Communication and Storytelling
+    - subject_id: coe:entity/visual_narrative_element
+      predicate: coe:supports
+      object_id: coe:entity/pedagogical_sequence_marker
+      relationship_weight: expected
+      description: Pedagogical sequencing is supported by the three synchronized arcs narrative visual and emotional progression
+        per Visual Communication and Storytelling
+    - subject_id: coe:entity/visual_narrative_element
+      predicate: coe:supports
+      object_id: coe:entity/visual_demonstration
+      relationship_weight: required
+      description: Visual demonstrations rely on visual narrative elements to show rather than tell activating sensory and
+        motor cortex per Visual Communication and Storytelling
+    id: coe:entity/visual_narrative_element
+    label: Visual Narrative Element
+    description: Slide-level narrative elements that signal structured argumentation — action titles, dot-dash logic, SCQA
+      visual structure, and annotation markers
+    home_domain: visual_communication
+    status: canonical
+    ner_label: VISUAL_NARRATIVE
+    examples:
+    - 'Action title: ''Costs fell 40% after automation — proving ROI in 90 days'''
+    - 'Dot-dash label: ''Market Share — up 12pp since 2024'''
+    - 'Callout annotation: ''This is the inflection point'''
+    - 'Data annotation: ''↑23% YoY — above market benchmark'''
+    - 'Insight label: ''The key takeaway: speed, not scale, is the differentiator'''
+    - 'Headline title: ''Three facts that will change your view of this market'''
+    confidence_threshold: 0.67
+  - aliases:
+    - attention anchor
+    - dominant element
+    - visual anchor
+    recognition_patterns:
+    - (focal|attention|visual) (point|anchor|center)
+    - (dominant|primary|hero) (element|visual|image)
+    id: coe:entity/focal_point
+    label: Focal Point
+    description: The single dominant visual element on a slide that anchors audience attention. Created through contrast (color,
+      size, boldness). Every slide must have exactly one focal point. Absence of a focal point causes audience scanning confusion
+      and increased extraneous cognitive load.
+    home_domain: visual_communication
+    status: canonical
+    edges: []
+    ner_label: FOCAL_POINT
+    examples:
+    - the hero image is the focal point
+    - make the chart the focal point of this slide
+    - the title serves as the focal point
+    anti_examples:
+    - focus on the main topic
+    - the focal area of the research
+    confidence_threshold: 0.7
+  - aliases:
+    - breathing room
+    - negative space
+    recognition_patterns:
+    - (white|negative|empty|open) space
+    - (breathing|visual) room
+    - margin(s?) (increase|add|expand)
+    id: coe:entity/white_space
+    label: White Space
+    description: An active design tool, not empty space. Functions include isolating elements, providing breathing room, and
+      strengthening focal points by eliminating nearby attention competitors. Recommended 40-60% of slide area. Margin whitespace
+      15-20% each side.
+    home_domain: visual_communication
+    status: canonical
+    edges: []
+    ner_label: WHITE_SPACE
+    examples:
+    - add more white space around the chart
+    - the slide needs breathing room
+    - increase margins to 15%
+    anti_examples:
+    - the white paper
+    - blank slide
+    confidence_threshold: 0.7
+  - aliases:
+    - chart clutter
+    - visual noise
+    recognition_patterns:
+    - chart(junk| junk| clutter| noise)
+    - (3D|three-D) (effect|chart|bar|pie)
+    - (heavy|thick|dark) grid ?lines
+    - (decorative|ornamental) (background|border|element) (on|in) (chart|graph)
+    id: coe:entity/chartjunk
+    label: Chartjunk
+    description: Any visual element in a chart that does not represent data and therefore distracts from the message (Tufte).
+      Includes 3D effects, moire patterns, heavy gridlines, decorative backgrounds, separate legends. Classification as pure
+      source of extraneous cognitive load.
+    home_domain: visual_communication
+    status: canonical
+    edges: []
+    ner_label: CHARTJUNK
+    examples:
+    - remove the 3D effects from the chart
+    - the gridlines are too heavy
+    - that decorative background on the graph is chartjunk
+    anti_examples:
+    - the chart data
+    - junk email
+    confidence_threshold: 0.7
+  - aliases:
+    - color palette
+    - colour scheme
+    recognition_patterns:
+    - (monochromatic|analogous|complementary|complex|achromatic) (scheme|palette|colors?)
+    - (color|colour) (scheme|palette) (type|choice|selection)
+    id: coe:entity/color_scheme_type
+    label: Color Scheme Type
+    description: Evidence-based color scheme types with cognitive load implications (Kimmons, 2020)
+    home_domain: visual_communication
+    status: canonical
+    edges: []
+    ner_label: COLOR_SCHEME_TYPE
+    examples:
+    - use a monochromatic color scheme
+    - the palette is complementary
+    - switch to achromatic for the training deck
+    anti_examples:
+    - the color of the text
+    - scheme for the project
+    confidence_threshold: 0.7
+  - id: coe:entity/gestalt_principles_viz
+    label: Gestalt Principles Viz
+    description: 'Visual perception principles applied to data visualization to reduce clutter: Proximity, Similarity, Enclosure,
+      Closure, Continuity, and Connection.'
+    home_domain: visual_communication
+    status: canonical
+    recognition_patterns:
+    - (?i)\bGestalt\s+Principles\s+Viz\b
+    edges: []
+    ner_label: GESTALT_VIZ
+  - id: coe:entity/preattentive_attributes
+    label: Preattentive Attributes
+    description: Visual properties (Color, Size, Orientation, Position) processed pre-consciously by System 1 to highlight
+      critical insights instantly.
+    home_domain: visual_communication
+    status: canonical
+    recognition_patterns:
+    - (?i)\bPreattentive\s+Attributes\b
+    edges: []
+    ner_label: PREATTENTIVE
+  - id: coe:entity/signage_principle
+    label: Signage Principle
+    description: Design principle stating that slides are a 'glance media' (like billboards) and must pass the 3-second Glance
+      Test.
+    home_domain: visual_communication
+    status: canonical
+    recognition_patterns:
+    - (?i)\bSignage\s+Principle\b
+    edges: []
+    ner_label: SIGNAGE_PRIN
+- id: coe:artifact/visual_communication/design_system_specs
+  label: Design System Layout Specs & Style Taxonomies
+  description: Governed dimensions, grid systems, and visual style taxonomies.
+  version: 4.0.0
+  last_updated: '2026-08-15'
+  entities:
+  - id: coe:entity/visual_communication/dimension_hero_banner
+    label: 'Layout Spec: Hero Banner'
+    description: 'Visual layout standard: Hero Banner = {''aspect_ratio'': ''3:1'', ''width_px'': 1200, ''height_px'': 400,
+      ''padding_px'': 48}.'
+    home_domain: visual_communication
+    status: canonical
+    ner_label: LAYOUT_SPEC
+    recognition_patterns:
+    - (?i)\bHero Banner\b
+  - id: coe:entity/visual_communication/dimension_presentation_slide
+    label: 'Layout Spec: Presentation Slide'
+    description: 'Visual layout standard: Presentation Slide = {''aspect_ratio'': ''16:9'', ''width_px'': 1920, ''height_px'':
+      1080, ''safe_margin_px'': {''top'': 80, ''bottom'': 80, ''left'': 100, ''right'': 100}}.'
+    home_domain: visual_communication
+    status: canonical
+    ner_label: LAYOUT_SPEC
+    recognition_patterns:
+    - (?i)\bPresentation Slide\b
+  - id: coe:entity/visual_communication/dimension_document_page
+    label: 'Layout Spec: Document Page'
+    description: 'Visual layout standard: Document Page = {''standard'': ''A4'', ''width_mm'': 210, ''height_mm'': 297, ''margins_mm'':
+      {''top'': 25, ''bottom'': 25, ''left'': 25, ''right'': 25}}.'
+    home_domain: visual_communication
+    status: canonical
+    ner_label: LAYOUT_SPEC
+    recognition_patterns:
+    - (?i)\bDocument Page\b
+  - id: coe:entity/visual_communication/dimension_interactive_scenario
+    label: 'Layout Spec: Interactive Scenario'
+    description: 'Visual layout standard: Interactive Scenario = {''max_width_px'': 600, ''container_padding_px'': 40, ''choice_button'':
+      {''min_height_px'': 48, ''padding_vertical_px'': 12, ''padding_horizontal_px'': 16, ''gap_between_buttons_px'': 12},
+      ''avatar'': {''size_px'': 64, ''border_width_px'': 2, ''gap_to_text_px'': 16}, ''feedback_panel'': {''padding_px'':
+      16, ''border_width_px'': 1}, ''design_bounds'': {''max_choices_per_node'': 3, ''remediation_loop_limit'': 2}}.'
+    home_domain: visual_communication
+    status: canonical
+    ner_label: LAYOUT_SPEC
+    recognition_patterns:
+    - (?i)\bInteractive Scenario\b
+  - id: coe:entity/visual_communication/dimension_quizzes
+    label: 'Layout Spec: Quizzes'
+    description: 'Visual layout standard: Quizzes = {''question_spacing_px'': 24, ''choice_item'': {''padding_vertical_px'':
+      10, ''padding_horizontal_px'': 12, ''min_touch_target_px'': 44}, ''matrix_question'': {''cell_padding_px'': 8, ''header_font_size_pt'':
+      11}, ''design_bounds'': {''preferred_options_count'': 3}}.'
+    home_domain: visual_communication
+    status: canonical
+    ner_label: LAYOUT_SPEC
+    recognition_patterns:
+    - (?i)\bQuizzes\b
+  - id: coe:entity/visual_communication/dimension_lottie_animation
+    label: 'Layout Spec: Lottie Animation'
+    description: 'Visual layout standard: Lottie Animation = {''default_width'': 300, ''default_height'': 300}.'
+    home_domain: visual_communication
+    status: canonical
+    ner_label: LAYOUT_SPEC
+    recognition_patterns:
+    - (?i)\bLottie Animation\b
+  - id: coe:entity/visual_communication/dimension_svg_canvas
+    label: 'Layout Spec: Svg Canvas'
+    description: 'Visual layout standard: Svg Canvas = {''default_width'': 800, ''default_height'': 600, ''title_font_size_px'':
+      24, ''subtitle_font_size_px'': 14, ''label_font_size_px'': 12}.'
+    home_domain: visual_communication
+    status: canonical
+    ner_label: LAYOUT_SPEC
+    recognition_patterns:
+    - (?i)\bSvg Canvas\b
+  - id: coe:entity/visual_communication/dimension_knowledge_organiser
+    label: 'Layout Spec: Knowledge Organiser'
+    description: 'Visual layout standard: Knowledge Organiser = {''paper_size'': ''A4'', ''flipped'': True, ''min_margin_top_cm'':
+      0.6, ''min_margin_bottom_cm'': 0.6, ''min_margin_left_cm'': 0.8, ''min_margin_right_cm'': 0.8, ''grid'': {''row_gutter_pt'':
+      8.0, ''column_gutter_pt'': 10.0, ''base_gutter_pt'': 6.0}, ''grid_templates'': {''1'': {''columns'': ''1fr'', ''rows'':
+      ''1fr''}, ''2'': {''columns'': ''1fr, 1fr'', ''rows'': ''1fr''}, ''3'': {''columns'': ''1fr, 1fr, 1fr'', ''rows'': ''1fr''},
+      ''4'': {''columns'': ''1fr, 1fr'', ''rows'': ''1fr, 1fr''}, ''6'': {''columns'': ''1fr, 1fr, 1fr'', ''rows'': ''1fr,
+      1fr''}, ''8'': {''columns'': ''1fr, 1fr, 1fr, 1fr'', ''rows'': ''1fr, 1fr''}}, ''title_banner'': {''radius_pt'': 6.0,
+      ''padding_top_pt'': 10.0, ''padding_bottom_pt'': 10.0, ''top_stroke_width_pt'': 4.0, ''font_size_pt'': 24.0}, ''cards'':
+      {''border_radius_pt'': 8.0, ''padding_pt'': 8.0, ''stroke_width_pt'': 1.5}, ''sub_cards'': {''border_radius_pt'': 5.0,
+      ''left_stroke_width_pt'': 4.5, ''padding_top_pt'': 7.0, ''padding_bottom_pt'': 7.0, ''padding_left_pt'': 10.0, ''padding_right_pt'':
+      10.0, ''row_gutter_pt'': 6.0}, ''header_banner'': {''border_radius_pt'': 5.0, ''padding_top_pt'': 7.0, ''padding_bottom_pt'':
+      7.0, ''padding_left_pt'': 10.0, ''font_size_pt'': 15.0}}.'
+    home_domain: visual_communication
+    status: canonical
+    ner_label: LAYOUT_SPEC
+    recognition_patterns:
+    - (?i)\bKnowledge Organiser\b
+  - id: coe:entity/visual_communication/dimension_retrieval_grid
+    label: 'Layout Spec: Retrieval Grid'
+    description: 'Visual layout standard: Retrieval Grid = {''paper_size'': ''A4'', ''flipped'': False, ''min_margin_top_cm'':
+      1.2, ''min_margin_bottom_cm'': 1.2, ''min_margin_left_cm'': 1.2, ''min_margin_right_cm'': 1.2, ''grid'': {''row_gutter_pt'':
+      8.0, ''column_gutter_pt'': 10.0}, ''title_banner'': {''radius_pt'': 6.0, ''padding_top_pt'': 10.0, ''padding_bottom_pt'':
+      10.0, ''top_stroke_width_pt'': 4.0, ''font_size_pt'': 20.0}, ''instructions_box'': {''border_radius_pt'': 5.0, ''padding_pt'':
+      9.0, ''left_stroke_width_pt'': 4.0, ''font_size_pt'': 10.0}, ''column_header'': {''border_radius_pt'': 5.0, ''padding_top_pt'':
+      6.0, ''padding_bottom_pt'': 6.0, ''font_size_pt'': 12.0}, ''question_cell'': {''border_radius_pt'': 6.0, ''padding_pt'':
+      8.0, ''stroke_width_pt'': 1.0, ''left_stroke_width_pt'': 4.0, ''row_gutter_pt'': 6.0, ''prompt_font_size_pt'': 10.0,
+      ''marks_font_size_pt'': 8.0, ''answer_space_cm'': 1.1, ''answer_rule_width_pt'': 0.5, ''border_token'': ''neutral_light'',
+      ''answer_rule_token'': ''neutral_dark''}, ''bucket_tokens'': {''last_lesson'': ''primary'', ''last_week'': ''secondary'',
+      ''last_term'': ''accent_3'', ''last_year'': ''accent_1'', ''red'': ''danger'', ''amber'': ''warning'', ''green'': ''success''},
+      ''design_bounds'': {''max_columns'': 4, ''max_questions_per_column'': 5}}.'
+    home_domain: visual_communication
+    status: canonical
+    ner_label: LAYOUT_SPEC
+    recognition_patterns:
+    - (?i)\bRetrieval Grid\b
+  - id: coe:entity/visual_communication/dimension_flowchart
+    label: 'Layout Spec: Flowchart'
+    description: 'Visual layout standard: Flowchart = {''default_width_px'': 600, ''default_height_px'': 400, ''node'': {''padding_px'':
+      10, ''stroke_width_px'': 2, ''font_size_pt'': 11}}.'
+    home_domain: visual_communication
+    status: canonical
+    ner_label: LAYOUT_SPEC
+    recognition_patterns:
+    - (?i)\bFlowchart\b
+  - id: coe:entity/visual_communication/dimension_timeline
+    label: 'Layout Spec: Timeline'
+    description: 'Visual layout standard: Timeline = {''default_width_px'': 800, ''default_height_px'': 200, ''item'': {''node_radius_pt'':
+      6.0, ''stroke_width_pt'': 2.0, ''font_size_pt'': 10.0}}.'
+    home_domain: visual_communication
+    status: canonical
+    ner_label: LAYOUT_SPEC
+    recognition_patterns:
+    - (?i)\bTimeline\b
+  - id: coe:entity/visual_communication/dimension_puzzles
+    label: 'Layout Spec: Puzzles'
+    description: 'Visual layout standard: Puzzles = {''word_search'': {''cell_size_cm'': 0.9, ''stroke_width_pt'': 0.5, ''container_radius_pt'':
+      4.0, ''container_padding_pt'': 16.0, ''container_stroke_width_pt'': 1.0, ''grid_font_size_pt'': 12.0, ''list_font_size_pt'':
+      11.0}, ''sudoku'': {''cell_size_cm'': 1.1, ''thick_stroke_width_pt'': 1.5, ''thin_stroke_width_pt'': 0.5, ''font_size_pt'':
+      14.0}, ''crossword'': {''cell_size_cm'': 0.8, ''stroke_width_pt'': 0.5, ''grid_size'': 13, ''font_size_pt'': 11.0, ''number_font_size_pt'':
+      7.0}}.'
+    home_domain: visual_communication
+    status: canonical
+    ner_label: LAYOUT_SPEC
+    recognition_patterns:
+    - (?i)\bPuzzles\b
+  - id: coe:entity/visual_communication/dimension_master_sow
+    label: 'Layout Spec: Master Sow'
+    description: 'Visual layout standard: Master Sow = {''paper_size'': ''A4'', ''flipped'': True, ''min_margin_top_cm'':
+      1.4, ''min_margin_bottom_cm'': 1.4, ''min_margin_left_cm'': 1.4, ''min_margin_right_cm'': 1.4, ''stack_gutter_pt'':
+      12.0, ''section_gutter_pt'': 16.0, ''title_banner'': {''radius_pt'': 6.0, ''padding_top_pt'': 12.0, ''padding_bottom_pt'':
+      12.0, ''top_stroke_width_pt'': 4.0, ''font_size_pt'': 18.0, ''subtitle_font_size_pt'': 10.0}, ''meta_strip'': {''border_radius_pt'':
+      5.0, ''padding_pt'': 8.0, ''font_size_pt'': 9.0, ''column_gutter_pt'': 8.0, ''fill_token'': ''neutral_light'', ''stroke_token'':
+      ''primary'', ''left_stroke_width_pt'': 3.0}, ''section_header'': {''font_size_pt'': 12.0, ''padding_bottom_pt'': 4.0,
+      ''rule_width_pt'': 1.0, ''rule_token'': ''primary'', ''fill_token'': ''neutral_dark''}, ''body_text'': {''font_size_pt'':
+      9.0, ''line_leading_em'': 1.25}, ''callout_box'': {''border_radius_pt'': 5.0, ''padding_pt'': 9.0, ''font_size_pt'':
+      9.0, ''left_stroke_width_pt'': 3.0, ''fill_token'': ''neutral_light'', ''stroke_token'': ''secondary''}, ''two_column'':
+      {''column_gutter_pt'': 10.0, ''card_radius_pt'': 5.0, ''card_padding_pt'': 8.0, ''card_stroke_width_pt'': 0.5, ''card_fill_token'':
+      ''white'', ''card_stroke_token'': ''neutral_light'', ''heading_font_size_pt'': 10.0}, ''table'': {''header_fill_token'':
+      ''neutral_dark'', ''header_text_token'': ''white'', ''header_font_size_pt'': 8.0, ''cell_font_size_pt'': 8.0, ''cell_padding_pt'':
+      5.0, ''row_alt_fill_token'': ''neutral_light'', ''stroke_width_pt'': 0.5, ''stroke_token'': ''neutral_light'', ''border_radius_pt'':
+      4.0}, ''chip'': {''radius_pt'': 3.0, ''padding_x_pt'': 5.0, ''padding_y_pt'': 2.0, ''font_size_pt'': 7.5, ''fill_token'':
+      ''primary'', ''text_token'': ''white''}, ''lesson_row'': {''number_fill_token'': ''primary'', ''number_text_token'':
+      ''white'', ''number_radius_pt'': 3.0, ''number_size_pt'': 8.0, ''title_font_size_pt'': 9.0, ''meta_font_size_pt'': 7.5,
+      ''gutter_pt'': 6.0}, ''design_bounds'': {''max_lessons_preview'': 40, ''max_vocab_per_tier_preview'': 24, ''max_threshold_concepts_preview'':
+      16}}.'
+    home_domain: visual_communication
+    status: canonical
+    ner_label: LAYOUT_SPEC
+    recognition_patterns:
+    - (?i)\bMaster Sow\b
+  - id: coe:entity/visual_communication/style_style
+    label: 'Visual Style: Style'
+    description: 'Design system visual style: Style.'
+    home_domain: visual_communication
+    status: canonical
+    ner_label: VISUAL_STYLE
+    recognition_patterns:
+    - (?i)\bStyle\b
+  - id: coe:entity/visual_communication/style_design
+    label: 'Visual Style: Design'
+    description: 'Design system visual style: Design.'
+    home_domain: visual_communication
+    status: canonical
+    ner_label: VISUAL_STYLE
+    recognition_patterns:
+    - (?i)\bDesign\b
+  - id: coe:entity/visual_communication/style_tone_of_voice
+    label: 'Visual Style: Tone Of Voice'
+    description: 'Design system visual style: Tone Of Voice.'
+    home_domain: visual_communication
+    status: canonical
+    ner_label: VISUAL_STYLE
+    recognition_patterns:
+    - (?i)\bTone Of Voice\b
+- id: coe:artifact/visual_communication/design_system_specs
+  label: Design System Layout Specs & Style Taxonomies
+  description: Governed dimensions, grid systems, and visual style taxonomies.
+  version: 4.0.0
+  last_updated: '2026-08-15'
+  entities:
+  - id: coe:entity/visual_communication/dimension_hero_banner
+    label: 'Layout Spec: Hero Banner'
+    description: 'Visual layout standard: Hero Banner = {''aspect_ratio'': ''3:1'', ''width_px'': 1200, ''height_px'': 400,
+      ''padding_px'': 48}.'
+    home_domain: visual_communication
+    status: canonical
+    ner_label: LAYOUT_SPEC
+    recognition_patterns:
+    - (?i)\bHero Banner\b
+  - id: coe:entity/visual_communication/dimension_presentation_slide
+    label: 'Layout Spec: Presentation Slide'
+    description: 'Visual layout standard: Presentation Slide = {''aspect_ratio'': ''16:9'', ''width_px'': 1920, ''height_px'':
+      1080, ''safe_margin_px'': {''top'': 80, ''bottom'': 80, ''left'': 100, ''right'': 100}}.'
+    home_domain: visual_communication
+    status: canonical
+    ner_label: LAYOUT_SPEC
+    recognition_patterns:
+    - (?i)\bPresentation Slide\b
+  - id: coe:entity/visual_communication/dimension_document_page
+    label: 'Layout Spec: Document Page'
+    description: 'Visual layout standard: Document Page = {''standard'': ''A4'', ''width_mm'': 210, ''height_mm'': 297, ''margins_mm'':
+      {''top'': 25, ''bottom'': 25, ''left'': 25, ''right'': 25}}.'
+    home_domain: visual_communication
+    status: canonical
+    ner_label: LAYOUT_SPEC
+    recognition_patterns:
+    - (?i)\bDocument Page\b
+  - id: coe:entity/visual_communication/dimension_interactive_scenario
+    label: 'Layout Spec: Interactive Scenario'
+    description: 'Visual layout standard: Interactive Scenario = {''max_width_px'': 600, ''container_padding_px'': 40, ''choice_button'':
+      {''min_height_px'': 48, ''padding_vertical_px'': 12, ''padding_horizontal_px'': 16, ''gap_between_buttons_px'': 12},
+      ''avatar'': {''size_px'': 64, ''border_width_px'': 2, ''gap_to_text_px'': 16}, ''feedback_panel'': {''padding_px'':
+      16, ''border_width_px'': 1}, ''design_bounds'': {''max_choices_per_node'': 3, ''remediation_loop_limit'': 2}}.'
+    home_domain: visual_communication
+    status: canonical
+    ner_label: LAYOUT_SPEC
+    recognition_patterns:
+    - (?i)\bInteractive Scenario\b
+  - id: coe:entity/visual_communication/dimension_quizzes
+    label: 'Layout Spec: Quizzes'
+    description: 'Visual layout standard: Quizzes = {''question_spacing_px'': 24, ''choice_item'': {''padding_vertical_px'':
+      10, ''padding_horizontal_px'': 12, ''min_touch_target_px'': 44}, ''matrix_question'': {''cell_padding_px'': 8, ''header_font_size_pt'':
+      11}, ''design_bounds'': {''preferred_options_count'': 3}}.'
+    home_domain: visual_communication
+    status: canonical
+    ner_label: LAYOUT_SPEC
+    recognition_patterns:
+    - (?i)\bQuizzes\b
+  - id: coe:entity/visual_communication/dimension_lottie_animation
+    label: 'Layout Spec: Lottie Animation'
+    description: 'Visual layout standard: Lottie Animation = {''default_width'': 300, ''default_height'': 300}.'
+    home_domain: visual_communication
+    status: canonical
+    ner_label: LAYOUT_SPEC
+    recognition_patterns:
+    - (?i)\bLottie Animation\b
+  - id: coe:entity/visual_communication/dimension_svg_canvas
+    label: 'Layout Spec: Svg Canvas'
+    description: 'Visual layout standard: Svg Canvas = {''default_width'': 800, ''default_height'': 600, ''title_font_size_px'':
+      24, ''subtitle_font_size_px'': 14, ''label_font_size_px'': 12}.'
+    home_domain: visual_communication
+    status: canonical
+    ner_label: LAYOUT_SPEC
+    recognition_patterns:
+    - (?i)\bSvg Canvas\b
+  - id: coe:entity/visual_communication/dimension_knowledge_organiser
+    label: 'Layout Spec: Knowledge Organiser'
+    description: 'Visual layout standard: Knowledge Organiser = {''paper_size'': ''A4'', ''flipped'': True, ''min_margin_top_cm'':
+      0.6, ''min_margin_bottom_cm'': 0.6, ''min_margin_left_cm'': 0.8, ''min_margin_right_cm'': 0.8, ''grid'': {''row_gutter_pt'':
+      8.0, ''column_gutter_pt'': 10.0, ''base_gutter_pt'': 6.0}, ''grid_templates'': {''1'': {''columns'': ''1fr'', ''rows'':
+      ''1fr''}, ''2'': {''columns'': ''1fr, 1fr'', ''rows'': ''1fr''}, ''3'': {''columns'': ''1fr, 1fr, 1fr'', ''rows'': ''1fr''},
+      ''4'': {''columns'': ''1fr, 1fr'', ''rows'': ''1fr, 1fr''}, ''6'': {''columns'': ''1fr, 1fr, 1fr'', ''rows'': ''1fr,
+      1fr''}, ''8'': {''columns'': ''1fr, 1fr, 1fr, 1fr'', ''rows'': ''1fr, 1fr''}}, ''title_banner'': {''radius_pt'': 6.0,
+      ''padding_top_pt'': 10.0, ''padding_bottom_pt'': 10.0, ''top_stroke_width_pt'': 4.0, ''font_size_pt'': 24.0}, ''cards'':
+      {''border_radius_pt'': 8.0, ''padding_pt'': 8.0, ''stroke_width_pt'': 1.5}, ''sub_cards'': {''border_radius_pt'': 5.0,
+      ''left_stroke_width_pt'': 4.5, ''padding_top_pt'': 7.0, ''padding_bottom_pt'': 7.0, ''padding_left_pt'': 10.0, ''padding_right_pt'':
+      10.0, ''row_gutter_pt'': 6.0}, ''header_banner'': {''border_radius_pt'': 5.0, ''padding_top_pt'': 7.0, ''padding_bottom_pt'':
+      7.0, ''padding_left_pt'': 10.0, ''font_size_pt'': 15.0}}.'
+    home_domain: visual_communication
+    status: canonical
+    ner_label: LAYOUT_SPEC
+    recognition_patterns:
+    - (?i)\bKnowledge Organiser\b
+  - id: coe:entity/visual_communication/dimension_retrieval_grid
+    label: 'Layout Spec: Retrieval Grid'
+    description: 'Visual layout standard: Retrieval Grid = {''paper_size'': ''A4'', ''flipped'': False, ''min_margin_top_cm'':
+      1.2, ''min_margin_bottom_cm'': 1.2, ''min_margin_left_cm'': 1.2, ''min_margin_right_cm'': 1.2, ''grid'': {''row_gutter_pt'':
+      8.0, ''column_gutter_pt'': 10.0}, ''title_banner'': {''radius_pt'': 6.0, ''padding_top_pt'': 10.0, ''padding_bottom_pt'':
+      10.0, ''top_stroke_width_pt'': 4.0, ''font_size_pt'': 20.0}, ''instructions_box'': {''border_radius_pt'': 5.0, ''padding_pt'':
+      9.0, ''left_stroke_width_pt'': 4.0, ''font_size_pt'': 10.0}, ''column_header'': {''border_radius_pt'': 5.0, ''padding_top_pt'':
+      6.0, ''padding_bottom_pt'': 6.0, ''font_size_pt'': 12.0}, ''question_cell'': {''border_radius_pt'': 6.0, ''padding_pt'':
+      8.0, ''stroke_width_pt'': 1.0, ''left_stroke_width_pt'': 4.0, ''row_gutter_pt'': 6.0, ''prompt_font_size_pt'': 10.0,
+      ''marks_font_size_pt'': 8.0, ''answer_space_cm'': 1.1, ''answer_rule_width_pt'': 0.5, ''border_token'': ''neutral_light'',
+      ''answer_rule_token'': ''neutral_dark''}, ''bucket_tokens'': {''last_lesson'': ''primary'', ''last_week'': ''secondary'',
+      ''last_term'': ''accent_3'', ''last_year'': ''accent_1'', ''red'': ''danger'', ''amber'': ''warning'', ''green'': ''success''},
+      ''design_bounds'': {''max_columns'': 4, ''max_questions_per_column'': 5}}.'
+    home_domain: visual_communication
+    status: canonical
+    ner_label: LAYOUT_SPEC
+    recognition_patterns:
+    - (?i)\bRetrieval Grid\b
+  - id: coe:entity/visual_communication/dimension_flowchart
+    label: 'Layout Spec: Flowchart'
+    description: 'Visual layout standard: Flowchart = {''default_width_px'': 600, ''default_height_px'': 400, ''node'': {''padding_px'':
+      10, ''stroke_width_px'': 2, ''font_size_pt'': 11}}.'
+    home_domain: visual_communication
+    status: canonical
+    ner_label: LAYOUT_SPEC
+    recognition_patterns:
+    - (?i)\bFlowchart\b
+  - id: coe:entity/visual_communication/dimension_timeline
+    label: 'Layout Spec: Timeline'
+    description: 'Visual layout standard: Timeline = {''default_width_px'': 800, ''default_height_px'': 200, ''item'': {''node_radius_pt'':
+      6.0, ''stroke_width_pt'': 2.0, ''font_size_pt'': 10.0}}.'
+    home_domain: visual_communication
+    status: canonical
+    ner_label: LAYOUT_SPEC
+    recognition_patterns:
+    - (?i)\bTimeline\b
+  - id: coe:entity/visual_communication/dimension_puzzles
+    label: 'Layout Spec: Puzzles'
+    description: 'Visual layout standard: Puzzles = {''word_search'': {''cell_size_cm'': 0.9, ''stroke_width_pt'': 0.5, ''container_radius_pt'':
+      4.0, ''container_padding_pt'': 16.0, ''container_stroke_width_pt'': 1.0, ''grid_font_size_pt'': 12.0, ''list_font_size_pt'':
+      11.0}, ''sudoku'': {''cell_size_cm'': 1.1, ''thick_stroke_width_pt'': 1.5, ''thin_stroke_width_pt'': 0.5, ''font_size_pt'':
+      14.0}, ''crossword'': {''cell_size_cm'': 0.8, ''stroke_width_pt'': 0.5, ''grid_size'': 13, ''font_size_pt'': 11.0, ''number_font_size_pt'':
+      7.0}}.'
+    home_domain: visual_communication
+    status: canonical
+    ner_label: LAYOUT_SPEC
+    recognition_patterns:
+    - (?i)\bPuzzles\b
+  - id: coe:entity/visual_communication/dimension_master_sow
+    label: 'Layout Spec: Master Sow'
+    description: 'Visual layout standard: Master Sow = {''paper_size'': ''A4'', ''flipped'': True, ''min_margin_top_cm'':
+      1.4, ''min_margin_bottom_cm'': 1.4, ''min_margin_left_cm'': 1.4, ''min_margin_right_cm'': 1.4, ''stack_gutter_pt'':
+      12.0, ''section_gutter_pt'': 16.0, ''title_banner'': {''radius_pt'': 6.0, ''padding_top_pt'': 12.0, ''padding_bottom_pt'':
+      12.0, ''top_stroke_width_pt'': 4.0, ''font_size_pt'': 18.0, ''subtitle_font_size_pt'': 10.0}, ''meta_strip'': {''border_radius_pt'':
+      5.0, ''padding_pt'': 8.0, ''font_size_pt'': 9.0, ''column_gutter_pt'': 8.0, ''fill_token'': ''neutral_light'', ''stroke_token'':
+      ''primary'', ''left_stroke_width_pt'': 3.0}, ''section_header'': {''font_size_pt'': 12.0, ''padding_bottom_pt'': 4.0,
+      ''rule_width_pt'': 1.0, ''rule_token'': ''primary'', ''fill_token'': ''neutral_dark''}, ''body_text'': {''font_size_pt'':
+      9.0, ''line_leading_em'': 1.25}, ''callout_box'': {''border_radius_pt'': 5.0, ''padding_pt'': 9.0, ''font_size_pt'':
+      9.0, ''left_stroke_width_pt'': 3.0, ''fill_token'': ''neutral_light'', ''stroke_token'': ''secondary''}, ''two_column'':
+      {''column_gutter_pt'': 10.0, ''card_radius_pt'': 5.0, ''card_padding_pt'': 8.0, ''card_stroke_width_pt'': 0.5, ''card_fill_token'':
+      ''white'', ''card_stroke_token'': ''neutral_light'', ''heading_font_size_pt'': 10.0}, ''table'': {''header_fill_token'':
+      ''neutral_dark'', ''header_text_token'': ''white'', ''header_font_size_pt'': 8.0, ''cell_font_size_pt'': 8.0, ''cell_padding_pt'':
+      5.0, ''row_alt_fill_token'': ''neutral_light'', ''stroke_width_pt'': 0.5, ''stroke_token'': ''neutral_light'', ''border_radius_pt'':
+      4.0}, ''chip'': {''radius_pt'': 3.0, ''padding_x_pt'': 5.0, ''padding_y_pt'': 2.0, ''font_size_pt'': 7.5, ''fill_token'':
+      ''primary'', ''text_token'': ''white''}, ''lesson_row'': {''number_fill_token'': ''primary'', ''number_text_token'':
+      ''white'', ''number_radius_pt'': 3.0, ''number_size_pt'': 8.0, ''title_font_size_pt'': 9.0, ''meta_font_size_pt'': 7.5,
+      ''gutter_pt'': 6.0}, ''design_bounds'': {''max_lessons_preview'': 40, ''max_vocab_per_tier_preview'': 24, ''max_threshold_concepts_preview'':
+      16}}.'
+    home_domain: visual_communication
+    status: canonical
+    ner_label: LAYOUT_SPEC
+    recognition_patterns:
+    - (?i)\bMaster Sow\b
+  - id: coe:entity/visual_communication/style_style
+    label: 'Visual Style: Style'
+    description: 'Design system visual style: Style.'
+    home_domain: visual_communication
+    status: canonical
+    ner_label: VISUAL_STYLE
+    recognition_patterns:
+    - (?i)\bStyle\b
+  - id: coe:entity/visual_communication/style_design
+    label: 'Visual Style: Design'
+    description: 'Design system visual style: Design.'
+    home_domain: visual_communication
+    status: canonical
+    ner_label: VISUAL_STYLE
+    recognition_patterns:
+    - (?i)\bDesign\b
+  - id: coe:entity/visual_communication/style_tone_of_voice
+    label: 'Visual Style: Tone Of Voice'
+    description: 'Design system visual style: Tone Of Voice.'
+    home_domain: visual_communication
+    status: canonical
+    ner_label: VISUAL_STYLE
+    recognition_patterns:
+    - (?i)\bTone Of Voice\b

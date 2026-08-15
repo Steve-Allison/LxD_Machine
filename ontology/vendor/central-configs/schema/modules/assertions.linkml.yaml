@@ -1,0 +1,38 @@
+id: https://steve-allison.github.io/Central_Configs/ontology/schema/assertions
+name: coe_assertions
+title: Central Configs Assertion Model
+version: 4.0.0
+default_prefix: coe
+default_range: string
+prefixes:
+  coe: https://steve-allison.github.io/Central_Configs/ontology/
+  dcterms: http://purl.org/dc/terms/
+  linkml: https://w3id.org/linkml/
+imports:
+- linkml:types
+- ./core.linkml
+classes:
+  Assertion:
+    is_a: Statement
+    class_uri: coe:Assertion
+    description: One machine-extracted semantic statement with calibrated confidence.
+    attributes:
+      confidence:
+        range: float
+        minimum_value: 0
+        maximum_value: 1
+        description: Confidence for this assertion.
+  AssertionSet:
+    class_uri: coe:AssertionSet
+    description: Validated semantic assertions produced by one extraction pass.
+    attributes:
+      assertion_set_id:
+        identifier: true
+        required: true
+        range: uriorcurie
+        description: Assertion set id for this bundle.
+      assertions:
+        range: Assertion
+        multivalued: true
+        inlined_as_list: true
+        description: Assertions for this bundle.

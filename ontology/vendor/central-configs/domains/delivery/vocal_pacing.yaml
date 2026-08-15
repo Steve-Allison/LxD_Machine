@@ -1,0 +1,32 @@
+bundle_id: coe:domain/delivery/vocal_pacing
+domain: delivery
+version: 4.0.0
+entity_collections:
+- id: coe:artifact/delivery/vocal_pacing
+  label: Vocal Pacing & Delivery Metrics
+  description: Speaking rate, strategic pause, acoustic pitch standards.
+  version: 4.0.0
+  last_updated: '2026-08-15'
+  entities:
+  - id: coe:entity/target_speaking_rate
+    label: Target Speaking Rate
+    description: Optimal speech velocity calibrated between 130 and 160 words per minute for maximum cognitive absorption.
+    home_domain: delivery
+    recognition_patterns:
+    - (?i)\bspeaking rate\b
+    - (?i)\bwords per minute\b
+    - (?i)\bwpm\b
+    edges: []
+  - id: coe:entity/strategic_pause
+    label: Strategic Pause
+    description: Deliberate 1.5-3 second silence following key assertions to allow audience cognitive consolidation.
+    home_domain: delivery
+    recognition_patterns:
+    - (?i)\bstrategic pause\b
+    - (?i)\bdeliberate silence\b
+    edges:
+    - subject_id: coe:entity/strategic_pause
+      predicate: coe:supports
+      object_id: coe:entity/mayer_coherence_principle
+      relationship_weight: expected
+      description: Strategic pausing prevents cognitive overload during key narrative beats.

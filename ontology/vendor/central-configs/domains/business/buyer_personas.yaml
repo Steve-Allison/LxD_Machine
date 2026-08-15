@@ -1,0 +1,109 @@
+bundle_id: coe:domain/business/buyer_personas
+domain: business
+version: 4.0.0
+entity_collections:
+- id: coe:artifact/business/buyer_personas
+  label: B2B Enterprise Buyer Personas
+  description: CXO decision-makers, buying center archetypes, commercial priorities.
+  version: 4.0.0
+  last_updated: '2026-08-15'
+  entities:
+  - id: coe:entity/competitor_mention
+    label: Competitor Mention
+    description: Competitor product company HubSpot Salesforce Google Analytics Sitecore Shopify Canva Figma alternative vendor
+    home_domain: business
+    status: canonical
+    recognition_patterns:
+    - (?i)\bCompetitor\s+Mention\b
+    edges: []
+    ner_label: COMPETITOR
+    examples:
+    - HubSpot
+    - Salesforce Marketing Cloud
+    - Google Analytics
+    - Sitecore
+    - Canva
+    confidence_threshold: 0.8
+  - id: coe:entity/competitive_claim
+    label: Competitive Claim
+    description: Competitor comparison differentiation advantage better than versus alternative claim positioning
+    home_domain: business
+    status: canonical
+    recognition_patterns:
+    - (?i)\bCompetitive\s+Claim\b
+    edges: []
+    ner_label: COMPETITIVE_CLAIM
+    examples:
+    - Unlike HubSpot, Adobe offers...
+    - While competitors require multiple tools...
+    - Adobe is the only platform that...
+    confidence_threshold: 0.7
+  - id: coe:entity/objection
+    label: Objection
+    description: Customer objection concern hesitation pushback too expensive too complex switch cost
+    home_domain: business
+    status: canonical
+    recognition_patterns:
+    - (?i)\bObjection\b
+    edges: []
+    ner_label: OBJECTION
+    examples:
+    - Adobe is too expensive
+    - We can't afford
+    - Too complex for our team
+    - We're happy with our current solution
+    confidence_threshold: 0.65
+- id: coe:artifact/business/sales_plays_and_market_competitors
+  label: Enterprise Sales Plays & Market Competitor Ontologies
+  description: Governed sales plays, strategic solution plays, and market competitors.
+  version: 4.0.0
+  last_updated: '2026-08-15'
+  entities:
+  - id: coe:entity/business/competitor_marketing_automation
+    label: marketing_automation
+    description: 'Market competitor entity: marketing_automation.'
+    home_domain: business
+    status: canonical
+    ner_label: MARKET_COMPETITOR
+    recognition_patterns:
+    - (?i)\bmarketing_automation\b
+  - id: coe:entity/business/competitor_analytics
+    label: analytics
+    description: 'Market competitor entity: analytics.'
+    home_domain: business
+    status: canonical
+    ner_label: MARKET_COMPETITOR
+    recognition_patterns:
+    - (?i)\banalytics\b
+  - id: coe:entity/business/competitor_content_management
+    label: content_management
+    description: 'Market competitor entity: content_management.'
+    home_domain: business
+    status: canonical
+    ner_label: MARKET_COMPETITOR
+    recognition_patterns:
+    - (?i)\bcontent_management\b
+  - id: coe:entity/business/competitor_creative_tools
+    label: creative_tools
+    description: 'Market competitor entity: creative_tools.'
+    home_domain: business
+    status: canonical
+    ner_label: MARKET_COMPETITOR
+    recognition_patterns:
+    - (?i)\bcreative_tools\b
+  - id: coe:entity/business/competitor_ecommerce
+    label: ecommerce
+    description: 'Market competitor entity: ecommerce.'
+    home_domain: business
+    status: canonical
+    ner_label: MARKET_COMPETITOR
+    recognition_patterns:
+    - (?i)\becommerce\b
+  - id: coe:entity/business/competitor_search_and_discovery
+    label: search_and_discovery
+    description: 'Market competitor entity: search_and_discovery.'
+    home_domain: business
+    status: canonical
+    ner_label: MARKET_COMPETITOR
+    recognition_patterns:
+    - (?i)\bsearch_and_discovery\b

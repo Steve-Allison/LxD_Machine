@@ -1,0 +1,324 @@
+bundle_id: coe:domain/visual_communication/design_quality_gates
+domain: visual_communication
+version: 4.0.0
+scoring_models:
+- dimensions:
+  - weight: 0.25
+    id: coe:artifact/visual/data_visualisation_rubric/dimension/chart_type_appropriateness
+    label: Chart Type Appropriateness
+    description: 'Degree to which the selected chart type matches the analytical task (lookup, comparison, trend, composition,
+      correlation, distribution). Based on Vessey''s Cognitive Fit Theory: performance is maximised only when the visual representation
+      aligns with the task the viewer must perform.'
+    home_domain: visual_communication
+    status: canonical
+  - weight: 0.2
+    id: coe:artifact/visual/data_visualisation_rubric/dimension/data_ink_ratio
+    label: Data-Ink Ratio
+    description: 'Proportion of visual ink actually encoding data versus total ink in the graphic. Target ratio >= 0.85. Chartjunk
+      (3D effects, decorative fills, heavy gridlines, moiré patterns, redundant tick marks, background fills) is extraneous
+      cognitive load and must be eliminated. Formula: Data-Ink / Total Ink used to print the graphic.'
+    home_domain: visual_communication
+    status: canonical
+  - weight: 0.2
+    id: coe:artifact/visual/data_visualisation_rubric/dimension/labelling_clarity
+    label: Labelling Clarity
+    description: Quality of axis labels, data labels, title informativeness, and absence of separate legends requiring lookup.
+      Direct labelling eliminates the split-attention effect where the viewer must split gaze between a legend and the data
+      series to decode colour mapping. Titles must state the analytical conclusion (action caption), not merely describe the
+      subject.
+    home_domain: visual_communication
+    status: canonical
+  - weight: 0.15
+    id: coe:artifact/visual/data_visualisation_rubric/dimension/colour_accessibility
+    label: Colour Accessibility
+    description: 'Use of colorblind-safe palettes, adequate contrast ratios for chart elements (WCAG 2.1 AA: 3:1 for non-text
+      graphics), and avoidance of colour as the sole encoding channel. Approximately 8% of males have colour vision deficiency;
+      red-green combinations are the most common failure mode. Redundant encoding (colour + shape/pattern/label) is required
+      for accessible charts.'
+    home_domain: visual_communication
+    status: canonical
+  - weight: 0.2
+    id: coe:artifact/visual/data_visualisation_rubric/dimension/insight_communication
+    label: Insight Communication
+    description: Degree to which the chart's title and annotations communicate the key analytical conclusion rather than merely
+      labelling the subject matter. A Topic Title ('Q4 Revenue') forces the viewer to analyse and conclude. An Action Caption
+      ('Q4 Revenue Grew 15%, Driven by the Premium Segment') transfers the conclusion instantly, reducing cognitive load and
+      increasing decision-making speed. Annotation quality and key takeaway visibility are also assessed.
+    home_domain: visual_communication
+    status: canonical
+  thresholds:
+  - id: coe:artifact/visual/data_visualisation_rubric/threshold/data_ink_ratio
+    label: Data Ink Ratio
+    description: data_ink_ratio threshold.
+    home_domain: visual_communication
+    status: canonical
+  - id: coe:artifact/visual/data_visualisation_rubric/threshold/colour_contrast
+    label: Colour Contrast
+    description: colour_contrast threshold.
+    home_domain: visual_communication
+    status: canonical
+  - id: coe:artifact/visual/data_visualisation_rubric/threshold/legend_items
+    label: Legend Items
+    description: legend_items threshold.
+    home_domain: visual_communication
+    status: canonical
+  - id: coe:artifact/visual/data_visualisation_rubric/threshold/bar_chart
+    label: Bar Chart
+    description: bar_chart threshold.
+    home_domain: visual_communication
+    status: canonical
+  - id: coe:artifact/visual/data_visualisation_rubric/threshold/line_chart
+    label: Line Chart
+    description: line_chart threshold.
+    home_domain: visual_communication
+    status: canonical
+  - id: coe:artifact/visual/data_visualisation_rubric/threshold/pie_chart
+    label: Pie Chart
+    description: pie_chart threshold.
+    home_domain: visual_communication
+    status: canonical
+  - id: coe:artifact/visual/data_visualisation_rubric/threshold/labelling
+    label: Labelling
+    description: labelling threshold.
+    home_domain: visual_communication
+    status: canonical
+  - id: coe:artifact/visual/data_visualisation_rubric/threshold/font_size_in_chart
+    label: Font Size In Chart
+    description: font_size_in_chart threshold.
+    home_domain: visual_communication
+    status: canonical
+  - id: coe:artifact/visual/data_visualisation_rubric/threshold/redundant_encoding
+    label: Redundant Encoding
+    description: redundant_encoding threshold.
+    home_domain: visual_communication
+    status: canonical
+  version: 1.3.2
+  last_updated: '2026-08-12'
+  id: coe:artifact/visual/data_visualisation_rubric
+  label: Data Visualisation Rubric
+  description: Scoring rubric for data visualisation quality covering chart type appropriateness, data-ink ratio, labelling
+    clarity, colour accessibility, and insight communication
+  home_domain: visual_communication
+  status: canonical
+- dimensions:
+  - weight: 0.25
+    id: coe:artifact/visual/video_multimedia_rubric/dimension/audio_clarity
+    label: Audio Clarity
+    description: Evaluates voice quality, background noise floor, volume consistency, articulation clarity, and compression/EQ
+      treatment. Crisp audio is the single highest-leverage production variable for learner engagement.
+    home_domain: visual_communication
+    status: canonical
+  - weight: 0.2
+    id: coe:artifact/visual/video_multimedia_rubric/dimension/visual_narration_sync
+    label: Visual-Narration Synchronisation
+    description: Evaluates temporal alignment of visuals with speech, spatial placement of on-screen text relative to corresponding
+      graphics, verbal-visual channel balance, and signalling cues that direct learner attention. Directly maps to Mayer's
+      temporal contiguity (effect size 1.30) and spatial contiguity (effect size 0.82) principles.
+    home_domain: visual_communication
+    status: canonical
+  - weight: 0.2
+    id: coe:artifact/visual/video_multimedia_rubric/dimension/segment_pacing
+    label: Segment Pacing
+    description: Evaluates video segment lengths against engagement research, information density per minute, learner cognitive
+      load management, and presence of reflection pause cues. Guo et al. (2014) found median engagement time is 6 minutes;
+      Brame (2016) recommends ≤6 min for concept videos.
+    home_domain: visual_communication
+    status: canonical
+  - weight: 0.15
+    id: coe:artifact/visual/video_multimedia_rubric/dimension/transition_quality
+    label: Transition Quality
+    description: Evaluates scene-to-scene cut quality, topic transition signposting, visual continuity across angles and backgrounds,
+      and use of B-roll or cutaways to maintain coherence. Research shows establishing shots before transitions reduce cognitive
+      load; consistent transition style creates predictable mental checkpoints.
+    home_domain: visual_communication
+    status: canonical
+  - weight: 0.2
+    id: coe:artifact/visual/video_multimedia_rubric/dimension/production_value
+    label: Production Value
+    description: 'Evaluates technical output quality: video resolution, camera framing, lighting quality, graphics fidelity,
+      and brand consistency. High production value signals credibility and maintains learner attention.'
+    home_domain: visual_communication
+    status: canonical
+  thresholds:
+  - id: coe:artifact/visual/video_multimedia_rubric/threshold/audio_integrated_lufs_target
+    label: Audio Integrated Lufs Target
+    description: audio_integrated_lufs_target threshold.
+    home_domain: visual_communication
+    status: canonical
+    target_value: '-16'
+  - id: coe:artifact/visual/video_multimedia_rubric/threshold/audio_integrated_lufs_min
+    label: Audio Integrated Lufs Min
+    description: audio_integrated_lufs_min threshold.
+    home_domain: visual_communication
+    status: canonical
+    target_value: '-18'
+  - id: coe:artifact/visual/video_multimedia_rubric/threshold/audio_integrated_lufs_max
+    label: Audio Integrated Lufs Max
+    description: audio_integrated_lufs_max threshold.
+    home_domain: visual_communication
+    status: canonical
+    target_value: '-14'
+  - id: coe:artifact/visual/video_multimedia_rubric/threshold/audio_noise_floor_target_dbfs
+    label: Audio Noise Floor Target Dbfs
+    description: audio_noise_floor_target_dbfs threshold.
+    home_domain: visual_communication
+    status: canonical
+    target_value: '-60'
+  - id: coe:artifact/visual/video_multimedia_rubric/threshold/audio_noise_floor_acceptable_dbfs
+    label: Audio Noise Floor Acceptable Dbfs
+    description: audio_noise_floor_acceptable_dbfs threshold.
+    home_domain: visual_communication
+    status: canonical
+    target_value: '-50'
+  - id: coe:artifact/visual/video_multimedia_rubric/threshold/audio_noise_floor_failure_dbfs
+    label: Audio Noise Floor Failure Dbfs
+    description: audio_noise_floor_failure_dbfs threshold.
+    home_domain: visual_communication
+    status: canonical
+    target_value: '-40'
+  - id: coe:artifact/visual/video_multimedia_rubric/threshold/narration_wpm_min
+    label: Narration Wpm Min
+    description: narration_wpm_min threshold.
+    home_domain: visual_communication
+    status: canonical
+    target_value: '120'
+  - id: coe:artifact/visual/video_multimedia_rubric/threshold/narration_wpm_max
+    label: Narration Wpm Max
+    description: narration_wpm_max threshold.
+    home_domain: visual_communication
+    status: canonical
+    target_value: '150'
+  - id: coe:artifact/visual/video_multimedia_rubric/threshold/narration_wpm_fast_warning
+    label: Narration Wpm Fast Warning
+    description: narration_wpm_fast_warning threshold.
+    home_domain: visual_communication
+    status: canonical
+    target_value: '165'
+  - id: coe:artifact/visual/video_multimedia_rubric/threshold/narration_wpm_slow_warning
+    label: Narration Wpm Slow Warning
+    description: narration_wpm_slow_warning threshold.
+    home_domain: visual_communication
+    status: canonical
+    target_value: '90'
+  - id: coe:artifact/visual/video_multimedia_rubric/threshold/concept_segment_max_minutes
+    label: Concept Segment Max Minutes
+    description: concept_segment_max_minutes threshold.
+    home_domain: visual_communication
+    status: canonical
+    target_value: '3'
+  - id: coe:artifact/visual/video_multimedia_rubric/threshold/module_segment_max_minutes
+    label: Module Segment Max Minutes
+    description: module_segment_max_minutes threshold.
+    home_domain: visual_communication
+    status: canonical
+    target_value: '6'
+  - id: coe:artifact/visual/video_multimedia_rubric/threshold/walkthrough_segment_max_minutes
+    label: Walkthrough Segment Max Minutes
+    description: walkthrough_segment_max_minutes threshold.
+    home_domain: visual_communication
+    status: canonical
+    target_value: '10'
+  - id: coe:artifact/visual/video_multimedia_rubric/threshold/cut_frequency_min_seconds
+    label: Cut Frequency Min Seconds
+    description: cut_frequency_min_seconds threshold.
+    home_domain: visual_communication
+    status: canonical
+    target_value: '8'
+  - id: coe:artifact/visual/video_multimedia_rubric/threshold/cut_frequency_max_seconds
+    label: Cut Frequency Max Seconds
+    description: cut_frequency_max_seconds threshold.
+    home_domain: visual_communication
+    status: canonical
+    target_value: '15'
+  - id: coe:artifact/visual/video_multimedia_rubric/threshold/bullet_hold_duration_min_seconds
+    label: Bullet Hold Duration Min Seconds
+    description: bullet_hold_duration_min_seconds threshold.
+    home_domain: visual_communication
+    status: canonical
+    target_value: '3'
+  - id: coe:artifact/visual/video_multimedia_rubric/threshold/bullet_hold_duration_max_seconds
+    label: Bullet Hold Duration Max Seconds
+    description: bullet_hold_duration_max_seconds threshold.
+    home_domain: visual_communication
+    status: canonical
+    target_value: '6'
+  - id: coe:artifact/visual/video_multimedia_rubric/threshold/caption_accuracy_min_percent
+    label: Caption Accuracy Min Percent
+    description: caption_accuracy_min_percent threshold.
+    home_domain: visual_communication
+    status: canonical
+    target_value: '99'
+  - id: coe:artifact/visual/video_multimedia_rubric/threshold/caption_sync_tolerance_seconds
+    label: Caption Sync Tolerance Seconds
+    description: caption_sync_tolerance_seconds threshold.
+    home_domain: visual_communication
+    status: canonical
+    target_value: '0.5'
+  - id: coe:artifact/visual/video_multimedia_rubric/threshold/caption_max_characters_per_line
+    label: Caption Max Characters Per Line
+    description: caption_max_characters_per_line threshold.
+    home_domain: visual_communication
+    status: canonical
+    target_value: '42'
+  - id: coe:artifact/visual/video_multimedia_rubric/threshold/caption_max_lines_on_screen
+    label: Caption Max Lines On Screen
+    description: caption_max_lines_on_screen threshold.
+    home_domain: visual_communication
+    status: canonical
+    target_value: '2'
+  - id: coe:artifact/visual/video_multimedia_rubric/threshold/visual_sync_tolerance_seconds
+    label: Visual Sync Tolerance Seconds
+    description: visual_sync_tolerance_seconds threshold.
+    home_domain: visual_communication
+    status: canonical
+    target_value: '1.0'
+  - id: coe:artifact/visual/video_multimedia_rubric/threshold/visual_sync_failure_seconds
+    label: Visual Sync Failure Seconds
+    description: visual_sync_failure_seconds threshold.
+    home_domain: visual_communication
+    status: canonical
+    target_value: '2.0'
+  - id: coe:artifact/visual/video_multimedia_rubric/threshold/resolution_min_pixels_height
+    label: Resolution Min Pixels Height
+    description: resolution_min_pixels_height threshold.
+    home_domain: visual_communication
+    status: canonical
+    target_value: '1080'
+  - id: coe:artifact/visual/video_multimedia_rubric/threshold/b_roll_min_percent_of_runtime
+    label: B Roll Min Percent Of Runtime
+    description: b_roll_min_percent_of_runtime threshold.
+    home_domain: visual_communication
+    status: canonical
+    target_value: '15'
+  - id: coe:artifact/visual/video_multimedia_rubric/threshold/lower_third_duration_seconds
+    label: Lower Third Duration Seconds
+    description: lower_third_duration_seconds threshold.
+    home_domain: visual_communication
+    status: canonical
+    target_value: '4'
+  - id: coe:artifact/visual/video_multimedia_rubric/threshold/mayer_critical_principles_required
+    label: Mayer Critical Principles Required
+    description: mayer_critical_principles_required threshold.
+    home_domain: visual_communication
+    status: canonical
+    target_value: '4'
+  - id: coe:artifact/visual/video_multimedia_rubric/threshold/on_screen_text_max_words_per_overlay
+    label: On Screen Text Max Words Per Overlay
+    description: on_screen_text_max_words_per_overlay threshold.
+    home_domain: visual_communication
+    status: canonical
+    target_value: '8'
+  - id: coe:artifact/visual/video_multimedia_rubric/threshold/max_animated_elements_simultaneous
+    label: Max Animated Elements Simultaneous
+    description: max_animated_elements_simultaneous threshold.
+    home_domain: visual_communication
+    status: canonical
+    target_value: '3'
+  version: 1.2.2
+  last_updated: '2026-08-12'
+  id: coe:artifact/visual/video_multimedia_rubric
+  label: Video and Multimedia Rubric
+  description: Scoring rubric for video and multimedia production quality covering audio clarity, visual-narration synchronisation,
+    segment pacing, transition quality, and production value
+  home_domain: visual_communication
+  status: canonical

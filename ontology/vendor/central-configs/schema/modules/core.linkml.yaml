@@ -1,0 +1,316 @@
+id: https://steve-allison.github.io/Central_Configs/ontology/schema/core
+name: coe_core
+title: Central Configs Core Semantic Model
+version: 4.0.0
+default_prefix: coe
+default_range: string
+prefixes:
+  coe: https://steve-allison.github.io/Central_Configs/ontology/
+  dcterms: http://purl.org/dc/terms/
+  linkml: https://w3id.org/linkml/
+  owl: http://www.w3.org/2002/07/owl#
+  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+  rdfs: http://www.w3.org/2000/01/rdf-schema#
+  skos: http://www.w3.org/2004/02/skos/core#
+  xsd: http://www.w3.org/2001/XMLSchema#
+imports:
+- linkml:types
+types:
+  Date:
+    typeof: date
+    base: str
+    uri: xsd:date
+    description: ISO 8601 calendar date.
+  DateTime:
+    typeof: datetime
+    base: str
+    uri: xsd:dateTime
+    description: ISO 8601 date-time.
+slots:
+  id:
+    identifier: true
+    required: true
+    range: uriorcurie
+    slot_uri: dcterms:identifier
+    description: Stable identifier for an identified resource.
+  label:
+    required: true
+    slot_uri: rdfs:label
+    description: Human-readable label for an identified resource.
+  description:
+    slot_uri: dcterms:description
+    description: Description of an identified resource.
+  home_domain:
+    range: OntologyDomainEnum
+    slot_uri: coe:homeDomain
+    description: Canonical home domain for an identified resource.
+  status:
+    range: LifecycleStatusEnum
+    slot_uri: coe:status
+    description: Lifecycle status of an identified resource.
+  version:
+    required: true
+    pattern: ^\d+\.\d+\.\d+$
+    slot_uri: dcterms:hasVersion
+    description: Semantic version of a versioned resource.
+  deprecated_by:
+    range: IdentifiedThing
+    inlined: false
+    slot_uri: dcterms:isReplacedBy
+    description: Successor resource that replaces this deprecated resource.
+  deprecation_reason:
+    slot_uri: coe:deprecationReason
+    description: Reason this resource is deprecated.
+  properties:
+    range: StructuredNode
+    multivalued: true
+    inlined_as_list: true
+    deprecated: Untyped extension bag subject to earned-inclusion curation; model new detail as typed slots instead.
+    slot_uri: coe:property
+    description: Typed extension properties retained without an unbounded Any range.
+classes:
+  IdentifiedThing:
+    abstract: true
+    class_uri: coe:IdentifiedThing
+    description: A canonical resource with an explicit, globally stable identifier.
+    slots:
+      - id
+      - label
+      - description
+      - home_domain
+      - status
+      - deprecated_by
+      - deprecation_reason
+    rules:
+      - description: A deprecated resource must name its successor and the reason for deprecation.
+        preconditions:
+          slot_conditions:
+            status:
+              equals_string: deprecated
+        postconditions:
+          slot_conditions:
+            deprecated_by:
+              required: true
+            deprecation_reason:
+              required: true
+  Versioned:
+    abstract: true
+    mixin: true
+    class_uri: coe:Versioned
+    description: Mixin for resources carrying an explicit semantic version.
+    slots:
+      - version
+  StructuredNode:
+    class_uri: coe:StructuredNode
+    description: Fully typed recursive representation of irregular authored detail. Exactly one scalar
+      value or a list of child nodes is populated by convention.
+    attributes:
+      id:
+        identifier: true
+        required: true
+        range: uriorcurie
+        slot_uri: dcterms:identifier
+        description: Id for this structurednode.
+      key:
+        required: true
+        slot_uri: coe:key
+        description: Key for this structurednode.
+      value_kind:
+        required: true
+        range: StructuredValueKindEnum
+        slot_uri: coe:valueKind
+        description: Value kind for this structurednode.
+      string_value:
+        slot_uri: coe:stringValue
+        description: String value for this structurednode.
+      integer_value:
+        range: integer
+        slot_uri: coe:integerValue
+        description: Integer value for this structurednode.
+      decimal_value:
+        range: float
+        slot_uri: coe:decimalValue
+        description: Decimal value for this structurednode.
+      boolean_value:
+        range: boolean
+        slot_uri: coe:booleanValue
+        description: Boolean value for this structurednode.
+      children:
+        range: StructuredNode
+        multivalued: true
+        inlined_as_list: true
+        slot_uri: coe:child
+        description: Children for this structurednode.
+  Statement:
+    abstract: true
+    class_uri: rdf:Statement
+    description: One reified semantic assertion carried by evidence; authored in the canonical
+      predicate direction only, never as a duplicate inverse edge.
+    attributes:
+      subject_id:
+        required: true
+        range: IdentifiedThing
+        inlined: false
+        slot_uri: rdf:subject
+        description: Subject id for this statement.
+      predicate:
+        required: true
+        range: AuthoredPredicateEnum
+        slot_uri: rdf:predicate
+        description: Canonical-direction predicate for this statement.
+      object_id:
+        required: true
+        range: IdentifiedThing
+        inlined: false
+        slot_uri: rdf:object
+        description: Object id for this statement.
+      description:
+        slot_uri: dcterms:description
+        description: Description for this statement.
+  SemanticEdge:
+    is_a: Statement
+    class_uri: coe:SemanticEdge
+    description: One directly authored canonical relationship between ontology entities.
+    unique_keys:
+      semantic_triple:
+        description: A subject, predicate, and object triple may be authored only once.
+        unique_key_slots:
+          - subject_id
+          - predicate
+          - object_id
+    slot_usage:
+      subject_id:
+        range: OntologyEntity
+      object_id:
+        range: OntologyEntity
+    attributes:
+      relationship_weight:
+        required: true
+        range: RelationshipWeightEnum
+        slot_uri: coe:relationshipWeight
+        description: Weight for this statement.
+  OntologyEntity:
+    is_a: IdentifiedThing
+    class_uri: coe:OntologyEntity
+    slots:
+      - properties
+    attributes:
+      description:
+        required: true
+        slot_uri: dcterms:description
+        description: Complete semantic definition of the entity.
+      home_domain:
+        required: true
+        range: OntologyDomainEnum
+        slot_uri: coe:homeDomain
+        description: Exactly one canonical home domain.
+      aliases:
+        multivalued: true
+        deprecated: Flat alias list superseded by typed, sense-scoped Synonym records in the terminology module.
+        slot_uri: skos:altLabel
+        description: Aliases for this ontologyentity.
+      recognition_patterns:
+        required: true
+        minimum_cardinality: 1
+        multivalued: true
+        deprecated: Surface recognition is moving to TermSense recognition_patterns in the terminology module.
+        slot_uri: coe:recognitionPattern
+        description: Recognition patterns for this ontologyentity.
+      edges:
+        range: SemanticEdge
+        multivalued: true
+        inlined_as_list: true
+        slot_uri: coe:edge
+        description: Edges for this ontologyentity.
+      examples:
+        multivalued: true
+        slot_uri: skos:example
+        description: Example surface forms or valid instances for this entity.
+      anti_examples:
+        multivalued: true
+        slot_uri: coe:antiExample
+        description: Explicit negative non-matches for this entity.
+      confidence_threshold:
+        range: float
+        slot_uri: coe:confidenceThreshold
+        description: Minimum recognition confidence score.
+      ner_label:
+        range: string
+        slot_uri: coe:nerLabel
+        description: Named entity classification label.
+      exact_match:
+        multivalued: true
+        slot_uri: skos:exactMatch
+        description: External standard ontology URIs with exact conceptual equivalence (e.g. Wikidata, Schema.org).
+      close_match:
+        multivalued: true
+        slot_uri: skos:closeMatch
+        description: External standard ontology URIs with close conceptual overlap.
+enums:
+  OntologyDomainEnum:
+    permissible_values:
+      ai:
+        description: Artificial intelligence systems, models, methods, patterns, and operational concepts.
+      adobe:
+        description: Adobe-specific portfolio, products, brand systems, and customer/learner profiles.
+      business:
+        description: Commercial strategy, industries, sales, value, and organisational outcomes.
+      narrative:
+        description: Story, discourse, rhetoric, argument, and narrative structure.
+      learning:
+        description: Learning design, instruction, assessment, and educational theory.
+      delivery:
+        description: Human delivery, facilitation, presence, voice, and physical performance.
+      visual_communication:
+        description: Visual communication, media, layout, graphics, and production craft.
+      language_editorial:
+        description: Authored language, editorial style, verbal identity, and written expression.
+  LifecycleStatusEnum:
+    permissible_values:
+      canonical: null
+      draft: null
+      deprecated: null
+  StructuredValueKindEnum:
+    permissible_values:
+      mapping: null
+      list: null
+      string: null
+      integer: null
+      decimal: null
+      boolean: null
+      "null": null
+  RelationshipWeightEnum:
+    permissible_values:
+      required: null
+      expected: null
+      optional: null
+  AuthoredPredicateEnum:
+    description: >-
+      Authorable projection of the canonical relation hierarchy defined in the
+      relations module. Canonical-direction predicates only; each value's
+      meaning URI resolves to the relation slot carrying that predicate's
+      logical characteristics, typing, and external mappings. Inverse
+      directions are generated graph semantics and are never authorable.
+    permissible_values:
+      coe:supports:
+        meaning: coe:supports
+      coe:bridges:
+        meaning: coe:bridges
+      coe:limits:
+        meaning: coe:limits
+      coe:rebuts:
+        meaning: coe:rebuts
+      coe:contains:
+        meaning: coe:contains
+      coe:triggers:
+        meaning: coe:triggers
+      coe:resolves:
+        meaning: coe:resolves
+      coe:precedes:
+        meaning: coe:precedes
+      coe:specialises:
+        meaning: coe:specialises
+      coe:enables:
+        meaning: coe:enables
+      coe:contrasts_with:
+        meaning: coe:contrasts_with

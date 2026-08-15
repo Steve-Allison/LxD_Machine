@@ -1,0 +1,1337 @@
+bundle_id: coe:domain/adobe/products
+domain: adobe
+version: 4.0.0
+entity_collections:
+- id: coe:artifact/adobe/products
+  label: Adobe Product Portfolio
+  description: Comprehensive catalogue of Adobe Experience Cloud, Creative Cloud, and Document Cloud solutions.
+  version: 4.0.0
+  last_updated: '2026-08-15'
+  entities:
+  - id: coe:entity/adobe/experience_manager
+    label: Adobe Experience Manager
+    description: 'Adobe Experience Manager: Enterprise digital asset and content management system powering web and mobile
+      experiences.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Experience Manager\b
+    - (?i)\bExperience Manager\b
+    edges:
+    - subject_id: coe:entity/adobe/experience_manager
+      predicate: coe:contains
+      object_id: coe:entity/adobe/experience_platform
+      relationship_weight: required
+      description: Adobe Experience Manager integrates natively with Adobe Experience Platform.
+    - subject_id: coe:entity/adobe/experience_manager
+      predicate: coe:enables
+      object_id: coe:entity/adobe/content_supply_chain
+      relationship_weight: required
+      description: Adobe Experience Manager serves as the core activation engine in the Adobe Content Supply Chain.
+    - subject_id: coe:entity/adobe/experience_manager
+      predicate: coe:enables
+      object_id: coe:entity/business/play_b2b_account_orchestration
+      relationship_weight: required
+      description: Experience Manager powers web personalization in the B2B Account Orchestration sales play.
+    exact_match:
+    - https://www.wikidata.org/wiki/Q4684074
+  - id: coe:entity/adobe/experience_manager_sites
+    label: Adobe Experience Manager Sites
+    description: 'Adobe Experience Manager Sites: Enterprise digital asset and content management system powering web and
+      mobile experiences.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Experience Manager Sites\b
+    - (?i)\bExperience Manager Sites\b
+    edges:
+    - subject_id: coe:entity/adobe/experience_manager_sites
+      predicate: coe:contains
+      object_id: coe:entity/adobe/experience_platform
+      relationship_weight: required
+      description: Adobe Experience Manager Sites integrates natively with Adobe Experience Platform.
+    - subject_id: coe:entity/adobe/experience_manager_sites
+      predicate: coe:enables
+      object_id: coe:entity/adobe/content_supply_chain
+      relationship_weight: required
+      description: Adobe Experience Manager Sites serves as the core activation engine in the Adobe Content Supply Chain.
+    - subject_id: coe:entity/adobe/experience_manager_sites
+      predicate: coe:enables
+      object_id: coe:entity/business/play_b2b_account_orchestration
+      relationship_weight: required
+      description: Experience Manager powers web personalization in the B2B Account Orchestration sales play.
+  - id: coe:entity/adobe/experience_manager_assets
+    label: Adobe Experience Manager Assets
+    description: 'Adobe Experience Manager Assets: Enterprise digital asset and content management system powering web and
+      mobile experiences.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Experience Manager Assets\b
+    - (?i)\bExperience Manager Assets\b
+    edges:
+    - subject_id: coe:entity/adobe/experience_manager_assets
+      predicate: coe:contains
+      object_id: coe:entity/adobe/experience_platform
+      relationship_weight: required
+      description: Adobe Experience Manager Assets integrates natively with Adobe Experience Platform.
+    - subject_id: coe:entity/adobe/experience_manager_assets
+      predicate: coe:enables
+      object_id: coe:entity/adobe/content_supply_chain
+      relationship_weight: required
+      description: Adobe Experience Manager Assets serves as the core activation engine in the Adobe Content Supply Chain.
+  - id: coe:entity/adobe/experience_manager_forms
+    label: Adobe Experience Manager Forms
+    description: 'Adobe Experience Manager Forms: Enterprise digital asset and content management system powering web and
+      mobile experiences.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Experience Manager Forms\b
+    - (?i)\bExperience Manager Forms\b
+    edges:
+    - subject_id: coe:entity/adobe/experience_manager_forms
+      predicate: coe:contains
+      object_id: coe:entity/adobe/experience_platform
+      relationship_weight: required
+      description: Adobe Experience Manager Forms integrates natively with Adobe Experience Platform.
+    - subject_id: coe:entity/adobe/experience_manager_forms
+      predicate: coe:enables
+      object_id: coe:entity/adobe/content_supply_chain
+      relationship_weight: required
+      description: Adobe Experience Manager Forms serves as the core activation engine in the Adobe Content Supply Chain.
+  - id: coe:entity/adobe/experience_manager_screens
+    label: Adobe Experience Manager Screens
+    description: 'Adobe Experience Manager Screens: Enterprise digital asset and content management system powering web and
+      mobile experiences.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Experience Manager Screens\b
+    - (?i)\bExperience Manager Screens\b
+    edges:
+    - subject_id: coe:entity/adobe/experience_manager_screens
+      predicate: coe:contains
+      object_id: coe:entity/adobe/experience_platform
+      relationship_weight: required
+      description: Adobe Experience Manager Screens integrates natively with Adobe Experience Platform.
+    - subject_id: coe:entity/adobe/experience_manager_screens
+      predicate: coe:enables
+      object_id: coe:entity/adobe/content_supply_chain
+      relationship_weight: required
+      description: Adobe Experience Manager Screens serves as the core activation engine in the Adobe Content Supply Chain.
+  - id: coe:entity/adobe/analytics
+    label: Adobe Analytics
+    description: Adobe Analytics enterprise solution (Experience Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Analytics\b
+    - (?i)\bAnalytics\b
+    edges: []
+  - id: coe:entity/adobe/target
+    label: Adobe Target
+    description: Adobe Target enterprise solution (Experience Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Target\b
+    - (?i)\bTarget\b
+    edges: []
+  - id: coe:entity/adobe/campaign
+    label: Adobe Campaign
+    description: Adobe Campaign enterprise solution (Experience Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Campaign\b
+    - (?i)\bCampaign\b
+    edges: []
+  - id: coe:entity/adobe/audience_manager
+    label: Adobe Audience Manager
+    description: Adobe Audience Manager enterprise solution (Experience Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Audience Manager\b
+    - (?i)\bAudience Manager\b
+    edges: []
+  - id: coe:entity/adobe/experience_platform
+    label: Adobe Experience Platform
+    description: Adobe Experience Platform enterprise solution (Experience Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Experience Platform\b
+    - (?i)\bExperience Platform\b
+    edges: []
+  - id: coe:entity/adobe/journey_optimizer
+    label: Adobe Journey Optimizer
+    description: 'Adobe Journey Optimizer: Native Adobe Experience Platform application for real-time customer data and journey
+      orchestration.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Journey Optimizer\b
+    - (?i)\bJourney Optimizer\b
+    edges:
+    - subject_id: coe:entity/adobe/journey_optimizer
+      predicate: coe:contains
+      object_id: coe:entity/adobe/experience_platform
+      relationship_weight: required
+      description: Adobe Journey Optimizer is built natively on Adobe Experience Platform.
+    - subject_id: coe:entity/adobe/journey_optimizer
+      predicate: coe:enables
+      object_id: coe:entity/business/play_genai_automation
+      relationship_weight: required
+      description: Journey Optimizer powers the GenAI Automation customer engagement sales play.
+  - id: coe:entity/adobe/real_time_cdp
+    label: Adobe Real-Time CDP
+    description: 'Adobe Real-Time CDP: Native Adobe Experience Platform application for real-time customer data and journey
+      orchestration.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Real-Time CDP\b
+    - (?i)\bReal-Time CDP\b
+    edges:
+    - subject_id: coe:entity/adobe/real_time_cdp
+      predicate: coe:contains
+      object_id: coe:entity/adobe/experience_platform
+      relationship_weight: required
+      description: Adobe Real-Time CDP is built natively on Adobe Experience Platform.
+    - subject_id: coe:entity/adobe/real_time_cdp
+      predicate: coe:enables
+      object_id: coe:entity/business/play_real_time_customer_data
+      relationship_weight: required
+      description: Real-Time CDP powers the Real-Time Customer Data enterprise sales play.
+  - id: coe:entity/adobe/customer_journey_analytics
+    label: Adobe Customer Journey Analytics
+    description: 'Adobe Customer Journey Analytics: Native Adobe Experience Platform application for real-time customer data
+      and journey orchestration.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Customer Journey Analytics\b
+    - (?i)\bCustomer Journey Analytics\b
+    edges:
+    - subject_id: coe:entity/adobe/customer_journey_analytics
+      predicate: coe:contains
+      object_id: coe:entity/adobe/experience_platform
+      relationship_weight: required
+      description: Adobe Customer Journey Analytics is built natively on Adobe Experience Platform.
+  - id: coe:entity/adobe/workfront
+    label: Adobe Workfront
+    description: 'Adobe Workfront: Enterprise work management and marketing orchestration platform.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Workfront\b
+    - (?i)\bWorkfront\b
+    edges:
+    - subject_id: coe:entity/adobe/workfront
+      predicate: coe:enables
+      object_id: coe:entity/adobe/content_supply_chain
+      relationship_weight: required
+      description: Adobe Workfront manages the planning and workflow orchestration phase of Content Supply Chain.
+  - id: coe:entity/adobe/marketo_engage
+    label: Adobe Marketo Engage
+    description: Adobe Marketo Engage enterprise solution (Experience Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Marketo Engage\b
+    - (?i)\bMarketo Engage\b
+    edges: []
+  - id: coe:entity/adobe/commerce
+    label: Adobe Commerce
+    description: Adobe Commerce enterprise solution (Experience Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Commerce\b
+    - (?i)\bCommerce\b
+    edges: []
+  - id: coe:entity/adobe/advertising_cloud
+    label: Adobe Advertising Cloud
+    description: Adobe Advertising Cloud enterprise solution (Experience Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Advertising Cloud\b
+    - (?i)\bAdvertising Cloud\b
+    edges: []
+  - id: coe:entity/adobe/genstudio
+    label: Adobe GenStudio
+    description: 'Adobe GenStudio: Umbrella generative AI content supply chain solution connecting Workfront, Firefly, AEM,
+      and Content Analytics.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe GenStudio\b
+    - (?i)\bGenStudio\b
+    edges:
+    - subject_id: coe:entity/adobe/genstudio
+      predicate: coe:enables
+      object_id: coe:entity/adobe/firefly
+      relationship_weight: required
+      description: Adobe GenStudio leverages Adobe Firefly generative services for on-brand asset variant generation.
+    - subject_id: coe:entity/adobe/genstudio
+      predicate: coe:enables
+      object_id: coe:entity/business/play_content_supply_chain
+      relationship_weight: required
+      description: GenStudio serves as the core technology driver for the Content Supply Chain enterprise sales play.
+  - id: coe:entity/adobe/genstudio_for_performance_marketing
+    label: Adobe GenStudio for Performance Marketing
+    description: 'Adobe GenStudio for Performance Marketing: Native AI-first application for planning, creating, and optimizing
+      campaign assets across paid media, email, and display ads.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe GenStudio for Performance Marketing\b
+    - (?i)\bGenStudio for Performance Marketing\b
+    edges:
+    - subject_id: coe:entity/adobe/genstudio_for_performance_marketing
+      predicate: coe:enables
+      object_id: coe:entity/adobe/firefly
+      relationship_weight: required
+      description: Adobe GenStudio for Performance Marketing leverages Adobe Firefly generative services for on-brand asset
+        variant generation.
+    - subject_id: coe:entity/adobe/genstudio_for_performance_marketing
+      predicate: coe:enables
+      object_id: coe:entity/business/play_content_supply_chain
+      relationship_weight: required
+      description: GenStudio serves as the core technology driver for the Content Supply Chain enterprise sales play.
+  - id: coe:entity/adobe/genstudio_foundation
+    label: Adobe GenStudio Foundation
+    description: 'Adobe GenStudio Foundation: Generative AI-first application uniting creative production, asset activation,
+      and performance insights.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe GenStudio Foundation\b
+    - (?i)\bGenStudio Foundation\b
+    edges:
+    - subject_id: coe:entity/adobe/genstudio_foundation
+      predicate: coe:enables
+      object_id: coe:entity/adobe/firefly
+      relationship_weight: required
+      description: Adobe GenStudio Foundation leverages Adobe Firefly generative services for on-brand asset variant generation.
+  - id: coe:entity/adobe/frame_io
+    label: Adobe Frame.io
+    description: Adobe Frame.io enterprise solution (Experience Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Frame\.io\b
+    - (?i)\bFrame\.io\b
+    edges: []
+  - id: coe:entity/adobe/express
+    label: Adobe Express
+    description: Adobe Express enterprise solution (Experience Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Express\b
+    - (?i)\bExpress\b
+    edges: []
+  - id: coe:entity/adobe/stock
+    label: Adobe Stock
+    description: Adobe Stock enterprise solution (Experience Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Stock\b
+    - (?i)\bStock\b
+    edges: []
+  - id: coe:entity/adobe/success_studio
+    label: Success Studio
+    description: Success Studio enterprise solution (Experience Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bSuccess Studio\b
+    edges: []
+  - id: coe:entity/adobe/federated_search
+    label: Federated Search
+    description: Federated Search enterprise solution (Experience Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bFederated Search\b
+    edges: []
+  - id: coe:entity/adobe/mix_modeler
+    label: Adobe Mix Modeler
+    description: Adobe Mix Modeler enterprise solution (Experience Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Mix Modeler\b
+    - (?i)\bMix Modeler\b
+    edges: []
+  - id: coe:entity/adobe/product_analytics
+    label: Adobe Product Analytics
+    description: Adobe Product Analytics enterprise solution (Experience Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Product Analytics\b
+    - (?i)\bProduct Analytics\b
+    edges: []
+  - id: coe:entity/adobe/learning_manager
+    label: Adobe Learning Manager
+    description: Adobe Learning Manager enterprise solution (Experience Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Learning Manager\b
+    - (?i)\bLearning Manager\b
+    edges: []
+  - id: coe:entity/adobe/journey_optimizer_b2b_edition
+    label: Adobe Journey Optimizer B2B Edition
+    description: 'Adobe Journey Optimizer B2B Edition: Native Adobe Experience Platform application for real-time customer
+      data and journey orchestration.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Journey Optimizer B2B Edition\b
+    - (?i)\bJourney Optimizer B2B Edition\b
+    edges:
+    - subject_id: coe:entity/adobe/journey_optimizer_b2b_edition
+      predicate: coe:contains
+      object_id: coe:entity/adobe/experience_platform
+      relationship_weight: required
+      description: Adobe Journey Optimizer B2B Edition is built natively on Adobe Experience Platform.
+    - subject_id: coe:entity/adobe/journey_optimizer_b2b_edition
+      predicate: coe:enables
+      object_id: coe:entity/business/play_genai_automation
+      relationship_weight: required
+      description: Journey Optimizer powers the GenAI Automation customer engagement sales play.
+  - id: coe:entity/adobe/real_time_cdp_b2b_edition
+    label: Adobe Real-Time CDP B2B Edition
+    description: 'Adobe Real-Time CDP B2B Edition: Native Adobe Experience Platform application for real-time customer data
+      and journey orchestration.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Real-Time CDP B2B Edition\b
+    - (?i)\bReal-Time CDP B2B Edition\b
+    edges:
+    - subject_id: coe:entity/adobe/real_time_cdp_b2b_edition
+      predicate: coe:contains
+      object_id: coe:entity/adobe/experience_platform
+      relationship_weight: required
+      description: Adobe Real-Time CDP B2B Edition is built natively on Adobe Experience Platform.
+    - subject_id: coe:entity/adobe/real_time_cdp_b2b_edition
+      predicate: coe:enables
+      object_id: coe:entity/business/play_real_time_customer_data
+      relationship_weight: required
+      description: Real-Time CDP powers the Real-Time Customer Data enterprise sales play.
+  - id: coe:entity/adobe/marketo_measure
+    label: Adobe Marketo Measure
+    description: Adobe Marketo Measure enterprise solution (Experience Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Marketo Measure\b
+    - (?i)\bMarketo Measure\b
+    edges: []
+  - id: coe:entity/adobe/experience_manager_guides
+    label: Adobe Experience Manager Guides
+    description: 'Adobe Experience Manager Guides: Enterprise digital asset and content management system powering web and
+      mobile experiences.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Experience Manager Guides\b
+    - (?i)\bExperience Manager Guides\b
+    edges:
+    - subject_id: coe:entity/adobe/experience_manager_guides
+      predicate: coe:contains
+      object_id: coe:entity/adobe/experience_platform
+      relationship_weight: required
+      description: Adobe Experience Manager Guides integrates natively with Adobe Experience Platform.
+    - subject_id: coe:entity/adobe/experience_manager_guides
+      predicate: coe:enables
+      object_id: coe:entity/adobe/content_supply_chain
+      relationship_weight: required
+      description: Adobe Experience Manager Guides serves as the core activation engine in the Adobe Content Supply Chain.
+  - id: coe:entity/adobe/experience_manager_sites_optimizer
+    label: Adobe Experience Manager Sites Optimizer
+    description: 'Adobe Experience Manager Sites Optimizer: Enterprise digital asset and content management system powering
+      web and mobile experiences.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Experience Manager Sites Optimizer\b
+    - (?i)\bExperience Manager Sites Optimizer\b
+    edges:
+    - subject_id: coe:entity/adobe/experience_manager_sites_optimizer
+      predicate: coe:contains
+      object_id: coe:entity/adobe/experience_platform
+      relationship_weight: required
+      description: Adobe Experience Manager Sites Optimizer integrates natively with Adobe Experience Platform.
+    - subject_id: coe:entity/adobe/experience_manager_sites_optimizer
+      predicate: coe:enables
+      object_id: coe:entity/adobe/content_supply_chain
+      relationship_weight: required
+      description: Adobe Experience Manager Sites Optimizer serves as the core activation engine in the Adobe Content Supply
+        Chain.
+  - id: coe:entity/adobe/llm_optimizer
+    label: Adobe LLM Optimizer
+    description: Adobe LLM Optimizer enterprise solution (Experience Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe LLM Optimizer\b
+    - (?i)\bLLM Optimizer\b
+    edges: []
+  - id: coe:entity/adobe/experience_manager_edge_delivery_services
+    label: Adobe Experience Manager Edge Delivery Services
+    description: 'Adobe Experience Manager Edge Delivery Services: Enterprise digital asset and content management system
+      powering web and mobile experiences.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Experience Manager Edge Delivery Services\b
+    - (?i)\bExperience Manager Edge Delivery Services\b
+    edges:
+    - subject_id: coe:entity/adobe/experience_manager_edge_delivery_services
+      predicate: coe:contains
+      object_id: coe:entity/adobe/experience_platform
+      relationship_weight: required
+      description: Adobe Experience Manager Edge Delivery Services integrates natively with Adobe Experience Platform.
+    - subject_id: coe:entity/adobe/experience_manager_edge_delivery_services
+      predicate: coe:enables
+      object_id: coe:entity/adobe/content_supply_chain
+      relationship_weight: required
+      description: Adobe Experience Manager Edge Delivery Services serves as the core activation engine in the Adobe Content
+        Supply Chain.
+  - id: coe:entity/adobe/workfront_planning
+    label: Adobe Workfront Planning
+    description: 'Adobe Workfront Planning: Enterprise work management and marketing orchestration platform.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Workfront Planning\b
+    - (?i)\bWorkfront Planning\b
+    edges:
+    - subject_id: coe:entity/adobe/workfront_planning
+      predicate: coe:enables
+      object_id: coe:entity/adobe/content_supply_chain
+      relationship_weight: required
+      description: Adobe Workfront Planning manages the planning and workflow orchestration phase of Content Supply Chain.
+  - id: coe:entity/adobe/advertising
+    label: Adobe Advertising
+    description: Adobe Advertising enterprise solution (Experience Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Advertising\b
+    - (?i)\bAdvertising\b
+    edges: []
+  - id: coe:entity/adobe/customer_journey_analytics_b2b_edition
+    label: Adobe Customer Journey Analytics B2B Edition
+    description: 'Adobe Customer Journey Analytics B2B Edition: Native Adobe Experience Platform application for real-time
+      customer data and journey orchestration.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Customer Journey Analytics B2B Edition\b
+    - (?i)\bCustomer Journey Analytics B2B Edition\b
+    edges:
+    - subject_id: coe:entity/adobe/customer_journey_analytics_b2b_edition
+      predicate: coe:contains
+      object_id: coe:entity/adobe/experience_platform
+      relationship_weight: required
+      description: Adobe Customer Journey Analytics B2B Edition is built natively on Adobe Experience Platform.
+  - id: coe:entity/adobe/workfront_workflow
+    label: Adobe Workfront Workflow
+    description: 'Adobe Workfront Workflow: Enterprise work management and marketing orchestration platform.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Workfront Workflow\b
+    - (?i)\bWorkfront Workflow\b
+    edges:
+    - subject_id: coe:entity/adobe/workfront_workflow
+      predicate: coe:enables
+      object_id: coe:entity/adobe/content_supply_chain
+      relationship_weight: required
+      description: Adobe Workfront Workflow manages the planning and workflow orchestration phase of Content Supply Chain.
+  - id: coe:entity/adobe/brand_concierge
+    label: Adobe Brand Concierge
+    description: Adobe Brand Concierge enterprise solution (Experience Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Brand Concierge\b
+    - (?i)\bBrand Concierge\b
+    edges: []
+  - id: coe:entity/adobe/content_analytics
+    label: Adobe Content Analytics
+    description: Adobe Content Analytics enterprise solution (Experience Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Content Analytics\b
+    - (?i)\bContent Analytics\b
+    edges: []
+  - id: coe:entity/adobe/real_time_cdp_collaboration
+    label: Adobe Real-Time CDP Collaboration
+    description: 'Adobe Real-Time CDP Collaboration: Native Adobe Experience Platform application for real-time customer data
+      and journey orchestration.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Real-Time CDP Collaboration\b
+    - (?i)\bReal-Time CDP Collaboration\b
+    edges:
+    - subject_id: coe:entity/adobe/real_time_cdp_collaboration
+      predicate: coe:contains
+      object_id: coe:entity/adobe/experience_platform
+      relationship_weight: required
+      description: Adobe Real-Time CDP Collaboration is built natively on Adobe Experience Platform.
+  - id: coe:entity/adobe/journey_optimizer_experimentation_accelerator
+    label: Adobe Journey Optimizer Experimentation Accelerator
+    description: 'Adobe Journey Optimizer Experimentation Accelerator: Native Adobe Experience Platform application for real-time
+      customer data and journey orchestration.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Journey Optimizer Experimentation Accelerator\b
+    - (?i)\bJourney Optimizer Experimentation Accelerator\b
+    edges:
+    - subject_id: coe:entity/adobe/journey_optimizer_experimentation_accelerator
+      predicate: coe:contains
+      object_id: coe:entity/adobe/experience_platform
+      relationship_weight: required
+      description: Adobe Journey Optimizer Experimentation Accelerator is built natively on Adobe Experience Platform.
+  - id: coe:entity/adobe/commerce_as_a_cloud_service
+    label: Adobe Commerce as a Cloud Service
+    description: Adobe Commerce as a Cloud Service enterprise solution (Experience Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Commerce as a Cloud Service\b
+    - (?i)\bCommerce as a Cloud Service\b
+    edges: []
+  - id: coe:entity/adobe/genstudio_for_content_marketing
+    label: Adobe GenStudio for Content Marketing
+    description: 'Adobe GenStudio for Content Marketing: Generative AI-first application uniting creative production, asset
+      activation, and performance insights.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe GenStudio for Content Marketing\b
+    - (?i)\bGenStudio for Content Marketing\b
+    edges:
+    - subject_id: coe:entity/adobe/genstudio_for_content_marketing
+      predicate: coe:enables
+      object_id: coe:entity/adobe/firefly
+      relationship_weight: required
+      description: Adobe GenStudio for Content Marketing leverages Adobe Firefly generative services for on-brand asset variant
+        generation.
+  - id: coe:entity/adobe/dynamic_chat
+    label: Adobe Dynamic Chat
+    description: Adobe Dynamic Chat enterprise solution (Experience Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Dynamic Chat\b
+    - (?i)\bDynamic Chat\b
+    edges: []
+  - id: coe:entity/adobe/commerce_optimizer
+    label: Adobe Commerce Optimizer
+    description: Adobe Commerce Optimizer enterprise solution (Experience Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Commerce Optimizer\b
+    - (?i)\bCommerce Optimizer\b
+    edges: []
+  - id: coe:entity/adobe/photoshop
+    label: Adobe Photoshop
+    description: 'Adobe Photoshop: Professional creative authoring software for image, vector, layout, or video production.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Photoshop\b
+    - (?i)\bPhotoshop\b
+    edges:
+    - subject_id: coe:entity/adobe/photoshop
+      predicate: coe:enables
+      object_id: coe:entity/adobe/firefly
+      relationship_weight: expected
+      description: Adobe Photoshop incorporates Adobe Firefly generative AI tools natively.
+    exact_match:
+    - https://www.wikidata.org/wiki/Q11246
+  - id: coe:entity/adobe/illustrator
+    label: Adobe Illustrator
+    description: 'Adobe Illustrator: Professional creative authoring software for image, vector, layout, or video production.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Illustrator\b
+    - (?i)\bIllustrator\b
+    edges:
+    - subject_id: coe:entity/adobe/illustrator
+      predicate: coe:enables
+      object_id: coe:entity/adobe/firefly
+      relationship_weight: expected
+      description: Adobe Illustrator incorporates Adobe Firefly generative AI tools natively.
+    exact_match:
+    - https://www.wikidata.org/wiki/Q214290
+  - id: coe:entity/adobe/indesign
+    label: Adobe InDesign
+    description: 'Adobe InDesign: Professional creative authoring software for image, vector, layout, or video production.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe InDesign\b
+    - (?i)\bInDesign\b
+    edges:
+    - subject_id: coe:entity/adobe/indesign
+      predicate: coe:enables
+      object_id: coe:entity/adobe/firefly
+      relationship_weight: expected
+      description: Adobe InDesign incorporates Adobe Firefly generative AI tools natively.
+    exact_match:
+    - https://www.wikidata.org/wiki/Q214309
+  - id: coe:entity/adobe/premiere_pro
+    label: Adobe Premiere Pro
+    description: 'Adobe Premiere Pro: Professional creative authoring software for image, vector, layout, or video production.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Premiere Pro\b
+    - (?i)\bPremiere Pro\b
+    edges:
+    - subject_id: coe:entity/adobe/premiere_pro
+      predicate: coe:enables
+      object_id: coe:entity/adobe/firefly
+      relationship_weight: expected
+      description: Adobe Premiere Pro incorporates Adobe Firefly generative AI tools natively.
+    exact_match:
+    - https://www.wikidata.org/wiki/Q246067
+  - id: coe:entity/adobe/premiere_mobile
+    label: Adobe Premiere (Mobile)
+    description: 'Adobe Premiere (Mobile): Professional creative authoring software for image, vector, layout, or video production.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Premiere \(Mobile\)\b
+    - (?i)\bPremiere \(Mobile\)\b
+    edges:
+    - subject_id: coe:entity/adobe/premiere_mobile
+      predicate: coe:enables
+      object_id: coe:entity/adobe/firefly
+      relationship_weight: expected
+      description: Adobe Premiere (Mobile) incorporates Adobe Firefly generative AI tools natively.
+  - id: coe:entity/adobe/after_effects
+    label: Adobe After Effects
+    description: Adobe After Effects enterprise solution (Creative Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe After Effects\b
+    - (?i)\bAfter Effects\b
+    edges: []
+    exact_match:
+    - https://www.wikidata.org/wiki/Q246104
+  - id: coe:entity/adobe/xd
+    label: Adobe XD
+    description: Adobe XD enterprise solution (Creative Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe XD\b
+    edges: []
+  - id: coe:entity/adobe/lightroom
+    label: Adobe Lightroom
+    description: Adobe Lightroom enterprise solution (Creative Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Lightroom\b
+    - (?i)\bLightroom\b
+    edges: []
+  - id: coe:entity/adobe/lightroom_classic
+    label: Adobe Lightroom Classic
+    description: Adobe Lightroom Classic enterprise solution (Creative Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Lightroom Classic\b
+    - (?i)\bLightroom Classic\b
+    edges: []
+  - id: coe:entity/adobe/acrobat_pro
+    label: Adobe Acrobat Pro
+    description: 'Adobe Acrobat Pro: Complete digital document solution for creating, editing, signing, and analyzing PDFs.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Acrobat Pro\b
+    - (?i)\bAcrobat Pro\b
+    edges: []
+  - id: coe:entity/adobe/animate
+    label: Adobe Animate
+    description: Adobe Animate enterprise solution (Creative Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Animate\b
+    - (?i)\bAnimate\b
+    edges: []
+  - id: coe:entity/adobe/audition
+    label: Adobe Audition
+    description: Adobe Audition enterprise solution (Creative Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Audition\b
+    - (?i)\bAudition\b
+    edges: []
+  - id: coe:entity/adobe/dimension
+    label: Adobe Dimension
+    description: Adobe Dimension enterprise solution (Creative Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Dimension\b
+    - (?i)\bDimension\b
+    edges: []
+  - id: coe:entity/adobe/dreamweaver
+    label: Adobe Dreamweaver
+    description: Adobe Dreamweaver enterprise solution (Creative Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Dreamweaver\b
+    - (?i)\bDreamweaver\b
+    edges: []
+  - id: coe:entity/adobe/character_animator
+    label: Adobe Character Animator
+    description: Adobe Character Animator enterprise solution (Creative Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Character Animator\b
+    - (?i)\bCharacter Animator\b
+    edges: []
+  - id: coe:entity/adobe/fresco
+    label: Adobe Fresco
+    description: Adobe Fresco enterprise solution (Creative Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Fresco\b
+    - (?i)\bFresco\b
+    edges: []
+  - id: coe:entity/adobe/substance_3d_designer
+    label: Adobe Substance 3D Designer
+    description: Adobe Substance 3D Designer enterprise solution (Creative Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Substance 3D Designer\b
+    - (?i)\bSubstance 3D Designer\b
+    edges: []
+  - id: coe:entity/adobe/substance_3d_painter
+    label: Adobe Substance 3D Painter
+    description: Adobe Substance 3D Painter enterprise solution (Creative Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Substance 3D Painter\b
+    - (?i)\bSubstance 3D Painter\b
+    edges: []
+  - id: coe:entity/adobe/substance_3d_sampler
+    label: Adobe Substance 3D Sampler
+    description: Adobe Substance 3D Sampler enterprise solution (Creative Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Substance 3D Sampler\b
+    - (?i)\bSubstance 3D Sampler\b
+    edges: []
+  - id: coe:entity/adobe/substance_3d_stager
+    label: Adobe Substance 3D Stager
+    description: Adobe Substance 3D Stager enterprise solution (Creative Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Substance 3D Stager\b
+    - (?i)\bSubstance 3D Stager\b
+    edges: []
+  - id: coe:entity/adobe/firefly
+    label: Adobe Firefly
+    description: Adobe Firefly enterprise solution (Creative Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Firefly\b
+    - (?i)\bFirefly\b
+    edges: []
+  - id: coe:entity/adobe/express
+    label: Adobe Express
+    description: Adobe Express enterprise solution (Creative Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Express\b
+    - (?i)\bExpress\b
+    edges: []
+  - id: coe:entity/adobe/frame_io
+    label: Adobe Frame.io
+    description: Adobe Frame.io enterprise solution (Creative Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Frame\.io\b
+    - (?i)\bFrame\.io\b
+    edges: []
+  - id: coe:entity/adobe/stock
+    label: Adobe Stock
+    description: Adobe Stock enterprise solution (Creative Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Stock\b
+    - (?i)\bStock\b
+    edges: []
+  - id: coe:entity/adobe/incopy
+    label: Adobe InCopy
+    description: Adobe InCopy enterprise solution (Creative Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe InCopy\b
+    - (?i)\bInCopy\b
+    edges: []
+  - id: coe:entity/adobe/bridge
+    label: Adobe Bridge
+    description: Adobe Bridge enterprise solution (Creative Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Bridge\b
+    - (?i)\bBridge\b
+    edges: []
+  - id: coe:entity/adobe/media_encoder
+    label: Adobe Media Encoder
+    description: Adobe Media Encoder enterprise solution (Creative Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Media Encoder\b
+    - (?i)\bMedia Encoder\b
+    edges: []
+  - id: coe:entity/adobe/capture
+    label: Adobe Capture
+    description: Adobe Capture enterprise solution (Creative Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Capture\b
+    - (?i)\bCapture\b
+    edges: []
+  - id: coe:entity/adobe/photoshop_express
+    label: Adobe Photoshop Express
+    description: 'Adobe Photoshop Express: Professional creative authoring software for image, vector, layout, or video production.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Photoshop Express\b
+    - (?i)\bPhotoshop Express\b
+    edges:
+    - subject_id: coe:entity/adobe/photoshop_express
+      predicate: coe:enables
+      object_id: coe:entity/adobe/firefly
+      relationship_weight: expected
+      description: Adobe Photoshop Express incorporates Adobe Firefly generative AI tools natively.
+  - id: coe:entity/adobe/portfolio
+    label: Adobe Portfolio
+    description: Adobe Portfolio enterprise solution (Creative Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Portfolio\b
+    - (?i)\bPortfolio\b
+    edges: []
+  - id: coe:entity/adobe/fonts
+    label: Adobe Fonts
+    description: Adobe Fonts enterprise solution (Creative Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Fonts\b
+    - (?i)\bFonts\b
+    edges: []
+  - id: coe:entity/adobe/color
+    label: Adobe Color
+    description: Adobe Color enterprise solution (Creative Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Color\b
+    - (?i)\bColor\b
+    edges: []
+  - id: coe:entity/adobe/photoshop_web
+    label: Adobe Photoshop (web)
+    description: 'Adobe Photoshop (web): Professional creative authoring software for image, vector, layout, or video production.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Photoshop \(web\)\b
+    - (?i)\bPhotoshop \(web\)\b
+    edges:
+    - subject_id: coe:entity/adobe/photoshop_web
+      predicate: coe:enables
+      object_id: coe:entity/adobe/firefly
+      relationship_weight: expected
+      description: Adobe Photoshop (web) incorporates Adobe Firefly generative AI tools natively.
+  - id: coe:entity/adobe/illustrator_web
+    label: Adobe Illustrator (web)
+    description: 'Adobe Illustrator (web): Professional creative authoring software for image, vector, layout, or video production.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Illustrator \(web\)\b
+    - (?i)\bIllustrator \(web\)\b
+    edges:
+    - subject_id: coe:entity/adobe/illustrator_web
+      predicate: coe:enables
+      object_id: coe:entity/adobe/firefly
+      relationship_weight: expected
+      description: Adobe Illustrator (web) incorporates Adobe Firefly generative AI tools natively.
+  - id: coe:entity/adobe/lightroom_web
+    label: Adobe Lightroom (web)
+    description: Adobe Lightroom (web) enterprise solution (Creative Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Lightroom \(web\)\b
+    - (?i)\bLightroom \(web\)\b
+    edges: []
+  - id: coe:entity/adobe/firefly_services
+    label: Adobe Firefly Services
+    description: Adobe Firefly Services enterprise solution (Creative Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Firefly Services\b
+    - (?i)\bFirefly Services\b
+    edges: []
+  - id: coe:entity/adobe/firefly_custom_models
+    label: Adobe Firefly Custom Models
+    description: Adobe Firefly Custom Models enterprise solution (Creative Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Firefly Custom Models\b
+    - (?i)\bFirefly Custom Models\b
+    edges: []
+  - id: coe:entity/adobe/firefly_foundry
+    label: Adobe Firefly Foundry
+    description: Adobe Firefly Foundry enterprise solution (Creative Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Firefly Foundry\b
+    - (?i)\bFirefly Foundry\b
+    edges: []
+  - id: coe:entity/adobe/firefly_creative_production
+    label: Adobe Firefly Creative Production
+    description: Adobe Firefly Creative Production enterprise solution (Creative Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Firefly Creative Production\b
+    - (?i)\bFirefly Creative Production\b
+    edges: []
+  - id: coe:entity/adobe/firefly_design_intelligence
+    label: Adobe Firefly Design Intelligence
+    description: Adobe Firefly Design Intelligence enterprise solution (Creative Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Firefly Design Intelligence\b
+    - (?i)\bFirefly Design Intelligence\b
+    edges: []
+  - id: coe:entity/adobe/acrobat_desktop
+    label: Adobe Acrobat (Desktop)
+    description: 'Adobe Acrobat (Desktop): Complete digital document solution for creating, editing, signing, and analyzing
+      PDFs.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Acrobat \(Desktop\)\b
+    - (?i)\bAcrobat \(Desktop\)\b
+    edges: []
+  - id: coe:entity/adobe/acrobat_web
+    label: Adobe Acrobat (Web)
+    description: 'Adobe Acrobat (Web): Complete digital document solution for creating, editing, signing, and analyzing PDFs.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Acrobat \(Web\)\b
+    - (?i)\bAcrobat \(Web\)\b
+    edges: []
+  - id: coe:entity/adobe/acrobat_mobile
+    label: Adobe Acrobat (Mobile)
+    description: 'Adobe Acrobat (Mobile): Complete digital document solution for creating, editing, signing, and analyzing
+      PDFs.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Acrobat \(Mobile\)\b
+    - (?i)\bAcrobat \(Mobile\)\b
+    edges: []
+  - id: coe:entity/adobe/acrobat_reader
+    label: Adobe Acrobat Reader
+    description: 'Adobe Acrobat Reader: Complete digital document solution for creating, editing, signing, and analyzing PDFs.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Acrobat Reader\b
+    - (?i)\bAcrobat Reader\b
+    edges: []
+  - id: coe:entity/adobe/acrobat_sign
+    label: Adobe Acrobat Sign
+    description: 'Adobe Acrobat Sign: Complete digital document solution for creating, editing, signing, and analyzing PDFs.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Acrobat Sign\b
+    - (?i)\bAcrobat Sign\b
+    edges: []
+  - id: coe:entity/adobe/scan
+    label: Adobe Scan
+    description: Adobe Scan enterprise solution (Document Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Scan\b
+    - (?i)\bScan\b
+    edges: []
+  - id: coe:entity/adobe/document_cloud
+    label: Adobe Document Cloud
+    description: Adobe Document Cloud enterprise solution (Document Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Document Cloud\b
+    - (?i)\bDocument Cloud\b
+    edges: []
+  - id: coe:entity/adobe/pdf_services_api
+    label: Adobe PDF Services API
+    description: Adobe PDF Services API enterprise solution (Document Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe PDF Services API\b
+    - (?i)\bPDF Services API\b
+    edges: []
+  - id: coe:entity/adobe/acrobat_standard
+    label: Adobe Acrobat Standard
+    description: 'Adobe Acrobat Standard: Complete digital document solution for creating, editing, signing, and analyzing
+      PDFs.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Acrobat Standard\b
+    - (?i)\bAcrobat Standard\b
+    edges: []
+  - id: coe:entity/adobe/acrobat_studio
+    label: Adobe Acrobat Studio
+    description: 'Adobe Acrobat Studio: Complete digital document solution for creating, editing, signing, and analyzing PDFs.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Acrobat Studio\b
+    - (?i)\bAcrobat Studio\b
+    edges: []
+  - id: coe:entity/adobe/acrobat_ai_assistant
+    label: Adobe Acrobat AI Assistant
+    description: 'Adobe Acrobat AI Assistant: Complete digital document solution for creating, editing, signing, and analyzing
+      PDFs.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Acrobat AI Assistant\b
+    - (?i)\bAcrobat AI Assistant\b
+    edges: []
+  - id: coe:entity/adobe/pdf_spaces
+    label: PDF Spaces
+    description: PDF Spaces enterprise solution (Document Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bPDF Spaces\b
+    edges: []
+  - id: coe:entity/adobe/acrobat_services
+    label: Adobe Acrobat Services
+    description: 'Adobe Acrobat Services: Complete digital document solution for creating, editing, signing, and analyzing
+      PDFs.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAdobe Acrobat Services\b
+    - (?i)\bAcrobat Services\b
+    edges: []
+  - id: coe:entity/adobe/acrobat_pdf_spaces
+    label: Acrobat PDF Spaces
+    description: 'Acrobat PDF Spaces: Complete digital document solution for creating, editing, signing, and analyzing PDFs.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAcrobat PDF Spaces\b
+    edges: []
+  - id: coe:entity/adobe/acrobat_generate_presentation
+    label: Acrobat Generate Presentation
+    description: 'Acrobat Generate Presentation: Complete digital document solution for creating, editing, signing, and analyzing
+      PDFs.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAcrobat Generate Presentation\b
+    edges: []
+  - id: coe:entity/adobe/pdf_spaces_sharing
+    label: PDF Spaces Sharing
+    description: PDF Spaces Sharing enterprise solution (Document Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bPDF Spaces Sharing\b
+    edges: []
+  - id: coe:entity/adobe/audio_overview
+    label: Audio Overview
+    description: Audio Overview enterprise solution (Document Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAudio Overview\b
+    edges: []
+  - id: coe:entity/adobe/generate_podcast
+    label: Generate Podcast
+    description: Generate Podcast enterprise solution (Document Cloud).
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bGenerate Podcast\b
+    edges: []
+  - id: coe:entity/adobe/acrobat_express
+    label: Acrobat Express
+    description: 'Acrobat Express: Complete digital document solution for creating, editing, signing, and analyzing PDFs.'
+    home_domain: adobe
+    status: canonical
+    ner_label: ADOBE_PRODUCT
+    recognition_patterns:
+    - (?i)\bAcrobat Express\b
+    edges: []
