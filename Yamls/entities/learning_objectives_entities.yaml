@@ -1,40 +1,15 @@
+# yaml-language-server: $schema=https://steve-allison.github.io/Central_Configs/schemas/resource-meta.schema.json
 _meta:
-  id: learning_objectives_entities
-  purpose: entity
-  version: 1.24.0
-  last_updated: '2026-03-09'
-  description: GLiNER entity definitions for detecting learning objective patterns including Bloom's action verbs, objective
-    quality markers, competency statements, and measurability indicators.
-  domain: pedagogical
-  domain_type: workflow
-  corpus_sources:
-  - Corpus/Research/Research - Writing Learning Objectives.md
-  - Corpus/Research/Research - Essential Inputs for Learning Objectives.md
-  - Corpus/Research/Learner Outcomes - Instructions v4.md
-  - Corpus/Research/Guide to Writing Learning Gap and Learning Goal Statements for Corporate Learning.md
-  - Corpus/Research/Research - Comprehensive Learning Design Framework.md
-  - Corpus/Research/Research - Merrills Instructional Design Theories Applied.md
-  - Corpus/Research/Research - Scenario-Based Training_ A Comprehensive Guide.md
-  - Corpus/Research/Research - Roleplay & Scenarios for Learning.md
-  - Corpus/Research/Research - Learner Persona Research and Development.md
-  - Corpus/Research/donald_clarks_100_tips_for_effective_learning_design.md
-  - Corpus/Research/recommended-training-effectiveness-questions-for-postcourse-eval.md
-  - Corpus/Research/Applying_Learning_Theory_Practical_Checklist.md
-  - Corpus/Research/Research - Corporate Learning Assessment- Strategies, Modalities, and Best Practices.md
-  - Corpus/Research/Best-Practice Learning Activities for Adult Corporate Learners (Tech Sector).md
-  - Corpus/Research/Best Practices for Structuring Corporate Learning Content.md
-  - Corpus/Research/Methodology - How do we move from this research to a sequenced A.I. Enhanced Course Pipeline_.md
-  - Corpus/Research/Content Map - Instructions v3.md
-  academic_sources:
-  - Anderson & Krathwohl (2001) - A Taxonomy for Learning, Teaching, and Assessing
-  - Bloom et al. (1956) - Taxonomy of Educational Objectives
-  relationships:
-  - target: taxonomy/learning_objectives_taxonomy.yaml
-    type: depends_on
-    description: Bloom's level definitions and verb classifications
-  - target: methodology/learning_objectives_framework.yaml
-    type: depends_on
-    description: Objective writing methodology and quality rules
+  id: "learning_objectives_entities"
+  title: "Learning Objectives Entities"
+  version: "1.24.0"
+  schema_version: "1.0.0"
+  last_updated: "2026-08-15"
+  authority: "LxD_Machine"
+  status: "released"
+  ontology_domain: "learning"
+  ontology_version: "4.0.0"
+  governing_schema: "DomainTaxonomy"
 gliner_config:
   model: urchade/gliner_multi_pii-v1
   batch_size: 8

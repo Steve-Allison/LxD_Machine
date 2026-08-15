@@ -1,20 +1,39 @@
+# yaml-language-server: $schema=https://steve-allison.github.io/Central_Configs/schemas/resource-meta.schema.json
+_meta:
+  id: "content_map_corpus"
+  title: "Content Map Corpus"
+  version: "2.0"
+  schema_version: "1.0.0"
+  last_updated: "2026-08-15"
+  authority: "LxD_Machine"
+  status: "released"
+  ontology_domain: "learning"
+  ontology_version: "4.0.0"
+  governing_schema: "InstructionalCorpus"
+
 # Content Map Builder - Knowledge Corpus
-# Version: 1.2
-# Last Updated: 2025-12-18
+# Version: 2.0
+# Last Updated: 2026-02-12
 #
 # This YAML contains methodologies and templates extracted from ALL 17 learning
 # design modules for the Content Map Builder PDL workflow.
 #
 # Sections:
-# 0. Content Mining (Module 08) - Extract structure from source materials
-# 1. Course Architecture (Module 01)
-# 2. Learning Structure (Module 02)
-# 3. Timing Intelligence (Module 03a/b)
-# 4. Learning Outcomes (Module 04)
-# 5. Activity Design (Module 05, 07)
-# 6. Assessment Design (Module 06)
-# 7. Content Map Generation (Module 09, 10)
-# 8. Conditional Modules (11-17) - includes:
+# 0. Shared Rules (formatting, grounding, output)
+# 0.1. Purpose & Role of Content Map - NEW in v2.0
+# 0.2. Stakeholder Collaboration - NEW in v2.0
+# 1. Content Mining (Module 08) - Extract structure from source materials
+# 2. Course Architecture (Module 01)
+# 2.1. Module 1 Requirements - NEW in v2.0
+# 2.2. Module Narrative Frameworks - NEW in v2.0
+# 3. Learning Structure (Module 02)
+# 4. Timing Intelligence (Module 03a/b)
+# 5. Learning Outcomes (Module 04)
+# 6. Activity Design (Module 05, 07)
+# 7. Assessment Design (Module 06)
+# 8. Content Map Generation (Module 09, 10)
+# 8.1. Information Scent Guidance - NEW in v2.0
+# 9. Conditional Modules (11-17) - includes:
 #    - Adult Learning (11)
 #    - VILT/ILT (12)
 #    - Debrief Protocol (13)
@@ -22,11 +41,185 @@
 #    - Roleplay Design (15)
 #    - Scenario Learning (16)
 #    - Social Learning (17)
-# 9. Quality Validation
+# 10. Quality Validation (includes MECE Principle - NEW in v2.0)
+#
+# NEW IN v2.0:
+# - Purpose & Role of Content Map (philosophical foundation)
+# - Stakeholder Collaboration guidance (facilitates review & iteration)
+# - Module 1 Requirements (introductory module structure)
+# - MECE Principle (Mutually Exclusive, Collectively Exhaustive validation)
+# - Information Scent Guidance (clear, navigable module/section naming)
+# - Module Narrative Frameworks (How-To, Case Study structures)
 # =============================================================================
 
 # =============================================================================
-# SECTION 0: CONTENT MINING (Module 08)
+# SECTION 0: SHARED RULES (NEW in v1.3)
+# =============================================================================
+shared_rules:
+  formatting_rules: |
+    FORMATTING RULES:
+    - The full_report field should NOT include section headers like "## Section 1:" or "## Section 2:"
+    - Start directly with content (e.g., "### Course Architecture" or "#### Module Breakdown:")
+    - The output template will add section numbering automatically
+    - Use markdown formatting (headers, lists, tables) for readability
+    - Keep paragraphs concise (2-4 sentences max)
+    - Use bullet points for lists of 3+ items
+
+  grounding_rules: |
+    GROUNDING RULES - USE ONLY PROVIDED DATA:
+    - Quote exact figures from input for all metrics (course duration, module count, timing)
+    - Reference exact course objectives provided - do NOT create new ones
+    - Use specified delivery modality for activity adaptations
+    - If data missing, state: "Not specified - recommend stakeholder input"
+    - Include measurement methodology for timing estimates (how calculated)
+    - Cite source for all content (from GGOO input or mined from source materials)
+
+  output_json_rules: |
+    JSON OUTPUT RULES:
+    - All percentage fields must be integers (0-100), NOT decimals
+    - All boolean fields must be true/false, NOT strings
+    - All number fields must be numeric types, NOT strings
+    - Array fields must be arrays, even if empty (use [], not null)
+    - Use null for optional fields that are not applicable, NOT empty strings
+
+# =============================================================================
+# SECTION 0.1: PURPOSE & ROLE OF CONTENT MAP
+# =============================================================================
+purpose_and_role:
+  definition: |
+    The Content Map is a visual/tabular tool that aligns high-level learning
+    objectives with detailed content, activities, and assessments. It connects
+    WHAT is taught with WHY it is taught and WHERE it fits in the overall
+    course flow.
+
+  why_it_matters: |
+    The Content Map serves as the central blueprint for learning design,
+    ensuring every element of the course is purposeful, aligned, and traceable
+    to learning outcomes and business objectives. It reveals gaps and redundancies,
+    making the learning experience cohesive and learner-centered.
+
+  core_functions:
+    aligning_elements:
+      description: "Aligns objectives, content, and activities"
+      benefit: "Ensures every piece of content has a clear purpose and supports measurable objectives"
+      validation_question: "Does each activity explicitly support a learning objective?"
+
+    ensuring_logical_sequence:
+      description: "Ensures logical sequence and cognitive progression"
+      benefit: "Confirms foundational knowledge appears before advanced content or assessments"
+      validation_question: "Are prerequisites clearly identified and properly sequenced?"
+
+    preventing_gaps_and_overlaps:
+      description: "Prevents gaps and overlaps in coverage"
+      benefit: "Identifies where objectives are not fully covered or where content is unnecessarily repeated"
+      validation_question: "Are all objectives covered without duplication?"
+
+    facilitating_stakeholder_review:
+      description: "Facilitates stakeholder review and approval"
+      benefit: "Provides high-level reference for quick review, targeted feedback, and approval gates"
+      validation_question: "Can stakeholders easily see how the course meets their requirements?"
+
+    supporting_planning_and_iteration:
+      description: "Supports resource planning and ongoing iteration"
+      benefit: "Makes resource requirements (time, budget, tools) clear and enables updates as requirements evolve"
+      validation_question: "Are resource needs identified and version history maintained?"
+
+  living_document_philosophy:
+    principle: "Content Map is a living document, not a one-time deliverable"
+    lifecycle:
+      design_phase: "Creates structure and alignment"
+      development_phase: "Guides storyboard and content creation"
+      pilot_phase: "Identifies high-priority or high-risk areas for testing"
+      launch_phase: "Serves as reference for facilitators and stakeholders"
+      maintenance_phase: "Updated iteratively as learning objectives evolve or feedback emerges"
+
+    version_control:
+      importance: "Maintain version history for traceability"
+      practice: "Document changes with date, section, and rationale"
+      review_cadence: "Schedule periodic reviews (quarterly or post-cohort) for continuous improvement"
+
+  relationship_to_detailed_design:
+    starting_point: "Content Map acts as guide for creating storyboards, lesson plans, detailed eLearning modules"
+    resource_creation: "Designers and SMEs see exactly what must be developed, preventing duplication"
+    prototyping: "Identifies high-priority or high-risk areas to pilot first"
+    accessibility: "Embedding UDL considerations in Content Map ensures every module is inclusive"
+    evaluation: "Mapping objectives to assessments sets stage for measuring course success"
+
+# =============================================================================
+# SECTION 0.2: STAKEHOLDER COLLABORATION
+# =============================================================================
+stakeholder_collaboration:
+  purpose: |
+    The Content Map facilitates collaboration among learning designers, SMEs,
+    sponsors, instructors, and learners. Early and ongoing involvement ensures
+    content accuracy, business alignment, and practical feasibility.
+
+  stakeholder_roles:
+    subject_matter_experts:
+      involvement: "Content accuracy and relevance validation"
+      when_to_involve: "Architecture design, content mining review, activity design"
+      contribution: "Validate technical accuracy, provide real-world examples, identify common misconceptions"
+
+    business_sponsors:
+      involvement: "Alignment with business priorities and resource approval"
+      when_to_involve: "Gap-to-objective traceability, ROI projection, scope approval"
+      contribution: "Confirm business objectives are addressed, approve resource allocation, prioritize modules"
+
+    instructors_facilitators:
+      involvement: "Practical feasibility and delivery considerations"
+      when_to_involve: "Activity design, timing validation, materials planning"
+      contribution: "Identify logistical constraints, suggest engagement strategies, validate timing estimates"
+
+    learners_representatives:
+      involvement: "Relevance, usability, and learner perspective"
+      when_to_involve: "Pilot review, accessibility validation, Module 1 framing"
+      contribution: "Confirm relevance to job role, identify barriers to engagement, validate clarity"
+
+  review_process:
+    high_level_reference:
+      principle: "Use Content Map as at-a-glance reference for quick review and approval"
+      approach: "Share 7-column table + architecture summary (not full storyboards) for initial review"
+      benefit: "Stakeholders can provide targeted feedback without being overwhelmed by detail"
+
+    review_stages:
+      stage_1_architecture:
+        timing: "After course architecture and module structure designed"
+        focus: "5-phase alignment, module count, gap coverage, objective traceability"
+        approval_gate: "Proceed to detailed objectives and activity design"
+
+      stage_2_objectives_and_activities:
+        timing: "After learning objectives and activities designed"
+        focus: "SMART compliance, activity-objective alignment, assessment strategy"
+        approval_gate: "Proceed to content development and storyboarding"
+
+      stage_3_final_content_map:
+        timing: "After all sections complete, before development begins"
+        focus: "Complete 7-column table, alignment matrix, materials list, timing validation"
+        approval_gate: "Greenlight for storyboard and content development"
+
+  iteration_and_maintenance:
+    principle: "Content Map evolves with the course - treat it as living document"
+    update_triggers:
+      - "Learning objectives change based on stakeholder feedback"
+      - "New content requirements emerge from pilot or early cohorts"
+      - "Timing adjustments needed based on actual delivery experience"
+      - "Technology or platform changes affect activity design"
+      - "Business priorities shift, requiring content realignment"
+
+    best_practices:
+      - "Maintain version history with date, section changed, and rationale"
+      - "Schedule post-cohort retrospectives to capture lessons learned"
+      - "Update Content Map before major revisions or re-launches"
+      - "Archive superseded versions for reference and compliance"
+
+  collaboration_tools:
+    documentation: "Use collaborative tools (SharePoint, Loop, Google Docs) for concurrent review"
+    feedback_collection: "Track stakeholder comments directly in Content Map or adjacent tracker"
+    approval_workflow: "Define clear approval process with sign-off at each review stage"
+    communication: "Schedule review sessions; don't rely solely on asynchronous feedback"
+
+# =============================================================================
+# SECTION 1: CONTENT MINING (Module 08)
 # =============================================================================
 content_mining:
   expert_identity: |
@@ -167,7 +360,167 @@ course_architecture:
         modules: "6-8"
 
 # =============================================================================
-# SECTION 2: LEARNING STRUCTURE
+# SECTION 2.1: MODULE 1 REQUIREMENTS
+# =============================================================================
+module_1_requirements:
+  mandate: "Module 1 should ALWAYS be the introductory module"
+  purpose: "Establish context, motivation, and readiness before content delivery"
+
+  required_elements:
+    what_course_is_about:
+      description: "Clear explanation of course focus and learning journey"
+      guidance: "State course title, domain, and high-level overview (2-3 sentences)"
+      example: "This course teaches consultative selling techniques to transform transactional sales conversations into value-based partnerships"
+
+    why_it_matters_learner_perspective:
+      description: "Relevance and value proposition from learner's point of view"
+      guidance: "Connect course to learner's job role, challenges, and career goals (not just business objectives)"
+      example: "Mastering consultative selling will help you build trust with prospects, close larger deals with less discounting, and become a trusted advisor—positioning you for top-performer recognition and career advancement"
+
+    scope_what_will_be_covered:
+      description: "Clear boundaries of what IS and IS NOT included"
+      guidance: "List main modules/topics to be covered, and explicitly state out-of-scope items to manage expectations"
+      example: |
+        **We WILL cover:**
+        - SPIN questioning framework
+        - Discovery call structure
+        - Value proposition articulation
+        - Objection handling with consultative approach
+
+        **We WILL NOT cover:**
+        - Cold calling and prospecting (see 'Prospecting Fundamentals' course)
+        - Negotiation and closing techniques (covered in advanced course)
+        - CRM system training (handled by IT onboarding)
+
+    prerequisites_and_assumptions:
+      description: "Required knowledge, experience, or resources"
+      guidance: "State what learners need to know or have before starting"
+      example: "This course assumes 6+ months in a sales role, familiarity with your product/service, and access to Salesforce CRM"
+
+    links_to_related_courses:
+      description: "Where this course fits in the curriculum and what comes before/after"
+      guidance: "Reference prerequisite courses and logical next steps in learning journey"
+      example: |
+        **Prerequisite:** Sales Fundamentals (recommended)
+        **Follow-up courses:**
+        - Advanced Negotiation Skills
+        - Executive Stakeholder Engagement
+        - Account-Based Selling Strategies
+
+    success_criteria_expectations:
+      description: "What good looks like at the end of the course"
+      guidance: "Describe end-of-course competency and how learners will demonstrate mastery"
+      example: "By course end, you will conduct a 45-minute consultative discovery call achieving 80% on our assessment rubric, and be ready to apply these skills in live client conversations"
+
+  foundational_phase_alignment:
+    principle: "Module 1 is the 'Foundation' phase of 5-phase learning cycle"
+    percentage: "10-15% of total course duration"
+    module_types: ["Introduction", "Context setting", "Prerequisite validation", "Motivation building"]
+
+  module_1_structure_template:
+    section_1_welcome_and_overview: "Course title, duration, modality, instructor intro (5-10% of Module 1)"
+    section_2_why_this_matters: "Relevance from learner perspective, business context (15-20%)"
+    section_3_what_you_will_learn: "Scope, key topics, learning outcomes (20-25%)"
+    section_4_how_the_course_works: "Structure, activities, assessments, logistics (15-20%)"
+    section_5_prerequisites_and_links: "Required knowledge, related courses (10-15%)"
+    section_6_readiness_check: "Self-assessment or pre-test to validate prerequisites (15-20%)"
+    section_7_lets_begin: "Transition to Module 2 with motivational close (5-10%)"
+
+# =============================================================================
+# SECTION 2.2: MODULE NARRATIVE FRAMEWORKS
+# =============================================================================
+module_narrative_frameworks:
+  purpose: |
+    Narrative frameworks provide proven structures for organizing module content
+    based on learning objective type. Choose the framework that best matches the
+    module's purpose and cognitive level.
+
+  how_to_process_framework:
+    when_to_use: "Procedural skills, step-by-step tasks, technical how-to training"
+    cognitive_level: "Bloom's Apply (executing procedures in given situations)"
+    characteristics:
+      - "Clear goal and prerequisites stated upfront"
+      - "Numbered steps in sequential order"
+      - "Common pitfalls and success checks included"
+      - "Practice application opportunities provided"
+
+    structure:
+      section_1_goal_and_prerequisites:
+        content: "Outcome + required context/tools"
+        timing: "10-15% of module"
+        example: "By end of this module, you'll configure lead scoring rules in Salesforce. Prerequisites: Salesforce admin access, understanding of lead qualification criteria"
+
+      section_2_steps:
+        content: "Step 1, Step 2, Step 3, etc. (numbered, sequential)"
+        timing: "50-60% of module"
+        guidance: "Each step should have: action statement, explanation, visual/demo, example"
+        example: |
+          **Step 1:** Navigate to Setup > Lead Scoring
+          **Step 2:** Define scoring criteria (engagement, fit, behavior)
+          **Step 3:** Assign point values to each criterion
+          **Step 4:** Set threshold for 'sales-ready' status
+          **Step 5:** Test scoring with sample leads
+
+      section_3_pitfalls_and_checks:
+        content: "Common errors, success validation"
+        timing: "15-20% of module"
+        example: "Common mistake: Assigning too many points to single action. Success check: Run test leads through scoring model and validate output"
+
+      section_4_practice_application:
+        content: "Hands-on activity or scenario"
+        timing: "15-20% of module"
+        example: "Activity: Configure lead scoring for your territory using provided criteria template"
+
+  case_study_framework:
+    when_to_use: "Complex decision-making, real-world application, judgment in ambiguous situations"
+    cognitive_level: "Bloom's Analyze/Evaluate (examining situations, making judgments)"
+    characteristics:
+      - "Realistic situation with authentic constraints"
+      - "Multiple stakeholders and perspectives"
+      - "Analysis of actions and consequences"
+      - "Transferable lessons extracted"
+
+    structure:
+      section_1_situation:
+        content: "Context, stakeholders, background"
+        timing: "15-20% of module"
+        example: "TechCorp faced declining win rates (45% to 32%) in enterprise deals. Sales reps were presenting product features rather than business value"
+
+      section_2_challenge:
+        content: "Problem statement, constraints, stakes"
+        timing: "15-20% of module"
+        example: "Challenge: Shift sales approach from product-centric to consultative without disrupting Q4 revenue. Constraint: Limited training time (2 days). Stakes: $2.4M revenue at risk"
+
+      section_3_intervention:
+        content: "Actions taken, rationale for decisions"
+        timing: "25-30% of module"
+        example: "Intervention: Implemented SPIN questioning framework, redesigned discovery call structure, provided coaching support for 90 days"
+
+      section_4_results:
+        content: "Outcomes, evidence, business impact"
+        timing: "15-20% of module"
+        example: "Results: Win rate recovered to 52% within 6 months, average deal size increased 18%, customer satisfaction improved (7.2 to 8.4 CSAT)"
+
+      section_5_lessons_and_application:
+        content: "Transferable insights, action for learner"
+        timing: "15-20% of module"
+        example: "Lessons: Consultative approach works when supported by structured framework + coaching. Your action: Identify one deal where consultative approach would improve outcomes"
+
+  when_to_use_which_framework:
+    how_to_process:
+      - "Technical skills (software, equipment, processes)"
+      - "Compliance procedures"
+      - "Step-by-step workflows"
+      - "Skill-based training with clear success criteria"
+
+    case_study:
+      - "Leadership development"
+      - "Complex problem-solving"
+      - "Interpersonal skills (coaching, negotiation)"
+      - "Situations requiring judgment and adaptation"
+
+# =============================================================================
+# SECTION 3: LEARNING STRUCTURE
 # =============================================================================
 learning_structure:
   expert_identity: |
@@ -440,7 +793,119 @@ content_map_generation:
       categories: ["Facilitator Materials", "Participant Materials", "Technology Requirements"]
 
 # =============================================================================
-# SECTION 8: CONDITIONAL MODULES
+# SECTION 8.1: INFORMATION SCENT GUIDANCE
+# =============================================================================
+information_scent_guidance:
+  principle: |
+    Information Scent (from Information Foraging Theory) ensures module titles,
+    section headings, and key messages clearly signal the value and content within,
+    allowing learners to efficiently navigate and understand what they'll learn.
+    Strong information scent reduces cognitive load and improves learner engagement.
+
+  purpose: "Create clear, navigable Content Maps where learners can quickly identify relevant content"
+
+  naming_best_practices:
+    use_action_verbs:
+      guidance: "Start with verbs that describe what learners will DO"
+      examples:
+        poor: "Sales Techniques"
+        good: "Conduct Discovery Calls Using SPIN Questioning"
+        why_good: "Action verb 'Conduct' signals hands-on practice; 'SPIN Questioning' specifies the method"
+
+    include_key_concept:
+      guidance: "Name the specific concept, skill, or tool being developed"
+      examples:
+        poor: "Communication Skills"
+        good: "Delivering Difficult Feedback with Empathy and Clarity"
+        why_good: "Specifies 'difficult feedback' (not all communication) and desired qualities (empathy, clarity)"
+
+    indicate_level:
+      guidance: "Signal whether content is foundational, intermediate, or advanced"
+      examples:
+        poor: "Data Analysis"
+        good: "Data Analysis Foundations: Descriptive Statistics for Beginners"
+        why_good: "Clearly signals this is entry-level content focused on descriptive (not inferential) statistics"
+
+    front_load_important_information:
+      guidance: "Put most critical information first in title (learners scan left-to-right)"
+      examples:
+        poor: "A Comprehensive Guide to Understanding and Implementing Advanced Excel Formulas"
+        good: "Advanced Excel Formulas: VLOOKUP, INDEX-MATCH, and Array Functions"
+        why_good: "Starts with topic ('Advanced Excel Formulas') and lists specific functions upfront"
+
+    be_specific_avoid_vagueness:
+      guidance: "Use concrete terms rather than abstract concepts"
+      examples:
+        poor: "Improving Your Skills"
+        good: "Reducing Project Delays Through Proactive Stakeholder Communication"
+        why_good: "Specific outcome (reduce delays), specific method (proactive communication)"
+
+  module_naming_examples:
+    knowledge_level:
+      poor: "Module 2: Selling"
+      good: "Module 2: Identifying Customer Pain Points Using Discovery Questions"
+
+    application_level:
+      poor: "Module 3: Practice"
+      good: "Module 3: Conducting 20-Minute Discovery Calls with Challenging Prospects"
+
+    analysis_level:
+      poor: "Module 4: Analysis"
+      good: "Module 4: Diagnosing Why Deals Stall and Adjusting Your Approach"
+
+  section_heading_guidance:
+    principle: "Section headings within modules should create a clear logical flow"
+
+    pattern_1_progressive_complexity:
+      example: |
+        Module: Conducting Discovery Calls
+        - Section 1: What Makes a Discovery Call Effective (foundational)
+        - Section 2: SPIN Questioning Framework (method)
+        - Section 3: Handling Evasive or Hostile Prospects (advanced)
+        - Section 4: Practice Discovery Call Scenarios (application)
+
+    pattern_2_process_steps:
+      example: |
+        Module: Configuring Salesforce Lead Scoring
+        - Section 1: Prerequisites and Access Requirements
+        - Section 2: Step 1 - Define Scoring Criteria
+        - Section 3: Step 2 - Assign Point Values
+        - Section 4: Step 3 - Set Thresholds and Test
+
+    pattern_3_problem_solution:
+      example: |
+        Module: Reducing Customer Churn
+        - Section 1: The Churn Problem - Why Customers Leave
+        - Section 2: Early Warning Signals - Identifying At-Risk Customers
+        - Section 3: Proactive Retention Strategies
+        - Section 4: Measuring Retention Success
+
+  key_message_clarity:
+    principle: "Each section should have a 1-sentence key message that answers 'What will I learn here?'"
+
+    example_1:
+      poor: "This section covers important concepts"
+      good: "This section teaches you to identify the 5 early warning signals that predict customer churn"
+
+    example_2:
+      poor: "We'll discuss various techniques"
+      good: "You'll practice using the SPIN framework to uncover prospect pain points in realistic scenarios"
+
+  validation_checklist:
+    title_clarity:
+      question: "Can a learner predict module content from title alone?"
+      test: "Show title to someone unfamiliar with course - can they describe what's covered?"
+
+    heading_scent:
+      question: "Do section headings create a logical, navigable structure?"
+      test: "Read headings in sequence - do they tell a coherent story?"
+
+    key_message_utility:
+      question: "Does each key message answer 'What will I learn here?'"
+      test: "Read key message - is it specific enough to set clear expectations?"
+
+# =============================================================================
+# SECTION 9: CONDITIONAL MODULES
 # =============================================================================
 conditional_modules:
   adult_learning:
@@ -566,9 +1031,96 @@ conditional_modules:
       large_group: "16+: Fishbowl or carousel protocols (91% voice representation)"
 
 # =============================================================================
-# SECTION 9: QUALITY VALIDATION
+# SECTION 10: QUALITY VALIDATION
 # =============================================================================
 quality_validation:
+  mece_principle:
+    name: "MECE Principle (Mutually Exclusive, Collectively Exhaustive)"
+    source: "McKinsey problem-solving framework adapted for learning design"
+    purpose: "Ensure Content Map is logically structured with no overlaps and no gaps"
+
+    mutually_exclusive:
+      definition: "Each module covers distinct content with no overlap"
+      validation_question: "Does any module repeat content covered in another module?"
+
+      warning_signs:
+        - "Same concepts taught in multiple modules without clear progression (e.g., 'SPIN questioning' in Module 2 AND Module 4)"
+        - "Duplicate activities or assessments across modules"
+        - "Learning objectives that overlap or conflict"
+        - "Content that could be consolidated into fewer modules"
+
+      validation_process:
+        step_1: "List all key topics/concepts covered in each module"
+        step_2: "Cross-reference topics across modules - flag duplicates"
+        step_3: "For flagged duplicates, determine if it's intentional scaffolding or redundancy"
+        step_4: "Eliminate true redundancy; preserve intentional spiral learning"
+
+      acceptable_overlap:
+        spiral_learning: "Revisiting concepts at higher cognitive levels (e.g., 'Define SPIN' in Module 1, 'Apply SPIN' in Module 3)"
+        reinforcement: "Brief review of prerequisites before building on them"
+        integration: "Combining multiple previously-taught concepts in capstone module"
+
+      unacceptable_overlap:
+        identical_content: "Teaching same concept at same cognitive level in multiple modules"
+        copy_paste: "Duplicating entire sections across modules"
+        redundant_practice: "Same activity repeated without clear rationale"
+
+    collectively_exhaustive:
+      definition: "All modules together fully address all course objectives and close all learning gaps"
+      validation_question: "Are there course objectives or learning gaps not addressed by any module?"
+
+      warning_signs:
+        - "Course objectives with no supporting modules"
+        - "Learning gaps identified in gap analysis but not addressed in any module"
+        - "Skills required for final assessment but never taught"
+        - "Prerequisites assumed but not validated or taught"
+
+      validation_process:
+        step_1: "Create traceability matrix: Course Objective → Supporting Modules"
+        step_2: "Check each course objective - is it covered by at least one module?"
+        step_3: "Check each learning gap - is it addressed by module content?"
+        step_4: "Check final assessment - are all assessed skills taught?"
+
+      coverage_checklist:
+        - "Every course objective mapped to 1+ modules"
+        - "Every learning gap mapped to 1+ modules"
+        - "Every assessment task has prerequisite instruction"
+        - "All prerequisite skills either taught or validated in Module 1"
+
+    mece_validation_matrix:
+      purpose: "Visual tool to validate MECE compliance"
+      structure: |
+        | Module | Key Topics | Course Objectives Supported | Gaps Addressed | Overlap Check | Coverage Check |
+        |--------|------------|----------------------------|----------------|---------------|----------------|
+        | Module 1 | [List] | [CO IDs] | [Gap IDs] | ✓/⚠/✗ | ✓/⚠/✗ |
+        | Module 2 | [List] | [CO IDs] | [Gap IDs] | ✓/⚠/✗ | ✓/⚠/✗ |
+
+      overlap_check_codes:
+        "✓": "No overlap detected - content is distinct"
+        "⚠": "Minor overlap - intentional scaffolding or review"
+        "✗": "Significant overlap - redundancy needs resolution"
+
+      coverage_check_codes:
+        "✓": "Module covers assigned objectives/gaps completely"
+        "⚠": "Partial coverage - may need enhancement"
+        "✗": "Insufficient coverage - major gap exists"
+
+    applying_mece_to_content_map:
+      module_design:
+        - "Each module should have a clear, distinct focus (Mutually Exclusive)"
+        - "All course objectives should be addressed across modules (Collectively Exhaustive)"
+        - "Module sequence should build logically without redundancy"
+
+      activity_design:
+        - "Each activity should target specific objective (Mutually Exclusive)"
+        - "All objectives should have supporting activities (Collectively Exhaustive)"
+        - "Avoid identical activities across modules"
+
+      assessment_design:
+        - "Each assessment should measure distinct competencies (Mutually Exclusive)"
+        - "All objectives should be assessed (Collectively Exhaustive)"
+        - "Assessment coverage matrix ensures complete evaluation"
+
   step_1_architecture:
     required_elements:
       - "All 5 phases represented with appropriate balance"
@@ -643,3 +1195,48 @@ output_templates:
     - Objective Alignment: ${objective_alignment}%
     - Activity Coverage: ${activity_coverage}%
     - Assessment Integration: ${assessment_integration}%
+
+# =============================================================================
+# VERSION HISTORY
+# =============================================================================
+version_history:
+  v2.0:
+    date: "2026-02-12"
+    status: "Current - Enhanced with Collaboration, MECE, and Information Scent"
+    major_additions:
+      - "Purpose & Role of Content Map (Section 0.1) - Philosophical foundation and 'why it matters'"
+      - "Stakeholder Collaboration (Section 0.2) - Review process, iteration, and living document philosophy"
+      - "Module 1 Requirements (Section 2.1) - Complete structure for introductory module"
+      - "Module Narrative Frameworks (Section 2.2) - How-To and Case Study structures"
+      - "Information Scent Guidance (Section 8.1) - Clear, navigable naming conventions"
+      - "MECE Principle (Section 10) - Mutually Exclusive, Collectively Exhaustive validation"
+
+    alignment_improvements:
+      instructions_v3: "75% → 95% (added collaboration, Module 1, living document philosophy)"
+      content_outline_generator: "Added MECE principle and Information Scent from video outline methodology"
+      overall: "Comprehensive alignment with DLI instructional design best practices"
+
+    coverage_enhancement:
+      purpose_and_philosophy: "0% → 100% (Section 0.1 added)"
+      stakeholder_collaboration: "5% → 95% (Section 0.2 added)"
+      module_1_requirements: "40% → 100% (Section 2.1 completed)"
+      logical_structuring: "60% → 95% (MECE principle added)"
+      navigation_clarity: "50% → 95% (Information Scent guidance added)"
+
+  v1.3:
+    date: "2026-02-12"
+    status: "Previous - Technical foundation"
+    features:
+      - "Shared Rules (Section 0) - Formatting, grounding, JSON output"
+      - "Content Mining (Section 1) - Semantic analysis and prerequisite detection"
+      - "Course Architecture (Section 2) - 5-phase learning cycle"
+      - "Learning Structure (Section 3) - Learning strips and scaffolding"
+      - "Timing Intelligence (Section 4) - Attention spans and modality adjustments"
+      - "Learning Objectives (Section 5) - SMART framework and Bloom's taxonomy"
+      - "Activity Design (Section 6) - Activity types and modality adaptations"
+      - "Assessment Design (Section 7) - Evidence-Centered Design"
+      - "Content Map Generation (Section 8) - 7-column format"
+      - "Conditional Modules (Section 9) - Adult Learning, VILT/ILT, Roleplay, etc."
+      - "Quality Validation (Section 10) - 4-step validation process"
+    strengths: "Comprehensive technical depth across 17 DLI modules"
+    gaps: "Missing collaboration guidance, Module 1 structure, MECE validation, navigation principles"

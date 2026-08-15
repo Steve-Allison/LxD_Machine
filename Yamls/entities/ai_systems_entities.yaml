@@ -1,32 +1,15 @@
+# yaml-language-server: $schema=https://steve-allison.github.io/Central_Configs/schemas/resource-meta.schema.json
 _meta:
-  id: ai_systems_entities
-  purpose: entity
-  version: 1.6.0
-  last_updated: '2026-03-09'
-  description: GLiNER entity definitions for AI system analysis including prompt engineering patterns, RAG components, PDL
-    constructs, LLM pipeline elements, and generation strategy markers.
-  domain: ai
-  domain_type: cross_cutting
-  corpus_sources:
-  - Corpus/Research/Context Engineering vs- Prompt Engineering- Smarter AI with RAG - Agents.md
-  - Corpus/Research/RAG vs Fine-Tuning vs Prompt Engineering- Optimizing AI Models.md
-  - Corpus/Research/RAG vs- CAG- Solving Knowledge Gaps in AI Models.md
-  - Corpus/Research/Research - AQE with LLMs via IBM PDL.md
-  - Corpus/Research/Research - Multi-step Prompting Best Practices.md
-  - Corpus/Research/Research - Zero-loss Prompt Optimisation.md
-  - Corpus/Research/Research - Best Practice Prompt writing for text.md
-  - Corpus/Research/Research - LLM Argument Mining with PDL.md
-  - Corpus/Research/Research - Model Criticism for Long-Form Text.md
-  - Corpus/Research/Research - Advanced Computational Discourse Analysis_ Operationalizing Rhetorical Structure Theory with
-    LLM.md
-  - Corpus/Research/Methodology - How do we move from this research to a sequenced A.I. Enhanced Course Pipeline_.md
-  relationships:
-  - target: ai_config/analyzer_catalog.yaml
-    type: depends_on
-    description: Analyzer definitions that consume AI entity extraction
-  - target: ai_config/analyzer_orchestration_config.yaml
-    type: depends_on
-    description: Pipeline orchestration for AI-driven analysis
+  id: "ai_systems_entities"
+  title: "Ai Systems Entities"
+  version: "1.6.0"
+  schema_version: "1.0.0"
+  last_updated: "2026-08-15"
+  authority: "LxD_Machine"
+  status: "released"
+  ontology_domain: "learning"
+  ontology_version: "4.0.0"
+  governing_schema: "DomainTaxonomy"
 gliner_config:
   model: urchade/gliner_multi_pii-v1
   batch_size: 8

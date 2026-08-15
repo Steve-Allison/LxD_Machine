@@ -1,53 +1,15 @@
+# yaml-language-server: $schema=https://steve-allison.github.io/Central_Configs/schemas/resource-meta.schema.json
 _meta:
+  id: "sales_play_taxonomy"
+  title: "Sales Play Taxonomy"
   version: "3.2.0"
-  description: "Complete FY26 sales play hierarchy mapping Portfolio Plays (L1) → Strategic Sales Plays (L2) → Application Sales Tactics (L3) → Industry Adaptations (L4) with narrative guardrails and technology enablers"
-  domain: sales
-  domain_type: cross_cutting
-  id: sales_play_taxonomy
-  title: "FY26 Sales Play Hierarchy"
-  purpose: reference
-  last_updated: "2026-03-01"
-  corpus_sources:
-    - "Corpus/Research/Research - Using SOAR Storytelling most effectively.md"
-    - "Corpus/Research/The Universal Narrative Methodology: A Framework for Crafting and Improving Stories.md"
-    - "Corpus/Research/Research - Canonical Presentation Methodology Research.md"
-  confidence_scope:
-    included:
-    - All FY26 Portfolio Plays (L1) and Strategic Sales Plays (L2) as shown in FY26 overview/TPG materials
-    - FY26 catalog application buckets as shown in FY26 overview/TPG materials
-    - L3 tactic lists only for applications whose FY26 GTM Guides were fetched and contain explicit tactic names
-    - L4 industry list from FY26 verticalized one-pagers menu and FY26 TPG industry messaging
-    excluded:
-    - L3 tactic lists for applications not yet fetched/parsed (will be added when those FY26 GTM guides are ingested)
-    - L4 mapping of each industry to specific strategic plays (not inferred without explicit FY26 source tables)
-  sources:
-  - file: FY26 Sales Plays Overviews - Account Planning v1.0.pptx
-    refs:
-    - turn6search361
-    - turn5search360
-  - file: FY26 Targeting & Positioning Guide_Dec 15 Final.pptx
-    refs:
-    - turn7search449
-  - file: Accelerate 2026 PPT _CSC - Bangkok.pptx
-    refs:
-    - turn6search557
-    - turn5search362
-  - file: FY26 RTCDP Application Sales Play GTM Guide.pptx
-    refs:
-    - turn6search562
-  - file: FY26 RTCDP Collaboration Application Sales Play GTM Guide.pptx
-    refs:
-    - turn6search560
-  - file: 12. FY26 Marketo Engage Sales Play GTM Guide.pptx
-    refs:
-    - turn6search561
-  - file: FY26 Verticalized Strategic Sales Play One-Pagers.pptx
-    refs:
-    - turn6search564
-  relationships:
-    - target: sales/soar_hierarchy_framework.yaml
-      type: depends_on
-      description: "Both classification systems for sales plays; taxonomy values align to SOAR structure"
+  schema_version: "1.0.0"
+  last_updated: "2026-08-15"
+  authority: "LxD_Machine"
+  status: "released"
+  ontology_domain: "adobe"
+  ontology_version: "4.0.0"
+  governing_schema: "DomainTaxonomy"
 hierarchy_levels:
   L1: Portfolio Play
   L2: Strategic Sales Play

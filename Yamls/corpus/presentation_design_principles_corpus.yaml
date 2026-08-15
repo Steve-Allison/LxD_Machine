@@ -1,24 +1,19 @@
+# yaml-language-server: $schema=https://steve-allison.github.io/Central_Configs/schemas/resource-meta.schema.json
 _meta:
-  id: presentation_design_principles
-  title: Presentation Design Principles Corpus
-  description: Comprehensive corpus of presentation design rules, principles, best practices, and anti-patterns extracted
-    from the Design Methodology repository
-  domain: course_materials
-  domain_type: workflow
-  purpose: reference
-  version: 1.0.0
-  last_updated: '2026-03-09'
-  owner: Design Methodology Team
-  license: CC-BY-4.0
-  lifecycle_status: active
-  relationships:
-    - target: corpus/constructive_RST_corpus.yaml
-      type: upstream_dependency
-      description: "RST discourse planning generates narrative structure; presentation corpus validates visual realisation"
+  id: "presentation_design_principles_corpus"
+  title: "Presentation Design Principles Corpus"
+  version: "1.0.0"
+  schema_version: "1.0.0"
+  last_updated: "2026-08-15"
+  authority: "LxD_Machine"
+  status: "released"
+  ontology_domain: "learning"
+  ontology_version: "4.0.0"
+  governing_schema: "InstructionalCorpus"
 schema_version: '1.0'
 domain: course_materials
 last_updated: '2026-03-09'
-total_entries: 245
+total_entries: 266
 tag_vocabulary:
 - tag: accessibility
   status: active
@@ -449,7 +444,7 @@ entries:
 - id: bp_002
   entry_type: best_practice
   title: Deck Type Decision First
-  description: Determine PRIMARY delivery mode BEFORE designing. "Presentation" (minimal text, spoken narrative) vs. "Deck-ument"
+  description: Determine PRIMARY delivery mode BEFORE designing. "Presentation" (minimal text, spoken narrative) vs. "Slidedoc"
     (self-contained, action titles). Never mix.
   sources:
   - Guides/02-slide-design/presentation-vs-deck-ument-decision-guide.md
@@ -580,7 +575,8 @@ entries:
   entry_type: best_practice
   title: SOAR-to-Layout Mapping
   description: 'Each SOAR phase maps to a specific visual archetype: Situation → Grid/Dashboard; Obstacle → Split Screen/Metaphor;
-    Approach → Timeline/Process Flow; Results → Hero Card/Big Number.'
+    Approach → Timeline/Process Flow; Results → Hero Card/Big Number. SOAR''s O reads dual — Obstacle (risk of inaction) or
+    Opportunity (reward of acting); either framing routes to the Split Screen/Metaphor archetype.'
   sources:
   - Guides/00-presentation-methodology/cognitive-visual-bridge.md
   tags:
@@ -608,7 +604,8 @@ entries:
   entry_type: best_practice
   title: Obstacle Phase Design
   description: 'Visual archetype: Metaphor / Split Screen. Use dramatic contrast, bold typography. Highlight gap between "what
-    is" and "what could be."'
+    is" and "what could be." This is SOAR''s O phase — read dually as Obstacle (risk of inaction) or Opportunity (reward of
+    acting); sales framings often label it Opportunity.'
   sources:
   - Guides/00-presentation-methodology/cognitive-visual-bridge.md
   tags:
@@ -695,7 +692,7 @@ entries:
   entry_type: best_practice
   title: Executive SCQA Structure
   description: Situation (context established) → Complication (problem quantified with $, %, time) → Question (decision framed)
-    → Answer (recommendation in first 5 slides — BLUF).
+    → Answer (recommendation immediately after the Question — BLUF, within the front fifth).
   sources:
   - Guides/00-presentation-methodology/quality-checklist-framework.md
   - Guides/02-slide-design/executive-presentation-sop.md
@@ -708,9 +705,11 @@ entries:
   confidence: strong
 - id: bp_020
   entry_type: best_practice
-  title: Executive Slide Distribution
-  description: 'Title: 1 slide; Situation: 1–2; Complication: 2–3; Answer/Exec Summary: 1; Data slides: 3–5 (40–50% of deck);
-    Process: 1–2; CTA: 1. Key ratios: data 40–50%, text 30–40%, visual 10–20%.'
+  title: Executive Section Emphasis
+  description: 'Relative weight, never counts — slide count is an output of the beats. Title and CTA: single frames.
+    Situation and Complication: brief, just enough to force the decision. Answer/Exec Summary: single frame immediately
+    after the framing. Data: the bulk of the deck — every claim proven with as many frames as the evidence needs.
+    Process: brief, enough to show the path is real. Data leads; text supports; visuals carry the data.'
   sources:
   - Guides/02-slide-design/executive-presentation-sop.md
   tags:
@@ -723,9 +722,9 @@ entries:
 - id: bp_021
   entry_type: best_practice
   title: Executive Slide Minimisation
-  description: 'Minimise or eliminate: section dividers, agenda slides, "About Us" slides, "Thank You" slides. **Zero agenda
-    slides for <10 slide decks. Max 1 agenda slide for 10–20. Section dividers only for >20 slides.** Every slide must earn
-    its place.'
+  description: 'Minimise or eliminate ceremony: section dividers, agenda slides, "About Us" slides, "Thank You" slides.
+    An agenda slide or divider is justified only when the deck is genuinely long enough that the audience needs a map or
+    a breather — never as ritual. Every slide must earn its place.'
   sources:
   - Guides/02-slide-design/executive-presentation-sop.md
   tags:
@@ -738,7 +737,7 @@ entries:
 - id: bp_022
   entry_type: best_practice
   title: Training Gagné Structure
-  description: '9 events mapped to slides: (1) Gain attention (hook in first 3 slides), (2) Inform objectives (ABCD format),
+  description: '9 events mapped to slides: (1) Gain attention (hook at the very opening), (2) Inform objectives (ABCD format),
     (3) Stimulate recall, (4) Present content, (5) Provide guidance, (6) Elicit practice, (7) Provide feedback, (8) Assess
     performance, (9) Enhance retention/transfer.'
   sources:
@@ -753,8 +752,9 @@ entries:
 - id: bp_023
   entry_type: best_practice
   title: Sales SOAR Structure
-  description: Situation (problem context) → Opportunity (solution capability) → Approach (implementation) → Results (proof
-    points + quantified outcomes).
+  description: 'Situation (problem context) → Opportunity (solution capability) → Approach (implementation) → Results (proof
+    points + quantified outcomes). Here SOAR''s O is framed as Opportunity (reward of acting) rather than Obstacle (risk of
+    inaction) — the same dual-O phase, not a contradiction.'
   sources:
   - Guides/00-presentation-methodology/quality-checklist-framework.md
   tags:
@@ -810,7 +810,7 @@ entries:
   confidence: strong
 - id: bp_027
   entry_type: best_practice
-  title: Horizontal Flow Test (Deck-uments)
+  title: Horizontal Flow Test (Slidedocs)
   description: Reading ONLY the slide titles must produce a complete executive summary.
   sources:
   - Guides/02-slide-design/presentation-vs-deck-ument-decision-guide.md
@@ -823,7 +823,7 @@ entries:
   confidence: strong
 - id: bp_028
   entry_type: best_practice
-  title: Vertical Logic Test (Deck-uments)
+  title: Vertical Logic Test (Slidedocs)
   description: Body content on each slide must prove/support its action title.
   sources:
   - Guides/02-slide-design/presentation-vs-deck-ument-decision-guide.md
@@ -916,8 +916,8 @@ entries:
 - id: bp_035
   entry_type: best_practice
   title: Slides Are Frames, Not Posters
-  description: 'Treat slides as **frames in a film**, not self-contained posters. A concept may need 3–5 frames to unpack
-    (context → data → insight → implication). Two modes: **Explanation mode** (body): one cognitive step per frame, use as
+  description: 'Treat slides as **frames in a film**, not self-contained posters. A concept takes as many frames as it
+    needs to unpack (context → data → insight → implication). Two modes: **Explanation mode** (body): one cognitive step per frame, use as
     many slides as the concept needs — progressive builds, reveals, and transitions are the primary storytelling mechanism.
     **Overview mode** (BLUF, summary, dashboard, closing): aggregate multiple concepts for orientation/recall. In both modes:
     **one focal point per visible unit.** Slide count is not a quality metric — narrative flow is. Platform scoping: fixed-frame
@@ -958,7 +958,7 @@ entries:
   entry_type: best_practice
   title: Text Density Decision Tree
   description: 'Text limits by deck type: **Keynote/TL:** 9 words (3×3), 3 bullets, 3 words/bullet. **Live presentation:**
-    10 words, 3 bullets, 5 words/bullet. **Boardroom:** 36 words (6×6), 6 bullets, 6 words/bullet. **Deck-ument:** 150 words,
+    10 words, 3 bullets, 5 words/bullet. **Boardroom:** 36 words (6×6), 6 bullets, 6 words/bullet. **Slidedoc:** 100–250 words (Duarte band),
     8 bullets, 20 words/bullet. **Gamma card:** 40 words, 5 bullets, 8 words/bullet.'
   sources:
   - Guides/02-slide-design/presentation-vs-deck-ument-decision-guide.md
@@ -1027,8 +1027,7 @@ entries:
 - id: bp_041
   entry_type: best_practice
   title: Presentation Text Density
-  description: '5–10 words maximum per slide. Max 3 short phrases (≤5 words each). Speaker notes: 50–150 words per slide (key
-    message + supporting detail + transition cue). See bp_037 decision tree for all deck types.'
+  description: '5–10 words maximum per slide. Max 3 short phrases (≤5 words each). Speaker notes: per the number registry (corpus_mapping talk_track_min_words–talk_track_max_words talk track, within notes_total_max_words; key message + supporting detail + transition cue). See bp_037 decision tree for all deck types.'
   sources:
   - Guides/02-slide-design/presentation-vs-deck-ument-decision-guide.md
   tags:
@@ -1040,9 +1039,9 @@ entries:
   confidence: strong
 - id: bp_042
   entry_type: best_practice
-  title: Deck-ument Text Density
-  description: 50–150 words per slide. 6–8 bullets with sub-bullets permitted. Action titles (full sentences). Must work without
-    presenter.
+  title: Slidedoc Text Density
+  description: 100–250 words per page (Duarte slidedoc band). 6–8 bullets with sub-bullets permitted. Action titles (full sentences).
+    Must work without presenter.
   sources:
   - Guides/02-slide-design/presentation-vs-deck-ument-decision-guide.md
   tags:
@@ -1056,8 +1055,8 @@ entries:
   entry_type: best_practice
   title: Slide Count Is Not a Constraint
   description: Slide count is irrelevant — narrative flow is. A 60-slide keynote that flows like a film beats a 15-slide deck
-    of cramped posters. **Rough pacing guide only:** speaking minutes × 1–3 frames (higher for visual/build-heavy styles).
-    Never sacrifice clarity to reduce slide count.
+    of cramped posters. Use as many slides as it takes to explain each beat intelligently, and not one more. Never derive
+    slide count from speaking time, and never sacrifice clarity to reduce slide count.
   sources:
   - Guides/02-slide-design/presentation-vs-deck-ument-decision-guide.md
   tags:
@@ -1069,7 +1068,7 @@ entries:
   confidence: strong
 - id: bp_044
   entry_type: best_practice
-  title: Deck-ument Self-Sufficiency
+  title: Slidedoc Self-Sufficiency
   description: Deck must work if CEO reads alone on a plane. Self-contained with action titles, evidence, and appendix.
   sources:
   - Guides/02-slide-design/presentation-vs-deck-ument-decision-guide.md
@@ -1084,7 +1083,7 @@ entries:
   entry_type: best_practice
   title: Font Size Decision Tree
   description: 'By context: **Large venue keynote (100+ seats):** title 60pt+, body 40pt+, min 20pt. **Boardroom (10–30 seats):**
-    title 30–40pt, body 24–30pt, min 18pt. **Deck-ument (screen):** title 24–40pt, body 12–20pt, min 12pt. **Infographic:**
+    title 30–40pt, body 24–30pt, min 18pt. **Slidedoc (screen):** title 24–40pt, body 12–20pt, min 12pt. **Infographic:**
     title 48–72pt, body 16–18pt, min 12pt. **Chart labels (projected):** min 18pt, ideal 24pt.'
   sources:
   - Guides/02-slide-design/presentation-vs-deck-ument-decision-guide.md
@@ -1110,7 +1109,7 @@ entries:
   confidence: strong
 - id: bp_047
   entry_type: best_practice
-  title: Deck-ument Font Sizes
+  title: Slidedoc Font Sizes
   description: 'Title: 24–40pt, body: 12–20pt, minimum: 12pt.'
   sources:
   - Guides/02-slide-design/presentation-vs-deck-ument-decision-guide.md
@@ -1191,7 +1190,7 @@ entries:
 - id: bp_053
   entry_type: best_practice
   title: Contrast Ratio — Normal Text
-  description: Minimum 4.5:1 contrast ratio (WCAG AA).
+  description: Contrast meets the registry WCAG AA floor (corpus_mapping wcag_version).
   sources:
   - Guides/03-visual-design/accessibility-standards.md
   tags:
@@ -2113,7 +2112,7 @@ entries:
 - id: bp_123
   entry_type: best_practice
   title: WCAG 2.2 AA Compliance
-  description: All text meets 4.5:1 contrast. Large text (18pt+) meets 3:1. Non-text graphics aim for 3:1.
+  description: All text, large text, and non-text graphics meet the registry WCAG AA floors (corpus_mapping wcag_version).
   sources:
   - Guides/03-visual-design/accessibility-standards.md
   - Guides/00-presentation-methodology/presentation-design-workflow.md
@@ -2225,8 +2224,8 @@ entries:
 - id: bp_132
   entry_type: best_practice
   title: Gate 2 — Post-Visual
-  description: 'Before refinement: cognitive load assessment (7±2), text density check (6×6), visual hierarchy established,
-    template consistency verified.'
+  description: 'Before refinement: cognitive load assessment (Cowan 4±1 working-memory budget), text density check (6×6), visual
+    hierarchy established, template consistency verified.'
   sources:
   - Guides/00-presentation-methodology/quality-checklist-framework.md
   tags:
@@ -2468,8 +2467,9 @@ entries:
   confidence: strong
 - id: bp_151
   entry_type: best_practice
-  title: 5-Second Test
-  description: 'Show slide for 5 seconds, ask "What was the main message?" Target: 80%+ recall.'
+  title: 3-Second Glance Test
+  description: 'Show slide for 3 seconds, ask "What was the main message?" Target: 80%+ recall. (Aligns with the methodology''s
+    Glance Test.)'
   sources:
   - Guides/03-visual-design/infographic-design-methodology.md
   tags:
@@ -2840,7 +2840,7 @@ entries:
 - id: bp_179
   entry_type: best_practice
   title: Speaker Notes Standards
-  description: '**50–150 words per slide.** Structure: key message (1 sentence) + supporting detail + transition cue to next
+  description: '**Word budget per the number registry** (corpus_mapping talk_track_min_words–talk_track_max_words talk track, within notes_total_max_words). Structure: key message (1 sentence) + supporting detail + transition cue to next
     slide.'
   sources:
   - Guides/00-presentation-methodology/quality-checklist-framework.md
@@ -2951,6 +2951,318 @@ entries:
   evidence: Industry best practice and expert consensus
   context: Sales presentations and pitch decks
   confidence: strong
+- id: bp_187
+  entry_type: best_practice
+  title: SOAR Phase Norms
+  description: 'SOAR narrative allocations: Situation 15–20% and Approach 45–60% of the narrative. Obstacle/Opportunity and
+    Results are deliberately unnormed — their weight flexes with sales stage. ''O'' is dual: Obstacle (a barrier overcome)
+    OR Opportunity (an ambitious goal pursued). Slide count is an output, never an input.'
+  sources:
+  - business-storytelling-frameworks.md
+  tags:
+  - narrative-structure
+  added: '2026-07-09'
+  evidence: Wiki business-storytelling-frameworks.md; config/creation/presentation_craft.yaml stage_3_story
+  context: Sales, business-case, and strategic narratives using SOAR
+  confidence: strong
+- id: bp_188
+  entry_type: best_practice
+  title: SOAR Sales-Stage Reweighting
+  description: SOAR emphasis re-weights across the sales stage. Early stages run visionary — heavier Situation and Opportunity
+    to build alignment before product specifics. Late stages run proof-heavy — heavier Approach and Results to justify commitment.
+    These are emphasis shifts, not fixed phase-share norms, which is why SOAR's O and R are left unnormed.
+  sources:
+  - soar-sales-stage-mapping.md
+  tags:
+  - narrative-structure
+  - sales-deck
+  added: '2026-07-09'
+  evidence: Wiki soar-sales-stage-mapping.md (10-stage SOAR weighting; three-band summary)
+  context: Sales narratives across the buying journey
+  confidence: moderate
+- id: bp_189
+  entry_type: best_practice
+  title: SCQA Disposition Variants
+  description: 'SCQA ordering adapts to audience disposition: Standard S→C→A for receptive audiences; Concerned C→S→A when
+    the problem is already felt; Aggressive Q→S→C→A to force engagement; Indirect S→C→Q→A for resistant audiences, deferring
+    the answer past the question. Keyed to the Stage 1 audience disposition.'
+  sources:
+  - pyramid-principle.md
+  tags:
+  - narrative-structure
+  added: '2026-07-09'
+  evidence: Wiki pyramid-principle.md (four SCQA opening variants); presentation-deck-formats.md
+  context: Analytical and executive decks selecting an SCQA opening
+  confidence: strong
+- id: bp_190
+  entry_type: best_practice
+  title: Duarte Big Idea Three-Component Test
+  description: 'Duarte''s Big Idea is a single complete sentence with three mandatory components: (1) a unique point of view,
+    not a topic; (2) what is at stake — the consequence gained or lost; (3) a grammatically complete sentence, ideally addressing
+    ''you''. It then works as the editorial filter: anything not directly supporting it is cut.'
+  sources:
+  - duarte-methodology.md
+  tags:
+  - narrative-structure
+  added: '2026-07-09'
+  evidence: Wiki duarte-methodology.md (The Big Idea)
+  context: Any persuasive deck establishing a central message
+  confidence: strong
+- id: bp_191
+  entry_type: best_practice
+  title: Exactly One STAR Moment
+  description: Exactly ONE S.T.A.R. moment ("Something They'll Always Remember") per deck — multiples dilute memorability (Duarte).
+    Type is audience-matched — shocking statistics for analytical rooms, dramatisation for intuitive ones. It gets its own
+    frame and pattern-breaking treatment.
+  sources:
+  - duarte-methodology.md
+  tags:
+  - narrative-structure
+  added: '2026-07-09'
+  evidence: Wiki duarte-methodology.md (S.T.A.R. Moments — "only one per presentation; multiple dilute")
+  context: Presentations and keynotes engineering a memorable peak
+  confidence: strong
+- id: bp_192
+  entry_type: best_practice
+  title: New Bliss Close
+  description: End on the New Bliss — the future state after the idea is adopted, the reward — NOT on the Call to Action and
+    never on a terminal "Questions?" slide. The CTA is the ask; the New Bliss is the reason to say yes, and ending on it supplies
+    the commitment to cross the threshold.
+  sources:
+  - duarte-methodology.md
+  tags:
+  - narrative-structure
+  - opening-closing
+  added: '2026-07-09'
+  evidence: Wiki duarte-methodology.md (Three-Act Scaffold — "end on New Bliss, not the Call to Action")
+  context: Persuasive and motivational decks; closing sequence
+  confidence: strong
+- id: bp_193
+  entry_type: best_practice
+  title: DataPOV Single-Sentence Recommendation
+  description: A DataPOV — the analytical equivalent of the Big Idea — is a single sentence containing a noun, a strong action
+    verb, and a specific statistical or financial outcome. Tying the outcome to a dollar amount or KPI is what drives executive
+    commitment; abstract recommendations get parked, quantified ones get decided.
+  sources:
+  - duarte-methodology.md
+  tags:
+  - data-visualisation
+  - narrative-structure
+  added: '2026-07-09'
+  evidence: Wiki duarte-methodology.md (DataStory — The DataPOV)
+  context: Data-driven recommendations to decision-makers
+  confidence: strong
+- id: bp_194
+  entry_type: best_practice
+  title: Decision-Scope Tiers
+  description: 'Classify the decision before structuring the data, across three scope tiers. Discrete (operational, low-risk,
+    yes/no): a single data point, table, or chart. Operational (needs ongoing monitoring): historical context to separate
+    anomalies from systemic shifts. Strategic (high-risk, direction-setting): synthesis of internal and external datasets
+    with explicit business-outcome interpretation. Tier match sets evidence density and where the recommendation sits.'
+  sources:
+  - duarte-methodology.md
+  tags:
+  - data-visualisation
+  - executive-deck
+  added: '2026-07-09'
+  evidence: Wiki duarte-methodology.md (DataStory — Three Decision-Scope Tiers)
+  context: Analytical decks; matching evidence depth to decision risk
+  confidence: strong
+- id: bp_195
+  entry_type: best_practice
+  title: Executive 50/50 Timing Rule
+  description: For a 30-minute executive meeting, prepare roughly 15 minutes of content — half the slot — because executives
+    interrupt and challenge throughout; the rest of the slot is for questions. Bringing 30 minutes of content to a 30-minute
+    executive slot is the most common executive-communication failure.
+  sources:
+  - duarte-methodology.md
+  tags:
+  - executive-deck
+  - narrative-structure
+  added: '2026-07-09'
+  evidence: Wiki duarte-methodology.md (Executive Communication Protocol — the 50/50 Timing Rule)
+  context: Executive and board briefings; time budgeting
+  confidence: strong
+- id: bp_196
+  entry_type: best_practice
+  title: Speaker-Notes Talk Track
+  description: A speaker-notes talk track is a structured delivery cue, not a transcript. Keep the spoken talk track short —
+    a ≤80-word talk track fits the Presenter-View pane without scrolling at 16–18pt. Notes complement the frame and carry the
+    spoken content that is NOT on it; they never re-read the frame.
+  sources:
+  - speaker-notes-craft.md
+  tags:
+  - deck-type
+  added: '2026-07-09'
+  evidence: Wiki speaker-notes-craft.md (Presenter View and Tablet Annotation — ≤80-word notes at 16–18pt)
+  context: Speaker-delivered frames; notes authoring
+  confidence: strong
+- id: bp_197
+  entry_type: best_practice
+  title: Complement Never Transcribe
+  description: 'Auto-generated speaker notes fail four systematic ways: Completeness Bias (full-sentence transcript re-explaining
+    the frame), Markdown Blindspot (bold/bullets/headers Presenter View cannot render), Statistical Averaging (voiceless generic
+    phrasing), and Image Data Loss (treating chart- or image-heavy frames as content-free). Notes must complement the visual,
+    carry the analytical commentary the visual cannot narrate, and never transcribe.'
+  sources:
+  - speaker-notes-craft.md
+  tags:
+  - deck-type
+  added: '2026-07-09'
+  evidence: Wiki speaker-notes-craft.md (AI Failure Modes in Notes Generation)
+  context: Machine-authored speaker notes; quality control
+  confidence: strong
+- id: bp_198
+  entry_type: best_practice
+  title: Genre-Specific Notes Templates
+  description: 'Notes architecture is genre-specific. Sales — lead each frame with "What they care about here is [X]" then
+    the proof point and an objection redirect. Executive/board — pre-source every quantitative claim with its methodology and
+    add "If challenged on X" blocks. Keynote — capture the opening sentence of each frame verbatim, the rest sparse cues. Training
+    — facilitator guide: objective reminder, anticipated learner questions, timing, activity instructions.'
+  sources:
+  - speaker-notes-craft.md
+  tags:
+  - deck-type
+  added: '2026-07-09'
+  evidence: Wiki speaker-notes-craft.md (Genre-Specific Notes Architectures)
+  context: Notes authoring adapted to deck genre
+  confidence: strong
+- id: bp_199
+  entry_type: best_practice
+  title: Human-Only Delivery Cues
+  description: 'Delivery execution cues — [click — reveal chart], [pause], [Aside: walk left], [launch poll] — are delivery-prep
+    annotations, not authored content. Keep them OUT of the four-part written content block (Anchor / Elaborate / Transition
+    / Aside). Where used downstream, place a build cue immediately BEFORE the words it supports to preserve temporal contiguity.'
+  sources:
+  - speaker-notes-craft.md
+  tags:
+  - deck-type
+  added: '2026-07-09'
+  evidence: Wiki speaker-notes-craft.md (Standardised Execution Cues); machine human-notes doctrine
+  context: Separating authored content notes from delivery-prep staging
+  confidence: strong
+- id: bp_200
+  entry_type: best_practice
+  title: BOPPPS Participatory-Largest
+  description: 'BOPPPS session pacing has six phases — Bridge-In, Objectives, Pre-Assessment, Participatory, Post-Assessment,
+    Summary — with Participatory Learning the LARGEST block, roughly half the session. Simple BOPPPS (single linear pass) suits
+    lessons of about an hour or less; Stacked BOPPPS (multiple modules with a recurring "you are here" module roadmap) suits
+    multi-hour workshops. The 10/10/10/50/10/10 split is a practitioner convention.'
+  sources:
+  - boppps-model.md
+  tags:
+  - training-deck
+  added: '2026-07-09'
+  evidence: Wiki boppps-model.md (The Six Components; Simple vs Stacked Configurations)
+  context: Instructor-led training sessions; pacing
+  confidence: moderate
+- id: bp_201
+  entry_type: best_practice
+  title: Kolb Experience-First Cycle
+  description: 'Kolb''s experiential cycle runs CE→RO→AC→AE — Concrete Experience → Reflective Observation → Abstract Conceptualisation
+    → Active Experimentation — experience-first. Two caveats bind: the meshing hypothesis (matching instruction to a diagnosed
+    learning "style") is refuted, so build one robust cycle through all four stages rather than per-style paths; and do NOT
+    force-fit the cycle onto persuasive or transactional decks (exec briefings, sales pitches), which need rhetorical structures
+    instead.'
+  sources:
+  - kolbs-experiential-learning.md
+  tags:
+  - training-deck
+  added: '2026-07-09'
+  evidence: Wiki kolbs-experiential-learning.md (four-stage cycle; meshing refutation; audience-delivery boundary)
+  context: Experiential and skill-transfer training decks
+  confidence: moderate
+- id: bp_202
+  entry_type: best_practice
+  title: Gagné Event-6 Practice Floor
+  description: In Gagné's Nine Events, Event 6 (Elicit Performance — practice and application) should absorb at least a quarter
+    of the session; muscle-memory and transfer need practice time well beyond declarative rehearsal. Gagné specifies event
+    sequence, not per-event time shares — only this Event 6 floor and the open/core/close grouping are attested. No lecture-only
+    training.
+  sources:
+  - gagnes-nine-events.md
+  tags:
+  - training-deck
+  added: '2026-07-09'
+  evidence: Wiki gagnes-nine-events.md (Event 6 absorbs more than a quarter of the session)
+  context: Training decks; practice-time budgeting
+  confidence: moderate
+- id: bp_203
+  entry_type: best_practice
+  title: Low/High-Inference Review Split
+  description: 'Split review by inference level. Low-inference observables — "single declarative headline under 15 words",
+    "alt text present", "axes labelled with units" — reach usable rater agreement (κ .65–.71) and are safe for machine gates
+    and LLM critique. High-inference judgements — "does the storyline persuade", "is the so-what right" — collapse to κ .23–.41
+    and belong to red agents and human gates, not automated pass/fail.'
+  sources:
+  - deck-qa-workflow.md
+  tags:
+  - quality-gate
+  added: '2026-07-09'
+  evidence: Wiki deck-qa-workflow.md (rubric inter-rater reliability; Joe et al. 2015)
+  context: Quality gates and critic design; assigning checks to the right reviewer
+  confidence: strong
+- id: bp_204
+  entry_type: best_practice
+  title: Red-Team Is Non-Substitutable
+  description: A red team is a separate gate, not a fiercer review pass. A checklist asks "did the author do X?" (confirmatory);
+    a red team asks "would a hostile reader believe X?" (disconfirmatory) — the two are non-substitutable. The red team builds
+    the strongest case AGAINST the central recommendation using the same evidence; a deck whose recommendation a red team can
+    convincingly invert is not ready.
+  sources:
+  - deck-qa-workflow.md
+  tags:
+  - quality-gate
+  added: '2026-07-09'
+  evidence: Wiki deck-qa-workflow.md (adversarial review is disconfirmatory; the review lifecycle)
+  context: Story and design critics; red-agent gates
+  confidence: strong
+- id: bp_205
+  entry_type: best_practice
+  title: Independent Review Beats Self-Review
+  description: Independent review beats self-review because of the Curse of Knowledge — a better-informed author cannot simulate
+    a less-informed reader (Newton's tappers-and-listeners — listeners decoded 2.5% of tapped songs while tappers predicted
+    50%). Self-review catches mechanical and structural faults but cannot substitute for independent review of clarity, narrative,
+    or persuasion; most detection comes from independent preparation, not the meeting.
+  sources:
+  - deck-qa-workflow.md
+  tags:
+  - quality-gate
+  added: '2026-07-09'
+  evidence: Wiki deck-qa-workflow.md (Curse of Knowledge; Camerer, Loewenstein & Weber 1989)
+  context: Review governance; why fresh-context critics exist
+  confidence: strong
+- id: bp_206
+  entry_type: best_practice
+  title: Grey-Scale-First Highlight
+  description: Design charts grey-scale-first and reserve saturated colour for the one data point that proves the takeaway —
+    highlight roughly 10% or less of the visual. Colour is a preattentive attribute; over-deploying it (a different colour
+    per category with no narrative purpose) removes its power to direct attention. Everything else sits in a muted tonal family.
+  sources:
+  - data-storytelling.md
+  tags:
+  - data-visualisation
+  - colour
+  added: '2026-07-09'
+  evidence: Wiki data-storytelling.md / presentation-deck-formats.md (Knaflic grey-scale-first; restrained colour hierarchy)
+  context: Data visualisation; directing attention with colour
+  confidence: strong
+- id: bp_207
+  entry_type: best_practice
+  title: Lowest-Realism Imagery
+  description: Match visual realism to the learning task and choose the LOWEST realism that carries the meaning (Dwyer) — a
+    labelled line diagram often teaches better than a photograph because it strips detail irrelevant to the point. Photorealism
+    is not a default; added realism that does not serve comprehension is extraneous load. "No visual" is a legitimate terminal
+    when words alone carry the meaning.
+  sources:
+  - visual-modality-decision.md
+  tags:
+  - image-usage
+  - data-visualisation
+  added: '2026-07-09'
+  evidence: Wiki visual-modality-decision.md / mayers-multimedia-principles.md (Dwyer realism continuum)
+  context: Imagery and modality selection
+  confidence: moderate
 - id: ap_001
   entry_type: anti_pattern
   title: Teleprompter
@@ -3281,9 +3593,9 @@ entries:
 - id: ap_024
   entry_type: anti_pattern
   title: Buried Recommendation
-  description: Key recommendation appears on slide 15+ instead of early in deck
+  description: Key recommendation held back until deep in the deck instead of stated early
   consequences: Executive disengages; decision deferred; meeting unproductive
-  instead: 'BLUF: state recommendation in first 5 slides'
+  instead: 'BLUF: state the recommendation immediately after the Question (front fifth)'
   sources:
   - Guides/02-slide-design/executive-presentation-sop.md
   tags:
@@ -3323,7 +3635,7 @@ entries:
   title: Missing Speaker Notes
   description: Presentation slides with no speaker notes sent to stand-in presenter
   consequences: Stand-in has no context; delivery quality drops catastrophically
-  instead: '50–150 words per slide: key message + detail + transition cue'
+  instead: 'Notes on every speaker-delivered frame, budgeted per the number registry (corpus_mapping talk-track keys): key message + detail + transition cue'
   sources:
   - Guides/00-presentation-methodology/quality-checklist-framework.md
   tags:

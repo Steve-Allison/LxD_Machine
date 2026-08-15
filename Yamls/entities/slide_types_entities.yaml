@@ -1,30 +1,15 @@
+# yaml-language-server: $schema=https://steve-allison.github.io/Central_Configs/schemas/resource-meta.schema.json
 _meta:
-  id: slide_types_entities
-  purpose: entity
-  version: 1.21.0
-  last_updated: '2026-03-09'
-  description: GLiNER entity definitions for detecting slide type references in instructional briefs, storyboards, and content
-    planning text — aligned to the 28-type slide taxonomy.
-  domain: visual
-  domain_type: cross_cutting
-  corpus_sources:
-  - Corpus/Research/Research - Visual Analysis of Slide Decks.md
-  - Corpus/Research/Research - Canonical Presentation Methodology Research.md
-  - Corpus/Research/Research - Visual Communication and Storytelling.md
-  - Corpus/Research/Research - visualisation_techniques_corporate_learning.md
-  - Corpus/Research/slide_design_research_monograph.md
-  - Corpus/Research/slide_design_research_monograph_part_2.md
-  - Corpus/Research/slide_design_research_monograph_part_4.md
-  - Corpus/Research/Applying Mayer's Principles & Contemporary Theory - A Practical Checklist.md
-  - Corpus/Research/Research - Narrative Visualization, Sketchnoting, Accessibility.md
-  - Corpus/Research/Visual Best Practices for Corporate Learning Videos.md
-  - Corpus/Research/Research - Storyboard Best Practices.md
-  - Corpus/Research/research_-_slide_deck_design_playbook_research.md
-  - Corpus/Research/Research - Slide Deck Design Playbook Research.md
-  relationships:
-  - target: taxonomy/slide_types_taxonomy.yaml
-    type: depends_on
-    description: Canonical 28-type slide taxonomy with SigLIP prompts and text signals
+  id: "slide_types_entities"
+  title: "Slide Types Entities"
+  version: "1.21.0"
+  schema_version: "1.0.0"
+  last_updated: "2026-08-15"
+  authority: "LxD_Machine"
+  status: "released"
+  ontology_domain: "visual_communication"
+  ontology_version: "4.0.0"
+  governing_schema: "DomainTaxonomy"
 gliner_config:
   model: urchade/gliner_multi_pii-v1
   batch_size: 8

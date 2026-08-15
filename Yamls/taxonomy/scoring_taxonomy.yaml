@@ -1,31 +1,15 @@
+# yaml-language-server: $schema=https://steve-allison.github.io/Central_Configs/schemas/resource-meta.schema.json
 _meta:
-  id: scoring_taxonomy
-  purpose: taxonomy
+  id: "scoring_taxonomy"
+  title: "Scoring Taxonomy"
   version: "1.3.0"
-  last_updated: "2026-03-01"
-  description: "Classification of scoring and evaluation constructs by quality domain, score tier, rubric type, assessment scope, and evaluative function."
-  domain: pedagogical
-  domain_type: cross_cutting
-  corpus_sources:
-    - "Corpus/Research/Research - Corporate Learning Assessment- Strategies, Modalities, and Best Practices.md"
-    - "Corpus/Research/Applying_Learning_Theory_Practical_Checklist.md"
-    - "Corpus/Research/Research - Comprehensive Learning Design Framework.md"
-  academic_sources:
-    - "Mayer (2009) - Multimedia Learning"
-    - "Bloom (1956) - Taxonomy of Educational Objectives"
-    - "Toulmin (2003) - The Uses of Argument"
-    - "Brookhart (2013) - How to Create and Use Rubrics"
-    - "Sadler (1989) - Formative Assessment and the Design of Instructional Systems"
-    - "Kirkpatrick (1959/1994) - Four Levels of Training Evaluation"
-    - "Hattie & Timperley (2007) - The Power of Feedback (Review of Educational Research)"
-    - "Sweller (1988/1994) - Cognitive Load Theory"
-  relationships:
-    - target: entities/scoring_entities.yaml
-      type: depends_on
-      description: "Scoring entity types for NER extraction of quality dimensions and evaluative language"
-    - target: scoring/scoring_weights.yaml
-      type: depends_on
-      description: "Dimension weighting configuration for composite scores"
+  schema_version: "1.0.0"
+  last_updated: "2026-08-15"
+  authority: "LxD_Machine"
+  status: "released"
+  ontology_domain: "learning"
+  ontology_version: "4.0.0"
+  governing_schema: "EvaluationRubric"
 # ==============================================================================
 # QUALITY DOMAINS
 # ==============================================================================

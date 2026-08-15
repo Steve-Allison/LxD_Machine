@@ -1,34 +1,15 @@
+# yaml-language-server: $schema=https://steve-allison.github.io/Central_Configs/schemas/resource-meta.schema.json
 _meta:
-  id: Descriptive_RST_entities
-  purpose: entity
-  version: 2.5.0
-  last_updated: '2026-03-08'
-  description: 'GLiNER2 entity definitions for RST discourse parsing: semantic coherence signals, EDU boundary markers, nuclearity
-    indicators, coreference chains, and tree structure elements.'
-  domain: narrative
-  domain_type: cross_cutting
-  corpus_sources:
-  - Corpus/Research/Research - Advanced Computational Discourse Analysis_ Operationalizing Rhetorical Structure Theory with
-    LLM.md
-  - Corpus/Research/Research - Analyzing Story for Business Communication.md
-  - Corpus/Research/THEORETICAL_FRAMEWORKS_INTEGRATION_ANALYSIS.md
-  academic_sources:
-  - Mann & Thompson (1988) - Rhetorical Structure Theory
-  - RST Discourse Treebank (Carlson et al. 2001)
-  - RST Signalling Corpus (Taboada & Das 2013)
-  - Entity-Based Approaches to Local Coherence (Barzilay & Lapata 2008)
-  - eRST - Enhanced Rhetorical Structure Theory (Zeldes 2024)
-  relationships:
-  - target: taxonomy/Descriptive_RST_taxonomy.yaml
-    type: depends_on
-    description: Relation classes and signal typology definitions consumed by these entity types
-  - target: entities/discourse_entities.yaml
-    type: related_to
-    description: Complementary lexical discourse marker entities — this file covers implicit/structural signals while discourse_entities
-      covers explicit connective markers
-  - target: corpus/Descriptive_RST_corpus.yaml
-    type: related_to
-    description: Best practices and principles governing RST parsing pipelines
+  id: "descriptive_rst_entities"
+  title: "Descriptive Rst Entities"
+  version: "2.5.0"
+  schema_version: "1.0.0"
+  last_updated: "2026-08-15"
+  authority: "LxD_Machine"
+  status: "released"
+  ontology_domain: "learning"
+  ontology_version: "4.0.0"
+  governing_schema: "DomainTaxonomy"
 entity_types:
   coreference_chain:
     label: COREFERENCE_CHAIN

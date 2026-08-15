@@ -1,56 +1,15 @@
-# ==============================================================================
-# DISCOURSE COHERENCE RUBRIC
-# Scoring rubric for discourse-level coherence in narrative content
-# Sources: PDL_ARCHITECTURE_NARRATIVE_DISCOURSE_SERIES.md, Research - AQE with LLMs via IBM PDL.md,
-#          Research - Argument Mining with MTL and PDL.md,
-#          Research - Researching Narrative and Discourse Analysis.md,
-#          discourse_markers_framework.yaml
-# Academic: Mann & Thompson (1988), Grosz & Sidner (1986), Halliday & Hasan (1976),
-#           Hobbs (1979), Wolf & Gibson (2005), Niklaus et al. (2023),
-#           Farzam et al. (2023), Deng et al. (2022), Liu et al. (2023)
-# ==============================================================================
-
+# yaml-language-server: $schema=https://steve-allison.github.io/Central_Configs/schemas/resource-meta.schema.json
 _meta:
-  id: discourse_coherence_rubric
+  id: "discourse_coherence_rubric"
   title: "Discourse Coherence Rubric"
-  description: "Scoring rubric for discourse-level coherence covering transition quality, RST relation coverage, topic progression, information flow, and structural integrity"
-  domain: narrative
-  domain_type: cross_cutting
-  purpose: scoring
   version: "1.1.0"
-  last_updated: "2026-03-01"
-  corpus_sources:
-    - "Corpus/Research/PDL_ARCHITECTURE_NARRATIVE_DISCOURSE_SERIES.md"
-    - "Corpus/Research/Research - AQE with LLMs via IBM PDL.md"
-    - "Corpus/Research/Research - Argument Mining with MTL and PDL.md"
-    - "Corpus/Research/Research - Researching Narrative and Discourse Analysis.md"
-    - "Corpus/Research/Research - PDL for Discourse-Aware Text Simplification.md"
-  academic_sources:
-    - "Mann & Thompson (1988) - Rhetorical Structure Theory"
-    - "Grosz & Sidner (1986) - Attention, intentions, and the structure of discourse"
-    - "Halliday & Hasan (1976) - Cohesion in English"
-    - "Hobbs (1979) - Coherence and coreference"
-    - "Wolf & Gibson (2005) - Representing discourse coherence"
-    - "Niklaus et al. (2023) - Discourse-Aware Text Simplification"
-    - "Farzam et al. (2023) - Multi-Task Learning Improves Performance in Deep Argument Mining Models"
-    - "Deng et al. (2022) - Model Criticism for Long-Form Text Generation"
-    - "Liu et al. (2023) - Incorporating Distributions of Discourse Structure (RSTformer)"
-  relationships:
-    - target: ../entities/discourse_entities.yaml
-      type: depends_on
-      description: "Entity types for discourse marker extraction"
-    - target: ../methodology/discourse_markers_framework.yaml
-      type: derived_from
-      description: "Discourse marker taxonomy and RST framework"
-    - target: ../methodology/rst_framework.yaml
-      type: derived_from
-      description: "RST relation definitions informing coherence criteria"
-    - target: narrative_quality_rubric.yaml
-      type: related_to
-      description: "Discourse coherence supports narrative quality"
-    - target: rhetorical_effectiveness_rubric.yaml
-      type: related_to
-      description: "Rhetorical structure contributes to discourse coherence"
+  schema_version: "1.0.0"
+  last_updated: "2026-08-15"
+  authority: "LxD_Machine"
+  status: "released"
+  ontology_domain: "language_editorial"
+  ontology_version: "4.0.0"
+  governing_schema: "EvaluationRubric"
 
 # ==============================================================================
 # RUBRIC WEIGHTS

@@ -1,34 +1,15 @@
+# yaml-language-server: $schema=https://steve-allison.github.io/Central_Configs/schemas/resource-meta.schema.json
 _meta:
-  id: content_format_entities
-  purpose: entity
-  version: 1.20.0
-  last_updated: '2026-03-09'
-  description: GLiNER entity definitions for detecting content format references in instructional design text including course
-    types, microlearning formats, performance support assets, and communication materials.
-  domain: pedagogical
-  domain_type: workflow
-  corpus_sources:
-  - Corpus/Research/Best Practices for Structuring Corporate Learning Content.md
-  - Corpus/Research/Research - Strips & Cards.md
-  - Corpus/Research/Creating Learning Videos - Process v2.md
-  - Corpus/Research/Gold Standard Structure for Any Corporate-Learning Asset v3.md
-  - Corpus/Research/Research - Complete Guide to AI-powered Microlearning.md
-  - Corpus/Research/High-Level Planning Tools in Corporate Learning - Wireframes, Content Maps & Course Blueprints.md
-  - Corpus/Research/Research - Comprehensive Learning Design Framework.md
-  - Corpus/Research/Research - Merrills Instructional Design Theories Applied.md
-  - Corpus/Research/Research - Roleplay & Scenarios for Learning.md
-  - Corpus/Research/Essentials_Course_Gold_Structure_AI_Course_Playbook.md
-  - Corpus/Research/Applying_Learning_Theory_Practical_Checklist.md
-  - Corpus/Research/course_structure_hierarchy_corpus_research.md
-  - Corpus/Research/Research - Slide Deck Design Playbook Research.md
-  - Corpus/Research/Research - Best Video Script Prompts.md
-  relationships:
-  - target: taxonomy/content_format_taxonomy.yaml
-    type: depends_on
-    description: Canonical content format definitions and routing rules
-  - target: methodology/strip_card_framework.yaml
-    type: depends_on
-    description: Strip and card content architecture
+  id: "content_format_entities"
+  title: "Content Format Entities"
+  version: "1.20.0"
+  schema_version: "1.0.0"
+  last_updated: "2026-08-15"
+  authority: "LxD_Machine"
+  status: "released"
+  ontology_domain: "learning"
+  ontology_version: "4.0.0"
+  governing_schema: "DomainTaxonomy"
 gliner_config:
   model: urchade/gliner_multi_pii-v1
   batch_size: 8

@@ -1,30 +1,15 @@
+# yaml-language-server: $schema=https://steve-allison.github.io/Central_Configs/schemas/resource-meta.schema.json
 _meta:
-  id: sales_taxonomy
-  purpose: taxonomy
+  id: "sales_taxonomy"
+  title: "Sales Taxonomy"
   version: "1.2.0"
-  last_updated: "2026-03-01"
-  description: "Classification of sales conversation signals and deal dynamics by signal type, deal stage, qualification framework, objection category, and engagement type."
-  domain: sales
-  domain_type: workflow
-  corpus_sources:
-    - "Corpus/Research/soar_mapping_by_sales_stage.md"
-    - "Corpus/Research/Storytelling_for_Different_Business_Personas.md"
-    - "Corpus/Research/Research - Using SOAR Storytelling most effectively.md"
-  academic_sources:
-    - "MEDDIC/MEDDPICC qualification framework"
-    - "SPIN Selling - Rackham (1988)"
-    - "Challenger Sale - Dixon & Adamson (2011)"
-    - "Adobe SOAR framework"
-  relationships:
-    - target: entities/sales_entities.yaml
-      type: depends_on
-      description: "Sales entity types for NER extraction of SOAR elements, buying signals, and objections"
-    - target: sales/sales_play_taxonomy.yaml
-      type: depends_on
-      description: "FY26 sales play hierarchy (L1-L4) for play-level classification"
-    - target: sales/soar_hierarchy_framework.yaml
-      type: depends_on
-      description: "SOAR narrative structure and hierarchy rules"
+  schema_version: "1.0.0"
+  last_updated: "2026-08-15"
+  authority: "LxD_Machine"
+  status: "released"
+  ontology_domain: "adobe"
+  ontology_version: "4.0.0"
+  governing_schema: "DomainTaxonomy"
 # ==============================================================================
 # SIGNAL TYPES
 # ==============================================================================
