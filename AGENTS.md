@@ -42,11 +42,22 @@ src/lxd/
 Key directories outside `src/`:
 
 - `Knowledge_Base/` — corpus root (gitignored)
-- `Yamls/` — ontology definitions
+- `Yamls/` — local ontology definitions and taxonomies (159 files)
 - `Plans/` — architecture and design specs
 - `tests/` — pytest suite
 - `data/` — SQLite + LanceDB stores (gitignored, rebuildable)
 - `.env` — API keys (OPENAI_API_KEY, etc.). Loaded by `app/bootstrap.py` via `python-dotenv` at startup. Never commit.
+
+## Ontology Integration & Ecosystem Governance
+
+- **Upstream Semantic Authority (`Central_Configs`)**: `Central_Configs` (release `v4.0.0`) is the single source of truth for LinkML ontologies, domain taxonomies, and controlled vocabularies.
+- **Local Application Profile (`Yamls/`)**:
+  - `Yamls/` (`entities/`, `taxonomy/`, `scoring/`, `methodology/`, `sales/`, `reference/`) forms the machine-local application profile used for entity recognition, relation extraction, and graph-augmented retrieval.
+  - Local definitions link directly to `Central_Configs` canonical domains: `learning` (pedagogical principles, cognitive load, learner profiles), `delivery` (speaking delivery, multimodal video), `narrative` (story structures), and `language_editorial` (style guides, discourse markers).
+- **Synchronized Master Corpora**:
+  - `Yamls/corpus/content_map_corpus.yaml` (`v2.0`), `Yamls/corpus/learning_design_corpus.yaml`, and `Yamls/corpus/presentation_design_principles_corpus.yaml` (`v1.0.0`) must maintain content parity with `Design_Methodology` and `AI_Prompts`.
+- **Mandatory `_meta` Frontmatter Standard**:
+  - All authored YAML and JSON files in `Yamls/` must carry a standard `_meta` block declaring `id`, `title`, `version`, `schema_version: "1.0.0"`, `last_updated`, `authority: "LxD_Machine"`, `status`, `ontology_domain`, `ontology_version: "4.0.0"`, and `governing_schema`.
 
 ## Common Commands
 
