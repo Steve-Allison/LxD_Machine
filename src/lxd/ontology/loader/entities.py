@@ -73,7 +73,7 @@ def build_node_records(
         metadata: dict[str, Any] = {"file_rel_path": source.file_rel_path}
         if isinstance(source_meta, dict):
             title = source_meta.get("title")
-            meta_id = source_meta.get("id")
+            meta_id = source_meta.get("file_id") or source_meta.get("id")
             label = (
                 title
                 if isinstance(title, str)
@@ -85,8 +85,8 @@ def build_node_records(
                 {
                     "meta_id": meta_id,
                     "purpose": source_meta.get("purpose"),
-                    "domain": source_meta.get("domain"),
-                    "domain_type": source_meta.get("domain_type"),
+                    "domain": source_meta.get("ontology_domain") or source_meta.get("domain"),
+                    "domain_type": source_meta.get("scope") or source_meta.get("domain_type"),
                 }
             )
         nodes[file_node_id(source.file_rel_path)] = OntologyNodeRecord(

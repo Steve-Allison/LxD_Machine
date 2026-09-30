@@ -15,7 +15,7 @@
 - durably ingest every V1-supported file type under that root
 - index text-bearing sources for retrieval and cited answering
 - register binary assets with durable provenance, even when they are not queryable evidence in V1
-- load the ontology from the full repo-local `Yamls/` tree
+- load the ontology from the vendored Central distribution at `ontology/vendor/central-configs/`, with the library at `library/vendor/central-library/`
 - expose corpus search, ontology lookup, status, knowledge-graph tools, and full answer-synthesis through MCP
 - report committed ingest, ontology, and knowledge-graph state
 
@@ -28,13 +28,14 @@ Corpus root (from `config.yaml :: paths.corpus_path`):
 
 Ontology root:
 
-- `<project_root>/Yamls`
+- `<project_root>/ontology/vendor/central-configs`
+- `<project_root>/library/vendor/central-library`
 
 Entity source subtree:
 
-- `<project_root>/Yamls/entities`
+- `<project_root>/ontology/vendor/central-configs/domains`
 
-Corpus / ontology counts are inventory-time facts, not spec facts, and drift as the wiki and ontology grow. Run `pixi run status` for the current committed counts on your machine; the wiki has grown from 262 → 269+ top-level pages over the SOTA sweep. The ontology tree carries ~158 YAML files across 27 entity YAMLs.
+Corpus / ontology counts are inventory-time facts, not spec facts, and drift as the wiki and ontology grow. Run `pixi run status` for the current committed counts on your machine.
 
 ## 4. File Classes
 
@@ -65,7 +66,7 @@ V1 includes:
 - full corpus inventory over all in-scope file types
 - durable ingest for markdown and Docling JSON text sources
 - durable registration for PNG assets
-- ontology load from the full `Yamls` tree with `!include` resolution
+- ontology load from the vendored Central distribution, projected into `coe:` and `lib:` records
 - committed status reporting
 - corpus search over text-bearing sources
 - baseline reranking with explicit dense-only fallback if the reranker is unavailable

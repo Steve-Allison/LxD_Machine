@@ -1,0 +1,327 @@
+_meta:
+  file_id: coe:file/domain/visual_communication/design_disciplines
+  title: Visual Communication — Design and Media Disciplines
+  last_updated: '2026-09-23'
+  authority: Central_Configs
+  scope: domain
+  ontology_domain: visual_communication
+  governing_class: coe:DomainModule
+module_id: coe:module/visual_communication/design_disciplines
+domain: visual_communication
+entity_collections:
+- id: coe:artifact/visual_communication/visual_design_disciplines
+  label: Visual Design Disciplines
+  description: Visual design theory, frameworks, and visualisation disciplines recovered from the knowledge wiki.
+  last_updated: '2026-09-23'
+  home_domain: visual_communication
+  status: canonical
+  entities:
+  - id: coe:entity/accessible_data_visualisation
+    label: Accessible Data Visualisation
+    description: The architectural discipline of building non-visual access into data visualisations — dual visual and
+      semantic structure, focus-driven audio description, live regions and sonification, designed in from the start.
+    home_domain: visual_communication
+    status: canonical
+    edges:
+    - subject_id: coe:entity/accessible_data_visualisation
+      predicate: coe:enables
+      object_id: coe:entity/multivariate_data_visualisation
+      relationship_weight: expected
+      description: High-dimensional plots depend on the dual visual-plus-semantic architecture accessible data
+        visualisation supplies for non-visual access.
+      statement_id: coe:edge/accessible-data-visualisation-enables-multivariate-data-visualisation
+      home_domain: visual_communication
+    examples:
+    - accessible chart
+    - sonification
+    - audio description of data
+    - ARIA live region
+    - screen-reader-accessible visualisation
+  - id: coe:entity/art_direction
+    label: Art Direction
+    description: The craft and direction of non-data visual assets — iconography systems, illustration parameter
+      systems, photography art direction, and distinctive-brand-asset theory.
+    home_domain: visual_communication
+    status: canonical
+    edges: []
+    examples:
+    - art direction
+    - iconography system
+    - illustration style guide
+    - photo art direction
+  - id: coe:entity/crap_design_principles
+    label: CRAP Design Principles
+    description: Robin Williams's four foundational layout principles — Contrast, Repetition, Alignment, Proximity — a
+      practical checklist for clear visual materials.
+    home_domain: visual_communication
+    status: canonical
+    edges:
+    - subject_id: coe:entity/crap_design_principles
+      predicate: coe:bridges
+      object_id: coe:entity/mayers_multimedia_principles
+      relationship_weight: optional
+      description: Contrast and Proximity align with Mayer's signalling and spatial-contiguity principles across the
+        design and learning-science traditions.
+      statement_id: coe:edge/crap-design-principles-bridges-mayers-multimedia-principles
+      home_domain: visual_communication
+    examples:
+    - contrast, repetition, alignment, proximity
+    - CRAP principles
+  - id: coe:entity/graphic_encoding_theory
+    label: Graphic Encoding Theory
+    description: The formal theory of choosing which visual variable encodes which information and designing cognitively
+      effective notations — Bertin's variables, Cleveland and McGill's accuracy ranking, Moody's Physics of Notations.
+    home_domain: visual_communication
+    status: canonical
+    edges:
+    - subject_id: coe:entity/graphic_encoding_theory
+      predicate: coe:supports
+      object_id: coe:entity/infographic_design
+      relationship_weight: expected
+      description: Infographic craft applies the encoding-accuracy theory — Bertin's variables and the Cleveland-McGill
+        ranking — that graphic encoding theory owns.
+      statement_id: coe:edge/graphic-encoding-theory-supports-infographic-design
+      home_domain: visual_communication
+    examples:
+    - visual variable
+    - Bertin's variables
+    - encoding accuracy ranking
+    - position beats angle
+  - id: coe:entity/honeycomb_model_ux
+    label: UX Honeycomb Model
+    description: Morville's seven-factor user-experience framework — Useful, Usable, Desirable, Findable, Accessible,
+      Credible, Valuable — used as a learning-experience quality check.
+    home_domain: visual_communication
+    status: canonical
+    edges: []
+    examples:
+    - UX honeycomb
+    - Morville's honeycomb
+    - useful, usable, desirable
+  - id: coe:entity/image_production
+    label: Image Production
+    description: The production and delivery pipeline for visual assets — raster and vector models, file formats, ICC
+      colour management, motion rendering, and export optimisation.
+    home_domain: visual_communication
+    status: canonical
+    edges:
+    - subject_id: coe:entity/image_production
+      predicate: coe:enables
+      object_id: coe:entity/lottie_authoring
+      relationship_weight: optional
+      description: The image-production pipeline owns the format, delivery and performance budgets Lottie authoring
+        works within.
+      statement_id: coe:edge/image-production-enables-lottie-authoring
+      home_domain: visual_communication
+    examples:
+    - image pipeline
+    - ICC profile
+    - export optimisation
+    - raster versus vector
+    - colour management
+  - id: coe:entity/infographic_design
+    label: Infographic Design
+    description: Evidence-based design of learning infographics — perceptual encoding, a structural typology of
+      infographic types, a phased workflow, type selection and accessibility.
+    home_domain: visual_communication
+    status: canonical
+    edges: []
+    examples:
+    - infographic
+    - data-driven graphic
+    - infographic layout
+    - visual explainer
+  - id: coe:entity/knowledge_visualisation
+    label: Knowledge Visualisation
+    description: The discipline of using visual representations — concept maps, mind maps, conceptual diagrams, visual
+      metaphors, knowledge maps — to create, transfer and elicit knowledge between people.
+    home_domain: visual_communication
+    status: canonical
+    edges: []
+    examples:
+    - concept map
+    - mind map
+    - knowledge map
+    - rich picture
+    - visual metaphor diagram
+  - id: coe:entity/lottie_authoring
+    label: Lottie Authoring
+    description: The Lottie JSON vector-animation schema as a programmatic authoring target — composition, layer and
+      shape hierarchy, abbreviated key mappings, and Bezier path interpolation rules.
+    home_domain: visual_communication
+    status: canonical
+    edges: []
+    examples:
+    - Lottie
+    - Lottie JSON
+    - bodymovin
+    - vector animation file
+  - id: coe:entity/multivariate_data_visualisation
+    label: Multivariate Data Visualisation
+    description: The discipline of visualising four or more dimensions — parallel coordinate plots, scatterplot matrices
+      and dimensionality-reduction projections — with interaction patterns and interpretation caveats.
+    home_domain: visual_communication
+    status: canonical
+    edges: []
+    examples:
+    - parallel coordinates
+    - scatterplot matrix
+    - SPLOM
+    - t-SNE plot
+    - UMAP projection
+  - id: coe:entity/system_dynamics_visualisation
+    label: System Dynamics Visualisation
+    description: Narrating dynamic systems through causal loop and stock-and-flow diagrams — loop polarity notation,
+      system archetypes, and interactive simulation patterns.
+    home_domain: visual_communication
+    status: canonical
+    edges: []
+    examples:
+    - causal loop diagram
+    - stock and flow diagram
+    - reinforcing loop
+    - balancing loop
+    - system archetype
+    anti_examples:
+    - system architecture diagram
+  - id: coe:entity/visual_modality_decision
+    label: Visual Modality Decision
+    description: The first-order choice of which visual modality a message needs — a seven-category taxonomy of photo,
+      illustration, icon, chart, diagram, screenshot and table, with a decision tree and the realism-abstraction
+      trade-off.
+    home_domain: visual_communication
+    status: canonical
+    edges:
+    - subject_id: coe:entity/visual_modality_decision
+      predicate: coe:precedes
+      object_id: coe:entity/infographic_design
+      relationship_weight: expected
+      description: The modality decision routes a message to chart or diagram execution before infographic design
+        begins.
+      statement_id: coe:edge/visual-modality-decision-precedes-infographic-design
+      home_domain: visual_communication
+    examples:
+    - photo or illustration
+    - chart versus table
+    - which visual format
+    - modality decision tree
+  - id: coe:entity/whiteboarding
+    label: Whiteboarding
+    description: Visual facilitation as cognitive practice — shared boards as working-memory offload, session
+      methodologies, scribing mechanics, sketchnote grammar and sketching as a generative thinking medium.
+    home_domain: visual_communication
+    status: canonical
+    edges:
+    - subject_id: coe:entity/whiteboarding
+      predicate: coe:bridges
+      object_id: coe:entity/knowledge_visualisation
+      relationship_weight: expected
+      description: Whiteboarding owns the live session and scribing craft; knowledge visualisation owns the construction
+        grammar of the formats drawn.
+      statement_id: coe:edge/whiteboarding-bridges-knowledge-visualisation
+      home_domain: visual_communication
+    examples:
+    - whiteboarding
+    - whiteboard session
+    - sketchnoting
+    - graphic recording
+    - live scribing
+- id: coe:artifact/visual_communication/media_preproduction
+  label: Media Pre-Production Artefacts and Constraints
+  description: Video and motion pre-production artefact types and motion-safety constraints recovered from the knowledge
+    wiki.
+  last_updated: '2026-09-23'
+  home_domain: visual_communication
+  status: canonical
+  entities:
+  - id: coe:entity/synthetic_presenter
+    label: Synthetic Presenter
+    description: An AI-generated on-screen instructor (avatar) that delivers scripted instruction in place of a filmed
+      human presenter.
+    home_domain: visual_communication
+    status: canonical
+    edges: []
+    examples:
+    - AI avatar
+    - synthetic presenter
+    - AI-generated instructor
+    - digital human presenter
+  - id: coe:entity/directors_treatment
+    label: Director's Treatment
+    description: A multi-page prose-plus-image pitch-and-planning document in which a director sets out the intended
+      look, tone and execution of a commission — the lookbook in film and television.
+    home_domain: visual_communication
+    status: canonical
+    edges:
+    - subject_id: coe:entity/directors_treatment
+      predicate: coe:contains
+      object_id: coe:entity/moodboard
+      relationship_weight: optional
+      description: A treatment's visual sections absorb the moodboard's role for live-action commissions.
+      statement_id: coe:edge/directors-treatment-contains-moodboard
+      home_domain: visual_communication
+    examples:
+    - director's treatment
+    - lookbook
+    - treatment deck
+    - pitch treatment
+  - id: coe:entity/moodboard
+    label: Moodboard
+    description: A curated pre-production collection of images, colour, type, texture and clips that defines a video
+      project's look and feel as a decision-making instrument.
+    home_domain: visual_communication
+    status: canonical
+    edges:
+    - subject_id: coe:entity/moodboard
+      predicate: coe:precedes
+      object_id: coe:entity/style_frame
+      relationship_weight: expected
+      description: The curated-reference moodboard precedes the original proof-of-look still in the motion
+        pre-production pipeline.
+      statement_id: coe:edge/moodboard-precedes-style-frame
+      home_domain: visual_communication
+    examples:
+    - moodboard
+    - mood board
+    - reference board
+    - look and feel board
+  - id: coe:entity/style_frame
+    label: Style Frame
+    description: An original full-fidelity still rendered in a project's own visual language that proves a motion
+      piece's intended look before animation begins.
+    home_domain: visual_communication
+    status: canonical
+    edges: []
+    examples:
+    - style frame
+    - styleframe
+    - proof-of-look still
+  - id: coe:entity/motion_flash_accessibility
+    label: Motion and Flash Accessibility
+    description: The safety constraints on on-screen movement — photosensitive flash thresholds, vestibular risk, and
+      the WCAG motion criteria with reduced-motion honouring.
+    home_domain: visual_communication
+    status: canonical
+    edges:
+    - subject_id: coe:entity/motion_flash_accessibility
+      predicate: coe:limits
+      object_id: coe:entity/slide_transition
+      relationship_weight: expected
+      description: Slide builds and transitions must satisfy the WCAG motion criteria — flash thresholds and
+        reduced-motion honouring bound what motion is permissible.
+      statement_id: coe:edge/motion-flash-accessibility-limits-slide-transition
+      home_domain: visual_communication
+    - subject_id: coe:entity/motion_flash_accessibility
+      predicate: coe:limits
+      object_id: coe:entity/animation_type
+      relationship_weight: expected
+      description: Craft motion of every animation type must remain within photosensitive and vestibular safety
+        constraints and be defeatable.
+      statement_id: coe:edge/motion-flash-accessibility-limits-animation-type
+      home_domain: visual_communication
+    examples:
+    - flash threshold
+    - three flashes per second
+    - prefers-reduced-motion
+    - vestibular trigger
+    - photosensitive seizure risk

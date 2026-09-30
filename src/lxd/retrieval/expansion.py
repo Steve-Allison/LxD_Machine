@@ -7,13 +7,13 @@ from typing import Any
 
 from lxd.ingest.mentions import detect_mentions
 from lxd.ontology.graph import OntologyGraph
-from lxd.ontology.loader import OntologyLoadResult, load_ontology
+from lxd.ontology.loader import OntologyLoadResult, load_configured_ontology
 from lxd.ontology.matcher import build_or_load_automaton
 from lxd.settings.models import RuntimeConfig
 from lxd.stores.sqlite.chunks import load_corpus_related_entity_ids
 from lxd.stores.sqlite.connection import build_store_paths, connect_sqlite
 
-_ONTOLOGY_CACHE: dict[tuple[str, tuple[str, ...], tuple[str, ...]], _OntologyRuntime] = {}
+_ONTOLOGY_CACHE: dict[tuple[str, str, tuple[str, ...], tuple[str, ...]], _OntologyRuntime] = {}
 
 
 @dataclass(frozen=True, slots=True)
@@ -54,7 +54,13 @@ def expand_question(question: str, config: RuntimeConfig) -> ExpansionOutcome:
         Expanded query text and added ontology terms.
     """
     runtime = _ontology_runtime(config)
-    mentions = detect_mentions(question, runtime.automaton)
+    mentions = detect_mentions(
+        question,
+        runtime.automaton,
+        recognition_patterns=runtime.ontology.recognition_patterns,
+        suppressed_terms=runtime.ontology.suppressed_terms,
+        anchor_constraints=runtime.ontology.anchor_constraints,
+    )
     matched_entity_ids = _dedupe([mention.entity_id for mention in mentions])
     if not matched_entity_ids:
         return ExpansionOutcome(
@@ -114,19 +120,17 @@ def _expand_from_corpus(config: RuntimeConfig, entity_ids: list[str]) -> list[st
 
 
 def _ontology_runtime(config: RuntimeConfig) -> _OntologyRuntime:
+    library_path = config.paths.library_path
     cache_key = (
         str(config.paths.ontology_path),
+        str(library_path) if library_path is not None else "",
         tuple(config.ontology.include_globs),
         tuple(config.ontology.ignore_names),
     )
     cached = _ONTOLOGY_CACHE.get(cache_key)
     if cached is not None:
         return cached
-    ontology = load_ontology(
-        root=config.paths.ontology_path,
-        include_globs=config.ontology.include_globs,
-        ignore_names=config.ontology.ignore_names,
-    )
+    ontology = load_configured_ontology(config)
     runtime = _OntologyRuntime(
         ontology=ontology,
         automaton=build_or_load_automaton(

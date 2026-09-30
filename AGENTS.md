@@ -42,7 +42,8 @@ src/lxd/
 Key directories outside `src/`:
 
 - `Knowledge_Base/` — corpus root (gitignored)
-- `Yamls/` — local ontology definitions and taxonomies (159 files)
+- `ontology/vendor/central-configs/` — staged Central distribution (runtime ontology)
+- `library/vendor/central-library/` — staged Central library (recognition, thresholds, prescriptions)
 - `Plans/` — architecture and design specs
 - `tests/` — pytest suite
 - `data/` — SQLite + LanceDB stores (gitignored, rebuildable)
@@ -51,13 +52,9 @@ Key directories outside `src/`:
 ## Ontology Integration & Ecosystem Governance
 
 - **Upstream Semantic Authority (`Central_Configs`)**: `Central_Configs` (release `v4.0.0`) is the single source of truth for LinkML ontologies, domain taxonomies, and controlled vocabularies.
-- **Local Application Profile (`Yamls/`)**:
-  - `Yamls/` (`entities/`, `taxonomy/`, `scoring/`, `methodology/`, `sales/`, `reference/`) forms the machine-local application profile used for entity recognition, relation extraction, and graph-augmented retrieval.
-  - Local definitions link directly to `Central_Configs` canonical domains: `learning` (pedagogical principles, cognitive load, learner profiles), `delivery` (speaking delivery, multimodal video), `narrative` (story structures), and `language_editorial` (style guides, discourse markers).
-- **Synchronized Master Corpora**:
-  - `Yamls/corpus/content_map_corpus.yaml` (`v2.0`), `Yamls/corpus/learning_design_corpus.yaml`, and `Yamls/corpus/presentation_design_principles_corpus.yaml` (`v1.0.0`) must maintain content parity with `Design_Methodology` and `AI_Prompts`.
+- **Runtime copies**: `ontology/vendor/central-configs/` is the staged YAML distribution and `library/vendor/central-library/` is the staged library. Load projects domain modules and library records into `coe:` and `lib:` identifiers for mention matching, graph edges, and synthesis context. Canonical domains include `learning`, `delivery`, `narrative`, `language_editorial`, and the Adobe portfolio.
 - **`_meta` Frontmatter Standard (Central `METADATA_STANDARD.md` v2.0.0)**:
-  - Authored YAML and JSON instance roots in `Yamls/` carry the six-field `coe:FileMeta` header: `file_id`, `title`, `last_updated`, `authority` (the resource's MASTER repository — `"LxD_Machine"` for resources mastered here; a copy always keeps its master's stamp), `scope`, and `governing_class` (CURIE). Git records file history and lifecycle, so version and status fields never live in `_meta` — `id`, `version`, `ontology_domain` (non-domain roots), `governing_schema`, `file_version`, `schema_version`, `status`, and `ontology_version` are retired names. LinkML schemas carry no `_meta`; cross-file content pinning is by sha256 digest.
+  - Authored YAML and JSON instance roots carry the six-field `coe:FileMeta` header: `file_id`, `title`, `last_updated`, `authority` (the resource's MASTER repository — `"LxD_Machine"` for resources mastered here; a copy always keeps its master's stamp), `scope`, and `governing_class` (CURIE). Git records file history and lifecycle, so version and status fields never live in `_meta` — `id`, `version`, `ontology_domain` (non-domain roots), `governing_schema`, `file_version`, `schema_version`, `status`, and `ontology_version` are retired names. LinkML schemas carry no `_meta`; cross-file content pinning is by sha256 digest.
 
 ## Common Commands
 

@@ -27,7 +27,7 @@ from lxd.ontology.communities import (
 )
 from lxd.ontology.entity_graph import build_combined_entity_graph
 from lxd.ontology.evidence import consolidate_relations
-from lxd.ontology.loader import load_ontology
+from lxd.ontology.loader import load_configured_ontology
 from lxd.ontology.profiles import (
     build_community_reports,
     build_entity_profiles,
@@ -129,11 +129,7 @@ def build_graph_command(
                 raise typer.Abort()
 
     # Load ontology for entity definitions and graph
-    ontology = load_ontology(
-        config.paths.ontology_path,
-        include_globs=config.ontology.include_globs,
-        ignore_names=config.ontology.ignore_names,
-    )
+    ontology = load_configured_ontology(config)
 
     run_id = str(uuid4())
     started_at = datetime.now(UTC).isoformat()

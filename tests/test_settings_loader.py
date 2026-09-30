@@ -11,7 +11,8 @@ def test_load_runtime_config_uses_default_config_yaml() -> None:
     # corpus_path is configured as an absolute path to the curated wiki;
     # this test only enforces that the loader returns it absolute and intact.
     assert config.paths.corpus_path.is_absolute()
-    assert config.paths.ontology_path == repo_root / "Yamls"
+    assert config.paths.ontology_path == repo_root / "ontology" / "vendor" / "central-configs"
+    assert config.paths.library_path == repo_root / "library" / "vendor" / "central-library"
     assert config.paths.data_path == repo_root / "data" / "openai"
 
 

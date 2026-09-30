@@ -1,0 +1,382 @@
+id: https://steve-allison.github.io/Central_Configs/ontology/schema/portfolio
+name: coe_portfolio
+title: Central Configs Portfolio Model
+description: The kinds of thing a vendor's portfolio is made of — organisations and their business units, product
+  families, offerings and their editions, surfaces and add-ons, services, managed services, AI models, agents,
+  capabilities, standards and frameworks — together with the
+  vendor-neutral industry categories and practices offerings are positioned against. Each kind is a class with an identity
+  test and the typed relations that define it; ownership comes from home_domain, so a competitor's application and an Adobe
+  application are the same class in different domains.
+version: 4.0.0
+default_prefix: coe
+default_range: string
+prefixes:
+  coe: https://steve-allison.github.io/Central_Configs/ontology/
+  linkml: https://w3id.org/linkml/
+  dcterms: http://purl.org/dc/terms/
+  schema: http://schema.org/
+imports:
+- linkml:types
+- ./core.linkml
+slots:
+  unit_of:
+    range: Organisation
+    inlined: false
+    slot_uri: coe:unitOf
+    close_mappings:
+    - schema:parentOrganization
+    description: The organisation this business unit is a division of.
+  vendor:
+    range: Organisation
+    inlined: false
+    slot_uri: coe:vendor
+    close_mappings:
+    - schema:provider
+    description: The organisation that makes and markets the resource.
+  families:
+    range: ProductFamily
+    multivalued: true
+    inlined: false
+    slot_uri: coe:family
+    close_mappings:
+    - schema:brand
+    description: Product families the resource is marketed under; a product family may itself sit under a broader family.
+  part_of:
+    range: Application
+    inlined: false
+    slot_uri: coe:partOfApplication
+    close_mappings:
+    - schema:isPartOf
+    description: The larger application this application is a component of, such as a module of a suite; the component
+      takes its vendor from it.
+  built_on:
+    range: Platform
+    multivalued: true
+    inlined: false
+    slot_uri: coe:builtOn
+    close_mappings:
+    - schema:isBasedOn
+    description: Platforms whose foundation this application runs on.
+  edition_of:
+    range: Application
+    inlined: false
+    slot_uri: coe:editionOf
+    close_mappings:
+    - schema:isVariantOf
+    description: The one application this edition is a packaging tier or variant of.
+  surface_of:
+    range: Application
+    inlined: false
+    slot_uri: coe:surfaceOf
+    close_mappings:
+    - schema:isVariantOf
+    description: The one application this surface delivers on another form factor.
+  surface_form:
+    range: SurfaceFormEnum
+    slot_uri: coe:surfaceForm
+    description: The form factor a surface delivers its application on.
+  add_on_to:
+    range: Application
+    inlined: false
+    slot_uri: coe:addOnTo
+    description: The one application a separately licensed add-on extends.
+  capability_of:
+    range: Offering
+    multivalued: true
+    inlined: false
+    slot_uri: coe:capabilityOf
+    description: Offerings that provide this capability.
+  available_in:
+    range: Offering
+    multivalued: true
+    inlined: false
+    slot_uri: coe:availableIn
+    description: Offerings inside which a user reaches this agent.
+  orchestrated_by:
+    range: Capability
+    inlined: false
+    slot_uri: coe:orchestratedBy
+    description: The orchestration capability that coordinates this agent with other agents.
+  powered_by:
+    range: AIModel
+    multivalued: true
+    inlined: false
+    slot_uri: coe:poweredBy
+    description: Named AI models the resource runs on.
+  conforms_to:
+    range: Standard
+    multivalued: true
+    inlined: false
+    slot_uri: dcterms:conformsTo
+    description: Published specifications the resource implements.
+  implements_category:
+    range: IndustryCategory
+    multivalued: true
+    inlined: false
+    slot_uri: coe:implementsCategory
+    close_mappings:
+    - schema:category
+    description: Vendor-neutral categories of system the offering is an instance of, such as a customer data platform.
+  supports_practice:
+    range: Practice
+    multivalued: true
+    inlined: false
+    slot_uri: coe:supportsPractice
+    description: Vendor-neutral practices the resource is built to carry out, such as A/B testing.
+  serves_stage:
+    range: FrameworkStage
+    multivalued: true
+    inlined: false
+    slot_uri: coe:servesStage
+    description: Framework stages the resource is positioned in.
+  stage_of:
+    range: Framework
+    inlined: false
+    slot_uri: coe:stageOf
+    close_mappings:
+    - schema:isPartOf
+    description: The one framework this stage is a component of.
+  stage_order:
+    range: integer
+    minimum_value: 1
+    slot_uri: coe:stageOrder
+    description: One-based position of the stage when its framework orders its stages; absent when the stages are
+      unordered.
+  market_status:
+    range: MarketStatusEnum
+    slot_uri: coe:marketStatus
+    description: Where the resource stands in its market lifecycle, when a source states it; distinct from status, which is
+      the record's curation state.
+  released_on:
+    range: PartialDate
+    slot_uri: coe:releasedOn
+    description: Date the resource became generally available, when a source states it.
+  retired_on:
+    range: PartialDate
+    slot_uri: coe:retiredOn
+    description: Date the resource stopped being sold or supported; present only on a retired resource.
+  succeeded_by:
+    range: Offering
+    multivalued: true
+    inlined: false
+    slot_uri: dcterms:isReplacedBy
+    description: Distinct offerings that replace this one, including a designated successor while this one is still
+      supported. A rename is a superseded term on the same resource, never a successor.
+classes:
+  Organisation:
+    is_a: OntologyEntity
+    class_uri: coe:Organisation
+    exact_mappings:
+    - schema:Organization
+    description: One company that makes and markets offerings.
+  BusinessUnit:
+    is_a: OntologyEntity
+    class_uri: coe:BusinessUnit
+    exact_mappings:
+    - schema:Organization
+    description: One named division of an organisation that owns a part of its portfolio and the teams that sell and
+      support it; a renamed unit keeps its identity and records its former name as a superseded term.
+    slots:
+    - unit_of
+    slot_usage:
+      unit_of:
+        required: true
+  ProductFamily:
+    is_a: OntologyEntity
+    class_uri: coe:ProductFamily
+    exact_mappings:
+    - schema:Brand
+    description: One named umbrella under which a vendor groups offerings or capabilities, such as a cloud or a product line.
+      It is marketed as a grouping, never licensed as a product itself.
+    slots:
+    - vendor
+    - families
+    slot_usage:
+      vendor:
+        required: true
+  Offering:
+    abstract: true
+    is_a: OntologyEntity
+    class_uri: coe:Offering
+    description: One thing a vendor makes available to customers under its own name. Concrete offerings are applications,
+      editions, surfaces, add-ons, services, managed services, AI models and agents.
+    slots:
+    - families
+    - market_status
+    - released_on
+    - retired_on
+    - succeeded_by
+    - implements_category
+    - supports_practice
+    - conforms_to
+    - serves_stage
+    - powered_by
+    rules:
+    - preconditions:
+        slot_conditions:
+          retired_on:
+            value_presence: PRESENT
+      postconditions:
+        slot_conditions:
+          market_status:
+            equals_string: retired
+  Application:
+    is_a: Offering
+    class_uri: coe:Application
+    exact_mappings:
+    - schema:SoftwareApplication
+    description: One offering a person uses through its own interface. An application names its vendor unless it is a
+      component of a larger application, whose vendor it shares.
+    slots:
+    - vendor
+    - part_of
+    - built_on
+    rules:
+    - preconditions:
+        slot_conditions:
+          part_of:
+            value_presence: ABSENT
+      postconditions:
+        slot_conditions:
+          vendor:
+            required: true
+  Platform:
+    is_a: Application
+    class_uri: coe:Platform
+    description: One application whose foundation other applications are built on, such as a shared data and services layer.
+  Edition:
+    is_a: Offering
+    class_uri: coe:Edition
+    description: One packaging tier or variant of exactly one application, sold under its own name.
+    slots:
+    - edition_of
+    slot_usage:
+      edition_of:
+        required: true
+  Surface:
+    is_a: Offering
+    class_uri: coe:Surface
+    description: One delivery of exactly one application on another form factor — desktop, web or mobile — under its own
+      name.
+    slots:
+    - surface_of
+    - surface_form
+    slot_usage:
+      surface_of:
+        required: true
+      surface_form:
+        required: true
+  AddOn:
+    is_a: Offering
+    class_uri: coe:AddOn
+    description: One separately licensed offering that only extends exactly one application.
+    slots:
+    - add_on_to
+    slot_usage:
+      add_on_to:
+        required: true
+  Service:
+    is_a: Offering
+    class_uri: coe:Service
+    exact_mappings:
+    - schema:WebAPI
+    description: One offering consumed by code rather than a person — an API, an SDK or a developer platform.
+    slots:
+    - vendor
+    slot_usage:
+      vendor:
+        required: true
+  ManagedService:
+    is_a: Offering
+    class_uri: coe:ManagedService
+    description: One offering the vendor operates on a customer's behalf — building, running or tuning something for that
+      customer — rather than software or an API the customer uses directly.
+    slots:
+    - vendor
+    slot_usage:
+      vendor:
+        required: true
+  AIModel:
+    is_a: Offering
+    class_uri: coe:AIModel
+    description: One trained model a vendor names and exposes through its offerings.
+    slots:
+    - vendor
+    slot_usage:
+      vendor:
+        required: true
+  Agent:
+    is_a: Offering
+    class_uri: coe:Agent
+    description: One AI agent that performs tasks on a user's behalf inside one or more offerings; it takes its vendor from
+      them.
+    slots:
+    - available_in
+    - orchestrated_by
+    slot_usage:
+      available_in:
+        required: true
+  Capability:
+    is_a: OntologyEntity
+    class_uri: coe:Capability
+    description: One named piece of functionality provided by one or more offerings and not sold on its own.
+    slots:
+    - capability_of
+    - families
+    - market_status
+    - powered_by
+    - conforms_to
+    - supports_practice
+    - serves_stage
+    slot_usage:
+      capability_of:
+        required: true
+  Standard:
+    is_a: OntologyEntity
+    class_uri: coe:Standard
+    description: One published specification that offerings conform to.
+  Framework:
+    is_a: OntologyEntity
+    class_uri: coe:Framework
+    description: One vendor's named model of how work or its portfolio is organised into stages.
+  FrameworkStage:
+    is_a: OntologyEntity
+    class_uri: coe:FrameworkStage
+    description: One named component of exactly one framework.
+    slots:
+    - stage_of
+    - stage_order
+    slot_usage:
+      stage_of:
+        required: true
+  IndustryCategory:
+    is_a: OntologyEntity
+    class_uri: coe:IndustryCategory
+    description: One vendor-neutral kind of system, defined independently of any vendor's product, such as a customer data
+      platform.
+  Practice:
+    is_a: OntologyEntity
+    class_uri: coe:Practice
+    description: One vendor-neutral method or discipline, defined independently of any product that supports it, such as
+      A/B testing.
+enums:
+  MarketStatusEnum:
+    description: Market lifecycle stages of an offering or capability.
+    permissible_values:
+      preview:
+        description: Announced, in beta or in limited availability; not generally available.
+      generally_available:
+        description: Sold or offered to all eligible customers.
+      end_of_sale:
+        description: No longer sold to new customers but still supported for existing ones.
+      retired:
+        description: No longer sold or supported.
+  SurfaceFormEnum:
+    description: Form factors on which an application is delivered.
+    permissible_values:
+      desktop:
+        description: An installed application on a desktop operating system.
+      web:
+        description: A browser-delivered application.
+      mobile:
+        description: An application on phones and tablets.

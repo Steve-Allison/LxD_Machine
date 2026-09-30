@@ -1,6 +1,13 @@
-bundle_id: coe:domain/business/commercial_rubrics
+_meta:
+  file_id: coe:file/domain/business/commercial_rubrics
+  title: Business — Commercial Rubrics
+  last_updated: '2026-09-25'
+  authority: Central_Configs
+  scope: domain
+  ontology_domain: business
+  governing_class: coe:DomainModule
+module_id: coe:module/business/commercial_rubrics
 domain: business
-version: 4.0.0
 scoring_models:
 - dimensions:
   - id: coe:artifact/business/elevator_pitch_rubric/dimension/time_to_value
@@ -13,7 +20,7 @@ scoring_models:
   - id: coe:artifact/business/elevator_pitch_rubric/dimension/core_message_clarity
     label: Core Message Clarity
     description: 'Evaluates whether the pitch communicates a single, coherent message in plain language tailored to the audience.
-      Cognitive load theory requires one core idea per elevator pitch; multiple ideas compete and all lose. Source: Best-Practice
+      The pitch carries one governing thought; several competing thoughts all lose. Source: Best-Practice
       Elevator Pitches.md; Best-Practice Product Descriptions.md'
     home_domain: business
     status: canonical
@@ -40,45 +47,7 @@ scoring_models:
       Storytelling most effectively.md'
     home_domain: business
     status: canonical
-  thresholds:
-  - id: coe:artifact/business/elevator_pitch_rubric/threshold/word_counts
-    label: Word Counts
-    description: word_counts threshold.
-    home_domain: business
-    status: canonical
-  - id: coe:artifact/business/elevator_pitch_rubric/threshold/bluf_position
-    label: Bluf Position
-    description: Value proposition or primary benefit must appear within first 30 words
-    home_domain: business
-    status: canonical
-  - id: coe:artifact/business/elevator_pitch_rubric/threshold/jargon_limits
-    label: Jargon Limits
-    description: jargon_limits threshold.
-    home_domain: business
-    status: canonical
-  - id: coe:artifact/business/elevator_pitch_rubric/threshold/proof_points
-    label: Proof Points
-    description: Exceeding proof point limits creates data overload and buries the CTA
-    home_domain: business
-    status: canonical
-  - id: coe:artifact/business/elevator_pitch_rubric/threshold/value_prop_sentence
-    label: Value Prop Sentence
-    description: The core value proposition sentence must be 25 words or fewer to be instantly comprehensible
-    home_domain: business
-    status: canonical
-  - id: coe:artifact/business/elevator_pitch_rubric/threshold/cta_specificity
-    label: Cta Specificity
-    description: cta_specificity threshold.
-    home_domain: business
-    status: canonical
-  - id: coe:artifact/business/elevator_pitch_rubric/threshold/success_criteria_minimum
-    label: Success Criteria Minimum
-    description: success_criteria_minimum threshold.
-    home_domain: business
-    status: canonical
-    target_value: '2'
-  version: 1.2.3
-  last_updated: '2026-08-12'
+  last_updated: '2026-09-25'
   id: coe:artifact/business/elevator_pitch_rubric
   label: Elevator Pitch Rubric
   description: Scoring rubric for elevator pitch and value proposition quality covering time-to-value, core message clarity,

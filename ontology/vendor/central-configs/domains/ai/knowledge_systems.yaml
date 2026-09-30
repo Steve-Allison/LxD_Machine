@@ -1,0 +1,166 @@
+_meta:
+  file_id: coe:file/domain/ai/knowledge_systems
+  title: AI — Knowledge Systems and Agentic Practices
+  last_updated: '2026-09-23'
+  authority: Central_Configs
+  scope: domain
+  ontology_domain: ai
+  governing_class: coe:DomainModule
+module_id: coe:module/ai/knowledge_systems
+domain: ai
+entity_collections:
+- id: coe:artifact/ai/knowledge_systems
+  label: Knowledge Systems and Agentic Practices
+  description: Knowledge-engineering pipelines, agentic architectures, AI-assessment instruments, and AI-capability
+    frameworks recovered from the knowledge wiki.
+  last_updated: '2026-09-23'
+  home_domain: ai
+  status: canonical
+  entities:
+  - id: coe:entity/agentic_instructional_pipeline
+    label: Agentic Instructional Pipeline
+    description: Multi-agent orchestration architecture for producing learning content — an autonomy spectrum,
+      architect-writer-assessor-packager patterns with human-in-the-loop gates, retrieval grounding and validation
+      passes.
+    home_domain: ai
+    status: canonical
+    edges: []
+    examples:
+    - agentic pipeline
+    - multi-agent course generation
+    - writer agent
+    - validation swarm
+    - human-in-the-loop gate
+  - id: coe:entity/ai_competency_framework
+    label: UNESCO AI Competency Frameworks
+    description: UNESCO's 2024 AI competency frameworks for teachers (five aspects by three levels) and students (four
+      dimensions by three levels) — the human-centred, ethics-first baseline for AI capability in education.
+    home_domain: ai
+    status: canonical
+    edges: []
+    examples:
+    - AI competency framework
+    - UNESCO AI CFT
+    - AI literacy levels
+  - id: coe:entity/agent_skill
+    label: Agent Skill
+    description: A packaged folder of instructions — a skill manifest plus scripts, references and assets — teaching an
+      LLM agent a repeatable workflow through progressive disclosure and a frontmatter trigger contract, as originated
+      by Claude Agent Skills.
+    home_domain: ai
+    status: canonical
+    edges:
+    - subject_id: coe:entity/agent_skill
+      predicate: coe:enables
+      object_id: coe:entity/agentic_instructional_pipeline
+      relationship_weight: expected
+      description: Packaged skills are the steering surfaces an agentic instructional pipeline orchestrates into its
+        production stages.
+      statement_id: coe:edge/agent-skill-enables-agentic-instructional-pipeline
+      home_domain: ai
+    examples:
+    - SKILL.md
+    - agent skill
+    - Claude skill
+    - progressive disclosure levels
+    - skill frontmatter
+  - id: coe:entity/tom_prompting_architecture
+    label: Theory-of-Mind Prompting Architectures
+    description: Prompting architectures for Theory-of-Mind perspective-taking in LLMs — SimToM, Decompose-ToM,
+      EnigmaToM and ToMAP — that isolate or decompose an agent's epistemic state before inference.
+    home_domain: ai
+    status: canonical
+    edges: []
+    examples:
+    - SimToM
+    - perspective-taking prompt
+    - Decompose-ToM
+    - ToMAP
+  - id: coe:entity/knowledge_graph_construction
+    label: Knowledge Graph Construction
+    description: The text-to-triples pipeline transforming unstructured text into typed entity-relation graphs via
+      named-entity recognition, coreference resolution, relation extraction, entity linking and community synthesis.
+    home_domain: ai
+    status: canonical
+    edges: []
+    examples:
+    - knowledge graph construction
+    - triple extraction
+    - entity linking
+    - relation extraction
+    - GraphRAG communities
+  - id: coe:entity/human_ai_curation
+    label: Human-AI Curation
+    description: Hybrid knowledge-curation pattern combining high-recall AI proposal, human filtering, grounding to a
+      curated vocabulary, and provenance by default.
+    home_domain: ai
+    status: canonical
+    edges:
+    - subject_id: coe:entity/human_ai_curation
+      predicate: coe:supports
+      object_id: coe:entity/semantic_wiki_architecture
+      relationship_weight: expected
+      description: The propose-filter-ground-provenance curation workflow is the semantic wiki's content control plane.
+      statement_id: coe:edge/human-ai-curation-supports-semantic-wiki-architecture
+      home_domain: ai
+    examples:
+    - human-in-the-loop curation
+    - AI-proposed, human-approved
+    - high-recall proposal
+    - curation queue
+  - id: coe:entity/semantic_wiki_architecture
+    label: Semantic Wiki Architecture
+    description: System design of a local agent-readable Markdown wiki — separated raw, curated and system layers,
+      portable records, progressive indexes, explicit schemas, and mechanical integrity gates.
+    home_domain: ai
+    status: canonical
+    edges: []
+    examples:
+    - semantic wiki
+    - agent-readable wiki
+    - raw and curated layers
+    - wiki integrity gates
+    anti_examples:
+    - Wikipedia article
+  - id: coe:entity/topic_modelling
+    label: Topic Modelling
+    description: Unsupervised discovery of latent themes in a text corpus by inferring topic mixtures from co-occurrence
+      or embedding structure, validated by coherence and stability metrics.
+    home_domain: ai
+    status: canonical
+    edges: []
+    examples:
+    - topic modelling
+    - LDA
+    - BERTopic
+    - topic coherence
+    - latent themes
+  - id: coe:entity/llm_as_judge
+    label: LLM as Judge
+    description: Using large language models as automated graders of constructed responses, engineered as measurement
+      instruments via golden-set alignment, drift regression, human-in-the-loop audits and heterogeneous judge panels.
+    home_domain: ai
+    status: canonical
+    edges:
+    - subject_id: coe:entity/llm_as_judge
+      predicate: coe:bridges
+      object_id: coe:entity/automated_essay_scoring
+      relationship_weight: expected
+      description: LLM judging generalises the essay-specific automated-scoring lineage; the two share bias and validity
+        failure modes across different task scopes.
+      statement_id: coe:edge/llm-as-judge-bridges-automated-essay-scoring
+      home_domain: ai
+    - subject_id: coe:entity/llm_as_judge
+      predicate: coe:limits
+      object_id: coe:entity/inter_annotator_agreement
+      relationship_weight: expected
+      description: Correlated model raters break the independence assumption under chance-corrected agreement statistics
+        — panels of near-clone judges inflate apparent consensus.
+      statement_id: coe:edge/llm-as-judge-limits-inter-annotator-agreement
+      home_domain: ai
+    examples:
+    - LLM-as-judge
+    - model-graded evaluation
+    - golden set
+    - judge panel
+    - grader drift

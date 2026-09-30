@@ -1,0 +1,285 @@
+_meta:
+  file_id: coe:file/domain/adobe/capabilities
+  title: Adobe — Capabilities
+  last_updated: '2026-09-23'
+  authority: Central_Configs
+  scope: domain
+  ontology_domain: adobe
+  governing_class: coe:DomainModule
+module_id: coe:module/adobe/capabilities
+domain: adobe
+capabilities:
+- id: coe:entity/adobe/agent_orchestrator
+  label: Adobe Experience Platform Agent Orchestrator
+  description: Experience Platform's capability that coordinates Adobe's AI agents — routing tasks to agents, sharing
+    context between them and governing how they act across the Experience Platform applications.
+  home_domain: adobe
+  status: canonical
+  capability_of:
+  - coe:entity/adobe/experience_platform
+  market_status: generally_available
+  terms:
+  - literal: Agent Orchestrator
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/ai_assistant
+  label: AI Assistant
+  description: The conversational assistant embedded across the Experience Platform applications that answers product and
+    operational questions in natural language and hosts the purpose-built agents.
+  home_domain: adobe
+  status: canonical
+  capability_of:
+  - coe:entity/adobe/experience_platform
+  - coe:entity/adobe/real_time_cdp
+  - coe:entity/adobe/journey_optimizer
+  - coe:entity/adobe/customer_journey_analytics
+  - coe:entity/adobe/experience_manager
+  market_status: generally_available
+- id: coe:entity/adobe/audience_ai
+  label: Audience AI
+  description: Experience Platform's group of AI capabilities for audiences — conversational audience creation, size
+    estimation, fluctuation insight, significant-change monitoring and growth forecasting.
+  home_domain: adobe
+  status: canonical
+  capability_of:
+  - coe:entity/adobe/experience_platform
+  - coe:entity/adobe/real_time_cdp
+  supports_practice:
+  - coe:entity/business/audience_segmentation
+- id: coe:entity/adobe/sensei_genai
+  label: Sensei GenAI
+  description: Experience Cloud's generative-AI services built on large language models that power marketing-copy
+    generation, conversational assistance and content variants inside applications such as Journey Optimizer and
+    Experience Manager.
+  home_domain: adobe
+  status: canonical
+  capability_of:
+  - coe:entity/adobe/journey_optimizer
+  - coe:entity/adobe/experience_manager
+  families:
+  - coe:entity/adobe/sensei
+- id: coe:entity/adobe/generative_fill
+  label: Generative Fill
+  description: Photoshop's Firefly-powered capability that generates new image content inside a selected region from a
+    text prompt, matching the lighting and perspective of the surrounding image.
+  home_domain: adobe
+  status: canonical
+  capability_of:
+  - coe:entity/adobe/photoshop
+  market_status: generally_available
+- id: coe:entity/adobe/generative_expand
+  label: Generative Expand
+  description: Photoshop's Firefly-powered capability that extends an image beyond its original borders, generating
+    matching content to fill the enlarged canvas.
+  home_domain: adobe
+  status: canonical
+  capability_of:
+  - coe:entity/adobe/photoshop
+  market_status: generally_available
+- id: coe:entity/adobe/content_aware_fill
+  label: Content Aware Fill
+  description: The Photoshop and After Effects capability that fills a removed region by synthesising from the surrounding
+    pixels of the same image — sampling the image itself rather than a generative model.
+  home_domain: adobe
+  status: canonical
+  capability_of:
+  - coe:entity/adobe/photoshop
+  - coe:entity/adobe/after_effects
+  market_status: generally_available
+- id: coe:entity/adobe/creative_cloud_libraries
+  label: Creative Cloud Libraries
+  description: Creative Cloud's shared-library capability that syncs colours, character styles, logos and components across
+    applications and teams so design elements stay consistent wherever they are used.
+  home_domain: adobe
+  status: canonical
+  capability_of:
+  - coe:entity/adobe/photoshop
+  - coe:entity/adobe/illustrator
+  - coe:entity/adobe/indesign
+  - coe:entity/adobe/capture
+  families:
+  - coe:entity/adobe/creative_cloud
+  market_status: generally_available
+- id: coe:entity/adobe/real_time_customer_profile
+  label: Real-Time Customer Profile
+  description: Experience Platform's unified view of each customer, in which streaming and batch data from all connected
+    sources merge into one profile that updates in real time and powers segmentation, journeys and personalisation.
+  home_domain: adobe
+  status: canonical
+  capability_of:
+  - coe:entity/adobe/experience_platform
+  market_status: generally_available
+- id: coe:entity/adobe/identity_graph
+  label: Identity Graph
+  description: Experience Platform's map of the relationships between a person's identifiers — device IDs, email hashes,
+    CRM IDs — that resolves fragmented records across channels to one individual.
+  home_domain: adobe
+  status: canonical
+  capability_of:
+  - coe:entity/adobe/experience_platform
+  market_status: generally_available
+- id: coe:entity/adobe/data_governance
+  label: Data Governance
+  description: Experience Platform's framework of usage labels, policies and enforcement that classifies data sensitivity at
+    field level and blocks activations that would violate policy.
+  home_domain: adobe
+  status: canonical
+  capability_of:
+  - coe:entity/adobe/experience_platform
+  market_status: generally_available
+- id: coe:entity/adobe/experience_platform_edge_network
+  label: Adobe Experience Platform Edge Network
+  description: Experience Platform's globally distributed edge-server network that receives data from websites and apps
+    through the Web and Mobile SDKs and returns audience qualifications and personalised offers, hosting Tags and event
+    forwarding at the edge.
+  home_domain: adobe
+  status: canonical
+  capability_of:
+  - coe:entity/adobe/experience_platform
+  market_status: generally_available
+  terms:
+  - literal: Edge Network
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/experience_platform_data_collection
+  label: Adobe Experience Platform Data Collection
+  description: Experience Platform's group of data-capture technologies — Web and Mobile SDKs, datastreams, Tags and event
+    forwarding — for collecting customer-experience data client- and server-side and routing it to Adobe and non-Adobe
+    destinations.
+  home_domain: adobe
+  status: canonical
+  capability_of:
+  - coe:entity/adobe/experience_platform
+  market_status: generally_available
+  terms:
+  - literal: Data Collection
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/tags
+  label: Tags
+  description: Experience Platform's tag-management capability — client-side rules, data elements and extensions with
+    development, staging and production environments and a publishing workflow for deploying data-collection and
+    marketing technologies.
+  home_domain: adobe
+  status: canonical
+  capability_of:
+  - coe:entity/adobe/experience_platform
+  market_status: generally_available
+  terms:
+  - literal: Launch
+    term_type: short_form
+    term_status: superseded
+  - literal: Experience Platform Launch
+    term_type: full_form
+    term_status: superseded
+- id: coe:entity/adobe/event_forwarding
+  label: Event Forwarding
+  description: Experience Platform's server-side counterpart to Tags that sends event data collected through the Edge
+    Network to non-Adobe destinations for server-side processing without adding client-side weight.
+  home_domain: adobe
+  status: canonical
+  capability_of:
+  - coe:entity/adobe/experience_platform
+  market_status: generally_available
+- id: coe:entity/adobe/datastreams
+  label: Datastreams
+  description: Experience Platform's server-side Edge Network configurations that route collected event data to Analytics,
+    Target, Experience Platform, Journey Optimizer and event-forwarding destinations.
+  home_domain: adobe
+  status: canonical
+  capability_of:
+  - coe:entity/adobe/experience_platform
+  market_status: generally_available
+- id: coe:entity/adobe/offer_decisioning
+  label: Offer Decisioning
+  description: The decisioning capability that selects which offer each customer sees from profile attributes and event
+    data, writing its decisions back to the Real-Time Customer Profile for any channel to reuse.
+  home_domain: adobe
+  status: canonical
+  capability_of:
+  - coe:entity/adobe/experience_platform
+  - coe:entity/adobe/journey_optimizer
+  market_status: generally_available
+- id: coe:entity/adobe/content_fragments
+  label: Content Fragments
+  description: Experience Manager's structured, presentation-independent content authored against a content model and
+    delivered through APIs, including GraphQL, to any channel — the unit of headless content.
+  home_domain: adobe
+  status: canonical
+  capability_of:
+  - coe:entity/adobe/experience_manager
+  market_status: generally_available
+- id: coe:entity/adobe/experience_fragments
+  label: Experience Fragments
+  description: Experience Manager's reusable groups of components with layout — a complete piece of an experience placed
+    across pages and channels so the same composed content is maintained once.
+  home_domain: adobe
+  status: canonical
+  capability_of:
+  - coe:entity/adobe/experience_manager
+  market_status: generally_available
+- id: coe:entity/adobe/pdf_spaces
+  label: PDF Spaces
+  description: Acrobat Studio's collaborative knowledge hubs — multi-document collections with AI question-answering
+    grounded in the sources, generated overviews and insight cards.
+  home_domain: adobe
+  status: canonical
+  capability_of:
+  - coe:entity/adobe/acrobat_studio
+  market_status: generally_available
+  terms:
+  - literal: Acrobat PDF Spaces
+    term_type: full_form
+    term_status: admitted
+- id: coe:entity/adobe/pdf_spaces_sharing
+  label: PDF Spaces Sharing
+  description: The PDF Spaces capability for inviting collaborators into a space so a common set of sources and AI
+    insights is worked on together.
+  home_domain: adobe
+  status: canonical
+  capability_of:
+  - coe:entity/adobe/acrobat_studio
+  market_status: generally_available
+- id: coe:entity/adobe/acrobat_generate_presentation
+  label: Acrobat Generate Presentation
+  description: Acrobat Studio's capability that produces a complete multi-slide presentation from a prompt and source
+    documents, fitted to Adobe Express templates.
+  home_domain: adobe
+  status: canonical
+  capability_of:
+  - coe:entity/adobe/acrobat_studio
+  market_status: generally_available
+  terms:
+  - literal: Generate Presentation
+    term_type: short_form
+    term_status: admitted
+  - literal: Gen Pres
+    term_type: abbreviation
+    term_status: admitted
+- id: coe:entity/adobe/audio_overview
+  label: Audio Overview
+  description: Acrobat's generative-audio capability that turns a document into a narrated single-host audio overview for
+    listening instead of reading.
+  home_domain: adobe
+  status: canonical
+  capability_of:
+  - coe:entity/adobe/acrobat
+  market_status: generally_available
+- id: coe:entity/adobe/generate_podcast
+  label: Generate Podcast
+  description: Acrobat's generative-audio capability that converts document content into a two-host conversational
+    podcast in condensed or deep-dive script styles.
+  home_domain: adobe
+  status: canonical
+  capability_of:
+  - coe:entity/adobe/acrobat
+  market_status: generally_available
+- id: coe:entity/adobe/acrobat_express
+  label: Acrobat Express
+  description: The Adobe Express-powered creation capability within Acrobat that turns document content into designed,
+    shareable graphics and social posts.
+  home_domain: adobe
+  status: canonical
+  capability_of:
+  - coe:entity/adobe/acrobat
+  market_status: generally_available

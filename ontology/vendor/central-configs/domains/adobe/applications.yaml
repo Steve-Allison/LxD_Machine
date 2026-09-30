@@ -1,0 +1,1119 @@
+_meta:
+  file_id: coe:file/domain/adobe/applications
+  title: Adobe — Applications and Platforms
+  last_updated: '2026-09-23'
+  authority: Central_Configs
+  scope: domain
+  ontology_domain: adobe
+  governing_class: coe:DomainModule
+module_id: coe:module/adobe/applications
+domain: adobe
+platforms:
+- id: coe:entity/adobe/experience_platform
+  label: Adobe Experience Platform
+  description: Adobe's customer-data foundation for Experience Cloud — XDM schemas, Real-Time Customer Profile,
+    segmentation and data governance — on which Real-Time CDP, Journey Optimizer and Customer Journey Analytics run.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/experience_cloud
+  market_status: generally_available
+  conforms_to:
+  - coe:entity/adobe/experience_data_model
+  supports_practice:
+  - coe:entity/business/audience_segmentation
+  terms:
+  - literal: AEP
+    term_type: initialism
+    term_status: admitted
+  - literal: Experience Platform
+    term_type: short_form
+    term_status: admitted
+applications:
+- id: coe:entity/adobe/experience_manager
+  label: Adobe Experience Manager
+  description: Adobe's enterprise content-management application, combining web content management and digital asset
+    management to build, manage and deliver web, mobile and headless experiences.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/experience_cloud
+  market_status: generally_available
+  implements_category:
+  - coe:entity/business/headless_cms
+  serves_stage:
+  - coe:entity/adobe/delivery_activation
+  exact_match:
+  - https://www.wikidata.org/wiki/Q4684074
+  terms:
+  - literal: AEM
+    term_type: initialism
+    term_status: admitted
+  - literal: Experience Manager
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/experience_manager_sites
+  label: Adobe Experience Manager Sites
+  description: Experience Manager's web content-management application for authoring, managing and delivering websites,
+    including headless delivery.
+  home_domain: adobe
+  status: canonical
+  part_of: coe:entity/adobe/experience_manager
+  market_status: generally_available
+  serves_stage:
+  - coe:entity/adobe/delivery_activation
+  terms:
+  - literal: AEM Sites
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/experience_manager_assets
+  label: Adobe Experience Manager Assets
+  description: Experience Manager's digital asset management application — storing, tagging, governing and distributing
+    approved assets at enterprise scale, with renditions for channel-ready delivery.
+  home_domain: adobe
+  status: canonical
+  part_of: coe:entity/adobe/experience_manager
+  market_status: generally_available
+  implements_category:
+  - coe:entity/business/digital_asset_management
+  terms:
+  - literal: Experience Manager Assets
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/experience_manager_forms
+  label: Adobe Experience Manager Forms
+  description: Experience Manager's application for digital enrolment — adaptive forms and automated document
+    communications connected to back-end workflows and e-signature.
+  home_domain: adobe
+  status: canonical
+  part_of: coe:entity/adobe/experience_manager
+  market_status: generally_available
+- id: coe:entity/adobe/experience_manager_screens
+  label: Adobe Experience Manager Screens
+  description: Experience Manager's digital-signage application for authoring and operating in-venue screen experiences
+    from the same content platform as web channels.
+  home_domain: adobe
+  status: canonical
+  part_of: coe:entity/adobe/experience_manager
+  market_status: generally_available
+- id: coe:entity/adobe/experience_manager_guides
+  label: Adobe Experience Manager Guides
+  description: Experience Manager's DITA-based component content-management application for authoring, reviewing and
+    publishing technical documentation.
+  home_domain: adobe
+  status: canonical
+  part_of: coe:entity/adobe/experience_manager
+  market_status: generally_available
+  terms:
+  - literal: AEM Guides
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/experience_manager_sites_optimizer
+  label: Adobe Experience Manager Sites Optimizer
+  description: The companion to Experience Manager Sites that finds problems in page loading, component usage and content
+    delivery and recommends fixes across performance, accessibility, SEO and engagement.
+  home_domain: adobe
+  status: canonical
+  part_of: coe:entity/adobe/experience_manager
+  market_status: generally_available
+  terms:
+  - literal: Sites Optimizer
+    term_type: short_form
+    term_status: admitted
+  - literal: Success Studio
+    term_type: codename
+    term_status: superseded
+  - literal: Project Success Studio
+    term_type: codename
+    term_status: superseded
+- id: coe:entity/adobe/experience_manager_edge_delivery_services
+  label: Adobe Experience Manager Edge Delivery Services
+  description: Experience Manager's delivery architecture that compiles document-based or code-based authoring into
+    pre-rendered pages served from the edge.
+  home_domain: adobe
+  status: canonical
+  part_of: coe:entity/adobe/experience_manager
+  market_status: generally_available
+  terms:
+  - literal: Edge Delivery Services
+    term_type: short_form
+    term_status: admitted
+  - literal: EDS
+    term_type: initialism
+    term_status: admitted
+- id: coe:entity/adobe/analytics
+  label: Adobe Analytics
+  description: Adobe's web and app analytics application — collecting, segmenting and reporting digital behaviour such as
+    traffic, conversion and pathing, with Analysis Workspace as its analysis surface.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/experience_cloud
+  market_status: generally_available
+  serves_stage:
+  - coe:entity/adobe/reporting_insights
+  terms:
+  - literal: Analytics
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/target
+  label: Adobe Target
+  description: Adobe's testing and personalisation application — A/B and multivariate testing plus rules-based and
+    AI-driven personalisation of digital experiences.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/experience_cloud
+  market_status: generally_available
+  implements_category:
+  - coe:entity/business/personalization_engine
+  supports_practice:
+  - coe:entity/business/a_b_testing
+  - coe:entity/business/multivariate_testing
+  terms:
+  - literal: Target
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/campaign
+  label: Adobe Campaign
+  description: Adobe's cross-channel campaign application for planning, executing and measuring outbound campaigns —
+    email at the core, with direct mail, SMS and push.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/experience_cloud
+  market_status: generally_available
+  implements_category:
+  - coe:entity/business/marketing_automation
+  supports_practice:
+  - coe:entity/business/campaign_management
+- id: coe:entity/adobe/audience_manager
+  label: Adobe Audience Manager
+  description: Adobe's data management platform application for building audience segments from anonymous and third-party
+    data for advertising activation.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/experience_cloud
+  market_status: end_of_sale
+  succeeded_by:
+  - coe:entity/adobe/real_time_cdp
+- id: coe:entity/adobe/journey_optimizer
+  label: Adobe Journey Optimizer
+  description: Experience Platform's journey application — orchestrating and delivering individual customer journeys,
+    triggered messages, campaigns and offers across email, mobile and web from the Real-Time Customer Profile.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/experience_cloud
+  built_on:
+  - coe:entity/adobe/experience_platform
+  market_status: generally_available
+  implements_category:
+  - coe:entity/business/customer_engagement_platform
+  supports_practice:
+  - coe:entity/business/journey_orchestration
+  terms:
+  - literal: AJO
+    term_type: initialism
+    term_status: admitted
+  - literal: Journey Optimizer
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/real_time_cdp
+  label: Adobe Real-Time CDP
+  description: Experience Platform's customer data platform application — unifying known and pseudonymous data into
+    Real-Time Customer Profiles and activating audiences to destinations under governance controls.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/experience_cloud
+  built_on:
+  - coe:entity/adobe/experience_platform
+  market_status: generally_available
+  implements_category:
+  - coe:entity/business/customer_data_platform
+  supports_practice:
+  - coe:entity/business/audience_segmentation
+  terms:
+  - literal: RTCDP
+    term_type: initialism
+    term_status: admitted
+  - literal: Real-Time Customer Data Platform
+    term_type: full_form
+    term_status: admitted
+- id: coe:entity/adobe/customer_journey_analytics
+  label: Adobe Customer Journey Analytics
+  description: Experience Platform's cross-channel analytics application — joining online and offline event data into a
+    single journey view queried in Analysis Workspace.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/experience_cloud
+  built_on:
+  - coe:entity/adobe/experience_platform
+  market_status: generally_available
+  supports_practice:
+  - coe:entity/business/attribution_modeling
+  serves_stage:
+  - coe:entity/adobe/reporting_insights
+  terms:
+  - literal: CJA
+    term_type: initialism
+    term_status: admitted
+  - literal: Customer Journey Analytics
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/workfront
+  label: Adobe Workfront
+  description: Adobe's enterprise work-management application connecting marketing strategy to execution — planning,
+    projects, workflows, approvals and resource management.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/experience_cloud
+  market_status: generally_available
+  serves_stage:
+  - coe:entity/adobe/workflows_planning_metadata
+  terms:
+  - literal: Workfront
+    term_type: short_form
+    term_status: admitted
+  - literal: WF
+    term_type: initialism
+    term_status: admitted
+- id: coe:entity/adobe/workfront_planning
+  label: Adobe Workfront Planning
+  description: Workfront's planning application — connected workspaces that organise campaigns, budgets and tasks into
+    linked records.
+  home_domain: adobe
+  status: canonical
+  part_of: coe:entity/adobe/workfront
+  market_status: generally_available
+  serves_stage:
+  - coe:entity/adobe/workflows_planning_metadata
+  terms:
+  - literal: Workfront Planning
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/workfront_workflow
+  label: Adobe Workfront Workflow
+  description: Workfront's execution application — projects, tasks, multi-stage reviews and approvals, and workflow
+    automation across teams.
+  home_domain: adobe
+  status: canonical
+  part_of: coe:entity/adobe/workfront
+  market_status: generally_available
+  serves_stage:
+  - coe:entity/adobe/workflows_planning_metadata
+  terms:
+  - literal: Workfront Workflow
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/marketo_engage
+  label: Adobe Marketo Engage
+  description: Adobe's B2B marketing-automation application — lead management, nurturing, scoring, email marketing and
+    account-based marketing tied to CRM.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/experience_cloud
+  market_status: generally_available
+  implements_category:
+  - coe:entity/business/marketing_automation
+  supports_practice:
+  - coe:entity/business/lead_scoring
+  - coe:entity/business/campaign_management
+  terms:
+  - literal: Marketo
+    term_type: short_form
+    term_status: admitted
+  - literal: Marketo Engage
+    term_type: short_form
+    term_status: admitted
+  - literal: MKE
+    term_type: initialism
+    term_status: admitted
+- id: coe:entity/adobe/dynamic_chat
+  label: Adobe Dynamic Chat
+  description: Marketo Engage's conversational-marketing application — AI-driven chat that replaces static forms with
+    real-time visitor dialogues, qualifying leads, booking meetings and syncing scores and routing back to Marketo.
+  home_domain: adobe
+  status: canonical
+  part_of: coe:entity/adobe/marketo_engage
+  market_status: generally_available
+  terms:
+  - literal: Dynamic Chat
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/marketo_measure
+  label: Adobe Marketo Measure
+  description: Adobe's B2B marketing-attribution application — multi-touch attribution and return-on-investment
+    measurement tied into CRM and the marketing platform.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/experience_cloud
+  market_status: generally_available
+  supports_practice:
+  - coe:entity/business/attribution_modeling
+  terms:
+  - literal: Marketo Measure
+    term_type: short_form
+    term_status: admitted
+  - literal: Bizible
+    term_type: full_form
+    term_status: superseded
+- id: coe:entity/adobe/commerce
+  label: Adobe Commerce
+  description: Adobe's commerce application for building and operating B2C and B2B storefronts — catalogue, pricing,
+    checkout and order management — with extension points for custom commerce logic.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/experience_cloud
+  market_status: generally_available
+  terms:
+  - literal: Magento
+    term_type: full_form
+    term_status: superseded
+- id: coe:entity/adobe/commerce_optimizer
+  label: Adobe Commerce Optimizer
+  description: Adobe's merchandising and optimisation application in the Commerce family — AI-driven personalisation,
+    testing and real-time analytics layered onto a commerce back end.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/experience_cloud
+  market_status: generally_available
+  terms:
+  - literal: Commerce Optimizer
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/advertising
+  label: Adobe Advertising
+  description: Adobe's advertising application — cross-channel paid-media planning, buying and optimisation spanning
+    search, display and connected TV.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/experience_cloud
+  market_status: generally_available
+  terms:
+  - literal: Advertising
+    term_type: short_form
+    term_status: admitted
+  - literal: Adobe Advertising Cloud
+    term_type: full_form
+    term_status: superseded
+- id: coe:entity/adobe/genstudio_for_performance_marketing
+  label: Adobe GenStudio for Performance Marketing
+  description: GenStudio's application for planning, creating and optimising on-brand campaign assets across paid media,
+    email and display advertising.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/genstudio
+  market_status: generally_available
+  serves_stage:
+  - coe:entity/adobe/creation_production
+  terms:
+  - literal: GenStudio for Performance Marketing
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/genstudio_for_content_marketing
+  label: Adobe GenStudio for Content Marketing
+  description: GenStudio's application that applies the GenStudio creation-and-activation pipeline to content-marketing
+    assets — briefs to on-brand marketing content — rather than to paid-media ads.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/genstudio
+  market_status: generally_available
+  serves_stage:
+  - coe:entity/adobe/creation_production
+  terms:
+  - literal: GenStudio for Content Marketing
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/genstudio_foundation
+  label: Adobe GenStudio Foundation
+  description: GenStudio's unifying application that brings campaign plans, projects, assets and performance from the
+    content-supply-chain applications into one view.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/genstudio
+  market_status: generally_available
+- id: coe:entity/adobe/content_analytics
+  label: Adobe Content Analytics
+  description: Experience Platform's application that joins AI-derived attributes of content — people present, tones,
+    keywords — with Customer Journey Analytics data to show which content drives engagement and revenue, and why.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/experience_cloud
+  built_on:
+  - coe:entity/adobe/experience_platform
+  market_status: generally_available
+  serves_stage:
+  - coe:entity/adobe/reporting_insights
+  terms:
+  - literal: Content Analytics
+    term_type: short_form
+    term_status: admitted
+  - literal: Project Condor
+    term_type: codename
+    term_status: superseded
+- id: coe:entity/adobe/real_time_cdp_collaboration
+  label: Adobe Real-Time CDP Collaboration
+  description: Real-Time CDP's data-collaboration application in which two organisations discover audience overlap and
+    measure campaign outcomes without exchanging their underlying customer databases.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/experience_cloud
+  built_on:
+  - coe:entity/adobe/experience_platform
+  market_status: generally_available
+  terms:
+  - literal: RTCDP Collaboration
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/journey_optimizer_experimentation_accelerator
+  label: Adobe Journey Optimizer Experimentation Accelerator
+  description: Journey Optimizer's experimentation application — centralising past and active experiments, analysing
+    results by audience and accelerating the design of new tests.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/experience_cloud
+  built_on:
+  - coe:entity/adobe/experience_platform
+  market_status: generally_available
+  supports_practice:
+  - coe:entity/business/a_b_testing
+  terms:
+  - literal: AJO Experimentation Accelerator
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/product_analytics
+  label: Adobe Product Analytics
+  description: Experience Platform's analytics application for product usage — user journeys, retention and cohort
+    analysis, and funnels — for optimising digital product experience rather than marketing traffic.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/experience_cloud
+  built_on:
+  - coe:entity/adobe/experience_platform
+  market_status: generally_available
+  terms:
+  - literal: Product Analytics
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/mix_modeler
+  label: Adobe Mix Modeler
+  description: Adobe's marketing measurement and planning application, combining media-mix modelling with multi-touch
+    attribution to measure and optimise spend across paid, earned and owned channels.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/experience_cloud
+  market_status: generally_available
+  supports_practice:
+  - coe:entity/business/attribution_modeling
+  terms:
+  - literal: Mix Modeler
+    term_type: short_form
+    term_status: admitted
+  - literal: MMM
+    term_type: initialism
+    term_status: admitted
+- id: coe:entity/adobe/llm_optimizer
+  label: Adobe LLM Optimizer
+  description: Adobe's generative-engine-optimisation application that improves how a brand's content is surfaced and
+    cited by AI assistants and LLM-powered search, with dashboards for brand presence and AI-referred traffic.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/experience_cloud
+  market_status: generally_available
+  terms:
+  - literal: LLM Optimizer
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/brand_concierge
+  label: Adobe Brand Concierge
+  description: Adobe's agentic conversational-experience application — brand-governed conversations that help each visitor
+    discover products, compare options, get answers and receive guided recommendations.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/experience_cloud
+  market_status: generally_available
+  terms:
+  - literal: Brand Concierge
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/federated_search
+  label: Federated Search
+  description: Experience Cloud's cross-application search — one permission-aware search surface over business objects
+    such as audiences, journeys, datasets and assets across the Experience Platform applications.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/experience_cloud
+  market_status: generally_available
+- id: coe:entity/adobe/learning_manager
+  label: Adobe Learning Manager
+  description: Adobe's cloud learning-management application for delivering and tracking training for customers, partners
+    and employees.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/experience_cloud
+  market_status: generally_available
+  terms:
+  - literal: Learning Manager
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/frame_io
+  label: Adobe Frame.io
+  description: Adobe's cloud video review and collaboration application — frame-accurate comments, version management and
+    camera-to-cloud uploads connecting production to post.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/experience_cloud
+  - coe:entity/adobe/creative_cloud
+  market_status: generally_available
+  terms:
+  - literal: Frame.io
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/express
+  label: Adobe Express
+  description: Adobe's template-led content-creation application for making graphics, social posts, short videos and
+    documents quickly, used across creative-production and marketing contexts.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/creative_cloud
+  - coe:entity/adobe/experience_cloud
+  market_status: generally_available
+  serves_stage:
+  - coe:entity/adobe/creation_production
+  terms:
+  - literal: Express
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/stock
+  label: Adobe Stock
+  description: Adobe's licensed stock-content marketplace — photos, video, vectors, templates and 3D — searchable and
+    licensable directly inside Creative Cloud applications.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/creative_cloud
+  - coe:entity/adobe/experience_cloud
+  market_status: generally_available
+  terms:
+  - literal: Stock
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/photoshop
+  label: Adobe Photoshop
+  description: Adobe's professional raster image-editing and compositing application — layers, masking, retouching and
+    Firefly generative editing.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/creative_cloud
+  market_status: generally_available
+  serves_stage:
+  - coe:entity/adobe/creation_production
+  exact_match:
+  - https://www.wikidata.org/wiki/Q11246
+  terms:
+  - literal: Photoshop
+    term_type: short_form
+    term_status: admitted
+  - literal: Ps
+    term_type: product_code
+    term_status: admitted
+    usage_note: The Photoshop product code shown on its icon; in Adobe field-role text PS is the Product Specialist role and in delivery text Professional Services.
+- id: coe:entity/adobe/illustrator
+  label: Adobe Illustrator
+  description: Adobe's professional vector-graphics application — logos, icons, illustration and type built from scalable
+    paths rather than pixels.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/creative_cloud
+  market_status: generally_available
+  serves_stage:
+  - coe:entity/adobe/creation_production
+  exact_match:
+  - https://www.wikidata.org/wiki/Q214290
+  terms:
+  - literal: Illustrator
+    term_type: short_form
+    term_status: admitted
+  - literal: Ai
+    term_type: product_code
+    term_status: admitted
+- id: coe:entity/adobe/indesign
+  label: Adobe InDesign
+  description: Adobe's professional page-layout and desktop-publishing application for print and digital documents —
+    books, magazines, brochures and interactive PDFs.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/creative_cloud
+  market_status: generally_available
+  serves_stage:
+  - coe:entity/adobe/creation_production
+  exact_match:
+  - https://www.wikidata.org/wiki/Q214309
+  terms:
+  - literal: InDesign
+    term_type: short_form
+    term_status: admitted
+  - literal: Id
+    term_type: product_code
+    term_status: admitted
+- id: coe:entity/adobe/incopy
+  label: Adobe InCopy
+  description: Adobe's editorial writing and copy-fitting application that lets writers work inside InDesign layouts in
+    parallel with designers.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/creative_cloud
+  market_status: generally_available
+  terms:
+  - literal: InCopy
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/premiere_pro
+  label: Adobe Premiere Pro
+  description: Adobe's professional non-linear video-editing application — timeline editing, colour, audio and delivery for
+    film, broadcast and online video.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/creative_cloud
+  market_status: generally_available
+  serves_stage:
+  - coe:entity/adobe/creation_production
+  exact_match:
+  - https://www.wikidata.org/wiki/Q246067
+  terms:
+  - literal: Premiere
+    term_type: short_form
+    term_status: admitted
+  - literal: Pr
+    term_type: product_code
+    term_status: admitted
+- id: coe:entity/adobe/after_effects
+  label: Adobe After Effects
+  description: Adobe's motion-graphics, compositing and visual-effects application — animated titles, effects and
+    composited scenes for video.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/creative_cloud
+  market_status: generally_available
+  exact_match:
+  - https://www.wikidata.org/wiki/Q246104
+  terms:
+  - literal: After Effects
+    term_type: short_form
+    term_status: admitted
+  - literal: Ae
+    term_type: product_code
+    term_status: admitted
+    usage_note: The After Effects product code shown on its icon; in Adobe field-role text AE is the Account Executive role.
+- id: coe:entity/adobe/media_encoder
+  label: Adobe Media Encoder
+  description: Adobe's batch transcoding and rendering application that outputs Premiere Pro and After Effects work to
+    delivery formats in the background.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/creative_cloud
+  market_status: generally_available
+  terms:
+  - literal: Media Encoder
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/xd
+  label: Adobe XD
+  description: Adobe's UI and UX design and prototyping application for screen experiences — artboards, components and
+    interactive prototypes.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/creative_cloud
+- id: coe:entity/adobe/lightroom
+  label: Adobe Lightroom
+  description: Adobe's cloud-centric photo editing and organisation application, syncing originals and edits across
+    desktop, web and mobile.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/creative_cloud
+  market_status: generally_available
+  terms:
+  - literal: Lightroom
+    term_type: short_form
+    term_status: admitted
+  - literal: Lr
+    term_type: product_code
+    term_status: admitted
+- id: coe:entity/adobe/lightroom_classic
+  label: Adobe Lightroom Classic
+  description: Adobe's desktop-centric, file-based photo-workflow application — local cataloguing, batch editing and print
+    output for photographers who keep originals on disk.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/creative_cloud
+  market_status: generally_available
+  terms:
+  - literal: LrC
+    term_type: product_code
+    term_status: admitted
+- id: coe:entity/adobe/animate
+  label: Adobe Animate
+  description: Adobe's 2D animation and interactive-content application — frame-based animation for web, games and
+    broadcast.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/creative_cloud
+  terms:
+  - literal: An
+    term_type: product_code
+    term_status: admitted
+  - literal: Flash Professional
+    term_type: full_form
+    term_status: superseded
+- id: coe:entity/adobe/audition
+  label: Adobe Audition
+  description: Adobe's audio recording, editing, mixing and restoration application — waveform and multitrack workflows for
+    podcast, video and broadcast sound.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/creative_cloud
+  market_status: generally_available
+  terms:
+  - literal: Au
+    term_type: product_code
+    term_status: admitted
+- id: coe:entity/adobe/dimension
+  label: Adobe Dimension
+  description: Adobe's 3D scene-composition application for product mock-ups and brand visualisation — staging models,
+    materials and lighting without a full 3D pipeline.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/creative_cloud
+  terms:
+  - literal: Dn
+    term_type: product_code
+    term_status: admitted
+- id: coe:entity/adobe/dreamweaver
+  label: Adobe Dreamweaver
+  description: Adobe's web design and development application combining visual authoring with a code editor for HTML, CSS
+    and JavaScript.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/creative_cloud
+  terms:
+  - literal: Dw
+    term_type: product_code
+    term_status: admitted
+- id: coe:entity/adobe/character_animator
+  label: Adobe Character Animator
+  description: Adobe's performance-capture animation application in which 2D puppets are animated live from camera and
+    microphone input, lip-sync included.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/creative_cloud
+  terms:
+  - literal: Ch
+    term_type: product_code
+    term_status: admitted
+- id: coe:entity/adobe/fresco
+  label: Adobe Fresco
+  description: Adobe's drawing and painting application for stylus and touch devices, with live brushes that behave like
+    physical watercolour and oil.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/creative_cloud
+  terms:
+  - literal: Fr
+    term_type: product_code
+    term_status: admitted
+- id: coe:entity/adobe/substance_3d_designer
+  label: Adobe Substance 3D Designer
+  description: Substance 3D's procedural material-authoring application — node-based creation of tileable, parametric
+    materials.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/substance_3d
+- id: coe:entity/adobe/substance_3d_painter
+  label: Adobe Substance 3D Painter
+  description: Substance 3D's texture-painting application for painting materials and details directly onto 3D models.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/substance_3d
+- id: coe:entity/adobe/substance_3d_sampler
+  label: Adobe Substance 3D Sampler
+  description: Substance 3D's application for converting photographs and captures into usable 3D materials.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/substance_3d
+- id: coe:entity/adobe/substance_3d_stager
+  label: Adobe Substance 3D Stager
+  description: Substance 3D's scene staging and rendering application — assembling models, materials, lighting and cameras
+    into finished product shots.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/substance_3d
+- id: coe:entity/adobe/firefly
+  label: Adobe Firefly
+  description: Adobe's generative-AI creative application for generating and editing images, video, vectors and audio with
+    commercially safe models, available on the web and integrated across Creative Cloud.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/creative_cloud
+  market_status: generally_available
+  serves_stage:
+  - coe:entity/adobe/creation_production
+  terms:
+  - literal: Firefly
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/firefly_creative_production
+  label: Adobe Firefly Creative Production
+  description: Firefly's governed production application for enterprises — creative actions, orchestration and
+    integrations that automate repetitive production and generate consistent on-brand variations.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/creative_cloud
+  market_status: generally_available
+  terms:
+  - literal: Firefly Creative Production
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/firefly_design_intelligence
+  label: Adobe Firefly Design Intelligence
+  description: Firefly's enterprise design-system application in which design teams codify brand guidelines as trained
+    style definitions that creators then apply to produce compliant, contextually adapted assets.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/creative_cloud
+  market_status: generally_available
+  terms:
+  - literal: Firefly Design Intelligence
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/bridge
+  label: Adobe Bridge
+  description: Adobe's desktop asset browser for organising, previewing and batch-processing creative files across the
+    Creative Cloud applications.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/creative_cloud
+  market_status: generally_available
+  terms:
+  - literal: Bridge
+    term_type: short_form
+    term_status: admitted
+    usage_note: Use for the Adobe asset-browser application, not the rhetorical or learning device of the same name.
+- id: coe:entity/adobe/capture
+  label: Adobe Capture
+  description: Adobe's mobile application that turns photographs into reusable creative elements — colour themes, brushes,
+    shapes and patterns — synced to Creative Cloud Libraries.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/creative_cloud
+  market_status: generally_available
+  terms:
+  - literal: Capture
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/photoshop_express
+  label: Adobe Photoshop Express
+  description: Adobe's lightweight mobile photo-editing application for quick corrections, filters and social-ready output.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/creative_cloud
+  market_status: generally_available
+  terms:
+  - literal: Photoshop Express
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/portfolio
+  label: Adobe Portfolio
+  description: Adobe's website builder for personal creative portfolios, included with Creative Cloud membership.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/creative_cloud
+  market_status: generally_available
+  terms:
+  - literal: Portfolio
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/fonts
+  label: Adobe Fonts
+  description: Adobe's font service — a library of licensed typefaces activated directly in Creative Cloud applications and
+    on the web.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/creative_cloud
+  market_status: generally_available
+  terms:
+  - literal: Fonts
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/color
+  label: Adobe Color
+  description: Adobe's colour application for creating, exploring and saving palettes and themes usable across Creative
+    Cloud applications.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/creative_cloud
+  market_status: generally_available
+- id: coe:entity/adobe/acrobat
+  label: Adobe Acrobat
+  description: Adobe's PDF application for creating, editing, converting, reviewing, protecting and signing PDF documents,
+    delivered on desktop, web and mobile and sold in several editions.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/document_cloud
+  market_status: generally_available
+  terms:
+  - literal: Acrobat
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/acrobat_sign
+  label: Adobe Acrobat Sign
+  description: Adobe's e-signature application for sending, signing, tracking and managing legally binding agreements as a
+    cloud workflow.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/document_cloud
+  market_status: generally_available
+  terms:
+  - literal: Acrobat Sign
+    term_type: short_form
+    term_status: admitted
+- id: coe:entity/adobe/scan
+  label: Adobe Scan
+  description: Adobe's mobile scanning application that captures paper documents as searchable, text-recognised PDFs.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  families:
+  - coe:entity/adobe/document_cloud
+  market_status: generally_available
+- id: coe:entity/adobe/developer_console
+  label: Adobe Developer Console
+  description: Adobe's console where developers create projects, manage API credentials and OAuth flows, and administer
+    integrations against Adobe APIs.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  market_status: generally_available
+- id: coe:entity/adobe/exchange
+  label: Adobe Exchange
+  description: Adobe's marketplace for third-party apps, plug-ins and integrations that extend Creative Cloud, Document
+    Cloud and Experience Cloud products.
+  home_domain: adobe
+  status: canonical
+  vendor: coe:entity/adobe/adobe
+  market_status: generally_available

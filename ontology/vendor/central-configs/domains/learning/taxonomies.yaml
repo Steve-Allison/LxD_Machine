@@ -1,1835 +1,2412 @@
-bundle_id: coe:domain/learning/taxonomies
+_meta:
+  file_id: coe:file/domain/learning/taxonomies
+  title: Learning — Taxonomies
+  last_updated: '2026-09-23'
+  authority: Central_Configs
+  scope: domain
+  ontology_domain: learning
+  governing_class: coe:DomainModule
+module_id: coe:module/learning/taxonomies
 domain: learning
-version: 4.0.0
 taxonomies:
-- schemes:
-  - concepts:
-    - in_scheme: coe:scheme/activity_types_taxonomy
-      id: coe:concept/activity_types_taxonomy/bloom_level
-      label: Bloom Level
-      description: bloom_level classification dimension.
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/activity_types_taxonomy
-      broader:
-      - coe:concept/activity_types_taxonomy/bloom_level
-      id: coe:concept/activity_types_taxonomy/bloom_level/remember
-      label: Remember
-      description: Recall of facts and concepts
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/activity_types_taxonomy
-      broader:
-      - coe:concept/activity_types_taxonomy/bloom_level
-      id: coe:concept/activity_types_taxonomy/bloom_level/understand
-      label: Understand
-      description: Interpretation and explanation
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/activity_types_taxonomy
-      broader:
-      - coe:concept/activity_types_taxonomy/bloom_level
-      id: coe:concept/activity_types_taxonomy/bloom_level/apply
-      label: Apply
-      description: Use of knowledge in new situations
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/activity_types_taxonomy
-      broader:
-      - coe:concept/activity_types_taxonomy/bloom_level
-      id: coe:concept/activity_types_taxonomy/bloom_level/analyze
-      label: Analyze
-      description: Breaking down and examining components
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/activity_types_taxonomy
-      broader:
-      - coe:concept/activity_types_taxonomy/bloom_level
-      id: coe:concept/activity_types_taxonomy/bloom_level/evaluate
-      label: Evaluate
-      description: Judging based on criteria
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/activity_types_taxonomy
-      broader:
-      - coe:concept/activity_types_taxonomy/bloom_level
-      id: coe:concept/activity_types_taxonomy/bloom_level/create
-      label: Create
-      description: Producing new or original work
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/activity_types_taxonomy
-      id: coe:concept/activity_types_taxonomy/cognitive_complexity
-      label: Cognitive Complexity
-      description: cognitive_complexity classification dimension.
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/activity_types_taxonomy
-      broader:
-      - coe:concept/activity_types_taxonomy/cognitive_complexity
-      id: coe:concept/activity_types_taxonomy/cognitive_complexity/low
-      label: Low
-      description: Single-answer recall; minimal processing
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/activity_types_taxonomy
-      broader:
-      - coe:concept/activity_types_taxonomy/cognitive_complexity
-      id: coe:concept/activity_types_taxonomy/cognitive_complexity/medium
-      label: Medium
-      description: Requires interpretation, comparison, or application
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/activity_types_taxonomy
-      broader:
-      - coe:concept/activity_types_taxonomy/cognitive_complexity
-      id: coe:concept/activity_types_taxonomy/cognitive_complexity/high
-      label: High
-      description: Multi-step reasoning, judgment, or creation
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/activity_types_taxonomy
-      id: coe:concept/activity_types_taxonomy/group_format
-      label: Group Format
-      description: group_format classification dimension.
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/activity_types_taxonomy
-      broader:
-      - coe:concept/activity_types_taxonomy/group_format
-      id: coe:concept/activity_types_taxonomy/group_format/individual
-      label: Individual
-      description: Learner works alone
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/activity_types_taxonomy
-      broader:
-      - coe:concept/activity_types_taxonomy/group_format
-      id: coe:concept/activity_types_taxonomy/group_format/pairs
-      label: Pairs
-      description: Two learners
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/activity_types_taxonomy
-      broader:
-      - coe:concept/activity_types_taxonomy/group_format
-      id: coe:concept/activity_types_taxonomy/group_format/small_group
-      label: Small Group
-      description: 3-6 learners
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/activity_types_taxonomy
-      broader:
-      - coe:concept/activity_types_taxonomy/group_format
-      id: coe:concept/activity_types_taxonomy/group_format/whole_group
-      label: Whole Group
-      description: Entire cohort
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/activity_types_taxonomy
-      broader:
-      - coe:concept/activity_types_taxonomy/group_format
-      id: coe:concept/activity_types_taxonomy/group_format/teams
-      label: Teams
-      description: Competing or collaborating teams
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/activity_types_taxonomy
-      broader:
-      - coe:concept/activity_types_taxonomy/group_format
-      id: coe:concept/activity_types_taxonomy/group_format/any
-      label: Any
-      description: Format is flexible
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/activity_types_taxonomy
-      id: coe:concept/activity_types_taxonomy/outcome_type
-      label: Outcome Type
-      description: outcome_type classification dimension.
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/activity_types_taxonomy
-      broader:
-      - coe:concept/activity_types_taxonomy/outcome_type
-      id: coe:concept/activity_types_taxonomy/outcome_type/recall
-      label: Recall
-      description: Can reproduce facts or steps
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/activity_types_taxonomy
-      broader:
-      - coe:concept/activity_types_taxonomy/outcome_type
-      id: coe:concept/activity_types_taxonomy/outcome_type/conceptual
-      label: Conceptual
-      description: Can explain and discuss ideas
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/activity_types_taxonomy
-      broader:
-      - coe:concept/activity_types_taxonomy/outcome_type
-      id: coe:concept/activity_types_taxonomy/outcome_type/procedural
-      label: Procedural
-      description: Can perform a process correctly
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/activity_types_taxonomy
-      broader:
-      - coe:concept/activity_types_taxonomy/outcome_type
-      id: coe:concept/activity_types_taxonomy/outcome_type/applied
-      label: Applied
-      description: Can use knowledge in context
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/activity_types_taxonomy
-      broader:
-      - coe:concept/activity_types_taxonomy/outcome_type
-      id: coe:concept/activity_types_taxonomy/outcome_type/generative
-      label: Generative
-      description: Can produce something new
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/activity_types_taxonomy
-      broader:
-      - coe:concept/activity_types_taxonomy/outcome_type
-      id: coe:concept/activity_types_taxonomy/outcome_type/argumentation
-      label: Argumentation
-      description: Can construct and defend a position
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/activity_types_taxonomy
-      broader:
-      - coe:concept/activity_types_taxonomy/outcome_type
-      id: coe:concept/activity_types_taxonomy/outcome_type/metacognitive
-      label: Metacognitive
-      description: Can assess and regulate own learning
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/activity_types_taxonomy
-      broader:
-      - coe:concept/activity_types_taxonomy/outcome_type
-      id: coe:concept/activity_types_taxonomy/outcome_type/clarification
-      label: Clarification
-      description: Can resolve uncertainty through dialogue
-      home_domain: learning
-      status: canonical
-    id: coe:scheme/activity_types_taxonomy
-    label: Activity Types Taxonomy
-    description: Classification of 34 synchronous and asynchronous learning activity types by delivery mode, cognitive level,
-      group format, and primary learning outcome
-    home_domain: learning
-    status: canonical
-  version: 1.4.2
-  last_updated: '2026-08-12'
-  id: coe:artifact/pedagogical/activity_types_taxonomy
+- last_updated: '2026-09-01'
+  id: coe:artifact/learning/activity_types_taxonomy
   label: Activity Types Taxonomy
   description: Classification of 34 synchronous and asynchronous learning activity types by delivery mode, cognitive level,
     group format, and primary learning outcome
   home_domain: learning
   status: canonical
-- schemes:
-  - concepts:
-    - in_scheme: coe:scheme/assessment_taxonomy
-      id: coe:concept/assessment_taxonomy/evaluation_purpose
-      label: Evaluation Purpose
-      description: When and why the assessment is administered
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/assessment_taxonomy
-      broader:
-      - coe:concept/assessment_taxonomy/evaluation_purpose
-      id: coe:concept/assessment_taxonomy/evaluation_purpose/diagnostic
-      label: Diagnostic
-      description: diagnostic
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/assessment_taxonomy
-      broader:
-      - coe:concept/assessment_taxonomy/evaluation_purpose
-      id: coe:concept/assessment_taxonomy/evaluation_purpose/formative
-      label: Formative
-      description: formative
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/assessment_taxonomy
-      broader:
-      - coe:concept/assessment_taxonomy/evaluation_purpose
-      id: coe:concept/assessment_taxonomy/evaluation_purpose/summative
-      label: Summative
-      description: summative
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/assessment_taxonomy
-      broader:
-      - coe:concept/assessment_taxonomy/evaluation_purpose
-      id: coe:concept/assessment_taxonomy/evaluation_purpose/transfer
-      label: Transfer
-      description: transfer
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/assessment_taxonomy
-      broader:
-      - coe:concept/assessment_taxonomy/evaluation_purpose
-      id: coe:concept/assessment_taxonomy/evaluation_purpose/impact
-      label: Impact
-      description: impact
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/assessment_taxonomy
-      id: coe:concept/assessment_taxonomy/kirkpatrick_level
-      label: Kirkpatrick Level
-      description: Which level of the Kirkpatrick model the assessment targets
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/assessment_taxonomy
-      broader:
-      - coe:concept/assessment_taxonomy/kirkpatrick_level
-      id: coe:concept/assessment_taxonomy/kirkpatrick_level/reaction
-      label: Reaction
-      description: reaction
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/assessment_taxonomy
-      broader:
-      - coe:concept/assessment_taxonomy/kirkpatrick_level
-      id: coe:concept/assessment_taxonomy/kirkpatrick_level/learning
-      label: Learning
-      description: learning
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/assessment_taxonomy
-      broader:
-      - coe:concept/assessment_taxonomy/kirkpatrick_level
-      id: coe:concept/assessment_taxonomy/kirkpatrick_level/behaviour
-      label: Behaviour
-      description: behaviour
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/assessment_taxonomy
-      broader:
-      - coe:concept/assessment_taxonomy/kirkpatrick_level
-      id: coe:concept/assessment_taxonomy/kirkpatrick_level/results
-      label: Results
-      description: results
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/assessment_taxonomy
-      id: coe:concept/assessment_taxonomy/item_format
-      label: Item Format
-      description: How the learner interacts with the assessment
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/assessment_taxonomy
-      broader:
-      - coe:concept/assessment_taxonomy/item_format
-      id: coe:concept/assessment_taxonomy/item_format/selected_response
-      label: Selected Response
-      description: selected_response
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/assessment_taxonomy
-      broader:
-      - coe:concept/assessment_taxonomy/item_format
-      id: coe:concept/assessment_taxonomy/item_format/constructed_response
-      label: Constructed Response
-      description: constructed_response
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/assessment_taxonomy
-      broader:
-      - coe:concept/assessment_taxonomy/item_format
-      id: coe:concept/assessment_taxonomy/item_format/performance_based
-      label: Performance Based
-      description: performance_based
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/assessment_taxonomy
-      broader:
-      - coe:concept/assessment_taxonomy/item_format
-      id: coe:concept/assessment_taxonomy/item_format/observational
-      label: Observational
-      description: observational
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/assessment_taxonomy
-      id: coe:concept/assessment_taxonomy/cognitive_demand
-      label: Cognitive Demand
-      description: Bloom's level required to succeed at the assessment
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/assessment_taxonomy
-      broader:
-      - coe:concept/assessment_taxonomy/cognitive_demand
-      id: coe:concept/assessment_taxonomy/cognitive_demand/remember
-      label: Remember
-      description: remember
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/assessment_taxonomy
-      broader:
-      - coe:concept/assessment_taxonomy/cognitive_demand
-      id: coe:concept/assessment_taxonomy/cognitive_demand/understand
-      label: Understand
-      description: understand
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/assessment_taxonomy
-      broader:
-      - coe:concept/assessment_taxonomy/cognitive_demand
-      id: coe:concept/assessment_taxonomy/cognitive_demand/apply
-      label: Apply
-      description: apply
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/assessment_taxonomy
-      broader:
-      - coe:concept/assessment_taxonomy/cognitive_demand
-      id: coe:concept/assessment_taxonomy/cognitive_demand/analyze
-      label: Analyze
-      description: analyze
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/assessment_taxonomy
-      broader:
-      - coe:concept/assessment_taxonomy/cognitive_demand
-      id: coe:concept/assessment_taxonomy/cognitive_demand/evaluate
-      label: Evaluate
-      description: evaluate
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/assessment_taxonomy
-      broader:
-      - coe:concept/assessment_taxonomy/cognitive_demand
-      id: coe:concept/assessment_taxonomy/cognitive_demand/create
-      label: Create
-      description: create
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/assessment_taxonomy
-      id: coe:concept/assessment_taxonomy/feedback_mechanism
-      label: Feedback Mechanism
-      description: How results are communicated back to the learner
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/assessment_taxonomy
-      broader:
-      - coe:concept/assessment_taxonomy/feedback_mechanism
-      id: coe:concept/assessment_taxonomy/feedback_mechanism/automated_immediate
-      label: Automated Immediate
-      description: automated_immediate
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/assessment_taxonomy
-      broader:
-      - coe:concept/assessment_taxonomy/feedback_mechanism
-      id: coe:concept/assessment_taxonomy/feedback_mechanism/automated_delayed
-      label: Automated Delayed
-      description: automated_delayed
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/assessment_taxonomy
-      broader:
-      - coe:concept/assessment_taxonomy/feedback_mechanism
-      id: coe:concept/assessment_taxonomy/feedback_mechanism/instructor_written
-      label: Instructor Written
-      description: instructor_written
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/assessment_taxonomy
-      broader:
-      - coe:concept/assessment_taxonomy/feedback_mechanism
-      id: coe:concept/assessment_taxonomy/feedback_mechanism/instructor_verbal
-      label: Instructor Verbal
-      description: instructor_verbal
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/assessment_taxonomy
-      broader:
-      - coe:concept/assessment_taxonomy/feedback_mechanism
-      id: coe:concept/assessment_taxonomy/feedback_mechanism/peer_review
-      label: Peer Review
-      description: peer_review
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/assessment_taxonomy
-      broader:
-      - coe:concept/assessment_taxonomy/feedback_mechanism
-      id: coe:concept/assessment_taxonomy/feedback_mechanism/self_reflection
-      label: Self Reflection
-      description: self_reflection
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/assessment_taxonomy
-      broader:
-      - coe:concept/assessment_taxonomy/feedback_mechanism
-      id: coe:concept/assessment_taxonomy/feedback_mechanism/rubric_based
-      label: Rubric Based
-      description: rubric_based
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/assessment_taxonomy
-      id: coe:concept/assessment_taxonomy/authenticity
-      label: Authenticity
-      description: How closely the assessment mirrors real-world performance
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/assessment_taxonomy
-      broader:
-      - coe:concept/assessment_taxonomy/authenticity
-      id: coe:concept/assessment_taxonomy/authenticity/abstract
-      label: Abstract
-      description: abstract
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/assessment_taxonomy
-      broader:
-      - coe:concept/assessment_taxonomy/authenticity
-      id: coe:concept/assessment_taxonomy/authenticity/contextualised
-      label: Contextualised
-      description: contextualised
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/assessment_taxonomy
-      broader:
-      - coe:concept/assessment_taxonomy/authenticity
-      id: coe:concept/assessment_taxonomy/authenticity/simulated
-      label: Simulated
-      description: simulated
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/assessment_taxonomy
-      broader:
-      - coe:concept/assessment_taxonomy/authenticity
-      id: coe:concept/assessment_taxonomy/authenticity/authentic
-      label: Authentic
-      description: authentic
-      home_domain: learning
-      status: canonical
-    id: coe:scheme/assessment_taxonomy
-    label: Assessment Taxonomy
-    description: Classification of learning assessment types by evaluation purpose, Kirkpatrick level, item format, cognitive
-      demand, and feedback mechanism
+  concepts:
+  - in_scheme: coe:artifact/learning/activity_types_taxonomy
+    id: coe:concept/activity_types_taxonomy/bloom_level
+    label: Bloom Level
+    description: 'The Bloom''s Revised Taxonomy (Anderson & Krathwohl 2001) cognitive level an activity targets, from Remember through Create; an activity may span several adjacent levels'
     home_domain: learning
     status: canonical
-  version: 1.3.2
-  last_updated: '2026-08-12'
-  id: coe:artifact/pedagogical/assessment_taxonomy
+  - in_scheme: coe:artifact/learning/activity_types_taxonomy
+    broader:
+    - coe:concept/activity_types_taxonomy/bloom_level
+    id: coe:concept/activity_types_taxonomy/bloom_level/remember
+    label: Remember
+    description: Recall of facts and concepts
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/activity_types_taxonomy
+    broader:
+    - coe:concept/activity_types_taxonomy/bloom_level
+    id: coe:concept/activity_types_taxonomy/bloom_level/understand
+    label: Understand
+    description: Interpretation and explanation
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/activity_types_taxonomy
+    broader:
+    - coe:concept/activity_types_taxonomy/bloom_level
+    id: coe:concept/activity_types_taxonomy/bloom_level/apply
+    label: Apply
+    description: Use of knowledge in new situations
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/activity_types_taxonomy
+    broader:
+    - coe:concept/activity_types_taxonomy/bloom_level
+    id: coe:concept/activity_types_taxonomy/bloom_level/analyze
+    label: Analyze
+    description: Breaking down and examining components
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/activity_types_taxonomy
+    broader:
+    - coe:concept/activity_types_taxonomy/bloom_level
+    id: coe:concept/activity_types_taxonomy/bloom_level/evaluate
+    label: Evaluate
+    description: Judging based on criteria
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/activity_types_taxonomy
+    broader:
+    - coe:concept/activity_types_taxonomy/bloom_level
+    id: coe:concept/activity_types_taxonomy/bloom_level/create
+    label: Create
+    description: Producing new or original work
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/activity_types_taxonomy
+    id: coe:concept/activity_types_taxonomy/cognitive_complexity
+    label: Cognitive Complexity
+    description: 'The depth of mental processing an activity demands of the learner, banded from low (single-answer recall) through medium (interpretation, comparison, application) to high (multi-step reasoning, judgment, or creation)'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/activity_types_taxonomy
+    broader:
+    - coe:concept/activity_types_taxonomy/cognitive_complexity
+    id: coe:concept/activity_types_taxonomy/cognitive_complexity/low
+    label: Low
+    description: Single-answer recall; minimal processing
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/activity_types_taxonomy
+    broader:
+    - coe:concept/activity_types_taxonomy/cognitive_complexity
+    id: coe:concept/activity_types_taxonomy/cognitive_complexity/medium
+    label: Medium
+    description: Requires interpretation, comparison, or application
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/activity_types_taxonomy
+    broader:
+    - coe:concept/activity_types_taxonomy/cognitive_complexity
+    id: coe:concept/activity_types_taxonomy/cognitive_complexity/high
+    label: High
+    description: Multi-step reasoning, judgment, or creation
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/activity_types_taxonomy
+    id: coe:concept/activity_types_taxonomy/group_format
+    label: Group Format
+    description: The grouping arrangement an activity is designed for. Members enumerate the permissible arrangements, including
+      the explicit no-constraint value Any.
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/activity_types_taxonomy
+    broader:
+    - coe:concept/activity_types_taxonomy/group_format
+    id: coe:concept/activity_types_taxonomy/group_format/individual
+    label: Individual
+    description: Learner works alone
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/activity_types_taxonomy
+    broader:
+    - coe:concept/activity_types_taxonomy/group_format
+    id: coe:concept/activity_types_taxonomy/group_format/pairs
+    label: Pairs
+    description: Two learners
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/activity_types_taxonomy
+    broader:
+    - coe:concept/activity_types_taxonomy/group_format
+    id: coe:concept/activity_types_taxonomy/group_format/small_group
+    label: Small Group
+    description: 3-6 learners
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/activity_types_taxonomy
+    broader:
+    - coe:concept/activity_types_taxonomy/group_format
+    id: coe:concept/activity_types_taxonomy/group_format/whole_group
+    label: Whole Group
+    description: Entire cohort
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/activity_types_taxonomy
+    broader:
+    - coe:concept/activity_types_taxonomy/group_format
+    id: coe:concept/activity_types_taxonomy/group_format/teams
+    label: Teams
+    description: Competing or collaborating teams
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/activity_types_taxonomy
+    broader:
+    - coe:concept/activity_types_taxonomy/group_format
+    id: coe:concept/activity_types_taxonomy/group_format/any
+    label: Any
+    description: No-constraint value asserting the activity works in any grouping arrangement; used where format genuinely
+      does not affect the design
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/activity_types_taxonomy
+    id: coe:concept/activity_types_taxonomy/outcome_type
+    label: Outcome Type
+    description: 'The primary learner capability an activity is designed to produce, expressed as an observable can-do result such as recall, procedural performance, or argumentation'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/activity_types_taxonomy
+    broader:
+    - coe:concept/activity_types_taxonomy/outcome_type
+    id: coe:concept/activity_types_taxonomy/outcome_type/recall
+    label: Recall
+    description: Can reproduce facts or steps
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/activity_types_taxonomy
+    broader:
+    - coe:concept/activity_types_taxonomy/outcome_type
+    id: coe:concept/activity_types_taxonomy/outcome_type/conceptual
+    label: Conceptual
+    description: Can explain and discuss ideas
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/activity_types_taxonomy
+    broader:
+    - coe:concept/activity_types_taxonomy/outcome_type
+    id: coe:concept/activity_types_taxonomy/outcome_type/procedural
+    label: Procedural
+    description: Can perform a process correctly
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/activity_types_taxonomy
+    broader:
+    - coe:concept/activity_types_taxonomy/outcome_type
+    id: coe:concept/activity_types_taxonomy/outcome_type/applied
+    label: Applied
+    description: Can use knowledge in context
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/activity_types_taxonomy
+    broader:
+    - coe:concept/activity_types_taxonomy/outcome_type
+    id: coe:concept/activity_types_taxonomy/outcome_type/generative
+    label: Generative
+    description: Can produce something new
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/activity_types_taxonomy
+    broader:
+    - coe:concept/activity_types_taxonomy/outcome_type
+    id: coe:concept/activity_types_taxonomy/outcome_type/argumentation
+    label: Argumentation
+    description: Can construct and defend a position
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/activity_types_taxonomy
+    broader:
+    - coe:concept/activity_types_taxonomy/outcome_type
+    id: coe:concept/activity_types_taxonomy/outcome_type/metacognitive
+    label: Metacognitive
+    description: Can assess and regulate own learning
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/activity_types_taxonomy
+    broader:
+    - coe:concept/activity_types_taxonomy/outcome_type
+    id: coe:concept/activity_types_taxonomy/outcome_type/clarification
+    label: Clarification
+    description: Can resolve uncertainty through dialogue
+    home_domain: learning
+    status: canonical
+  top_concepts:
+  - coe:concept/activity_types_taxonomy/bloom_level
+  - coe:concept/activity_types_taxonomy/cognitive_complexity
+  - coe:concept/activity_types_taxonomy/group_format
+  - coe:concept/activity_types_taxonomy/outcome_type
+- last_updated: '2026-09-23'
+  id: coe:artifact/learning/assessment_taxonomy
   label: Assessment Taxonomy
-  description: Classification of learning assessment types by evaluation purpose, Kirkpatrick level, item format, cognitive
-    demand, and feedback mechanism
+  description: Classification of learning assessment types by evaluation purpose, Kirkpatrick level, LTEM tier, item format,
+    cognitive demand, and feedback mechanism
   home_domain: learning
   status: canonical
-- schemes:
-  - concepts:
-    - in_scheme: coe:scheme/cognitive_load_taxonomy
-      id: coe:concept/cognitive_load_taxonomy/load_type
-      label: Load Type
-      description: The category of cognitive load according to Cognitive Load Theory
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/cognitive_load_taxonomy
-      broader:
-      - coe:concept/cognitive_load_taxonomy/load_type
-      id: coe:concept/cognitive_load_taxonomy/load_type/extraneous
-      label: Extraneous
-      description: extraneous
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/cognitive_load_taxonomy
-      broader:
-      - coe:concept/cognitive_load_taxonomy/load_type
-      id: coe:concept/cognitive_load_taxonomy/load_type/intrinsic
-      label: Intrinsic
-      description: intrinsic
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/cognitive_load_taxonomy
-      broader:
-      - coe:concept/cognitive_load_taxonomy/load_type
-      id: coe:concept/cognitive_load_taxonomy/load_type/germane
-      label: Germane
-      description: germane
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/cognitive_load_taxonomy
-      id: coe:concept/cognitive_load_taxonomy/mayer_category
-      label: Mayer Principle Category
-      description: The functional category of Mayer's multimedia learning principle
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/cognitive_load_taxonomy
-      broader:
-      - coe:concept/cognitive_load_taxonomy/mayer_category
-      id: coe:concept/cognitive_load_taxonomy/mayer_category/reduce_extraneous
-      label: Reduce Extraneous
-      description: reduce_extraneous
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/cognitive_load_taxonomy
-      broader:
-      - coe:concept/cognitive_load_taxonomy/mayer_category
-      id: coe:concept/cognitive_load_taxonomy/mayer_category/manage_essential
-      label: Manage Essential
-      description: manage_essential
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/cognitive_load_taxonomy
-      broader:
-      - coe:concept/cognitive_load_taxonomy/mayer_category
-      id: coe:concept/cognitive_load_taxonomy/mayer_category/foster_generative
-      label: Foster Generative
-      description: foster_generative
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/cognitive_load_taxonomy
-      id: coe:concept/cognitive_load_taxonomy/design_strategy
-      label: Design Strategy
-      description: The instructional design strategy for managing cognitive load
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/cognitive_load_taxonomy
-      broader:
-      - coe:concept/cognitive_load_taxonomy/design_strategy
-      id: coe:concept/cognitive_load_taxonomy/design_strategy/progressive_disclosure
-      label: Progressive Disclosure
-      description: progressive_disclosure
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/cognitive_load_taxonomy
-      broader:
-      - coe:concept/cognitive_load_taxonomy/design_strategy
-      id: coe:concept/cognitive_load_taxonomy/design_strategy/worked_examples
-      label: Worked Examples
-      description: worked_examples
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/cognitive_load_taxonomy
-      broader:
-      - coe:concept/cognitive_load_taxonomy/design_strategy
-      id: coe:concept/cognitive_load_taxonomy/design_strategy/retrieval_practice
-      label: Retrieval Practice
-      description: retrieval_practice
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/cognitive_load_taxonomy
-      broader:
-      - coe:concept/cognitive_load_taxonomy/design_strategy
-      id: coe:concept/cognitive_load_taxonomy/design_strategy/adaptive_scaffolding
-      label: Adaptive Scaffolding
-      description: adaptive_scaffolding
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/cognitive_load_taxonomy
-      id: coe:concept/cognitive_load_taxonomy/expertise_sensitivity
-      label: Expertise Sensitivity
-      description: How the strategy's effectiveness varies with learner expertise
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/cognitive_load_taxonomy
-      broader:
-      - coe:concept/cognitive_load_taxonomy/expertise_sensitivity
-      id: coe:concept/cognitive_load_taxonomy/expertise_sensitivity/novice_beneficial
-      label: Novice Beneficial
-      description: novice_beneficial
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/cognitive_load_taxonomy
-      broader:
-      - coe:concept/cognitive_load_taxonomy/expertise_sensitivity
-      id: coe:concept/cognitive_load_taxonomy/expertise_sensitivity/expertise_reversal
-      label: Expertise Reversal
-      description: expertise_reversal
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/cognitive_load_taxonomy
-      broader:
-      - coe:concept/cognitive_load_taxonomy/expertise_sensitivity
-      id: coe:concept/cognitive_load_taxonomy/expertise_sensitivity/universally_beneficial
-      label: Universally Beneficial
-      description: universally_beneficial
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/cognitive_load_taxonomy
-      id: coe:concept/cognitive_load_taxonomy/content_modality
-      label: Content Modality
-      description: The type of content the cognitive load construct applies to
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/cognitive_load_taxonomy
-      broader:
-      - coe:concept/cognitive_load_taxonomy/content_modality
-      id: coe:concept/cognitive_load_taxonomy/content_modality/slide_presentation
-      label: Slide Presentation
-      description: slide_presentation
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/cognitive_load_taxonomy
-      broader:
-      - coe:concept/cognitive_load_taxonomy/content_modality
-      id: coe:concept/cognitive_load_taxonomy/content_modality/video_content
-      label: Video Content
-      description: video_content
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/cognitive_load_taxonomy
-      broader:
-      - coe:concept/cognitive_load_taxonomy/content_modality
-      id: coe:concept/cognitive_load_taxonomy/content_modality/written_document
-      label: Written Document
-      description: written_document
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/cognitive_load_taxonomy
-      broader:
-      - coe:concept/cognitive_load_taxonomy/content_modality
-      id: coe:concept/cognitive_load_taxonomy/content_modality/interactive_module
-      label: Interactive Module
-      description: interactive_module
-      home_domain: learning
-      status: canonical
-    id: coe:scheme/cognitive_load_taxonomy
-    label: Cognitive Load Taxonomy
-    description: Classification of cognitive load constructs by load type, Mayer principle category, design strategy, expertise
-      sensitivity, and content modality.
+  concepts:
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    id: coe:concept/assessment_taxonomy/evaluation_purpose
+    label: Evaluation Purpose
+    description: When and why the assessment is administered
     home_domain: learning
     status: canonical
-  version: 1.3.2
-  last_updated: '2026-08-12'
-  id: coe:artifact/pedagogical/cognitive_load_taxonomy
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/evaluation_purpose
+    id: coe:concept/assessment_taxonomy/evaluation_purpose/diagnostic
+    label: Diagnostic
+    description: 'Pre-learning assessment administered before instruction to establish baseline knowledge and identify gaps'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/evaluation_purpose
+    id: coe:concept/assessment_taxonomy/evaluation_purpose/formative
+    label: Formative
+    description: 'During-learning assessment that monitors progress and adjusts instruction while learning is underway (Kirkpatrick Level 2)'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/evaluation_purpose
+    id: coe:concept/assessment_taxonomy/evaluation_purpose/summative
+    label: Summative
+    description: 'End-of-learning assessment evaluating overall achievement against objectives after instruction (Kirkpatrick Level 2)'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/evaluation_purpose
+    id: coe:concept/assessment_taxonomy/evaluation_purpose/transfer
+    label: Transfer
+    description: 'Post-learning assessment measuring on-the-job application of skills (Kirkpatrick Level 3)'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/evaluation_purpose
+    id: coe:concept/assessment_taxonomy/evaluation_purpose/impact
+    label: Impact
+    description: 'Organisational-level assessment measuring business outcomes and ROI (Kirkpatrick Level 4)'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    id: coe:concept/assessment_taxonomy/kirkpatrick_level
+    label: Kirkpatrick Level
+    description: The level of Kirkpatrick's four-level training evaluation model — reaction, learning, behaviour or results
+      — at which an assessment or evaluation operates. The four levels are ordered, each evidencing an outcome of training
+      that arrives later and matters more to the organisation than the one before; this is the stakeholder-facing reporting
+      language, which the LTEM tiers refine for design and audit.
+    home_domain: learning
+    status: canonical
+    edges:
+    - subject_id: coe:concept/assessment_taxonomy/kirkpatrick_level
+      predicate: coe:contains
+      object_id: coe:entity/formative_assessment
+      relationship_weight: optional
+      description: Kirkpatrick levels encompass both formative and summative evaluation approaches
+      statement_id: coe:edge/a98b9183124b1d273833fc28
+      home_domain: learning
+    - subject_id: coe:concept/assessment_taxonomy/kirkpatrick_level
+      predicate: coe:contains
+      object_id: coe:entity/practice_activity
+      relationship_weight: optional
+      description: Kirkpatrick Level 3 behaviour assessment relies on on-the-job practice observation via manager checklists
+        and follow-up interviews
+      statement_id: coe:edge/26182b8717e07461ecff3485
+      home_domain: learning
+    - subject_id: coe:concept/assessment_taxonomy/kirkpatrick_level
+      predicate: coe:bridges
+      object_id: coe:entity/performance_tier
+      relationship_weight: expected
+      description: Performance tier evaluation aligns with Kirkpatrick Level 2 (learning/skill) and Level 3 (behaviour transfer)
+        assessment of speaker competency development
+      statement_id: coe:edge/0328be4ba2c39f4d69704283
+      home_domain: learning
+    - subject_id: coe:concept/assessment_taxonomy/kirkpatrick_level
+      predicate: coe:supports
+      object_id: coe:entity/alignment_marker
+      relationship_weight: expected
+      description: Kirkpatrick evaluation levels support alignment — the research recommends noting level 1-4 evaluations
+        and on-the-job metrics in the blueprint to reinforce the focus on business outcomes and verify training effectiveness
+        per High-Level Planning Tools research | Backward design integrates Kirkpatrick L1-L4 evaluation at the design stage,
+        with evaluation levels directly supporting alignment verification between learning objectives and business outcomes
+        per universal_learning_design_framework
+      statement_id: coe:edge/a57e61da3d7f5015a1138c16
+      home_domain: learning
+    - subject_id: coe:concept/assessment_taxonomy/kirkpatrick_level
+      predicate: coe:supports
+      object_id: coe:entity/apply_verb
+      relationship_weight: expected
+      description: Apply-level learning objectives are assessed through Kirkpatrick Level 3 (behavior/transfer) — Intent to
+        Use construct directly targets application of learned knowledge per recommended-training-effectiveness-questions
+      statement_id: coe:edge/4bd57b2bdcd251ebe15ead8e
+      home_domain: learning
+    - subject_id: coe:concept/assessment_taxonomy/kirkpatrick_level
+      predicate: coe:supports
+      object_id: coe:entity/call_to_action
+      relationship_weight: expected
+      description: Kirkpatrick Level 3 (Behavior) measures whether the audience executed the call to action's 'Do' objective
+        after the presentation (Canonical Presentation Methodology)
+      statement_id: coe:edge/b54d9977fbdf32a73b4788cc
+      home_domain: learning
+    - subject_id: coe:concept/assessment_taxonomy/kirkpatrick_level
+      predicate: coe:supports
+      object_id: coe:entity/engagement_cue
+      relationship_weight: expected
+      description: Engagement cue effectiveness is evaluated through Kirkpatrick Level 1 (reaction/sentiment) and Level 2
+        (learning/retention) measuring whether cues produced knowledge transfer
+      statement_id: coe:edge/f034e9954dc38a6e11b6f4bc
+      home_domain: learning
+    - subject_id: coe:concept/assessment_taxonomy/kirkpatrick_level
+      predicate: coe:supports
+      object_id: coe:entity/learning_objective
+      relationship_weight: required
+      description: Kirkpatrick Levels 1-3 validate whether learning objectives were achieved — Level 2 measures knowledge
+        gain, Level 1 measures relevance, Level 3 measures transfer intent per recommended-training-effectiveness-questions
+      statement_id: coe:edge/59cb1d4dcdbc6a4274cd00f1
+      home_domain: learning
+    - subject_id: coe:concept/assessment_taxonomy/kirkpatrick_level
+      predicate: coe:supports
+      object_id: coe:entity/microlearning_format
+      relationship_weight: expected
+      description: Pre/post assessments following Kirkpatrick's model evaluate reaction, learning, behaviour, and results
+        at 30/60/90-day intervals for microlearning effectiveness per AI Microlearning Guide
+      statement_id: coe:edge/713580ed3c6b254325f326ec
+      home_domain: learning
+    - subject_id: coe:concept/assessment_taxonomy/kirkpatrick_level
+      predicate: coe:supports
+      object_id: coe:entity/motivation_element
+      relationship_weight: expected
+      description: Intent to Use and Barriers to Use constructs directly measure learner motivation and transfer intent at
+        Kirkpatrick Level 3 per recommended-training-effectiveness-questions
+      statement_id: coe:edge/54819a31930b5207b147f089
+      home_domain: learning
+    - subject_id: coe:concept/assessment_taxonomy/kirkpatrick_level
+      predicate: coe:supports
+      object_id: coe:entity/outcome_statement
+      relationship_weight: expected
+      description: Kirkpatrick Level 4 (Results) validates outcome statements by measuring business impact — ROI, revenue
+        increase, risk reduction — as the strategic 'Why' (Canonical Presentation Methodology)
+      statement_id: coe:edge/b50c02bd7efa58a03c549b12
+      home_domain: learning
+    - subject_id: coe:concept/assessment_taxonomy/kirkpatrick_level
+      predicate: coe:supports
+      object_id: coe:entity/roleplay_activity
+      relationship_weight: expected
+      description: Kirkpatrick levels evaluate roleplay effectiveness — L2 measures skill acquisition, L3 measures on-the-job
+        behaviour transfer from roleplay practice per roleplay research
+      statement_id: coe:edge/d7e1a9db66949d4e325c17b2
+      home_domain: learning
+    - subject_id: coe:concept/assessment_taxonomy/kirkpatrick_level
+      predicate: coe:supports
+      object_id: coe:entity/rubric_component
+      relationship_weight: expected
+      description: Evaluation constructs (Learning, Relevance, Characteristics of Training, Intent to Use, Barriers) function
+        as rubric components structuring Kirkpatrick-level postcourse evaluation per recommended-training-effectiveness-questions
+      statement_id: coe:edge/0758aff15871d20708dfd6ae
+      home_domain: learning
+    - subject_id: coe:concept/assessment_taxonomy/kirkpatrick_level
+      predicate: coe:supports
+      object_id: coe:entity/scenario_activity
+      relationship_weight: required
+      description: Kirkpatrick four-level framework (Reaction, Learning, Behavior, Results) is explicitly prescribed for evaluating
+        scenario-based training effectiveness per SBT guide
+      statement_id: coe:edge/6e8225830ff04107f63d250f
+      home_domain: learning
+    - subject_id: coe:concept/assessment_taxonomy/kirkpatrick_level
+      predicate: coe:supports
+      object_id: coe:entity/summative_assessment
+      relationship_weight: required
+      description: Summative assessment maps to Kirkpatrick Level 2 for knowledge tests, Level 3 for behavioural observation,
+        Level 4 for business metrics | Kirkpatrick Levels 2-4 map directly to summative assessment types — L2 knowledge tests,
+        L3 behavioural observation, L4 business metrics
+      statement_id: coe:edge/d9cff987053c411372eaf293
+      home_domain: learning
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/kirkpatrick_level
+    id: coe:concept/assessment_taxonomy/kirkpatrick_level/reaction
+    label: Reaction
+    description: 'Kirkpatrick Level 1 — measures learner satisfaction, engagement, and perceived relevance'
+    home_domain: learning
+    status: canonical
+    terms:
+    - literal: L1 Reaction
+      term_type: full_form
+      term_status: admitted
+    edges:
+    - subject_id: coe:concept/assessment_taxonomy/kirkpatrick_level/reaction
+      predicate: coe:precedes
+      object_id: coe:concept/assessment_taxonomy/kirkpatrick_level/learning
+      relationship_weight: required
+      description: Level 1 precedes Level 2 in Kirkpatrick's ordering of training evaluation.
+      statement_id: coe:edge/kirkpatrick-reaction-precedes-learning
+      home_domain: learning
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/kirkpatrick_level
+    id: coe:concept/assessment_taxonomy/kirkpatrick_level/learning
+    label: Learning
+    description: 'Kirkpatrick Level 2 — measures knowledge acquisition, skill development, and attitude change'
+    home_domain: learning
+    status: canonical
+    terms:
+    - literal: L2 Learning
+      term_type: full_form
+      term_status: admitted
+    edges:
+    - subject_id: coe:concept/assessment_taxonomy/kirkpatrick_level/learning
+      predicate: coe:precedes
+      object_id: coe:concept/assessment_taxonomy/kirkpatrick_level/behaviour
+      relationship_weight: required
+      description: Level 2 precedes Level 3 in Kirkpatrick's ordering of training evaluation.
+      statement_id: coe:edge/kirkpatrick-learning-precedes-behaviour
+      home_domain: learning
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/kirkpatrick_level
+    id: coe:concept/assessment_taxonomy/kirkpatrick_level/behaviour
+    label: Behaviour
+    description: 'Kirkpatrick Level 3 — measures on-the-job application and behavioural change'
+    home_domain: learning
+    status: canonical
+    terms:
+    - literal: L3 Behaviour
+      term_type: full_form
+      term_status: admitted
+    edges:
+    - subject_id: coe:concept/assessment_taxonomy/kirkpatrick_level/behaviour
+      predicate: coe:precedes
+      object_id: coe:concept/assessment_taxonomy/kirkpatrick_level/results
+      relationship_weight: required
+      description: Level 3 precedes Level 4 in Kirkpatrick's ordering of training evaluation.
+      statement_id: coe:edge/kirkpatrick-behaviour-precedes-results
+      home_domain: learning
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/kirkpatrick_level
+    id: coe:concept/assessment_taxonomy/kirkpatrick_level/results
+    label: Results
+    description: 'Kirkpatrick Level 4 — measures organisational impact, productivity gains, and business ROI'
+    home_domain: learning
+    status: canonical
+    terms:
+    - literal: L4 Results
+      term_type: full_form
+      term_status: admitted
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    id: coe:concept/assessment_taxonomy/ltem_tier
+    label: LTEM Tier
+    description: The tier of Thalheimer's Learning-Transfer Evaluation Model at which an assessment gathers evidence, from
+      attendance through the effects of transfer. The eight tiers are ordered by the strength of the evidence each gives
+      that learning happened and was used; tiers three to eight refine Kirkpatrick's four levels for designing and auditing
+      evaluation, and tiers one and two are not evidence of learning at all.
+    home_domain: learning
+    status: canonical
+    terms:
+    - literal: Learning-Transfer Evaluation Model tier
+      term_type: full_form
+      term_status: admitted
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/ltem_tier
+    id: coe:concept/assessment_taxonomy/ltem_tier/attendance
+    label: Attendance
+    description: 'LTEM Tier 1 — learners enrol in, start, attend or complete a learning experience; evidence of participation
+      only, never of learning.'
+    home_domain: learning
+    status: canonical
+    edges:
+    - subject_id: coe:concept/assessment_taxonomy/ltem_tier/attendance
+      predicate: coe:precedes
+      object_id: coe:concept/assessment_taxonomy/ltem_tier/activity
+      relationship_weight: required
+      description: Tier 1 precedes Tier 2 in the LTEM ordering of evidence strength.
+      statement_id: coe:edge/ltem-attendance-precedes-activity
+      home_domain: learning
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/ltem_tier
+    id: coe:concept/assessment_taxonomy/ltem_tier/activity
+    label: Activity
+    description: 'LTEM Tier 2 — learners engage in the learning activities, showing attention, interest or participation;
+      evidence of engagement only, never of learning.'
+    home_domain: learning
+    status: canonical
+    edges:
+    - subject_id: coe:concept/assessment_taxonomy/ltem_tier/activity
+      predicate: coe:precedes
+      object_id: coe:concept/assessment_taxonomy/ltem_tier/learner_perceptions
+      relationship_weight: required
+      description: Tier 2 precedes Tier 3 in the LTEM ordering of evidence strength.
+      statement_id: coe:edge/ltem-activity-precedes-learner-perceptions
+      home_domain: learning
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/ltem_tier
+    id: coe:concept/assessment_taxonomy/ltem_tier/learner_perceptions
+    label: Learner Perceptions
+    description: 'LTEM Tier 3 — learners report their perceptions of the learning experience; the weakest evidence that
+      bears on learning, and never on its own a claim of success.'
+    home_domain: learning
+    status: canonical
+    edges:
+    - subject_id: coe:concept/assessment_taxonomy/ltem_tier/learner_perceptions
+      predicate: coe:specialises
+      object_id: coe:concept/assessment_taxonomy/kirkpatrick_level/reaction
+      relationship_weight: required
+      description: Tier 3 refines Kirkpatrick's reaction level into perception evidence.
+      statement_id: coe:edge/ltem-learner-perceptions-specialises-kirkpatrick-reaction
+      home_domain: learning
+    - subject_id: coe:concept/assessment_taxonomy/ltem_tier/learner_perceptions
+      predicate: coe:precedes
+      object_id: coe:concept/assessment_taxonomy/ltem_tier/knowledge
+      relationship_weight: required
+      description: Tier 3 precedes Tier 4 in the LTEM ordering of evidence strength.
+      statement_id: coe:edge/ltem-learner-perceptions-precedes-knowledge
+      home_domain: learning
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/ltem_tier
+    id: coe:concept/assessment_taxonomy/ltem_tier/knowledge
+    label: Knowledge
+    description: 'LTEM Tier 4 — learners answer questions about facts and terminology; recitation soon after learning is
+      distinguished from retention measured after a delay.'
+    home_domain: learning
+    status: canonical
+    edges:
+    - subject_id: coe:concept/assessment_taxonomy/ltem_tier/knowledge
+      predicate: coe:specialises
+      object_id: coe:concept/assessment_taxonomy/kirkpatrick_level/learning
+      relationship_weight: required
+      description: Tier 4 refines Kirkpatrick's learning level into knowledge evidence.
+      statement_id: coe:edge/ltem-knowledge-specialises-kirkpatrick-learning
+      home_domain: learning
+    - subject_id: coe:concept/assessment_taxonomy/ltem_tier/knowledge
+      predicate: coe:precedes
+      object_id: coe:concept/assessment_taxonomy/ltem_tier/decision_making_competence
+      relationship_weight: required
+      description: Tier 4 precedes Tier 5 in the LTEM ordering of evidence strength.
+      statement_id: coe:edge/ltem-knowledge-precedes-decision-making-competence
+      home_domain: learning
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/ltem_tier
+    id: coe:concept/assessment_taxonomy/ltem_tier/decision_making_competence
+    label: Decision-Making Competence
+    description: 'LTEM Tier 5 — learners make the right decisions in realistic scenarios with plausible alternatives.'
+    home_domain: learning
+    status: canonical
+    edges:
+    - subject_id: coe:concept/assessment_taxonomy/ltem_tier/decision_making_competence
+      predicate: coe:specialises
+      object_id: coe:concept/assessment_taxonomy/kirkpatrick_level/learning
+      relationship_weight: required
+      description: Tier 5 refines Kirkpatrick's learning level into decision-making evidence.
+      statement_id: coe:edge/ltem-decision-making-competence-specialises-kirkpatrick-learning
+      home_domain: learning
+    - subject_id: coe:concept/assessment_taxonomy/ltem_tier/decision_making_competence
+      predicate: coe:precedes
+      object_id: coe:concept/assessment_taxonomy/ltem_tier/task_competence
+      relationship_weight: required
+      description: Tier 5 precedes Tier 6 in the LTEM ordering of evidence strength.
+      statement_id: coe:edge/ltem-decision-making-competence-precedes-task-competence
+      home_domain: learning
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/ltem_tier
+    id: coe:concept/assessment_taxonomy/ltem_tier/task_competence
+    label: Task Competence
+    description: 'LTEM Tier 6 — learners perform realistic tasks that combine decisions with actions, the highest tier reachable
+      inside a learning environment.'
+    home_domain: learning
+    status: canonical
+    edges:
+    - subject_id: coe:concept/assessment_taxonomy/ltem_tier/task_competence
+      predicate: coe:specialises
+      object_id: coe:concept/assessment_taxonomy/kirkpatrick_level/learning
+      relationship_weight: required
+      description: Tier 6 refines Kirkpatrick's learning level into task-performance evidence.
+      statement_id: coe:edge/ltem-task-competence-specialises-kirkpatrick-learning
+      home_domain: learning
+    - subject_id: coe:concept/assessment_taxonomy/ltem_tier/task_competence
+      predicate: coe:precedes
+      object_id: coe:concept/assessment_taxonomy/ltem_tier/transfer
+      relationship_weight: required
+      description: Tier 6 precedes Tier 7 in the LTEM ordering of evidence strength.
+      statement_id: coe:edge/ltem-task-competence-precedes-transfer
+      home_domain: learning
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/ltem_tier
+    id: coe:concept/assessment_taxonomy/ltem_tier/transfer
+    label: Transfer
+    description: 'LTEM Tier 7 — learners apply what they learned in their real work; supported transfer, with help or prompting,
+      is distinguished from full, unaided transfer.'
+    home_domain: learning
+    status: canonical
+    edges:
+    - subject_id: coe:concept/assessment_taxonomy/ltem_tier/transfer
+      predicate: coe:specialises
+      object_id: coe:concept/assessment_taxonomy/kirkpatrick_level/behaviour
+      relationship_weight: required
+      description: Tier 7 refines Kirkpatrick's behaviour level into transfer evidence.
+      statement_id: coe:edge/ltem-transfer-specialises-kirkpatrick-behaviour
+      home_domain: learning
+    - subject_id: coe:concept/assessment_taxonomy/ltem_tier/transfer
+      predicate: coe:precedes
+      object_id: coe:concept/assessment_taxonomy/ltem_tier/effects_of_transfer
+      relationship_weight: required
+      description: Tier 7 precedes Tier 8 in the LTEM ordering of evidence strength.
+      statement_id: coe:edge/ltem-transfer-precedes-effects-of-transfer
+      home_domain: learning
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/ltem_tier
+    id: coe:concept/assessment_taxonomy/ltem_tier/effects_of_transfer
+    label: Effects of Transfer
+    description: 'LTEM Tier 8 — the effects of transferred learning on learners, colleagues, the organisation and beyond,
+      such as business results.'
+    home_domain: learning
+    status: canonical
+    edges:
+    - subject_id: coe:concept/assessment_taxonomy/ltem_tier/effects_of_transfer
+      predicate: coe:specialises
+      object_id: coe:concept/assessment_taxonomy/kirkpatrick_level/results
+      relationship_weight: required
+      description: Tier 8 refines Kirkpatrick's results level into evidence of the effects of transfer.
+      statement_id: coe:edge/ltem-effects-of-transfer-specialises-kirkpatrick-results
+      home_domain: learning
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    id: coe:concept/assessment_taxonomy/item_format
+    label: Item Format
+    description: How the learner interacts with the assessment
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/item_format
+    id: coe:concept/assessment_taxonomy/item_format/selected_response
+    label: Selected Response
+    description: 'Learner selects from predetermined options such as multiple choice, matching, or ordering; cognitive ceiling around Understand'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/item_format
+    id: coe:concept/assessment_taxonomy/item_format/constructed_response
+    label: Constructed Response
+    description: 'Learner generates an original answer such as a short answer, essay, or code submission; reaches up to Create'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/item_format
+    id: coe:concept/assessment_taxonomy/item_format/performance_based
+    label: Performance Based
+    description: 'Learner demonstrates skill through authentic task execution such as simulation, roleplay, or product build; reaches up to Create'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/item_format
+    id: coe:concept/assessment_taxonomy/item_format/observational
+    label: Observational
+    description: 'An assessor observes and rates learner behaviour in context, as in coaching observation or manager rating; cognitive ceiling around Evaluate'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    id: coe:concept/assessment_taxonomy/cognitive_demand
+    label: Cognitive Demand
+    description: Bloom's level required to succeed at the assessment
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/cognitive_demand
+    id: coe:concept/assessment_taxonomy/cognitive_demand/remember
+    label: Remember
+    description: 'Succeeding requires only retrieval or recognition of previously learned facts and terminology'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/cognitive_demand
+    id: coe:concept/assessment_taxonomy/cognitive_demand/understand
+    label: Understand
+    description: 'Succeeding requires constructing meaning — interpreting, classifying, comparing, or explaining in one''s own words'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/cognitive_demand
+    id: coe:concept/assessment_taxonomy/cognitive_demand/apply
+    label: Apply
+    description: 'Succeeding requires carrying out a procedure or using knowledge in a given situation'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/cognitive_demand
+    id: coe:concept/assessment_taxonomy/cognitive_demand/analyze
+    label: Analyze
+    description: 'Succeeding requires breaking material into parts and determining how they relate to one another and to an overall structure'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/cognitive_demand
+    id: coe:concept/assessment_taxonomy/cognitive_demand/evaluate
+    label: Evaluate
+    description: 'Succeeding requires making judgements based on criteria and standards'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/cognitive_demand
+    id: coe:concept/assessment_taxonomy/cognitive_demand/create
+    label: Create
+    description: 'Succeeding requires assembling elements into a new, coherent, or original whole'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    id: coe:concept/assessment_taxonomy/feedback_mechanism
+    label: Feedback Mechanism
+    description: How results are communicated back to the learner
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/feedback_mechanism
+    id: coe:concept/assessment_taxonomy/feedback_mechanism/automated_immediate
+    label: Automated Immediate
+    description: 'System-generated feedback delivered to the learner the moment a response is submitted'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/feedback_mechanism
+    id: coe:concept/assessment_taxonomy/feedback_mechanism/automated_delayed
+    label: Automated Delayed
+    description: 'System-generated feedback released after a delay, such as when an attempt window or cohort deadline closes'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/feedback_mechanism
+    id: coe:concept/assessment_taxonomy/feedback_mechanism/instructor_written
+    label: Instructor Written
+    description: 'Individual written commentary composed by the instructor and returned to the learner'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/feedback_mechanism
+    id: coe:concept/assessment_taxonomy/feedback_mechanism/instructor_verbal
+    label: Instructor Verbal
+    description: 'Spoken feedback delivered by the instructor, live or recorded, rather than in writing'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/feedback_mechanism
+    id: coe:concept/assessment_taxonomy/feedback_mechanism/peer_review
+    label: Peer Review
+    description: 'Feedback provided by fellow learners reviewing one another''s responses or work products'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/feedback_mechanism
+    id: coe:concept/assessment_taxonomy/feedback_mechanism/self_reflection
+    label: Self Reflection
+    description: 'The learner generates their own feedback by reflecting on performance against objectives or criteria'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/feedback_mechanism
+    id: coe:concept/assessment_taxonomy/feedback_mechanism/rubric_based
+    label: Rubric Based
+    description: 'Feedback structured against the explicit criteria and levels of a rubric rather than free-form commentary'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    id: coe:concept/assessment_taxonomy/authenticity
+    label: Authenticity
+    description: How closely the assessment mirrors real-world performance
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/authenticity
+    id: coe:concept/assessment_taxonomy/authenticity/abstract
+    label: Abstract
+    description: 'Assessment presented without real-world context — decontextualised items testing knowledge in isolation'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/authenticity
+    id: coe:concept/assessment_taxonomy/authenticity/contextualised
+    label: Contextualised
+    description: 'Assessment framed within a realistic scenario, though the learner responds outside actual task conditions'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/authenticity
+    id: coe:concept/assessment_taxonomy/authenticity/simulated
+    label: Simulated
+    description: 'Assessment in which the learner performs the task within a safe replica of the real environment'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/assessment_taxonomy
+    broader:
+    - coe:concept/assessment_taxonomy/authenticity
+    id: coe:concept/assessment_taxonomy/authenticity/authentic
+    label: Authentic
+    description: 'Assessment in which the learner performs the real task under genuine workplace conditions'
+    home_domain: learning
+    status: canonical
+  top_concepts:
+  - coe:concept/assessment_taxonomy/evaluation_purpose
+  - coe:concept/assessment_taxonomy/kirkpatrick_level
+  - coe:concept/assessment_taxonomy/ltem_tier
+  - coe:concept/assessment_taxonomy/item_format
+  - coe:concept/assessment_taxonomy/cognitive_demand
+  - coe:concept/assessment_taxonomy/feedback_mechanism
+  - coe:concept/assessment_taxonomy/authenticity
+- last_updated: '2026-09-01'
+  id: coe:artifact/learning/cognitive_load_taxonomy
   label: Cognitive Load Taxonomy
   description: Classification of cognitive load constructs by load type, Mayer principle category, design strategy, expertise
     sensitivity, and content modality.
   home_domain: learning
   status: canonical
-- schemes:
-  - concepts:
-    - in_scheme: coe:scheme/content_architecture_taxonomy
-      id: coe:concept/content_architecture_taxonomy/artefact_type
-      label: Artefact Type
-      description: The kind of instructional design planning document
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_architecture_taxonomy
-      broader:
-      - coe:concept/content_architecture_taxonomy/artefact_type
-      id: coe:concept/content_architecture_taxonomy/artefact_type/course_blueprint
-      label: Course Blueprint
-      description: course_blueprint
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_architecture_taxonomy
-      broader:
-      - coe:concept/content_architecture_taxonomy/artefact_type
-      id: coe:concept/content_architecture_taxonomy/artefact_type/content_map
-      label: Content Map
-      description: content_map
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_architecture_taxonomy
-      broader:
-      - coe:concept/content_architecture_taxonomy/artefact_type
-      id: coe:concept/content_architecture_taxonomy/artefact_type/wireframe
-      label: Wireframe
-      description: wireframe
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_architecture_taxonomy
-      broader:
-      - coe:concept/content_architecture_taxonomy/artefact_type
-      id: coe:concept/content_architecture_taxonomy/artefact_type/screenplan
-      label: Screenplan
-      description: screenplan
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_architecture_taxonomy
-      broader:
-      - coe:concept/content_architecture_taxonomy/artefact_type
-      id: coe:concept/content_architecture_taxonomy/artefact_type/storyboard
-      label: Storyboard
-      description: storyboard
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_architecture_taxonomy
-      broader:
-      - coe:concept/content_architecture_taxonomy/artefact_type
-      id: coe:concept/content_architecture_taxonomy/artefact_type/action_map
-      label: Action Map
-      description: action_map
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_architecture_taxonomy
-      id: coe:concept/content_architecture_taxonomy/design_phase
-      label: Design Phase
-      description: The stage in the instructional design workflow
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_architecture_taxonomy
-      broader:
-      - coe:concept/content_architecture_taxonomy/design_phase
-      id: coe:concept/content_architecture_taxonomy/design_phase/discovery
-      label: Discovery
-      description: discovery
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_architecture_taxonomy
-      broader:
-      - coe:concept/content_architecture_taxonomy/design_phase
-      id: coe:concept/content_architecture_taxonomy/design_phase/planning
-      label: Planning
-      description: planning
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_architecture_taxonomy
-      broader:
-      - coe:concept/content_architecture_taxonomy/design_phase
-      id: coe:concept/content_architecture_taxonomy/design_phase/design
-      label: Design
-      description: design
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_architecture_taxonomy
-      broader:
-      - coe:concept/content_architecture_taxonomy/design_phase
-      id: coe:concept/content_architecture_taxonomy/design_phase/development
-      label: Development
-      description: development
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_architecture_taxonomy
-      broader:
-      - coe:concept/content_architecture_taxonomy/design_phase
-      id: coe:concept/content_architecture_taxonomy/design_phase/production
-      label: Production
-      description: production
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_architecture_taxonomy
-      broader:
-      - coe:concept/content_architecture_taxonomy/design_phase
-      id: coe:concept/content_architecture_taxonomy/design_phase/evaluation
-      label: Evaluation
-      description: evaluation
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_architecture_taxonomy
-      id: coe:concept/content_architecture_taxonomy/structural_granularity
-      label: Structural Granularity
-      description: The hierarchical level of the content unit
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_architecture_taxonomy
-      broader:
-      - coe:concept/content_architecture_taxonomy/structural_granularity
-      id: coe:concept/content_architecture_taxonomy/structural_granularity/course_level
-      label: Course Level
-      description: course_level
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_architecture_taxonomy
-      broader:
-      - coe:concept/content_architecture_taxonomy/structural_granularity
-      id: coe:concept/content_architecture_taxonomy/structural_granularity/module_level
-      label: Module Level
-      description: module_level
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_architecture_taxonomy
-      broader:
-      - coe:concept/content_architecture_taxonomy/structural_granularity
-      id: coe:concept/content_architecture_taxonomy/structural_granularity/topic_level
-      label: Topic Level
-      description: topic_level
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_architecture_taxonomy
-      broader:
-      - coe:concept/content_architecture_taxonomy/structural_granularity
-      id: coe:concept/content_architecture_taxonomy/structural_granularity/segment_level
-      label: Segment Level
-      description: segment_level
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_architecture_taxonomy
-      broader:
-      - coe:concept/content_architecture_taxonomy/structural_granularity
-      id: coe:concept/content_architecture_taxonomy/structural_granularity/scene_level
-      label: Scene Level
-      description: scene_level
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_architecture_taxonomy
-      id: coe:concept/content_architecture_taxonomy/pedagogical_function
-      label: Pedagogical Function
-      description: The instructional role the content plays within a learning sequence
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_architecture_taxonomy
-      broader:
-      - coe:concept/content_architecture_taxonomy/pedagogical_function
-      id: coe:concept/content_architecture_taxonomy/pedagogical_function/hook_and_opening
-      label: Hook And Opening
-      description: hook_and_opening
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_architecture_taxonomy
-      broader:
-      - coe:concept/content_architecture_taxonomy/pedagogical_function
-      id: coe:concept/content_architecture_taxonomy/pedagogical_function/roadmap
-      label: Roadmap
-      description: roadmap
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_architecture_taxonomy
-      broader:
-      - coe:concept/content_architecture_taxonomy/pedagogical_function
-      id: coe:concept/content_architecture_taxonomy/pedagogical_function/pre_training
-      label: Pre Training
-      description: pre_training
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_architecture_taxonomy
-      broader:
-      - coe:concept/content_architecture_taxonomy/pedagogical_function
-      id: coe:concept/content_architecture_taxonomy/pedagogical_function/core_instruction
-      label: Core Instruction
-      description: core_instruction
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_architecture_taxonomy
-      broader:
-      - coe:concept/content_architecture_taxonomy/pedagogical_function
-      id: coe:concept/content_architecture_taxonomy/pedagogical_function/practice_and_retrieval
-      label: Practice And Retrieval
-      description: practice_and_retrieval
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_architecture_taxonomy
-      broader:
-      - coe:concept/content_architecture_taxonomy/pedagogical_function
-      id: coe:concept/content_architecture_taxonomy/pedagogical_function/summary_and_reflection
-      label: Summary And Reflection
-      description: summary_and_reflection
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_architecture_taxonomy
-      broader:
-      - coe:concept/content_architecture_taxonomy/pedagogical_function
-      id: coe:concept/content_architecture_taxonomy/pedagogical_function/assessment_and_closure
-      label: Assessment And Closure
-      description: assessment_and_closure
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_architecture_taxonomy
-      id: coe:concept/content_architecture_taxonomy/delivery_format
-      label: Delivery Format
-      description: How the content is delivered to learners
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_architecture_taxonomy
-      broader:
-      - coe:concept/content_architecture_taxonomy/delivery_format
-      id: coe:concept/content_architecture_taxonomy/delivery_format/synchronous
-      label: Synchronous
-      description: synchronous
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_architecture_taxonomy
-      broader:
-      - coe:concept/content_architecture_taxonomy/delivery_format
-      id: coe:concept/content_architecture_taxonomy/delivery_format/asynchronous
-      label: Asynchronous
-      description: asynchronous
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_architecture_taxonomy
-      broader:
-      - coe:concept/content_architecture_taxonomy/delivery_format
-      id: coe:concept/content_architecture_taxonomy/delivery_format/blended
-      label: Blended
-      description: blended
-      home_domain: learning
-      status: canonical
-    id: coe:scheme/content_architecture_taxonomy
-    label: Content Architecture Taxonomy
-    description: Classification of content architecture constructs by artefact type, design phase, structural granularity,
-      pedagogical function, and delivery format.
+  concepts:
+  - in_scheme: coe:artifact/learning/cognitive_load_taxonomy
+    id: coe:concept/cognitive_load_taxonomy/load_type
+    label: Load Type
+    description: The category of cognitive load according to Cognitive Load Theory
     home_domain: learning
     status: canonical
-  version: 1.3.2
-  last_updated: '2026-08-12'
-  id: coe:artifact/pedagogical/content_architecture_taxonomy
+  - in_scheme: coe:artifact/learning/cognitive_load_taxonomy
+    broader:
+    - coe:concept/cognitive_load_taxonomy/load_type
+    id: coe:concept/cognitive_load_taxonomy/load_type/extraneous
+    label: Extraneous
+    description: 'Unnecessary cognitive effort imposed by poor instructional design — split attention, redundancy, chartjunk, or unclear hierarchy — which can and should be minimised'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/cognitive_load_taxonomy
+    broader:
+    - coe:concept/cognitive_load_taxonomy/load_type
+    id: coe:concept/cognitive_load_taxonomy/load_type/intrinsic
+    label: Intrinsic
+    description: 'Inherent difficulty of the material itself, determined by element interactivity and prerequisite knowledge — cannot be eliminated, only managed'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/cognitive_load_taxonomy
+    broader:
+    - coe:concept/cognitive_load_taxonomy/load_type
+    id: coe:concept/cognitive_load_taxonomy/load_type/germane
+    label: Germane
+    description: 'Productive effort spent on schema construction and deep processing — to be maximised once extraneous load is reduced'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/cognitive_load_taxonomy
+    id: coe:concept/cognitive_load_taxonomy/mayer_category
+    label: Mayer Principle Category
+    description: The functional category of Mayer's multimedia learning principle
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/cognitive_load_taxonomy
+    broader:
+    - coe:concept/cognitive_load_taxonomy/mayer_category
+    id: coe:concept/cognitive_load_taxonomy/mayer_category/reduce_extraneous
+    label: Reduce Extraneous
+    description: 'Mayer principles that eliminate unnecessary cognitive processing — coherence, signalling, redundancy, and spatial and temporal contiguity'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/cognitive_load_taxonomy
+    broader:
+    - coe:concept/cognitive_load_taxonomy/mayer_category
+    id: coe:concept/cognitive_load_taxonomy/mayer_category/manage_essential
+    label: Manage Essential
+    description: 'Mayer principles that help learners manage inherent content complexity — segmenting, pre-training, and modality'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/cognitive_load_taxonomy
+    broader:
+    - coe:concept/cognitive_load_taxonomy/mayer_category
+    id: coe:concept/cognitive_load_taxonomy/mayer_category/foster_generative
+    label: Foster Generative
+    description: 'Mayer principles that encourage deep engagement and meaning-making — multimedia, personalisation, voice, and generative activity'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/cognitive_load_taxonomy
+    id: coe:concept/cognitive_load_taxonomy/design_strategy
+    label: Design Strategy
+    description: The instructional design strategy for managing cognitive load
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/cognitive_load_taxonomy
+    broader:
+    - coe:concept/cognitive_load_taxonomy/design_strategy
+    id: coe:concept/cognitive_load_taxonomy/design_strategy/progressive_disclosure
+    label: Progressive Disclosure
+    description: 'Present only what is needed at each moment and reveal complexity gradually, via builds, layered diagrams, and drill-down — targets extraneous load'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/cognitive_load_taxonomy
+    broader:
+    - coe:concept/cognitive_load_taxonomy/design_strategy
+    id: coe:concept/cognitive_load_taxonomy/design_strategy/worked_examples
+    label: Worked Examples
+    description: 'Provide step-by-step solutions for learners to study before attempting problems, fading steps as competence grows — targets germane load'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/cognitive_load_taxonomy
+    broader:
+    - coe:concept/cognitive_load_taxonomy/design_strategy
+    id: coe:concept/cognitive_load_taxonomy/design_strategy/retrieval_practice
+    label: Retrieval Practice
+    description: 'Strengthen learning through active recall using low-stakes quizzing, spaced repetition, and interleaving — targets germane load'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/cognitive_load_taxonomy
+    broader:
+    - coe:concept/cognitive_load_taxonomy/design_strategy
+    id: coe:concept/cognitive_load_taxonomy/design_strategy/adaptive_scaffolding
+    label: Adaptive Scaffolding
+    description: 'Adjust instructional support to the learner''s expertise level, fading support as competence grows — targets intrinsic load'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/cognitive_load_taxonomy
+    id: coe:concept/cognitive_load_taxonomy/expertise_sensitivity
+    label: Expertise Sensitivity
+    description: How the strategy's effectiveness varies with learner expertise
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/cognitive_load_taxonomy
+    broader:
+    - coe:concept/cognitive_load_taxonomy/expertise_sensitivity
+    id: coe:concept/cognitive_load_taxonomy/expertise_sensitivity/novice_beneficial
+    label: Novice Beneficial
+    description: 'Strategies that significantly help low-prior-knowledge learners — apply liberally for novice audiences'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/cognitive_load_taxonomy
+    broader:
+    - coe:concept/cognitive_load_taxonomy/expertise_sensitivity
+    id: coe:concept/cognitive_load_taxonomy/expertise_sensitivity/expertise_reversal
+    label: Expertise Reversal
+    description: 'Strategies that help novices but hinder expert learners — reduce or eliminate for expert audiences'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/cognitive_load_taxonomy
+    broader:
+    - coe:concept/cognitive_load_taxonomy/expertise_sensitivity
+    id: coe:concept/cognitive_load_taxonomy/expertise_sensitivity/universally_beneficial
+    label: Universally Beneficial
+    description: 'Strategies that help all learners regardless of expertise — always apply'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/cognitive_load_taxonomy
+    id: coe:concept/cognitive_load_taxonomy/content_modality
+    label: Content Modality
+    description: The type of content the cognitive load construct applies to
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/cognitive_load_taxonomy
+    broader:
+    - coe:concept/cognitive_load_taxonomy/content_modality
+    id: coe:concept/cognitive_load_taxonomy/content_modality/slide_presentation
+    label: Slide Presentation
+    description: 'Slide-based content whose primary load risks are text overload, split attention, and redundancy; its word, bullet and data-series caps are library knowledge'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/cognitive_load_taxonomy
+    broader:
+    - coe:concept/cognitive_load_taxonomy/content_modality
+    id: coe:concept/cognitive_load_taxonomy/content_modality/video_content
+    label: Video Content
+    description: 'Video or animation content risking temporal misalignment and information dump; its segment length and on-screen text caps are library knowledge'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/cognitive_load_taxonomy
+    broader:
+    - coe:concept/cognitive_load_taxonomy/content_modality
+    id: coe:concept/cognitive_load_taxonomy/content_modality/written_document
+    label: Written Document
+    description: 'Written or eLearning document content risking walls of text and undefined jargon; its paragraph and section caps are library knowledge'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/cognitive_load_taxonomy
+    broader:
+    - coe:concept/cognitive_load_taxonomy/content_modality
+    id: coe:concept/cognitive_load_taxonomy/content_modality/interactive_module
+    label: Interactive Module
+    description: 'Interactive eLearning content risking navigation confusion and interactivity overload; its interactions-per-screen cap is library knowledge'
+    home_domain: learning
+    status: canonical
+  top_concepts:
+  - coe:concept/cognitive_load_taxonomy/load_type
+  - coe:concept/cognitive_load_taxonomy/mayer_category
+  - coe:concept/cognitive_load_taxonomy/design_strategy
+  - coe:concept/cognitive_load_taxonomy/expertise_sensitivity
+  - coe:concept/cognitive_load_taxonomy/content_modality
+- last_updated: '2026-09-01'
+  id: coe:artifact/learning/content_architecture_taxonomy
   label: Content Architecture Taxonomy
   description: Classification of content architecture constructs by artefact type, design phase, structural granularity, pedagogical
     function, and delivery format.
   home_domain: learning
   status: canonical
-- schemes:
-  - concepts:
-    - in_scheme: coe:scheme/content_format_taxonomy
-      id: coe:concept/content_format_taxonomy/format_type
-      label: format_type
-      description: Primary content format category determining structural requirements and production approach
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_format_taxonomy
-      broader:
-      - coe:concept/content_format_taxonomy/format_type
-      id: coe:concept/content_format_taxonomy/format_type/formal_learning
-      label: Formal Learning
-      description: formal_learning
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_format_taxonomy
-      broader:
-      - coe:concept/content_format_taxonomy/format_type
-      id: coe:concept/content_format_taxonomy/format_type/job_aid
-      label: Job Aid
-      description: job_aid
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_format_taxonomy
-      broader:
-      - coe:concept/content_format_taxonomy/format_type
-      id: coe:concept/content_format_taxonomy/format_type/reference_material
-      label: Reference Material
-      description: reference_material
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_format_taxonomy
-      broader:
-      - coe:concept/content_format_taxonomy/format_type
-      id: coe:concept/content_format_taxonomy/format_type/practice_activity
-      label: Practice Activity
-      description: practice_activity
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_format_taxonomy
-      broader:
-      - coe:concept/content_format_taxonomy/format_type
-      id: coe:concept/content_format_taxonomy/format_type/assessment
-      label: Assessment
-      description: assessment
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_format_taxonomy
-      id: coe:concept/content_format_taxonomy/duration_band
-      label: duration_band
-      description: Content duration classification from nano (< 2 min) to extended (> 4 hours)
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_format_taxonomy
-      broader:
-      - coe:concept/content_format_taxonomy/duration_band
-      id: coe:concept/content_format_taxonomy/duration_band/nano
-      label: Nano
-      description: nano
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_format_taxonomy
-      broader:
-      - coe:concept/content_format_taxonomy/duration_band
-      id: coe:concept/content_format_taxonomy/duration_band/micro
-      label: Micro
-      description: micro
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_format_taxonomy
-      broader:
-      - coe:concept/content_format_taxonomy/duration_band
-      id: coe:concept/content_format_taxonomy/duration_band/short
-      label: Short
-      description: short
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_format_taxonomy
-      broader:
-      - coe:concept/content_format_taxonomy/duration_band
-      id: coe:concept/content_format_taxonomy/duration_band/medium
-      label: Medium
-      description: medium
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_format_taxonomy
-      broader:
-      - coe:concept/content_format_taxonomy/duration_band
-      id: coe:concept/content_format_taxonomy/duration_band/long
-      label: Long
-      description: long
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_format_taxonomy
-      broader:
-      - coe:concept/content_format_taxonomy/duration_band
-      id: coe:concept/content_format_taxonomy/duration_band/extended
-      label: Extended
-      description: extended
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_format_taxonomy
-      id: coe:concept/content_format_taxonomy/delivery_mode
-      label: delivery_mode
-      description: Primary delivery modality for the content format
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_format_taxonomy
-      broader:
-      - coe:concept/content_format_taxonomy/delivery_mode
-      id: coe:concept/content_format_taxonomy/delivery_mode/elearning
-      label: Elearning
-      description: elearning
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_format_taxonomy
-      broader:
-      - coe:concept/content_format_taxonomy/delivery_mode
-      id: coe:concept/content_format_taxonomy/delivery_mode/ilt
-      label: Ilt
-      description: ilt
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_format_taxonomy
-      broader:
-      - coe:concept/content_format_taxonomy/delivery_mode
-      id: coe:concept/content_format_taxonomy/delivery_mode/blended
-      label: Blended
-      description: blended
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_format_taxonomy
-      broader:
-      - coe:concept/content_format_taxonomy/delivery_mode
-      id: coe:concept/content_format_taxonomy/delivery_mode/self_directed
-      label: Self Directed
-      description: self_directed
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_format_taxonomy
-      broader:
-      - coe:concept/content_format_taxonomy/delivery_mode
-      id: coe:concept/content_format_taxonomy/delivery_mode/on_the_job
-      label: On The Job
-      description: on_the_job
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/content_format_taxonomy
-      broader:
-      - coe:concept/content_format_taxonomy/delivery_mode
-      id: coe:concept/content_format_taxonomy/delivery_mode/virtual_ilt
-      label: Virtual Ilt
-      description: virtual_ilt
-      home_domain: learning
-      status: canonical
-    id: coe:scheme/content_format_taxonomy
-    label: Content Format Taxonomy
-    description: Classification of learning and performance support content format types — from full courses to microlearning,
-      job aids, coaching, and communication formats — for pipeline routing and design selection
+  concepts:
+  - in_scheme: coe:artifact/learning/content_architecture_taxonomy
+    id: coe:concept/content_architecture_taxonomy/artefact_type
+    label: Artefact Type
+    description: The kind of instructional design planning document
     home_domain: learning
     status: canonical
-  version: 1.5.2
-  last_updated: '2026-08-12'
-  id: coe:artifact/pedagogical/content_format_taxonomy
+  - in_scheme: coe:artifact/learning/content_architecture_taxonomy
+    broader:
+    - coe:concept/content_architecture_taxonomy/artefact_type
+    id: coe:concept/content_architecture_taxonomy/artefact_type/course_blueprint
+    label: Course Blueprint
+    description: 'Strategic-fidelity curriculum outline mapping modules to learning outcomes, audience, duration, and delivery method'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_architecture_taxonomy
+    broader:
+    - coe:concept/content_architecture_taxonomy/artefact_type
+    id: coe:concept/content_architecture_taxonomy/artefact_type/content_map
+    label: Content Map
+    description: 'Tabular planning tool aligning each module''s objectives, topics, activities, assessments, and outcomes in a single view'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_architecture_taxonomy
+    broader:
+    - coe:concept/content_architecture_taxonomy/artefact_type
+    id: coe:concept/content_architecture_taxonomy/artefact_type/wireframe
+    label: Wireframe
+    description: 'Low-to-medium fidelity planning document outlining the structure and flow of a learning asset segment by segment'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_architecture_taxonomy
+    broader:
+    - coe:concept/content_architecture_taxonomy/artefact_type
+    id: coe:concept/content_architecture_taxonomy/artefact_type/screenplan
+    label: Screenplan
+    description: 'Screen-by-screen outline specifying purpose, content summary, media, and layout for each display state'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_architecture_taxonomy
+    broader:
+    - coe:concept/content_architecture_taxonomy/artefact_type
+    id: coe:concept/content_architecture_taxonomy/artefact_type/action_map
+    label: Action Map
+    description: 'Visual diagram connecting business goals to performer actions to practice activities, minimising unnecessary content (Cathy Moore framework)'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_architecture_taxonomy
+    id: coe:concept/content_architecture_taxonomy/design_phase
+    label: Design Phase
+    description: The stage in the instructional design workflow
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_architecture_taxonomy
+    broader:
+    - coe:concept/content_architecture_taxonomy/design_phase
+    id: coe:concept/content_architecture_taxonomy/design_phase/discovery
+    label: Discovery
+    description: 'Needs analysis, audience research, and business goal identification'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_architecture_taxonomy
+    broader:
+    - coe:concept/content_architecture_taxonomy/design_phase
+    id: coe:concept/content_architecture_taxonomy/design_phase/planning
+    label: Planning
+    description: 'Strategic design decisions — objectives, structure, assessment strategy, and content mapping'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_architecture_taxonomy
+    broader:
+    - coe:concept/content_architecture_taxonomy/design_phase
+    id: coe:concept/content_architecture_taxonomy/design_phase/design
+    label: Design
+    description: 'Detailed structural planning — wireframes, screenplans, and interaction design'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_architecture_taxonomy
+    broader:
+    - coe:concept/content_architecture_taxonomy/design_phase
+    id: coe:concept/content_architecture_taxonomy/design_phase/development
+    label: Development
+    description: 'Content creation — storyboards, scripts, media production, and authoring'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_architecture_taxonomy
+    broader:
+    - coe:concept/content_architecture_taxonomy/design_phase
+    id: coe:concept/content_architecture_taxonomy/design_phase/production
+    label: Production
+    description: 'Building the final learning asset — recording, animating, assembling, and publishing'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_architecture_taxonomy
+    broader:
+    - coe:concept/content_architecture_taxonomy/design_phase
+    id: coe:concept/content_architecture_taxonomy/design_phase/evaluation
+    label: Evaluation
+    description: 'Measuring effectiveness, gathering feedback, and planning reinforcement'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_architecture_taxonomy
+    id: coe:concept/content_architecture_taxonomy/structural_granularity
+    label: Structural Granularity
+    description: The hierarchical level of the content unit
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_architecture_taxonomy
+    broader:
+    - coe:concept/content_architecture_taxonomy/structural_granularity
+    id: coe:concept/content_architecture_taxonomy/structural_granularity/course_level
+    label: Course Level
+    description: 'The entire learning programme or curriculum, spanning hours to days and containing modules'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_architecture_taxonomy
+    broader:
+    - coe:concept/content_architecture_taxonomy/structural_granularity
+    id: coe:concept/content_architecture_taxonomy/structural_granularity/module_level
+    label: Module Level
+    description: 'A distinct unit of instruction organised around a cluster of related learning objectives; its duration band is library knowledge'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_architecture_taxonomy
+    broader:
+    - coe:concept/content_architecture_taxonomy/structural_granularity
+    id: coe:concept/content_architecture_taxonomy/structural_granularity/topic_level
+    label: Topic Level
+    description: 'A major subject area or concept group within a module; its duration band is library knowledge'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_architecture_taxonomy
+    broader:
+    - coe:concept/content_architecture_taxonomy/structural_granularity
+    id: coe:concept/content_architecture_taxonomy/structural_granularity/segment_level
+    label: Segment Level
+    description: 'A self-contained portion of content, typically one pedagogical sequence stage; its duration band is library knowledge'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_architecture_taxonomy
+    broader:
+    - coe:concept/content_architecture_taxonomy/structural_granularity
+    id: coe:concept/content_architecture_taxonomy/structural_granularity/scene_level
+    label: Scene Level
+    description: 'A single view, shot, or screen state within a segment; its duration band is library knowledge'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_architecture_taxonomy
+    id: coe:concept/content_architecture_taxonomy/pedagogical_function
+    label: Pedagogical Function
+    description: The instructional role the content plays within a learning sequence
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_architecture_taxonomy
+    broader:
+    - coe:concept/content_architecture_taxonomy/pedagogical_function
+    id: coe:concept/content_architecture_taxonomy/pedagogical_function/hook_and_opening
+    label: Hook And Opening
+    description: 'Stage 1 — attention-grabbing introduction that motivates learners and creates relevance; its duration is library knowledge'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_architecture_taxonomy
+    broader:
+    - coe:concept/content_architecture_taxonomy/pedagogical_function
+    id: coe:concept/content_architecture_taxonomy/pedagogical_function/roadmap
+    label: Roadmap
+    description: 'Stage 2 — advance organiser previewing what the learner will cover, establishing expectations and a mental framework; its duration is library knowledge'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_architecture_taxonomy
+    broader:
+    - coe:concept/content_architecture_taxonomy/pedagogical_function
+    id: coe:concept/content_architecture_taxonomy/pedagogical_function/pre_training
+    label: Pre Training
+    description: 'Stage 3 — foundational vocabulary and prerequisite concepts taught before the main complexity; its duration is library knowledge'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_architecture_taxonomy
+    broader:
+    - coe:concept/content_architecture_taxonomy/pedagogical_function
+    id: coe:concept/content_architecture_taxonomy/pedagogical_function/core_instruction
+    label: Core Instruction
+    description: 'Stage 4 — primary content delivery: the main explanatory, demonstrative, or exploratory material; its segment duration is library knowledge'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_architecture_taxonomy
+    broader:
+    - coe:concept/content_architecture_taxonomy/pedagogical_function
+    id: coe:concept/content_architecture_taxonomy/pedagogical_function/practice_and_retrieval
+    label: Practice And Retrieval
+    description: 'Stage 5 — in-line knowledge checks, activities, and retrieval practice embedded within or after core content; its check duration is library knowledge'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_architecture_taxonomy
+    broader:
+    - coe:concept/content_architecture_taxonomy/pedagogical_function
+    id: coe:concept/content_architecture_taxonomy/pedagogical_function/summary_and_reflection
+    label: Summary And Reflection
+    description: 'Stage 6 — consolidation of key points and personal reflection on how to apply the learning; its duration is library knowledge'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_architecture_taxonomy
+    broader:
+    - coe:concept/content_architecture_taxonomy/pedagogical_function
+    id: coe:concept/content_architecture_taxonomy/pedagogical_function/assessment_and_closure
+    label: Assessment And Closure
+    description: 'Stage 7 — summative evaluation and transition to next learning or application; its duration is library knowledge'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_architecture_taxonomy
+    id: coe:concept/content_architecture_taxonomy/delivery_format
+    label: Delivery Format
+    description: How the content is delivered to learners
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_architecture_taxonomy
+    broader:
+    - coe:concept/content_architecture_taxonomy/delivery_format
+    id: coe:concept/content_architecture_taxonomy/delivery_format/synchronous
+    label: Synchronous
+    description: 'Real-time delivery requiring simultaneous participation of learners and facilitator'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_architecture_taxonomy
+    broader:
+    - coe:concept/content_architecture_taxonomy/delivery_format
+    id: coe:concept/content_architecture_taxonomy/delivery_format/asynchronous
+    label: Asynchronous
+    description: 'Self-paced delivery that learners complete on their own schedule'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_architecture_taxonomy
+    broader:
+    - coe:concept/content_architecture_taxonomy/delivery_format
+    id: coe:concept/content_architecture_taxonomy/delivery_format/blended
+    label: Blended
+    description: 'Combination of synchronous and asynchronous elements in a structured learning journey'
+    home_domain: learning
+    status: canonical
+  top_concepts:
+  - coe:concept/content_architecture_taxonomy/artefact_type
+  - coe:concept/content_architecture_taxonomy/design_phase
+  - coe:concept/content_architecture_taxonomy/structural_granularity
+  - coe:concept/content_architecture_taxonomy/pedagogical_function
+  - coe:concept/content_architecture_taxonomy/delivery_format
+- last_updated: '2026-09-01'
+  id: coe:artifact/learning/content_format_taxonomy
   label: Content Format Taxonomy
   description: Classification of learning and performance support content format types — from full courses to microlearning,
     job aids, coaching, and communication formats — for pipeline routing and design selection
   home_domain: learning
   status: canonical
-- schemes:
-  - concepts:
-    - in_scheme: coe:scheme/learning_objectives_taxonomy
-      id: coe:concept/learning_objectives_taxonomy/bloom_level
-      label: bloom_level
-      description: Bloom's Revised Taxonomy cognitive level from Remember (1) to Create (6)
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/learning_objectives_taxonomy
-      broader:
-      - coe:concept/learning_objectives_taxonomy/bloom_level
-      id: coe:concept/learning_objectives_taxonomy/bloom_level/remember
-      label: Remember
-      description: remember
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/learning_objectives_taxonomy
-      broader:
-      - coe:concept/learning_objectives_taxonomy/bloom_level
-      id: coe:concept/learning_objectives_taxonomy/bloom_level/understand
-      label: Understand
-      description: understand
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/learning_objectives_taxonomy
-      broader:
-      - coe:concept/learning_objectives_taxonomy/bloom_level
-      id: coe:concept/learning_objectives_taxonomy/bloom_level/apply
-      label: Apply
-      description: apply
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/learning_objectives_taxonomy
-      broader:
-      - coe:concept/learning_objectives_taxonomy/bloom_level
-      id: coe:concept/learning_objectives_taxonomy/bloom_level/analyze
-      label: Analyze
-      description: analyze
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/learning_objectives_taxonomy
-      broader:
-      - coe:concept/learning_objectives_taxonomy/bloom_level
-      id: coe:concept/learning_objectives_taxonomy/bloom_level/evaluate
-      label: Evaluate
-      description: evaluate
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/learning_objectives_taxonomy
-      broader:
-      - coe:concept/learning_objectives_taxonomy/bloom_level
-      id: coe:concept/learning_objectives_taxonomy/bloom_level/create
-      label: Create
-      description: create
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/learning_objectives_taxonomy
-      id: coe:concept/learning_objectives_taxonomy/cognitive_category
-      label: cognitive_category
-      description: Higher-order vs lower-order thinking classification
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/learning_objectives_taxonomy
-      broader:
-      - coe:concept/learning_objectives_taxonomy/cognitive_category
-      id: coe:concept/learning_objectives_taxonomy/cognitive_category/lower_order_thinking
-      label: Lower Order Thinking
-      description: lower_order_thinking
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/learning_objectives_taxonomy
-      broader:
-      - coe:concept/learning_objectives_taxonomy/cognitive_category
-      id: coe:concept/learning_objectives_taxonomy/cognitive_category/higher_order_thinking
-      label: Higher Order Thinking
-      description: higher_order_thinking
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/learning_objectives_taxonomy
-      id: coe:concept/learning_objectives_taxonomy/objective_quality
-      label: objective_quality
-      description: ABCD formula compliance and measurability quality rating
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/learning_objectives_taxonomy
-      broader:
-      - coe:concept/learning_objectives_taxonomy/objective_quality
-      id: coe:concept/learning_objectives_taxonomy/objective_quality/strong
-      label: Strong
-      description: strong
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/learning_objectives_taxonomy
-      broader:
-      - coe:concept/learning_objectives_taxonomy/objective_quality
-      id: coe:concept/learning_objectives_taxonomy/objective_quality/acceptable
-      label: Acceptable
-      description: acceptable
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/learning_objectives_taxonomy
-      broader:
-      - coe:concept/learning_objectives_taxonomy/objective_quality
-      id: coe:concept/learning_objectives_taxonomy/objective_quality/weak_or_invalid
-      label: Weak Or Invalid
-      description: weak_or_invalid
-      home_domain: learning
-      status: canonical
-    id: coe:scheme/learning_objectives_taxonomy
-    label: Learning Objectives Taxonomy
-    description: Bloom's Revised Taxonomy 6-level classification hierarchy for learning objectives — with action verbs, measurability
-      signals, aligned activity types, and assessment approaches
+  concepts:
+  - in_scheme: coe:artifact/learning/content_format_taxonomy
+    id: coe:concept/content_format_taxonomy/format_type
+    label: format_type
+    description: Primary content format category determining structural requirements and production approach
     home_domain: learning
     status: canonical
-  version: 1.5.2
-  last_updated: '2026-08-12'
-  id: coe:artifact/pedagogical/learning_objectives_taxonomy
+  - in_scheme: coe:artifact/learning/content_format_taxonomy
+    broader:
+    - coe:concept/content_format_taxonomy/format_type
+    id: coe:concept/content_format_taxonomy/format_type/formal_learning
+    label: Formal Learning
+    description: 'Structured content with defined objectives, progression, and assessment — courses, modules, workshops, bootcamps, and webinars'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_format_taxonomy
+    broader:
+    - coe:concept/content_format_taxonomy/format_type
+    id: coe:concept/content_format_taxonomy/format_type/job_aid
+    label: Job Aid
+    description: 'Quick-reference support for a specific task or process, used at the moment of need rather than studied for learning'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_format_taxonomy
+    broader:
+    - coe:concept/content_format_taxonomy/format_type
+    id: coe:concept/content_format_taxonomy/format_type/reference_material
+    label: Reference Material
+    description: 'Lookup content organised for consultation rather than sequential study — reference cards, glossaries, and terminology guides for on-demand fact retrieval'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_format_taxonomy
+    broader:
+    - coe:concept/content_format_taxonomy/format_type
+    id: coe:concept/content_format_taxonomy/format_type/practice_activity
+    label: Practice Activity
+    description: 'Content whose primary purpose is skill rehearsal — structured drills, exercises, and scenarios in which the learner performs rather than consumes'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_format_taxonomy
+    broader:
+    - coe:concept/content_format_taxonomy/format_type
+    id: coe:concept/content_format_taxonomy/format_type/assessment
+    label: Assessment
+    description: 'Content that measures learner knowledge or performance against objectives rather than teaching new material'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_format_taxonomy
+    id: coe:concept/content_format_taxonomy/duration_band
+    label: duration_band
+    description: Content duration classification ordered from nano through extended; the band boundaries are library knowledge
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_format_taxonomy
+    broader:
+    - coe:concept/content_format_taxonomy/duration_band
+    id: coe:concept/content_format_taxonomy/duration_band/nano
+    label: Nano
+    description: 'The shortest band — a single fact or concept, such as a knowledge burst'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_format_taxonomy
+    broader:
+    - coe:concept/content_format_taxonomy/duration_band
+    id: coe:concept/content_format_taxonomy/duration_band/micro
+    label: Micro
+    description: 'The microlearning band — a single-objective microlearning unit'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_format_taxonomy
+    broader:
+    - coe:concept/content_format_taxonomy/duration_band
+    id: coe:concept/content_format_taxonomy/duration_band/short
+    label: Short
+    description: 'The short band — a focused topic treatment or practice drill'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_format_taxonomy
+    broader:
+    - coe:concept/content_format_taxonomy/duration_band
+    id: coe:concept/content_format_taxonomy/duration_band/medium
+    label: Medium
+    description: 'The medium band — a full learning module or coaching session'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_format_taxonomy
+    broader:
+    - coe:concept/content_format_taxonomy/duration_band
+    id: coe:concept/content_format_taxonomy/duration_band/long
+    label: Long
+    description: 'The long band — a workshop or multi-module block'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_format_taxonomy
+    broader:
+    - coe:concept/content_format_taxonomy/duration_band
+    id: coe:concept/content_format_taxonomy/duration_band/extended
+    label: Extended
+    description: 'The longest band — a full course, bootcamp, or multi-day programme'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_format_taxonomy
+    id: coe:concept/content_format_taxonomy/delivery_mode
+    label: delivery_mode
+    description: Primary delivery modality for the content format
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_format_taxonomy
+    broader:
+    - coe:concept/content_format_taxonomy/delivery_mode
+    id: coe:concept/content_format_taxonomy/delivery_mode/elearning
+    label: eLearning
+    description: 'Self-paced interactive digital delivery completed without a live facilitator'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_format_taxonomy
+    broader:
+    - coe:concept/content_format_taxonomy/delivery_mode
+    id: coe:concept/content_format_taxonomy/delivery_mode/ilt
+    label: ILT
+    description: 'Instructor-led training delivered live and in person to a cohort'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_format_taxonomy
+    broader:
+    - coe:concept/content_format_taxonomy/delivery_mode
+    id: coe:concept/content_format_taxonomy/delivery_mode/blended
+    label: Blended
+    description: 'Delivery combining live facilitated sessions with self-paced components in one structured journey'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_format_taxonomy
+    broader:
+    - coe:concept/content_format_taxonomy/delivery_mode
+    id: coe:concept/content_format_taxonomy/delivery_mode/self_directed
+    label: Self Directed
+    description: 'Learner-controlled delivery in which the individual chooses what, when, and how to study, without an imposed pathway'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_format_taxonomy
+    broader:
+    - coe:concept/content_format_taxonomy/delivery_mode
+    id: coe:concept/content_format_taxonomy/delivery_mode/on_the_job
+    label: On The Job
+    description: 'Delivery embedded in real work, where learning happens while performing actual tasks, supported by coaching or performance support'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/content_format_taxonomy
+    broader:
+    - coe:concept/content_format_taxonomy/delivery_mode
+    id: coe:concept/content_format_taxonomy/delivery_mode/virtual_ilt
+    label: Virtual ILT
+    description: 'Instructor-led training delivered live over video conferencing rather than in a physical room'
+    home_domain: learning
+    status: canonical
+  top_concepts:
+  - coe:concept/content_format_taxonomy/format_type
+  - coe:concept/content_format_taxonomy/duration_band
+  - coe:concept/content_format_taxonomy/delivery_mode
+- last_updated: '2026-09-01'
+  id: coe:artifact/learning/learning_objectives_taxonomy
   label: Learning Objectives Taxonomy
   description: Bloom's Revised Taxonomy 6-level classification hierarchy for learning objectives — with action verbs, measurability
     signals, aligned activity types, and assessment approaches
   home_domain: learning
   status: canonical
-- schemes:
-  - concepts:
-    - in_scheme: coe:scheme/pedagogical_frameworks_taxonomy
-      id: coe:concept/pedagogical_frameworks_taxonomy/learning_paradigm
-      label: learning_paradigm
-      description: Foundational theoretical orientation of the pedagogical framework
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/pedagogical_frameworks_taxonomy
-      broader:
-      - coe:concept/pedagogical_frameworks_taxonomy/learning_paradigm
-      id: coe:concept/pedagogical_frameworks_taxonomy/learning_paradigm/behaviourist
-      label: Behaviourist
-      description: behaviourist
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/pedagogical_frameworks_taxonomy
-      broader:
-      - coe:concept/pedagogical_frameworks_taxonomy/learning_paradigm
-      id: coe:concept/pedagogical_frameworks_taxonomy/learning_paradigm/cognitivist
-      label: Cognitivist
-      description: cognitivist
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/pedagogical_frameworks_taxonomy
-      broader:
-      - coe:concept/pedagogical_frameworks_taxonomy/learning_paradigm
-      id: coe:concept/pedagogical_frameworks_taxonomy/learning_paradigm/constructivist
-      label: Constructivist
-      description: constructivist
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/pedagogical_frameworks_taxonomy
-      broader:
-      - coe:concept/pedagogical_frameworks_taxonomy/learning_paradigm
-      id: coe:concept/pedagogical_frameworks_taxonomy/learning_paradigm/social_learning
-      label: Social Learning
-      description: social_learning
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/pedagogical_frameworks_taxonomy
-      broader:
-      - coe:concept/pedagogical_frameworks_taxonomy/learning_paradigm
-      id: coe:concept/pedagogical_frameworks_taxonomy/learning_paradigm/humanist_andragogical
-      label: Humanist Andragogical
-      description: humanist_andragogical
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/pedagogical_frameworks_taxonomy
-      broader:
-      - coe:concept/pedagogical_frameworks_taxonomy/learning_paradigm
-      id: coe:concept/pedagogical_frameworks_taxonomy/learning_paradigm/experiential
-      label: Experiential
-      description: experiential
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/pedagogical_frameworks_taxonomy
-      id: coe:concept/pedagogical_frameworks_taxonomy/bloom_level_alignment
-      label: bloom_level_alignment
-      description: Bloom's taxonomy level the framework is best suited to develop
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/pedagogical_frameworks_taxonomy
-      broader:
-      - coe:concept/pedagogical_frameworks_taxonomy/bloom_level_alignment
-      id: coe:concept/pedagogical_frameworks_taxonomy/bloom_level_alignment/remember
-      label: Remember
-      description: remember
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/pedagogical_frameworks_taxonomy
-      broader:
-      - coe:concept/pedagogical_frameworks_taxonomy/bloom_level_alignment
-      id: coe:concept/pedagogical_frameworks_taxonomy/bloom_level_alignment/understand
-      label: Understand
-      description: understand
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/pedagogical_frameworks_taxonomy
-      broader:
-      - coe:concept/pedagogical_frameworks_taxonomy/bloom_level_alignment
-      id: coe:concept/pedagogical_frameworks_taxonomy/bloom_level_alignment/apply
-      label: Apply
-      description: apply
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/pedagogical_frameworks_taxonomy
-      broader:
-      - coe:concept/pedagogical_frameworks_taxonomy/bloom_level_alignment
-      id: coe:concept/pedagogical_frameworks_taxonomy/bloom_level_alignment/analyze
-      label: Analyze
-      description: analyze
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/pedagogical_frameworks_taxonomy
-      broader:
-      - coe:concept/pedagogical_frameworks_taxonomy/bloom_level_alignment
-      id: coe:concept/pedagogical_frameworks_taxonomy/bloom_level_alignment/evaluate
-      label: Evaluate
-      description: evaluate
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/pedagogical_frameworks_taxonomy
-      broader:
-      - coe:concept/pedagogical_frameworks_taxonomy/bloom_level_alignment
-      id: coe:concept/pedagogical_frameworks_taxonomy/bloom_level_alignment/create
-      label: Create
-      description: create
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/pedagogical_frameworks_taxonomy
-      id: coe:concept/pedagogical_frameworks_taxonomy/delivery_format
-      label: delivery_format
-      description: Delivery modality for which the framework is most effective
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/pedagogical_frameworks_taxonomy
-      broader:
-      - coe:concept/pedagogical_frameworks_taxonomy/delivery_format
-      id: coe:concept/pedagogical_frameworks_taxonomy/delivery_format/elearning
-      label: Elearning
-      description: elearning
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/pedagogical_frameworks_taxonomy
-      broader:
-      - coe:concept/pedagogical_frameworks_taxonomy/delivery_format
-      id: coe:concept/pedagogical_frameworks_taxonomy/delivery_format/ilt
-      label: Ilt
-      description: ilt
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/pedagogical_frameworks_taxonomy
-      broader:
-      - coe:concept/pedagogical_frameworks_taxonomy/delivery_format
-      id: coe:concept/pedagogical_frameworks_taxonomy/delivery_format/blended
-      label: Blended
-      description: blended
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/pedagogical_frameworks_taxonomy
-      broader:
-      - coe:concept/pedagogical_frameworks_taxonomy/delivery_format
-      id: coe:concept/pedagogical_frameworks_taxonomy/delivery_format/self_directed
-      label: Self Directed
-      description: self_directed
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/pedagogical_frameworks_taxonomy
-      broader:
-      - coe:concept/pedagogical_frameworks_taxonomy/delivery_format
-      id: coe:concept/pedagogical_frameworks_taxonomy/delivery_format/virtual_ilt
-      label: Virtual Ilt
-      description: virtual_ilt
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/pedagogical_frameworks_taxonomy
-      broader:
-      - coe:concept/pedagogical_frameworks_taxonomy/delivery_format
-      id: coe:concept/pedagogical_frameworks_taxonomy/delivery_format/on_the_job
-      label: On The Job
-      description: on_the_job
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/pedagogical_frameworks_taxonomy
-      id: coe:concept/pedagogical_frameworks_taxonomy/audience_experience_level
-      label: audience_experience_level
-      description: Learner experience level the framework is optimised for
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/pedagogical_frameworks_taxonomy
-      broader:
-      - coe:concept/pedagogical_frameworks_taxonomy/audience_experience_level
-      id: coe:concept/pedagogical_frameworks_taxonomy/audience_experience_level/novice
-      label: Novice
-      description: novice
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/pedagogical_frameworks_taxonomy
-      broader:
-      - coe:concept/pedagogical_frameworks_taxonomy/audience_experience_level
-      id: coe:concept/pedagogical_frameworks_taxonomy/audience_experience_level/intermediate
-      label: Intermediate
-      description: intermediate
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/pedagogical_frameworks_taxonomy
-      broader:
-      - coe:concept/pedagogical_frameworks_taxonomy/audience_experience_level
-      id: coe:concept/pedagogical_frameworks_taxonomy/audience_experience_level/experienced
-      label: Experienced
-      description: experienced
-      home_domain: learning
-      status: canonical
-    id: coe:scheme/pedagogical_frameworks_taxonomy
-    label: Pedagogical Frameworks Taxonomy
-    description: Classification of 16 research-validated instructional design frameworks by learning paradigm — behaviourist,
-      cognitivist, constructivist, humanist, and experiential — with selection guidance and use case routing
+  concepts:
+  - in_scheme: coe:artifact/learning/learning_objectives_taxonomy
+    id: coe:concept/learning_objectives_taxonomy/bloom_level
+    label: bloom_level
+    description: Bloom's Revised Taxonomy cognitive level from Remember (1) to Create (6)
     home_domain: learning
     status: canonical
-  version: 1.5.2
-  last_updated: '2026-08-12'
-  id: coe:artifact/pedagogical/pedagogical_frameworks_taxonomy
+  - in_scheme: coe:artifact/learning/learning_objectives_taxonomy
+    broader:
+    - coe:concept/learning_objectives_taxonomy/bloom_level
+    id: coe:concept/learning_objectives_taxonomy/bloom_level/remember
+    label: Remember
+    description: 'Level 1 — retrieve, recognise, or recall relevant knowledge from long-term memory; strong verbs include define, list, and identify'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/learning_objectives_taxonomy
+    broader:
+    - coe:concept/learning_objectives_taxonomy/bloom_level
+    id: coe:concept/learning_objectives_taxonomy/bloom_level/understand
+    label: Understand
+    description: 'Level 2 — construct meaning by interpreting, classifying, comparing, or explaining in one''s own words; strong verbs include explain, summarise, and compare'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/learning_objectives_taxonomy
+    broader:
+    - coe:concept/learning_objectives_taxonomy/bloom_level
+    id: coe:concept/learning_objectives_taxonomy/bloom_level/apply
+    label: Apply
+    description: 'Level 3 — carry out or use a procedure in a given situation; strong verbs include demonstrate, implement, and solve'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/learning_objectives_taxonomy
+    broader:
+    - coe:concept/learning_objectives_taxonomy/bloom_level
+    id: coe:concept/learning_objectives_taxonomy/bloom_level/analyze
+    label: Analyze
+    description: 'Level 4 — break material into constituent parts and determine how they relate to structure and purpose; strong verbs include differentiate, diagnose, and deconstruct'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/learning_objectives_taxonomy
+    broader:
+    - coe:concept/learning_objectives_taxonomy/bloom_level
+    id: coe:concept/learning_objectives_taxonomy/bloom_level/evaluate
+    label: Evaluate
+    description: 'Level 5 — make judgements based on criteria and standards; strong verbs include critique, justify, and recommend'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/learning_objectives_taxonomy
+    broader:
+    - coe:concept/learning_objectives_taxonomy/bloom_level
+    id: coe:concept/learning_objectives_taxonomy/bloom_level/create
+    label: Create
+    description: 'Level 6 — put elements together to form a new, coherent, or functional whole; strong verbs include design, build, and formulate'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/learning_objectives_taxonomy
+    id: coe:concept/learning_objectives_taxonomy/cognitive_category
+    label: cognitive_category
+    description: Higher-order vs lower-order thinking classification
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/learning_objectives_taxonomy
+    broader:
+    - coe:concept/learning_objectives_taxonomy/cognitive_category
+    id: coe:concept/learning_objectives_taxonomy/cognitive_category/lower_order_thinking
+    label: Lower Order Thinking
+    description: 'Remember, Understand, and Apply — foundation knowledge and skill, necessary but not sufficient for transfer'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/learning_objectives_taxonomy
+    broader:
+    - coe:concept/learning_objectives_taxonomy/cognitive_category
+    id: coe:concept/learning_objectives_taxonomy/cognitive_category/higher_order_thinking
+    label: Higher Order Thinking
+    description: 'Analyze, Evaluate, and Create — transfer, judgment, and creation, indicating deep learning'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/learning_objectives_taxonomy
+    id: coe:concept/learning_objectives_taxonomy/objective_quality
+    label: objective_quality
+    description: ABCD formula compliance and measurability quality rating
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/learning_objectives_taxonomy
+    broader:
+    - coe:concept/learning_objectives_taxonomy/objective_quality
+    id: coe:concept/learning_objectives_taxonomy/objective_quality/strong
+    label: Strong
+    description: 'Objective satisfies the full ABCD formula — a measurable Bloom-aligned verb with explicit condition and degree of success'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/learning_objectives_taxonomy
+    broader:
+    - coe:concept/learning_objectives_taxonomy/objective_quality
+    id: coe:concept/learning_objectives_taxonomy/objective_quality/acceptable
+    label: Acceptable
+    description: 'Objective uses a measurable verb but leaves condition or degree implicit — usable, though short of best practice'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/learning_objectives_taxonomy
+    broader:
+    - coe:concept/learning_objectives_taxonomy/objective_quality
+    id: coe:concept/learning_objectives_taxonomy/objective_quality/weak_or_invalid
+    label: Weak Or Invalid
+    description: 'Objective rests on an unmeasurable verb such as understand, know, or appreciate, or lacks an observable behaviour, so it cannot be assessed as written'
+    home_domain: learning
+    status: canonical
+  top_concepts:
+  - coe:concept/learning_objectives_taxonomy/bloom_level
+  - coe:concept/learning_objectives_taxonomy/cognitive_category
+  - coe:concept/learning_objectives_taxonomy/objective_quality
+- last_updated: '2026-09-01'
+  id: coe:artifact/learning/pedagogical_frameworks_taxonomy
   label: Pedagogical Frameworks Taxonomy
   description: Classification of 16 research-validated instructional design frameworks by learning paradigm — behaviourist,
     cognitivist, constructivist, humanist, and experiential — with selection guidance and use case routing
   home_domain: learning
   status: canonical
-- schemes:
-  - concepts:
-    - in_scheme: coe:scheme/scoring_taxonomy
-      id: coe:concept/scoring_taxonomy/quality_domain
-      label: Quality Domain
-      description: The broad area of quality the dimension belongs to
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/quality_domain
-      id: coe:concept/scoring_taxonomy/quality_domain/communication_quality
-      label: Communication Quality
-      description: communication_quality
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/quality_domain
-      id: coe:concept/scoring_taxonomy/quality_domain/argument_quality
-      label: Argument Quality
-      description: argument_quality
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/quality_domain
-      id: coe:concept/scoring_taxonomy/quality_domain/design_quality
-      label: Design Quality
-      description: design_quality
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/quality_domain
-      id: coe:concept/scoring_taxonomy/quality_domain/learning_quality
-      label: Learning Quality
-      description: learning_quality
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/quality_domain
-      id: coe:concept/scoring_taxonomy/quality_domain/inclusion_quality
-      label: Inclusion Quality
-      description: inclusion_quality
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/quality_domain
-      id: coe:concept/scoring_taxonomy/quality_domain/validity_integrity_quality
-      label: Validity Integrity Quality
-      description: validity_integrity_quality
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      id: coe:concept/scoring_taxonomy/score_tier
-      label: Score Tier
-      description: The performance level assigned to evaluated content
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/score_tier
-      id: coe:concept/scoring_taxonomy/score_tier/exemplary
-      label: Exemplary
-      description: exemplary
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/score_tier
-      id: coe:concept/scoring_taxonomy/score_tier/proficient
-      label: Proficient
-      description: proficient
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/score_tier
-      id: coe:concept/scoring_taxonomy/score_tier/developing
-      label: Developing
-      description: developing
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/score_tier
-      id: coe:concept/scoring_taxonomy/score_tier/needs_improvement
-      label: Needs Improvement
-      description: needs_improvement
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      id: coe:concept/scoring_taxonomy/rubric_type
-      label: Rubric Type
-      description: The structural approach used for scoring
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/rubric_type
-      id: coe:concept/scoring_taxonomy/rubric_type/analytic
-      label: Analytic
-      description: analytic
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/rubric_type
-      id: coe:concept/scoring_taxonomy/rubric_type/holistic
-      label: Holistic
-      description: holistic
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/rubric_type
-      id: coe:concept/scoring_taxonomy/rubric_type/single_point
-      label: Single Point
-      description: single_point
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/rubric_type
-      id: coe:concept/scoring_taxonomy/rubric_type/weighted
-      label: Weighted
-      description: weighted
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/rubric_type
-      id: coe:concept/scoring_taxonomy/rubric_type/confidence_weighted
-      label: Confidence Weighted
-      description: confidence_weighted
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      id: coe:concept/scoring_taxonomy/assessment_scope
-      label: Assessment Scope
-      description: The granularity level at which content is evaluated
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/assessment_scope
-      id: coe:concept/scoring_taxonomy/assessment_scope/interaction_level
-      label: Interaction Level
-      description: interaction_level
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/assessment_scope
-      id: coe:concept/scoring_taxonomy/assessment_scope/slide_level
-      label: Slide Level
-      description: slide_level
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/assessment_scope
-      id: coe:concept/scoring_taxonomy/assessment_scope/microlearning_level
-      label: Microlearning Level
-      description: microlearning_level
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/assessment_scope
-      id: coe:concept/scoring_taxonomy/assessment_scope/section_level
-      label: Section Level
-      description: section_level
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/assessment_scope
-      id: coe:concept/scoring_taxonomy/assessment_scope/deck_level
-      label: Deck Level
-      description: deck_level
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/assessment_scope
-      id: coe:concept/scoring_taxonomy/assessment_scope/portfolio_level
-      label: Portfolio Level
-      description: portfolio_level
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/assessment_scope
-      id: coe:concept/scoring_taxonomy/assessment_scope/workplace_level
-      label: Workplace Level
-      description: workplace_level
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/assessment_scope
-      id: coe:concept/scoring_taxonomy/assessment_scope/modality_level
-      label: Modality Level
-      description: modality_level
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      id: coe:concept/scoring_taxonomy/evaluative_function
-      label: Evaluative Function
-      description: The purpose and audience of the evaluation
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/evaluative_function
-      id: coe:concept/scoring_taxonomy/evaluative_function/diagnostic
-      label: Diagnostic
-      description: diagnostic
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/evaluative_function
-      id: coe:concept/scoring_taxonomy/evaluative_function/summative
-      label: Summative
-      description: summative
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/evaluative_function
-      id: coe:concept/scoring_taxonomy/evaluative_function/benchmarking
-      label: Benchmarking
-      description: benchmarking
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/evaluative_function
-      id: coe:concept/scoring_taxonomy/evaluative_function/formative
-      label: Formative
-      description: formative
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/evaluative_function
-      id: coe:concept/scoring_taxonomy/evaluative_function/ipsative
-      label: Ipsative
-      description: ipsative
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/evaluative_function
-      id: coe:concept/scoring_taxonomy/evaluative_function/transfer_evaluation
-      label: Transfer Evaluation
-      description: transfer_evaluation
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      id: coe:concept/scoring_taxonomy/cognitive_level
-      label: Cognitive Level (Bloom's)
-      description: The cognitive complexity tier of the learning objective or assessment item, aligned to Bloom's Revised
-        Taxonomy (Anderson & Krathwohl 2001)
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/cognitive_level
-      id: coe:concept/scoring_taxonomy/cognitive_level/remember
-      label: Remember
-      description: remember
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/cognitive_level
-      id: coe:concept/scoring_taxonomy/cognitive_level/understand
-      label: Understand
-      description: understand
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/cognitive_level
-      id: coe:concept/scoring_taxonomy/cognitive_level/apply
-      label: Apply
-      description: apply
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/cognitive_level
-      id: coe:concept/scoring_taxonomy/cognitive_level/analyse
-      label: Analyse
-      description: analyse
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/cognitive_level
-      id: coe:concept/scoring_taxonomy/cognitive_level/evaluate
-      label: Evaluate
-      description: evaluate
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/cognitive_level
-      id: coe:concept/scoring_taxonomy/cognitive_level/create
-      label: Create
-      description: create
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      id: coe:concept/scoring_taxonomy/kirkpatrick_level
-      label: Kirkpatrick Evaluation Level
-      description: The level of the Kirkpatrick Four-Level Training Evaluation Model at which the assessment operates
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/kirkpatrick_level
-      id: coe:concept/scoring_taxonomy/kirkpatrick_level/l1_reaction
-      label: L1 Reaction
-      description: L1_reaction
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/kirkpatrick_level
-      id: coe:concept/scoring_taxonomy/kirkpatrick_level/l2_learning
-      label: L2 Learning
-      description: L2_learning
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/kirkpatrick_level
-      id: coe:concept/scoring_taxonomy/kirkpatrick_level/l3_behaviour
-      label: L3 Behaviour
-      description: L3_behaviour
-      home_domain: learning
-      status: canonical
-    - in_scheme: coe:scheme/scoring_taxonomy
-      broader:
-      - coe:concept/scoring_taxonomy/kirkpatrick_level
-      id: coe:concept/scoring_taxonomy/kirkpatrick_level/l4_results
-      label: L4 Results
-      description: L4_results
-      home_domain: learning
-      status: canonical
-    id: coe:scheme/scoring_taxonomy
-    label: Scoring Taxonomy
-    description: Classification of scoring and evaluation constructs by quality domain, score tier, rubric type, assessment
-      scope, and evaluative function.
+  concepts:
+  - in_scheme: coe:artifact/learning/pedagogical_frameworks_taxonomy
+    id: coe:concept/pedagogical_frameworks_taxonomy/learning_paradigm
+    label: learning_paradigm
+    description: Foundational theoretical orientation of the pedagogical framework
     home_domain: learning
     status: canonical
-  version: 1.5.1
-  last_updated: '2026-08-12'
-  id: coe:artifact/pedagogical/scoring_taxonomy
+  - in_scheme: coe:artifact/learning/pedagogical_frameworks_taxonomy
+    broader:
+    - coe:concept/pedagogical_frameworks_taxonomy/learning_paradigm
+    id: coe:concept/pedagogical_frameworks_taxonomy/learning_paradigm/behaviourist
+    label: Behaviourist
+    description: 'Learning is a change in observable behaviour produced by stimulus-response relationships and reinforcement (Skinner, Pavlov, Watson)'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/pedagogical_frameworks_taxonomy
+    broader:
+    - coe:concept/pedagogical_frameworks_taxonomy/learning_paradigm
+    id: coe:concept/pedagogical_frameworks_taxonomy/learning_paradigm/cognitivist
+    label: Cognitivist
+    description: 'Learning is internal information processing — attention, encoding, schema formation, and retrieval (Piaget, Ausubel, Bruner)'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/pedagogical_frameworks_taxonomy
+    broader:
+    - coe:concept/pedagogical_frameworks_taxonomy/learning_paradigm
+    id: coe:concept/pedagogical_frameworks_taxonomy/learning_paradigm/constructivist
+    label: Constructivist
+    description: 'Learners actively construct knowledge through experience, reflection, and interaction with their environment (Piaget, Dewey, Vygotsky)'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/pedagogical_frameworks_taxonomy
+    broader:
+    - coe:concept/pedagogical_frameworks_taxonomy/learning_paradigm
+    id: coe:concept/pedagogical_frameworks_taxonomy/learning_paradigm/social_learning
+    label: Social Learning
+    description: 'Learning occurs through observation of others, social interaction, and participation in communities of practice (Vygotsky, Bandura, Lave and Wenger)'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/pedagogical_frameworks_taxonomy
+    broader:
+    - coe:concept/pedagogical_frameworks_taxonomy/learning_paradigm
+    id: coe:concept/pedagogical_frameworks_taxonomy/learning_paradigm/humanist_andragogical
+    label: Humanist Andragogical
+    description: 'Adult learners are self-directed, experience-rich, and motivated by relevance to their personal and professional goals (Knowles, Maslow, Rogers)'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/pedagogical_frameworks_taxonomy
+    broader:
+    - coe:concept/pedagogical_frameworks_taxonomy/learning_paradigm
+    id: coe:concept/pedagogical_frameworks_taxonomy/learning_paradigm/experiential
+    label: Experiential
+    description: 'Learning is a cyclical process of concrete experience, reflective observation, conceptual abstraction, and active experimentation (Dewey, Kolb, Schön)'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/pedagogical_frameworks_taxonomy
+    id: coe:concept/pedagogical_frameworks_taxonomy/bloom_level_alignment
+    label: bloom_level_alignment
+    description: Bloom's taxonomy level the framework is best suited to develop
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/pedagogical_frameworks_taxonomy
+    broader:
+    - coe:concept/pedagogical_frameworks_taxonomy/bloom_level_alignment
+    id: coe:concept/pedagogical_frameworks_taxonomy/bloom_level_alignment/remember
+    label: Remember
+    description: 'Framework is best suited to developing retrieval and recognition of facts and terminology, as in spaced repetition'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/pedagogical_frameworks_taxonomy
+    broader:
+    - coe:concept/pedagogical_frameworks_taxonomy/bloom_level_alignment
+    id: coe:concept/pedagogical_frameworks_taxonomy/bloom_level_alignment/understand
+    label: Understand
+    description: 'Framework is best suited to developing interpretation and explanation of concepts in the learner''s own words'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/pedagogical_frameworks_taxonomy
+    broader:
+    - coe:concept/pedagogical_frameworks_taxonomy/bloom_level_alignment
+    id: coe:concept/pedagogical_frameworks_taxonomy/bloom_level_alignment/apply
+    label: Apply
+    description: 'Framework is best suited to developing execution of procedures and skills in context, as in mastery learning or social modelling'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/pedagogical_frameworks_taxonomy
+    broader:
+    - coe:concept/pedagogical_frameworks_taxonomy/bloom_level_alignment
+    id: coe:concept/pedagogical_frameworks_taxonomy/bloom_level_alignment/analyze
+    label: Analyze
+    description: 'Framework is best suited to developing decomposition of material and diagnosis of how parts relate, as in problem-based learning'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/pedagogical_frameworks_taxonomy
+    broader:
+    - coe:concept/pedagogical_frameworks_taxonomy/bloom_level_alignment
+    id: coe:concept/pedagogical_frameworks_taxonomy/bloom_level_alignment/evaluate
+    label: Evaluate
+    description: 'Framework is best suited to developing criterion-based judgement and critique, as in Kolb''s cycle or communities of practice'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/pedagogical_frameworks_taxonomy
+    broader:
+    - coe:concept/pedagogical_frameworks_taxonomy/bloom_level_alignment
+    id: coe:concept/pedagogical_frameworks_taxonomy/bloom_level_alignment/create
+    label: Create
+    description: 'Framework is best suited to developing design and production of novel work, as in discovery learning or action learning'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/pedagogical_frameworks_taxonomy
+    id: coe:concept/pedagogical_frameworks_taxonomy/delivery_format
+    label: delivery_format
+    description: Delivery modality for which the framework is most effective
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/pedagogical_frameworks_taxonomy
+    broader:
+    - coe:concept/pedagogical_frameworks_taxonomy/delivery_format
+    id: coe:concept/pedagogical_frameworks_taxonomy/delivery_format/elearning
+    label: eLearning
+    description: 'Self-paced interactive digital delivery completed without a live facilitator'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/pedagogical_frameworks_taxonomy
+    broader:
+    - coe:concept/pedagogical_frameworks_taxonomy/delivery_format
+    id: coe:concept/pedagogical_frameworks_taxonomy/delivery_format/ilt
+    label: ILT
+    description: 'Instructor-led training delivered live and in person to a cohort'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/pedagogical_frameworks_taxonomy
+    broader:
+    - coe:concept/pedagogical_frameworks_taxonomy/delivery_format
+    id: coe:concept/pedagogical_frameworks_taxonomy/delivery_format/blended
+    label: Blended
+    description: 'Delivery combining live facilitated sessions with self-paced components in one structured journey'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/pedagogical_frameworks_taxonomy
+    broader:
+    - coe:concept/pedagogical_frameworks_taxonomy/delivery_format
+    id: coe:concept/pedagogical_frameworks_taxonomy/delivery_format/self_directed
+    label: Self Directed
+    description: 'Learner-controlled delivery in which the individual chooses what, when, and how to study, without an imposed pathway'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/pedagogical_frameworks_taxonomy
+    broader:
+    - coe:concept/pedagogical_frameworks_taxonomy/delivery_format
+    id: coe:concept/pedagogical_frameworks_taxonomy/delivery_format/virtual_ilt
+    label: Virtual ILT
+    description: 'Instructor-led training delivered live over video conferencing rather than in a physical room'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/pedagogical_frameworks_taxonomy
+    broader:
+    - coe:concept/pedagogical_frameworks_taxonomy/delivery_format
+    id: coe:concept/pedagogical_frameworks_taxonomy/delivery_format/on_the_job
+    label: On The Job
+    description: 'Delivery embedded in real work, where learning happens while performing actual tasks, supported by coaching or performance support'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/pedagogical_frameworks_taxonomy
+    id: coe:concept/pedagogical_frameworks_taxonomy/audience_experience_level
+    label: audience_experience_level
+    description: Learner experience level the framework is optimised for
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/pedagogical_frameworks_taxonomy
+    broader:
+    - coe:concept/pedagogical_frameworks_taxonomy/audience_experience_level
+    id: coe:concept/pedagogical_frameworks_taxonomy/audience_experience_level/novice
+    label: Novice
+    description: 'Learners with little or no prior domain knowledge, needing directive instruction, structured sequencing, and full scaffolding'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/pedagogical_frameworks_taxonomy
+    broader:
+    - coe:concept/pedagogical_frameworks_taxonomy/audience_experience_level
+    id: coe:concept/pedagogical_frameworks_taxonomy/audience_experience_level/intermediate
+    label: Intermediate
+    description: 'Learners with working foundational knowledge, ready for problem-centred practice and social learning with reduced scaffolding'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/pedagogical_frameworks_taxonomy
+    broader:
+    - coe:concept/pedagogical_frameworks_taxonomy/audience_experience_level
+    id: coe:concept/pedagogical_frameworks_taxonomy/audience_experience_level/experienced
+    label: Experienced
+    description: 'Learners with substantial domain expertise, best served by self-directed, discovery, and peer-based approaches'
+    home_domain: learning
+    status: canonical
+  top_concepts:
+  - coe:concept/pedagogical_frameworks_taxonomy/learning_paradigm
+  - coe:concept/pedagogical_frameworks_taxonomy/bloom_level_alignment
+  - coe:concept/pedagogical_frameworks_taxonomy/delivery_format
+  - coe:concept/pedagogical_frameworks_taxonomy/audience_experience_level
+- last_updated: '2026-08-31'
+  id: coe:artifact/learning/realisation_forms_taxonomy
+  label: Realisation Forms Taxonomy
+  description: Classification of the artefact forms that realise one pedagogic unit, in two classes — instructional forms
+    discharge a taught disposition and support forms discharge a performance-support disposition; forms are builder-agnostic
+    and a unit may carry several realisations
+  home_domain: learning
+  status: canonical
+  concepts:
+  - in_scheme: coe:artifact/learning/realisation_forms_taxonomy
+    id: coe:concept/realisation_forms_taxonomy/instructional_form
+    label: Instructional Form
+    description: An artefact form that teaches — it carries a full alignment chain from objective through activity to evidence,
+      and discharges a taught disposition
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/realisation_forms_taxonomy
+    broader:
+    - coe:concept/realisation_forms_taxonomy/instructional_form
+    id: coe:concept/realisation_forms_taxonomy/instructional_form/formal_module
+    label: Formal Module
+    description: A formal course module delivered as structured instruction
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/realisation_forms_taxonomy
+    broader:
+    - coe:concept/realisation_forms_taxonomy/instructional_form
+    id: coe:concept/realisation_forms_taxonomy/instructional_form/workshop_session
+    label: Workshop Session
+    description: A facilitated live session, in-room or virtual
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/realisation_forms_taxonomy
+    broader:
+    - coe:concept/realisation_forms_taxonomy/instructional_form
+    id: coe:concept/realisation_forms_taxonomy/instructional_form/deck
+    label: Deck
+    description: A presentation deck carrying a taught narrative
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/realisation_forms_taxonomy
+    broader:
+    - coe:concept/realisation_forms_taxonomy/instructional_form
+    id: coe:concept/realisation_forms_taxonomy/instructional_form/video
+    label: Video
+    description: A scripted spoken video such as an explainer or narrated training piece
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/realisation_forms_taxonomy
+    broader:
+    - coe:concept/realisation_forms_taxonomy/instructional_form
+    id: coe:concept/realisation_forms_taxonomy/instructional_form/podcast_episode
+    label: Podcast Episode
+    description: A scripted audio episode, including reinforcement and discussion episodes
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/realisation_forms_taxonomy
+    id: coe:concept/realisation_forms_taxonomy/support_form
+    label: Support Form
+    description: An artefact form that supports performance at the moment of need rather than teaching; it discharges a performance-support
+      disposition
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/realisation_forms_taxonomy
+    broader:
+    - coe:concept/realisation_forms_taxonomy/support_form
+    id: coe:concept/realisation_forms_taxonomy/support_form/job_aid
+    label: Job Aid
+    description: A task-anchored reference used during work, reachable at the moment of apply
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/realisation_forms_taxonomy
+    broader:
+    - coe:concept/realisation_forms_taxonomy/support_form
+    id: coe:concept/realisation_forms_taxonomy/support_form/aide_memoire
+    label: Aide-Memoire
+    description: A compact memory prompt that cues recall of already-learned material
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/realisation_forms_taxonomy
+    broader:
+    - coe:concept/realisation_forms_taxonomy/support_form
+    id: coe:concept/realisation_forms_taxonomy/support_form/performance_support
+    label: Performance Support
+    description: In-workflow support embedded at the point of work
+    home_domain: learning
+    status: canonical
+  top_concepts:
+  - coe:concept/realisation_forms_taxonomy/instructional_form
+  - coe:concept/realisation_forms_taxonomy/support_form
+- last_updated: '2026-09-23'
+  id: coe:artifact/learning/scoring_taxonomy
   label: Scoring Taxonomy
   description: Classification of scoring and evaluation constructs by quality domain, score tier, rubric type, assessment
     scope, and evaluative function.
   home_domain: learning
   status: canonical
+  concepts:
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    id: coe:concept/scoring_taxonomy/quality_domain
+    label: Quality Domain
+    description: The broad area of quality the dimension belongs to
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    broader:
+    - coe:concept/scoring_taxonomy/quality_domain
+    id: coe:concept/scoring_taxonomy/quality_domain/communication_quality
+    label: Communication Quality
+    description: 'Dimensions covering how effectively content conveys its message — clarity, structure, engagement, and personalisation of tone'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    broader:
+    - coe:concept/scoring_taxonomy/quality_domain
+    id: coe:concept/scoring_taxonomy/quality_domain/argument_quality
+    label: Argument Quality
+    description: 'Dimensions covering the strength and credibility of claims and evidence — evidence quality, logical coherence, and source credibility'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    broader:
+    - coe:concept/scoring_taxonomy/quality_domain
+    id: coe:concept/scoring_taxonomy/quality_domain/design_quality
+    label: Design Quality
+    description: 'Dimensions covering visual presentation, aesthetic effectiveness, and cognitive readability — hierarchy, typography, colour contrast, imagery, and layout'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    broader:
+    - coe:concept/scoring_taxonomy/quality_domain
+    id: coe:concept/scoring_taxonomy/quality_domain/learning_quality
+    label: Learning Quality
+    description: 'Dimensions covering cognitive load management, instructional effectiveness, multimedia principles, and transfer to real-world application'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    broader:
+    - coe:concept/scoring_taxonomy/quality_domain
+    id: coe:concept/scoring_taxonomy/quality_domain/inclusion_quality
+    label: Inclusion Quality
+    description: 'Dimensions covering accessibility, diversity, universal design, and cultural appropriateness for diverse audiences'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    broader:
+    - coe:concept/scoring_taxonomy/quality_domain
+    id: coe:concept/scoring_taxonomy/quality_domain/validity_integrity_quality
+    label: Validity Integrity Quality
+    description: 'Dimensions covering whether instruments measure what they claim to measure and whether scores are free from systematic bias or construct-irrelevant variance'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    id: coe:concept/scoring_taxonomy/score_tier
+    label: Score Tier
+    description: The performance level assigned to evaluated content
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    broader:
+    - coe:concept/scoring_taxonomy/score_tier
+    id: coe:concept/scoring_taxonomy/score_tier/exemplary
+    label: Exemplary
+    description: 'Exceeds expectations and models best practice; its score band is library knowledge'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    broader:
+    - coe:concept/scoring_taxonomy/score_tier
+    id: coe:concept/scoring_taxonomy/score_tier/proficient
+    label: Proficient
+    description: 'Meets expectations — solid and effective; its score band is library knowledge'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    broader:
+    - coe:concept/scoring_taxonomy/score_tier
+    id: coe:concept/scoring_taxonomy/score_tier/developing
+    label: Developing
+    description: 'Approaching expectations — shows promise but needs refinement; its score band is library knowledge'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    broader:
+    - coe:concept/scoring_taxonomy/score_tier
+    id: coe:concept/scoring_taxonomy/score_tier/needs_improvement
+    label: Needs Improvement
+    description: 'Below expectations — fundamental issues to address; its score band is library knowledge'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    id: coe:concept/scoring_taxonomy/rubric_type
+    label: Rubric Type
+    description: The structural approach used for scoring
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    broader:
+    - coe:concept/scoring_taxonomy/rubric_type
+    id: coe:concept/scoring_taxonomy/rubric_type/analytic
+    label: Analytic
+    description: 'Scores each dimension separately with distinct criteria per level — detailed diagnostic feedback at the cost of time to apply'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    broader:
+    - coe:concept/scoring_taxonomy/rubric_type
+    id: coe:concept/scoring_taxonomy/rubric_type/holistic
+    label: Holistic
+    description: 'Assigns a single overall score from a general impression across all dimensions — fast to apply but low in diagnostic value'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    broader:
+    - coe:concept/scoring_taxonomy/rubric_type
+    id: coe:concept/scoring_taxonomy/rubric_type/single_point
+    label: Single Point
+    description: 'Defines only the proficient level, with feedback noting deviations above or below — encourages qualitative feedback but needs skilled assessors'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    broader:
+    - coe:concept/scoring_taxonomy/rubric_type
+    id: coe:concept/scoring_taxonomy/rubric_type/weighted
+    label: Weighted
+    description: 'Analytic rubric with different importance weights per dimension, reflecting strategic priorities in the composite score'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    broader:
+    - coe:concept/scoring_taxonomy/rubric_type
+    id: coe:concept/scoring_taxonomy/rubric_type/confidence_weighted
+    label: Confidence Weighted
+    description: 'Adjusts each response''s score by the learner''s expressed confidence — rewarding calibrated certainty and penalising overconfident guessing to incentivise epistemic accuracy'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    id: coe:concept/scoring_taxonomy/assessment_scope
+    label: Assessment Scope
+    description: The scope at which evaluation is applied — a content granularity from single interaction to whole portfolio,
+      or a cross-cutting scope such as workplace transfer or delivery modality
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    broader:
+    - coe:concept/scoring_taxonomy/assessment_scope
+    id: coe:concept/scoring_taxonomy/assessment_scope/interaction_level
+    label: Interaction Level
+    description: 'Evaluation of a single atomic interaction or question — immediate response validation at the card or item level'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    broader:
+    - coe:concept/scoring_taxonomy/assessment_scope
+    id: coe:concept/scoring_taxonomy/assessment_scope/slide_level
+    label: Slide Level
+    description: 'Evaluation of a single slide or content unit for qualities such as visual clarity and cognitive load'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    broader:
+    - coe:concept/scoring_taxonomy/assessment_scope
+    id: coe:concept/scoring_taxonomy/assessment_scope/microlearning_level
+    label: Microlearning Level
+    description: 'Evaluation of a short microlearning sequence — embedded quick checks and micro-feedback loops; the span it covers is library knowledge'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    broader:
+    - coe:concept/scoring_taxonomy/assessment_scope
+    id: coe:concept/scoring_taxonomy/assessment_scope/section_level
+    label: Section Level
+    description: 'Evaluation of a group of slides or a content section for structure, narrative flow, and evidence quality'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    broader:
+    - coe:concept/scoring_taxonomy/assessment_scope
+    id: coe:concept/scoring_taxonomy/assessment_scope/deck_level
+    label: Deck Level
+    description: 'Holistic evaluation of an entire presentation or content asset'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    broader:
+    - coe:concept/scoring_taxonomy/assessment_scope
+    id: coe:concept/scoring_taxonomy/assessment_scope/portfolio_level
+    label: Portfolio Level
+    description: 'Evaluation aggregated across multiple content assets — consistency, brand alignment, and quality trend'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    broader:
+    - coe:concept/scoring_taxonomy/assessment_scope
+    id: coe:concept/scoring_taxonomy/assessment_scope/workplace_level
+    label: Workplace Level
+    description: Evaluation applied to on-the-job performance after learning — workplace transfer rather than a content unit
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    broader:
+    - coe:concept/scoring_taxonomy/assessment_scope
+    id: coe:concept/scoring_taxonomy/assessment_scope/modality_level
+    label: Modality Level
+    description: Evaluation applied across one delivery modality, comparing content within that channel rather than judging
+      a single content unit
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    id: coe:concept/scoring_taxonomy/evaluative_function
+    label: Evaluative Function
+    description: The purpose and audience of the evaluation
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    broader:
+    - coe:concept/scoring_taxonomy/evaluative_function
+    id: coe:concept/scoring_taxonomy/evaluative_function/diagnostic
+    label: Diagnostic
+    description: 'Identifies specific strengths, weaknesses, and prerequisite gaps before or at the start of learning, to target improvement'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    broader:
+    - coe:concept/scoring_taxonomy/evaluative_function
+    id: coe:concept/scoring_taxonomy/evaluative_function/summative
+    label: Summative
+    description: 'Provides a final quality judgement for a completed asset, read by stakeholders, reviewers, and quality assurance'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    broader:
+    - coe:concept/scoring_taxonomy/evaluative_function
+    id: coe:concept/scoring_taxonomy/evaluative_function/benchmarking
+    label: Benchmarking
+    description: 'Compares quality against standards, peers, or historical performance, yielding comparative scores and percentile positioning'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    broader:
+    - coe:concept/scoring_taxonomy/evaluative_function
+    id: coe:concept/scoring_taxonomy/evaluative_function/formative
+    label: Formative
+    description: 'Provides in-progress feedback that guides iterative improvement during the creation or learning process'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    broader:
+    - coe:concept/scoring_taxonomy/evaluative_function
+    id: coe:concept/scoring_taxonomy/evaluative_function/ipsative
+    label: Ipsative
+    description: 'Evaluates performance against the learner''s or creator''s own previous results rather than an external standard, tracking personal growth over time'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    broader:
+    - coe:concept/scoring_taxonomy/evaluative_function
+    id: coe:concept/scoring_taxonomy/evaluative_function/transfer_evaluation
+    label: Transfer Evaluation
+    description: 'Assesses application of learning in the workplace after the formal learning event, at Kirkpatrick L3-L4, at the booster intervals the library states'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    id: coe:concept/scoring_taxonomy/cognitive_level
+    label: Cognitive Level (Bloom's)
+    description: The cognitive complexity tier of the learning objective or assessment item, aligned to Bloom's Revised Taxonomy
+      (Anderson & Krathwohl 2001)
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    broader:
+    - coe:concept/scoring_taxonomy/cognitive_level
+    id: coe:concept/scoring_taxonomy/cognitive_level/remember
+    label: Remember
+    description: 'Requires retrieval or recognition of knowledge from long-term memory'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    broader:
+    - coe:concept/scoring_taxonomy/cognitive_level
+    id: coe:concept/scoring_taxonomy/cognitive_level/understand
+    label: Understand
+    description: 'Requires constructing meaning — interpreting, classifying, comparing, or explaining'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    broader:
+    - coe:concept/scoring_taxonomy/cognitive_level
+    id: coe:concept/scoring_taxonomy/cognitive_level/apply
+    label: Apply
+    description: 'Requires carrying out or using a procedure in a given situation'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    broader:
+    - coe:concept/scoring_taxonomy/cognitive_level
+    id: coe:concept/scoring_taxonomy/cognitive_level/analyse
+    label: Analyse
+    description: 'Requires breaking material into parts and determining how they relate to structure and purpose'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    broader:
+    - coe:concept/scoring_taxonomy/cognitive_level
+    id: coe:concept/scoring_taxonomy/cognitive_level/evaluate
+    label: Evaluate
+    description: 'Requires making judgements based on criteria and standards'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/scoring_taxonomy
+    broader:
+    - coe:concept/scoring_taxonomy/cognitive_level
+    id: coe:concept/scoring_taxonomy/cognitive_level/create
+    label: Create
+    description: 'Requires assembling elements into a new, coherent, or original whole'
+    home_domain: learning
+    status: canonical
+  top_concepts:
+  - coe:concept/scoring_taxonomy/quality_domain
+  - coe:concept/scoring_taxonomy/score_tier
+  - coe:concept/scoring_taxonomy/rubric_type
+  - coe:concept/scoring_taxonomy/assessment_scope
+  - coe:concept/scoring_taxonomy/evaluative_function
+  - coe:concept/scoring_taxonomy/cognitive_level
+- last_updated: '2026-09-23'
+  id: coe:artifact/learning/gagne_events_taxonomy
+  label: Gagné's Nine Events of Instruction
+  description: 'Gagné''s nine events of instruction, in the order a lesson presents them, from gaining attention to enhancing retention and transfer; each is one instructional event the Instructional Event entity classifies.'
+  home_domain: learning
+  status: canonical
+  concepts:
+  - in_scheme: coe:artifact/learning/gagne_events_taxonomy
+    id: coe:concept/gagne_events_taxonomy/gain_attention
+    label: Gain Attention
+    description: 'Gagné''s first event of instruction: capturing the learner''s attention and interest so they are ready to receive the lesson.'
+    home_domain: learning
+    status: canonical
+    edges:
+    - subject_id: coe:concept/gagne_events_taxonomy/gain_attention
+      predicate: coe:precedes
+      object_id: coe:concept/gagne_events_taxonomy/inform_objectives
+      relationship_weight: required
+      description: 'Gain Attention precedes Inform Learners of Objectives in the Gagné''s Nine Events of Instruction ordering.'
+      statement_id: coe:edge/gagne-gain-attention-precedes-gagne-inform-objectives
+      home_domain: learning
+  - in_scheme: coe:artifact/learning/gagne_events_taxonomy
+    id: coe:concept/gagne_events_taxonomy/inform_objectives
+    label: Inform Learners of Objectives
+    description: 'Gagné''s second event: telling learners what they will be able to do by the end, so they can organise their attention around it.'
+    home_domain: learning
+    status: canonical
+    terms:
+    - literal: State Objectives
+      term_type: short_form
+      term_status: admitted
+    edges:
+    - subject_id: coe:concept/gagne_events_taxonomy/inform_objectives
+      predicate: coe:precedes
+      object_id: coe:concept/gagne_events_taxonomy/stimulate_recall
+      relationship_weight: required
+      description: 'Inform Learners of Objectives precedes Stimulate Recall of Prior Learning in the Gagné''s Nine Events of Instruction ordering.'
+      statement_id: coe:edge/gagne-inform-objectives-precedes-gagne-stimulate-recall
+      home_domain: learning
+  - in_scheme: coe:artifact/learning/gagne_events_taxonomy
+    id: coe:concept/gagne_events_taxonomy/stimulate_recall
+    label: Stimulate Recall of Prior Learning
+    description: 'Gagné''s third event: bringing relevant prior knowledge back to mind so new material can attach to it.'
+    home_domain: learning
+    status: canonical
+    terms:
+    - literal: Stimulate Recall
+      term_type: short_form
+      term_status: admitted
+    edges:
+    - subject_id: coe:concept/gagne_events_taxonomy/stimulate_recall
+      predicate: coe:precedes
+      object_id: coe:concept/gagne_events_taxonomy/present_content
+      relationship_weight: required
+      description: 'Stimulate Recall of Prior Learning precedes Present the Content in the Gagné''s Nine Events of Instruction ordering.'
+      statement_id: coe:edge/gagne-stimulate-recall-precedes-gagne-present-content
+      home_domain: learning
+  - in_scheme: coe:artifact/learning/gagne_events_taxonomy
+    id: coe:concept/gagne_events_taxonomy/present_content
+    label: Present the Content
+    description: 'Gagné''s fourth event: presenting the new material in organised, meaningful chunks.'
+    home_domain: learning
+    status: canonical
+    terms:
+    - literal: Present Content
+      term_type: short_form
+      term_status: admitted
+    edges:
+    - subject_id: coe:concept/gagne_events_taxonomy/present_content
+      predicate: coe:precedes
+      object_id: coe:concept/gagne_events_taxonomy/provide_guidance
+      relationship_weight: required
+      description: 'Present the Content precedes Provide Learning Guidance in the Gagné''s Nine Events of Instruction ordering.'
+      statement_id: coe:edge/gagne-present-content-precedes-gagne-provide-guidance
+      home_domain: learning
+  - in_scheme: coe:artifact/learning/gagne_events_taxonomy
+    id: coe:concept/gagne_events_taxonomy/provide_guidance
+    label: Provide Learning Guidance
+    description: 'Gagné''s fifth event: guiding learners with examples, demonstrations and cues that help them encode the material.'
+    home_domain: learning
+    status: canonical
+    terms:
+    - literal: Provide Guidance
+      term_type: short_form
+      term_status: admitted
+    edges:
+    - subject_id: coe:concept/gagne_events_taxonomy/provide_guidance
+      predicate: coe:precedes
+      object_id: coe:concept/gagne_events_taxonomy/elicit_performance
+      relationship_weight: required
+      description: 'Provide Learning Guidance precedes Elicit Performance in the Gagné''s Nine Events of Instruction ordering.'
+      statement_id: coe:edge/gagne-provide-guidance-precedes-gagne-elicit-performance
+      home_domain: learning
+  - in_scheme: coe:artifact/learning/gagne_events_taxonomy
+    id: coe:concept/gagne_events_taxonomy/elicit_performance
+    label: Elicit Performance
+    description: 'Gagné''s sixth event: having learners practise what they have learned.'
+    home_domain: learning
+    status: canonical
+    edges:
+    - subject_id: coe:concept/gagne_events_taxonomy/elicit_performance
+      predicate: coe:precedes
+      object_id: coe:concept/gagne_events_taxonomy/provide_feedback
+      relationship_weight: required
+      description: 'Elicit Performance precedes Provide Feedback in the Gagné''s Nine Events of Instruction ordering.'
+      statement_id: coe:edge/gagne-elicit-performance-precedes-gagne-provide-feedback
+      home_domain: learning
+  - in_scheme: coe:artifact/learning/gagne_events_taxonomy
+    id: coe:concept/gagne_events_taxonomy/provide_feedback
+    label: Provide Feedback
+    description: 'Gagné''s seventh event: giving learners specific, timely information about their performance.'
+    home_domain: learning
+    status: canonical
+    edges:
+    - subject_id: coe:concept/gagne_events_taxonomy/provide_feedback
+      predicate: coe:precedes
+      object_id: coe:concept/gagne_events_taxonomy/assess_performance
+      relationship_weight: required
+      description: 'Provide Feedback precedes Assess Performance in the Gagné''s Nine Events of Instruction ordering.'
+      statement_id: coe:edge/gagne-provide-feedback-precedes-gagne-assess-performance
+      home_domain: learning
+  - in_scheme: coe:artifact/learning/gagne_events_taxonomy
+    id: coe:concept/gagne_events_taxonomy/assess_performance
+    label: Assess Performance
+    description: 'Gagné''s eighth event: testing whether learners have met the objectives.'
+    home_domain: learning
+    status: canonical
+    edges:
+    - subject_id: coe:concept/gagne_events_taxonomy/assess_performance
+      predicate: coe:precedes
+      object_id: coe:concept/gagne_events_taxonomy/enhance_retention
+      relationship_weight: required
+      description: 'Assess Performance precedes Enhance Retention and Transfer in the Gagné''s Nine Events of Instruction ordering.'
+      statement_id: coe:edge/gagne-assess-performance-precedes-gagne-enhance-retention
+      home_domain: learning
+  - in_scheme: coe:artifact/learning/gagne_events_taxonomy
+    id: coe:concept/gagne_events_taxonomy/enhance_retention
+    label: Enhance Retention and Transfer
+    description: 'Gagné''s ninth event: helping learners retain the learning and apply it in new situations and on the job.'
+    home_domain: learning
+    status: canonical
+    terms:
+    - literal: Enhance Retention
+      term_type: short_form
+      term_status: admitted
+  top_concepts:
+  - coe:concept/gagne_events_taxonomy/gain_attention
+  - coe:concept/gagne_events_taxonomy/inform_objectives
+  - coe:concept/gagne_events_taxonomy/stimulate_recall
+  - coe:concept/gagne_events_taxonomy/present_content
+  - coe:concept/gagne_events_taxonomy/provide_guidance
+  - coe:concept/gagne_events_taxonomy/elicit_performance
+  - coe:concept/gagne_events_taxonomy/provide_feedback
+  - coe:concept/gagne_events_taxonomy/assess_performance
+  - coe:concept/gagne_events_taxonomy/enhance_retention
+- last_updated: '2026-09-23'
+  id: coe:artifact/learning/arcs_taxonomy
+  label: ARCS Model of Motivational Design
+  description: 'Keller''s ARCS model of motivational design — attention, relevance, confidence and satisfaction — the four components a learning experience must address to motivate; the members are unordered components, not stages.'
+  home_domain: learning
+  status: canonical
+  concepts:
+  - in_scheme: coe:artifact/learning/arcs_taxonomy
+    id: coe:concept/arcs_taxonomy/attention
+    label: Attention
+    description: 'The ARCS component of capturing and sustaining the learner''s interest and curiosity.'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/arcs_taxonomy
+    id: coe:concept/arcs_taxonomy/relevance
+    label: Relevance
+    description: 'The ARCS component of connecting the learning to the learner''s goals, needs and experience.'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/arcs_taxonomy
+    id: coe:concept/arcs_taxonomy/confidence
+    label: Confidence
+    description: 'The ARCS component of building the learner''s expectation that they can succeed.'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/arcs_taxonomy
+    id: coe:concept/arcs_taxonomy/satisfaction
+    label: Satisfaction
+    description: 'The ARCS component of making the learner feel the learning was worthwhile and its success earned.'
+    home_domain: learning
+    status: canonical
+  top_concepts:
+  - coe:concept/arcs_taxonomy/attention
+  - coe:concept/arcs_taxonomy/relevance
+  - coe:concept/arcs_taxonomy/confidence
+  - coe:concept/arcs_taxonomy/satisfaction

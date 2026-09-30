@@ -192,7 +192,15 @@ class RetrievalConfig(BaseModel):
 
     dense_top_k: int = Field(gt=0, le=MAX_RETRIEVAL_LIMIT)
     rerank_top_k: int = Field(gt=0, le=MAX_RETRIEVAL_LIMIT)
-    lexical_fusion_weight: float = Field(default=2.0, ge=0.0)
+    lexical_fusion_weight: float = Field(
+        default=2.0,
+        ge=0.0,
+        description=(
+            "Multiplier on the BM25 lane inside hybrid reciprocal-rank fusion. "
+            "1.0 weights keyword rank equally with dense rank. The default "
+            "prefers an exact framework name over a merely nearby embedding."
+        ),
+    )
     relation_fusion_weight: float = Field(default=1.0, ge=0.0)
     centrality_fusion_weight: float = Field(default=1.0, ge=0.0)
     community_diversity_enabled: bool = True
@@ -532,6 +540,7 @@ class PathsConfig(BaseModel):
 
     corpus_path: Path
     ontology_path: Path
+    library_path: Path | None = None
     data_path: Path
 
 

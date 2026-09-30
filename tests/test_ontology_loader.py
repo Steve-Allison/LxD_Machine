@@ -2,7 +2,6 @@ from pathlib import Path
 
 from lxd.ontology.graph import direct_neighbors
 from lxd.ontology.loader import load_ontology
-from lxd.settings.loader import resolve_repo_root
 
 
 def test_load_ontology_uses_file_entity_and_taxonomy_relationships(tmp_path: Path) -> None:
@@ -118,40 +117,3 @@ entity_types:
     assert "taxonomy_value" in neighbor_types
     assert "taxonomy_type" in neighbor_types
     assert "ontology_file" in neighbor_types
-
-
-def test_real_yaml_tree_has_no_unclassified_ontology_paths() -> None:
-    repo_root = resolve_repo_root(Path.cwd())
-    result = load_ontology(repo_root / "Yamls", ["**/*.yaml"], [])
-
-    assert result.coverage_report.unclassified_paths == []
-    assert result.coverage_report.classification_counts["graph_input"] > 0
-    assert result.coverage_report.classification_counts["matcher_input"] > 0
-    assert result.coverage_report.classification_counts["metadata_input"] > 0
-    assert any(record.relation_type == "depends_on" for record in result.relation_records)
-    assert any(
-        record.relation_type == "maps_to_taxonomy_value" for record in result.relation_records
-    )
-    assert any(record.relation_type == "references_taxonomy" for record in result.relation_records)
-
-
-def test_real_yaml_graph_includes_file_level_relationships() -> None:
-    repo_root = resolve_repo_root(Path.cwd())
-    result = load_ontology(repo_root / "Yamls", ["**/*.yaml"], [])
-
-    file_edges = [
-        record
-        for record in result.relation_records
-        if record.origin_kind == "file_meta"
-        and record.source_file_rel_path == "entities/writing_entities.yaml"
-        and record.relation_type == "depends_on"
-    ]
-
-    assert any(
-        record.target_file_rel_path == "methodology/editorial_standards.yaml"
-        for record in file_edges
-    )
-    assert any(
-        record.target_file_rel_path == "methodology/style_guide_standards.yaml"
-        for record in file_edges
-    )

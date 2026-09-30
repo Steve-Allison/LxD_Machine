@@ -66,6 +66,14 @@ def build_slug_index(entity_definitions: Iterable[Mapping[str, Any]]) -> dict[st
             continue
         for variant in _slug_variants(canonical):
             index.setdefault(variant, canonical)
+        tail = canonical.rsplit("/", 1)[-1]
+        if tail != canonical:
+            for variant in _slug_variants(tail):
+                index.setdefault(variant, canonical)
+        label = entity.get("label")
+        if isinstance(label, str) and label.strip():
+            for variant in _slug_variants(label.strip().replace(" ", "_")):
+                index.setdefault(variant, canonical)
     return index
 
 

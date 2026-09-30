@@ -45,7 +45,7 @@ from lxd.ingest.wiki_relations import (
 )
 from lxd.ontology.ambiguity import ambiguous_surface_forms_with_candidates
 from lxd.ontology.disambiguator import make_disambiguator
-from lxd.ontology.loader import OntologyLoadResult, load_ontology
+from lxd.ontology.loader import OntologyLoadResult, load_configured_ontology
 from lxd.ontology.matcher import MatcherTermRecord, build_or_load_automaton
 from lxd.ontology.normalization import normalize_match_text
 from lxd.settings.models import RuntimeConfig
@@ -179,6 +179,8 @@ def validate_project_paths(config: RuntimeConfig) -> None:
         raise FileNotFoundError(f"Missing corpus path: {config.paths.corpus_path}")
     if not config.paths.ontology_path.exists():
         raise FileNotFoundError(f"Missing ontology path: {config.paths.ontology_path}")
+    if config.paths.library_path is not None and not config.paths.library_path.exists():
+        raise FileNotFoundError(f"Missing library path: {config.paths.library_path}")
     config.paths.data_path.mkdir(parents=True, exist_ok=True)
 
 
@@ -191,11 +193,7 @@ def build_ingest_plan(config: RuntimeConfig) -> IngestPlan:
         asset_extensions=config.corpus.asset_extensions,
         ignore_names=config.corpus.ignore_names,
     )
-    ontology = load_ontology(
-        root=config.paths.ontology_path,
-        include_globs=config.ontology.include_globs,
-        ignore_names=config.ontology.ignore_names,
-    )
+    ontology = load_configured_ontology(config)
     return IngestPlan(scanned_files=scanned_files, ontology=ontology)
 
 
@@ -568,6 +566,9 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                             contextual_summary_table=contextual_summary_table,
                             ambiguous_map=ambiguous_map,
                             disambiguator=disambiguator,
+                            recognition_patterns=plan.ontology.recognition_patterns,
+                            suppressed_terms=plan.ontology.suppressed_terms,
+                            anchor_constraints=plan.ontology.anchor_constraints,
                         )
                         cache_hit_total += file_cache_hits
                         cache_miss_total += file_cache_misses

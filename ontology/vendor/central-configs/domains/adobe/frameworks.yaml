@@ -1,0 +1,55 @@
+_meta:
+  file_id: coe:file/domain/adobe/frameworks
+  title: Adobe — Frameworks
+  last_updated: '2026-09-23'
+  authority: Central_Configs
+  scope: domain
+  ontology_domain: adobe
+  governing_class: coe:DomainModule
+module_id: coe:module/adobe/frameworks
+domain: adobe
+frameworks:
+- id: coe:entity/adobe/content_supply_chain
+  label: Content Supply Chain
+  description: Adobe's model of enterprise content operations as an end-to-end chain of stages, from planning work through
+    producing, activating and measuring marketing content.
+  home_domain: adobe
+  status: canonical
+  terms:
+  - literal: CSC
+    term_type: initialism
+    term_status: admitted
+  anti_examples:
+  - supply chain logistics
+framework_stages:
+- id: coe:entity/adobe/workflows_planning_metadata
+  label: Workflows, Planning & Metadata
+  description: The Content Supply Chain stage covering campaign and work planning, workflow orchestration and the metadata
+    standards that keep content findable and traceable downstream.
+  home_domain: adobe
+  status: canonical
+  stage_of: coe:entity/adobe/content_supply_chain
+  stage_order: 1
+- id: coe:entity/adobe/creation_production
+  label: Creation & Production
+  description: The Content Supply Chain stage in which creative assets are authored and produced at scale.
+  home_domain: adobe
+  status: canonical
+  stage_of: coe:entity/adobe/content_supply_chain
+  stage_order: 2
+- id: coe:entity/adobe/delivery_activation
+  label: Delivery & Activation
+  description: The Content Supply Chain stage in which approved content is published and activated across channels and
+    campaigns.
+  home_domain: adobe
+  status: canonical
+  stage_of: coe:entity/adobe/content_supply_chain
+  stage_order: 3
+- id: coe:entity/adobe/reporting_insights
+  label: Reporting & Insights
+  description: The Content Supply Chain stage in which content and campaign performance is measured and fed back into
+    planning.
+  home_domain: adobe
+  status: canonical
+  stage_of: coe:entity/adobe/content_supply_chain
+  stage_order: 4

@@ -1,0 +1,556 @@
+_meta:
+  file_id: coe:file/domain/narrative/argumentation_schemes
+  title: Narrative — Argumentation Schemes
+  last_updated: '2026-09-05'
+  authority: Central_Configs
+  scope: domain
+  ontology_domain: narrative
+  governing_class: coe:DomainModule
+module_id: coe:module/narrative/argumentation_schemes
+domain: narrative
+taxonomies:
+- last_updated: '2026-09-05'
+  id: coe:artifact/narrative/argumentation_schemes_taxonomy
+  label: Argumentation Schemes Taxonomy
+  description: >-
+    Canonical identities for the bounded Walton-style defeasible reasoning
+    patterns, together with the
+    premise-slot and critical-question identities required to instantiate and
+    challenge each pattern without treating its conclusion as deductively proven.
+  home_domain: narrative
+  status: canonical
+  concepts:
+  -
+    in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    id: coe:concept/argumentation_schemes_taxonomy/scheme
+    label: Argumentation Scheme
+    description: A defeasible inference pattern whose presumption is assessable only with its declared premise slots and critical questions.
+    home_domain: narrative
+    status: canonical
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/scheme]
+    id: coe:concept/argumentation_schemes_taxonomy/scheme/practical_reasoning
+    label: Argument from Practical Reasoning
+    description: Reasons from a desired goal and a feasible action that promotes it to a defeasible recommendation to perform that action.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/scheme]
+    id: coe:concept/argumentation_schemes_taxonomy/scheme/expert_opinion
+    label: Argument from Expert Opinion
+    description: Reasons defeasibly from a qualified source's assertion in its field to acceptance of the asserted proposition.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/scheme]
+    id: coe:concept/argumentation_schemes_taxonomy/scheme/analogy
+    label: Argument from Analogy
+    description: Transfers a defeasible conclusion from a cited source case to a target case on the basis of relevant similarities and after testing relevant differences.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/scheme]
+    id: coe:concept/argumentation_schemes_taxonomy/scheme/position_to_know
+    label: Argument from Position to Know
+    description: Accepts an assertion presumptively because its source has access to the relevant facts.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/scheme]
+    id: coe:concept/argumentation_schemes_taxonomy/scheme/popular_opinion
+    label: Argument from Popular Opinion
+    description: Invokes widespread acceptance as a defeasible reason to accept a proposition.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/scheme]
+    id: coe:concept/argumentation_schemes_taxonomy/scheme/example
+    label: Argument from Example
+    description: Infers a generalisation defeasibly from a particular case or collection of cases.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/scheme]
+    id: coe:concept/argumentation_schemes_taxonomy/scheme/sign
+    label: Argument from Sign
+    description: Infers a state of affairs from an observed indicator associated with it.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/scheme]
+    id: coe:concept/argumentation_schemes_taxonomy/scheme/cause_to_effect
+    label: Argument from Cause to Effect
+    description: Predicts an effect defeasibly from an asserted cause and a causal generalisation.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/scheme]
+    id: coe:concept/argumentation_schemes_taxonomy/scheme/consequences
+    label: Argument from Consequences
+    description: Recommends or opposes an action by evaluating its anticipated consequences.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/scheme]
+    id: coe:concept/argumentation_schemes_taxonomy/scheme/verbal_classification
+    label: Argument from Verbal Classification
+    description: Assigns an individual to a category through an attributed property and a classification rule.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/scheme]
+    id: coe:concept/argumentation_schemes_taxonomy/scheme/slippery_slope
+    label: Slippery Slope Argument
+    description: Opposes an initial step because a claimed sequence of transitions would lead to an unacceptable outcome.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/scheme]
+    id: coe:concept/argumentation_schemes_taxonomy/scheme/ad_hominem
+    label: Ad Hominem Argument
+    description: Challenges a person's argument through an adverse allegation about that person; the allegation's relevance must itself be justified.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    id: coe:concept/argumentation_schemes_taxonomy/premise_slot
+    label: Scheme Premise Slot
+    description: A named semantic role that an instantiated scheme must bind to actual argument components or support sets.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/premise_slot]
+    id: coe:concept/argumentation_schemes_taxonomy/premise_slot/practical_reasoning/goal
+    label: Practical Reasoning Goal Premise
+    description: States the goal or audience-valued outcome the proposed action is intended to advance.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/premise_slot]
+    id: coe:concept/argumentation_schemes_taxonomy/premise_slot/practical_reasoning/action
+    label: Practical Reasoning Action Premise
+    description: States the concrete action proposed as a means of advancing the goal.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/premise_slot]
+    id: coe:concept/argumentation_schemes_taxonomy/premise_slot/practical_reasoning/means_goal
+    label: Practical Reasoning Means–Goal Premise
+    description: States the warranted connection by which the proposed action advances the declared goal.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/premise_slot]
+    id: coe:concept/argumentation_schemes_taxonomy/premise_slot/expert_opinion/expertise
+    label: Expert Opinion Expertise Premise
+    description: Establishes the source's relevant expertise in the field to which the proposition belongs.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/premise_slot]
+    id: coe:concept/argumentation_schemes_taxonomy/premise_slot/expert_opinion/assertion
+    label: Expert Opinion Assertion Premise
+    description: Records the exact proposition the qualified source asserts.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/premise_slot]
+    id: coe:concept/argumentation_schemes_taxonomy/premise_slot/expert_opinion/field
+    label: Expert Opinion Field Premise
+    description: Establishes that the asserted proposition falls within the source's relevant field.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/premise_slot]
+    id: coe:concept/argumentation_schemes_taxonomy/premise_slot/analogy/source_case
+    label: Analogy Source-Case Premise
+    description: States the cited case from which the proposed inference is transferred.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/premise_slot]
+    id: coe:concept/argumentation_schemes_taxonomy/premise_slot/analogy/target_case
+    label: Analogy Target-Case Premise
+    description: States the case to which the proposed inference is applied.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/premise_slot]
+    id: coe:concept/argumentation_schemes_taxonomy/premise_slot/analogy/relevant_similarity
+    label: Analogy Relevant-Similarity Premise
+    description: States the similarities that are material to the transferred conclusion rather than merely superficial.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    id: coe:concept/argumentation_schemes_taxonomy/critical_question
+    label: Scheme Critical Question
+    description: A scheme-specific challenge whose answer can sustain, qualify, or defeat the defeasible inference.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/critical_question]
+    id: coe:concept/argumentation_schemes_taxonomy/critical_question/practical_reasoning/goal_legitimacy
+    label: Is the goal legitimate and genuinely valued?
+    description: Tests whether the stated goal is an appropriate objective for the actual decision and audience.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/critical_question]
+    id: coe:concept/argumentation_schemes_taxonomy/critical_question/practical_reasoning/feasibility
+    label: Is the proposed action feasible?
+    description: Tests whether the actor can perform the proposed action under the stated constraints.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/critical_question]
+    id: coe:concept/argumentation_schemes_taxonomy/critical_question/practical_reasoning/goal_advancement
+    label: Will the action advance the goal?
+    description: Tests the strength and scope of the means–goal connection rather than assuming it from sequence or plausibility.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/critical_question]
+    id: coe:concept/argumentation_schemes_taxonomy/critical_question/practical_reasoning/alternatives
+    label: Is there a materially better alternative action?
+    description: Tests whether another feasible action advances the goal with a more favourable trade-off.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/critical_question]
+    id: coe:concept/argumentation_schemes_taxonomy/critical_question/practical_reasoning/consequences
+    label: Do adverse consequences outweigh the expected benefit?
+    description: Tests material side effects, risks, and conflicts with other goals before accepting the recommendation.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/critical_question]
+    id: coe:concept/argumentation_schemes_taxonomy/critical_question/expert_opinion/expertise
+    label: How credible is the source as an expert?
+    description: Tests the source's qualifications, experience, and standing for this subject.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/critical_question]
+    id: coe:concept/argumentation_schemes_taxonomy/critical_question/expert_opinion/field
+    label: Is the assertion within the source's field?
+    description: Tests whether the proposition actually falls inside the expertise established for the source.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/critical_question]
+    id: coe:concept/argumentation_schemes_taxonomy/critical_question/expert_opinion/assertion
+    label: What exactly did the source assert?
+    description: Tests whether the argument preserves the source's actual proposition, scope, and qualification.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/critical_question]
+    id: coe:concept/argumentation_schemes_taxonomy/critical_question/expert_opinion/trustworthiness
+    label: Is the source trustworthy in this instance?
+    description: Tests bias, conflicts, incentives, and reporting conditions relevant to the assertion.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/critical_question]
+    id: coe:concept/argumentation_schemes_taxonomy/critical_question/expert_opinion/consistency
+    label: Is the assertion consistent with other qualified opinion?
+    description: Tests whether credible peers materially disagree and whether that disagreement changes the presumption.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/critical_question]
+    id: coe:concept/argumentation_schemes_taxonomy/critical_question/expert_opinion/evidence
+    label: Is the assertion supported by evidence?
+    description: Tests the data, method, or reasons behind the opinion rather than relying on status alone.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/critical_question]
+    id: coe:concept/argumentation_schemes_taxonomy/critical_question/analogy/similarity
+    label: Are the cited similarities relevant to the conclusion?
+    description: Tests whether the similarities support the transferred property rather than merely resembling the target superficially.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/critical_question]
+    id: coe:concept/argumentation_schemes_taxonomy/critical_question/analogy/difference
+    label: Is there a relevant difference between the cases?
+    description: Tests whether a material disanalogy defeats or narrows the proposed transfer.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/critical_question]
+    id: coe:concept/argumentation_schemes_taxonomy/critical_question/analogy/source_case
+    label: Is the source case itself established?
+    description: Tests the truth and scope of the case from which the conclusion is transferred.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/critical_question]
+    id: coe:concept/argumentation_schemes_taxonomy/critical_question/analogy/counteranalogy
+    label: Is there a stronger counteranalogy?
+    description: Tests whether another relevant comparison supports a conflicting conclusion.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    id: coe:concept/argumentation_schemes_taxonomy/scheme_variable
+    label: Scheme Variable
+    description: A parameter of an inference pattern, distinct from a premise asserting a relationship among parameters.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/scheme_variable]
+    id: coe:concept/argumentation_schemes_taxonomy/scheme_variable/expert_opinion/source
+    label: Expert Opinion Source Variable
+    description: The source E whose expertise and assertion are at issue; identifying E alone does not establish expertise.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/scheme_variable]
+    id: coe:concept/argumentation_schemes_taxonomy/scheme_variable/expert_opinion/domain
+    label: Expert Opinion Domain Variable
+    description: The subject domain S to which the expertise and proposition are related; naming it does not establish the required field relationship.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/scheme_variable]
+    id: coe:concept/argumentation_schemes_taxonomy/scheme_variable/sign/indicated_proposition
+    label: Sign Indicated Proposition Variable
+    description: Proposition B whose truth is inferred from the observed sign, rather than independently assumed as a premise.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/premise_slot]
+    id: coe:concept/argumentation_schemes_taxonomy/premise_slot/sign/observation
+    label: Sign Observation Premise
+    description: Asserts that the indicator A occurs in the situation under consideration.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/premise_slot]
+    id: coe:concept/argumentation_schemes_taxonomy/premise_slot/sign/indicator_warrant
+    label: Sign Indicator Warrant
+    description: Supplies the defeasible connection from indicator A to proposition B in the relevant kind of situation.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/scheme_variable]
+    id: coe:concept/argumentation_schemes_taxonomy/scheme_variable/position_to_know/source
+    label: Position to Know Source
+    description: The informant whose access to the facts is questioned.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/premise_slot]
+    id: coe:concept/argumentation_schemes_taxonomy/premise_slot/position_to_know/assertion
+    label: Position to Know Assertion
+    description: Records what the informant asserts.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/critical_question]
+    id: coe:concept/argumentation_schemes_taxonomy/critical_question/position_to_know/access
+    label: Access to Knowledge
+    description: Tests whether the informant can know the relevant facts.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/critical_question]
+    id: coe:concept/argumentation_schemes_taxonomy/critical_question/position_to_know/reliability
+    label: Informant Reliability
+    description: Tests the informant's honesty and trustworthiness.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/critical_question]
+    id: coe:concept/argumentation_schemes_taxonomy/critical_question/position_to_know/assertion
+    label: Assertion Verification
+    description: Tests whether the informant actually made the attributed assertion.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/premise_slot]
+    id: coe:concept/argumentation_schemes_taxonomy/premise_slot/slippery_slope/first_step
+    label: Slippery Slope First Step
+    description: Identifies the initially proposed action.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/premise_slot]
+    id: coe:concept/argumentation_schemes_taxonomy/premise_slot/slippery_slope/recursive
+    label: Slippery Slope Recursive Premise
+    description: Claims successive plausible transitions from the initial step.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/premise_slot]
+    id: coe:concept/argumentation_schemes_taxonomy/premise_slot/slippery_slope/bad_outcome
+    label: Slippery Slope Bad Outcome
+    description: Identifies the unacceptable endpoint of the sequence.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/critical_question]
+    id: coe:concept/argumentation_schemes_taxonomy/critical_question/practical_reasoning/alternative_means
+    label: Alternative Means Question
+    description: Tests whether another means can realize the goal, before comparing which option is preferable.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/critical_question]
+    id: coe:concept/argumentation_schemes_taxonomy/critical_question/verbal_classification/individual_property
+    label: Individual Property Question
+    description: Challenges whether the entity has the property asserted in the individual premise.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/critical_question]
+    id: coe:concept/argumentation_schemes_taxonomy/critical_question/verbal_classification/classification_strength
+    label: Classification Strength Question
+    description: Challenges whether the classification premise is sufficiently strong or remains doubtful.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/scheme_variable]
+    id: coe:concept/argumentation_schemes_taxonomy/scheme_variable/popular_opinion/proposition
+    label: Popular Opinion Proposition
+    description: The proposition whose widespread acceptance supports a presumption.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/premise_slot]
+    id: coe:concept/argumentation_schemes_taxonomy/premise_slot/popular_opinion/acceptance
+    label: Popular Opinion Acceptance Premise
+    description: Asserts widespread acceptance of the proposition.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/scheme_variable]
+    id: coe:concept/argumentation_schemes_taxonomy/scheme_variable/analogy/conclusion_property
+    label: Analogy Transferred Proposition
+    description: The proposition transferred between compared cases.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/critical_question]
+    id: coe:concept/argumentation_schemes_taxonomy/critical_question/analogy/claimed_similarity
+    label: Claimed Similarity Question
+    description: Checks whether the asserted resemblance holds.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/premise_slot]
+    id: coe:concept/argumentation_schemes_taxonomy/premise_slot/example/instance
+    label: Example Instance Premise
+    description: Asserts the example's relevant properties.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/critical_question]
+    id: coe:concept/argumentation_schemes_taxonomy/critical_question/example/truth
+    label: Example Truth Question
+    description: Checks the example's attributed properties.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/critical_question]
+    id: coe:concept/argumentation_schemes_taxonomy/critical_question/example/instantiation
+    label: Example Instantiation Question
+    description: Checks whether the example supports the generalisation.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/critical_question]
+    id: coe:concept/argumentation_schemes_taxonomy/critical_question/example/typicality
+    label: Example Typicality Question
+    description: Checks representativeness within the generalisation's scope.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/critical_question]
+    id: coe:concept/argumentation_schemes_taxonomy/critical_question/example/strength
+    label: Generalisation Strength Question
+    description: Challenges the generalisation's strength and applicability.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/critical_question]
+    id: coe:concept/argumentation_schemes_taxonomy/critical_question/sign/correlation_strength
+    label: Sign Correlation Strength Question
+    description: Challenges the indicator's evidential strength.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/scheme_variable]
+    id: coe:concept/argumentation_schemes_taxonomy/scheme_variable/cause_to_effect/cause
+    label: Cause Variable
+    description: The initiating event in the causal inference.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/scheme_variable]
+    id: coe:concept/argumentation_schemes_taxonomy/scheme_variable/cause_to_effect/effect
+    label: Effect Variable
+    description: The predicted event in the causal inference.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/premise_slot]
+    id: coe:concept/argumentation_schemes_taxonomy/premise_slot/cause_to_effect/generalisation
+    label: Causal Generalisation Premise
+    description: States the defeasible cause-effect connection.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/critical_question]
+    id: coe:concept/argumentation_schemes_taxonomy/critical_question/cause_to_effect/strength
+    label: Causal Strength Question
+    description: Challenges the causal generalisation's strength.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/critical_question]
+    id: coe:concept/argumentation_schemes_taxonomy/critical_question/cause_to_effect/evidence
+    label: Causal Evidence Question
+    description: Challenges the evidence supporting the causal generalisation.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/critical_question]
+    id: coe:concept/argumentation_schemes_taxonomy/critical_question/cause_to_effect/interference
+    label: Causal Interference Question
+    description: Checks factors counteracting the predicted effect.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/scheme_variable]
+    id: coe:concept/argumentation_schemes_taxonomy/scheme_variable/consequences/action
+    label: Consequences Action Variable
+    description: The proposed action assessed through its consequences.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/critical_question]
+    id: coe:concept/argumentation_schemes_taxonomy/critical_question/consequences/likelihood
+    label: Consequence Likelihood Question
+    description: Challenges the predicted consequence's likelihood.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/critical_question]
+    id: coe:concept/argumentation_schemes_taxonomy/critical_question/consequences/evidence
+    label: Consequence Evidence Question
+    description: Challenges evidence linking action and consequence.
+  - in_scheme: coe:artifact/narrative/argumentation_schemes_taxonomy
+    home_domain: narrative
+    status: canonical
+    broader: [coe:concept/argumentation_schemes_taxonomy/critical_question]
+    id: coe:concept/argumentation_schemes_taxonomy/critical_question/consequences/opposite_value
+    label: Opposite Consequences Question
+    description: Checks consequences carrying opposing value.
+  top_concepts:
+  - coe:concept/argumentation_schemes_taxonomy/scheme_variable
+  - coe:concept/argumentation_schemes_taxonomy/scheme
+  - coe:concept/argumentation_schemes_taxonomy/premise_slot
+  - coe:concept/argumentation_schemes_taxonomy/critical_question

@@ -66,9 +66,18 @@ def build_entity_profiles(
         if not entity_id:
             continue
 
-        label = entity_id.replace("_", " ").title()
-        entity_type = str(entity_def.get("entity_type", ""))
-        domain = str(entity_def.get("domain", ""))
+        raw_label = entity_def.get("label")
+        label = (
+            raw_label.strip()
+            if isinstance(raw_label, str) and raw_label.strip()
+            else entity_id.replace("_", " ").title()
+        )
+        entity_type = str(entity_def.get("entity_type") or entity_def.get("entity_kind") or "")
+        domain = str(entity_def.get("domain") or "")
+        description = entity_def.get("description")
+        description_text = description.strip() if isinstance(description, str) else ""
+        craft = entity_def.get("craft_summary")
+        craft_text = craft.strip() if isinstance(craft, str) else ""
         aliases = entity_def.get("aliases", [])
         if not isinstance(aliases, list):
             aliases = []
@@ -123,6 +132,8 @@ def build_entity_profiles(
             str(in_degree),
             str(out_degree),
             str(community_id),
+            description_text,
+            craft_text,
             *claim_ids,
         )
 
@@ -150,8 +161,13 @@ def build_entity_profiles(
             else "unassigned"
         )
 
+        lead = (
+            f"{label}: {description_text}"
+            if description_text
+            else f"{label} is a {entity_type} entity in the {domain} domain."
+        )
         deterministic_summary = (
-            f"{label} is a {entity_type} entity in the {domain} domain. "
+            f"{lead} "
             f"It has {mention_count} mentions across {chunk_count} chunks "
             f"from {doc_count} source documents. "
             f"Centrality: PageRank {pr_rank}/{total_entities} | "
@@ -161,6 +177,8 @@ def build_entity_profiles(
             f"Key relationships: {top_rels_text}. "
             f"Key claims: {top_claims_text}."
         )
+        if craft_text:
+            deterministic_summary += f" Craft knowledge: {craft_text}"
 
         record = EntityProfileRecord(
             entity_id=entity_id,

@@ -1,9 +1,10 @@
 id: https://steve-allison.github.io/Central_Configs/ontology/schema/coe
 name: coe
 title: Central Configs Canonical Ontology
-description: Sole shared semantic authority for Central Configs consumers. All authored instances validate
-  against this LinkML import closure; consumer application profiles import immutable releases and never
-  redefine coe identifiers.
+description: Sole shared semantic authority for Central Configs consumers. All authored instances validate against this LinkML
+  import closure; consumer application profiles import the complete distribution and never redefine coe identifiers. Every
+  class in this closure defines what a thing is; measurements, craft rules and recognition calibration about these things are
+  library records, as governance/PLACEMENT_STANDARD.md decides.
 version: 4.0.0
 default_prefix: coe
 default_range: string
@@ -11,29 +12,34 @@ default_curi_maps:
 - semweb_context
 prefixes:
   coe: https://steve-allison.github.io/Central_Configs/ontology/
-  coesrc: https://steve-allison.github.io/Central_Configs/source/
   dcterms: http://purl.org/dc/terms/
   linkml: https://w3id.org/linkml/
   owl: http://www.w3.org/2002/07/owl#
   rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
   rdfs: http://www.w3.org/2000/01/rdf-schema#
   skos: http://www.w3.org/2004/02/skos/core#
+  skosxl: http://www.w3.org/2008/05/skos-xl#
+  lexinfo: http://www.lexinfo.net/ontology/3.0/lexinfo#
+  sh: http://www.w3.org/ns/shacl#
+  schema: http://schema.org/
   xsd: http://www.w3.org/2001/XMLSchema#
 emit_prefixes:
 - coe
-- coesrc
 - dcterms
 - owl
-- prov
 - rdf
 - rdfs
 - skos
+- skosxl
+- lexinfo
+- sh
+- schema
 - xsd
 imports:
 - linkml:types
+- ./modules/terminology.linkml
 - ./modules/core.linkml
 - ./modules/relations.linkml
-- ./modules/terminology.linkml
+- ./modules/portfolio.linkml
 - ./modules/knowledge.linkml
-- ./modules/governance.linkml
-- ./modules/assertions.linkml
+- ./modules/distribution.linkml

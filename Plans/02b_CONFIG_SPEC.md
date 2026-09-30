@@ -57,7 +57,8 @@ Both machine profiles must define the following sections:
 ```yaml
 paths:
   corpus_path: Knowledge_Base
-  ontology_path: Yamls
+  ontology_path: ontology/vendor/central-configs
+  library_path: library/vendor/central-library
   data_path: data
 ```
 
@@ -226,7 +227,8 @@ This profile is the **best-balance** configuration: fast ingest, modest vector s
 ```yaml
 paths:
   corpus_path: Knowledge_Base
-  ontology_path: Yamls
+  ontology_path: ontology/vendor/central-configs
+  library_path: library/vendor/central-library
   data_path: data
 
 ollama:
@@ -311,7 +313,8 @@ This profile is the **best-quality** configuration: higher-quality reranking and
 ```yaml
 paths:
   corpus_path: Knowledge_Base
-  ontology_path: Yamls
+  ontology_path: ontology/vendor/central-configs
+  library_path: library/vendor/central-library
   data_path: data
 
 ollama:

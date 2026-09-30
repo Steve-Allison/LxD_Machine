@@ -1,32 +1,30 @@
-bundle_id: coe:domain/delivery/vocal_pacing
+_meta:
+  file_id: coe:file/domain/delivery/vocal_pacing
+  title: Delivery — Vocal Pacing
+  last_updated: '2026-09-02'
+  authority: Central_Configs
+  scope: domain
+  ontology_domain: delivery
+  governing_class: coe:DomainModule
+module_id: coe:module/delivery/vocal_pacing
 domain: delivery
-version: 4.0.0
 entity_collections:
 - id: coe:artifact/delivery/vocal_pacing
   label: Vocal Pacing & Delivery Metrics
   description: Speaking rate, strategic pause, acoustic pitch standards.
-  version: 4.0.0
   last_updated: '2026-08-15'
   entities:
   - id: coe:entity/target_speaking_rate
     label: Target Speaking Rate
-    description: Optimal speech velocity calibrated between 130 and 160 words per minute for maximum cognitive absorption.
+    description: Speech velocity a delivery context calls for, expressed as a band rather than a point; the band differs between live conversational, live persuasive and narrated instructional delivery and is bounded above by the rate at which listeners can no longer process what is said. Which band applies is a measured finding owned by the evidence and by the tool that measures speech, not by this definition.
     home_domain: delivery
-    recognition_patterns:
-    - (?i)\bspeaking rate\b
-    - (?i)\bwords per minute\b
-    - (?i)\bwpm\b
     edges: []
+    status: canonical
   - id: coe:entity/strategic_pause
     label: Strategic Pause
-    description: Deliberate 1.5-3 second silence following key assertions to allow audience cognitive consolidation.
+    description: Deliberate silence placed after a key assertion so the audience can consolidate it before the speaker moves on; its duration band is library knowledge.
     home_domain: delivery
-    recognition_patterns:
-    - (?i)\bstrategic pause\b
-    - (?i)\bdeliberate silence\b
-    edges:
-    - subject_id: coe:entity/strategic_pause
-      predicate: coe:supports
-      object_id: coe:entity/mayer_coherence_principle
-      relationship_weight: expected
-      description: Strategic pausing prevents cognitive overload during key narrative beats.
+    edges: []
+    status: canonical
+  home_domain: delivery
+  status: canonical

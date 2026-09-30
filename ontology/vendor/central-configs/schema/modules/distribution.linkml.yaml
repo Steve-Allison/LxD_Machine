@@ -1,0 +1,52 @@
+id: https://steve-allison.github.io/Central_Configs/ontology/schema/distribution
+name: coe_distribution
+title: Central Configs Distribution Manifest Model
+version: 4.0.0
+default_prefix: coe
+default_range: string
+prefixes:
+  coe: https://steve-allison.github.io/Central_Configs/ontology/
+  dcterms: http://purl.org/dc/terms/
+  linkml: https://w3id.org/linkml/
+imports:
+- linkml:types
+- ./core.linkml
+slots:
+  namespace:
+    required: true
+    range: uri
+    slot_uri: coe:namespace
+    description: Canonical namespace URI for the ontology distribution.
+classes:
+  OntologyDistribution:
+    class_uri: coe:OntologyDistribution
+    description: Versioned distribution manifest listing the canonical schema, domain bundles, and domain modules.
+    mixins:
+    - Versioned
+    slots:
+    - _meta
+    - namespace
+    slot_usage:
+      _meta:
+        required: true
+    attributes:
+      distribution_id:
+        identifier: true
+        required: true
+        range: uriorcurie
+        slot_uri: dcterms:identifier
+        description: Canonical identifier for this ontology distribution.
+      schema_path:
+        required: true
+        slot_uri: coe:schema_path
+        description: Canonical LinkML schema entry point.
+      domain_bundle_paths:
+        required: true
+        multivalued: true
+        slot_uri: coe:domain_bundle_paths
+        description: Exactly eight canonical DomainBundle manifest paths.
+      domain_module_paths:
+        required: true
+        multivalued: true
+        slot_uri: coe:domain_module_paths
+        description: Complete set of focused DomainModule paths in this distribution.

@@ -1,10 +1,11 @@
 """Detect ontology mentions in chunk text spans."""
 
-from collections.abc import Callable
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, replace
 from operator import attrgetter
 from typing import Any
 
+from lxd.ontology.loader.types import AnchorConstraint, RecognitionPattern
 from lxd.ontology.normalization import normalize_match_text
 
 
@@ -26,6 +27,9 @@ def detect_mentions(
     ambiguous_map: dict[str, list[str]] | None = None,
     disambiguator: Callable[[str, list[str]], str | None] | None = None,
     context_radius: int = 200,
+    recognition_patterns: Sequence[RecognitionPattern] | None = None,
+    suppressed_terms: Mapping[str, frozenset[str]] | None = None,
+    anchor_constraints: Sequence[AnchorConstraint] | None = None,
 ) -> list[Mention]:
     """Detect ontology term mentions in text.
 
@@ -47,6 +51,11 @@ def detect_mentions(
         context_radius: ±characters of context around the ambiguous
             mention fed to the disambiguator. ±200 by default (B-KG-2
             spec).
+        recognition_patterns: Compiled library patterns applied after
+            literal matching.
+        suppressed_terms: Normalized negative surfaces that must not be
+            kept for an entity.
+        anchor_constraints: Context anchors a mention must satisfy.
 
     Returns:
         Non-overlapping mention spans sorted by position.
@@ -65,7 +74,21 @@ def detect_mentions(
                 end_char=end_index + 1,
             )
         )
+    if recognition_patterns:
+        matches.extend(_pattern_mentions(normalized, recognition_patterns))
     resolved = _resolve_overlaps(matches)
+    if suppressed_terms:
+        resolved = [
+            mention
+            for mention in resolved
+            if not _is_suppressed(mention, normalized, suppressed_terms)
+        ]
+    if anchor_constraints:
+        resolved = [
+            mention
+            for mention in resolved
+            if _anchors_allow(mention, normalized, anchor_constraints)
+        ]
     if ambiguous_map and disambiguator is not None:
         resolved = _apply_disambiguator(
             resolved,
@@ -113,7 +136,7 @@ def _apply_disambiguator(
 
 
 def _resolve_overlaps(matches: list[Mention]) -> list[Mention]:
-    priority = {"canonical_id": 0, "alias": 1, "indicator": 2}
+    priority = {"canonical_id": 0, "alias": 1, "indicator": 2, "pattern": 3}
     ordered = sorted(
         matches,
         key=lambda item: (
@@ -131,3 +154,62 @@ def _resolve_overlaps(matches: list[Mention]) -> list[Mention]:
         accepted.append(match)
         occupied.append((match.start_char, match.end_char))
     return sorted(accepted, key=attrgetter("start_char", "end_char", "entity_id"))
+
+
+def _pattern_mentions(normalized: str, patterns: Sequence[RecognitionPattern]) -> list[Mention]:
+    """Return mentions produced by compiled recognition patterns."""
+    found: list[Mention] = []
+    for spec in patterns:
+        for match in spec.compiled.finditer(normalized):
+            surface = normalize_match_text(match.group(0))
+            if len(surface) < 3:
+                continue
+            found.append(
+                Mention(
+                    entity_id=spec.entity_id,
+                    term_source="pattern",
+                    surface_form=surface,
+                    start_char=match.start(),
+                    end_char=match.end(),
+                )
+            )
+    return found
+
+
+def _is_suppressed(
+    mention: Mention,
+    normalized: str,
+    suppressed_terms: Mapping[str, frozenset[str]],
+) -> bool:
+    """Return whether a mention is a library negative surface."""
+    negatives = suppressed_terms.get(mention.entity_id)
+    if not negatives:
+        return False
+    if mention.surface_form in negatives:
+        return True
+    window = normalized[max(0, mention.start_char - 48) : mention.end_char + 48]
+    return any(negative in window and mention.surface_form in negative for negative in negatives)
+
+
+def _anchors_allow(
+    mention: Mention,
+    normalized: str,
+    constraints: Sequence[AnchorConstraint],
+) -> bool:
+    """Return whether every applicable anchor rule is satisfied."""
+    applicable = [
+        rule
+        for rule in constraints
+        if rule.entity_id == mention.entity_id
+        and (rule.surface is None or rule.surface == mention.surface_form)
+    ]
+    if not applicable:
+        return True
+    for rule in applicable:
+        radius = rule.window_tokens * 8
+        window = normalized[
+            max(0, mention.start_char - radius) : min(len(normalized), mention.end_char + radius)
+        ]
+        if not any(anchor in window for anchor in rule.anchors):
+            return False
+    return True

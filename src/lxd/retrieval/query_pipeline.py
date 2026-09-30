@@ -14,6 +14,8 @@ from lxd.domain.ids import blake3_hex
 from lxd.domain.limits import MAX_RETRIEVAL_LIMIT
 from lxd.domain.time import utc_now
 from lxd.ingest.wiki_metadata import is_citable_source
+from lxd.ontology.central_projection import format_ontology_context
+from lxd.ontology.loader import load_configured_ontology
 from lxd.retrieval.dense import embed_query
 from lxd.retrieval.expansion import ExpansionOutcome, expand_question
 from lxd.retrieval.graph_lane import GraphLaneHit, graph_lane_chunk_ids, load_graph_lane_hits
@@ -23,6 +25,7 @@ from lxd.retrieval.graph_routing import (
     format_graph_context_prompt,
 )
 from lxd.retrieval.hyde import generate_hypothetical_answer
+from lxd.retrieval.lexical import build_lexical_query, load_lexical_terms, phrases_for_question
 from lxd.retrieval.multi_query import generate_query_paraphrases
 from lxd.retrieval.rerank import rerank_chunks
 from lxd.retrieval.router import RouteBreadth, resolve_dense_top_k, route_query
@@ -292,6 +295,7 @@ def search_chunks(
                     requested_limit=requested_limit,
                     target_source_count=target_source_count,
                     rerank_top_k=config.retrieval.rerank_top_k,
+                    config=config,
                 )
                 for variant_query, variant_vector in query_variants
             ]
@@ -305,6 +309,7 @@ def search_chunks(
                 requested_limit=requested_limit,
                 target_source_count=target_source_count,
                 rerank_top_k=config.retrieval.rerank_top_k,
+                config=config,
             )
         ranked = _attach_centrality_signals(stores.sqlite, ranked)
         representative_candidates = _unique_source_prefix(ranked, target_source_count)
@@ -470,6 +475,12 @@ def answer_question(  # noqa: PLR0917 — established retrieval entrypoint; late
     # reuse the structured object without a second SQLite round-trip.
     graph_context = _load_graph_context(config, outcome.matched_entity_ids)
     graph_context_prompt = format_graph_context_prompt(graph_context) if graph_context else ""
+    ontology_context = format_ontology_context(
+        load_configured_ontology(config).entity_definitions,
+        outcome.matched_entity_ids,
+    )
+    if ontology_context:
+        graph_context_prompt = f"{graph_context_prompt}\n{ontology_context}".strip()
     if on_phase is not None:
         on_phase(2, "synthesising answer")
 
@@ -481,6 +492,7 @@ def answer_question(  # noqa: PLR0917 — established retrieval entrypoint; late
         "expansion_terms": outcome.expansion_terms,
         "result_count": len(outcome.ranked),
         "graph_context_applied": bool(graph_context_prompt),
+        "ontology_context_applied": bool(ontology_context),
         "dense_top_k": dense_top_k,
         "hyde_applied": outcome.hyde_applied,
         "multi_query_applied": outcome.multi_query_applied,
@@ -719,30 +731,34 @@ def _hybrid_ranked_candidates(
     requested_limit: int,
     target_source_count: int,
     rerank_top_k: int,
+    config: RuntimeConfig,
 ) -> list[RankedChunk]:
     """Fuse dense + BM25 candidates via LanceDB native hybrid search.
 
-    Uses ``Table.search(query_type="hybrid")`` with ``RRFReranker`` — the
-    engine issues one query, runs dense k-NN and BM25 FTS in parallel,
-    and fuses them internally on ``_relevance_score``. Result is a
-    single ordered stream; per-lane ranks are not exposed. The dense
-    ``score`` on the returned ``RankedChunk`` carries the fused
-    relevance (higher is better; the sign convention matches the
-    dense-only path's negated cosine).
+    The dense vector stays on ``query_vector`` (the literal question, or
+    the HyDE passage when that lane fired). The text query quotes
+    multi-word wiki and ontology phrases and weights the BM25 rank by
+    ``retrieval.lexical_fusion_weight``. Fusion uses the same RRF ``K``
+    as :func:`_fuse_ranked_prefix`.
 
     Same overfetch-until-enough-unique-sources loop as the previous
     dense-only variant, so the downstream unique-source prefix
     guarantee is preserved.
     """
+    lexical_query = build_lexical_query(
+        query, phrases_for_question(query, load_lexical_terms(config))
+    )
     raw_limit = min(_MAX_LIMIT, max(requested_limit, rerank_top_k))
     ranked: list[RankedChunk] = []
     while True:
         hits = search_chunks_hybrid(
             table,
-            query=query,
+            query=lexical_query,
             query_vector=query_vector,
             domain=domain,
             limit=raw_limit,
+            lexical_weight=config.retrieval.lexical_fusion_weight,
+            rrf_k=_RRF_K,
         )
         ranked = [RankedChunk.from_vector_hit(item) for item in hits]
         if len(_unique_source_prefix(ranked, target_source_count)) >= target_source_count:
@@ -929,11 +945,11 @@ def _fuse_ranked_prefix(
     The dense+lexical fuse now lives inside LanceDB's native hybrid search
     (see :func:`_hybrid_ranked_candidates`), so the incoming
     ``dense_prefix`` order already carries the fused dense+BM25 signal on
-    ``item.score``. This fuser layers four remaining Python-side lanes on
-    top: cross-encoder rerank, matched-relation membership, per-entity
-    PageRank, and claim-linked chunks from the graph-as-retrieval-lane
-    path (:mod:`lxd.retrieval.graph_lane`). The lexical lane and its
-    ``lexical_fusion_weight`` knob are gone by construction.
+    ``item.score``. ``retrieval.lexical_fusion_weight`` is applied there,
+    on the BM25 reciprocal-rank term. This fuser layers four remaining
+    Python-side lanes on top: cross-encoder rerank, matched-relation
+    membership, per-entity PageRank, and claim-linked chunks from the
+    graph-as-retrieval-lane path (:mod:`lxd.retrieval.graph_lane`).
     """
     if not dense_prefix:
         return []

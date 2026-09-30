@@ -11,6 +11,8 @@ Responsibility:
 Design boundary:
     The models intentionally permit unknown keys (``extra="allow"``) so they
     do not block valid-but-unmodelled ontology shapes during the transition.
+    Central domain modules are not validated here; ``central_projection``
+    turns those files into runtime entity records.
     The goal is *observability*, not gatekeeping — validation errors surface
     as :class:`ValueError` and should be logged, not re-raised as fatal.
 
@@ -71,6 +73,8 @@ class OntologyFileModel(BaseModel):
 
     meta: OntologyMetaModel | None = None
     entity_types: dict[str, OntologyEntityModel] | None = None
+    module_id: str | None = None
+    domain: str | None = None
     file_relationships: dict[str, dict[str, Any]] | None = None
     entity_relations: dict[str, dict[str, Any]] | None = None
     entity_relation_weights: dict[str, Any] | None = None

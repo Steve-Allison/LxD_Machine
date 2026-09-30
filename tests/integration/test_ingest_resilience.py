@@ -61,9 +61,9 @@ from lxd.stores.sqlite.connection import build_store_paths, connect_sqlite
 # ---------------------------------------------------------------------------
 
 
-# Use the project's own minimal ontology directory. This is read-only at
-# ingest time and is real — exactly what production runs against.
-ONTOLOGY_PATH = Path(__file__).resolve().parents[2] / "Yamls"
+# Vendored Central distribution. Read-only at ingest time, and the ontology
+# production runs against.
+ONTOLOGY_PATH = Path(__file__).resolve().parents[2] / "ontology" / "vendor" / "central-configs"
 
 
 def _deterministic_embedding(text: str, dims: int) -> list[float]:
@@ -792,9 +792,7 @@ def test_captioned_png_becomes_a_searchable_chunk(
     store_paths = build_store_paths(data)
     conn = connect_sqlite(store_paths.sqlite_path)
     try:
-        row = conn.execute(
-            "SELECT source_type, citation_label, text FROM chunk_rows"
-        ).fetchone()
+        row = conn.execute("SELECT source_type, citation_label, text FROM chunk_rows").fetchone()
         manifest_row = conn.execute(
             "SELECT retrieval_status, document_id FROM corpus_manifest "
             "WHERE source_rel_path = 'images/diagram.png'"
@@ -813,9 +811,7 @@ def test_captioned_png_becomes_a_searchable_chunk(
 
     db = connect_lancedb(store_paths.lancedb_path)
     table = open_chunk_table(db, vector_size=config.models.embed_dims)
-    lance_rows = (
-        table.search().where("source_rel_path = 'images/diagram.png'").to_list()
-    )
+    lance_rows = table.search().where("source_rel_path = 'images/diagram.png'").to_list()
     assert len(lance_rows) == 1
 
 

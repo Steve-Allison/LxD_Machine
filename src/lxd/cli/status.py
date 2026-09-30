@@ -96,6 +96,8 @@ def status_command(
     typer.echo(f"Config file: {context.config_path}")
     typer.echo(f"Corpus path: {context.config.paths.corpus_path}")
     typer.echo(f"Ontology path: {context.config.paths.ontology_path}")
+    if context.config.paths.library_path is not None:
+        typer.echo(f"Library path: {context.config.paths.library_path}")
     typer.echo(f"Scanned text files: {len(plan.scanned_files) - asset_count}")
     typer.echo(f"Scanned asset files: {asset_count}")
     typer.echo(f"Ontology snapshot hash: {plan.ontology.snapshot_hash}")

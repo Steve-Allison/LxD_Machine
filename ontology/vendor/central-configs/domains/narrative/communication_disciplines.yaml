@@ -1,0 +1,182 @@
+_meta:
+  file_id: coe:file/domain/narrative/communication_disciplines
+  title: Narrative — Communication Disciplines
+  last_updated: '2026-09-23'
+  authority: Central_Configs
+  scope: domain
+  ontology_domain: narrative
+  governing_class: coe:DomainModule
+module_id: coe:module/narrative/communication_disciplines
+domain: narrative
+entity_collections:
+- id: coe:artifact/narrative/story_craft_frameworks
+  label: Story Craft Frameworks
+  description: Named story-structure and message-craft frameworks recovered from the knowledge wiki.
+  last_updated: '2026-09-23'
+  home_domain: narrative
+  status: canonical
+  entities:
+  - id: coe:entity/freytags_pyramid
+    label: Freytag's Pyramid
+    description: Freytag's five-part dramatic-structure model — exposition, rising action, climax, falling action,
+      catastrophe — punctuated by three structural forces (1863).
+    home_domain: narrative
+    status: canonical
+    edges:
+    - subject_id: coe:entity/freytags_pyramid
+      predicate: coe:contrasts_with
+      object_id: coe:entity/minto_pyramid
+      relationship_weight: expected
+      description: Freytag's delayed dramatic resolution is the structural inverse of Minto's answer-first pyramid.
+      statement_id: coe:edge/freytags-pyramid-contrasts-with-minto-pyramid
+      home_domain: narrative
+    examples:
+    - Freytag's pyramid
+    - rising action
+    - falling action
+    - five-act structure
+    - denouement
+    anti_examples:
+    - pyramid principle
+  - id: coe:entity/save_the_cat
+    label: Save the Cat
+    description: Snyder's fifteen-beat, percentage-timed commercial screenplay structure with ten structural genre
+      categories.
+    home_domain: narrative
+    status: canonical
+    edges: []
+    examples:
+    - Save the Cat
+    - beat sheet
+    - fifteen beats
+    - All Is Lost beat
+  - id: coe:entity/story_spine
+    label: Story Spine
+    description: Adams's nine-step causal narrative template, from "Once upon a time" to "the moral is", enforcing
+      because-of-that causal coherence (1991); commonly misattributed to Pixar.
+    home_domain: narrative
+    status: canonical
+    edges: []
+    examples:
+    - story spine
+    - once upon a time... until finally
+    - because of that
+  - id: coe:entity/golden_circle
+    label: Golden Circle
+    description: Sinek's three-ring Why-How-What model prescribing inside-out, purpose-first communication; its
+      triune-brain justification is superseded.
+    home_domain: narrative
+    status: canonical
+    edges: []
+    examples:
+    - golden circle
+    - start with why
+    - why, how, what
+  - id: coe:entity/succes_framework
+    label: SUCCES Framework
+    description: The Heath brothers' six stickiness attributes — Simple, Unexpected, Concrete, Credible, Emotional,
+      Stories — countering the Curse of Knowledge (2007).
+    home_domain: narrative
+    status: canonical
+    edges: []
+    examples:
+    - SUCCES
+    - Made to Stick
+    - curse of knowledge
+    - sticky ideas
+  - id: coe:entity/live_speechwriting
+    label: Live Speechwriting
+    description: Composing a speech for live spoken performance — oral style for first-hearing comprehension, evidence
+      selection, designed moments, and the manuscript-to-run-of-show chain.
+    home_domain: narrative
+    status: canonical
+    edges: []
+    examples:
+    - speechwriting
+    - written for the ear
+    - run of show
+    - manuscript speech
+- id: coe:artifact/narrative/argument_and_audience_disciplines
+  label: Argument and Audience Disciplines
+  description: Argumentation and audience-communication disciplines recovered from the knowledge wiki.
+  last_updated: '2026-09-23'
+  home_domain: narrative
+  status: canonical
+  entities:
+  - id: coe:entity/dialectic
+    label: Dialectic
+    description: Structured truth-testing inquiry through cooperative question-and-answer among peers, distinct from
+      rhetoric's audience persuasion.
+    home_domain: narrative
+    status: canonical
+    edges:
+    - subject_id: coe:entity/dialectic
+      predicate: coe:supports
+      object_id: coe:entity/qa_handling
+      relationship_weight: optional
+      description: Live Q&A inherits the Socratic questioner-responder structure dialectic formalises.
+      statement_id: coe:edge/dialectic-supports-qa-handling
+      home_domain: narrative
+    examples:
+    - dialectic
+    - Socratic method
+    - thesis and antithesis
+    - dialectical inquiry
+  - id: coe:entity/cer_framework
+    label: Claim-Evidence-Reasoning Framework
+    description: McNeill and Krajcik's Claim-Evidence-Reasoning framework for constructing and assessing scientific
+      arguments, extended by stance and evidence-type classification with a levelled quality rubric.
+    home_domain: narrative
+    status: canonical
+    edges:
+    - subject_id: coe:entity/cer_framework
+      predicate: coe:specialises
+      object_id: coe:entity/critical_thinking
+      relationship_weight: expected
+      description: Claim-Evidence-Reasoning operationalises the argument anatomy of critical thinking as a teachable
+        construction and assessment framework.
+      statement_id: coe:edge/cer-framework-specialises-critical-thinking
+      home_domain: narrative
+    examples:
+    - claim-evidence-reasoning
+    - CER framework
+    - scientific argumentation rubric
+  - id: coe:entity/audience_analysis
+    label: Audience Analysis
+    description: The discipline of researching an audience's knowledge, disposition and four-part needs — functional,
+      emotional, social, aspirational — before communicating, using psychological profiling frameworks.
+    home_domain: narrative
+    status: canonical
+    edges:
+    - subject_id: coe:entity/audience_analysis
+      predicate: coe:precedes
+      object_id: coe:entity/audience_design
+      relationship_weight: expected
+      description: Pre-delivery audience research supplies the knowledge model that real-time audience design adjusts
+        against.
+      statement_id: coe:edge/audience-analysis-precedes-audience-design
+      home_domain: narrative
+    - subject_id: coe:entity/audience_analysis
+      predicate: coe:supports
+      object_id: coe:entity/persona_method
+      relationship_weight: expected
+      description: Persona construction applies audience-analysis profiling evidence to build and validate archetypes.
+      statement_id: coe:edge/audience-analysis-supports-persona-method
+      home_domain: narrative
+    examples:
+    - audience analysis
+    - audience research
+    - know your audience
+    - audience needs assessment
+  - id: coe:entity/audience_design
+    label: Audience Design
+    description: The cognitive process by which speakers tailor speech to a listener's knowledge — common-ground models,
+      egocentric referential error under load, and neural-alignment evidence.
+    home_domain: narrative
+    status: canonical
+    edges: []
+    examples:
+    - audience design
+    - common ground
+    - recipient design
+    - egocentric speech error

@@ -1,0 +1,113 @@
+_meta:
+  file_id: coe:file/domain/adobe/brand
+  title: Adobe — Brand Identity
+  last_updated: '2026-09-23'
+  authority: Central_Configs
+  scope: domain
+  ontology_domain: adobe
+  governing_class: coe:DomainModule
+module_id: coe:module/adobe/brand
+domain: adobe
+entity_collections:
+- id: coe:artifact/adobe/brand_identity
+  label: Adobe Brand Identity
+  description: The named parts of Adobe's corporate brand — its voice, its visual style, and the colour, typeface, marks and
+    template treatments that carry it; their values, rules and markup are library records about these entities.
+  last_updated: '2026-09-23'
+  home_domain: adobe
+  status: canonical
+  entities:
+  - id: coe:entity/adobe/brand_voice
+    label: Adobe Brand Voice
+    description: The voice in which Adobe speaks in its own customer-facing words — narrative spines, claims, visible copy,
+      speaker notes, marketing and learning content — as distinct from the product names and trademarks governed by Adobe's
+      product taxonomy.
+    home_domain: adobe
+    status: canonical
+  - id: coe:entity/adobe/corporate_visual_style
+    label: Adobe Corporate Visual Style
+    description: The recognisable visual character of Adobe's corporate brand — colour behaviour, typographic character,
+      imagery point of view, motion and video feel, and the treatment of its marks — applied to Adobe-branded decks,
+      documents, videos and visual assets. It is a style, not a production design system, and is distinct from Spectrum,
+      Adobe's design system for product interfaces.
+    home_domain: adobe
+    status: canonical
+    edges:
+    - subject_id: coe:entity/adobe/corporate_visual_style
+      predicate: coe:contains
+      object_id: coe:entity/adobe/adobe_red
+      relationship_weight: required
+      description: Adobe Red is the brand colour the corporate style is recognised by.
+      statement_id: coe:edge/adobe-corporate-visual-style-contains-adobe-red
+      home_domain: adobe
+    - subject_id: coe:entity/adobe/corporate_visual_style
+      predicate: coe:contains
+      object_id: coe:entity/adobe/adobe_clean
+      relationship_weight: required
+      description: Adobe Clean is the typeface the corporate style sets all its type in.
+      statement_id: coe:edge/adobe-corporate-visual-style-contains-adobe-clean
+      home_domain: adobe
+    - subject_id: coe:entity/adobe/corporate_visual_style
+      predicate: coe:contains
+      object_id: coe:entity/adobe/adobe_wordmark
+      relationship_weight: required
+      description: The wordmark is the corporate style's primary brand identifier.
+      statement_id: coe:edge/adobe-corporate-visual-style-contains-adobe-wordmark
+      home_domain: adobe
+    - subject_id: coe:entity/adobe/corporate_visual_style
+      predicate: coe:contains
+      object_id: coe:entity/adobe/adobe_icon
+      relationship_weight: required
+      description: The icon is the corporate style's secondary brand identifier.
+      statement_id: coe:edge/adobe-corporate-visual-style-contains-adobe-icon
+      home_domain: adobe
+    - subject_id: coe:entity/adobe/corporate_visual_style
+      predicate: coe:contains
+      object_id: coe:entity/adobe/presentation_left_red_stripe
+      relationship_weight: expected
+      description: The left red stripe is the corporate style's presentation-template chrome.
+      statement_id: coe:edge/adobe-corporate-visual-style-contains-presentation-left-red-stripe
+      home_domain: adobe
+    - subject_id: coe:entity/adobe/corporate_visual_style
+      predicate: coe:contains
+      object_id: coe:entity/adobe/document_h1_red_underline
+      relationship_weight: expected
+      description: The H1 red underline is the corporate style's document heading treatment.
+      statement_id: coe:edge/adobe-corporate-visual-style-contains-document-h1-red-underline
+      home_domain: adobe
+  - id: coe:entity/adobe/adobe_red
+    label: Adobe Red
+    description: Adobe's signature brand colour, used as a precise accent on black, white and grey foundations; its colour
+      value and the places it may be used are library knowledge.
+    home_domain: adobe
+    status: canonical
+  - id: coe:entity/adobe/adobe_clean
+    label: Adobe Clean
+    description: Adobe's proprietary typeface, the only typeface for Adobe's internal and external communications and licensed
+      for Adobe use only; its weights, hierarchy and fallbacks are library knowledge.
+    home_domain: adobe
+    status: canonical
+  - id: coe:entity/adobe/adobe_wordmark
+    label: Adobe Wordmark
+    description: The spelled-out Adobe logotype, Adobe's primary brand identifier, used wherever no other Adobe identifier is
+      present.
+    home_domain: adobe
+    status: canonical
+  - id: coe:entity/adobe/adobe_icon
+    label: Adobe Icon
+    description: The Adobe "A" symbol, Adobe's secondary brand identifier, used where space is small or Adobe is already
+      identified elsewhere.
+    home_domain: adobe
+    status: canonical
+  - id: coe:entity/adobe/presentation_left_red_stripe
+    label: Presentation Left Red Stripe
+    description: The fixed Adobe Red vertical stripe at the extreme left edge of Adobe's official presentation template —
+      template chrome and a recognisable Adobe presentation cue, never a general-purpose motif.
+    home_domain: adobe
+    status: canonical
+  - id: coe:entity/adobe/document_h1_red_underline
+    label: Document H1 Red Underline
+    description: The thin Adobe Red underline beneath H1-level headings that Adobe document templates call for — a document
+      heading treatment, distinct from presentation-template chrome.
+    home_domain: adobe
+    status: canonical

@@ -22,6 +22,9 @@ def test_expand_question_uses_query_mentions_and_entity_neighbors(
     runtime = SimpleNamespace(
         ontology=SimpleNamespace(
             graph=graph,
+            recognition_patterns=(),
+            suppressed_terms={},
+            anchor_constraints=(),
             entity_definitions=[
                 {
                     "canonical_id": "mayer_principle",
@@ -63,7 +66,9 @@ def test_expand_question_uses_query_mentions_and_entity_neighbors(
     def _ontology_runtime(_config: RuntimeConfig) -> SimpleNamespace:
         return runtime
 
-    def _detect_mentions(_question: str, _automaton: Any) -> list[SimpleNamespace]:
+    def _detect_mentions(
+        _question: str, _automaton: Any, **_kwargs: object
+    ) -> list[SimpleNamespace]:
         return [SimpleNamespace(entity_id="mayer_principle")]
 
     monkeypatch.setattr(expansion, "_ontology_runtime", _ontology_runtime)

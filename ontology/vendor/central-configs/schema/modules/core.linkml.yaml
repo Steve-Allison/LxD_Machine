@@ -12,9 +12,12 @@ prefixes:
   rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
   rdfs: http://www.w3.org/2000/01/rdf-schema#
   skos: http://www.w3.org/2004/02/skos/core#
+  skosxl: http://www.w3.org/2008/05/skos-xl#
+  sh: http://www.w3.org/ns/shacl#
   xsd: http://www.w3.org/2001/XMLSchema#
 imports:
 - linkml:types
+- ./terminology.linkml
 types:
   Date:
     typeof: date
@@ -43,254 +46,278 @@ slots:
   home_domain:
     range: OntologyDomainEnum
     slot_uri: coe:homeDomain
-    description: Canonical home domain for an identified resource.
+    description: Canonical semantic owner of a domain-owned resource.
   status:
     range: LifecycleStatusEnum
     slot_uri: coe:status
-    description: Lifecycle status of an identified resource.
+    description: Lifecycle status of a semantic resource.
   version:
     required: true
     pattern: ^\d+\.\d+\.\d+$
     slot_uri: dcterms:hasVersion
-    description: Semantic version of a versioned resource.
-  deprecated_by:
-    range: IdentifiedThing
-    inlined: false
-    slot_uri: dcterms:isReplacedBy
-    description: Successor resource that replaces this deprecated resource.
-  deprecation_reason:
-    slot_uri: coe:deprecationReason
-    description: Reason this resource is deprecated.
-  properties:
-    range: StructuredNode
+    description: Semantic version of the resource that carries it. Only the distribution
+      manifest is versioned; ordinary authored artifacts carry no version because Git
+      is their history.
+  terms:
+    range: Term
     multivalued: true
     inlined_as_list: true
-    deprecated: Untyped extension bag subject to earned-inclusion curation; model new detail as typed slots instead.
-    slot_uri: coe:property
-    description: Typed extension properties retained without an unbounded Any range.
+    slot_uri: skosxl:altLabel
+    description: Every name other than its label by which this resource is known, each typed and dated; the label stays
+      the one current official name.
+  edges:
+    range: SemanticEdge
+    multivalued: true
+    inlined_as_list: true
+    slot_uri: coe:edge
+    description: Canonical semantic relationships authored from this resource.
+  _meta:
+    range: FileMeta
+    inlined: true
+    slot_uri: coe:_meta
+    description: Typed metadata for an authored instance root.
 classes:
-  IdentifiedThing:
-    abstract: true
-    class_uri: coe:IdentifiedThing
-    description: A canonical resource with an explicit, globally stable identifier.
-    slots:
-      - id
-      - label
-      - description
-      - home_domain
-      - status
-      - deprecated_by
-      - deprecation_reason
-    rules:
-      - description: A deprecated resource must name its successor and the reason for deprecation.
-        preconditions:
-          slot_conditions:
-            status:
-              equals_string: deprecated
-        postconditions:
-          slot_conditions:
-            deprecated_by:
-              required: true
-            deprecation_reason:
-              required: true
-  Versioned:
-    abstract: true
-    mixin: true
-    class_uri: coe:Versioned
-    description: Mixin for resources carrying an explicit semantic version.
-    slots:
-      - version
-  StructuredNode:
-    class_uri: coe:StructuredNode
-    description: Fully typed recursive representation of irregular authored detail. Exactly one scalar
-      value or a list of child nodes is populated by convention.
+  FileMeta:
+    class_uri: coe:FileMeta
+    description: Machine-validated metadata for one authored instance root; LinkML schemas use native SchemaDefinition metadata.
     attributes:
-      id:
+      file_id:
         identifier: true
         required: true
         range: uriorcurie
         slot_uri: dcterms:identifier
-        description: Id for this structurednode.
-      key:
+        description: Stable identifier naming this authored file, distinct from the semantic
+          identifiers of the resources the file contains.
+      title:
         required: true
-        slot_uri: coe:key
-        description: Key for this structurednode.
-      value_kind:
+        slot_uri: dcterms:title
+        description: Human-readable title of the authored file.
+      last_updated:
         required: true
-        range: StructuredValueKindEnum
-        slot_uri: coe:valueKind
-        description: Value kind for this structurednode.
-      string_value:
-        slot_uri: coe:stringValue
-        description: String value for this structurednode.
-      integer_value:
-        range: integer
-        slot_uri: coe:integerValue
-        description: Integer value for this structurednode.
-      decimal_value:
-        range: float
-        slot_uri: coe:decimalValue
-        description: Decimal value for this structurednode.
-      boolean_value:
-        range: boolean
-        slot_uri: coe:booleanValue
-        description: Boolean value for this structurednode.
-      children:
-        range: StructuredNode
+        range: Date
+        slot_uri: dcterms:modified
+        description: Calendar date of the most recent authored change to this file.
+      authority:
+        required: true
+        range: FileAuthorityEnum
+        slot_uri: coe:authority
+        description: Repository that owns and maintains this authored file.
+      scope:
+        required: true
+        range: FileScopeEnum
+        slot_uri: coe:scope
+        description: Kind of authored root this file is; determines whether ontology_domain
+          is required.
+      ontology_domain:
+        range: OntologyDomainEnum
+        slot_uri: coe:ontology_domain
+        description: Canonical domain that owns this file's contents. Required for domain
+          scope and absent for non-domain roots.
+      governing_class:
+        required: true
+        range: string
+        pattern: ^[A-Za-z][A-Za-z0-9_]*:[A-Za-z][A-Za-z0-9_]*$
+        slot_uri: coe:governing_class
+        description: CURIE of the LinkML class this file's root instance validates against.
+  IdentifiedThing:
+    abstract: true
+    class_uri: coe:IdentifiedThing
+    description: Identifiable record with a stable URI and human-readable label.
+    slots:
+    - id
+    - label
+    - description
+  Versioned:
+    abstract: true
+    mixin: true
+    class_uri: coe:Versioned
+    slots:
+    - version
+    description: Mixin granting an explicit semantic version. Applied only where the version
+      is itself authoritative shared meaning — the distribution manifest — never to ordinary
+      authored artifacts, whose history lives in Git.
+  SemanticResource:
+    abstract: true
+    is_a: IdentifiedThing
+    class_uri: coe:SemanticResource
+    description: One first-class meaning owned by exactly one canonical domain. Its provenance is the Git history of the
+      file that defines it, never a field of its own.
+    slots:
+    - home_domain
+    - status
+    - terms
+    - edges
+    slot_usage:
+      home_domain:
+        required: true
+    attributes:
+      exact_match:
         multivalued: true
-        inlined_as_list: true
-        slot_uri: coe:child
-        description: Children for this structurednode.
+        slot_uri: skos:exactMatch
+        description: External identifiers whose meaning is interchangeable with this resource
+          (skos:exactMatch).
+      close_match:
+        multivalued: true
+        slot_uri: skos:closeMatch
+        description: External identifiers whose meaning closely approximates this resource
+          without being interchangeable (skos:closeMatch).
   Statement:
     abstract: true
     class_uri: rdf:Statement
-    description: One reified semantic assertion carried by evidence; authored in the canonical
-      predicate direction only, never as a duplicate inverse edge.
+    description: One addressable semantic statement authored in canonical predicate direction.
     attributes:
+      statement_id:
+        identifier: true
+        required: true
+        range: uriorcurie
+        slot_uri: dcterms:identifier
+        description: Stable identifier making this statement itself addressable and citable.
       subject_id:
         required: true
-        range: IdentifiedThing
+        range: SemanticResource
         inlined: false
         slot_uri: rdf:subject
-        description: Subject id for this statement.
+        description: Resource the statement is about; resolves to a SemanticResource identifier.
       predicate:
         required: true
         range: AuthoredPredicateEnum
         slot_uri: rdf:predicate
-        description: Canonical-direction predicate for this statement.
+        description: Canonical-direction predicate relating subject to object; one of the
+          authorable predicates in AuthoredPredicateEnum.
       object_id:
         required: true
-        range: IdentifiedThing
+        range: SemanticResource
         inlined: false
         slot_uri: rdf:object
-        description: Object id for this statement.
+        description: Resource the statement relates the subject to; resolves to a SemanticResource
+          identifier.
+      home_domain:
+        required: true
+        range: OntologyDomainEnum
+        slot_uri: coe:homeDomain
+        description: Canonical domain that owns and curates this statement.
       description:
         slot_uri: dcterms:description
-        description: Description for this statement.
+        description: Optional prose qualifying the statement beyond what subject, predicate,
+          and object already convey.
   SemanticEdge:
     is_a: Statement
     class_uri: coe:SemanticEdge
-    description: One directly authored canonical relationship between ontology entities.
+    description: One first-class canonical relationship between semantic resources.
     unique_keys:
       semantic_triple:
-        description: A subject, predicate, and object triple may be authored only once.
         unique_key_slots:
-          - subject_id
-          - predicate
-          - object_id
-    slot_usage:
-      subject_id:
-        range: OntologyEntity
-      object_id:
-        range: OntologyEntity
+        - subject_id
+        - predicate
+        - object_id
     attributes:
       relationship_weight:
         required: true
         range: RelationshipWeightEnum
         slot_uri: coe:relationshipWeight
-        description: Weight for this statement.
+        description: How binding this relationship is for consumers — required, expected,
+          or optional.
   OntologyEntity:
-    is_a: IdentifiedThing
+    is_a: SemanticResource
     class_uri: coe:OntologyEntity
-    slots:
-      - properties
     attributes:
       description:
         required: true
         slot_uri: dcterms:description
-        description: Complete semantic definition of the entity.
-      home_domain:
-        required: true
-        range: OntologyDomainEnum
-        slot_uri: coe:homeDomain
-        description: Exactly one canonical home domain.
-      aliases:
-        multivalued: true
-        deprecated: Flat alias list superseded by typed, sense-scoped Synonym records in the terminology module.
-        slot_uri: skos:altLabel
-        description: Aliases for this ontologyentity.
-      recognition_patterns:
-        required: true
-        minimum_cardinality: 1
-        multivalued: true
-        deprecated: Surface recognition is moving to TermSense recognition_patterns in the terminology module.
-        slot_uri: coe:recognitionPattern
-        description: Recognition patterns for this ontologyentity.
-      edges:
-        range: SemanticEdge
-        multivalued: true
-        inlined_as_list: true
-        slot_uri: coe:edge
-        description: Edges for this ontologyentity.
+        description: Complete definition of this entity, sufficient to apply or reject it
+          without consulting application context.
       examples:
         multivalued: true
         slot_uri: skos:example
-        description: Example surface forms or valid instances for this entity.
+        description: Positive instances that fall under this entity, sharpening its boundary — items a subject expert would
+          give when explaining what the entity means. A phrase that only signals the entity in text is a library recognition
+          surface, not an example.
       anti_examples:
         multivalued: true
         slot_uri: coe:antiExample
-        description: Explicit negative non-matches for this entity.
-      confidence_threshold:
-        range: float
-        slot_uri: coe:confidenceThreshold
-        description: Minimum recognition confidence score.
-      ner_label:
-        range: string
-        slot_uri: coe:nerLabel
-        description: Named entity classification label.
-      exact_match:
-        multivalued: true
-        slot_uri: skos:exactMatch
-        description: External standard ontology URIs with exact conceptual equivalence (e.g. Wikidata, Schema.org).
-      close_match:
-        multivalued: true
-        slot_uri: skos:closeMatch
-        description: External standard ontology URIs with close conceptual overlap.
+        description: Near-miss instances that do not fall under this entity, marking its
+          boundary against confusable neighbours in meaning. A phrase that merely shares words with the entity's names is a
+          library negative surface, not an anti-example.
+    description: One named unit of domain meaning — the entity that recognition,
+      retrieval, and semantic edges attach to; how to recognise it in text is library knowledge. Distinguished from Concept by standing alone
+      rather than as a member of a governed taxonomy.
 enums:
   OntologyDomainEnum:
     permissible_values:
       ai:
-        description: Artificial intelligence systems, models, methods, patterns, and operational concepts.
+        description: Subject domain owning AI systems, techniques, and prompt-engineering meaning.
       adobe:
-        description: Adobe-specific portfolio, products, brand systems, and customer/learner profiles.
+        description: Organisation domain owning Adobe products, technologies, brand concepts,
+          and Adobe user and learner profiles.
       business:
-        description: Commercial strategy, industries, sales, value, and organisational outcomes.
+        description: Subject domain owning commercial meaning — buyer personas, sales vocabulary,
+          and commercial rubrics.
       narrative:
-        description: Story, discourse, rhetoric, argument, and narrative structure.
+        description: Craft domain owning story, discourse, and argumentation structure.
       learning:
-        description: Learning design, instruction, assessment, and educational theory.
+        description: Subject domain owning instructional design, assessment, and learner meaning.
       delivery:
-        description: Human delivery, facilitation, presence, voice, and physical performance.
+        description: Craft domain owning spoken and performed delivery — vocal pacing and presence.
       visual_communication:
-        description: Visual communication, media, layout, graphics, and production craft.
+        description: Craft domain owning visual design, slide, and data-visualisation meaning.
       language_editorial:
-        description: Authored language, editorial style, verbal identity, and written expression.
+        description: Craft domain owning lexicon, style, tone, and language accessibility.
+    description: The eight canonical domains that exhaustively partition ownership of shared
+      meaning across three tiers — Craft (narrative, visual_communication, language_editorial,
+      delivery), Subject (learning, business, ai), and Organisation (adobe).
   LifecycleStatusEnum:
     permissible_values:
-      canonical: null
-      draft: null
-      deprecated: null
-  StructuredValueKindEnum:
+      draft:
+        description: Authored but not yet reviewed; consumers must not rely on it.
+      candidate:
+        description: Reviewed and proposed for canonical status; stable enough to trial.
+      canonical:
+        description: Settled shared meaning; the default state consumers rely on.
+      retired:
+        description: Withdrawn from use and retained only for reference; never cited by new work.
+    description: Curation states a semantic resource moves through; only canonical resources
+      are settled shared meaning.
+  FileAuthorityEnum:
     permissible_values:
-      mapping: null
-      list: null
-      string: null
-      integer: null
-      decimal: null
-      boolean: null
-      "null": null
+      Central_Configs:
+        description: This repository — the sole authority for every file authored under
+          ontology/; no other value exists because Central describes only what it owns.
+    description: Repository authorised to own a file authored in this repository. The
+      vocabulary is closed at Central itself; a consuming project's file metadata is
+      defined by that project's own application profile, never here.
+  FileScopeEnum:
+    permissible_values:
+      domain:
+        description: DomainModule root owned by exactly one canonical domain.
+      distribution:
+        description: OntologyDistribution manifest root.
+      stewardship:
+        description: Stewardship record such as the domain registry.
+      schema:
+        description: Reserved for schema-scoped records; LinkML schema files themselves use
+          native SchemaDefinition metadata, never _meta.
+      library:
+        description: LibraryModule or LibraryDistribution root under library/ — shared craft
+          knowledge keyed to ontology identifiers, authored in this repository beside the ontology.
+      pack:
+        description: PackDefinition root under packs/ — declares one self-contained domain pack that stage-packs builds
+          from the ontology and the library.
+    description: Kinds of authored root a file in this repository may declare; domain roots
+      additionally name their owning domain.
   RelationshipWeightEnum:
     permissible_values:
-      required: null
-      expected: null
-      optional: null
+      required:
+        description: Consumers must honour the relationship; ignoring it is an error.
+      expected:
+        description: Consumers should honour the relationship and justify exceptions.
+      optional:
+        description: Available context; consumers may ignore it freely.
+    description: How binding a canonical relationship is for consumers.
   AuthoredPredicateEnum:
-    description: >-
-      Authorable projection of the canonical relation hierarchy defined in the
-      relations module. Canonical-direction predicates only; each value's
-      meaning URI resolves to the relation slot carrying that predicate's
-      logical characteristics, typing, and external mappings. Inverse
-      directions are generated graph semantics and are never authorable.
+    description: Canonical-direction authorable predicates; inverse directions are generated
+      only. Each value's meaning URI resolves to the canonical-direction slot in the relations
+      module, which carries the definitive description and logical characteristics — defining
+      them here as well would create a second authority.
     permissible_values:
       coe:supports:
         meaning: coe:supports

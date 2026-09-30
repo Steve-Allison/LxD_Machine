@@ -1,29 +1,28 @@
-bundle_id: coe:domain/ai/prompt_techniques
+_meta:
+  file_id: coe:file/domain/ai/prompt_techniques
+  title: Ai — Prompt Techniques
+  last_updated: '2026-09-23'
+  authority: Central_Configs
+  scope: domain
+  ontology_domain: ai
+  governing_class: coe:DomainModule
+module_id: coe:module/ai/prompt_techniques
 domain: ai
-version: 4.0.0
 entity_collections:
 - entities:
-  - aliases:
-    - LLM technique
-    - prompting method
-    - prompting strategy
-    recognition_patterns:
-    - (chain[- ]of[- ]thought|tree[- ]of[- ]thought)
-    - (few|zero|one|multi)[- ]shot
-    - (role|system|self-consistency|ReAct) prompting
-    - prompt (chaining|decomposition|engineering)
-    edges:
+  - edges:
     - subject_id: coe:entity/prompt_technique
       predicate: coe:supports
       object_id: coe:entity/adult_professional_learner
       relationship_weight: expected
       description: AI systems adapt generative learning experiences for adult professional learners.
+      statement_id: coe:edge/608099b80c8e736809f07535
+      home_domain: ai
     id: coe:entity/prompt_technique
     label: Prompt Technique
     description: Named prompting strategies and methodologies for LLM interaction
     home_domain: ai
     status: canonical
-    ner_label: PROMPT_TECHNIQUE
     examples:
     - chain-of-thought prompting
     - few-shot learning
@@ -33,31 +32,19 @@ entity_collections:
     - tree-of-thought reasoning
     - ReAct prompting
     - multi-step decomposition
-    anti_examples:
-    - chain link fence
-    - few items
-    - zero tolerance
-    confidence_threshold: 0.75
-  - aliases:
-    - prompt element
-    - template section
-    recognition_patterns:
-    - system (message|prompt|instruction)
-    - (output|response) format
-    - (persona|role) definition
-    - (guardrail|constraint|boundary)
-    edges:
+  - edges:
     - subject_id: coe:entity/prompt_component
       predicate: coe:supports
       object_id: coe:entity/adult_professional_learner
       relationship_weight: expected
       description: AI systems adapt generative learning experiences for adult professional learners.
+      statement_id: coe:edge/24480b9f61eb69e4328486cb
+      home_domain: ai
     id: coe:entity/prompt_component
     label: Prompt Component
     description: Structural elements within a prompt template (system message, examples, constraints)
     home_domain: ai
     status: canonical
-    ner_label: PROMPT_COMPONENT
     examples:
     - system message
     - user instruction
@@ -67,32 +54,19 @@ entity_collections:
     - persona definition
     - guardrail constraint
     - temperature setting
-    anti_examples:
-    - system administrator
-    - output device
-    confidence_threshold: 0.7
-  - aliases:
-    - knowledge pipeline
-    - RAG element
-    - retrieval component
-    recognition_patterns:
-    - vector (store|database|db|index)
-    - embedding (model|space|dimension)
-    - document (retriever|loader|splitter)
-    - (semantic|similarity|hybrid) search
-    - (chunk|chunking) (size|strategy|splitter)
-    edges:
+  - edges:
     - subject_id: coe:entity/rag_component
       predicate: coe:supports
       object_id: coe:entity/adult_professional_learner
       relationship_weight: expected
       description: AI systems adapt generative learning experiences for adult professional learners.
+      statement_id: coe:edge/382bfc5b4da9b6f4dc182ec5
+      home_domain: ai
     id: coe:entity/rag_component
     label: Rag Component
     description: Components of Retrieval-Augmented Generation architectures
     home_domain: ai
     status: canonical
-    ner_label: RAG_COMPONENT
     examples:
     - vector store
     - embedding model
@@ -102,29 +76,19 @@ entity_collections:
     - knowledge base
     - document loader
     - semantic search index
-    anti_examples:
-    - store manager
-    - document folder
-    confidence_threshold: 0.75
-  - aliases:
-    - augmentation pattern
-    - retrieval strategy
-    recognition_patterns:
-    - (naive|advanced|modular|self|corrective)[- ]RAG
-    - (hybrid|multi-hop|dense|sparse) (search|retrieval)
-    - contextual augmented generation
-    edges:
+  - edges:
     - subject_id: coe:entity/rag_strategy
       predicate: coe:supports
       object_id: coe:entity/adult_professional_learner
       relationship_weight: expected
       description: AI systems adapt generative learning experiences for adult professional learners.
+      statement_id: coe:edge/75f29f849d8f33b7e547366b
+      home_domain: ai
     id: coe:entity/rag_strategy
     label: Rag Strategy
     description: Named RAG architectures and retrieval augmentation strategies
     home_domain: ai
     status: canonical
-    ner_label: RAG_STRATEGY
     examples:
     - naive RAG
     - advanced RAG
@@ -134,30 +98,19 @@ entity_collections:
     - multi-hop retrieval
     - self-RAG
     - corrective RAG
-    anti_examples:
-    - rag doll
-    - rag tag
-    confidence_threshold: 0.8
-  - aliases:
-    - declarative construct
-    - PDL element
-    recognition_patterns:
-    - (IBM )?PDL
-    - Prompt Declaration Language
-    - (declarative|neuro-symbolic) (prompt|framework|methodology)
-    - (block|function|model) (definition|call|invocation)
-    edges:
+  - edges:
     - subject_id: coe:entity/pdl_construct
       predicate: coe:supports
       object_id: coe:entity/adult_professional_learner
       relationship_weight: expected
       description: AI systems adapt generative learning experiences for adult professional learners.
+      statement_id: coe:edge/a7b56cb00c428558988ba586
+      home_domain: ai
     id: coe:entity/pdl_construct
     label: Pdl Construct
     description: IBM Prompt Declaration Language constructs and declarative programming elements
     home_domain: ai
     status: canonical
-    ner_label: PDL_CONSTRUCT
     examples:
     - PDL block definition
     - declarative prompt template
@@ -167,32 +120,19 @@ entity_collections:
     - loop construct
     - model call
     - PDL program
-    anti_examples:
-    - PDL file format
-    - block chain
-    confidence_threshold: 0.8
-  - aliases:
-    - AI model
-    - foundation model
-    - language model
-    recognition_patterns:
-    - GPT-?\d
-    - Claude \d
-    - Gemini (Pro|Ultra|Flash|Nano)
-    - Llama \d
-    - Mistral \d
-    edges:
+  - edges:
     - subject_id: coe:entity/llm_model_reference
       predicate: coe:supports
       object_id: coe:entity/adult_professional_learner
       relationship_weight: expected
       description: AI systems adapt generative learning experiences for adult professional learners.
+      statement_id: coe:edge/1c1c2f89f2094451ebbd76ad
+      home_domain: ai
     id: coe:entity/llm_model_reference
     label: Llm Model Reference
     description: References to specific LLM model families, versions, or capabilities
     home_domain: ai
     status: canonical
-    ner_label: LLM_MODEL_REF
     examples:
     - GPT-4
     - Claude 3.5 Sonnet
@@ -201,31 +141,19 @@ entity_collections:
     - Mistral 7B
     - BERT
     - T5
-    anti_examples:
-    - GPT partition table
-    - llama animal
-    confidence_threshold: 0.85
-  - aliases:
-    - generation setting
-    - inference parameter
-    - sampling parameter
-    recognition_patterns:
-    - temperature[= :]?\s?\d
-    - top[_-]?[pk][= :]?\s?\d
-    - max[_-]?tokens[= :]?\s?\d
-    - (frequency|presence)[_-]?penalty
-    edges:
+  - edges:
     - subject_id: coe:entity/generation_parameter
       predicate: coe:supports
       object_id: coe:entity/adult_professional_learner
       relationship_weight: expected
       description: AI systems adapt generative learning experiences for adult professional learners.
+      statement_id: coe:edge/551555dea18df27aacd10983
+      home_domain: ai
     id: coe:entity/generation_parameter
     label: Generation Parameter
     description: Configuration parameters that control LLM text generation behaviour
     home_domain: ai
     status: canonical
-    ner_label: GENERATION_PARAM
     examples:
     - temperature 0.7
     - top_p 0.9
@@ -233,30 +161,19 @@ entity_collections:
     - frequency_penalty 0.5
     - stop sequence
     - presence penalty
-    anti_examples:
-    - room temperature
-    - top priority
-    confidence_threshold: 0.8
-  - aliases:
-    - context management
-    - context optimisation
-    recognition_patterns:
-    - context (window|stuffing|summarisation|pruning|length|limit)
-    - prompt (compression|compacting|optimisation)
-    - (sliding|attention) window
-    - token (budget|limit|count)
-    edges:
+  - edges:
     - subject_id: coe:entity/context_engineering_pattern
       predicate: coe:supports
       object_id: coe:entity/adult_professional_learner
       relationship_weight: expected
       description: AI systems adapt generative learning experiences for adult professional learners.
+      statement_id: coe:edge/18085f1caf9f02bb1ce8ce30
+      home_domain: ai
     id: coe:entity/context_engineering_pattern
     label: Context Engineering Pattern
     description: Named patterns for managing and optimising LLM context windows
     home_domain: ai
     status: canonical
-    ner_label: CONTEXT_PATTERN
     examples:
     - context window stuffing
     - prompt compression
@@ -265,56 +182,38 @@ entity_collections:
     - context pruning
     - zero-loss compacting
     - token budgeting
-    anti_examples:
-    - window cleaning
-    - context menu
-    confidence_threshold: 0.7
-  - aliases:
-    - presentation AI pipeline
-    - slide audit pipeline
-    - slide QA
-    recognition_patterns:
-    - slide (QA|quality|audit) pipeline
-    - (cognitive|narrative|visual) (audit|rewrite|refactor)
-    edges:
+  - edges:
     - subject_id: coe:entity/slide_qa_pipeline
       predicate: coe:supports
       object_id: coe:entity/adult_professional_learner
       relationship_weight: expected
       description: AI systems adapt generative learning experiences for adult professional learners.
+      statement_id: coe:edge/b12e3a247eee649bded3f503
+      home_domain: ai
     id: coe:entity/slide_qa_pipeline
     label: Slide Qa Pipeline
     description: AI-Assisted Slide QA Pipeline architecture — 7-step process
     home_domain: ai
     status: canonical
-    ner_label: SLIDE_QA_PIPELINE
     examples:
     - AI pipeline for slide quality assessment
     - automated slide cognitive audit
     anti_examples:
     - manual slide review process
-    confidence_threshold: 0.75
-  - aliases:
-    - AI content analysis
-    - content mining pipeline
-    - source extraction system
-    recognition_patterns:
-    - (content|concept|source) extraction (pipeline|system|process)
-    - (source|material) quality (assessment|scoring)
-    - (prerequisite|dependency) mapping
-    edges:
+  - edges:
     - subject_id: coe:entity/content_extraction_pipeline
       predicate: coe:supports
       object_id: coe:entity/adult_professional_learner
       relationship_weight: expected
       description: AI systems adapt generative learning experiences for adult professional learners.
+      statement_id: coe:edge/74b45bf3e22cd7c0339f5b84
+      home_domain: ai
     id: coe:entity/content_extraction_pipeline
     label: Content Extraction Pipeline
     description: Multi-stage AI content extraction pipeline for mining source materials into structured learning content —
       5 sequential stages from surface scan through gap analysis
     home_domain: ai
     status: canonical
-    ner_label: CONTENT_EXTRACTION_PIPELINE
     examples:
     - AI content extraction pipeline for course development
     - automated source material analysis
@@ -322,16 +221,7 @@ entity_collections:
     anti_examples:
     - manual content review
     - web content extraction
-    confidence_threshold: 0.75
-  - aliases:
-    - AI chart generator
-    - automated visualisation
-    - data-to-visual pipeline
-    recognition_patterns:
-    - (AI|automated|generative) (visuali[sz]ation|chart|diagram) (pipeline|generation|system)
-    - data[- ]to[- ]visual (pipeline|workflow)
-    - (template|automated) (chart|visual) generation
-    id: coe:entity/visualisation_generation_pipeline
+  - id: coe:entity/visualisation_generation_pipeline
     label: Visualisation Generation Pipeline
     description: AI-driven visualisation generation pipeline for automated chart/diagram creation in learning content
     home_domain: ai
@@ -342,7 +232,8 @@ entity_collections:
       object_id: coe:entity/adult_professional_learner
       relationship_weight: expected
       description: AI systems adapt generative learning experiences for adult professional learners.
-    ner_label: VIS_GENERATION_PIPELINE
+      statement_id: coe:edge/7d2830f828ec52249417e9a1
+      home_domain: ai
     examples:
     - AI-powered chart generation
     - automated data visualisation pipeline
@@ -350,28 +241,20 @@ entity_collections:
     anti_examples:
     - manual chart creation
     - hand-drawn diagrams
-    confidence_threshold: 0.7
-  - aliases:
-    - automated deck generation
-    - presentation AI pipeline
-    - SOAR presentation agent
-    recognition_patterns:
-    - (presentation|slide|deck) generation (pipeline|system|agent)
-    - multi[- ]agent (presentation|deck|slide) (generation|creation)
-    - SOAR (agent|pipeline|automation)
-    edges:
+  - edges:
     - subject_id: coe:entity/presentation_generation_pipeline
       predicate: coe:supports
       object_id: coe:entity/adult_professional_learner
       relationship_weight: expected
       description: AI systems adapt generative learning experiences for adult professional learners.
+      statement_id: coe:edge/9f6f27f6b1e1a8f13cccd743
+      home_domain: ai
     id: coe:entity/presentation_generation_pipeline
     label: Presentation Generation Pipeline
     description: Multi-agent AI pipeline for autonomous presentation generation — 4 specialised agents (Strategist, Architect,
       Artist, Critic) with HITL checkpoints
     home_domain: ai
     status: canonical
-    ner_label: PRES_GENERATION_PIPELINE
     examples:
     - multi-agent presentation pipeline
     - automated slide deck generation
@@ -379,9 +262,7 @@ entity_collections:
     anti_examples:
     - single-step slide generator
     - manual presentation design
-    confidence_threshold: 0.75
-  version: 3.0.1
-  last_updated: '2026-08-12'
+  last_updated: '2026-09-23'
   id: coe:artifact/ai/ai_systems_entities
   label: Ai Systems Entities
   description: NER entity definitions for AI system analysis including prompt engineering patterns, RAG components, PDL constructs,

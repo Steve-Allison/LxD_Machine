@@ -1,16 +1,23 @@
-bundle_id: coe:domain/language_editorial/terminology
+_meta:
+  file_id: coe:file/domain/language_editorial/terminology
+  title: Language Editorial — Terminology
+  last_updated: '2026-08-22'
+  authority: Central_Configs
+  scope: domain
+  ontology_domain: language_editorial
+  governing_class: coe:DomainModule
+module_id: coe:module/language_editorial/terminology
 domain: language_editorial
-version: 4.0.0
-terms:
-- id: coe:term/language_editorial/tone
-  label: Tone
+entity_collections:
+- id: coe:artifact/language_editorial/terminology_term_referents
+  label: Terminology Term Referents
+  description: Semantic resources denoted by governed terminology senses.
+  last_updated: '2026-08-22'
   home_domain: language_editorial
-  surface_form: Tone
-  description: The stylistic and emotional quality of written expression (e.g. authoritative, conversational, urgent).
-  senses:
-  - id: coe:sense/language_editorial/tone
-    label: Tone (Language Editorial Sense)
-    home_domain: language_editorial
+  status: canonical
+  entities:
+  - id: coe:entity/language_editorial/term/tone
+    label: Tone
     description: The stylistic and emotional quality of written expression (e.g. authoritative, conversational, urgent).
-    definition: The stylistic and emotional quality of written expression (e.g. authoritative, conversational, urgent).
-    usage_note: Used specifically within the language_editorial domain context.
+    home_domain: language_editorial
+    status: canonical

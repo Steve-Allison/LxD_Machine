@@ -6,7 +6,7 @@ The architecture must match the real repository:
 
 - mixed-format corpus, not markdown-only
 - long-running embedding builds on local hardware
-- ontology data distributed across the full `Yamls` tree
+- ontology data in the vendored Central distribution and library
 
 The system therefore optimizes for:
 
@@ -53,8 +53,8 @@ File handling rules:
 
 Responsibilities:
 
-- load ontology YAML from the full `Yamls` tree
-- resolve `!include` references
+- load the vendored Central distribution at `ontology/vendor/central-configs/` and project it, with the library at `library/vendor/central-library/`, into runtime entity, edge, and matcher records
+- resolve `!include` references on non-distribution YAML trees
 - inventory every resolved YAML key path and classify it
 - build an in-memory `networkx.MultiDiGraph`
 - build an Aho-Corasick matcher from entity definitions

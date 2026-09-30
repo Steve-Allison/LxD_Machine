@@ -36,6 +36,7 @@ def current_ingest_config(config: RuntimeConfig) -> dict[str, str]:
     return {
         "paths.corpus_path": str(config.paths.corpus_path),
         "paths.ontology_path": str(config.paths.ontology_path),
+        "paths.library_path": str(getattr(config.paths, "library_path", "") or ""),
         "paths.data_path": str(config.paths.data_path),
         "chunking.chunk_overlap": str(config.chunking.chunk_overlap),
         "chunking.chunk_size": str(config.chunking.chunk_size),

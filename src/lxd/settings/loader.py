@@ -46,6 +46,7 @@ def load_runtime_config(
         config_path=config_path,
     )
     raw = _load_yaml(resolved_config_path)
+    raw.pop("_meta", None)
     _resolve_paths_section(raw, base_dir=resolved_config_path.parent)
     _resolve_reranker_section(raw, base_dir=resolved_config_path.parent)
     return RuntimeConfig.model_validate(raw), resolved_config_path
@@ -87,8 +88,10 @@ def _resolve_paths_section(raw: dict[str, Any], *, base_dir: Path) -> None:
     paths = raw.get("paths")
     if not isinstance(paths, dict):
         raise ValueError("Runtime config must define a top-level 'paths' mapping.")
-    for key in ("corpus_path", "ontology_path", "data_path"):
+    for key in ("corpus_path", "ontology_path", "library_path", "data_path"):
         value = paths.get(key)
+        if key == "library_path" and value is None:
+            continue
         if not isinstance(value, str) or not value.strip():
             raise ValueError(f"Runtime config paths.{key} must be a non-empty string.")
         candidate = Path(value).expanduser()

@@ -17,6 +17,7 @@ from lxd.ingest.relations import extract_relations_for_chunk
 from lxd.ingest.scanner import ScannedCorpusFile
 from lxd.ingest.wiki_metadata import merge_wiki_page_metadata
 from lxd.ingest.wiki_relations import derive_defer_relations, derive_wiki_link_relations
+from lxd.ontology.loader.types import AnchorConstraint, RecognitionPattern
 from lxd.settings.models import RuntimeConfig
 from lxd.stores.models import (
     ChunkRecord,
@@ -39,6 +40,9 @@ def build_source_records(
     contextual_summary_table: object | None = None,
     ambiguous_map: dict[str, list[str]] | None = None,
     disambiguator: Callable[[str, list[str]], str | None] | None = None,
+    recognition_patterns: tuple[RecognitionPattern, ...] = (),
+    suppressed_terms: dict[str, frozenset[str]] | None = None,
+    anchor_constraints: tuple[AnchorConstraint, ...] = (),
 ) -> tuple[
     list[ChunkRecord],
     list[MentionRecord],
@@ -135,6 +139,9 @@ def build_source_records(
                 automaton,
                 ambiguous_map=ambiguous_map,
                 disambiguator=disambiguator,
+                recognition_patterns=recognition_patterns,
+                suppressed_terms=suppressed_terms,
+                anchor_constraints=anchor_constraints,
             )
         )
         mention_records.extend(chunk_mentions)

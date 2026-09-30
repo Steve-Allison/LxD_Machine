@@ -1,0 +1,137 @@
+_meta:
+  file_id: coe:file/domain/narrative/analytical_frameworks
+  title: Narrative — Analytical Frameworks
+  last_updated: '2026-08-31'
+  authority: Central_Configs
+  scope: domain
+  ontology_domain: narrative
+  governing_class: coe:DomainModule
+module_id: coe:module/narrative/analytical_frameworks
+domain: narrative
+taxonomies:
+- last_updated: '2026-08-31'
+  id: coe:artifact/narrative/analytical_frameworks_taxonomy
+  label: Analytical Frameworks Taxonomy
+  description: Canonical identities of the discourse-structure, argumentation, and communication frameworks used across the
+    estate, so that every consumer names the same framework by the same identifier. Framework identity only; each framework's
+    native inventories, profiles, and vocabularies remain owned by their registering modules or by consumer providers.
+  home_domain: narrative
+  status: canonical
+  concepts:
+  - in_scheme: coe:artifact/narrative/analytical_frameworks_taxonomy
+    id: coe:concept/analytical_frameworks_taxonomy/discourse_structure_framework
+    label: Discourse Structure Framework
+    description: Framework representing how spans of a text or dialogue connect into discourse structure; members differ in
+      structural commitment — a single complete tree, local relation pairs only, or a directed acyclic graph
+    home_domain: narrative
+    status: canonical
+  - in_scheme: coe:artifact/narrative/analytical_frameworks_taxonomy
+    broader:
+    - coe:concept/analytical_frameworks_taxonomy/discourse_structure_framework
+    id: coe:concept/analytical_frameworks_taxonomy/discourse_structure_framework/rst
+    label: Rhetorical Structure Theory
+    description: Represents a coherent monologue text as a single projective tree of elementary discourse units joined by
+      nucleus-satellite or multinuclear rhetorical relations defined by constraints and intended reader effect (Mann & Thompson
+      1988)
+    home_domain: narrative
+    status: canonical
+  - in_scheme: coe:artifact/narrative/analytical_frameworks_taxonomy
+    broader:
+    - coe:concept/analytical_frameworks_taxonomy/discourse_structure_framework
+    id: coe:concept/analytical_frameworks_taxonomy/discourse_structure_framework/erst
+    label: Enhanced Rhetorical Structure Theory
+    description: Signalled graph generalisation of RST adding typed discourse signals and secondary edges beyond the single
+      tree (Zeldes et al. 2025)
+    home_domain: narrative
+    status: canonical
+  - in_scheme: coe:artifact/narrative/analytical_frameworks_taxonomy
+    broader:
+    - coe:concept/analytical_frameworks_taxonomy/discourse_structure_framework
+    id: coe:concept/analytical_frameworks_taxonomy/discourse_structure_framework/pdtb
+    label: Penn Discourse Treebank
+    description: Shallow, lexically grounded annotation of local discourse relations between two arguments, explicit or implicit,
+      with no commitment to global text structure (Prasad et al. 2008; Webber et al. 2019)
+    home_domain: narrative
+    status: canonical
+  - in_scheme: coe:artifact/narrative/analytical_frameworks_taxonomy
+    broader:
+    - coe:concept/analytical_frameworks_taxonomy/discourse_structure_framework
+    id: coe:concept/analytical_frameworks_taxonomy/discourse_structure_framework/sdrt
+    label: Segmented Discourse Representation Theory
+    description: Formal-semantic discourse theory representing text or multi-party dialogue as a directed acyclic graph permitting
+      multiple parents and crossing edges, built for non-linear conversation (Asher & Lascarides 2003)
+    home_domain: narrative
+    status: canonical
+  - in_scheme: coe:artifact/narrative/analytical_frameworks_taxonomy
+    id: coe:concept/analytical_frameworks_taxonomy/argumentation_framework
+    label: Argumentation Framework
+    description: Framework representing the anatomy, typing, deliberative mapping, formal evaluation, or computational extraction
+      of arguments rather than general text coherence
+    home_domain: narrative
+    status: canonical
+  - in_scheme: coe:artifact/narrative/analytical_frameworks_taxonomy
+    broader:
+    - coe:concept/analytical_frameworks_taxonomy/argumentation_framework
+    id: coe:concept/analytical_frameworks_taxonomy/argumentation_framework/toulmin
+    label: Toulmin Model
+    description: Layout of a single practical argument in six functional roles — claim, grounds, warrant, backing, qualifier,
+      rebuttal — with field-invariant structure and field-dependent standards (Toulmin 1958)
+    home_domain: narrative
+    status: canonical
+  - in_scheme: coe:artifact/narrative/analytical_frameworks_taxonomy
+    broader:
+    - coe:concept/analytical_frameworks_taxonomy/argumentation_framework
+    id: coe:concept/analytical_frameworks_taxonomy/argumentation_framework/walton
+    label: Walton Argumentation Schemes
+    description: Stereotypical defeasible reasoning patterns, each paired with critical questions whose answers restore or
+      defeat the presumption the scheme licenses (Walton, Reed & Macagno 2008)
+    home_domain: narrative
+    status: canonical
+  - in_scheme: coe:artifact/narrative/analytical_frameworks_taxonomy
+    broader:
+    - coe:concept/analytical_frameworks_taxonomy/argumentation_framework
+    id: coe:concept/analytical_frameworks_taxonomy/argumentation_framework/ibis
+    label: Issue-Based Information System
+    description: Deliberation grammar mapping wicked-problem discussion into issues, positions, and pro/con arguments under
+      a deliberately constrained link grammar; records what was said, not what is valid (Kunz & Rittel 1970)
+    home_domain: narrative
+    status: canonical
+  - in_scheme: coe:artifact/narrative/analytical_frameworks_taxonomy
+    broader:
+    - coe:concept/analytical_frameworks_taxonomy/argumentation_framework
+    id: coe:concept/analytical_frameworks_taxonomy/argumentation_framework/dung
+    label: Dung Abstract Argumentation
+    description: Formal evaluation of a supplied set of arguments and a binary attack relation, computing which argument sets
+      are collectively acceptable under extension or labelling semantics; argument content is deliberately abstracted away
+      (Dung 1995)
+    home_domain: narrative
+    status: canonical
+  - in_scheme: coe:artifact/narrative/analytical_frameworks_taxonomy
+    broader:
+    - coe:concept/analytical_frameworks_taxonomy/argumentation_framework
+    id: coe:concept/analytical_frameworks_taxonomy/argumentation_framework/argument_mining
+    label: Argument Mining
+    description: Computational extraction of argumentative components and support/attack relations from natural-language text,
+      operationalising claim-premise, Toulmin, and scheme-based models (Stab & Gurevych 2017; Lawrence & Reed 2019)
+    home_domain: narrative
+    status: canonical
+  - in_scheme: coe:artifact/narrative/analytical_frameworks_taxonomy
+    id: coe:concept/analytical_frameworks_taxonomy/communication_framework
+    label: Communication Framework
+    description: Prescriptive framework for producing well-structured communication, in contrast to the analytical frameworks
+      that represent what an existing text or argument is
+    home_domain: narrative
+    status: canonical
+  - in_scheme: coe:artifact/narrative/analytical_frameworks_taxonomy
+    broader:
+    - coe:concept/analytical_frameworks_taxonomy/communication_framework
+    id: coe:concept/analytical_frameworks_taxonomy/communication_framework/pyramid_principle
+    label: Pyramid Principle
+    description: Answer-first communication structure with vertical question-answer logic, MECE horizontal groupings, and
+      SCQA introductions (Minto 1985)
+    home_domain: narrative
+    status: canonical
+  top_concepts:
+  - coe:concept/analytical_frameworks_taxonomy/discourse_structure_framework
+  - coe:concept/analytical_frameworks_taxonomy/argumentation_framework
+  - coe:concept/analytical_frameworks_taxonomy/communication_framework

@@ -92,7 +92,7 @@ src/lxd/
 Key directories outside `src/`:
 
 - Corpus root — set in `config.yaml` (`paths.corpus_path`). Default: the curated wiki at `~/Documents/_Knowledge/wiki/` (147 markdown pages with frontmatter Sources lines and `[[slug]]` cross-references). The legacy raw research at `Knowledge_Base/` is retained as an archive.
-- `Yamls/` — ontology definitions
+- `ontology/vendor/central-configs/` and `library/vendor/central-library/` — runtime ontology and craft library, projected at load
 - `Plans/` — architecture and design specs
 - `tests/` — pytest suite
 - `data/` — SQLite + LanceDB stores (gitignored, rebuildable). Auto-backups before destructive migrations.

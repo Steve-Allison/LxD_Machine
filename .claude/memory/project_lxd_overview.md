@@ -8,7 +8,7 @@ LxD Machine is an ontology-first knowledge retrieval system for instructional de
 
 **Why:** Steve needs a fast, grounded retrieval system over a large corpus of instructional design documents, sales plays, and methodology frameworks — not just vector search but structurally-aware retrieval with entity mentions, ontology graph expansion, and provenance.
 
-**How to apply:** Treat the ontology (Yamls/) as the source of truth for domain concepts. The pipeline is: Docling parse → HybridChunker → embedding → LanceDB + SQLite. Retrieval is: query embedding → dense vector search → optional graph expansion → rerank → synthesis with citations.
+**How to apply:** Treat the vendored Central distribution (`ontology/vendor/central-configs/` plus `library/vendor/central-library/`) as the source of truth for domain concepts. The pipeline is: Docling parse → HybridChunker → embedding → LanceDB + SQLite. Retrieval is: query embedding → dense vector search → optional graph expansion → rerank → synthesis with citations.
 
 Key numbers (as of 2026-03-27):
 - 430 text files, 4314 asset files

@@ -1,6 +1,7 @@
 """Public and internal dataclasses for ontology loading."""
 
-from dataclasses import dataclass
+import re
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -40,6 +41,24 @@ class OntologyValidationIssue:
 
 
 @dataclass(frozen=True, slots=True)
+class RecognitionPattern:
+    """Compiled library recognition pattern for one ontology resource."""
+
+    entity_id: str
+    compiled: re.Pattern[str]
+
+
+@dataclass(frozen=True, slots=True)
+class AnchorConstraint:
+    """Context-anchor rule that a mention must satisfy before it is kept."""
+
+    entity_id: str
+    surface: str | None
+    anchors: frozenset[str]
+    window_tokens: int
+
+
+@dataclass(frozen=True, slots=True)
 class OntologyLoadResult:
     """All artifacts produced by ontology loading."""
 
@@ -53,6 +72,9 @@ class OntologyLoadResult:
     coverage_report: OntologyCoverageReport
     validation_issues: list[OntologyValidationIssue]
     graph: Any
+    recognition_patterns: tuple[RecognitionPattern, ...] = ()
+    suppressed_terms: dict[str, frozenset[str]] = field(default_factory=dict)
+    anchor_constraints: tuple[AnchorConstraint, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)

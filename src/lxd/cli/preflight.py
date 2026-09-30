@@ -77,6 +77,14 @@ def preflight_command(
     else:
         notes.append(f"Ontology path: {context.config.paths.ontology_path}")
 
+    if (
+        context.config.paths.library_path is not None
+        and not context.config.paths.library_path.exists()
+    ):
+        issues.append(f"library path missing: {context.config.paths.library_path}")
+    elif context.config.paths.library_path is not None:
+        notes.append(f"Library path: {context.config.paths.library_path}")
+
     store_paths = build_store_paths(context.config.paths.data_path)
     notes.append(f"SQLite store: {store_paths.sqlite_path}")
     notes.append(f"LanceDB store: {store_paths.lancedb_path}")

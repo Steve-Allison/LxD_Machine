@@ -1,0 +1,451 @@
+id: https://steve-allison.github.io/Central_Configs/library/schema/library
+name: coe_library
+title: Central Configs Knowledge Library
+description: Shared craft knowledge — thresholds, rubric scoring, principle evidence, prescriptions, recognition calibration,
+  profiles and layout specifications — each record keyed to the ontology identifiers it is knowledge about. The library never defines
+  a thing; it states how much, how many, what passes, how to recognise, and how to do well.
+version: 1.0.0
+default_prefix: lib
+default_range: string
+prefixes:
+  lib: https://steve-allison.github.io/Central_Configs/library/
+  coe: https://steve-allison.github.io/Central_Configs/ontology/
+  linkml: https://w3id.org/linkml/
+  dcterms: http://purl.org/dc/terms/
+  skos: http://www.w3.org/2004/02/skos/core#
+  lexinfo: http://www.lexinfo.net/ontology/3.0/lexinfo#
+imports:
+- linkml:types
+- ../../ontology/schema/coe.linkml
+enums:
+  RecordStatusEnum:
+    description: Curation state of a library record.
+    permissible_values:
+      draft:
+        description: Authored but not reviewed; a consumer must not rely on it.
+      canonical:
+        description: Reviewed shared knowledge; the state consumers rely on.
+      retired:
+        description: Withdrawn; kept for the record and never cited by new work.
+  BoundKindEnum:
+    description: Which way a threshold bounds its quantity.
+    permissible_values:
+      floor:
+        description: The quantity must not fall below minimum_value.
+      ceiling:
+        description: The quantity must not exceed maximum_value.
+      band:
+        description: The quantity should sit between minimum_value and maximum_value.
+      target:
+        description: The quantity should approach target_value; bounds, if present, are tolerances.
+classes:
+  KnowledgeRecord:
+    abstract: true
+    class_uri: lib:KnowledgeRecord
+    description: One unit of shared craft knowledge about one or more ontology resources. It names what it is about and
+      never restates the definition of its subject; its provenance is the Git history of the file that holds it.
+    attributes:
+      id:
+        identifier: true
+        required: true
+        range: uriorcurie
+        slot_uri: dcterms:identifier
+        description: Stable identifier of this record, of the form lib:<kind>/<domain>/<slug>.
+      label:
+        required: true
+        slot_uri: skos:prefLabel
+        description: Human-readable name of the knowledge, not of its subject.
+      description:
+        required: true
+        slot_uri: dcterms:description
+        description: What this record prescribes, measures or calibrates and how a reader applies it; never a restatement
+          of the subject's definition and never a bare number.
+      about:
+        required: true
+        multivalued: true
+        range: uriorcurie
+        slot_uri: dcterms:subject
+        description: Ontology identifiers this record is knowledge about; every value must exist in ontology/data.
+      context:
+        multivalued: true
+        range: ContextConstraint
+        inlined_as_list: true
+        slot_uri: lib:context
+        description: Conditions under which the record applies; a consumer selects the record whose constraints match and
+          treats an unconstrained record as the default.
+      status:
+        required: true
+        range: RecordStatusEnum
+        slot_uri: lib:status
+        description: Curation state of this record.
+      last_updated:
+        required: true
+        range: date
+        slot_uri: dcterms:modified
+        description: Calendar date of the most recent authored change to this record.
+  ContextConstraint:
+    class_uri: lib:ContextConstraint
+    description: One named condition on a record's applicability, such as delivery_context equals narrated_instructional_video.
+    attributes:
+      name:
+        required: true
+        slot_uri: lib:constraintName
+        description: Dimension the constraint is on, for example delivery_context, audience_expertise, deck_variant.
+      value:
+        required: true
+        slot_uri: lib:constraintValue
+        description: Value the dimension must take for the record to apply.
+  ThresholdRecord:
+    is_a: KnowledgeRecord
+    class_uri: lib:ThresholdRecord
+    description: One numeric bound on one measured quantity of the subject; it names the quantity's unit and declares at
+      least one of target, minimum and maximum.
+    attributes:
+      quantity:
+        required: true
+        slot_uri: lib:quantity
+        description: The measured quantity, for example speaking rate, line length, contrast ratio.
+      unit:
+        required: true
+        slot_uri: lib:unit
+        description: Unit the bounds are expressed in, for example words per minute, characters per line, ratio.
+      bound_kind:
+        required: true
+        range: BoundKindEnum
+        slot_uri: lib:boundKind
+        description: Whether the record is a floor, ceiling, band or target.
+      target_value:
+        range: float
+        slot_uri: lib:targetValue
+        description: Preferred value when quality is fully met.
+      minimum_value:
+        range: float
+        slot_uri: lib:minimumValue
+        description: Lowest acceptable value.
+      maximum_value:
+        range: float
+        slot_uri: lib:maximumValue
+        description: Highest acceptable value.
+    any_of:
+    - slot_conditions:
+        target_value:
+          required: true
+    - slot_conditions:
+        minimum_value:
+          required: true
+    - slot_conditions:
+        maximum_value:
+          required: true
+  ScoreLevelRecord:
+    class_uri: lib:ScoreLevelRecord
+    description: One level of a scoring dimension — its numeric score, its short name, and the observable conditions that
+      earn it.
+    attributes:
+      score:
+        required: true
+        range: integer
+        slot_uri: lib:score
+        description: Numeric value awarded at this level.
+      level_label:
+        required: true
+        slot_uri: lib:levelLabel
+        description: Short name of the level, for example exemplary.
+      criteria:
+        required: true
+        slot_uri: lib:criteria
+        description: Observable conditions an artifact must meet to be scored at this level.
+  AdjustmentRecord:
+    class_uri: lib:AdjustmentRecord
+    description: One additive scoring adjustment applied when a named condition is observed.
+    attributes:
+      key:
+        required: true
+        slot_uri: lib:adjustmentKey
+        description: Stable machine key naming the condition.
+      condition:
+        required: true
+        slot_uri: lib:condition
+        description: What must be observed for the adjustment to apply.
+      delta:
+        required: true
+        range: float
+        slot_uri: lib:delta
+        description: Signed amount added to the score; negative for a penalty, positive for a bonus.
+      cap:
+        range: float
+        slot_uri: lib:cap
+        description: Largest cumulative magnitude this adjustment may contribute, when capped.
+  ScoringDimensionRecord:
+    class_uri: lib:ScoringDimensionRecord
+    description: One weighted dimension of a scoring model, keyed to the ontology dimension it scores.
+    attributes:
+      about:
+        required: true
+        range: uriorcurie
+        slot_uri: dcterms:subject
+        description: The coe:artifact dimension identifier this scores; must exist in ontology/data.
+      weight:
+        range: float
+        minimum_value: 0
+        slot_uri: lib:weight
+        description: Relative importance; conventionally sums to 1 across a model's dimensions.
+      score_levels:
+        multivalued: true
+        range: ScoreLevelRecord
+        inlined_as_list: true
+        slot_uri: lib:scoreLevel
+        description: Ordered levels defining what each score means on this dimension.
+  ScoringModelRecord:
+    is_a: KnowledgeRecord
+    class_uri: lib:ScoringModelRecord
+    description: The scoring knowledge of one rubric the ontology names — dimension weights, level scores, adjustments,
+      thresholds and pass rule; the rubric's identity and prose criteria stay in the ontology.
+    attributes:
+      dimensions:
+        required: true
+        multivalued: true
+        range: ScoringDimensionRecord
+        inlined_as_list: true
+        slot_uri: lib:dimension
+        description: Weighted dimensions with their score levels.
+      thresholds:
+        multivalued: true
+        range: ThresholdRecord
+        inlined: true
+        slot_uri: lib:threshold
+        description: Numeric bounds this model's judgements apply, keyed by their identifiers.
+      penalties:
+        multivalued: true
+        range: AdjustmentRecord
+        inlined_as_list: true
+        slot_uri: lib:penalty
+        description: Conditions that subtract from the score.
+      bonuses:
+        multivalued: true
+        range: AdjustmentRecord
+        inlined_as_list: true
+        slot_uri: lib:bonus
+        description: Conditions that add to the score.
+      pass_rule:
+        slot_uri: lib:passRule
+        description: How a verdict is reached from the dimension scores, stated so a consumer can implement it.
+  PrincipleEvidenceRecord:
+    is_a: KnowledgeRecord
+    class_uri: lib:PrincipleEvidenceRecord
+    description: The empirical standing of one principle the ontology defines — direction, effect size, sample basis and
+      known limits — so a consumer can weigh it without re-reading the studies.
+    attributes:
+      direction:
+        required: true
+        slot_uri: lib:direction
+        description: What the evidence says happens when the principle is applied or violated.
+      effect_size:
+        range: float
+        slot_uri: lib:effectSize
+        description: Standardised effect size for applying the principle, in the metric effect_metric names.
+      effect_metric:
+        slot_uri: lib:effectMetric
+        description: Metric the effect size is expressed in, for example Cohen's d, Hedges' g, percent retention.
+      sample_basis:
+        slot_uri: lib:sampleBasis
+        description: Number and kind of studies or participants behind the effect size.
+      boundary_conditions:
+        multivalued: true
+        slot_uri: lib:boundaryCondition
+        description: Conditions under which the effect weakens, reverses or does not apply.
+  PrescriptionRecord:
+    is_a: KnowledgeRecord
+    class_uri: lib:PrescriptionRecord
+    description: One checkable rule of craft about the subject — what must or must not hold and why. A craft rule is stated
+      only here; the ontology defines the practice, principle or guide the rule is about and never states the rule itself.
+    attributes:
+      statement:
+        required: true
+        slot_uri: lib:statement
+        description: The prescription, phrased so conformance is checkable.
+      rationale:
+        slot_uri: lib:rationale
+        description: The failure or cost that violating it incurs, present when the source states one; absent rather than
+          invented when it does not.
+      applies_when:
+        slot_uri: lib:appliesWhen
+        description: Situations the prescription is meant for, when narrower than the context constraints.
+  RecognitionCalibrationRecord:
+    is_a: KnowledgeRecord
+    class_uri: lib:RecognitionCalibrationRecord
+    description: Everything an extractor needs to recognise one ontology resource in text beyond its names and definition
+      — confidence floor, patterns, cue phrases and fallback. The resource's names are ontology terms; a record that applies
+      to one of those names says which in term.
+    attributes:
+      ner_label:
+        slot_uri: lib:nerLabel
+        description: Tag an extractor emits for spans of this resource; present only when it differs from the resource
+          identifier's own slug in upper case.
+      ner_description:
+        slot_uri: lib:nerDescription
+        description: Model-facing gloss used to prompt a recogniser, when the ontology definition is too long or too
+          abstract to prompt with.
+      confidence_threshold:
+        required: true
+        range: float
+        minimum_value: 0
+        maximum_value: 1
+        slot_uri: lib:confidenceThreshold
+        description: Minimum extraction confidence below which recognition must not be asserted.
+      recognition_patterns:
+        multivalued: true
+        slot_uri: lib:recognitionPattern
+        description: Case-insensitive regular expressions matching surface forms.
+      surfaces:
+        multivalued: true
+        slot_uri: lib:surface
+        description: Cue phrases that signal the resource in text without being one of its names, such as a related word an
+          extractor treats as a hint. A phrase belongs here, not in the ontology's examples, when it signals the resource only
+          because of the words it shares with it.
+      negative_surfaces:
+        multivalued: true
+        slot_uri: lib:negativeSurface
+        description: Look-alike phrases that share words with the resource's names but must not be recognised as it, such as
+          economy class for an economic buyer. A phrase belongs here, not in the ontology's anti-examples, when it is a
+          near miss in wording rather than in meaning.
+      term:
+        slot_uri: lib:term
+        description: The one name — the resource's label or one of its ontology terms — this record's calibration applies to,
+          when a name needs its own floor or context rule; absent when the record applies to every name.
+      context_anchors:
+        multivalued: true
+        slot_uri: lib:contextAnchor
+        description: Named context signals, at least one of which must occur near a match before recognition is asserted,
+          such as adobe_brand for an acronym that is ambiguous outside Adobe material.
+      anchor_window_tokens:
+        range: integer
+        minimum_value: 1
+        slot_uri: lib:anchorWindowTokens
+        description: Number of tokens either side of a match within which a context anchor must occur.
+      validators:
+        multivalued: true
+        slot_uri: lib:validator
+        description: Named validator references of the form regex:<name> or parser:<name> a span must satisfy.
+      requires_model_fallback:
+        range: boolean
+        slot_uri: lib:requiresModelFallback
+        description: Whether deterministic matching is insufficient and a model pass is required.
+  ProfileRecord:
+    is_a: KnowledgeRecord
+    class_uri: lib:ProfileRecord
+    description: One stated characteristic of the subject — a named facet and its value — that is neither a numeric bound
+      nor a checkable rule, such as a learner persona's time availability or a voice's formality band. It says what is
+      observed or designed about the subject, never what the subject is; a characteristic with a numeric bound is a
+      ThresholdRecord and one a reviewer can mark compliant or not is a PrescriptionRecord.
+    attributes:
+      facet:
+        required: true
+        slot_uri: lib:facet
+        description: The characteristic stated, named the same way on every record of its kind, for example time
+          availability, barriers to learning, formality.
+      facet_values:
+        required: true
+        multivalued: true
+        slot_uri: lib:facetValue
+        description: The stated value, one entry per distinct point where the source lists several.
+  LayoutSpecRecord:
+    is_a: KnowledgeRecord
+    class_uri: lib:LayoutSpecRecord
+    description: Dimensional or visual specification of one visual subject — a frame family's sizes, margins, grids and
+      floors, or a brand element's colour values, type settings or mark markup — keyed to the entity it specifies.
+    attributes:
+      specification:
+        required: true
+        slot_uri: lib:specification
+        description: The layout parameters as a mapping of named measurements with units, addressable by dot-path.
+  LibraryModule:
+    class_uri: lib:LibraryModule
+    description: One authored library file belonging to exactly one canonical domain, holding records keyed by identifier.
+    slots:
+    - _meta
+    slot_usage:
+      _meta:
+        required: true
+    attributes:
+      module_id:
+        identifier: true
+        required: true
+        range: uriorcurie
+        slot_uri: dcterms:identifier
+        description: Stable identifier of this module, of the form lib:module/<domain>/<name>.
+      domain:
+        required: true
+        range: OntologyDomainEnum
+        slot_uri: coe:homeDomain
+        description: Canonical domain that owns every record in this module.
+      thresholds:
+        multivalued: true
+        range: ThresholdRecord
+        inlined: true
+        slot_uri: lib:thresholds
+        description: Threshold records keyed by their identifiers.
+      scoring_models:
+        multivalued: true
+        range: ScoringModelRecord
+        inlined: true
+        slot_uri: lib:scoringModels
+        description: Scoring-model records keyed by their identifiers.
+      principle_evidence:
+        multivalued: true
+        range: PrincipleEvidenceRecord
+        inlined: true
+        slot_uri: lib:principleEvidence
+        description: Principle-evidence records keyed by their identifiers.
+      prescriptions:
+        multivalued: true
+        range: PrescriptionRecord
+        inlined: true
+        slot_uri: lib:prescriptions
+        description: Prescription records keyed by their identifiers.
+      recognition_calibrations:
+        multivalued: true
+        range: RecognitionCalibrationRecord
+        inlined: true
+        slot_uri: lib:recognitionCalibrations
+        description: Recognition-calibration records keyed by their identifiers.
+      profiles:
+        multivalued: true
+        range: ProfileRecord
+        inlined: true
+        slot_uri: lib:profiles
+        description: Profile records keyed by their identifiers.
+      layout_specs:
+        multivalued: true
+        range: LayoutSpecRecord
+        inlined: true
+        slot_uri: lib:layoutSpecs
+        description: Layout-specification records keyed by their identifiers.
+  LibraryDistribution:
+    class_uri: lib:LibraryDistribution
+    description: Manifest of the library files that make up one distributable library version.
+    slots:
+    - _meta
+    slot_usage:
+      _meta:
+        required: true
+    attributes:
+      distribution_id:
+        identifier: true
+        required: true
+        range: uriorcurie
+        slot_uri: dcterms:identifier
+        description: Identifier of this distribution.
+      version:
+        required: true
+        pattern: ^\d+\.\d+\.\d+$
+        slot_uri: dcterms:hasVersion
+        description: The one authoritative library version.
+      schema_path:
+        required: true
+        slot_uri: lib:schemaPath
+        description: Repository path of the library profile.
+      module_paths:
+        required: true
+        multivalued: true
+        slot_uri: lib:modulePath
+        description: Repository paths of every library module in this distribution.

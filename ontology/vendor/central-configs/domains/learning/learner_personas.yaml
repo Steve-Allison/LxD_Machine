@@ -1,164 +1,425 @@
-bundle_id: coe:domain/learning/learner_personas
+_meta:
+  file_id: coe:file/domain/learning/learner_personas
+  title: Learning — Learner Personas
+  last_updated: '2026-09-23'
+  authority: Central_Configs
+  scope: domain
+  ontology_domain: learning
+  governing_class: coe:DomainModule
+module_id: coe:module/learning/learner_personas
 domain: learning
-version: 4.0.0
 entity_collections:
 - id: coe:artifact/learning/learner_personas
   label: Authoritative Learner Personas & Cognitive Ladders
   description: Comprehensive UK K-12, adult professional, executive profiles and depth target ladders.
-  version: 4.0.0
   last_updated: '2026-08-15'
   entities:
+  - id: coe:entity/learning/learner_audience
+    label: Learner Audience
+    description: People participating in learning, represented by explicit learner profiles rather than commercial buying
+      roles.
+    home_domain: learning
+    status: canonical
+    terms:
+    - literal: Audience
+      term_type: short_form
+      term_status: admitted
+      usage_note: Use when the people addressed participate in learning.
+    - literal: Learner
+      term_type: short_form
+      term_status: admitted
   - id: coe:entity/learning/learner_ks3_foundation_explorer
     label: KS3 Foundation Explorer
     description: UK Learner Profile for KS3 Foundation Explorer.
     home_domain: learning
     status: canonical
-    ner_label: LEARNER_PERSONA
-    recognition_patterns:
-    - (?i)\bKS3 Foundation Explorer\b
-    - (?i)\bks3 foundation explorer\b
-    edges:
-    - subject_id: coe:entity/learning/learner_ks3_foundation_explorer
-      predicate: coe:supports
-      object_id: coe:entity/language_editorial/register_interactive_workshop
-      relationship_weight: required
-      description: KS3 foundation learners are supported by an interactive workshop register with guided scaffolding.
+    edges: []
   - id: coe:entity/learning/learner_ks4_gcse_academic_achiever
     label: KS4 GCSE Academic Achiever
     description: UK Learner Profile for KS4 GCSE Academic Achiever.
     home_domain: learning
     status: canonical
-    ner_label: LEARNER_PERSONA
-    recognition_patterns:
-    - (?i)\bKS4 GCSE Academic Achiever\b
-    - (?i)\bks4 gcse academic achiever\b
-    edges:
-    - subject_id: coe:entity/learning/learner_ks4_gcse_academic_achiever
-      predicate: coe:supports
-      object_id: coe:entity/language_editorial/register_formal_academic
-      relationship_weight: required
-      description: GCSE and Advanced academic specialists are supported by formal academic register aligned to syllabus specifications.
+    edges: []
   - id: coe:entity/learning/learner_ks4_5_applied_vocational_learner
     label: Applied & Vocational Learner
     description: UK Learner Profile for Applied & Vocational Learner.
     home_domain: learning
     status: canonical
-    ner_label: LEARNER_PERSONA
-    recognition_patterns:
-    - (?i)\bApplied \& Vocational Learner\b
-    - (?i)\bks4 5 applied vocational learner\b
     edges: []
   - id: coe:entity/learning/learner_ks5_academic_specialist
     label: KS5 Academic Specialist
     description: UK Learner Profile for KS5 Academic Specialist.
     home_domain: learning
     status: canonical
-    ner_label: LEARNER_PERSONA
-    recognition_patterns:
-    - (?i)\bKS5 Academic Specialist\b
-    - (?i)\bks5 academic specialist\b
-    edges:
-    - subject_id: coe:entity/learning/learner_ks5_academic_specialist
-      predicate: coe:supports
-      object_id: coe:entity/language_editorial/register_formal_academic
-      relationship_weight: required
-      description: GCSE and Advanced academic specialists are supported by formal academic register aligned to syllabus specifications.
+    edges: []
   - id: coe:entity/learning/learner_supported_diverse_learner
     label: Supported Diverse Learner
     description: UK Learner Profile for Supported Diverse Learner.
     home_domain: learning
     status: canonical
-    ner_label: LEARNER_PERSONA
-    recognition_patterns:
-    - (?i)\bSupported Diverse Learner\b
-    - (?i)\bsupported diverse learner\b
-    edges:
-    - subject_id: coe:entity/learning/learner_supported_diverse_learner
-      predicate: coe:enables
-      object_id: coe:entity/mayer_signaling_principle
-      relationship_weight: required
-      description: Instruction for supported diverse learners enables high visual signaling and dual-coding clarity.
+    edges: []
   - id: coe:entity/learning/learner_ks2_lower_primary_explorer
     label: KS2 Lower Primary Explorer
     description: UK Learner Profile for KS2 Lower Primary Explorer.
     home_domain: learning
     status: canonical
-    ner_label: LEARNER_PERSONA
-    recognition_patterns:
-    - (?i)\bKS2 Lower Primary Explorer\b
-    - (?i)\bks2 lower primary explorer\b
-    edges:
-    - subject_id: coe:entity/learning/learner_ks2_lower_primary_explorer
-      predicate: coe:supports
-      object_id: coe:entity/language_editorial/stance_conversational
-      relationship_weight: required
-      description: Primary learners are supported by an approachable conversational stance with explicit vocabulary scaffolding.
+    edges: []
   - id: coe:entity/learning/learner_ks2_upper_primary_achiever
     label: KS2 Upper Primary Achiever
     description: UK Learner Profile for KS2 Upper Primary Achiever.
     home_domain: learning
     status: canonical
-    ner_label: LEARNER_PERSONA
-    recognition_patterns:
-    - (?i)\bKS2 Upper Primary Achiever\b
-    - (?i)\bks2 upper primary achiever\b
-    edges:
-    - subject_id: coe:entity/learning/learner_ks2_upper_primary_achiever
-      predicate: coe:supports
-      object_id: coe:entity/language_editorial/stance_conversational
-      relationship_weight: required
-      description: Primary learners are supported by an approachable conversational stance with explicit vocabulary scaffolding.
-  - id: coe:entity/learning/depth_none
+    edges: []
+  - id: coe:entity/adult_professional_learner
+    label: Adult Professional Learner
+    description: Adult professional with self-directed learning preferences.
+    examples:
+    - adult learner
+    - working professional
+    - corporate employee
+    - self-directed learner
+    - busy professional
+    home_domain: learning
+    status: canonical
+  home_domain: learning
+  status: canonical
+taxonomies:
+- last_updated: '2026-09-23'
+  id: coe:artifact/learning/cognitive_depth_taxonomy
+  label: Cognitive Depth Taxonomy
+  description: 'The ordered ladder of capability depth a learner is designed to reach in one dimension of a role — business, product, technical or another — from none to mastery; persona depth profiles and depth targets are stated against it, and it is kept separate from the personas themselves.'
+  home_domain: learning
+  status: canonical
+  concepts:
+  - in_scheme: coe:artifact/learning/cognitive_depth_taxonomy
+    id: coe:entity/learning/depth_none
     label: 'Cognitive Depth: None'
-    description: 'Target cognitive depth capability attainment level: None.'
+    description: 'The depth-target level at which no capability in a dimension is required of the learner.'
     home_domain: learning
     status: canonical
-    ner_label: COGNITIVE_DEPTH_LEVEL
-    recognition_patterns:
-    - (?i)\bNone\b
-    edges: []
-  - id: coe:entity/learning/depth_awareness
+    edges:
+    - subject_id: coe:entity/learning/depth_none
+      predicate: coe:precedes
+      object_id: coe:entity/learning/depth_awareness
+      relationship_weight: required
+      description: 'Cognitive Depth: None precedes Cognitive Depth: Awareness in the Cognitive Depth Taxonomy ordering.'
+      statement_id: coe:edge/depth-none-precedes-depth-awareness
+      home_domain: learning
+  - in_scheme: coe:artifact/learning/cognitive_depth_taxonomy
+    id: coe:entity/learning/depth_awareness
     label: 'Cognitive Depth: Awareness'
-    description: 'Target cognitive depth capability attainment level: Awareness.'
+    description: 'The depth-target level at which the learner recognises a concept, its terminology and its basic purpose.'
     home_domain: learning
     status: canonical
-    ner_label: COGNITIVE_DEPTH_LEVEL
-    recognition_patterns:
-    - (?i)\bAwareness\b
-    edges: []
-  - id: coe:entity/learning/depth_comprehension
+    edges:
+    - subject_id: coe:entity/learning/depth_awareness
+      predicate: coe:precedes
+      object_id: coe:entity/learning/depth_comprehension
+      relationship_weight: required
+      description: 'Cognitive Depth: Awareness precedes Cognitive Depth: Comprehension in the Cognitive Depth Taxonomy ordering.'
+      statement_id: coe:edge/depth-awareness-precedes-depth-comprehension
+      home_domain: learning
+  - in_scheme: coe:artifact/learning/cognitive_depth_taxonomy
+    id: coe:entity/learning/depth_comprehension
     label: 'Cognitive Depth: Comprehension'
-    description: 'Target cognitive depth capability attainment level: Comprehension.'
+    description: 'The depth-target level at which the learner understands a concept well enough to explain it and interpret examples of it.'
     home_domain: learning
     status: canonical
-    ner_label: COGNITIVE_DEPTH_LEVEL
-    recognition_patterns:
-    - (?i)\bComprehension\b
-    edges: []
-  - id: coe:entity/learning/depth_application
+    edges:
+    - subject_id: coe:entity/learning/depth_comprehension
+      predicate: coe:precedes
+      object_id: coe:entity/learning/depth_application
+      relationship_weight: required
+      description: 'Cognitive Depth: Comprehension precedes Cognitive Depth: Application in the Cognitive Depth Taxonomy ordering.'
+      statement_id: coe:edge/depth-comprehension-precedes-depth-application
+      home_domain: learning
+  - in_scheme: coe:artifact/learning/cognitive_depth_taxonomy
+    id: coe:entity/learning/depth_application
     label: 'Cognitive Depth: Application'
-    description: 'Target cognitive depth capability attainment level: Application.'
+    description: 'The depth-target level at which the learner can apply a concept or process in a guided or standard scenario.'
     home_domain: learning
     status: canonical
-    ner_label: COGNITIVE_DEPTH_LEVEL
-    recognition_patterns:
-    - (?i)\bApplication\b
-    edges: []
-  - id: coe:entity/learning/depth_fluency
+    edges:
+    - subject_id: coe:entity/learning/depth_application
+      predicate: coe:precedes
+      object_id: coe:entity/learning/depth_fluency
+      relationship_weight: required
+      description: 'Cognitive Depth: Application precedes Cognitive Depth: Fluency in the Cognitive Depth Taxonomy ordering.'
+      statement_id: coe:edge/depth-application-precedes-depth-fluency
+      home_domain: learning
+  - in_scheme: coe:artifact/learning/cognitive_depth_taxonomy
+    id: coe:entity/learning/depth_fluency
     label: 'Cognitive Depth: Fluency'
-    description: 'Target cognitive depth capability attainment level: Fluency.'
+    description: 'The depth-target level at which the learner performs reliably in live work, adapting with moderate judgement.'
     home_domain: learning
     status: canonical
-    ner_label: COGNITIVE_DEPTH_LEVEL
-    recognition_patterns:
-    - (?i)\bFluency\b
-    edges: []
-  - id: coe:entity/learning/depth_mastery
+    edges:
+    - subject_id: coe:entity/learning/depth_fluency
+      predicate: coe:precedes
+      object_id: coe:entity/learning/depth_mastery
+      relationship_weight: required
+      description: 'Cognitive Depth: Fluency precedes Cognitive Depth: Mastery in the Cognitive Depth Taxonomy ordering.'
+      statement_id: coe:edge/depth-fluency-precedes-depth-mastery
+      home_domain: learning
+  - in_scheme: coe:artifact/learning/cognitive_depth_taxonomy
+    id: coe:entity/learning/depth_mastery
     label: 'Cognitive Depth: Mastery'
-    description: 'Target cognitive depth capability attainment level: Mastery.'
+    description: 'The depth-target level at which the learner handles edge cases, coaches others and adapts the capability to novel situations.'
     home_domain: learning
     status: canonical
-    ner_label: COGNITIVE_DEPTH_LEVEL
-    recognition_patterns:
-    - (?i)\bMastery\b
-    edges: []
+  top_concepts:
+  - coe:entity/learning/depth_none
+  - coe:entity/learning/depth_awareness
+  - coe:entity/learning/depth_comprehension
+  - coe:entity/learning/depth_application
+  - coe:entity/learning/depth_fluency
+  - coe:entity/learning/depth_mastery
+- last_updated: '2026-09-23'
+  id: coe:artifact/learning/learning_level_taxonomy
+  label: Learning Level Taxonomy
+  description: 'The ordered levels at which learning content is pitched for its subject, answering how advanced the learner is for this subject; distinct from the learner''s general domain expertise and from the depth a role requires.'
+  home_domain: learning
+  status: canonical
+  concepts:
+  - in_scheme: coe:artifact/learning/learning_level_taxonomy
+    id: coe:concept/learning_level_taxonomy/foundational
+    label: Foundational
+    description: 'The learning level of content covering core concepts, basic workflows, essential terminology and introductory understanding of the subject.'
+    home_domain: learning
+    status: canonical
+    terms:
+    - literal: Basic
+      term_type: full_form
+      term_status: admitted
+    edges:
+    - subject_id: coe:concept/learning_level_taxonomy/foundational
+      predicate: coe:precedes
+      object_id: coe:concept/learning_level_taxonomy/intermediate
+      relationship_weight: required
+      description: 'Foundational precedes Intermediate in the Learning Level Taxonomy ordering.'
+      statement_id: coe:edge/learning-level-foundational-precedes-learning-level-intermediate
+      home_domain: learning
+  - in_scheme: coe:artifact/learning/learning_level_taxonomy
+    id: coe:concept/learning_level_taxonomy/intermediate
+    label: Intermediate
+    description: 'The learning level of content covering broader feature sets, configuration options, applied use cases and deeper understanding of the subject.'
+    home_domain: learning
+    status: canonical
+    edges:
+    - subject_id: coe:concept/learning_level_taxonomy/intermediate
+      predicate: coe:precedes
+      object_id: coe:concept/learning_level_taxonomy/advanced
+      relationship_weight: required
+      description: 'Intermediate precedes Advanced in the Learning Level Taxonomy ordering.'
+      statement_id: coe:edge/learning-level-intermediate-precedes-learning-level-advanced
+      home_domain: learning
+  - in_scheme: coe:artifact/learning/learning_level_taxonomy
+    id: coe:concept/learning_level_taxonomy/advanced
+    label: Advanced
+    description: 'The learning level of content demanding high proficiency — specialisation, complex integration, optimisation, troubleshooting and difficult problem solving.'
+    home_domain: learning
+    status: canonical
+    edges:
+    - subject_id: coe:concept/learning_level_taxonomy/advanced
+      predicate: coe:precedes
+      object_id: coe:concept/learning_level_taxonomy/expert
+      relationship_weight: required
+      description: 'Advanced precedes Expert in the Learning Level Taxonomy ordering.'
+      statement_id: coe:edge/learning-level-advanced-precedes-learning-level-expert
+      home_domain: learning
+  - in_scheme: coe:artifact/learning/learning_level_taxonomy
+    id: coe:concept/learning_level_taxonomy/expert
+    label: Expert
+    description: 'The learning level of content at architecture-level design, scalability, thought leadership and expert or master practice.'
+    home_domain: learning
+    status: canonical
+  top_concepts:
+  - coe:concept/learning_level_taxonomy/foundational
+  - coe:concept/learning_level_taxonomy/intermediate
+  - coe:concept/learning_level_taxonomy/advanced
+  - coe:concept/learning_level_taxonomy/expert
+- last_updated: '2026-09-23'
+  id: coe:artifact/learning/learner_expertise_taxonomy
+  label: Learner Expertise Taxonomy
+  description: 'The ordered levels of a learner''s prior expertise in a domain, from novice to expert, used to adapt how a learning experience scaffolds, sequences and emphasises its events; distinct from the level at which content is pitched.'
+  home_domain: learning
+  status: canonical
+  concepts:
+  - in_scheme: coe:artifact/learning/learner_expertise_taxonomy
+    id: coe:concept/learner_expertise_taxonomy/novice
+    label: Novice Learner
+    description: 'A learner new to the domain with minimal prior knowledge, still building foundational schemas; needs concrete examples before abstraction and external guidance to regulate their learning, and tolerates little cognitive load.'
+    home_domain: learning
+    status: canonical
+    edges:
+    - subject_id: coe:concept/learner_expertise_taxonomy/novice
+      predicate: coe:precedes
+      object_id: coe:concept/learner_expertise_taxonomy/intermediate
+      relationship_weight: required
+      description: 'Novice Learner precedes Intermediate Learner in the Learner Expertise Taxonomy ordering.'
+      statement_id: coe:edge/learner-expertise-novice-precedes-learner-expertise-intermediate
+      home_domain: learning
+  - in_scheme: coe:artifact/learning/learner_expertise_taxonomy
+    id: coe:concept/learner_expertise_taxonomy/intermediate
+    label: Intermediate Learner
+    description: 'A learner with foundational knowledge who is building competence by integrating new material with what they know; handles some abstraction, is developing self-direction and tolerates moderate cognitive load.'
+    home_domain: learning
+    status: canonical
+    edges:
+    - subject_id: coe:concept/learner_expertise_taxonomy/intermediate
+      predicate: coe:precedes
+      object_id: coe:concept/learner_expertise_taxonomy/advanced
+      relationship_weight: required
+      description: 'Intermediate Learner precedes Advanced Learner in the Learner Expertise Taxonomy ordering.'
+      statement_id: coe:edge/learner-expertise-intermediate-precedes-learner-expertise-advanced
+      home_domain: learning
+  - in_scheme: coe:artifact/learning/learner_expertise_taxonomy
+    id: coe:concept/learner_expertise_taxonomy/advanced
+    label: Advanced Learner
+    description: 'A learner with substantial domain knowledge seeking mastery by refining and extending their schemas; comfortable with abstraction, self-directed and tolerant of high cognitive load.'
+    home_domain: learning
+    status: canonical
+    edges:
+    - subject_id: coe:concept/learner_expertise_taxonomy/advanced
+      predicate: coe:precedes
+      object_id: coe:concept/learner_expertise_taxonomy/expert
+      relationship_weight: required
+      description: 'Advanced Learner precedes Expert Learner in the Learner Expertise Taxonomy ordering.'
+      statement_id: coe:edge/learner-expertise-advanced-precedes-learner-expertise-expert
+      home_domain: learning
+  - in_scheme: coe:artifact/learning/learner_expertise_taxonomy
+    id: coe:concept/learner_expertise_taxonomy/expert
+    label: Expert Learner
+    description: 'A learner with extensive, deep expertise seeking new insight by restructuring their schemas for new paradigms; prefers abstraction, is fully autonomous and tolerates very high cognitive load.'
+    home_domain: learning
+    status: canonical
+  top_concepts:
+  - coe:concept/learner_expertise_taxonomy/novice
+  - coe:concept/learner_expertise_taxonomy/intermediate
+  - coe:concept/learner_expertise_taxonomy/advanced
+  - coe:concept/learner_expertise_taxonomy/expert
+- last_updated: '2026-09-23'
+  id: coe:artifact/learning/learner_motivation_taxonomy
+  label: Learner Motivation Taxonomy
+  description: 'The closed set of dominant motivations a learner persona is described by — what drives a learner to engage with learning and to apply it; the members are unordered.'
+  home_domain: learning
+  status: canonical
+  concepts:
+  - in_scheme: coe:artifact/learning/learner_motivation_taxonomy
+    id: coe:concept/learner_motivation_taxonomy/achievement_oriented
+    label: Achievement-Oriented
+    description: 'A learner motivation driven by goals, recognition and measurable progress — mastery, credentials, performance metrics, demonstrated competency and career advancement.'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/learner_motivation_taxonomy
+    id: coe:concept/learner_motivation_taxonomy/curiosity_driven
+    label: Curiosity-Driven
+    description: 'A learner motivation driven by understanding, novelty and exploration — new information, the why behind a thing and intellectual challenge.'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/learner_motivation_taxonomy
+    id: coe:concept/learner_motivation_taxonomy/problem_solver
+    label: Problem Solver
+    description: 'A learner motivation driven by resolving concrete, present problems — immediate applicability, real-world problems, practical solutions and efficiency gains.'
+    home_domain: learning
+    status: canonical
+    terms:
+    - literal: Problem-Solver
+      term_type: full_form
+      term_status: admitted
+  - in_scheme: coe:artifact/learning/learner_motivation_taxonomy
+    id: coe:concept/learner_motivation_taxonomy/social_learner
+    label: Social Learner
+    description: 'A learner motivation driven by peers, community and shared practice — peer interaction, shared learning, discussion and belonging.'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/learner_motivation_taxonomy
+    id: coe:concept/learner_motivation_taxonomy/craft_mastery
+    label: Craft Mastery
+    description: 'A learner motivation driven by depth and excellence in the craft itself.'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/learner_motivation_taxonomy
+    id: coe:concept/learner_motivation_taxonomy/get_the_job_done
+    label: Get the Job Done
+    description: 'A learner motivation driven by immediate task completion, for which learning is a means and not an end.'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/learner_motivation_taxonomy
+    id: coe:concept/learner_motivation_taxonomy/operational_stability
+    label: Operational Stability
+    description: 'A learner motivation driven by keeping systems and processes running safely.'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/learner_motivation_taxonomy
+    id: coe:concept/learner_motivation_taxonomy/outcome_accountability
+    label: Outcome Accountability
+    description: 'A learner motivation driven by owning and evidencing a business outcome.'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/learner_motivation_taxonomy
+    id: coe:concept/learner_motivation_taxonomy/risk_reduction
+    label: Risk Reduction
+    description: 'A learner motivation driven by avoiding failure, exposure or wasted investment.'
+    home_domain: learning
+    status: canonical
+  top_concepts:
+  - coe:concept/learner_motivation_taxonomy/achievement_oriented
+  - coe:concept/learner_motivation_taxonomy/curiosity_driven
+  - coe:concept/learner_motivation_taxonomy/problem_solver
+  - coe:concept/learner_motivation_taxonomy/social_learner
+  - coe:concept/learner_motivation_taxonomy/craft_mastery
+  - coe:concept/learner_motivation_taxonomy/get_the_job_done
+  - coe:concept/learner_motivation_taxonomy/operational_stability
+  - coe:concept/learner_motivation_taxonomy/outcome_accountability
+  - coe:concept/learner_motivation_taxonomy/risk_reduction
+- last_updated: '2026-09-23'
+  id: coe:artifact/learning/learning_context_taxonomy
+  label: Learning Context Taxonomy
+  description: 'The situations a learner may be learning in that change how a learning experience should be shaped, answering what situation the learner is in; the members are unordered.'
+  home_domain: learning
+  status: canonical
+  concepts:
+  - in_scheme: coe:artifact/learning/learning_context_taxonomy
+    id: coe:concept/learning_context_taxonomy/just_in_time
+    label: Just-in-Time Learner
+    description: 'A learning situation in which the learner is under immediate pressure or blocked on a live task or incident and seeks the minimum clarity needed to act now.'
+    home_domain: learning
+    status: canonical
+    terms:
+    - literal: Just-in-Time Crisis Learner
+      term_type: full_form
+      term_status: admitted
+    - literal: Just-in-Time Operational Learner
+      term_type: full_form
+      term_status: admitted
+  - in_scheme: coe:artifact/learning/learning_context_taxonomy
+    id: coe:concept/learning_context_taxonomy/compliance_driven
+    label: Compliance-Driven Learner
+    description: 'A learning situation in which the learner is motivated chiefly by an obligation, a deadline or an audit requirement.'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/learning_context_taxonomy
+    id: coe:concept/learning_context_taxonomy/change_enablement
+    label: Change Enablement Audience
+    description: 'A learning situation in which people are segmented for communications, impact analysis and operational readiness during a programme or system change, rather than for capability design.'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/learning_context_taxonomy
+    id: coe:concept/learning_context_taxonomy/onboarding_window
+    label: Onboarding-Window Learner
+    description: 'A learning situation inside the initial deployment or onboarding period of a product, when motivation and organisational attention are at their peak.'
+    home_domain: learning
+    status: canonical
+  - in_scheme: coe:artifact/learning/learning_context_taxonomy
+    id: coe:concept/learning_context_taxonomy/renewal_pressure
+    label: Renewal-Pressure Audience
+    description: 'A learning situation in which an audience is engaged while evidence of value is assembled ahead of a renewal or expansion decision.'
+    home_domain: learning
+    status: canonical
+  top_concepts:
+  - coe:concept/learning_context_taxonomy/just_in_time
+  - coe:concept/learning_context_taxonomy/compliance_driven
+  - coe:concept/learning_context_taxonomy/change_enablement
+  - coe:concept/learning_context_taxonomy/onboarding_window
+  - coe:concept/learning_context_taxonomy/renewal_pressure

@@ -45,6 +45,8 @@ def canonical_matcher_term_records(
             ("indicator", _coerce_str_list(entity.get("indicators", []))),
         ):
             for value in values:
+                if term_source == "canonical_id" and ":" in value:
+                    continue
                 normalized = normalize_match_text(value)
                 if normalized:
                     records.add(

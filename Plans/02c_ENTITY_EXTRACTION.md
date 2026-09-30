@@ -18,7 +18,7 @@ Rules:
 
 ## 2. Ontology Inputs
 
-The matcher is built from the resolved ontology loaded from the full `Yamls` tree.
+The matcher is built from the resolved ontology loaded from `ontology/vendor/central-configs`, with recognition surfaces from `library/vendor/central-library`.
 
 Only entity definitions contribute matcher terms.
 

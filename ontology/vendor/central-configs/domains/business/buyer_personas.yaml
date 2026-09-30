@@ -1,11 +1,127 @@
-bundle_id: coe:domain/business/buyer_personas
+_meta:
+  file_id: coe:file/domain/business/buyer_personas
+  title: Business — Buyer Personas
+  last_updated: '2026-09-23'
+  authority: Central_Configs
+  scope: domain
+  ontology_domain: business
+  governing_class: coe:DomainModule
+module_id: coe:module/business/buyer_personas
 domain: business
-version: 4.0.0
 entity_collections:
+- id: coe:artifact/business/buyer_audience_roles
+  label: Buyer Audience Roles
+  description: Genuine commercial buyer personas separated from competitor, objection, and sales-concept records.
+  last_updated: '2026-09-23'
+  home_domain: business
+  status: canonical
+  entities:
+  - id: coe:entity/business/buyer_audience
+    label: Buyer Audience
+    description: People participating in a commercial buying decision, represented by explicit buying roles and personas.
+    home_domain: business
+    status: canonical
+    terms:
+    - literal: Audience
+      term_type: short_form
+      term_status: admitted
+      usage_note: Use when the people addressed participate in a commercial buying decision.
+    - literal: Buyer
+      term_type: short_form
+      term_status: admitted
+  - id: coe:entity/business/buyer_persona/economic_buyer
+    label: Economic Buyer
+    description: Executive with budget authority and final purchase approval
+    home_domain: business
+    status: canonical
+    examples:
+    - CFO
+    - CMO
+    - CRO
+    - VP of Marketing
+    - Chief Digital Officer
+    - budget holder
+    - economic decision maker
+    - executive sponsor
+  - id: coe:entity/business/buyer_persona/technical_buyer
+    label: Technical Buyer
+    description: Technical evaluator with product veto power based on technical requirements
+    home_domain: business
+    status: canonical
+    examples:
+    - CTO
+    - CIO
+    - IT Director
+    - Enterprise Architect
+    - Security Officer
+    - Solutions Architect
+    - technical evaluator
+    - IT stakeholder
+  - id: coe:entity/business/buyer_persona/user_buyer
+    label: User Buyer
+    description: End-user champion who will use the product daily
+    home_domain: business
+    status: canonical
+    examples:
+    - Marketing Manager
+    - Content Creator
+    - Campaign Manager
+    - Designer
+    - Analyst
+    - power user
+    - end user
+    - practitioner
+  - id: coe:entity/business/buyer_persona/champion
+    label: Champion
+    description: Internal advocate driving the purchase decision forward
+    home_domain: business
+    status: canonical
+    examples:
+    - project sponsor
+    - internal champion
+    - change agent
+    - transformation lead
+    - initiative owner
+    - advocate
+    anti_examples: []
+  - id: coe:entity/business/buyer_persona/influencer
+    label: Influencer
+    description: Stakeholder who shapes opinions but doesn't have final authority
+    home_domain: business
+    status: canonical
+    examples:
+    - subject matter expert
+    - SME
+    - consultant
+    - advisor
+    - thought leader
+    - key stakeholder
+  - id: coe:entity/business/buyer_persona/enterprise_buyer
+    label: Enterprise Buyer
+    description: Large-organisation buyer characterised by complex procurement, multiple stakeholders, and extended sales
+      cycles
+    home_domain: business
+    status: canonical
+    examples:
+    - enterprise customer
+    - large organisation buyer
+    - Fortune 500 prospect
+    - enterprise procurement
+    - buying committee
+  - id: coe:entity/business/buyer_persona/smb_buyer
+    label: Smb Buyer
+    description: Small or medium business buyer characterised by streamlined decisions, budget sensitivity, and personal rapport
+    home_domain: business
+    status: canonical
+    examples:
+    - small business owner
+    - SMB prospect
+    - startup founder
+    - mid-market buyer
+    - small team lead
 - id: coe:artifact/business/buyer_personas
   label: B2B Enterprise Buyer Personas
   description: CXO decision-makers, buying center archetypes, commercial priorities.
-  version: 4.0.0
   last_updated: '2026-08-15'
   entities:
   - id: coe:entity/competitor_mention
@@ -13,97 +129,183 @@ entity_collections:
     description: Competitor product company HubSpot Salesforce Google Analytics Sitecore Shopify Canva Figma alternative vendor
     home_domain: business
     status: canonical
-    recognition_patterns:
-    - (?i)\bCompetitor\s+Mention\b
     edges: []
-    ner_label: COMPETITOR
     examples:
     - HubSpot
     - Salesforce Marketing Cloud
     - Google Analytics
     - Sitecore
     - Canva
-    confidence_threshold: 0.8
   - id: coe:entity/competitive_claim
     label: Competitive Claim
     description: Competitor comparison differentiation advantage better than versus alternative claim positioning
     home_domain: business
     status: canonical
-    recognition_patterns:
-    - (?i)\bCompetitive\s+Claim\b
     edges: []
-    ner_label: COMPETITIVE_CLAIM
     examples:
     - Unlike HubSpot, Adobe offers...
     - While competitors require multiple tools...
     - Adobe is the only platform that...
-    confidence_threshold: 0.7
   - id: coe:entity/objection
     label: Objection
     description: Customer objection concern hesitation pushback too expensive too complex switch cost
     home_domain: business
     status: canonical
-    recognition_patterns:
-    - (?i)\bObjection\b
     edges: []
-    ner_label: OBJECTION
     examples:
     - Adobe is too expensive
     - We can't afford
     - Too complex for our team
     - We're happy with our current solution
-    confidence_threshold: 0.65
+  home_domain: business
+  status: canonical
 - id: coe:artifact/business/sales_plays_and_market_competitors
   label: Enterprise Sales Plays & Market Competitor Ontologies
   description: Governed sales plays, strategic solution plays, and market competitors.
-  version: 4.0.0
-  last_updated: '2026-08-15'
+  last_updated: '2026-09-01'
   entities:
   - id: coe:entity/business/competitor_marketing_automation
-    label: marketing_automation
-    description: 'Market competitor entity: marketing_automation.'
+    label: Marketing Automation Competitors
+    description: Competitor market segment for email marketing, campaign orchestration, and lead nurturing — vendors
+      competing with Adobe Marketo Engage, principally HubSpot, Salesforce Marketing Cloud (including Account Engagement,
+      formerly Pardot), Oracle Eloqua, and Mailchimp.
     home_domain: business
     status: canonical
-    ner_label: MARKET_COMPETITOR
-    recognition_patterns:
-    - (?i)\bmarketing_automation\b
   - id: coe:entity/business/competitor_analytics
-    label: analytics
-    description: 'Market competitor entity: analytics.'
+    label: Analytics Competitors
+    description: Competitor market segment for digital analytics, customer insights, and attribution — vendors competing
+      with Adobe Analytics and Customer Journey Analytics, principally Google Analytics 4, Mixpanel, Amplitude, Segment,
+      and Heap.
     home_domain: business
     status: canonical
-    ner_label: MARKET_COMPETITOR
-    recognition_patterns:
-    - (?i)\banalytics\b
   - id: coe:entity/business/competitor_content_management
-    label: content_management
-    description: 'Market competitor entity: content_management.'
+    label: Content Management Competitors
+    description: Competitor market segment for web CMS, headless CMS, and digital experience platforms — vendors competing
+      with Adobe Experience Manager Sites and Assets, from enterprise DXPs (Sitecore, Optimizely, Contentful, Contentstack,
+      Bloomreach, Drupal/Acquia) to SMB publishing platforms (WordPress, Squarespace, Wix).
     home_domain: business
     status: canonical
-    ner_label: MARKET_COMPETITOR
-    recognition_patterns:
-    - (?i)\bcontent_management\b
   - id: coe:entity/business/competitor_creative_tools
-    label: creative_tools
-    description: 'Market competitor entity: creative_tools.'
+    label: Creative Tools Competitors
+    description: Competitor market segment for design, video, and creative collaboration — vendors competing with Creative
+      Cloud, Firefly, and Express, spanning design tools (Figma, Sketch, Canva) and generative AI creation (Midjourney,
+      Stability AI, Runway, Descript, Jasper, Typeface).
     home_domain: business
     status: canonical
-    ner_label: MARKET_COMPETITOR
-    recognition_patterns:
-    - (?i)\bcreative_tools\b
   - id: coe:entity/business/competitor_ecommerce
-    label: ecommerce
-    description: 'Market competitor entity: ecommerce.'
+    label: Ecommerce Competitors
+    description: Competitor market segment for commerce platforms, storefronts, and B2B commerce — vendors competing with
+      Adobe Commerce, principally Shopify, Salesforce Commerce Cloud, BigCommerce, commercetools, WooCommerce, and Elastic
+      Path.
     home_domain: business
     status: canonical
-    ner_label: MARKET_COMPETITOR
-    recognition_patterns:
-    - (?i)\becommerce\b
   - id: coe:entity/business/competitor_search_and_discovery
-    label: search_and_discovery
-    description: 'Market competitor entity: search_and_discovery.'
+    label: Search and Discovery Competitors
+    description: Competitor market segment for site search, product discovery, and merchandising — vendors competing with
+      Adobe Target and Adobe Commerce search, principally Algolia.
     home_domain: business
     status: canonical
-    ner_label: MARKET_COMPETITOR
-    recognition_patterns:
-    - (?i)\bsearch_and_discovery\b
+  home_domain: business
+  status: canonical
+- id: coe:artifact/business/reallocated_delivery_concepts
+  label: Reallocated Business Concepts
+  description: Concepts moved from Delivery because their semantic meaning is owned by this domain.
+  last_updated: '2026-08-22'
+  home_domain: business
+  status: canonical
+  entities:
+  - id: coe:entity/pre_wire_strategy
+    label: Pre Wire Strategy
+    description: Practice of calling key stakeholders individually before a high-stakes meeting to understand and address
+      their concerns.
+    home_domain: business
+    status: canonical
+    edges: []
+- id: coe:artifact/business/audience_method_disciplines
+  label: Audience Method Disciplines
+  description: Audience-research and demonstration method disciplines recovered from the knowledge wiki, governing the
+    persona instances this module holds.
+  last_updated: '2026-09-23'
+  home_domain: business
+  status: canonical
+  entities:
+  - id: coe:entity/empathy_mapping
+    label: Empathy Mapping
+    description: Gray's collaborative canvas synthesising primary research into a user's Says, Thinks, Does and Feels
+      plus Pains and Gains to build shared audience understanding.
+    home_domain: business
+    status: canonical
+    edges:
+    - subject_id: coe:entity/empathy_mapping
+      predicate: coe:supports
+      object_id: coe:entity/persona_method
+      relationship_weight: expected
+      description: The Says-Thinks-Does-Feels canvas synthesises the primary research that evidence-led persona
+        construction consumes.
+      statement_id: coe:edge/empathy-mapping-supports-persona-method
+      home_domain: business
+    examples:
+    - empathy map
+    - says, thinks, does, feels
+    - pains and gains canvas
+  - id: coe:entity/jobs_to_be_done
+    label: Jobs to Be Done
+    description: Framework locating the causal driver of buying and learning behaviour in situational progress rather
+      than demographics, spanning the Christensen, Ulwick and Klement schools.
+    home_domain: business
+    status: canonical
+    edges:
+    - subject_id: coe:entity/jobs_to_be_done
+      predicate: coe:contrasts_with
+      object_id: coe:entity/persona_method
+      relationship_weight: expected
+      description: Jobs-to-be-done locates causation in situational progress where persona methods segment by archetype;
+        they are rival and complementary audience frames.
+      statement_id: coe:edge/jobs-to-be-done-contrasts-with-persona-method
+      home_domain: business
+    examples:
+    - jobs to be done
+    - JTBD
+    - job story
+    - hire a product
+    - struggling moment
+  - id: coe:entity/persona_method
+    label: Persona Method
+    description: The general method of constructing, validating, maintaining and retiring evidence-based audience
+      archetypes, separating organisational-alignment value from unproven representativeness claims.
+    home_domain: business
+    status: canonical
+    edges:
+    - subject_id: coe:entity/persona_method
+      predicate: coe:supports
+      object_id: coe:entity/inclusion_personas
+      relationship_weight: expected
+      description: Capability-spectrum personas take their construction, validation and retirement discipline from the
+        general persona method.
+      statement_id: coe:edge/persona-method-supports-inclusion-personas
+      home_domain: business
+    examples:
+    - persona construction
+    - persona validation
+    - proto-persona
+    - persona retirement
+  - id: coe:entity/product_demo_delivery
+    label: Product Demo Delivery
+    description: Methodology for designing and delivering high-stakes B2B product demonstrations — inverted-pyramid
+      information architecture, quantified value deltas, planned interaction moments and glitch recovery.
+    home_domain: business
+    status: canonical
+    edges:
+    - subject_id: coe:entity/product_demo_delivery
+      predicate: coe:supports
+      object_id: coe:entity/demo_certification
+      relationship_weight: expected
+      description: Demo certification measures the demonstration methodology product demo delivery owns.
+      statement_id: coe:edge/product-demo-delivery-supports-demo-certification
+      home_domain: business
+    examples:
+    - product demo
+    - demo flow
+    - inverted-pyramid demo
+    - glitch recovery
+    - value delta

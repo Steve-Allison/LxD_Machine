@@ -13,6 +13,10 @@ OntologyKeyClassification = Literal[
 ]
 
 _GRAPH_PATH_PATTERNS: Final = (
+    re.compile(r"(^|\.)edges(\.|$)"),
+    re.compile(r"(^|\.)broader(\.|$)"),
+    re.compile(r"(^|\.)narrower(\.|$)"),
+    re.compile(r"(^|\.)in_scheme(\.|$)"),
     re.compile(r"^_meta\.relationships(?:\.|$)"),
     re.compile(r"^file_relationships(?:\.|$)"),
     re.compile(r"^entity_relations(?:\.|$)"),
@@ -26,6 +30,7 @@ _GRAPH_PATH_PATTERNS: Final = (
 )
 
 _MATCHER_PATH_PATTERNS: Final = (
+    re.compile(r"(^|\.)terms(\.|$)"),
     re.compile(r"^entity_types\.[^.]+\.canonical_id(?:\.|$)"),
     re.compile(r"^entity_types\.[^.]+\.aliases(?:\.|$)"),
     re.compile(r"^entity_types\.[^.]+\.indicators(?:\.|$)"),

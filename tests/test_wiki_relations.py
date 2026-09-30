@@ -56,6 +56,20 @@ def test_build_slug_index_folds_kebab_and_snake_case() -> None:
     assert index["addie-model"] == "ADDIE_Model"
 
 
+def test_build_slug_index_resolves_curie_tail_and_label() -> None:
+    """Wiki slugs match the identifier tail and the human label, not the CURIE."""
+    index = build_slug_index(
+        [
+            {
+                "canonical_id": "coe:entity/learning/term/scaffolding",
+                "label": "Scaffolding",
+            }
+        ]
+    )
+    assert index["scaffolding"] == "coe:entity/learning/term/scaffolding"
+    assert index["Scaffolding"] == "coe:entity/learning/term/scaffolding"
+
+
 def test_build_slug_index_skips_entities_without_canonical_id() -> None:
     """Entities missing a ``canonical_id`` are tolerated, not crashed on."""
     index = build_slug_index([{"canonical_id": "valid"}, {"label": "no-id"}, {}])
