@@ -3,10 +3,9 @@ name = "lxd-machine"
 version = "0.1.0"
 description = "LxD domain knowledge system — fast local SoT"
 channels = ["conda-forge"]
-platforms = ["osx-arm64"]
-
-[system-requirements]
-macos = "26.4"
+platforms = [
+  { platform = "osx-arm64", macos = "27" },
+]
 
 [dependencies]
 python = ">=3.14,<3.15"
