@@ -1,19 +1,29 @@
 """Persist and query vector chunk records in LanceDB."""
 
 import json
+from collections import defaultdict
 from pathlib import Path
 from typing import Any, Final
 
 import lancedb
 import pyarrow as pa
+import structlog
 from lancedb.index import FTS, BTree
+from lancedb.query import FullTextQuery
 from lancedb.rerankers import RRFReranker
 
 from lxd.stores.lance_sql import eq_clause, in_clause
 from lxd.stores.models import ChunkRecord, VectorSearchRecord
 
+_log = structlog.get_logger(__name__)
+
 _TABLE_NAME: Final = "chunk_vectors"
 _FTS_FIELD: Final = "text"
+_FTS_INDEX_NAME: Final = "text_fts_pos_idx"
+# Indexes built before phrase search. Dropped once, then replaced by
+# ``_FTS_INDEX_NAME`` so an existing store gains token positions without
+# an embedding rerun.
+_LEGACY_FTS_INDEX_NAME: Final = "text_fts_idx"
 _CHUNK_SCALAR_INDEX_COLUMNS: Final = ("source_rel_path", "chunk_id", "source_domain")
 
 
@@ -48,9 +58,7 @@ def connect_lancedb(path: Path) -> Any:
     return lancedb.connect(str(path))
 
 
-def open_chunk_table(
-    database: Any, *, vector_size: int, refresh_fts: bool = False
-) -> Any:
+def open_chunk_table(database: Any, *, vector_size: int, refresh_fts: bool = False) -> Any:
     """Open the chunk vector table, creating it when missing.
 
     On the **read** path (default), ensure the native LanceDB FTS index
@@ -117,21 +125,42 @@ def reset_chunk_table(database: Any, *, vector_size: int) -> Any:
     return table
 
 
-def ensure_fts_index(table: Any) -> None:
-    """Create the native FTS index over ``text`` if it is absent.
+def _fts_config() -> FTS:
+    """Full-text index that stores token positions so phrase queries work."""
+    return FTS(with_position=True)
 
-    Idempotent for the read path: an existing index is left untouched so
-    retrieval does not pay a full Tantivy rebuild on every query. Call
-    :func:`refresh_fts_index` after ingest writes so BM25 sees new rows.
-    """
-    fts_index_name = f"{_FTS_FIELD}_fts_idx"
-    existing_names = {getattr(index, "name", None) for index in table.list_indices()}
-    if fts_index_name in existing_names:
+
+def _index_names(table: Any) -> set[str | None]:
+    return {getattr(index, "name", None) for index in table.list_indices()}
+
+
+def _drop_legacy_fts_index(table: Any, names: set[str | None]) -> None:
+    if _LEGACY_FTS_INDEX_NAME not in names:
         return
+    table.drop_index(_LEGACY_FTS_INDEX_NAME)
+
+
+def ensure_fts_index(table: Any) -> None:
+    """Create the position-aware FTS index over ``text`` if it is absent.
+
+    Idempotent for the read path: an index that already stores token
+    positions is left untouched so retrieval does not pay a Tantivy
+    rebuild on every query. A legacy index built without positions is
+    dropped and replaced once, which is a local rebuild, not an
+    embedding rerun. Call :func:`refresh_fts_index` after ingest writes
+    so BM25 sees new rows.
+    """
+    names = _index_names(table)
+    if _FTS_INDEX_NAME in names:
+        _drop_legacy_fts_index(table, names)
+        return
+    if _LEGACY_FTS_INDEX_NAME in names:
+        _log.info("fts_index.rebuild_with_positions", index=_FTS_INDEX_NAME)
+        _drop_legacy_fts_index(table, names)
     table.create_index(
         _FTS_FIELD,
-        config=FTS(with_position=False),
-        name=fts_index_name,
+        config=_fts_config(),
+        name=_FTS_INDEX_NAME,
         replace=False,
     )
 
@@ -143,18 +172,60 @@ def refresh_fts_index(table: Any) -> None:
     auto-include rows added after index creation; ingest calls this once
     after persisting all chunks so retrieval BM25 sees every row. Calls
     are idempotent: the index is replaced in place when it already exists
-    and created from scratch otherwise.
+    and created from scratch otherwise. Token positions are stored so
+    phrase queries can match multi-word framework names.
 
     Args:
         table: LanceDB chunk_vectors table.
     """
-    fts_index_name = f"{_FTS_FIELD}_fts_idx"
     table.create_index(
         _FTS_FIELD,
-        config=FTS(with_position=False),
-        name=fts_index_name,
+        config=_fts_config(),
+        name=_FTS_INDEX_NAME,
         replace=True,
     )
+    _drop_legacy_fts_index(table, _index_names(table))
+
+
+class WeightedRRFReranker(RRFReranker):
+    """Reciprocal rank fusion that can prefer the BM25 list.
+
+    LanceDB's stock reranker adds ``1 / (rank + K)`` once for the dense
+    list and once for the full-text list. ``fts_weight`` multiplies the
+    full-text term, which is how ``retrieval.lexical_fusion_weight``
+    reaches the hybrid query.
+    """
+
+    def __init__(self, *, k: int, fts_weight: float) -> None:
+        super().__init__(K=k)
+        if fts_weight < 0:
+            raise ValueError("fts_weight must be >= 0")
+        self.fts_weight = fts_weight
+
+    def rerank_hybrid(
+        self,
+        query: str,
+        vector_results: pa.Table,
+        fts_results: pa.Table,
+    ) -> pa.Table:
+        vector_ids = vector_results["_rowid"].to_pylist() if vector_results else []
+        fts_ids = fts_results["_rowid"].to_pylist() if fts_results else []
+        rrf_score_map: dict[Any, float] = defaultdict(float)
+        for rank, result_id in enumerate(vector_ids, start=1):
+            rrf_score_map[result_id] += 1 / (rank + self.K)
+        for rank, result_id in enumerate(fts_ids, start=1):
+            rrf_score_map[result_id] += self.fts_weight / (rank + self.K)
+
+        combined_results = self.merge_results(vector_results, fts_results)
+        combined_row_ids = combined_results["_rowid"].to_pylist()
+        relevance_scores = [rrf_score_map[row_id] for row_id in combined_row_ids]
+        combined_results = combined_results.append_column(
+            "_relevance_score", pa.array(relevance_scores, type=pa.float32())
+        )
+        combined_results = combined_results.sort_by([("_relevance_score", "descending")])
+        if self.score == "relevance":
+            combined_results = self._keep_relevance_score(combined_results)
+        return combined_results
 
 
 def load_source_chunk_rows(table: Any, source_rel_path: str) -> list[dict[str, object]]:
@@ -291,40 +362,40 @@ def search_chunks(
 def search_chunks_hybrid(
     table: Any,
     *,
-    query: str,
+    query: str | FullTextQuery,
     query_vector: list[float],
     domain: str | None,
     limit: int,
+    lexical_weight: float = 1.0,
+    rrf_k: int = 60,
 ) -> list[VectorSearchRecord]:
-    """Hybrid dense + BM25 retrieval fused inside LanceDB via RRF.
+    """Hybrid dense + BM25 retrieval fused inside LanceDB via weighted RRF.
 
     ``Table.search(query_type="hybrid")`` runs the dense k-NN and the BM25
-    FTS index in one query and fuses them with the passed reranker
-    (Reciprocal Rank Fusion here). Returns a single ordered list keyed on
-    ``_relevance_score`` — the per-lane ranks are collapsed inside the
-    engine and are not surfaced to Python callers.
-
-    This is an alternative to the two-query + Python-side fuse path that
-    ``search_chunks`` + ``search_chunks_fts`` provide separately. Callers
-    that need independent per-lane weights (e.g. the current 5-lane RRF
-    in :mod:`lxd.retrieval.query_pipeline`) cannot use this shape; those
-    that just want dense+BM25 fused with default RRF can.
+    FTS index in one query and fuses them with
+    :class:`WeightedRRFReranker`. ``lexical_weight`` multiplies the BM25
+    reciprocal-rank term. ``query`` may be a structured full-text query
+    so the text lane can require phrases while the dense vector stays on
+    the caller's embedding text. Returns a single ordered list keyed on
+    ``_relevance_score``.
     """
-    cleaned = query.strip()
-    if not cleaned:
-        # Fall back to dense-only when the query is empty — hybrid with an
-        # empty text query is undefined at the engine level.
-        return search_chunks(
-            table, query_vector=query_vector, domain=domain, limit=limit
-        )
-    hybrid = (
-        table.search(query_type="hybrid")
-        .vector(query_vector)
-        .text(cleaned)
-    )
+    if isinstance(query, str):
+        cleaned = query.strip()
+        if not cleaned:
+            # Fall back to dense-only when the query is empty — hybrid with an
+            # empty text query is undefined at the engine level.
+            return search_chunks(table, query_vector=query_vector, domain=domain, limit=limit)
+        text_query: str | FullTextQuery = cleaned
+    else:
+        text_query = query
+    hybrid = table.search(query_type="hybrid").vector(query_vector).text(text_query)
     if domain is not None:
         hybrid = hybrid.where(eq_clause("source_domain", domain))
-    rows = hybrid.rerank(RRFReranker()).limit(limit).to_list()
+    rows = (
+        hybrid.rerank(WeightedRRFReranker(k=rrf_k, fts_weight=lexical_weight))
+        .limit(limit)
+        .to_list()
+    )
     return [
         record
         for record in (
@@ -337,7 +408,7 @@ def search_chunks_hybrid(
 def search_chunks_fts(
     table: Any,
     *,
-    query: str,
+    query: str | FullTextQuery,
     domain: str | None,
     limit: int,
 ) -> list[VectorSearchRecord]:
@@ -346,11 +417,12 @@ def search_chunks_fts(
     The native LanceDB FTS index is built by :func:`open_chunk_table` /
     :func:`refresh_fts_index`; queries here issue BM25 directly against
     that index — no Python-side keyword counting, no IDF estimation by
-    hand, no length-normalisation guesswork.
+    hand, no length-normalisation guesswork. A :class:`FullTextQuery`
+    carries phrase clauses that a bag-of-words string cannot.
 
     Args:
         table: LanceDB table storing chunk vectors.
-        query: Natural-language query string.
+        query: Natural-language query string or a structured full-text query.
         domain: Optional source domain filter.
         limit: Maximum number of records to return.
 
@@ -359,10 +431,14 @@ def search_chunks_fts(
         Returns an empty list when the query is empty or contains no
         index-matching tokens.
     """
-    cleaned = query.strip()
-    if not cleaned:
-        return []
-    fts_query = table.search(cleaned, query_type="fts")
+    if isinstance(query, str):
+        cleaned = query.strip()
+        if not cleaned:
+            return []
+        text_query: str | FullTextQuery = cleaned
+    else:
+        text_query = query
+    fts_query = table.search(text_query, query_type="fts")
     if domain is not None:
         fts_query = fts_query.where(eq_clause("source_domain", domain))
     rows = fts_query.limit(limit).to_list()

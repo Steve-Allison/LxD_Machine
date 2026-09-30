@@ -103,12 +103,27 @@ def build_lexical_query(question: str, phrases: tuple[str, ...] | list[str]) -> 
     scores the phrase and the original words. A chunk that only contains
     the words still matches.
     """
-    match = MatchQuery(query=question.strip(), column=_TEXT_COLUMN, operator=FullTextOperator.OR)
+    # The installed LanceDB dataclasses type these fields as required.
+    # The values are the library defaults: OR bag-of-words, exact phrases.
+    match = MatchQuery(
+        query=question.strip(),
+        column=_TEXT_COLUMN,
+        boost=1.0,
+        fuzziness=0,
+        max_expansions=50,
+        operator=FullTextOperator.OR,
+        prefix_length=0,
+        document_granularity=None,
+    )
     if not phrases:
         return match
     clauses: list[tuple[Occur, FullTextQuery]] = [(Occur.SHOULD, match)]
     clauses.extend(
-        (Occur.SHOULD, PhraseQuery(query=phrase, column=_TEXT_COLUMN)) for phrase in phrases
+        (
+            Occur.SHOULD,
+            PhraseQuery(query=phrase, column=_TEXT_COLUMN, slop=0, document_granularity=None),
+        )
+        for phrase in phrases
     )
     return BooleanQuery(clauses)
 
