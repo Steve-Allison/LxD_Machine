@@ -128,9 +128,10 @@ def replace_source_chunks(
                     object_entity_id,
                     confidence,
                     extraction_model,
-                    extracted_at
+                    extracted_at,
+                    qualifier
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 [
                     (
@@ -144,6 +145,7 @@ def replace_source_chunks(
                         record.confidence,
                         record.extraction_model,
                         record.extracted_at,
+                        record.qualifier,
                     )
                     for record in relation_records
                 ],

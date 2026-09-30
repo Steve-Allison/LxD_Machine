@@ -32,11 +32,22 @@ from lxd.ingest.pipeline.moves import (
 from lxd.ingest.pipeline.sources import build_manifest_record, build_source_records
 from lxd.ingest.relations import build_valid_predicates
 from lxd.ingest.scanner import ScannedCorpusFile, scan_corpus
-from lxd.ingest.wiki_relations import build_slug_index, derive_wiki_link_relations
+from lxd.ingest.wiki_metadata import (
+    defers_from_metadata,
+    load_wiki_matcher_phrases,
+    wiki_category_warnings,
+)
+from lxd.ingest.wiki_relations import (
+    build_slug_index,
+    derive_defer_relations,
+    derive_wiki_link_relations,
+    graph_entity_id,
+)
 from lxd.ontology.ambiguity import ambiguous_surface_forms_with_candidates
 from lxd.ontology.disambiguator import make_disambiguator
 from lxd.ontology.loader import OntologyLoadResult, load_ontology
-from lxd.ontology.matcher import build_or_load_automaton
+from lxd.ontology.matcher import MatcherTermRecord, build_or_load_automaton
+from lxd.ontology.normalization import normalize_match_text
 from lxd.settings.models import RuntimeConfig
 from lxd.stores.lancedb import (
     connect_lancedb,
@@ -194,13 +205,19 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
     _validate_ingest_dependencies(config)
 
     warnings: list[str] = []
-    automaton = build_or_load_automaton(
+    slug_index = build_slug_index(plan.ontology.entity_definitions)
+    matcher_records = _matcher_records_with_wiki(
         plan.ontology.matcher_records,
+        corpus_root=config.paths.corpus_path,
+        slug_index=slug_index,
+    )
+    automaton = build_or_load_automaton(
+        matcher_records,
         cache_dir=config.paths.data_path / "matcher_cache",
     )
-    ambiguous_map = ambiguous_surface_forms_with_candidates(plan.ontology.matcher_records)
+    ambiguous_map = ambiguous_surface_forms_with_candidates(matcher_records)
+    warnings.extend(wiki_category_warnings(config.paths.corpus_path))
     valid_predicates = build_valid_predicates(plan.ontology.relation_records)
-    slug_index = build_slug_index(plan.ontology.entity_definitions)
     budget_tracker = IngestBudgetTracker(config.ingest_budget)
     wiki_dangling_total: set[str] = set()
     wiki_pages_without_subject_total: set[str] = set()
@@ -491,16 +508,23 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                         # snapshot compensate). Only delete the OLD path after
                         # the new identity is durable in both stores — never
                         # delete-before-write.
+                        cloned_at = utc_now()
                         cloned_wiki = derive_wiki_link_relations(
                             chunk_records=cloned_chunks,
                             slug_index=slug_index,
-                            extracted_at=utc_now(),
+                            extracted_at=cloned_at,
+                        )
+                        cloned_defers = derive_defer_relations(
+                            chunk_records=cloned_chunks,
+                            defers=defers_from_metadata(
+                                cloned_chunks[0].metadata_json if cloned_chunks else "{}"
+                            ),
+                            slug_index=slug_index,
+                            extracted_at=cloned_at,
                         )
                         wiki_dangling_total.update(cloned_wiki.dangling_slugs)
                         wiki_pages_without_subject_total.update(cloned_wiki.pages_without_subject)
-                        prior_new_path = load_source_chunk_rows(
-                            vector_table, scanned.relative_path
-                        )
+                        prior_new_path = load_source_chunk_rows(vector_table, scanned.relative_path)
                         replace_vector_source_chunks(
                             vector_table, scanned.relative_path, cloned_chunks
                         )
@@ -510,7 +534,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                                 source_rel_path=scanned.relative_path,
                                 chunk_records=cloned_chunks,
                                 mention_records=cloned_mentions,
-                                relation_records=cloned_wiki.relations,
+                                relation_records=[*cloned_wiki.relations, *cloned_defers],
                             )
                         except sqlite3.Error:
                             with contextlib.suppress(FileNotFoundError, ValueError, RuntimeError):
@@ -555,9 +579,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                         # leave the path empty (first ingest). A bare delete
                         # would empty LanceDB while SQLite still held the old
                         # chunk rows — false atomicity.
-                        prior_vectors = load_source_chunk_rows(
-                            vector_table, scanned.relative_path
-                        )
+                        prior_vectors = load_source_chunk_rows(vector_table, scanned.relative_path)
                         replace_vector_source_chunks(
                             vector_table, scanned.relative_path, chunk_records
                         )
@@ -628,7 +650,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
             summary = summarize_store(
                 sqlite_connection,
                 ontology_file_count=len(plan.ontology.sources),
-                matcher_term_count=len(plan.ontology.matcher_records),
+                matcher_term_count=len(matcher_records),
                 matcher_termset_hash=plan.ontology.matcher_termset_hash,
                 ontology_snapshot_hash=plan.ontology.snapshot_hash,
                 ontology_coverage_path_count=plan.ontology.coverage_report.discovered_path_count,
@@ -643,6 +665,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                 summary=summary,
                 entity_count=len(plan.ontology.entity_definitions),
             )
+
             def _counters() -> IngestRunCounters:
                 return IngestRunCounters(
                     files_completed=files_completed,
@@ -836,3 +859,36 @@ def _config_snapshot_records(config: RuntimeConfig) -> list[IngestConfigSnapshot
     return [
         IngestConfigSnapshotRecord(key=key, value=value) for key, value in sorted(snapshot.items())
     ]
+
+
+def _matcher_records_with_wiki(
+    ontology_records: list[MatcherTermRecord],
+    *,
+    corpus_root: Path,
+    slug_index: dict[str, str],
+) -> list[MatcherTermRecord]:
+    """Append glossary aliases and ``owns`` phrases, then let ontology terms win.
+
+    Wiki phrases are listed first so a later ontology term for the same
+    surface form replaces them in the automaton. Ambiguous forms stay in
+    the combined list for the disambiguator.
+    """
+    wiki_records: list[MatcherTermRecord] = []
+    seen: set[tuple[str, str, str]] = set()
+    for phrase in load_wiki_matcher_phrases(corpus_root):
+        normalized = normalize_match_text(phrase.term)
+        if not normalized:
+            continue
+        entity_id = graph_entity_id(phrase.slug, slug_index)
+        key = (normalized, entity_id, phrase.term_source)
+        if key in seen:
+            continue
+        seen.add(key)
+        wiki_records.append(
+            MatcherTermRecord(
+                normalized_term=normalized,
+                entity_id=entity_id,
+                term_source=phrase.term_source,
+            )
+        )
+    return [*wiki_records, *ontology_records]

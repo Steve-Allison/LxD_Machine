@@ -189,6 +189,7 @@ class ExtractedRelationRecord:
     confidence: float
     extraction_model: str
     extracted_at: str
+    qualifier: str = ""
 
 
 @dataclass(frozen=True, slots=True)

@@ -13,6 +13,7 @@ from lxd.domain.brief import LearnerBrief
 from lxd.domain.ids import blake3_hex
 from lxd.domain.limits import MAX_RETRIEVAL_LIMIT
 from lxd.domain.time import utc_now
+from lxd.ingest.wiki_metadata import is_citable_source
 from lxd.retrieval.dense import embed_query
 from lxd.retrieval.expansion import ExpansionOutcome, expand_question
 from lxd.retrieval.graph_lane import GraphLaneHit, graph_lane_chunk_ids, load_graph_lane_hits
@@ -343,7 +344,7 @@ def search_chunks(
         )
 
 
-def answer_question(
+def answer_question(  # noqa: PLR0917 — established retrieval entrypoint; later args are keyword-only
     question: str,
     config: RuntimeConfig,
     domain: str | None = None,
@@ -504,8 +505,9 @@ def answer_question(
             score=item.score,
             cited_sources=item.cited_sources,
         )
-        for item in outcome.ranked[: config.synthesis.max_chunks]
-    ]
+        for item in outcome.ranked
+        if is_citable_source(item.source_rel_path)
+    ][: config.synthesis.max_chunks]
     if _insufficient_evidence(evidence):
         answer = insufficient_evidence_answer()
         return _finalize(

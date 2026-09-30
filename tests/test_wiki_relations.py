@@ -1,7 +1,9 @@
 """Tests for the wiki-link → entity-graph relation derivation."""
 
+from lxd.ingest.wiki_metadata import WikiDeferral
 from lxd.ingest.wiki_relations import (
     build_slug_index,
+    derive_defer_relations,
     derive_wiki_link_relations,
     resolve_page_subject,
 )
@@ -66,9 +68,8 @@ def test_resolve_page_subject_strips_extension_and_resolves() -> None:
     assert resolve_page_subject("wiki/unknown-page.md", index) is None
 
 
-def test_derive_wiki_link_relations_emits_resolved_edges_only() -> None:
-    """Resolved [[slug]] becomes a wiki_references edge; unresolved goes
-    to dangling_slugs."""
+def test_derive_wiki_link_relations_keeps_unmatched_slugs() -> None:
+    """A slug with no ontology entity is still an edge, keyed ``wiki:<slug>``."""
     index = build_slug_index([_entity("addie_model"), _entity("backward_design")])
     chunks = [
         _chunk(
@@ -82,14 +83,15 @@ def test_derive_wiki_link_relations_emits_resolved_edges_only() -> None:
         slug_index=index,
         extracted_at="2026-05-05T00:00:00+00:00",
     )
-    assert len(result.relations) == 1
-    rel = result.relations[0]
+    by_object = {rel.object_entity_id: rel for rel in result.relations}
+    assert set(by_object) == {"backward_design", "wiki:unknown-concept"}
+    rel = by_object["backward_design"]
     assert rel.subject_entity_id == "addie_model"
-    assert rel.object_entity_id == "backward_design"
     assert rel.predicate == "wiki_references"
     assert rel.extraction_model == "wiki_metadata"
     assert rel.confidence == 1.0
-    assert result.dangling_slugs == ("unknown-concept",)
+    assert rel.qualifier == ""
+    assert result.dangling_slugs == ()
     assert result.pages_without_subject == ()
 
 
@@ -126,9 +128,8 @@ def test_derive_wiki_link_relations_dedupes_within_chunk() -> None:
 
 
 def test_derive_wiki_link_relations_records_pages_without_subject() -> None:
-    """A page whose filename has no ontology match is reported (so the
-    user can decide whether to add an entity or accept the page as
-    descriptive-only)."""
+    """A page whose filename has no ontology match is reported, and the
+    edge is still written under ``wiki:<slug>``."""
     index = build_slug_index([_entity("backward_design")])
     chunks = [
         _chunk(
@@ -138,7 +139,9 @@ def test_derive_wiki_link_relations_records_pages_without_subject() -> None:
         ),
     ]
     result = derive_wiki_link_relations(chunk_records=chunks, slug_index=index, extracted_at="t")
-    assert result.relations == []
+    assert len(result.relations) == 1
+    assert result.relations[0].subject_entity_id == "wiki:orphan-page"
+    assert result.relations[0].object_entity_id == "backward_design"
     assert result.pages_without_subject == ("wiki/orphan-page.md",)
 
 
@@ -178,3 +181,23 @@ def test_derive_wiki_link_relation_ids_are_deterministic() -> None:
         chunk_records=chunks, slug_index=index, extracted_at="t2"
     ).relations[0]
     assert first.relation_id == second.relation_id
+
+
+def test_derive_defer_relations_keeps_reason_and_resolves_slug() -> None:
+    index = build_slug_index([_entity("addie_model"), _entity("backward_design")])
+    chunks = [
+        _chunk(chunk_id="c1", source_rel_path="addie-model.md"),
+        _chunk(chunk_id="c2", source_rel_path="addie-model.md"),
+    ]
+    relations = derive_defer_relations(
+        chunk_records=chunks,
+        defers=(WikiDeferral(reason="Stage 1 design logic", slug="backward-design"),),
+        slug_index=index,
+        extracted_at="t",
+    )
+    assert len(relations) == 1
+    assert relations[0].chunk_id == "c1"
+    assert relations[0].predicate == "defers_to"
+    assert relations[0].subject_entity_id == "addie_model"
+    assert relations[0].object_entity_id == "backward_design"
+    assert relations[0].qualifier == "Stage 1 design logic"

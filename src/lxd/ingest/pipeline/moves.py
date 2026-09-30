@@ -7,6 +7,7 @@ from lxd.domain.citations import make_citation_label
 from lxd.domain.ids import blake3_hex, make_chunk_id
 from lxd.domain.status import RetrievalStatus
 from lxd.ingest.scanner import ScannedCorpusFile
+from lxd.ingest.wiki_metadata import has_current_wiki_parse
 from lxd.stores.lancedb import load_vectors_by_chunk_ids
 from lxd.stores.models import ChunkRecord, ManifestRecord, MentionRecord
 from lxd.stores.sqlite.chunks import (
@@ -42,7 +43,11 @@ def can_skip_unchanged_source(
     if manifest.retrieval_status != RetrievalStatus.SEARCHABLE or manifest.chunk_count <= 0:
         return False
     committed_chunks = load_chunk_records_for_source(sqlite_connection, manifest.source_rel_path)
-    return len(committed_chunks) == manifest.chunk_count
+    if len(committed_chunks) != manifest.chunk_count:
+        return False
+    if scanned.source_type in {"markdown", "docling_md"}:
+        return all(has_current_wiki_parse(chunk.metadata_json) for chunk in committed_chunks)
+    return True
 
 
 def resolve_document_id(

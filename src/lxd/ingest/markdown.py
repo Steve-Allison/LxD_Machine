@@ -9,7 +9,11 @@ from docling.datamodel.base_models import InputFormat
 from docling.document_converter import DocumentConverter
 
 from lxd.domain.citations import make_citation_label
-from lxd.ingest.wiki_metadata import WikiPageMetadata, parse_wiki_metadata
+from lxd.ingest.wiki_metadata import (
+    WikiPageMetadata,
+    parse_wiki_metadata,
+    strip_wiki_frontmatter,
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -49,7 +53,9 @@ def load_markdown_document(
     text = path.read_text(encoding="utf-8")
     converter = DocumentConverter()
     document = converter.convert_string(
-        content=text, format=InputFormat.MD, name=source_rel_path
+        content=strip_wiki_frontmatter(text),
+        format=InputFormat.MD,
+        name=source_rel_path,
     ).document
     return ExtractedDocument(
         source_rel_path=source_rel_path,

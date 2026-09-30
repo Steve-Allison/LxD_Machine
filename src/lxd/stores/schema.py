@@ -35,7 +35,7 @@ from lxd.stores._base_ddl import BASE_SCHEMA_DDL
 
 Migration = Callable[[sqlite3.Connection], None]
 
-CURRENT_SCHEMA_VERSION: Final = 10
+CURRENT_SCHEMA_VERSION: Final = 11
 
 
 class SchemaIntegrityError(sqlite3.DatabaseError):
@@ -536,6 +536,21 @@ def _migration_0009_entity_embedding_state(connection: sqlite3.Connection) -> No
     )
 
 
+def _migration_0011_relation_qualifier(connection: sqlite3.Connection) -> None:
+    """Store the wiki ``defers`` reason on ``extracted_relations.qualifier``.
+
+    ``wiki_references`` rows leave the column empty. Historic rows gain
+    the empty default. Fresh databases already have the column from the
+    base DDL; the ``PRAGMA table_info`` guard makes the ALTER idempotent.
+    """
+    row = connection.execute("PRAGMA table_info(extracted_relations);").fetchall()
+    columns = {str(info[1]) for info in row} if row else set()
+    if "qualifier" not in columns:
+        connection.execute(
+            "ALTER TABLE extracted_relations ADD COLUMN qualifier TEXT NOT NULL DEFAULT '';"
+        )
+
+
 def _migration_0010_sessions(connection: sqlite3.Connection) -> None:
     """Create ``sessions`` and ``session_turns`` for the learner-brief product layer.
 
@@ -586,6 +601,7 @@ _MIGRATIONS: dict[int, Migration] = {
     8: _migration_0008_hierarchical_communities,
     9: _migration_0009_entity_embedding_state,
     10: _migration_0010_sessions,
+    11: _migration_0011_relation_qualifier,
 }
 
 
@@ -610,7 +626,7 @@ _REQUIRED_COLUMNS: dict[str, frozenset[str]] = {
         }
     ),
     "mention_rows": frozenset({"mention_id", "chunk_id", "entity_id"}),
-    "extracted_relations": frozenset({"relation_id", "chunk_id"}),
+    "extracted_relations": frozenset({"relation_id", "chunk_id", "qualifier"}),
     "claims": frozenset({"claim_id", "chunk_id"}),
     "relation_evidence": frozenset({"evidence_id", "relation_id", "chunk_id"}),
     "ingest_runs": frozenset({"run_id", "status"}),

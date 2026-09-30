@@ -120,6 +120,7 @@ CREATE TABLE IF NOT EXISTS extracted_relations (
     confidence REAL NOT NULL,
     extraction_model TEXT NOT NULL,
     extracted_at TEXT NOT NULL,
+    qualifier TEXT NOT NULL DEFAULT '',
     FOREIGN KEY(chunk_id) REFERENCES chunk_rows(chunk_id) ON DELETE CASCADE
 );
 

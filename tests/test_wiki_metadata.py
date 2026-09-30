@@ -113,20 +113,114 @@ def test_parse_summary_with_inline_bold() -> None:
     assert md.cited_sources == ("x.md",)
 
 
+def test_parse_yaml_frontmatter_owns_defers_and_sources() -> None:
+    text = (
+        "---\n"
+        "type: Concept\n"
+        'category: "Instructional Design & Methodology"\n'
+        'description: "The five-phase Analyse-Design lifecycle."\n'
+        "owns:\n"
+        '  - "SME"\n'
+        "defers:\n"
+        '  "Stage 1 design logic": "backward-design"\n'
+        "sources:\n"
+        '  - resource: "/raw/2025_Learning_Experience_(LX)_Design.pdf"\n'
+        "generated:\n"
+        '  at: "2026-09-26"\n'
+        "---\n"
+        "# ADDIE Model\n\n"
+        "**Scope**: Owns the five phases.\n\n"
+        "See [[backward-design]]. Evidence status [one-researcher].\n"
+    )
+    md = parse_wiki_metadata(text)
+    assert md.page_type == "Concept"
+    assert md.category == "Instructional Design & Methodology"
+    assert md.summary == "The five-phase Analyse-Design lifecycle."
+    assert md.scope == "Owns the five phases."
+    assert md.owns == ("SME",)
+    assert md.defers[0].slug == "backward-design"
+    assert md.defers[0].reason == "Stage 1 design logic"
+    assert md.cited_sources == ("/raw/2025_Learning_Experience_(LX)_Design.pdf",)
+    assert md.last_updated == "2026-09-26"
+    assert md.wiki_links == ("backward-design",)
+    assert md.evidence_grades == ("one-researcher",)
+    assert md.is_empty is False
+
+
+def test_strip_frontmatter_leaves_body() -> None:
+    from lxd.ingest.wiki_metadata import strip_wiki_frontmatter
+
+    text = "---\ntype: Concept\n---\n# Title\n\nBody.\n"
+    assert strip_wiki_frontmatter(text) == "# Title\n\nBody.\n"
+
+
+def test_glossary_phrases_point_at_owner_slug() -> None:
+    from lxd.ingest.wiki_metadata import parse_glossary_phrases
+
+    text = (
+        "| Canonical term | Aliases (sources may use these) | Owner page |\n"
+        "|---|---|---|\n"
+        "| Working memory capacity (WMC) | WMC, working-memory span | [[working-memory]] |\n"
+    )
+    phrases = parse_glossary_phrases(text)
+    terms = {phrase.term: phrase.slug for phrase in phrases}
+    assert terms["Working memory capacity (WMC)"] == "working-memory"
+    assert terms["WMC"] == "working-memory"
+    assert all(phrase.term_source == "wiki_glossary" for phrase in phrases)
+
+
+def test_merge_wiki_page_metadata_keeps_existing_keys_and_chunk_grades() -> None:
+    from lxd.ingest.wiki_metadata import merge_wiki_page_metadata
+
+    page = parse_wiki_metadata(
+        "---\n"
+        "type: Concept\n"
+        'category: "Assessment & Evaluation"\n'
+        "defers:\n"
+        '  "Evaluation detail": "kirkpatricks-evaluation-model"\n'
+        "---\n"
+        "Body without a grade.\n"
+    )
+    merged = merge_wiki_page_metadata(
+        '{"heading": "Overview"}',
+        page,
+        "Supported by one study [one-researcher].",
+    )
+    import json
+
+    payload = json.loads(merged)
+    assert payload["heading"] == "Overview"
+    assert payload["wiki_page"]["category"] == "Assessment & Evaluation"
+    assert payload["wiki_parse_version"] == 2
+    assert payload["wiki_page"]["evidence_grades"] == ["one-researcher"]
+    assert payload["wiki_page"]["defers"][0]["slug"] == "kirkpatricks-evaluation-model"
+
+
+def test_index_page_is_not_citable() -> None:
+    from lxd.ingest.wiki_metadata import is_citable_source
+
+    assert is_citable_source("_index.md") is False
+    assert is_citable_source("addie-model.md") is True
+
+
 def test_parse_against_real_addie_page() -> None:
     """Smoke test against the live wiki — guards against parser regressions
     on real-world prose."""
     from pathlib import Path
 
-    page = Path("/Users/steveallison/Documents/_Knowledge/wiki/addie-model.md")
-    if not page.exists():
-        return  # Wiki not present on this machine; skip silently.
+    candidates = [
+        Path("/Users/steveallison/AI_Projects+Code/knowledge/wiki/addie-model.md"),
+        Path("/Users/steveallison/Documents/_Knowledge/wiki/addie-model.md"),
+    ]
+    page = next((path for path in candidates if path.exists()), None)
+    if page is None:
+        return
     md = parse_wiki_metadata(page.read_text(encoding="utf-8"))
-    # Real expectations from the actual file:
-    assert "Five-phase" in (md.summary or "") or "five-phase" in (md.summary or "")
+    assert md.summary is not None
+    assert "five-phase" in md.summary.casefold()
     assert len(md.cited_sources) >= 5
-    # The (LX) filename must be preserved verbatim:
-    assert any("(LX)" in s for s in md.cited_sources)
-    # At least the major cross-refs ADDIE owns:
+    assert any("(LX)" in source for source in md.cited_sources)
+    assert md.category
+    assert md.defers
     assert "backward-design" in md.wiki_links
     assert "kirkpatricks-evaluation-model" in md.wiki_links

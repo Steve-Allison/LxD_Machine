@@ -15,7 +15,8 @@ from lxd.ingest.pipeline.embed import (
 )
 from lxd.ingest.relations import extract_relations_for_chunk
 from lxd.ingest.scanner import ScannedCorpusFile
-from lxd.ingest.wiki_relations import derive_wiki_link_relations
+from lxd.ingest.wiki_metadata import merge_wiki_page_metadata
+from lxd.ingest.wiki_relations import derive_defer_relations, derive_wiki_link_relations
 from lxd.settings.models import RuntimeConfig
 from lxd.stores.models import (
     ChunkRecord,
@@ -93,8 +94,9 @@ def build_source_records(
     chunk_records: list[ChunkRecord] = []
     mention_records: list[MentionRecord] = []
     relation_records: list[ExtractedRelationRecord] = []
-    page_cited_sources = extracted_document.wiki_metadata.cited_sources
-    page_wiki_links = extracted_document.wiki_metadata.wiki_links
+    page_meta = extracted_document.wiki_metadata
+    page_cited_sources = page_meta.cited_sources
+    page_wiki_links = page_meta.wiki_links
     for chunk, vector in zip(text_chunks, embeddings, strict=True):
         chunk_record = ChunkRecord(
             chunk_id=chunk.chunk_id,
@@ -111,7 +113,7 @@ def build_source_records(
             text=chunk.text,
             chunk_hash=chunk.chunk_hash,
             score_hint=chunk.score_hint,
-            metadata_json=chunk.metadata_json,
+            metadata_json=merge_wiki_page_metadata(chunk.metadata_json, page_meta, chunk.text),
             vector=vector,
             embedding_model=config.models.embed,
             embedding_dims=config.models.embed_dims,
@@ -154,12 +156,21 @@ def build_source_records(
         )
         if will_call_llm:
             budget_tracker.record_llm_call()
+    extracted_at = utc_now()
     wiki_outcome = derive_wiki_link_relations(
         chunk_records=chunk_records,
         slug_index=slug_index,
-        extracted_at=utc_now(),
+        extracted_at=extracted_at,
     )
     relation_records.extend(wiki_outcome.relations)
+    relation_records.extend(
+        derive_defer_relations(
+            chunk_records=chunk_records,
+            defers=page_meta.defers,
+            slug_index=slug_index,
+            extracted_at=extracted_at,
+        )
+    )
     return (
         chunk_records,
         mention_records,
