@@ -3,8 +3,4 @@
 - [MCP server status](project_mcp_server.md) — FastMCP 3.0, 23 read-only tools (6 corpus + 11 KG + 3 full-pipeline + 2 design-agent + 1 eval)
 - [Relation extraction](project_relation_extraction.md) — LLM-based relation extraction via OpenAI; mandatory, no enable toggle
 - [Knowledge Graph Phase 5](project_knowledge_graph.md) — Phase 5 implemented 2026-03-28; Louvain communities, 6 centrality metrics, graph-augmented synthesis
-- [KG features are mandatory](feedback_mandatory_features.md) — never add enabled toggles for core KG features; relation extraction, claims, enrichment are mandatory
-- [API keys in .env](feedback_env_file.md) — always test env vars through bootstrap path, not bare Python; .env loaded by app/bootstrap.py
 - [2026-05 backlog run](project_2026-05_backlog_run.md) — Sessions 1–7: 8 ships, 5 strikes (with rationale), 1 deferral (B-KG-1 needs user direction); commit shas + the why-behind each
-- [No unverified claims](feedback_no_unverified_claims.md) — every closure phrase needs evidence in the same turn; documentation is part of "done", not optional polish
-- [Preflight is a gate, never the flight](feedback_preflight_is_a_gate.md) — preflight/dry-run/estimate commands stop and wait for user decision; never auto-chain with the real operation

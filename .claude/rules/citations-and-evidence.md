@@ -26,8 +26,10 @@ Each `ChunkRecord` carries:
 - `citation_label` — the client-facing handle, format
   `<source_rel_path>#<chunk_index>`
 
-Wiki pages additionally carry transitive `**Sources**:` citations parsed at
-ingest time (`wiki_metadata.py`). These appear as `cited_sources` on every
+Wiki pages additionally carry transitive citations from the YAML frontmatter
+`sources:` list (each entry a path string or a `resource:` mapping), parsed at
+ingest time (`wiki_metadata.py`); a legacy bold `**Sources**:` line is read
+only when the YAML list yields nothing. These appear as `cited_sources` on every
 chunk derived from a wiki page so synthesis can attribute back to the
 original research.
 

@@ -33,7 +33,7 @@ Tier-7 backlog implementation, 2026-05-05, captured in `.claude/plans/backlog-im
 
 - Before re-litigating a strike, compare the current code at the cited line against the audit framing. If the audit framing still mismatches, the strike stands; if the codebase has drifted in the meantime, re-survey.
 - Before resuming `B-KG-1`, ask the user which of the three options they want — implementing any of them without that decision risks a half-correct feature.
-- The "no enabled toggles for core KG features" rule (`feedback_mandatory_features.md`) was followed for `B-KG-3` — the embedding entity expansion is always-on and silently no-ops when the entity table doesn't exist. Future KG work should follow the same pattern.
+- The "no enabled toggles for core KG features" rule (`.claude/rules/mandatory-features.md`) was followed for `B-KG-3` — the embedding entity expansion is always-on and silently no-ops when the entity table doesn't exist. Future KG work should follow the same pattern.
 
 **Sessions remaining (8–11) — not yet executed:**
 

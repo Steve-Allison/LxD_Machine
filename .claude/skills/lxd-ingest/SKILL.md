@@ -111,7 +111,5 @@ counts (corpus stats + KG stats) when done.
 ## Cross-reference
 
 - `.claude/rules/ingest-discipline.md` — the rule this skill implements
-- `~/.claude/projects/-Users-steveallison-AI-Projects-Code-LxD-Machine/memory/feedback_preflight_is_a_gate.md`
-  — the original incident record
 - `.claude/skills/lxd-rebuild` — full sequence including wipe + build-graph
 - `~/.claude/CLAUDE.md` §5 (Honor decided plan), §7 (Preserve user state)

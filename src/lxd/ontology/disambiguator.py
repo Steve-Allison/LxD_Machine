@@ -44,7 +44,7 @@ def make_disambiguator(
     Returns ``None`` when the LanceDB store, the entity table, or the
     embedder are not available — the caller MUST treat this as "no
     disambiguation possible" and not raise. This contract preserves the
-    "always-on, no toggle" rule (`feedback_mandatory_features`) while
+    "always-on, no toggle" rule (`.claude/rules/mandatory-features.md`) while
     allowing graceful degradation on a fresh ingest before
     `pixi run build-graph` has populated `entity_embeddings`.
 

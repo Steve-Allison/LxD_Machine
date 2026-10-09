@@ -19,8 +19,6 @@ analogous dry-run / cost-estimate command — exist so the human can review
 
 Before a paid run (`ingest`, `build-graph`), report the preflight numbers and cost ceiling and ask once whether to proceed; this is the spending-money pause in ~/.claude/CLAUDE.md §1. Never chain preflight and the paid run in one command.
 
-Detail: `~/.claude/projects/-Users-steveallison-AI-Projects-Code-LxD-Machine/memory/feedback_preflight_is_a_gate.md`.
-
 ## Required state before any ingest
 
 Before invoking `pixi run ingest` (full or incremental):

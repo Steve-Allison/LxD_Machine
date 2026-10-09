@@ -10,7 +10,7 @@ This project's `.claude/` directory carries scoped guidance that auto-loads when
 | Skills | `.claude/skills/` | `/lxd-status`, `/lxd-ingest`, `/lxd-rebuild`, `/lxd-add-mcp-tool` |
 | Agents | `.claude/agents/` | `ingest-pipeline-auditor`, `mcp-tool-reviewer`, `schema-migration-reviewer` (read-only audits) |
 | Hooks | `.claude/hooks/` | `session-start` (orient), `protect-critical` (blocks edits to `.env` / lockfiles / DBs / golden tests), `pre-bash-destructive-ingest` (warns on `ingest --full` / `build-graph --full` / `rm -rf data`), `instructions-loaded` (logs path-scoped rules per session) |
-| Memory | `.claude/memory/` | Project context + `feedback_preflight_is_a_gate` (the rule behind today's discipline) |
+| Memory | `.claude/memory/` | Project context |
 
 Two non-negotiables baked into these:
 
