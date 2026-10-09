@@ -28,7 +28,6 @@ Unreadable hook input allows the call: a broken guard must never wedge a session
 import json
 import sys
 
-
 CONTENT_FREE = {"files_with_matches", "count"}
 
 REASON = """BLOCKED: Grep may locate, but may not read.
@@ -47,7 +46,7 @@ Then open the file with Read (whole file, tracked).
 def main() -> int:
     try:
         data = json.load(sys.stdin)
-    except (json.JSONDecodeError, UnicodeDecodeError):
+    except ValueError:  # JSONDecodeError and UnicodeDecodeError both subclass it
         return 0
     tool_input = data.get("tool_input") if isinstance(data, dict) else None
     if not isinstance(tool_input, dict):
