@@ -66,9 +66,5 @@ the config surface is what this rule protects.
 
 ## Cross-reference
 
-- `~/.claude/rules/no-spec-invention.md` — adding an `enabled` toggle is
-  inventing scope the plan didn't ask for
-- `~/.claude/rules/no-defensive-coding.md` — gating on `enabled` is a form of
-  defensive coding against a contract you can just enforce
 - `Plans/00_PURPOSE_AND_BACKGROUND.md` — the mandatory-feature decision is
   upstream of this rule

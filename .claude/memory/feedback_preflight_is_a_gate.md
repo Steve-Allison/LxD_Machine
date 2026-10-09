@@ -13,10 +13,9 @@ Preflight, dry-run, cost-estimate, and any "review before pressing go" command i
 
 **How to apply:**
 
-- Commands named `preflight`, `plan`, `dry-run`, `--check`, `--estimate`, `--noop`, `status`, `diff` — all gates. Run, report, stop.
-- Even when the user has said "yes" to a paragraph that includes both the gate and the operation, treat that as **conditional consent**: yes to *running preflight*, and then conditional yes to the operation *if* preflight passes — but the user still owns the press-go decision after seeing the actual numbers.
+- Commands named `preflight`, `plan`, `dry-run`, `--check`, `--estimate`, `--noop` — all gates. Run, report, stop.
+- Before a paid run (`ingest`, `build-graph`), report the preflight numbers and cost ceiling and ask once whether to proceed; this is the spending-money pause in ~/.claude/CLAUDE.md §1. Never chain preflight and the paid run in one command.
 - The right shape: *"Preflight: <numbers>. Ready for `pixi run ingest --full` when you say go."* Then wait.
 - If preflight surfaces something the user wouldn't have known up front (cost ceiling, schema-version bump, integrity warning, larger-than-expected corpus), that's exactly the moment the gate is most useful — never skip it.
-- This rule generalises to: any `--full`, `--force`, `--purge`, `--reset`, anything with an explicit confirm prompt, anything that touches paid APIs or persistent state.
 
-Companion rules: `~/.claude/rules/decision-fatigue.md` (don't *over*-ask), `~/.claude/CLAUDE.md` §7 (preserve user state), §6 (report honestly), `.claude/rules/ingest-discipline.md` (the in-repo expression of this rule).
+Companion rules: `~/.claude/CLAUDE.md` §1 (the spending-money and irreversible-action pauses), `.claude/rules/ingest-discipline.md` (the in-repo expression of this rule).

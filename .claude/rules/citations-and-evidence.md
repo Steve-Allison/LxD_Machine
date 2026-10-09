@@ -87,9 +87,9 @@ You are violating this rule if you write any of:
 
 ## Cross-reference
 
-- `~/.claude/CLAUDE.md` §1 (Verify, Don't Assume) — citations are the verify
+- `~/.claude/CLAUDE.md` §2 (Read before you speak) — citations are the verify
   step made structural
-- `~/.claude/CLAUDE.md` §6 (Report Honestly) — same rule, applied to answer
+- `~/.claude/CLAUDE.md` §7 (Tests and checks) — same rule, applied to answer
   generation
 - `Plans/04_QUERY_SPEC.md` — citation contract in the query pipeline
 - `Plans/08_KNOWLEDGE_GRAPH_SPEC.md` — claim/relation provenance contract

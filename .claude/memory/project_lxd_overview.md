@@ -18,6 +18,6 @@ Key numbers (as of 2026-03-27):
 Tech stack:
 - Python 3.14 on osx-arm64, managed via pixi
 - LanceDB (vector store), SQLite (metadata/chunks), Docling (parsing)
-- FastMCP >=3.0 for MCP server (5 read-only tools)
+- FastMCP >=3.0 for MCP server (23 read-only tools)
 - llama.cpp as conda dependency for local reranker
 - OpenAI for embeddings and relation extraction (cloud path)

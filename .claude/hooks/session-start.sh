@@ -73,7 +73,7 @@ else
 fi
 
 # --- Reminders --------------------------------------------------------------
-print "  rules:   ingest-discipline / stores-and-paths / mandatory-features / no-pull-requests"
+print "  rules:   ingest-discipline / stores-and-paths / mandatory-features"
 print "  gates:   pixi run preflight is BEFORE pixi run ingest — never auto-chain"
 
 exit 0

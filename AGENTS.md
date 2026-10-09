@@ -2,51 +2,88 @@
 
 An **Instructional Designer / Learning Experience Designer in RAG format**. The corpus encodes how to teach — pedagogical and delivery best practice grounded in academic theory and industry evidence. Instructional design frameworks, cognitive load theory, assessment design, modality selection, delivery formats — everything needed to design effective learning for any topic in any modality.
 
-Built for Adobe field enablement. The system ingests a mixed-format corpus (Markdown, Docling JSON, PNGs), builds an ontology-driven knowledge graph with entity recognition, relation extraction, community detection, and centrality analysis, and exposes retrieval and graph-augmented synthesis via 20 MCP tools. Everything runs locally; MCP is the only external interface.
+Built for Adobe field enablement. The system ingests a mixed-format corpus (Markdown, Docling JSON, PNGs), builds an ontology-driven knowledge graph with entity recognition, relation extraction, community detection, and centrality analysis, and exposes retrieval, graph-augmented synthesis and design-artefact agents via 23 MCP tools. Everything runs locally; MCP is the only external interface.
 
 ## Architecture
 
-```
+```text
 src/lxd/
-├── cli/          # Typer CLI: ingest, status, eval, build-graph, graph-status
-├── app/          # Bootstrap + AppContext + config.lock reconciliation
-├── domain/       # Pydantic models (citations, IDs, status enums)
-├── net/          # Shared httpx.Client / httpx.AsyncClient factories
-├── ingest/       # Corpus pipeline: scan → chunk → embed → mention → relation → persist
-│   ├── embedder.py # Batched Ollama/OpenAI embedding with context-aware retry
-│   ├── relations.py # LLM-based relation extraction
-│   └── claims.py   # LLM-based claim extraction
-├── ontology/     # YAML ontology loading, graph building, Aho-Corasick matching
-│   ├── entity_graph.py  # Combined entity graph + 6 centrality metrics
-│   ├── communities.py   # Louvain community detection (Leiden optional)
-│   ├── evidence.py      # Canonical relation deduplication + evidence provenance
-│   ├── profiles.py      # Entity profiles, community reports, LLM enrichment
-│   └── schema_models.py # Pydantic ontology schema (opt-in validation)
-├── stores/       # SQLite + LanceDB (vectors canonical in LanceDB)
-│   ├── schema.py        # Numbered migrations driven by PRAGMA user_version
-│   ├── connection.py    # Pragma-tight SQLite connect + close hooks
-│   ├── sqlite.py        # Query/upsert API (thin orchestrator)
-│   ├── lancedb.py       # Canonical vector store
-│   ├── lance_sql.py     # Safe LanceDB filter builders
-│   ├── sql_helpers.py   # Safe SQLite IN (?, ?, …) helpers
-│   └── llm_jobs.py      # Persistent LLM job queue API
-├── retrieval/    # Query pipeline: dense search → rerank → expansion → graph routing → synthesis
-│   └── graph_routing.py # Graph context augmentation for synthesis
-├── synthesis/    # Answer generation with citations and graph context
-├── mcp/          # FastMCP server (20 read-only tools)
-│   └── async_runtime.py # run_tool: async wrapper + hard timeout for tool bodies
-├── observability/# structlog: JSON/console, UTC, log_duration, scrub_secrets
-└── settings/     # Pydantic config models (incl. tenancy, observability) + YAML loader
+├── cli/                      # Typer CLI: ingest, status, eval, eval-gaps, eval-quality, build-graph, graph-status, collect-batch, batch-status, preflight, caption-assets
+│   ├── preflight.py          # Schema-integrity + corpus-readiness gate
+│   └── graph.py              # build-graph + graph-status
+├── app/                      # Bootstrap + AppContext + config.lock reconciliation
+├── agents/                   # Multi-step design-artefact agent (design_learning) + critique of an existing design
+├── domain/                   # Pydantic models (citations, IDs, status enums)
+├── eval/                     # RAGAS-style answer-quality eval (faithfulness, answer relevance, context precision)
+├── net/                      # Shared httpx.Client / httpx.AsyncClient factories
+├── ingest/                   # Corpus pipeline (sequential orchestrator + per-phase modules)
+│   ├── pipeline/             # Top-level orchestrator subpackage (no re-export façade)
+│   │   ├── orchestrator.py   # `run_ingest`, `build_ingest_plan`, `IngestPlan`, persist+commit loop
+│   │   ├── sources.py        # Per-source extract → chunk → embed → assemble records
+│   │   ├── embed.py          # Embedding cache + contextual augmentation + context refinement
+│   │   └── moves.py          # Move detection, unchanged-source skip, document_id resolution, chunk cloning
+│   ├── scanner.py            # Filesystem scan + BLAKE3 hashing of corpus files
+│   ├── diff.py               # Set-wise scan diff (new / deleted / unchanged)
+│   ├── markdown.py           # Markdown → ExtractedDocument (calls wiki_metadata)
+│   ├── docling.py            # Docling JSON → ExtractedDocument
+│   ├── wiki_metadata.py      # Wiki YAML frontmatter, scope line and [[slug]] parser
+│   ├── wiki_relations.py     # Synthetic `wiki_references` relations from [[slug]] cross-references
+│   ├── chunking.py           # Hybrid Docling chunker; recursive context refinement
+│   ├── embedder.py           # Batched Ollama/OpenAI embedding with context-aware retry
+│   ├── embedding_cache.py    # Content-addressed LanceDB cache: (chunk_hash, model, dims)
+│   ├── error_classification.py # Error → TRANSIENT/DATA/SYSTEMIC; circuit breaker
+│   ├── llm_client.py         # Shared async OpenAI/Ollama client; prompt-cache helper
+│   ├── relations.py          # LLM-based relation extraction (OpenAI primary, Ollama fallback)
+│   ├── claims.py             # LLM-based claim extraction
+│   ├── mentions.py           # Aho-Corasick mention detection in chunk text
+│   └── assets.py             # Asset (PNG) parent-link inference
+├── ontology/                 # YAML ontology loading, graph building, Aho-Corasick matching
+│   ├── entity_graph.py       # Combined entity graph + 6 centrality metrics
+│   ├── communities.py        # Louvain community detection (Leiden optional)
+│   ├── evidence.py           # Canonical relation deduplication + evidence provenance
+│   ├── profiles.py           # Entity profiles, community reports, LLM enrichment
+│   └── schema_models.py      # Pydantic ontology schema (opt-in validation)
+├── stores/                   # SQLite + LanceDB (vectors canonical in LanceDB)
+│   ├── schema.py             # Numbered migrations (PRAGMA user_version) + integrity check
+│   ├── _base_ddl.py          # Authoritative CREATE TABLE / CREATE INDEX statements
+│   ├── _sqlite_rows.py       # Row → record adapters (private to stores)
+│   ├── connection.py         # Managed SQLite connection open/close lifecycle
+│   ├── sqlite/               # SQLite query/upsert subpackage (no re-export façade)
+│   │   ├── connection.py     # `connect_sqlite`, `build_store_paths`, schema initialisation
+│   │   ├── _pool.py          # Per-thread schema-initialised connection pool for the MCP request path
+│   │   ├── runs.py           # Ingest-run lifecycle (begin / progress / finish)
+│   │   ├── manifest.py       # `corpus_manifest` upsert / load / hash-grouped queries
+│   │   ├── ontology.py       # Ontology snapshot, ingest-config snapshot, allowed-domain lookups
+│   │   ├── chunks.py         # Chunk + mention persist; entity-mention search; centrality signals
+│   │   ├── summary.py        # Aggregate counts and `CorpusStatusSummary` builder
+│   │   ├── claims.py         # Claim insert / load / count
+│   │   ├── kg_profiles.py    # Entity profiles, community assignments, community reports
+│   │   ├── kg_relations.py   # Canonical relations, relation evidence, graph metadata
+│   │   └── sessions.py       # Learner-brief session state (`sessions` + `session_turns`)
+│   ├── lancedb.py            # Canonical vector store + chunk_vectors / embedding_cache tables
+│   ├── lance_sql.py          # Safe LanceDB filter builders
+│   ├── sql_helpers.py        # Safe SQLite IN (?, ?, …) helpers
+│   ├── models.py             # Typed dataclasses for records (frozen, slots=True)
+│   └── llm_jobs.py           # Persistent LLM job queue API
+├── retrieval/                # Query pipeline: dense → rerank → expansion → graph routing → synthesis
+│   └── graph_routing.py      # Graph context augmentation for synthesis
+├── synthesis/                # Answer generation with citations + graph context + transitive sources
+├── mcp/                      # FastMCP server (23 read-only tools)
+│   ├── async_runtime.py      # run_tool: async wrapper + hard timeout for tool bodies
+│   └── tools.py              # Tool implementations
+├── observability/            # structlog: JSON/console, UTC, log_duration, scrub_secrets
+└── settings/                 # Pydantic config models (incl. tenancy, observability) + YAML loader
 ```
 
 Key directories outside `src/`:
 
-- `Knowledge_Base/` — corpus root (gitignored)
+- Corpus root — set in `config.yaml` (`paths.corpus_path`): the curated wiki at `~/AI_Projects+Code/knowledge/wiki/`, whose pages carry YAML frontmatter (including `sources:`) and `[[slug]]` cross-references.
 - `ontology/vendor/central-configs/` — staged Central distribution (runtime ontology)
 - `library/vendor/central-library/` — staged Central library (recognition, thresholds, prescriptions)
 - `Plans/` — architecture and design specs
 - `tests/` — pytest suite
-- `data/` — SQLite + LanceDB stores (gitignored, rebuildable)
+- `data/` — SQLite + LanceDB stores (gitignored, rebuildable; `config.yaml` `paths.data_path`). Auto-backups before destructive migrations.
+- `start.sh` — interactive launcher: preflight, ingest, build-graph, MCP, status.
 - `.env` — API keys (OPENAI_API_KEY, etc.). Loaded by `app/bootstrap.py` via `python-dotenv` at startup. Never commit.
 
 ## Ontology Integration & Ecosystem Governance
@@ -59,8 +96,9 @@ Key directories outside `src/`:
 ## Common Commands
 
 ```bash
+pixi run preflight       # Schema-integrity + corpus-readiness gate (run before ingest)
 pixi run ingest          # Incremental corpus ingestion
-pixi run ingest --full   # Full rebuild
+pixi run ingest --full   # Full rebuild (recreates SQLite + LanceDB tables)
 pixi run status          # Corpus and ontology status
 pixi run retrieval-check # Retrieval evaluation against tests/eval/eval_set.json (Recall@10, MRR@10)
 pixi run mcp             # Launch MCP server
@@ -70,17 +108,22 @@ pixi run test            # pytest -q
 pixi run lint            # ruff check src tests
 pixi run fmt             # ruff format src tests
 pixi run typecheck       # pyright src
+./start.sh               # Interactive launcher (preflight + ingest + build-graph + MCP)
 ```
 
 ## MCP Tools
 
-20 read-only tools exposed via FastMCP (>=3.0) over stdio transport:
+23 read-only tools exposed via FastMCP (>=3.0) over stdio transport:
 
 **Corpus tools:** `corpus_status`, `get_entity_types`, `get_related_concepts`, `search_corpus`, `find_documents_for_concept`, `get_corpus_relations`
 
 **Knowledge graph tools:** `get_entity_summary`, `get_community_context`, `get_similar_entities`, `search_entities`, `inspect_evidence`, `find_path_between_entities`, `find_weighted_path`, `get_hub_entities`, `find_bridge_entities`, `find_foundational_entities`, `get_entity_graph_stats`
 
 **Full answer pipeline:** `search_knowledge` (graph-augmented synthesis), `search_knowledge_deep` (same + structured graph context), `get_graph_overview` (KG health check)
+
+**Design agents:** `design_learning` (multi-step design-artefact agent), `critique_design` (critique an existing design against corpus evidence)
+
+**Eval:** `list_eval_gaps`
 
 ## Knowledge Graph
 
@@ -102,11 +145,16 @@ The graph build is a resumable state machine (`pixi run build-graph`). Graph con
 - **Portable stores**: all SQLite PKs and FKs use corpus-relative paths. The `data/` folder can be copied between machines; `pixi run ingest` updates machine-local absolute paths. LanceDB vectors are also keyed by relative path.
 - **Safe by default**: `pixi run build-graph --full` requires interactive confirmation before re-extracting claims (costs API calls and time). No command unconditionally destroys the knowledge graph.
 - **Rebuildable**: all stores can be rebuilt from source via `pixi run ingest --full` and `pixi run build-graph --full`.
-- **Explicit provenance**: every chunk traces back to source document, page, and extraction method. Every claim and relation traces to source chunk.
-- **Ontology-first**: entity recognition uses Aho-Corasick automaton built from YAML definitions; relations extracted via LLM.
+- **Explicit provenance**: every chunk traces back to source document, page, and extraction method. Every claim and relation traces to source chunk. Wiki pages additionally carry transitive source citations on every chunk so synthesis can attribute back to the original research.
+- **Ontology-first**: entity recognition uses Aho-Corasick automaton built from YAML definitions; relations extracted via LLM. Wiki pages also contribute hand-curated `[[slug]]` cross-references parsed at ingest time and persisted on chunk rows.
 - **Graceful degradation**: the system remains usable when the knowledge graph is not yet built or the reranker service is unavailable.
 - **Async MCP surface**: every tool is `async def`; synchronous bodies run through `lxd.mcp.async_runtime.run_tool` with a hard `tool_timeout_secs` cap.
 - **Single source of truth for vectors**: LanceDB is canonical; `chunk_rows.vector_json` was dropped in schema migration 0002.
+- **Schema integrity is a hard gate**: `ensure_schema` runs numbered migrations under `PRAGMA user_version`, then verifies `foreign_key_check` + required tables/columns. A half-migrated DB raises `SchemaIntegrityError` and refuses writes. The CLI `pixi run preflight` exposes this check.
+- **Migrations are reversible-by-backup**: every pending migration triggers an auto-backup (`*.pre-migration-vN-to-vM-<timestamp>.sqlite3.bak`) before destructive DDL runs.
+- **Embedding cache is content-addressed**: `(chunk_hash, embedding_model, embedding_dims)` keys; cache survives full rebuilds since identical text + identical model = identical vector. Stored in a separate LanceDB table (`embedding_cache`) so chunk-rebuilds don't wipe it.
+- **Systemic-error circuit breaker**: ingest classifies errors as TRANSIENT / DATA / SYSTEMIC; 3 consecutive SYSTEMIC errors abort the run before further API spend. DATA errors (e.g. `IntegrityError`) don't advance the counter — duplicate-row failures don't trip the breaker.
+- **Cross-store atomicity**: chunk persistence is LanceDB-first, then SQLite; a SQLite failure runs a compensating `delete_vector_source` so the two stores never diverge.
 - **Config drift is visible**: bootstrap hashes the resolved config (blake3) and reconciles `data/config.lock`; mismatches log a `config.lock.mismatch` warning without overwriting.
 
 ## Key Patterns
@@ -119,6 +167,8 @@ The graph build is a resumable state machine (`pixi run build-graph`). Graph con
 - Schema evolution runs automatically on bootstrap via numbered migrations keyed by `PRAGMA user_version` (`stores/schema.py`).
 - LanceDB `where` clauses are built through `stores/lance_sql.py`; SQLite `IN (?, ?, …)` clauses through `stores/sql_helpers.py`. No raw string interpolation.
 - Long-running LLM jobs are persisted via `stores/llm_jobs.py` (`queued → running → succeeded|failed|cancelled`) so executors can crash and resume.
+- The MCP request path uses a per-thread SQLite connection pool (`stores/sqlite/_pool.py`) and a process-wide cached `openai.OpenAI` client (`ingest/embedder.py:get_openai_client`).
+- Retrieval widens `expansion.matched_entity_ids` with the entities nearest to the query vector via `entity_embeddings`; graph context is bounded by `knowledge_graph.max_graph_context_tokens`.
 - Structured logs ship through `observability/logging.py` with UTC timestamps, `contextvars` propagation, a `log_duration` context manager, and a `scrub_secrets` processor.
 
 ## Test Layout

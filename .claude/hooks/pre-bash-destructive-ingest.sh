@@ -51,15 +51,13 @@ cat >&2 <<MSG
   Matched:  $matched
 
   This command falls under the preflight-is-a-gate rule
-  (.claude/rules/ingest-discipline.md). Per ~/.claude/CLAUDE.md §7, destructive
-  operations need explicit in-session confirmation EVERY TIME.
+  (.claude/rules/ingest-discipline.md). Per ~/.claude/CLAUDE.md §1
+  (irreversible actions pause), destructive operations need explicit
+  in-session confirmation EVERY TIME.
 
   Confirm before running:
     1. Did the user approve THIS specific command in THIS session?
-    2. If preflight was the prior step — was its output reviewed AND user
-       said go AFTER seeing it?  (Not "yes to preflight then ingest" in
-       the same breath.)
-    3. Is the rollback path obvious if this destroys the wrong state?
+    2. Is the rollback path obvious if this destroys the wrong state?
 
   If any answer is no — STOP. Surface the situation to the user and wait.
 MSG

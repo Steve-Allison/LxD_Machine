@@ -12,21 +12,18 @@ routinely ignored under task pressure. This guard is enforcing.
 Allowed (content-free — you learn WHERE, never WHAT):
   * output_mode: "files_with_matches"  -> paths only
   * output_mode: "count"               -> paths + a number
+  * output_mode absent                 -> Grep's own default, files_with_matches
 
 Denied:
   * output_mode: "content"             -> matched source lines
-  * output_mode absent                 -> fail CLOSED; state the mode you want
 
 The doctrine is unchanged: locate freely, but you may not learn anything about
 a file without reading it in full. Grep tells you which file to open. Read
 opens it.
 
 Exit 2 = block with the reason on stderr. Exit 0 = allow.
-Fails OPEN on internal error only: a broken guard must never wedge a session.
-A missing/unknown output_mode is a POLICY decision, not an error — it blocks.
+Unreadable hook input allows the call: a broken guard must never wedge a session.
 """
-
-from __future__ import annotations
 
 import json
 import sys
@@ -50,13 +47,15 @@ Then open the file with Read (whole file, tracked).
 def main() -> int:
     try:
         data = json.load(sys.stdin)
-        tool_input = data.get("tool_input") or {}
-    except Exception:  # noqa: BLE001 - deliberately broad: fail open, never wedge a session
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return 0
+    tool_input = data.get("tool_input") if isinstance(data, dict) else None
+    if not isinstance(tool_input, dict):
         return 0
 
     mode = tool_input.get("output_mode")
 
-    if isinstance(mode, str) and mode in CONTENT_FREE:
+    if mode is None or mode in CONTENT_FREE:
         return 0
 
     sys.stderr.write(REASON.format(mode=mode))

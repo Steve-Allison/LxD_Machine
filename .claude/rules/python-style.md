@@ -7,7 +7,7 @@ globs: "**/*.py"
 
 - Target Python 3.14+. Use modern syntax: `type` statements, `match/case`, union `X | Y` not `Optional[X]`.
 - Line length: 100 (enforced by Ruff).
-- Ruff lint selects: E, F, I, UP, B, SIM, TCH. Do not add `# noqa` without justification.
+- Ruff lint selects: E, F, I, UP, B, SIM, TCH. Do not add `# noqa`; fix the code.
 - Pyright strict mode is enabled. All new code must pass strict type-checking.
 - Use `pathlib.Path` not `os.path`. Use f-strings not `.format()`.
 - All public functions and classes require type hints and a one-line docstring.

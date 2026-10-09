@@ -128,4 +128,4 @@ Stop and re-think if you write any of:
 - `src/lxd/mcp/models.py` — typed output models
 - `.claude/skills/lxd-add-mcp-tool/SKILL.md` — scaffolding helper
 - `.claude/agents/mcp-tool-reviewer.md` — independent audit before merging
-- `~/.claude/CLAUDE.md` §3 (MVC) — don't expand the contract speculatively
+- `~/.claude/CLAUDE.md` §3 — don't expand the contract speculatively

@@ -17,14 +17,7 @@ ingest module, the CLI, the corpus config, or the ingest spec.
 analogous dry-run / cost-estimate command — exist so the human can review
 **before** pressing go. They are decision points, not pipeline steps.
 
-- After running preflight or any equivalent gate, **STOP**. Report the numbers.
-  The next action belongs to the user.
-- Do **not** chain `pixi run preflight && pixi run ingest …`. Treat the two as
-  separate sessions.
-- Same rule applies to `pixi run build-graph` after `pixi run graph-status`.
-- When the user says "preflight then ingest" in a single sentence, treat that as
-  conditional consent: run preflight, surface the result, **wait** for explicit
-  go-ahead before launching the costed run.
+Before a paid run (`ingest`, `build-graph`), report the preflight numbers and cost ceiling and ask once whether to proceed; this is the spending-money pause in ~/.claude/CLAUDE.md §1. Never chain preflight and the paid run in one command.
 
 Detail: `~/.claude/projects/-Users-steveallison-AI-Projects-Code-LxD-Machine/memory/feedback_preflight_is_a_gate.md`.
 
@@ -46,7 +39,7 @@ creating files the user owns (`.env`, corpus paths).
 
 `pixi run ingest --full` and `pixi run build-graph --full` are destructive: they
 supersede or rebuild large amounts of state. Every invocation needs explicit
-in-session approval per `~/.claude/CLAUDE.md` §7.
+in-session approval per `~/.claude/CLAUDE.md` §1 (irreversible actions pause).
 
 - Approval from a previous session does not carry over.
 - Approval given conditionally ("if preflight is clean, do X") still needs
@@ -82,8 +75,6 @@ When proposing an ingest run, name the realistic cost ceiling out loud
 
 ## Cross-reference
 
-- `~/.claude/CLAUDE.md` §5–§7 — plan, report honestly, preserve state
-- `~/.claude/rules/agent-prompt-discipline.md` — same discipline at the agent
-  layer when ingest work is delegated
+- `~/.claude/CLAUDE.md` §1 (spending-money and irreversible-action pauses) and §7 (tests and checks)
 - `Plans/03_INGEST_SPEC.md` — the canonical pipeline spec
 - `.claude/rules/stores-and-paths.md` — store-layer invariants

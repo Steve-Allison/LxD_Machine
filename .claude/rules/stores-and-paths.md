@@ -86,5 +86,5 @@ LanceDB `where` clauses build through `stores/lance_sql.py`. SQLite
 
 - `Plans/02_DATA_SCHEMA.md` — canonical schema definitions
 - `.claude/rules/ingest-discipline.md` — operational rules for the pipeline
-- `~/.claude/CLAUDE.md` §1 — read governance docs end-to-end before editing
+- `~/.claude/CLAUDE.md` §2 — read governance docs end-to-end before editing
   store code
