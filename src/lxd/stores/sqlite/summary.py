@@ -98,11 +98,11 @@ def count_image_asset_retrieval_status(connection: sqlite3.Connection) -> dict[s
 
 def _summarize_chunk_counts(connection: sqlite3.Connection) -> tuple[int, int]:
     """Return ``(chunk_count, mention_count)`` across the whole store."""
-    chunk_row = connection.execute("SELECT COUNT(*) AS chunk_count FROM chunk_rows").fetchone()
-    mention_row = connection.execute(
-        "SELECT COUNT(*) AS mention_count FROM mention_rows"
+    row = connection.execute(
+        "SELECT (SELECT COUNT(*) FROM chunk_rows) AS chunk_count, "
+        "(SELECT COUNT(*) FROM mention_rows) AS mention_count"
     ).fetchone()
     return (
-        int(row_value(chunk_row, "chunk_count")),
-        int(row_value(mention_row, "mention_count")),
+        int(row_value(row, "chunk_count")),
+        int(row_value(row, "mention_count")),
     )

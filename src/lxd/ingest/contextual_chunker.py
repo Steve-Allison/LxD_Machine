@@ -25,19 +25,18 @@ Storage:
     ``vector`` field.
 """
 
-import re
 from dataclasses import dataclass
 from typing import Any, Final
 
 import pyarrow as pa
 import structlog
 
+from lxd.domain.json_utils import strip_thinking
 from lxd.mlx.chat import ChatError, complete_chat
 from lxd.settings.models import RuntimeConfig
 from lxd.stores.lance_sql import in_clause
 
 _TABLE_NAME: Final = "contextual_summary_cache"
-_THINK_BLOCK_PATTERN: Final = re.compile(r"<think>.*?</think>", flags=re.DOTALL)
 _log = structlog.get_logger(__name__)
 
 _CONTEXT_PROMPT: Final = """\
@@ -205,7 +204,7 @@ def generate_chunk_context(
     except ChatError as exc:
         _log.warning("contextual_summary_failed", error=str(exc))
         return ""
-    text = _THINK_BLOCK_PATTERN.sub("", raw).strip()
+    text = strip_thinking(raw)
     # Keep it one line — many models emit a paragraph break followed by
     # commentary; truncate at the first newline.
     return text.split("\n", 1)[0].strip()

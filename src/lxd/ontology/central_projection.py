@@ -8,6 +8,7 @@ as semantic authority.
 
 import re
 from collections import defaultdict
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -97,6 +98,11 @@ _REGEX_META: re.Pattern[str] = re.compile(r"[\\[\](){}|+?*]")
 _CRAFT_CHAR_LIMIT = 600
 _PROMPT_ENTITY_LIMIT = 5
 _PROMPT_CHAR_LIMIT = 1200
+
+
+@lru_cache(maxsize=1024)
+def _compile_recognition_pattern(pattern: str) -> re.Pattern[str]:
+    return re.compile(pattern, re.IGNORECASE)
 
 
 def is_central_distribution(root: Path) -> bool:
@@ -524,7 +530,7 @@ def _apply_recognition(
                     indicators.append(raw.strip())
                 continue
             try:
-                compiled = re.compile(raw, re.IGNORECASE)
+                compiled = _compile_recognition_pattern(raw)
             except re.error as exc:
                 issues.append(
                     OntologyValidationIssue(

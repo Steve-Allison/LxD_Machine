@@ -2,6 +2,7 @@
 
 import json
 from collections import defaultdict
+from functools import lru_cache
 from pathlib import Path
 from typing import Any, Final
 
@@ -521,6 +522,17 @@ def load_vectors_by_chunk_ids(table: Any, chunk_ids: list[str]) -> dict[str, lis
 fetch_vectors_by_chunk_ids = load_vectors_by_chunk_ids
 
 
+@lru_cache(maxsize=4096)
+def _cached_decode_json_tuple(value: str) -> tuple[str, ...]:
+    try:
+        parsed = json.loads(value)
+    except TypeError, ValueError:
+        return ()
+    if not isinstance(parsed, list):
+        return ()
+    return tuple(str(item) for item in parsed if isinstance(item, str))
+
+
 def _decode_string_list(value: object) -> tuple[str, ...]:
     """Decode a JSON-array-of-strings column tolerantly.
 
@@ -529,13 +541,7 @@ def _decode_string_list(value: object) -> tuple[str, ...]:
     """
     if not value or not isinstance(value, str):
         return ()
-    try:
-        parsed = json.loads(value)
-    except TypeError, ValueError:
-        return ()
-    if not isinstance(parsed, list):
-        return ()
-    return tuple(str(item) for item in parsed if isinstance(item, str))
+    return _cached_decode_json_tuple(value)
 
 
 def _chunk_table_schema(vector_size: int) -> pa.Schema:

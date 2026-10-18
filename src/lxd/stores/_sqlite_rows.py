@@ -17,6 +17,7 @@ Key constraints:
 
 import json
 import sqlite3
+from functools import lru_cache
 from typing import Any
 
 from lxd.domain.ids import blake3_hex
@@ -96,8 +97,10 @@ def entity_profile_from_row(row: sqlite3.Row) -> EntityProfileRecord:
 
 
 def community_report_from_row(row: sqlite3.Row) -> CommunityReportRecord:
-    row_keys = set(row.keys())
-    parent_raw = row["parent_community_id"] if "parent_community_id" in row_keys else None
+    try:
+        parent_raw = row["parent_community_id"]
+    except KeyError, IndexError:
+        parent_raw = None
     return CommunityReportRecord(
         community_id=int(row["community_id"]),
         community_level=int(row["community_level"]),
@@ -209,6 +212,17 @@ def session_turn_from_row(row: sqlite3.Row) -> SessionTurnRecord:
     )
 
 
+@lru_cache(maxsize=4096)
+def _decode_json_string_tuple(raw: str) -> tuple[str, ...]:
+    try:
+        parsed = json.loads(raw)
+    except TypeError, ValueError:
+        return ()
+    if not isinstance(parsed, list):
+        return ()
+    return tuple(str(item) for item in parsed if isinstance(item, str))
+
+
 def _parse_string_list(row: sqlite3.Row, column: str) -> tuple[str, ...]:
     """Parse a JSON array of strings, returning an empty tuple on error or absence."""
     try:
@@ -217,10 +231,4 @@ def _parse_string_list(row: sqlite3.Row, column: str) -> tuple[str, ...]:
         return ()
     if not raw:
         return ()
-    try:
-        parsed = json.loads(raw)
-    except TypeError, ValueError:
-        return ()
-    if not isinstance(parsed, list):
-        return ()
-    return tuple(str(item) for item in parsed if isinstance(item, str))
+    return _decode_json_string_tuple(str(raw))

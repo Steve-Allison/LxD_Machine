@@ -19,15 +19,14 @@ caller then falls back to embedding the literal question, so HyDE
 turns into a no-op rather than breaking retrieval.
 """
 
-import re
 from typing import Final
 
 import structlog
 
+from lxd.domain.json_utils import strip_thinking
 from lxd.mlx.chat import ChatError, complete_chat
 from lxd.settings.models import RuntimeConfig
 
-_THINK_BLOCK_PATTERN: Final = re.compile(r"<think>.*?</think>", flags=re.DOTALL)
 _log = structlog.get_logger(__name__)
 
 _HYDE_PROMPT: Final = """\
@@ -69,4 +68,4 @@ def generate_hypothetical_answer(question: str, config: RuntimeConfig) -> str:
     except ChatError as exc:
         _log.warning("hyde_generation_failed", error=str(exc))
         return ""
-    return _THINK_BLOCK_PATTERN.sub("", raw).strip()
+    return strip_thinking(raw)
