@@ -1,10 +1,11 @@
 """YAML source loading, hashing, and coverage for ontology files."""
 
+import hashlib
 import json
 from collections import defaultdict
 from operator import attrgetter
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import yaml
 from blake3 import blake3
@@ -66,11 +67,8 @@ def _load_yaml_with_includes(path: Path) -> Any:
 
 
 def _file_hash(path: Path) -> str:
-    hasher = blake3()
     with path.open("rb") as handle:
-        while chunk := handle.read(8192):
-            hasher.update(chunk)
-    return hasher.hexdigest()
+        return hashlib.file_digest(handle, cast("Any", blake3)).hexdigest()
 
 
 def snapshot_hash(sources: list[OntologySource]) -> str:

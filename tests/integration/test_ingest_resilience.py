@@ -130,7 +130,6 @@ def _write_config(
             "ontology_path": str(ontology_path),
             "data_path": str(data_path),
         },
-        "ollama": {"url": "http://localhost:11434"},
         "models": {
             "embed": "text-embedding-3-small",
             "embed_dims": 8,
@@ -188,7 +187,7 @@ def _write_config(
             "launch": {
                 "auto_start": False,
                 "executable": "llama-server",
-                "model_source": "ollama_blob",
+                "model_source": "model_path",
                 "host": "127.0.0.1",
                 "port": 8012,
                 "startup_timeout_secs": 120,
@@ -198,9 +197,8 @@ def _write_config(
         "expansion": {"hops": 1, "max_terms": 5},
         "relation_extraction": {
             "backend": "openai",
-            "fallback_backend": "ollama",
+            "fallback_backend": "none",
             "openai_model": "gpt-4o-mini",
-            "ollama_model": "qwen3:14b",
             "min_entity_mentions": 2,
             "max_relations_per_chunk": 15,
             "temperature": 0.0,
@@ -213,6 +211,11 @@ def _write_config(
             "max_tokens": 1500,
         },
         "mcp": {"server_name": "lxd-test", "version": "0.0.1"},
+        "mlx": {
+            "chat_host": "127.0.0.1",
+            "chat_port": 8080,
+            "auto_start_chat": False,
+        },
         "logging": {"level": "WARNING", "format": "console"},
     }
     config_path.write_text(yaml.safe_dump(config), encoding="utf-8")

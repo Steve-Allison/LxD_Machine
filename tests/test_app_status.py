@@ -50,7 +50,7 @@ def test_load_committed_status_uses_live_plan_when_snapshot_lacks_coverage(
                 tokenizer_backend="tiktoken",
                 tokenizer_name="cl100k_base",
             ),
-            models=SimpleNamespace(embed="embed-model", embed_backend="ollama", embed_dims=3),
+            models=SimpleNamespace(embed="embed-model", embed_backend="mlx", embed_dims=3),
         )
         plan = SimpleNamespace(
             ontology=SimpleNamespace(
@@ -121,7 +121,7 @@ def test_load_committed_status_ignores_malformed_validation_issue_json(
                 tokenizer_backend="tiktoken",
                 tokenizer_name="cl100k_base",
             ),
-            models=SimpleNamespace(embed="embed-model", embed_backend="ollama", embed_dims=3),
+            models=SimpleNamespace(embed="embed-model", embed_backend="mlx", embed_dims=3),
         )
         plan = SimpleNamespace(
             ontology=SimpleNamespace(

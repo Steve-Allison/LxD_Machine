@@ -1,6 +1,6 @@
 """Contextual retrieval chunker (Anthropic-style).
 
-For each chunk, ask the local Ollama model for a one-sentence
+For each chunk, ask the local MLX model for a one-sentence
 "this chunk discusses X in the context of Y" summary, prepend it to
 the chunk text **before embedding only** (the stored chunk text stays
 clean for citation rendering), and cache the summary keyed on
@@ -8,14 +8,14 @@ clean for citation rendering), and cache the summary keyed on
 signal beyond the literal chunk text — useful for ambiguous queries
 on long documents.
 
-Local-first: uses the configured Ollama model
+Local-first: uses the configured MLX model
 (``config.chunking.contextual_summary_model``). No remote calls.
 
 Opt-in: ``config.chunking.contextual_summary_enabled`` defaults to
 False. When disabled the pipeline runs unchanged. When enabled, the
 contextual path bypasses the embedding cache (each run re-embeds the
 augmented text); the *summary* cache survives across runs so the
-expensive Ollama summarisation step is paid once per chunk.
+expensive MLX summarisation step is paid once per chunk.
 
 Storage:
     LanceDB table ``contextual_summary_cache`` adjacent to
@@ -29,11 +29,10 @@ import re
 from dataclasses import dataclass
 from typing import Any, Final
 
-import ollama
 import pyarrow as pa
 import structlog
 
-from lxd.ingest.llm_client import get_ollama_client
+from lxd.mlx.chat import ChatError, complete_chat
 from lxd.settings.models import RuntimeConfig
 from lxd.stores.lance_sql import in_clause
 
@@ -182,7 +181,7 @@ def generate_chunk_context(
     document_summary: str,
     config: RuntimeConfig,
 ) -> str:
-    """Generate a one-sentence context summary via local Ollama.
+    """Generate a one-sentence context summary via local MLX.
 
     Returns the generated sentence, or an empty string on any failure
     so the pipeline can fall back to embedding the chunk without
@@ -195,22 +194,17 @@ def generate_chunk_context(
         chunk_text=chunk_text,
     )
     try:
-        client = get_ollama_client(
-            str(config.ollama.url), float(cfg.contextual_summary_timeout_secs)
-        )
-        response = client.generate(
+        raw = complete_chat(
+            config,
+            prompt,
+            temperature=cfg.contextual_summary_temperature,
+            max_tokens=cfg.contextual_summary_max_tokens,
+            timeout_secs=float(cfg.contextual_summary_timeout_secs),
             model=cfg.contextual_summary_model,
-            prompt=prompt,
-            think=False if config.models.llm_no_think else None,
-            options={
-                "temperature": cfg.contextual_summary_temperature,
-                "num_predict": cfg.contextual_summary_max_tokens,
-            },
         )
-    except (ollama.RequestError, ollama.ResponseError) as exc:
+    except ChatError as exc:
         _log.warning("contextual_summary_failed", error=str(exc))
         return ""
-    raw = str(response.get("response") if isinstance(response, dict) else response.response or "")
     text = _THINK_BLOCK_PATTERN.sub("", raw).strip()
     # Keep it one line — many models emit a paragraph break followed by
     # commentary; truncate at the first newline.

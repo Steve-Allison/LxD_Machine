@@ -1,0 +1,48 @@
+{
+  "python.defaultInterpreterPath": "${workspaceFolder}/.pixi/envs/default/bin/python",
+  "python.terminal.activateEnvironment": true,
+  "python.analysis.extraPaths": [
+    "${workspaceFolder}/src"
+  ],
+  "python.analysis.typeCheckingMode": "strict",
+  "python.testing.pytestEnabled": true,
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestArgs": [
+    "tests",
+    "-m",
+    "not live",
+    "-q"
+  ],
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit",
+      "source.fixAll.ruff": "explicit"
+    }
+  },
+  "ruff.importStrategy": "fromEnvironment",
+  "ruff.interpreter": [
+    "${workspaceFolder}/.pixi/envs/default/bin/python"
+  ],
+  "files.associations": {
+    "pixi.toml": "toml",
+    "pixi.lock": "yaml",
+    "config.yaml": "yaml"
+  },
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/__pycache__": true,
+    "**/.pytest_cache": true,
+    "**/.ruff_cache": true,
+    "**/.hypothesis": true
+  },
+  "search.exclude": {
+    "**/.pixi": true,
+    "**/.ruff_cache": true,
+    "**/.pytest_cache": true,
+    "**/.hypothesis": true,
+    "**/data": true
+  }
+}

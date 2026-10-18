@@ -13,24 +13,18 @@ dependencies = [
     "fastmcp>=3.0",
     "httpx>=0.28",
     "lancedb>=0.21",
+    "mlx>=0.22",
+    "mlx-lm>=0.21",
     "networkx>=3.4",
-    "ollama",
     "openai>=1.0",
     "pyahocorasick>=2.0",
     "pydantic>=2.12",
     "python-dotenv>=1.0",
     "pyyaml>=6.0",
     "rich>=14.0",
-    "semchunk>=3.2",
     "structlog>=24.4",
     "tiktoken>=0.9",
     "transformers>=5.0,<6.0",
-    "tree-sitter>=0.24",
-    "tree-sitter-c>=0.24",
-    "tree-sitter-java-orchard>=0.0.10",
-    "tree-sitter-javascript>=0.25",
-    "tree-sitter-python>=0.23",
-    "tree-sitter-typescript>=0.23",
     "typer>=0.15",
 ]
 
@@ -51,6 +45,7 @@ ignore  = [
     "PLR0911", # too many returns — query/formatter code is legitimately branchy
     "PLR0912", # too many branches — same rationale as PLR0911
     "PLR0913", # too many arguments — ingest pipelines have many stores
+    "PLR0917", # too many positional arguments — added in Ruff 0.17
     "PLR0915", # too many statements — split later, not in Wave 7
     "PLR2004", # magic values — pervasive in tests and tight inner loops
     "PLW0603", # global statement — used intentionally for client reuse
@@ -86,5 +81,5 @@ markers = [
     "property: Hypothesis property-based tests — typically deterministic invariants, not randomised fuzzing in CI",
     "benchmark: pytest-benchmark performance regression gates; run explicitly via --benchmark-enable",
     "slow: long-running tests skipped from the default suite (use -m slow to enable)",
-    "live: opt-in tests that hit a real local Ollama server; run via `pixi run pytest -m live` (skipped by default)",
+    "live: opt-in integration tests against local live models; run via `pixi run pytest -m live` (skipped by default)",
 ]

@@ -399,7 +399,8 @@ def get_similar_entities_tool(
         if not vectors:
             return []
 
-        query_vector = [sum(v[i] for v in vectors) / len(vectors) for i in range(vector_size)]
+        count = len(vectors)
+        query_vector = [sum(components) / count for components in zip(*vectors, strict=True)]
 
         try:
             entity_table = open_entity_table(db, vector_size=vector_size)

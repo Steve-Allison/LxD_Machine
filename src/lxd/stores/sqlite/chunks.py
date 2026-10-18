@@ -348,9 +348,7 @@ def load_corpus_relations_for_entity(
     ]
 
 
-def load_chunk_record_by_id(
-    connection: sqlite3.Connection, chunk_id: str
-) -> ChunkRecord | None:
+def load_chunk_record_by_id(connection: sqlite3.Connection, chunk_id: str) -> ChunkRecord | None:
     """Load a single persisted chunk record by ID, or ``None`` if absent.
 
     Used by the graph-as-retrieval-lane path to hydrate the chunk text

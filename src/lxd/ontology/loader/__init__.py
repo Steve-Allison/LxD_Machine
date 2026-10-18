@@ -1,5 +1,6 @@
 """Load ontology data and validate source metadata."""
 
+from functools import lru_cache
 from pathlib import Path
 
 from lxd.ontology.graph import build_graph
@@ -34,7 +35,20 @@ __all__ = [
     "load_ontology",
 ]
 
-_ONTOLOGY_CACHE: dict[tuple[str, str, tuple[str, ...], tuple[str, ...]], OntologyLoadResult] = {}
+
+@lru_cache(maxsize=4)
+def _load_configured_ontology_cached(
+    ontology_path: str,
+    library_path: str,
+    include_globs: tuple[str, ...],
+    ignore_names: tuple[str, ...],
+) -> OntologyLoadResult:
+    return load_ontology(
+        Path(ontology_path),
+        list(include_globs),
+        list(ignore_names),
+        library_root=Path(library_path) if library_path else None,
+    )
 
 
 def load_configured_ontology(config: RuntimeConfig) -> OntologyLoadResult:
@@ -47,23 +61,12 @@ def load_configured_ontology(config: RuntimeConfig) -> OntologyLoadResult:
         Loaded ontology. A Central distribution is projected with its library.
     """
     library_path = config.paths.library_path
-    cache_key = (
+    return _load_configured_ontology_cached(
         str(config.paths.ontology_path),
         str(library_path) if library_path is not None else "",
         tuple(config.ontology.include_globs),
         tuple(config.ontology.ignore_names),
     )
-    cached = _ONTOLOGY_CACHE.get(cache_key)
-    if cached is not None:
-        return cached
-    loaded = load_ontology(
-        config.paths.ontology_path,
-        config.ontology.include_globs,
-        config.ontology.ignore_names,
-        library_root=library_path,
-    )
-    _ONTOLOGY_CACHE[cache_key] = loaded
-    return loaded
 
 
 def load_ontology(

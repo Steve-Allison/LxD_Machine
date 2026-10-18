@@ -99,8 +99,5 @@ def _iter_files(root: Path, ignore_names: list[str]) -> Iterator[Path]:
 
 
 def _hash_file(path: Path) -> str:
-    hasher = hashlib.blake2b(digest_size=32)
     with path.open("rb") as handle:
-        while chunk := handle.read(8192):
-            hasher.update(chunk)
-    return hasher.hexdigest()
+        return hashlib.file_digest(handle, lambda: hashlib.blake2b(digest_size=32)).hexdigest()

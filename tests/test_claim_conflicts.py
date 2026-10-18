@@ -30,7 +30,9 @@ def _claim(
 
 def test_no_conflicts_when_fewer_than_two_claims() -> None:
     assert detect_claim_conflicts([], max_conflicts=5) == []
-    assert detect_claim_conflicts([_claim("c1", text="X improves retention.")], max_conflicts=5) == []
+    assert (
+        detect_claim_conflicts([_claim("c1", text="X improves retention.")], max_conflicts=5) == []
+    )
 
 
 def test_no_conflicts_when_max_conflicts_is_zero() -> None:
@@ -67,7 +69,9 @@ def test_detects_negation_conflict_within_same_subject_object_pair() -> None:
 
 def test_detects_negation_conflict_grouped_by_subject_and_claim_type_when_no_object() -> None:
     claims = [
-        _claim("c1", text="Cognitive load theory is well supported.", subject="concept-clt", obj=None),
+        _claim(
+            "c1", text="Cognitive load theory is well supported.", subject="concept-clt", obj=None
+        ),
         _claim(
             "c2",
             text="Cognitive load theory is not well supported by recent meta-analyses.",
@@ -93,7 +97,9 @@ def test_does_not_group_claims_with_different_subjects() -> None:
 def test_does_not_group_claims_with_different_claim_types_when_no_object() -> None:
     claims = [
         _claim("c1", text="X is defined as Y.", claim_type="definition", subject="concept-x"),
-        _claim("c2", text="There is no evidence for X.", claim_type="assertion", subject="concept-x"),
+        _claim(
+            "c2", text="There is no evidence for X.", claim_type="assertion", subject="concept-x"
+        ),
     ]
 
     assert detect_claim_conflicts(claims, max_conflicts=5) == []
@@ -102,7 +108,9 @@ def test_does_not_group_claims_with_different_claim_types_when_no_object() -> No
 def test_no_conflict_when_neither_claim_is_negated() -> None:
     claims = [
         _claim("c1", text="X improves retention.", subject="concept-x", obj="concept-y"),
-        _claim("c2", text="X strengthens retention over time.", subject="concept-x", obj="concept-y"),
+        _claim(
+            "c2", text="X strengthens retention over time.", subject="concept-x", obj="concept-y"
+        ),
     ]
 
     assert detect_claim_conflicts(claims, max_conflicts=5) == []
@@ -110,8 +118,18 @@ def test_no_conflict_when_neither_claim_is_negated() -> None:
 
 def test_no_conflict_when_both_claims_are_negated() -> None:
     claims = [
-        _claim("c1", text="There is no evidence X improves retention.", subject="concept-x", obj="concept-y"),
-        _claim("c2", text="Contrary to popular belief, X never improves retention.", subject="concept-x", obj="concept-y"),
+        _claim(
+            "c1",
+            text="There is no evidence X improves retention.",
+            subject="concept-x",
+            obj="concept-y",
+        ),
+        _claim(
+            "c2",
+            text="Contrary to popular belief, X never improves retention.",
+            subject="concept-x",
+            obj="concept-y",
+        ),
     ]
 
     assert detect_claim_conflicts(claims, max_conflicts=5) == []

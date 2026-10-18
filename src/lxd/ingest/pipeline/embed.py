@@ -48,7 +48,7 @@ def embed_with_contextual_augmentation(
     """Embed chunks with contextual summary augmentation.
 
     For each chunk: look up a one-sentence "what this chunk is about"
-    summary in the contextual cache; on miss, generate via local Ollama
+    summary in the contextual cache; on miss, generate via local MLX
     (counted against the ingest budget). Build the augmented text
     ``f"{summary}\\n\\n{chunk.text}"`` and embed *that* — the stored
     chunk text remains the original. Returns the cache-hit/miss counts
@@ -171,9 +171,9 @@ def embed_with_cache(
             merged_chunks: list[TextChunk] = []
             merged_vectors: list[list[float]] = []
             miss_iter = iter(zip(miss_text_chunks, miss_vectors, strict=True))
-            for idx in range(len(chunks)):
+            for idx, chunk in enumerate(chunks):
                 if idx in lookup_result.hits:
-                    merged_chunks.append(chunks[idx])
+                    merged_chunks.append(chunk)
                     merged_vectors.append(lookup_result.hits[idx])
                 else:
                     chunk_, vec_ = next(miss_iter)

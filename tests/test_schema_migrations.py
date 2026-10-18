@@ -61,6 +61,31 @@ def test_migration_0011_adds_relation_qualifier_to_existing_table() -> None:
         connection.close()
 
 
+def test_migration_0012_creates_indexes_on_existing_tables() -> None:
+    connection = _open_inmem()
+    try:
+        ensure_schema(connection)
+        connection.execute("DROP INDEX IF EXISTS idx_chunk_rows_source_rel_path;")
+        connection.execute("DROP INDEX IF EXISTS idx_chunk_rows_document_id;")
+        connection.execute("DROP INDEX IF EXISTS idx_mention_rows_source_rel_path;")
+        connection.execute("DROP INDEX IF EXISTS idx_mention_rows_chunk_id;")
+        connection.execute("PRAGMA user_version = 11;")
+        ensure_schema(connection)
+        index_names = {
+            str(row[0])
+            for row in connection.execute(
+                "SELECT name FROM sqlite_master WHERE type='index';"
+            ).fetchall()
+        }
+        assert "idx_chunk_rows_source_rel_path" in index_names
+        assert "idx_chunk_rows_document_id" in index_names
+        assert "idx_mention_rows_source_rel_path" in index_names
+        assert "idx_mention_rows_chunk_id" in index_names
+        assert get_schema_version(connection) == CURRENT_SCHEMA_VERSION
+    finally:
+        connection.close()
+
+
 def test_ensure_schema_is_idempotent() -> None:
     connection = _open_inmem()
     try:

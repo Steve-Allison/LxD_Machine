@@ -22,6 +22,7 @@ def connect_sqlite(path: Path) -> sqlite3.Connection:
       immediate ``database is locked`` errors.
     - ``temp_store=MEMORY`` — keep transient B-trees in RAM, not tempfiles.
     - ``cache_size=-65536`` — ~64 MiB per-connection page cache.
+    - ``mmap_size=268435456`` — 256 MiB memory-mapped I/O for zero-copy reads.
 
     Args:
         path: Path to the source file or storage location.
@@ -38,6 +39,7 @@ def connect_sqlite(path: Path) -> sqlite3.Connection:
     connection.execute("PRAGMA busy_timeout=5000;")
     connection.execute("PRAGMA temp_store=MEMORY;")
     connection.execute("PRAGMA cache_size=-65536;")
+    connection.execute("PRAGMA mmap_size=268435456;")
     return connection
 
 

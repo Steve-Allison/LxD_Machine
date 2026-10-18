@@ -32,7 +32,7 @@ This rule auto-loads on edits to settings, config, retrieval, or ontology.
 ## What is allowed
 
 - Backend choice between real options:
-  `reranker.backend: llama_cpp | openai | ollama` — yes.
+  `reranker.backend: llama_cpp | mlx` — yes.
   `reranker.backend: none` — no.
 - Graceful degradation when state is missing:
   *"the graph hasn't been built yet → fall back to graph-free baseline"* is

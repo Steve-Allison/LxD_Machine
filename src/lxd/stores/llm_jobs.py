@@ -2,7 +2,7 @@
 
 Responsibility:
     Provide a minimal, idempotent queue for long-running LLM workloads —
-    OpenAI Batch jobs, Ollama background calls, or any structured-output
+    OpenAI Batch jobs, background LLM calls, or any structured-output
     task that outlives a single process. Callers pick their own ``job_id``
     (usually a blake3 hash of the input + tenancy), so re-enqueueing the
     same work is safe.
@@ -10,7 +10,7 @@ Responsibility:
 Design boundary:
     This module owns *only* the queue surface. Executors (claim extraction,
     relation extraction, batch runners) are free to interpret ``payload_json``
-    however they like. The queue knows nothing about OpenAI or Ollama.
+    however they like. The queue knows nothing about specific LLM providers.
 
 Key constraints:
     * All timestamps are ISO-8601 UTC strings for audit consistency with the

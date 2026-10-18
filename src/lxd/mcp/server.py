@@ -9,7 +9,7 @@ from typing import Annotated, Any, Final, Literal
 
 import anyio.from_thread
 from fastmcp import Context, FastMCP
-from mcp.types import ToolAnnotations
+from mcp.types import SamplingMessage, TextContent, ToolAnnotations
 from pydantic import Field
 
 from lxd.app.bootstrap import AppContext, bootstrap_app
@@ -76,12 +76,12 @@ from lxd.synthesis.sampler import Sampler, SamplerFailure, SamplerRequest
 #   LLM         — open-world AND non-deterministic because answer synthesis
 #                 calls an LLM.
 _HINT_IDEMPOTENT: Final = ToolAnnotations(
-    readOnlyHint=True, idempotentHint=True, openWorldHint=False
+    read_only_hint=True, idempotent_hint=True, open_world_hint=False
 )
 _HINT_OPEN_WORLD: Final = ToolAnnotations(
-    readOnlyHint=True, idempotentHint=False, openWorldHint=True
+    read_only_hint=True, idempotent_hint=False, open_world_hint=True
 )
-_HINT_LLM: Final = ToolAnnotations(readOnlyHint=True, idempotentHint=False, openWorldHint=True)
+_HINT_LLM: Final = ToolAnnotations(read_only_hint=True, idempotent_hint=False, open_world_hint=True)
 
 _LIFESPAN_KEY: Final = "lxd"
 
@@ -174,17 +174,24 @@ def _make_client_sampler(ctx: Context) -> Sampler:
     same pattern as :func:`_make_phase_callback`. Any failure — no
     sampling capability, upstream error, empty result — is normalised to
     :class:`SamplerFailure` so the caller can transparently fall back to
-    the server-side Ollama path.
+    the server-side MLX path.
     """
 
     async def _do_sample(request: SamplerRequest) -> str:
-        result = await ctx.sample(
-            messages=request.prompt,
+        session = ctx.session
+        message = SamplingMessage(
+            role="user",
+            content=TextContent(type="text", text=request.prompt),
+        )
+        result = await session.create_message(  # type: ignore[deprecated]
+            messages=[message],
             temperature=request.temperature,
             max_tokens=request.max_tokens,
         )
-        text = getattr(result, "text", None) or str(result)
-        return text
+        content = result.content
+        if isinstance(content, TextContent):
+            return content.text
+        return str(content)
 
     def _sample(request: SamplerRequest) -> str:
         try:
@@ -202,7 +209,7 @@ def _resolve_sampler(lxd: _LxDLifespan, ctx: Context) -> Sampler | None:
 
     When ``mcp.synthesis_backend`` is set to ``client_sampling`` the
     server builds a client-side sampler; otherwise synthesis stays on
-    the server's own Ollama model. When the connected client has not
+    the server's own MLX model. When the connected client has not
     advertised sampling capability the sampler still returns — the
     fallback happens inside :func:`lxd.synthesis.answering.synthesize_answer`
     on the first :class:`SamplerFailure`, so a single warning is added

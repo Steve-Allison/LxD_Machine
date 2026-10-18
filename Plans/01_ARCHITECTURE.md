@@ -85,7 +85,7 @@ Responsibilities:
 - rerank retrieved candidates through the configured backend (`llama_cpp` cross-encoder over HTTP or in-process ColBERT); when the reranker is unavailable the pipeline surfaces a live warning via `ctx.warning` AND records it in the buffered `warnings` list, then continues with the hybrid ranking
 - fuse rerank, relation-membership, and centrality lanes on top of the hybrid ranking via source-aware RRF; optionally community-diversify
 - build graph context (entity profiles + community reports + claims) additively for the synthesis prompt
-- synthesise a cited answer either against the server's Ollama model or, when `mcp.synthesis_backend=client_sampling`, via MCP `ctx.sample` (with server-LLM fallback on `SamplerFailure`)
+- synthesise a cited answer either against the server's local MLX model or, when `mcp.synthesis_backend=client_sampling`, via MCP `ctx.sample` (with server-LLM fallback on `SamplerFailure`)
 
 Query scope rule:
 
@@ -233,7 +233,7 @@ The working query path (single-source-of-truth: `retrieval/query_pipeline.py`) i
 7. diversify to one representative chunk per `source_rel_path`; rerank the representative prefix
 8. fuse the hybrid + rerank + relation-membership + centrality lanes via RRF; optionally community-diversify
 9. build additive graph context (entity profiles + community reports + claims) for the synthesis prompt
-10. synthesise a cited answer either via the server's Ollama model or, when `mcp.synthesis_backend=client_sampling`, via `ctx.sample` (with server-LLM fallback on `SamplerFailure`)
+10. synthesise a cited answer either via the server's local MLX model or, when `mcp.synthesis_backend=client_sampling`, via `ctx.sample` (with server-LLM fallback on `SamplerFailure`)
 
 Citation rules:
 

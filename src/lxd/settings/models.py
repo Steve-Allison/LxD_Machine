@@ -42,14 +42,6 @@ def _validate_corpus_id_shape(value: str) -> str:
     return value
 
 
-class OllamaConfig(BaseModel):
-    """Configuration for connecting to the Ollama API."""
-
-    model_config = ConfigDict(extra="forbid")
-
-    url: HttpUrl
-
-
 class ModelsConfig(BaseModel):
     """Model identifiers and embedding/rerank model settings."""
 
@@ -57,8 +49,9 @@ class ModelsConfig(BaseModel):
 
     embed: str
     embed_dims: int = Field(gt=0)
-    embed_backend: Literal["ollama", "openai"] = "ollama"
+    embed_backend: Literal["openai", "mlx"] = "openai"
     llm: str
+    llm_backend: Literal["mlx"] = "mlx"
     rerank: str
     llm_no_think: bool = False
 
@@ -68,7 +61,7 @@ class ChunkingConfig(BaseModel):
 
     ``contextual_summary_*`` settings control optional contextual
     retrieval (Anthropic-style chunk-level context preamble): when
-    enabled, the ingest pipeline asks the local Ollama LLM to
+    enabled, the ingest pipeline asks the local MLX LLM to
     generate a 1-sentence summary of *what each chunk is about in the
     context of its document*, prepends it to the chunk text **before
     embedding only** (the stored chunk text stays clean for citation
@@ -86,7 +79,7 @@ class ChunkingConfig(BaseModel):
     tokenizer_backend: str
     tokenizer_name: str
     contextual_summary_enabled: bool = False
-    contextual_summary_model: str = "qwen3:14b"
+    contextual_summary_model: str = "mlx-community/Qwen2.5-7B-Instruct-4bit"
     contextual_summary_temperature: float = Field(default=0.0, ge=0.0)
     contextual_summary_timeout_secs: int = Field(default=60, gt=0)
     contextual_summary_max_tokens: int = Field(default=80, gt=0)
@@ -205,7 +198,7 @@ class RetrievalConfig(BaseModel):
     centrality_fusion_weight: float = Field(default=1.0, ge=0.0)
     community_diversity_enabled: bool = True
     hyde_enabled: bool = True
-    hyde_model: str = "qwen3:14b"
+    hyde_model: str = "mlx-community/Qwen2.5-7B-Instruct-4bit"
     hyde_temperature: float = Field(default=0.0, ge=0.0)
     hyde_timeout_secs: int = Field(default=30, gt=0)
     hyde_max_tokens: int = Field(default=200, gt=0)
@@ -240,7 +233,7 @@ class RerankerLaunchConfig(BaseModel):
 
     auto_start: bool = False
     executable: str = "llama-server"
-    model_source: Literal["ollama_blob", "model_path"] = "ollama_blob"
+    model_source: Literal["model_path", "mlx"] = "model_path"
     model_path: Path | None = None
     host: str = "127.0.0.1"
     port: int = Field(default=8012, gt=0, le=65535)
@@ -253,7 +246,7 @@ class RerankerConfig(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    backend: Literal["llama_cpp", "colbert"] = "llama_cpp"
+    backend: Literal["llama_cpp", "colbert", "mlx"] = "llama_cpp"
     url: HttpUrl | None = None
     endpoint: str = "/v1/rerank"
     timeout_secs: int = Field(default=30, gt=0)
@@ -325,10 +318,9 @@ class RelationExtractionConfig(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    backend: Literal["openai", "ollama"] = "openai"
-    fallback_backend: Literal["ollama", "none"] = "ollama"
+    backend: Literal["openai"] = "openai"
+    fallback_backend: Literal["none"] = "none"
     openai_model: str = "gpt-4o-mini"
-    ollama_model: str = "qwen3:14b"
     min_entity_mentions: int = Field(default=2, ge=1)
     max_relations_per_chunk: int = Field(default=15, gt=0)
     temperature: float = Field(default=0.0, ge=0.0)
@@ -368,7 +360,7 @@ class AdaptiveRetrievalConfig(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    router_backend: Literal["openai", "ollama"] = Field(
+    router_backend: Literal["openai"] = Field(
         default="openai",
         description="LLM backend used for the router classification.",
     )
@@ -427,9 +419,9 @@ class KnowledgeGraphConfig(BaseModel):
     entity_embedding_min_mentions: int = Field(default=3, ge=1)
 
     # Claim extraction
-    claim_extraction_backend: Literal["openai", "ollama"] = "openai"
+    claim_extraction_backend: Literal["openai"] = "openai"
     claim_extraction_model: str = "gpt-4o-mini"
-    claim_extraction_fallback_model: str = "qwen3:14b"
+    claim_extraction_fallback_model: str | None = None
     claim_extraction_min_mentions: int = Field(default=1, ge=1)
     claim_max_per_chunk: int = Field(default=10, gt=0)
     claim_extraction_timeout_secs: int = Field(default=90, gt=0)
@@ -438,9 +430,9 @@ class KnowledgeGraphConfig(BaseModel):
     claim_extraction_sub_batch_size: int = Field(default=500, gt=0)
 
     # LLM enrichment
-    llm_enrichment_backend: Literal["openai", "ollama"] = "openai"
+    llm_enrichment_backend: Literal["openai"] = "openai"
     llm_enrichment_model: str = "gpt-4o-mini"
-    llm_enrichment_fallback_model: str = "qwen3:14b"
+    llm_enrichment_fallback_model: str | None = None
     llm_enrichment_temperature: float = Field(default=0.1, ge=0.0)
     llm_enrichment_timeout_secs: int = Field(default=30, gt=0)
 
@@ -468,10 +460,9 @@ class DesignAgentConfig(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    backend: Literal["openai", "ollama"] = "openai"
-    fallback_backend: Literal["ollama", "none"] = "ollama"
+    backend: Literal["openai"] = "openai"
+    fallback_backend: Literal["none"] = "none"
     openai_model: str = "gpt-4o-mini"
-    ollama_model: str = "qwen3:14b"
     temperature: float = Field(default=0.2, ge=0.0)
     timeout_secs: float = Field(default=60.0, gt=0.0)
     max_tokens: int = Field(default=1500, gt=0)
@@ -505,7 +496,7 @@ class MCPConfig(BaseModel):
         description=(
             "Which LLM answers the synthesis step for search_knowledge / "
             "search_knowledge_deep. ``server_llm`` (default) calls the "
-            "server's own Ollama model — trust and cost boundary stays "
+            "server's own MLX model — trust and cost boundary stays "
             "server-side. ``client_sampling`` delegates to MCP "
             "``Context.sample`` so the client's own LLM runs the "
             "synthesis (client picks model, client pays for tokens); the "
@@ -531,6 +522,48 @@ class LoggingConfig(BaseModel):
             "mention_detected",
         ]
     )
+
+
+class MlxConfig(BaseModel):
+    """Local MLX servers for chat and Octen embeddings.
+
+    Chat is ``mlx_lm.server`` (OpenAI ``/v1/chat/completions``). Embeddings
+    are a separate process serving Octen-Embedding-8B at ``/v1/embeddings``.
+    The reranker loads in-process and does not use either URL.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    chat_url: HttpUrl = HttpUrl("http://127.0.0.1:8080")
+    embed_url: HttpUrl = HttpUrl("http://127.0.0.1:8100")
+    chat_host: str = "127.0.0.1"
+    chat_port: int = Field(default=8080, gt=0, le=65535)
+    embed_host: str = "127.0.0.1"
+    embed_port: int = Field(default=8100, gt=0, le=65535)
+    embed_weights: str = "chulcher/Octen-Embedding-8B-mlx"
+    auto_start_chat: bool = True
+    auto_start_embed: bool = True
+    startup_timeout_secs: int = Field(default=1800, gt=0)
+    rerank_instruction: str = (
+        "Given a web search query, retrieve relevant passages that answer the query"
+    )
+    rerank_max_length: int = Field(default=4096, gt=32, le=32768)
+
+    @model_validator(mode="after")
+    def _validate_bind_addresses(self) -> Self:
+        if self.auto_start_chat and (
+            self.chat_url.host != self.chat_host or self.chat_url.port != self.chat_port
+        ):
+            raise ValueError(
+                "mlx.chat_url host and port must match mlx.chat_host and mlx.chat_port."
+            )
+        if self.auto_start_embed and (
+            self.embed_url.host != self.embed_host or self.embed_url.port != self.embed_port
+        ):
+            raise ValueError(
+                "mlx.embed_url host and port must match mlx.embed_host and mlx.embed_port."
+            )
+        return self
 
 
 class PathsConfig(BaseModel):
@@ -571,7 +604,6 @@ class RuntimeConfig(BaseModel):
 
     paths: PathsConfig
     tenancy: TenancyConfig = Field(default_factory=TenancyConfig)
-    ollama: OllamaConfig
     models: ModelsConfig
     chunking: ChunkingConfig
     embedding: EmbeddingConfig
@@ -591,6 +623,7 @@ class RuntimeConfig(BaseModel):
     mcp: MCPConfig
     logging: LoggingConfig
     openai: OpenAIEmbeddingConfig | None = None
+    mlx: MlxConfig | None = None
 
     @model_validator(mode="after")
     def _validate_openai_backend(self) -> Self:
@@ -604,4 +637,16 @@ class RuntimeConfig(BaseModel):
             raise ValueError(
                 "models.embed_dims must match openai.dims when models.embed_backend=openai."
             )
+        if self._mlx_required() and self.mlx is None:
+            raise ValueError(
+                "mlx config section is required when models.llm_backend, "
+                "models.embed_backend, or reranker.backend is mlx."
+            )
         return self
+
+    def _mlx_required(self) -> bool:
+        return (
+            self.models.llm_backend == "mlx"
+            or self.models.embed_backend == "mlx"
+            or self.reranker.backend == "mlx"
+        )

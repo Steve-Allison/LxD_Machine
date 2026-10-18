@@ -26,8 +26,6 @@ paths:
   corpus_path: corpus
   ontology_path: ontology
   data_path: data
-ollama:
-  url: http://localhost:11434
 models:
   embed: nomic-embed-text
   embed_dims: 768
@@ -81,6 +79,16 @@ synthesis:
   timeout_secs: 60
   temperature: 0.1
   max_tokens: 1500
+openai:
+  api_key_env: OPENAI_API_KEY
+  model: text-embedding-3-small
+  dims: 768
+  batch_size: 64
+  max_workers: 2
+mlx:
+  chat_host: 127.0.0.1
+  chat_port: 8080
+  auto_start_chat: false
 mcp:
   server_name: lxd-machine
   version: 0.1.0
@@ -155,8 +163,6 @@ paths:
   corpus_path: corpus
   ontology_path: ontology
   data_path: data
-ollama:
-  url: http://localhost:11434
 models:
   embed: text-embedding-3-small
   embed_dims: {embed_dims}
@@ -181,6 +187,10 @@ openai:
   dims: {openai_dims}
   batch_size: 64
   max_workers: 2
+mlx:
+  chat_host: 127.0.0.1
+  chat_port: 8080
+  auto_start_chat: false
 corpus:
   text_extensions: [".md"]
   asset_extensions: [".png"]

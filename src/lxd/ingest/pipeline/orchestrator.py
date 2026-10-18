@@ -50,6 +50,7 @@ from lxd.ontology.matcher import MatcherTermRecord, build_or_load_automaton
 from lxd.ontology.normalization import normalize_match_text
 from lxd.settings.models import RuntimeConfig
 from lxd.stores.lancedb import (
+    compact_chunk_table,
     connect_lancedb,
     load_source_chunk_rows,
     open_chunk_table,
@@ -243,7 +244,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
         cache_hit_total = 0
         cache_miss_total = 0
 
-        run_id = f"ingest-{datetime.now(UTC).strftime('%Y%m%d-%H%M%S')}"
+        run_id = f"ingest-{datetime.now(UTC).strftime('%Y%m%d-%H%M%S%f')}"
         timestamp = utc_now()
         begin_ingest_run(
             sqlite_connection,
@@ -690,6 +691,8 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
             # index creation; rebuild the index once at the end of the run
             # so retrieval BM25 sees every chunk written this run.
             refresh_fts_index(vector_table)
+            compact_chunk_table(vector_table)
+            compact_chunk_table(cache_table)
             if wiki_dangling_total or wiki_pages_without_subject_total:
                 _log.info(
                     "wiki_relation_derivation_diagnostics",

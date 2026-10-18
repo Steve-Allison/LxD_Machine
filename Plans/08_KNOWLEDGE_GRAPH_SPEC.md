@@ -33,7 +33,7 @@ No performance or capacity claim is accepted until benchmarked on the real corpu
 ## 2. Tech Stack Additions
 
 - **`graspologic` is optional and not in `pixi.toml`** — removed due to an irreconcilable dependency conflict with `fastmcp` (beartype version clash) per Section 1's Implementation Notes. Community detection defaults to `networkx.algorithms.community.louvain_communities` (zero new deps). The Leiden codepath remains in `ontology/communities.py` behind an `ImportError`-guarded import for operators who install graspologic manually into the pixi env.
-- No other new runtime dependencies. NetworkX 3.6+ provides all centrality and path algorithms. LLM calls use the existing shared OpenAI client (via the OpenAI-compat endpoint for Ollama fallback per `ingest/llm_client.py`) with schema-enforced `.parse()` on the sync path.
+- No other new runtime dependencies. NetworkX 3.6+ provides all centrality and path algorithms. LLM calls use the shared OpenAI client with schema-enforced `.parse()` on the sync path.
 
 ### Verified API Constraints
 
@@ -328,7 +328,7 @@ Extract fine-grained assertions from chunks. Claims are the evidence layer that 
 **New:** `src/lxd/ingest/claims.py`
 **Modified:** `src/lxd/stores/sqlite/claims.py`, `src/lxd/stores/models.py`
 
-For each chunk with ≥1 entity mention, extract claims via GPT-4o-mini (with Ollama qwen3:14b fallback):
+For each chunk with ≥1 entity mention, extract claims via GPT-4o-mini:
 
 ```text
 Given this text and these entities, extract factual assertions.
@@ -533,13 +533,13 @@ Generate richer prose summaries via GPT-4o-mini for entities and communities. **
 
 Per entity (where `llm_summary IS NULL` or `source_hash` changed):
 
-- Feed the entity's label + entity_type + domain + deterministic summary + top predicates + top claims to GPT-4o-mini (with Ollama qwen3:14b fallback). Chunk text is not passed in — the deterministic summary already carries the corpus-derived facts and passing chunks would inflate the prompt without measurable gain
+- Feed the entity's label + entity_type + domain + deterministic summary + top predicates + top claims to GPT-4o-mini. Chunk text is not passed in — the deterministic summary already carries the corpus-derived facts and passing chunks would inflate the prompt without measurable gain
 - Generate 150–300 word prose summary
 - Store in `entity_profiles.llm_summary`
 
 Per community (where `llm_summary IS NULL` or `source_hash` changed):
 
-- Feed the community's member deterministic summaries + top claims to GPT-4o-mini (with Ollama qwen3:14b fallback). Intra-community edges are surfaced through the deterministic summaries rather than passed as a separate prompt input
+- Feed the community's member deterministic summaries + top claims to GPT-4o-mini. Intra-community edges are surfaced through the deterministic summaries rather than passed as a separate prompt input
 - Generate 200–400 word community narrative
 - Store in `community_reports.llm_summary`
 
@@ -778,18 +778,16 @@ class KnowledgeGraphConfig(BaseModel):
     entity_embedding_min_mentions: int = Field(default=3, ge=1)
 
     # Claim extraction
-    claim_extraction_backend: Literal["openai", "ollama"] = "openai"
+    claim_extraction_backend: Literal["openai"] = "openai"
     claim_extraction_model: str = "gpt-4o-mini"
-    claim_extraction_fallback_model: str = "qwen3:14b"
     claim_extraction_min_mentions: int = Field(default=1, ge=1)
     claim_max_per_chunk: int = Field(default=10, gt=0)
     claim_extraction_timeout_secs: int = Field(default=90, gt=0)
     claim_extraction_temperature: float = Field(default=0.0, ge=0.0)
 
     # LLM enrichment
-    llm_enrichment_backend: Literal["openai", "ollama"] = "openai"
+    llm_enrichment_backend: Literal["openai"] = "openai"
     llm_enrichment_model: str = "gpt-4o-mini"
-    llm_enrichment_fallback_model: str = "qwen3:14b"
     llm_enrichment_temperature: float = Field(default=0.1, ge=0.0)
     llm_enrichment_timeout_secs: int = Field(default=30, gt=0)
 

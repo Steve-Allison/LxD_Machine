@@ -74,9 +74,7 @@ class ClaimConflict:
     reason: str
 
 
-def detect_claim_conflicts(
-    claims: list[ClaimRecord], *, max_conflicts: int
-) -> list[ClaimConflict]:
+def detect_claim_conflicts(claims: list[ClaimRecord], *, max_conflicts: int) -> list[ClaimConflict]:
     """Flag pairs of claims that look like they disagree, without an LLM call.
 
     Claims are grouped so only claims *about the same thing* are ever

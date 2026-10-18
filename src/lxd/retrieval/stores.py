@@ -9,7 +9,8 @@ from typing import Any
 from lxd.settings.models import RuntimeConfig
 from lxd.stores.lancedb import connect_lancedb, open_chunk_table
 from lxd.stores.models import StorePaths
-from lxd.stores.sqlite.connection import build_store_paths, connect_sqlite, initialize_schema
+from lxd.stores.sqlite._pool import pooled_connection
+from lxd.stores.sqlite.connection import build_store_paths
 
 
 @dataclass(slots=True)
@@ -23,15 +24,11 @@ class RetrievalStores:
 
 @contextmanager
 def open_retrieval_stores(config: RuntimeConfig) -> Generator[RetrievalStores]:
-    """Yield SQLite + LanceDB chunk table; always close SQLite on exit."""
+    """Yield SQLite + LanceDB chunk table using pooled SQLite connection."""
     paths = build_store_paths(config.paths.data_path)
-    connection = connect_sqlite(paths.sqlite_path)
-    try:
-        initialize_schema(connection)
+    with pooled_connection(paths.sqlite_path) as connection:
         table = open_chunk_table(
             connect_lancedb(paths.lancedb_path),
             vector_size=config.models.embed_dims,
         )
         yield RetrievalStores(paths=paths, sqlite=connection, chunk_table=table)
-    finally:
-        connection.close()

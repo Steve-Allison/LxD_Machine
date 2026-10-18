@@ -9,20 +9,12 @@ platforms = [
 
 [dependencies]
 python = ">=3.14,<3.15"
-"llama.cpp" = ">=8224"
 
 [pypi-dependencies]
 lxd-machine       = { path = ".", editable = true }
 lancedb           = ">=0.21"
 docling           = ">=2.0"
 docling-core      = ">=2.0"
-semchunk          = ">=3.2"
-tree-sitter       = ">=0.24"
-tree-sitter-c     = ">=0.24"
-tree-sitter-javascript = ">=0.25"
-tree-sitter-python = ">=0.23"
-tree-sitter-typescript = ">=0.23"
-tree-sitter-java-orchard = ">=0.0.10"
 tiktoken          = ">=0.9"
 transformers      = ">=5.0,<6.0"
 httpx             = ">=0.28"
@@ -43,6 +35,8 @@ pytest            = ">=8.3"
 pytest-asyncio    = ">=0.25"
 pytest-benchmark  = ">=4.0"
 hypothesis        = ">=6.112"
+mlx = ">=0.22"
+mlx-lm = ">=0.21"
 
 [tasks]
 ingest    = "python -m lxd.cli ingest"

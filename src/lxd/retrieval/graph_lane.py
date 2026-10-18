@@ -163,9 +163,7 @@ def graph_lane_chunk_ids(hits: list[GraphLaneHit]) -> list[str]:
     return ordered
 
 
-def _matched_community_ids(
-    connection: sqlite3.Connection, entity_ids: list[str]
-) -> list[int]:
+def _matched_community_ids(connection: sqlite3.Connection, entity_ids: list[str]) -> list[int]:
     """Return distinct, ascending community IDs for the given matched entities.
 
     Reuses :func:`lxd.stores.sqlite.kg_profiles.load_entity_profile` (the

@@ -316,9 +316,7 @@ def test_route_query_falls_through_to_llm_when_heuristic_declines(
         return QueryRoute(retrieve=True, breadth="standard", router_path="llm")
 
     monkeypatch.setattr(_router_module, "_route_openai", _fake_route_openai)
-    route = route_query(
-        question="How should I sequence a module on feedback loops?", config=config
-    )
+    route = route_query(question="How should I sequence a module on feedback loops?", config=config)
     assert called["count"] == 1
     assert route.router_path == "llm"
 

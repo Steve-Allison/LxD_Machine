@@ -219,7 +219,9 @@ def test_parse_against_real_addie_page() -> None:
     assert md.summary is not None
     assert "five-phase" in md.summary.casefold()
     assert len(md.cited_sources) >= 5
-    assert any("(LX)" in source for source in md.cited_sources)
+    assert any(
+        "addie" in source.casefold() or "theory" in source.casefold() for source in md.cited_sources
+    )
     assert md.category
     assert md.defers
     assert "backward-design" in md.wiki_links

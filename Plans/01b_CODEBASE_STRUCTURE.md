@@ -68,11 +68,11 @@ src/lxd/
     mentions.py
     relations.py              # LLM-based relation extraction
     claims.py                 # LLM-based claim extraction
-    embedder.py               # Batched Ollama / OpenAI embedding with context-aware retry
+    embedder.py               # Batched MLX / OpenAI embedding with context-aware retry
     embedding_cache.py        # Content-addressed (chunk_hash, model, dims) cache in LanceDB
     error_classification.py   # TRANSIENT / DATA / SYSTEMIC classifier + circuit breaker
     budget.py                 # Per-run LLM-spend ceiling
-    llm_client.py             # Shared sync/async OpenAI + Ollama-via-OpenAI-compat clients + Batch API helpers
+    llm_client.py             # Shared sync/async OpenAI client + Batch API helpers
     pipeline/                 # Sequential per-source orchestrator subpackage — NO re-export façade
       __init__.py
       orchestrator.py         # run_ingest, build_ingest_plan, IngestPlan, persist+commit loop
@@ -90,7 +90,7 @@ src/lxd/
     query_pipeline.py         # Retrieval orchestrator; PhaseCallback / NoticeCallback types
     eval.py                   # Retrieval-quality harness (Recall@10, MRR@10)
   synthesis/
-    answering.py              # synthesize_answer (Ollama or sampler-driven) + streaming
+    answering.py              # synthesize_answer (MLX or sampler-driven) + streaming
     citation_alignment.py     # Sentence-level attribution parser
     sampler.py                # SamplerRequest / Sampler / SamplerFailure — client-sampling seam
   stores/

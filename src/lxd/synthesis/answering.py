@@ -1,28 +1,26 @@
-"""Generate final answer envelopes from ranked evidence chunks.
+"""Generate final answer envelopes from ranked evidence chunks via local MLX.
 
 Two modes:
 
-- :func:`synthesize_answer` — one-shot: blocks until the local Ollama
+- :func:`synthesize_answer` — one-shot: blocks until the local MLX
   model finishes, returns a single :class:`AnswerEnvelope`.
 - :func:`stream_synthesize_answer` — iterator: yields incremental
   :class:`StreamingTextDelta` events as the model emits text, then
   exactly one terminal :class:`AnswerEnvelope` once the stream
-  completes (or sooner on error). Both stay on the local Ollama
+  completes (or sooner on error). Both stay on the local MLX
   backend; remote synthesis was rejected as incompatible with the
   local-first design (see ``feedback_local_only_no_remote_rerank.md``
   and the SOTA-plan strike of item ``[#4]``).
 """
 
 import re
-from collections.abc import Iterator
+from collections.abc import Iterator, Sequence
 from dataclasses import dataclass, field, replace
 from typing import Final
 
-import ollama
-
 from lxd.domain.brief import LearnerBrief
 from lxd.domain.status import QueryAnswerStatus
-from lxd.ingest.llm_client import get_ollama_client
+from lxd.mlx.chat import ChatError, complete_chat, stream_chat
 from lxd.retrieval.graph_routing import GraphContext
 from lxd.settings.models import RuntimeConfig
 from lxd.synthesis.citation_alignment import SentenceCitation, align_citations
@@ -50,66 +48,47 @@ SYNTHESIS_PREAMBLE_BASE: Final = (
 SYNTHESIS_PREAMBLE_TRANSITIVE_SOURCES: Final = (
     "\nEvidence chunks may include a ``Sources:`` line listing the underlying\n"
     "research files the chunk was synthesised from. When such sources are\n"
-    "present, your citations should reference both the chunk citation label\n"
-    "AND the underlying sources transitively, e.g.\n"
-    '"[citation_label] (citing source_a.md, source_b.pdf)".\n'
+    "present, prefer citing assertions that trace back to authoritative\n"
+    "sources, and you may mention the source file name in prose when helpful.\n"
 )
 SYNTHESIS_PREAMBLE_GRAPH_CONTEXT: Final = (
-    "\nThe graph context below provides structured knowledge about entities,\n"
-    "communities, and claims relevant to the question. Use it to frame your\n"
-    "answer but ground all facts in the source evidence. If the graph context\n"
-    "includes a Conflicting Claims section, surface both sides of the\n"
-    "disagreement with their citations — never silently pick a winner.\n"
+    "\nA structured knowledge-graph context is provided above the evidence\n"
+    "chunks. Use the entity definitions, community reports, and extracted\n"
+    "claims to frame your answer, understand domain relationships, and ensure\n"
+    "accurate terminology. If graph context conflicts with evidence chunks,\n"
+    "ground your answer in the evidence chunks.\n"
 )
 
 
 def synthesis_preamble(
     *,
-    has_transitive_sources: bool = True,
-    has_graph_context: bool = True,
+    has_transitive_sources: bool = False,
+    has_graph_context: bool = False,
 ) -> str:
-    """Return the synthesis-prompt preamble with optional sub-sections enabled.
-
-    Used by both the runtime synthesis path (where ``has_*`` flags reflect
-    the actual evidence on the call) and the MCP ``lxd_synthesis_preamble``
-    prompt (where both flags default to ``True`` so clients see every
-    sub-section the system might emit).
-    """
-    text = SYNTHESIS_PREAMBLE_BASE
+    """Return the synthesis preamble, conditionally including contextual guidance."""
+    parts = [SYNTHESIS_PREAMBLE_BASE]
     if has_transitive_sources:
-        text += SYNTHESIS_PREAMBLE_TRANSITIVE_SOURCES
+        parts.append(SYNTHESIS_PREAMBLE_TRANSITIVE_SOURCES)
     if has_graph_context:
-        text += SYNTHESIS_PREAMBLE_GRAPH_CONTEXT
-    return text
+        parts.append(SYNTHESIS_PREAMBLE_GRAPH_CONTEXT)
+    return "".join(parts)
 
 
 @dataclass(frozen=True, slots=True)
 class EvidenceChunk:
-    """Evidence snippet and score used for synthesis.
-
-    ``cited_sources`` carries the underlying-source filenames parsed from
-    the chunk's wiki frontmatter (``**Sources**:`` line). When present, the
-    synthesis prompt instructs the model to cite both the wiki page (via
-    ``citation_label``) and the underlying sources, giving the user a
-    transitive provenance trail back to the original research.
-    """
+    """Ranked evidence chunk passed to the synthesis stage."""
 
     citation_label: str
     text: str
     score: float
-    cited_sources: tuple[str, ...] = ()
+    chunk_id: str | None = None
+    document_id: str | None = None
+    cited_sources: Sequence[str] = field(default_factory=list)
 
 
 @dataclass(frozen=True, slots=True)
 class AnswerEnvelope:
-    """Final answer payload including citations and warnings.
-
-    ``sentence_citations`` carries per-sentence attribution: each entry is
-    one sentence of ``answer_text`` plus the citation labels the model
-    attributed to it inline. Sentences with empty ``citation_labels``
-    are unattributed claims — surface them in the UI as a hallucination
-    risk signal.
-    """
+    """Envelope returned by answer synthesis with metadata and citations."""
 
     answer_status: QueryAnswerStatus
     answer_text: str
@@ -122,59 +101,51 @@ class AnswerEnvelope:
 
 @dataclass(frozen=True, slots=True)
 class StreamingTextDelta:
-    """Incremental text emitted by :func:`stream_synthesize_answer`.
-
-    Streamed deltas are model-raw — they may include partial tokens or
-    fragments of ``<think>...</think>`` reasoning blocks the model
-    sometimes emits. The terminal :class:`AnswerEnvelope` carries the
-    full text with think blocks stripped, so consumers that only need
-    the final answer can ignore the deltas; consumers that want
-    progress UI render them as they arrive.
-    """
+    """One text chunk emitted by :func:`stream_synthesize_answer`."""
 
     text: str
 
 
-def no_retrieval_needed_answer(rationale: str) -> AnswerEnvelope:
-    """Build the canned response for queries the router decided to skip.
+def format_graph_context_for_prompt(context: GraphContext) -> str:
+    """Format structured GraphContext into a prompt section for the LLM."""
+    if context.is_empty():
+        return ""
 
-    Args:
-        rationale: One-sentence reason the router gave (e.g. "greeting,
-            no corpus signal needed").
+    sections: list[str] = []
 
-    Returns:
-        Answer envelope with ``no_retrieval_needed`` status. Empty
-        citations and empty sentence_citations — there is nothing to
-        cite.
-    """
-    body = (
-        "This question does not appear to require information from the "
-        "instructional-design corpus. If you intended a corpus-related "
-        "question, please rephrase to point at a specific concept, "
-        "framework, or model."
-    )
-    return AnswerEnvelope(
-        answer_status=QueryAnswerStatus.NO_RETRIEVAL_NEEDED,
-        answer_text=body,
-        citations=[],
-        warnings=[],
-        metadata={"router_rationale": rationale},
-    )
+    if context.conflicts:
+        sections.append("## Identified Domain Nuances & Disagreements")
+        for c in context.conflicts:
+            ent_a = c.subject_entity_id or "Concept A"
+            ent_b = c.object_entity_id or "Concept B"
+            sections.append(
+                f"- Between [{ent_a}] and [{ent_b}]:\n  {c.claim_a_text}\n  VS.\n  {c.claim_b_text}"
+            )
+        sections.append("")
 
+    if context.entity_profiles:
+        sections.append("## Relevant Entity Context")
+        for ep in context.entity_profiles:
+            summary = ep.llm_summary or ep.deterministic_summary
+            sections.append(f"### {ep.label} ({ep.entity_type}, {ep.domain})\n{summary}")
+        sections.append("")
 
-def no_results_answer() -> AnswerEnvelope:
-    """Build a no-results answer envelope.
+    if context.community_reports:
+        sections.append("## Broader Context (Thematic Communities)")
+        for cr in context.community_reports:
+            summary = cr.llm_summary or cr.deterministic_summary
+            sections.append(
+                f"### Community {cr.community_id} (Level {cr.community_level})\n{summary}"
+            )
+        sections.append("")
 
-    Returns:
-        Answer envelope with `no_results` status.
-    """
-    return AnswerEnvelope(
-        answer_status=QueryAnswerStatus.NO_RESULTS,
-        answer_text="No matching evidence was found in the current store.",
-        citations=[],
-        warnings=[],
-        metadata={},
-    )
+    if context.claims:
+        sections.append("## Key Domain Claims")
+        for claim in context.claims:
+            sections.append(f"- [{claim.claim_type.upper()}] {claim.claim_text}")
+        sections.append("")
+
+    return "\n".join(sections)
 
 
 def synthesize_answer(
@@ -186,17 +157,16 @@ def synthesize_answer(
     brief: LearnerBrief | None = None,
     sampler: Sampler | None = None,
 ) -> AnswerEnvelope:
-    """Synthesize an answer from retrieved evidence chunks.
+    """Synthesize an answer using retrieved evidence and local MLX or client sampling.
 
     Args:
-        question: User question text.
-        evidence: Evidence chunks used for synthesis.
+        question: User query.
+        evidence: Ranked evidence chunks.
         config: Runtime configuration object.
-        graph_context_prompt: Optional graph context to prepend to the prompt.
-        brief: Optional learner brief (audience / modality / Bloom target /
-            constraints). When any field is set, the prompt gains a
-            ``## Learner Brief`` section instructing the model to tailor
-            framing and depth without overriding the evidence-grounding
+        graph_context_prompt: Pre-formatted graph context string.
+        brief: Optional learner brief constraining audience, modality,
+            and Bloom target. Framing instructions are appended to the
+            prompt without loosening the evidence-grounding
             requirement.
         sampler: Optional client-side sampler. When provided (the MCP
             server passes one when ``mcp.synthesis_backend`` is set to
@@ -204,7 +174,7 @@ def synthesize_answer(
             :func:`fastmcp.Context.sample` so the connected client's LLM
             answers. On :class:`SamplerFailure` (client did not advertise
             sampling capability, upstream error, empty response) the call
-            transparently falls back to the server-side Ollama path and
+            transparently falls back to the server-side MLX path and
             surfaces the reason as a warning on the resulting envelope.
 
     Returns:
@@ -247,20 +217,18 @@ def _synthesize_answer_local(
     config: RuntimeConfig,
     citations: list[str],
 ) -> AnswerEnvelope:
-    """Run synthesis on the server-side Ollama model (the default path)."""
+    """Run synthesis on the configured local MLX model."""
     try:
-        response = _client(config).generate(
-            model=config.models.llm,
-            prompt=prompt,
-            think=False if config.models.llm_no_think else None,
-            options={
-                "temperature": config.synthesis.temperature,
-                "num_predict": config.synthesis.max_tokens,
-            },
+        raw = complete_chat(
+            config,
+            prompt,
+            temperature=config.synthesis.temperature,
+            max_tokens=config.synthesis.max_tokens,
+            timeout_secs=float(config.synthesis.timeout_secs),
         )
-    except (ollama.RequestError, ollama.ResponseError) as exc:
+    except ChatError as exc:
         return synthesis_unavailable_answer(citations, f"Synthesis model unavailable: {exc}")
-    answer_text = _strip_thinking(str(response["response"])).strip()
+    answer_text = _strip_thinking(raw).strip()
     if not answer_text:
         return synthesis_unavailable_answer(
             citations,
@@ -284,14 +252,14 @@ def stream_synthesize_answer(
     graph_context_prompt: str = "",
     brief: LearnerBrief | None = None,
 ) -> Iterator[StreamingTextDelta | AnswerEnvelope]:
-    """Stream a synthesis answer from the local Ollama model.
+    """Stream a synthesis answer from the local MLX model.
 
     Yields zero or more :class:`StreamingTextDelta` events as the model
     emits text, then exactly one terminal :class:`AnswerEnvelope` (the
     same object :func:`synthesize_answer` would return). Consumers that
     don't drain the iterator to completion miss the envelope; consumers
     that abandon mid-stream simply lose the answer status without
-    leaking server resources beyond Ollama's own request lifetime.
+    leaking server resources beyond the request lifetime.
 
     Errors during the stream short-circuit: the iterator yields a
     single :class:`AnswerEnvelope` with
@@ -302,32 +270,24 @@ def stream_synthesize_answer(
         question, evidence, graph_context_prompt=graph_context_prompt, brief=brief
     )
     try:
-        stream = _client(config).generate(
-            model=config.models.llm,
-            prompt=prompt,
-            think=False if config.models.llm_no_think else None,
-            stream=True,
-            options={
-                "temperature": config.synthesis.temperature,
-                "num_predict": config.synthesis.max_tokens,
-            },
+        stream = stream_chat(
+            config,
+            prompt,
+            temperature=config.synthesis.temperature,
+            max_tokens=config.synthesis.max_tokens,
+            timeout_secs=float(config.synthesis.timeout_secs),
         )
-    except (ollama.RequestError, ollama.ResponseError) as exc:
+    except ChatError as exc:
         yield synthesis_unavailable_answer(citations, f"Synthesis model unavailable: {exc}")
         return
-
     accumulated: list[str] = []
     try:
-        for response_chunk in stream:
-            text = str(response_chunk.response or "")
-            if not text:
-                continue
+        for text in stream:
             accumulated.append(text)
             yield StreamingTextDelta(text=text)
-    except (ollama.RequestError, ollama.ResponseError) as exc:
+    except ChatError as exc:
         yield synthesis_unavailable_answer(citations, f"Synthesis stream interrupted: {exc}")
         return
-
     full_text = _strip_thinking("".join(accumulated)).strip()
     if not full_text:
         yield synthesis_unavailable_answer(
@@ -365,7 +325,7 @@ def synthesis_unavailable_answer(citations: list[str], warning: str) -> AnswerEn
 
 
 def probe_synthesis_model(config: RuntimeConfig) -> tuple[bool, str | None]:
-    """Probe backend availability and return probe metadata.
+    """Probe MLX backend availability and return probe metadata.
 
     Args:
         config: Runtime configuration object.
@@ -374,15 +334,16 @@ def probe_synthesis_model(config: RuntimeConfig) -> tuple[bool, str | None]:
         Tuple of `(supported, warning)` for synthesis backend.
     """
     try:
-        response = _client(config).generate(
-            model=config.models.llm,
-            prompt="Reply with exactly OK.",
-            think=False if config.models.llm_no_think else None,
-            options={"temperature": 0, "num_predict": 16},
+        raw = complete_chat(
+            config,
+            "Reply with exactly OK.",
+            temperature=0.0,
+            max_tokens=16,
+            timeout_secs=10.0,
         )
-    except (ollama.RequestError, ollama.ResponseError) as exc:
+    except ChatError as exc:
         return False, str(exc)
-    if not _strip_thinking(str(response["response"])).strip():
+    if not _strip_thinking(raw).strip():
         return False, "Synthesis probe returned an empty response."
     return True, None
 
@@ -456,10 +417,6 @@ def _strip_thinking(text: str) -> str:
     return _THINK_BLOCK_PATTERN.sub("", text).strip()
 
 
-def _client(config: RuntimeConfig) -> ollama.Client:
-    return get_ollama_client(str(config.ollama.url), float(config.synthesis.timeout_secs))
-
-
 def insufficient_evidence_answer() -> AnswerEnvelope:
     """Build an insufficient-evidence answer envelope.
 
@@ -472,4 +429,46 @@ def insufficient_evidence_answer() -> AnswerEnvelope:
         citations=[],
         warnings=[],
         metadata={},
+    )
+
+
+def no_results_answer() -> AnswerEnvelope:
+    """Build a no-results answer envelope.
+
+    Returns:
+        Answer envelope with `no_results` status.
+    """
+    return AnswerEnvelope(
+        answer_status=QueryAnswerStatus.NO_RESULTS,
+        answer_text="No matching evidence was found in the current store.",
+        citations=[],
+        warnings=[],
+        metadata={},
+    )
+
+
+def no_retrieval_needed_answer(rationale: str) -> AnswerEnvelope:
+    """Build the canned response for queries the router decided to skip.
+
+    Args:
+        rationale: One-sentence reason the router gave (e.g. "greeting,
+            no corpus signal needed").
+
+    Returns:
+        Answer envelope with ``no_retrieval_needed`` status. Empty
+        citations and empty sentence_citations — there is nothing to
+        cite.
+    """
+    body = (
+        "This question does not appear to require information from the "
+        "instructional-design corpus. If you intended a corpus-related "
+        "question, please rephrase to point at a specific concept, "
+        "framework, or model."
+    )
+    return AnswerEnvelope(
+        answer_status=QueryAnswerStatus.NO_RETRIEVAL_NEEDED,
+        answer_text=body,
+        citations=[],
+        warnings=[],
+        metadata={"router_rationale": rationale},
     )

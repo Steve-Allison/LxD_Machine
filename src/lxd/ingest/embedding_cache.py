@@ -1,7 +1,7 @@
 """Content-addressed embedding cache.
 
 Responsibility:
-    Avoid paying OpenAI / Ollama for embeddings we have already computed.
+    Avoid recomputing embeddings we have already computed.
     Cache entries are keyed by ``(chunk_hash, embedding_model, embedding_dims)``
     — a content-addressed key that is *intrinsically* safe to keep across
     full rebuilds: if the input bytes are the same and the model+dims are the

@@ -20,7 +20,6 @@ from lxd.settings.models import (
     EmbeddingConfig,
     KnowledgeGraphConfig,
     ModelsConfig,
-    OllamaConfig,
     OpenAIEmbeddingConfig,
     RuntimeConfig,
 )
@@ -69,7 +68,6 @@ def _config() -> RuntimeConfig:
             claim_extraction_sub_batch_size=10,
         ),
         openai=OpenAIEmbeddingConfig(api_key_env="OPENAI_API_KEY"),
-        ollama=OllamaConfig.model_construct(url="http://127.0.0.1:11434"),
     )
 
 

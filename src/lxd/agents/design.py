@@ -139,70 +139,112 @@ async def _design_learning_async(
     citations = citation_labels(ranked)
 
     objectives = LearningObjectives(citations=citations)
-    if steps_completed < cap:
-        items, step_warnings = await _draft_json_list(
-            system_prompt=_OBJECTIVES_SYSTEM_PROMPT,
-            user_prompt=(
-                f"TOPIC:\n{topic}\n\nLEARNER BRIEF:\n{brief_summary}\n\nEVIDENCE:\n{evidence_block}"
-            ),
-            config=config,
-            json_key="objectives",
-        )
-        objectives = LearningObjectives(items=items, citations=citations if items else [])
-        warnings.extend(step_warnings)
+    modality_plan = ModalityPlan(citations=citations)
+
+    run_objectives = steps_completed < cap
+    if run_objectives:
         steps_completed += 1
     else:
         warnings.append("max_steps reached before drafting objectives.")
 
-    modality_plan = ModalityPlan(citations=citations)
-    if steps_completed < cap:
-        text, step_warnings = await _draft_json_text(
-            system_prompt=_MODALITY_SYSTEM_PROMPT,
-            user_prompt=(
-                f"TOPIC:\n{topic}\n\nLEARNER BRIEF:\n{brief_summary}\n\nEVIDENCE:\n{evidence_block}"
-            ),
-            config=config,
-            json_key="modality_plan",
-        )
-        modality_plan = ModalityPlan(text=text, citations=citations if text else [])
-        warnings.extend(step_warnings)
+    run_modality = steps_completed < cap
+    if run_modality:
         steps_completed += 1
     else:
         warnings.append("max_steps reached before drafting the modality plan.")
 
-    outline = Outline(citations=citations)
-    if steps_completed < cap:
-        items, step_warnings = await _draft_json_list(
-            system_prompt=_OUTLINE_SYSTEM_PROMPT,
-            user_prompt=(
-                f"TOPIC:\n{topic}\n\nOBJECTIVES:\n{_bullet(objectives.items)}\n\n"
-                f"LEARNER BRIEF:\n{brief_summary}\n\nEVIDENCE:\n{evidence_block}"
-            ),
-            config=config,
-            json_key="outline",
+    tasks = []
+    if run_objectives:
+        tasks.append(
+            _draft_json_list(
+                system_prompt=_OBJECTIVES_SYSTEM_PROMPT,
+                user_prompt=(
+                    f"TOPIC:\n{topic}\n\nLEARNER BRIEF:\n{brief_summary}\n\nEVIDENCE:\n{evidence_block}"
+                ),
+                config=config,
+                json_key="objectives",
+            )
         )
-        outline = Outline(items=items, citations=citations if items else [])
-        warnings.extend(step_warnings)
+    if run_modality:
+        tasks.append(
+            _draft_json_text(
+                system_prompt=_MODALITY_SYSTEM_PROMPT,
+                user_prompt=(
+                    f"TOPIC:\n{topic}\n\nLEARNER BRIEF:\n{brief_summary}\n\nEVIDENCE:\n{evidence_block}"
+                ),
+                config=config,
+                json_key="modality_plan",
+            )
+        )
+
+    if tasks:
+        results = await asyncio.gather(*tasks)
+        res_idx = 0
+        if run_objectives:
+            items, step_warnings = results[res_idx]
+            res_idx += 1
+            objectives = LearningObjectives(items=items, citations=citations if items else [])
+            warnings.extend(step_warnings)
+        if run_modality:
+            text, step_warnings = results[res_idx]
+            res_idx += 1
+            modality_plan = ModalityPlan(text=text, citations=citations if text else [])
+            warnings.extend(step_warnings)
+
+    outline = Outline(citations=citations)
+    assessment = AssessmentBlueprint(citations=citations)
+
+    run_outline = steps_completed < cap
+    if run_outline:
         steps_completed += 1
     else:
         warnings.append("max_steps reached before drafting the outline.")
 
-    assessment = AssessmentBlueprint(citations=citations)
-    if steps_completed < cap:
-        items, step_warnings = await _draft_json_list(
-            system_prompt=_ASSESSMENT_SYSTEM_PROMPT,
-            user_prompt=(
-                f"TOPIC:\n{topic}\n\nOBJECTIVES:\n{_bullet(objectives.items)}\n\n"
-                f"LEARNER BRIEF:\n{brief_summary}\n\nEVIDENCE:\n{evidence_block}"
-            ),
-            config=config,
-            json_key="assessment",
-        )
-        assessment = AssessmentBlueprint(items=items, citations=citations if items else [])
-        warnings.extend(step_warnings)
+    run_assessment = steps_completed < cap
+    if run_assessment:
         steps_completed += 1
     else:
         warnings.append("max_steps reached before drafting the assessment blueprint.")
+
+    tasks_2 = []
+    if run_outline:
+        tasks_2.append(
+            _draft_json_list(
+                system_prompt=_OUTLINE_SYSTEM_PROMPT,
+                user_prompt=(
+                    f"TOPIC:\n{topic}\n\nOBJECTIVES:\n{_bullet(objectives.items)}\n\n"
+                    f"LEARNER BRIEF:\n{brief_summary}\n\nEVIDENCE:\n{evidence_block}"
+                ),
+                config=config,
+                json_key="outline",
+            )
+        )
+    if run_assessment:
+        tasks_2.append(
+            _draft_json_list(
+                system_prompt=_ASSESSMENT_SYSTEM_PROMPT,
+                user_prompt=(
+                    f"TOPIC:\n{topic}\n\nOBJECTIVES:\n{_bullet(objectives.items)}\n\n"
+                    f"LEARNER BRIEF:\n{brief_summary}\n\nEVIDENCE:\n{evidence_block}"
+                ),
+                config=config,
+                json_key="assessment",
+            )
+        )
+
+    if tasks_2:
+        results_2 = await asyncio.gather(*tasks_2)
+        res_idx = 0
+        if run_outline:
+            items, step_warnings = results_2[res_idx]
+            res_idx += 1
+            outline = Outline(items=items, citations=citations if items else [])
+            warnings.extend(step_warnings)
+        if run_assessment:
+            items, step_warnings = results_2[res_idx]
+            res_idx += 1
+            assessment = AssessmentBlueprint(items=items, citations=citations if items else [])
+            warnings.extend(step_warnings)
 
     bundle = DesignArtefactBundle(
         topic=topic,
@@ -327,11 +369,9 @@ async def _call_design_llm(
             user_prompt=user_prompt,
             primary_backend=cfg.backend,
             openai_model=cfg.openai_model,
-            ollama_model=cfg.ollama_model,
             fallback_backend=cfg.fallback_backend,
             temperature=cfg.temperature,
             openai_timeout=cfg.timeout_secs,
-            ollama_timeout=cfg.timeout_secs,
             max_tokens=cfg.max_tokens,
             response_format={"type": "json_object"},
         )

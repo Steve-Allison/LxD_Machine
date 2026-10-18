@@ -1,4 +1,4 @@
-"""Relation extraction from document chunks using LLM (OpenAI primary, Ollama fallback).
+"""Relation extraction from document chunks using LLM (OpenAI).
 
 Uses the shared llm_client for async concurrency, prompt caching,
 and OpenAI Batch API support.
@@ -12,7 +12,6 @@ from pathlib import Path
 from typing import Any, Final, assert_never
 
 import httpx
-import ollama
 import openai
 import structlog
 from pydantic import BaseModel, ConfigDict, Field
@@ -22,7 +21,6 @@ from lxd.ingest.llm_client import (
     build_cached_system_prompt,
     call_with_fallback_async,
     collect_batch_results,
-    get_sync_ollama_compat_client,
     get_sync_openai_client,
     prepare_batch_jsonl,
     run_concurrent_extraction,
@@ -35,14 +33,11 @@ _log = structlog.get_logger(__name__)
 
 _RELATION_LLM_ERRORS: tuple[type[BaseException], ...] = (
     openai.OpenAIError,
-    ollama.ResponseError,
-    ollama.RequestError,
     httpx.HTTPError,
     json.JSONDecodeError,
     TimeoutError,
     OSError,
     RuntimeError,
-    ValueError,
 )
 
 _RELATION_BASE_PROMPT: Final = """You are a knowledge graph builder specialising in learning experience design (LxD), instructional design, and educational theory.
@@ -111,9 +106,9 @@ def extract_relations_for_chunk(
     valid_predicates: frozenset[str],
     config: RuntimeConfig,
 ) -> list[ExtractedRelationRecord]:
-    """Extract semantic relations from a chunk using LLM (OpenAI with Ollama fallback).
+    """Extract semantic relations from a chunk using LLM (OpenAI).
 
-    Returns an empty list if the chunk has too few entity mentions or if all backends fail.
+    Returns an empty list if the chunk has too few entity mentions or if the backend fails.
     """
     cfg = config.relation_extraction
 
@@ -337,7 +332,6 @@ async def _extract_relations_bulk_async(
     )
 
     api_key_env = config.openai.api_key_env if config.openai else "OPENAI_API_KEY"
-    ollama_host = str(config.ollama.url)
 
     async def _extract_one(item: dict[str, Any]) -> list[ExtractedRelationRecord]:
         entity_ids: list[str] = item["_entity_ids"]
@@ -346,15 +340,11 @@ async def _extract_relations_bulk_async(
             user_prompt=_build_user_prompt(item["chunk_text"], entity_ids, valid_predicates),
             primary_backend=cfg.backend,
             openai_model=cfg.openai_model,
-            ollama_model=cfg.ollama_model,
-            fallback_backend=cfg.fallback_backend,
             temperature=cfg.temperature,
             openai_timeout=float(cfg.timeout_secs),
-            ollama_timeout=float(cfg.timeout_secs),
             max_tokens=1000,
             response_format={"type": "json_object"},
             api_key_env=api_key_env,
-            ollama_host=ollama_host,
         )
 
         raw = _parse_response(raw_text)
@@ -385,7 +375,7 @@ async def _extract_relations_bulk_async(
 
 
 # ---------------------------------------------------------------------------
-# Sync fallback (used by per-chunk extraction in pipeline)
+# Sync extraction (used by per-chunk extraction in pipeline)
 # ---------------------------------------------------------------------------
 
 
@@ -395,7 +385,7 @@ def _call_with_fallback_sync(
     valid_predicates: frozenset[str],
     config: RuntimeConfig,
 ) -> list[_RawRelation]:
-    """Synchronous call with OpenAI → Ollama fallback.
+    """Synchronous call with OpenAI.
 
     Exception handling is scoped to the errors the LLM backends can
     plausibly raise (transport/HTTP, model refusals, parse failures,
@@ -409,22 +399,6 @@ def _call_with_fallback_sync(
                 return _call_openai_sync(chunk_text, entity_ids, valid_predicates, config)
             except _RELATION_LLM_ERRORS as exc:
                 _log.warning("relation_extraction_openai_failed", error=str(exc), exc_info=True)
-                if cfg.fallback_backend != "ollama":
-                    return []
-                try:
-                    return _call_ollama_sync(chunk_text, entity_ids, valid_predicates, config)
-                except _RELATION_LLM_ERRORS as fallback_exc:
-                    _log.warning(
-                        "relation_extraction_ollama_fallback_failed",
-                        error=str(fallback_exc),
-                        exc_info=True,
-                    )
-                    return []
-        case "ollama":
-            try:
-                return _call_ollama_sync(chunk_text, entity_ids, valid_predicates, config)
-            except _RELATION_LLM_ERRORS as exc:
-                _log.warning("relation_extraction_ollama_failed", error=str(exc), exc_info=True)
                 return []
         case _:
             assert_never(cfg.backend)
@@ -466,32 +440,6 @@ def _call_openai_sync(
         )
         for item in parsed.relations
     ]
-
-
-def _call_ollama_sync(
-    chunk_text: str,
-    entity_ids: list[str],
-    valid_predicates: frozenset[str],
-    config: RuntimeConfig,
-) -> list[_RawRelation]:
-    cfg = config.relation_extraction
-    client = get_sync_ollama_compat_client(str(config.ollama.url))
-    response = client.chat.completions.create(
-        model=cfg.ollama_model,
-        messages=[
-            {"role": "system", "content": _RELATION_BASE_PROMPT},
-            {
-                "role": "user",
-                "content": _build_user_prompt(chunk_text, entity_ids, valid_predicates),
-            },
-        ],
-        temperature=cfg.temperature,
-        response_format={"type": "json_object"},
-        max_tokens=1000,
-        timeout=float(cfg.timeout_secs),
-    )
-    content = response.choices[0].message.content or ""
-    return _parse_response(content)
 
 
 # ---------------------------------------------------------------------------
@@ -561,8 +509,6 @@ def _active_model(config: RuntimeConfig) -> str:
     match cfg.backend:
         case "openai":
             return cfg.openai_model
-        case "ollama":
-            return cfg.ollama_model
         case _:
             assert_never(cfg.backend)
 

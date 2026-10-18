@@ -139,9 +139,7 @@ def caption_assets_command(
         for record in candidates:
             absolute_path = Path(record.absolute_path)
             if not absolute_path.exists():
-                _console.print(
-                    f"[yellow]Missing file, skipping:[/yellow] {record.source_rel_path}"
-                )
+                _console.print(f"[yellow]Missing file, skipping:[/yellow] {record.source_rel_path}")
                 missing_files += 1
                 continue
 
@@ -174,9 +172,7 @@ def caption_assets_command(
             except sqlite3.Error as exc:
                 with contextlib.suppress(FileNotFoundError, ValueError, RuntimeError):
                     restore_source_chunk_rows(vector_table, record.source_rel_path, prior_vectors)
-                _console.print(
-                    f"[red]Persistence failed for {record.source_rel_path}:[/red] {exc}"
-                )
+                _console.print(f"[red]Persistence failed for {record.source_rel_path}:[/red] {exc}")
                 empty_or_failed += 1
                 continue
 

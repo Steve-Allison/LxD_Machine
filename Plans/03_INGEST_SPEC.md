@@ -60,7 +60,7 @@ Before mutating any store:
 
 - validate settings
 - verify `config.paths.corpus_path` and `config.paths.ontology_path`
-- probe the configured embedder — `probe_embedder(config)` issues one embedding request against whichever backend `models.embed_backend` names (`ollama` or `openai`). When `embed_backend=openai`, the Ollama endpoint is not probed at all — its availability isn't a precondition for an OpenAI-embed run
+- probe the configured embedder — `probe_embedder(config)` issues one embedding request against whichever backend `models.embed_backend` names (`mlx` or `openai`). When `embed_backend=openai`, the local MLX endpoint is not probed at all — its availability isn't a precondition for an OpenAI-embed run
 - open SQLite with WAL-capable settings
 
 Model readiness probe contract:
@@ -243,11 +243,10 @@ Embedding dispatch rules:
 - all new/changed chunks are embedded through `embed_texts_batched`, which
   uses the backend's native batch API in `embedding.batch_size`-sized
   batches
-- on `EmbeddingContextError` (typically Ollama
-  `input length exceeds the context length`) the batch path falls back
+- on `EmbeddingContextError` the batch path falls back
   to per-chunk embedding with recursive splitting, so a single oversize
   chunk never stalls the whole document
-- both OpenAI and Ollama batches are dispatched concurrently via `_run_batches_concurrently` when `len(batches) > 1` and `max_workers > 1`; the serial-Ollama policy that older versions used has been retired
+- OpenAI batches are dispatched concurrently via `_run_batches_concurrently` when `len(batches) > 1` and `max_workers > 1`
 - embedding writes go through the `embedding_cache` LanceDB table via `merge_insert` on `cache_key` (`chunk_hash|model|dims`), a single atomic upsert per key — no delete-then-add split-brain window. Cache lookups are O(log N) via the BTree scalar index on `cache_key`
 
 ### 10.5 Write And Verify
@@ -319,7 +318,7 @@ The `ingest_runs` row records at least: total files, files completed, `searchabl
 | Failure | Behavior |
 |---|---|
 | YAML parse or include resolution failure | Halt ingest before writing ontology snapshot |
-| Embedder probe failure (Ollama unreachable or OpenAI key missing / rate-limited on the probe) | Halt before any store mutation via `RuntimeError` from `_validate_ingest_dependencies` |
+| Embedder probe failure (local MLX unreachable or OpenAI key missing / rate-limited on the probe) | Halt before any store mutation via `RuntimeError` from `_validate_ingest_dependencies` |
 | Markdown / Docling JSON parse failure | Mark file `FAILED` (per-file recoverable path) and continue |
 | PNG link inference failure | Register asset with null parent and continue |
 | Mention detection failure per file | Mark that file `FAILED`; compensating LanceDB delete keeps stores consistent; run continues |

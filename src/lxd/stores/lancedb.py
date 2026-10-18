@@ -350,12 +350,12 @@ def search_chunks(
     """
     query = table.search(query_vector, vector_column_name="vector").metric("cosine")
     if domain is not None:
-        query = query.where(eq_clause("source_domain", domain))
+        query = query.where(eq_clause("source_domain", domain), prefilter=True)
     rows = query.limit(limit).to_list()
     return [
         record
-        for record in (_row_to_vector_search_record(row, score_field="_distance") for row in rows)
-        if record is not None
+        for row in rows
+        if (record := _row_to_vector_search_record(row, score_field="_distance")) is not None
     ]
 
 
@@ -390,7 +390,7 @@ def search_chunks_hybrid(
         text_query = query
     hybrid = table.search(query_type="hybrid").vector(query_vector).text(text_query)
     if domain is not None:
-        hybrid = hybrid.where(eq_clause("source_domain", domain))
+        hybrid = hybrid.where(eq_clause("source_domain", domain), prefilter=True)
     rows = (
         hybrid.rerank(WeightedRRFReranker(k=rrf_k, fts_weight=lexical_weight))
         .limit(limit)
@@ -440,12 +440,12 @@ def search_chunks_fts(
         text_query = query
     fts_query = table.search(text_query, query_type="fts")
     if domain is not None:
-        fts_query = fts_query.where(eq_clause("source_domain", domain))
+        fts_query = fts_query.where(eq_clause("source_domain", domain), prefilter=True)
     rows = fts_query.limit(limit).to_list()
     return [
         record
-        for record in (_row_to_vector_search_record(row, score_field="_score") for row in rows)
-        if record is not None
+        for row in rows
+        if (record := _row_to_vector_search_record(row, score_field="_score")) is not None
     ]
 
 
@@ -718,3 +718,19 @@ def _entity_table_schema(vector_size: int) -> pa.Schema:
 
 def _is_missing_table_error(error: ValueError) -> bool:
     return "was not found" in str(error)
+
+
+def compact_chunk_table(table: Any) -> None:
+    """Compact data files and optimize table layout.
+
+    LanceDB writes append-only fragments on each batch insert/delete. Over
+    time, query latency degrades as fragment count grows. Optimization merges
+    fragments and purges dead files. Safe to call after ingest operations.
+    """
+    try:
+        if hasattr(table, "optimize"):
+            table.optimize()
+        elif hasattr(table, "compact_files"):
+            table.compact_files()
+    except Exception as exc:  # pragma: no cover
+        _log.debug("lancedb.compact_skipped", reason=str(exc))

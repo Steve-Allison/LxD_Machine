@@ -30,7 +30,7 @@ def load_manifest_index(connection: sqlite3.Connection) -> dict[str, ManifestRec
         FROM corpus_manifest
         """
     ).fetchall()
-    return {record.source_rel_path: record for record in (manifest_from_row(row) for row in rows)}
+    return {(record := manifest_from_row(row)).source_rel_path: record for row in rows}
 
 
 def load_manifest_by_content_hash(

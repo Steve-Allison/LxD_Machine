@@ -1,7 +1,7 @@
 """Client-side sampling seam for synthesis.
 
 The MCP server can either run the synthesis LLM call itself (calling
-Ollama via the server's own credentials) or delegate to the client via
+MLX via the server's own credentials) or delegate to the client via
 ``ctx.sample`` (MCP sampling), letting the client's LLM answer with the
 client's own model choice and token budget.
 
@@ -14,7 +14,7 @@ The sampler is sync because synthesis runs inside a worker thread via
 
 When the sampler raises :class:`SamplerFailure` — e.g. the connected
 client did not advertise sampling capability, or the client's own model
-returned an error — the caller falls back to the server-side Ollama
+returned an error — the caller falls back to the server-side MLX
 path and records the reason in the answer envelope's ``warnings``.
 """
 
@@ -29,7 +29,7 @@ class SamplerRequest:
     Attributes:
         prompt: The fully-composed synthesis prompt (preamble + graph
             context + evidence + question), same string the server-side
-            Ollama path would send.
+            MLX path would send.
         temperature: Sampling temperature to request from the client.
         max_tokens: Maximum tokens the sampler should generate.
     """

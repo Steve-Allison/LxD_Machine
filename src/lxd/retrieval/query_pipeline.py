@@ -16,7 +16,7 @@ from lxd.domain.time import utc_now
 from lxd.ingest.wiki_metadata import is_citable_source
 from lxd.ontology.central_projection import format_ontology_context
 from lxd.ontology.loader import load_configured_ontology
-from lxd.retrieval.dense import embed_query
+from lxd.retrieval.dense import embed_query, embed_texts
 from lxd.retrieval.expansion import ExpansionOutcome, expand_question
 from lxd.retrieval.graph_lane import GraphLaneHit, graph_lane_chunk_ids, load_graph_lane_hits
 from lxd.retrieval.graph_routing import (
@@ -282,10 +282,11 @@ def search_chunks(
         )
         multi_query_applied = bool(paraphrases)
         if multi_query_applied:
+            instruction = config.embedding.query_instruction
+            prefixed_paraphrases = [f"{instruction}{p}" if instruction else p for p in paraphrases]
+            paraphrase_vectors = embed_texts(config, prefixed_paraphrases)
             query_variants: list[tuple[str, list[float]]] = [(question, query_vector)]
-            query_variants.extend(
-                (paraphrase, embed_query(config, paraphrase)) for paraphrase in paraphrases
-            )
+            query_variants.extend(zip(paraphrases, paraphrase_vectors, strict=False))
             candidate_lists = [
                 _hybrid_ranked_candidates(
                     table=stores.chunk_table,
@@ -349,7 +350,7 @@ def search_chunks(
         )
 
 
-def answer_question(  # noqa: PLR0917 — established retrieval entrypoint; later args are keyword-only
+def answer_question(
     question: str,
     config: RuntimeConfig,
     domain: str | None = None,

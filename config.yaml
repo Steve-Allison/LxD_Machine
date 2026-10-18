@@ -1,38 +1,53 @@
 # yaml-language-server: $schema=https://steve-allison.github.io/Central_Configs/schemas/resource-meta.schema.json
 _meta:
-  id: "config"
-  title: "Config"
-  version: "0.1.0"
-  schema_version: "1.0.0"
-  last_updated: "2026-08-15"
+  file_id: "config"
+  title: "LxD Machine Runtime Configuration"
+  last_updated: "2026-10-18"
   authority: "LxD_Machine"
-  status: "released"
-  ontology_domain: "learning"
-  ontology_version: "4.0.0"
-  governing_schema: "ResourceSpecification"
+  scope: "Runtime configuration for local LxD Machine pipeline, stores, models, and MCP tools"
+  governing_class: "coe:ConfigurationSpecification"
 
 paths:
   # Curated wiki — synthesised, deduplicated, cross-linked digest of the
-  # raw Knowledge_Base research. Higher signal density and consistent
-  # vocabulary give a better RAG surface than the raw corpus. Each page
-  # carries a **Sources**: line that the ingest pipeline parses into
-  # transitive citations attached to every chunk.
+  # raw research. Higher signal density and consistent vocabulary provide
+  # an optimal RAG surface. Each page carries a Sources: line that the
+  # ingest pipeline parses into transitive citations on every chunk.
   corpus_path: /Users/steveallison/AI_Projects+Code/knowledge/wiki
   # Runtime semantic authority: staged Central distribution, projected at load.
   ontology_path: ontology/vendor/central-configs
   library_path: library/vendor/central-library
   data_path: data/openai
 
-ollama:
-  url: http://localhost:11434
+tenancy:
+  # Single-tenant default; slug matching ^[a-z0-9][a-z0-9_-]{0,62}$
+  corpus_id: default
 
 models:
+  # Primary embedding model and dimension
   embed: text-embedding-3-small
   embed_dims: 1536
-  embed_backend: openai
-  llm: qwen3.5:4b
-  rerank: qwen3-reranker:0.6b
+  embed_backend: openai          # "openai" or "mlx"
+  # Local MLX chat/synthesis writer
+  llm: mlx-community/Qwen2.5-7B-Instruct-4bit
+  llm_backend: mlx
+  # In-process MLX cross-encoder reranker
+  rerank: mlx-community/Qwen3-Reranker-4B-mxfp8
   llm_no_think: true
+
+mlx:
+  # Local MLX writer (mlx_lm.server) and Octen embedding service endpoints
+  chat_url: http://127.0.0.1:8080
+  embed_url: http://127.0.0.1:8100
+  chat_host: 127.0.0.1
+  chat_port: 8080
+  embed_host: 127.0.0.1
+  embed_port: 8100
+  embed_weights: chulcher/Octen-Embedding-8B-mlx
+  auto_start_chat: true
+  auto_start_embed: true
+  startup_timeout_secs: 1800
+  rerank_instruction: "Given a web search query, retrieve relevant passages that answer the query"
+  rerank_max_length: 4096
 
 openai:
   api_key_env: OPENAI_API_KEY
@@ -48,6 +63,13 @@ chunking:
   min_tokens: 20
   tokenizer_backend: tiktoken
   tokenizer_name: cl100k_base
+  # Contextual retrieval: when enabled, prepends 1-sentence document-aware
+  # summary before embedding only (cached by chunk_hash + model).
+  contextual_summary_enabled: false
+  contextual_summary_model: mlx-community/Qwen2.5-7B-Instruct-4bit
+  contextual_summary_temperature: 0.0
+  contextual_summary_timeout_secs: 60
+  contextual_summary_max_tokens: 80
 
 embedding:
   timeout_secs: 60
@@ -56,6 +78,8 @@ embedding:
     - 1
     - 2
     - 4
+  batch_size: 32
+  max_workers: 4
   query_instruction: null
 
 corpus:
@@ -70,9 +94,7 @@ corpus:
     - ".DS_Store"
     # Wiki meta files: high-volume operational logs and registers that
     # would otherwise dilute retrieval. _index.md and _glossary.md are
-    # intentionally KEPT — both are pure RAG gold (TOC + canonical-term
-    # registry). _log is the append-only operations log; _ingest-tracker
-    # is meta-about-sources and would shadow real source pages.
+    # intentionally KEPT (TOC + canonical-term registry).
     - "_log.md"
     - "_ingest-tracker.md"
   min_text_file_bytes: 1
@@ -97,30 +119,46 @@ retrieval:
   rerank_top_k: 20
   lexical_fusion_weight: 2.0
   relation_fusion_weight: 1.0
+  centrality_fusion_weight: 1.0
+  community_diversity_enabled: true
+  # HyDE (Hypothetical Document Embeddings) query rewriting via local MLX
   hyde_enabled: true
+  hyde_model: mlx-community/Qwen2.5-7B-Instruct-4bit
+  hyde_temperature: 0.0
+  hyde_timeout_secs: 30
+  hyde_max_tokens: 200
+  hyde_min_breadth: standard
+  # Multi-query expansion
   multi_query_enabled: true
   multi_query_count: 2
+  multi_query_model: gpt-4o-mini
+  multi_query_timeout_secs: 20.0
+  multi_query_temperature: 0.3
+  # Graph-lane candidate injection
   graph_lane_enabled: true
   graph_lane_fusion_weight: 1.0
   max_graph_lane_hits: 10
 
+adaptive_retrieval:
+  # Self-RAG / CRAG router: classifies query intent before retrieval
+  router_backend: openai
+  router_model: gpt-4o-mini
+  router_timeout_secs: 15.0
+  narrow_dense_top_k: 8
+  broad_dense_top_k: 40
+  heuristic_router_enabled: true
+
 reranker:
-  backend: llama_cpp
-  url: http://127.0.0.1:8012
+  backend: mlx                   # "mlx", "llama_cpp", or "colbert"
+  url: null
   endpoint: /v1/rerank
   timeout_secs: 30
-  # Opt-in second scorer (ColBERT) fused via RRF. Off by default — heavyweight.
+  colbert_model: BAAI/bge-m3
+  colbert_max_length: 512
+  # Optional ensemble scoring: primary backend + ColBERT secondary lane
   ensemble_enabled: false
   ensemble_secondary: colbert
   ensemble_secondary_weight: 1.0
-  launch:
-    auto_start: true
-    executable: llama-server
-    model_source: ollama_blob
-    host: 127.0.0.1
-    port: 8012
-    startup_timeout_secs: 120
-    extra_args: []
 
 expansion:
   hops: 1
@@ -128,13 +166,61 @@ expansion:
 
 relation_extraction:
   backend: openai
-  fallback_backend: ollama
+  fallback_backend: none
   openai_model: gpt-4o-mini
-  ollama_model: qwen3:14b
   min_entity_mentions: 2
   max_relations_per_chunk: 15
   temperature: 0.0
   timeout_secs: 90
+  max_concurrent: 50
+  sub_batch_size: 500
+
+knowledge_graph:
+  min_relation_confidence: 0.5
+  community_resolution: 1.0
+  community_algorithm: louvain
+  community_seed: 42
+  entity_summary_max_chunks: 20
+  entity_embedding_min_mentions: 3
+  # Claim extraction from chunks with entity mentions
+  claim_extraction_backend: openai
+  claim_extraction_model: gpt-4o-mini
+  claim_extraction_min_mentions: 1
+  claim_max_per_chunk: 10
+  claim_extraction_timeout_secs: 90
+  claim_extraction_temperature: 0.0
+  claim_extraction_max_concurrent: 50
+  claim_extraction_sub_batch_size: 500
+  # LLM enrichment of entity profiles and community reports
+  llm_enrichment_backend: openai
+  llm_enrichment_model: gpt-4o-mini
+  llm_enrichment_temperature: 0.1
+  llm_enrichment_timeout_secs: 30
+  # Context augmentation for synthesis
+  multi_hop_max: 3
+  max_entity_context: 5
+  max_community_context: 3
+  max_claim_context: 10
+  max_graph_context_tokens: 1500
+  # Contradiction and conflict detection
+  conflict_detection_enabled: true
+  max_conflicts_in_context: 5
+
+ingest_budget:
+  # Hard ceiling on LLM calls during an ingest run; null for unlimited
+  max_llm_calls_per_run: null
+
+design_agent:
+  backend: openai
+  fallback_backend: none
+  openai_model: gpt-4o-mini
+  temperature: 0.2
+  timeout_secs: 60.0
+  max_tokens: 1500
+  max_steps: 6
+  retrieval_top_k: 8
+  max_empty_retrievals: 2
+  critique_retrieval_top_k: 6
 
 synthesis:
   max_chunks: 8
@@ -145,7 +231,16 @@ synthesis:
 mcp:
   server_name: lxd-machine
   version: 0.1.0
+  async_tools_enabled: true
+  tool_timeout_secs: 60.0
+  synthesis_backend: server_llm  # "server_llm" (local MLX) or "client_sampling"
 
 logging:
   level: INFO
   format: json
+  sample_rate: 1
+  sampled_event_names:
+    - embedding_cache_hit
+    - embedding_cache_miss
+    - chunk_processed
+    - mention_detected

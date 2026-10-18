@@ -1,7 +1,7 @@
 """Probe embedding backends and encode corpus or query text.
 
 Responsibility:
-    Front the Ollama and OpenAI embedding providers behind a uniform
+    Front OpenAI and local Octen (MLX) embedding providers behind a uniform
     ``embed_texts`` / ``embed_chunk_text`` / ``embed_texts_batched`` API, and
     surface :class:`EmbeddingContextError` so the pipeline can split chunks
     that overflow the model's context window.
@@ -12,10 +12,7 @@ Design boundary:
     strategy.
 
 Key constraints:
-    * Ollama batches are sent in a single HTTP call using
-      ``input=list[str]`` when possible, and fall back to per-text requests
-      on context-window errors so a single oversized text cannot fail an
-      entire batch silently.
+    * MLX batches use the resident Octen embedding HTTP server.
     * OpenAI batches respect ``OpenAIEmbeddingConfig.batch_size`` and are
       issued concurrently via a thread pool bounded by ``max_workers``.
       Per-batch failures are aggregated into an :class:`ExceptionGroup` so
@@ -27,17 +24,16 @@ Key constraints:
 
 import os
 import threading
-import time
 from collections.abc import Callable, Sequence
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from itertools import batched, chain
 from operator import attrgetter
-from typing import Final
+from typing import Final, assert_never
 
-import ollama
 import openai
 
+from lxd.mlx.embeddings import embed_texts_http
 from lxd.settings.models import RuntimeConfig
 
 _OPENAI_RESPONSE_INDEX: Final = attrgetter("index")
@@ -129,9 +125,13 @@ def embed_texts(config: RuntimeConfig, texts: list[str]) -> list[list[float]]:
     Returns:
         One embedding vector per input text, in input order.
     """
-    if config.models.embed_backend == "openai":
-        return _openai_embed_texts(config, texts)
-    return _ollama_embed_texts(config, texts)
+    match config.models.embed_backend:
+        case "openai":
+            return _openai_embed_texts(config, texts)
+        case "mlx":
+            return embed_texts_http(config, texts)
+        case _:
+            assert_never(config.models.embed_backend)
 
 
 def embed_chunk_text(config: RuntimeConfig, text: str) -> list[float]:
@@ -171,115 +171,13 @@ def embed_texts_batched(
     """
     if not texts:
         return []
-    if config.models.embed_backend == "openai":
-        return _openai_embed_texts(config, list(texts))
-    return _ollama_embed_batch(config, list(texts))
-
-
-def _ollama_embed_texts(config: RuntimeConfig, texts: list[str]) -> list[list[float]]:
-    """Embed a list of texts via the Ollama backend sequentially."""
-    return [_ollama_embed_single(config, text) for text in texts]
-
-
-def _ollama_embed_batch(config: RuntimeConfig, texts: list[str]) -> list[list[float]]:
-    """Embed ``texts`` through Ollama in one batch, falling back per-text.
-
-    Ollama's ``embed`` accepts ``input: Sequence[str]``; on a 200 response
-    the returned ``embeddings`` list is ordered to match ``input``. If the
-    call fails with a context-length error we cannot tell which text caused
-    it, so we fall back to sequential single embeds and let the first
-    offender surface :class:`EmbeddingContextError` to the caller.
-    """
-    runtime = _embedding_runtime_settings(config)
-    batch_size = max(1, runtime.batch_size)
-    max_workers = max(1, runtime.max_workers)
-
-    batches = [list(batch) for batch in batched(texts, batch_size, strict=False)]
-    if not batches:
-        return []
-
-    if len(batches) == 1 or max_workers == 1:
-        return list(
-            chain.from_iterable(
-                _ollama_embed_one_batch(config, batch, runtime) for batch in batches
-            )
-        )
-
-    return _run_batches_concurrently(
-        batches,
-        max_workers=max_workers,
-        worker=lambda batch: _ollama_embed_one_batch(config, batch, runtime),
-        group_message="ollama embedding batch failures",
-    )
-
-
-def _ollama_embed_one_batch(
-    config: RuntimeConfig,
-    texts: list[str],
-    runtime: _EmbeddingRuntimeSettings,
-) -> list[list[float]]:
-    """Send one Ollama ``embed`` call; fall back per-text on context errors."""
-    attempts = max(1, runtime.retry_attempts)
-    backoff = runtime.retry_backoff
-    last_error: Exception | None = None
-    for attempt in range(attempts):
-        try:
-            response = _ollama_client(config).embed(
-                model=config.models.embed,
-                input=texts,
-                truncate=False,
-                dimensions=config.models.embed_dims,
-            )
-            embeddings = response["embeddings"]
-            if len(embeddings) != len(texts):
-                raise RuntimeError(
-                    f"Ollama embed returned {len(embeddings)} vectors for {len(texts)} inputs"
-                )
-            return [[float(value) for value in vector] for vector in embeddings]
-        except ollama.ResponseError as exc:
-            if "input length exceeds the context length" in str(exc):
-                return [_ollama_embed_single(config, text) for text in texts]
-            last_error = exc
-        except ollama.RequestError as exc:
-            last_error = exc
-        if attempt < attempts - 1:
-            time.sleep(float(backoff[min(attempt, len(backoff) - 1)]) if backoff else 0.0)
-    assert last_error is not None
-    raise last_error
-
-
-def _ollama_embed_single(config: RuntimeConfig, text: str) -> list[float]:
-    """Embed one text via Ollama with retry on transient errors."""
-    runtime = _embedding_runtime_settings(config)
-    attempts = max(1, runtime.retry_attempts)
-    backoff = runtime.retry_backoff
-    last_error: Exception | None = None
-    for attempt in range(attempts):
-        try:
-            response = _ollama_client(config).embed(
-                model=config.models.embed,
-                input=text,
-                truncate=False,
-                dimensions=config.models.embed_dims,
-            )
-            if not response["embeddings"]:
-                raise RuntimeError("Embedding response returned no vectors")
-            return [float(value) for value in response["embeddings"][0]]
-        except ollama.ResponseError as exc:
-            if "input length exceeds the context length" in str(exc):
-                raise EmbeddingContextError(str(exc)) from exc
-            last_error = exc
-        except ollama.RequestError as exc:
-            last_error = exc
-        if attempt < attempts - 1:
-            time.sleep(float(backoff[min(attempt, len(backoff) - 1)]) if backoff else 0.0)
-    assert last_error is not None
-    raise last_error
-
-
-def _ollama_client(config: RuntimeConfig) -> ollama.Client:
-    runtime = _embedding_runtime_settings(config)
-    return ollama.Client(host=str(config.ollama.url), timeout=float(runtime.timeout_secs))
+    match config.models.embed_backend:
+        case "mlx":
+            return embed_texts_http(config, list(texts))
+        case "openai":
+            return _openai_embed_texts(config, list(texts))
+        case _:
+            assert_never(config.models.embed_backend)
 
 
 def _openai_embed_texts(config: RuntimeConfig, texts: list[str]) -> list[list[float]]:

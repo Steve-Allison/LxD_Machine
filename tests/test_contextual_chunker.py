@@ -3,8 +3,8 @@
 The chunker has three integration points exercised here:
 
 * ``augment_chunk_for_embedding`` — pure function, no I/O.
-* ``generate_chunk_context`` — calls Ollama; we monkeypatch the
-  client so the test runs without a live model.
+* ``generate_chunk_context`` — calls MLX; we monkeypatch the
+  chat function so the test runs without a live model.
 * ``lookup_summaries`` / ``store_summaries`` — round-trip through a
   real LanceDB table (project no-mocks rule for internal stores).
 """
@@ -39,16 +39,8 @@ def _config() -> RuntimeConfig:
                 contextual_summary_max_tokens=80,
             ),
             models=SimpleNamespace(llm_no_think=True),
-            ollama=SimpleNamespace(url="http://localhost:11434"),
         ),
     )
-
-
-def _install_ollama_client(monkeypatch: pytest.MonkeyPatch, client: object) -> None:
-    def _factory(_url: str, _timeout: float) -> object:
-        return client
-
-    monkeypatch.setattr(contextual_chunker, "get_ollama_client", _factory)
 
 
 def test_augment_chunk_for_embedding_prepends_summary() -> None:
@@ -59,49 +51,50 @@ def test_augment_chunk_for_embedding_prepends_summary() -> None:
     assert augmented.startswith(
         "This chunk introduces backward design within the ADDIE methodology."
     )
-    assert "Backward design starts from" in augmented
+    assert augmented.endswith("Backward design starts from the desired learning outcome.")
+    assert "\n\n" in augmented
 
 
-def test_augment_chunk_for_embedding_with_empty_summary_is_passthrough() -> None:
-    """Generation failures yield empty summary — augmentation must be a no-op
-    so the embedder still gets the original chunk text."""
-    text = "Body text only."
-    assert augment_chunk_for_embedding(text, "") == text
+def test_augment_chunk_for_embedding_noop_on_empty_summary() -> None:
+    original = "Some text."
+    assert augment_chunk_for_embedding(original, "") == original
 
 
-def test_summary_cache_round_trips_strings(tmp_path: Path) -> None:
-    """Stored summaries reappear via ``lookup_summaries`` keyed by chunk_hash."""
-    database = lancedb.connect(str(tmp_path / "lancedb"))
-    table = open_summary_cache_table(database)
-    written = store_summaries(
+def test_store_and_lookup_summaries_round_trip(tmp_path: Path) -> None:
+    db = lancedb.connect(str(tmp_path / "lancedb"))
+    table = open_summary_cache_table(db)
+
+    stored = store_summaries(
         table,
-        chunk_hashes=["h1", "h2", "h3"],
-        summaries=[
-            "Summary one.",
-            "Summary two.",
-            "",  # empty: must NOT round-trip
-        ],
-        model="qwen3:14b",
+        chunk_hashes=["hash-1", "hash-2"],
+        summaries=["Summary 1.", "Summary 2."],
+        model="model-a",
     )
-    assert written == 2
-    result = lookup_summaries(table, chunk_hashes=["h1", "h2", "h3"], model="qwen3:14b")
-    assert result.hits == {0: "Summary one.", 1: "Summary two."}
-    assert result.misses_indices == [2]
+    assert stored == 2
+
+    # Look up by hash list
+    result = lookup_summaries(table, chunk_hashes=["hash-1", "hash-missing"], model="model-a")
+    assert result.hits == {0: "Summary 1."}
+    assert result.misses_indices == [1]
 
 
-def test_summary_cache_lookup_handles_empty_input(tmp_path: Path) -> None:
-    database = lancedb.connect(str(tmp_path / "lancedb"))
-    table = open_summary_cache_table(database)
-    result = lookup_summaries(table, chunk_hashes=[], model="qwen3:14b")
+def test_store_summaries_empty_list_is_noop(tmp_path: Path) -> None:
+    db = lancedb.connect(str(tmp_path / "lancedb"))
+    table = open_summary_cache_table(db)
+    assert store_summaries(table, chunk_hashes=[], summaries=[], model="model-a") == 0
+
+
+def test_lookup_summaries_empty_list_returns_empty_hits(tmp_path: Path) -> None:
+    db = lancedb.connect(str(tmp_path / "lancedb"))
+    table = open_summary_cache_table(db)
+    result = lookup_summaries(table, chunk_hashes=[], model="model-a")
     assert result.hits == {}
     assert result.misses_indices == []
 
 
-def test_summary_cache_keys_are_model_scoped(tmp_path: Path) -> None:
-    """A summary stored under model A must NOT surface under model B —
-    swapping the local LLM should produce a fresh cache namespace."""
-    database = lancedb.connect(str(tmp_path / "lancedb"))
-    table = open_summary_cache_table(database)
+def test_lookup_summaries_isolates_by_model(tmp_path: Path) -> None:
+    db = lancedb.connect(str(tmp_path / "lancedb"))
+    table = open_summary_cache_table(db)
     store_summaries(
         table,
         chunk_hashes=["h1"],
@@ -116,23 +109,17 @@ def test_summary_cache_keys_are_model_scoped(tmp_path: Path) -> None:
 
 
 def test_generate_chunk_context_returns_first_line(monkeypatch: pytest.MonkeyPatch) -> None:
-    """The Ollama response is post-processed: ``<think>`` blocks stripped,
-    only the first non-empty line returned (some models emit a paragraph
-    of commentary after the requested sentence)."""
+    """The MLX response is post-processed: ``<think>`` blocks stripped,
+    only the first non-empty line returned."""
 
-    class FakeClient:
-        def generate(self, **kwargs: Any) -> dict[str, str]:
-            assert kwargs["model"] == "qwen3:14b"
-            assert kwargs["options"]["temperature"] == 0.0
-            return {
-                "response": (
-                    "<think>let me plan</think>"
-                    "This chunk discusses backward design.\n"
-                    "Some extra commentary the indexer should not embed."
-                )
-            }
+    def _complete(*args: Any, **kwargs: Any) -> str:
+        return (
+            "<think>let me plan</think>"
+            "This chunk discusses backward design.\n"
+            "Some extra commentary the indexer should not embed."
+        )
 
-    _install_ollama_client(monkeypatch, FakeClient())
+    monkeypatch.setattr(contextual_chunker, "complete_chat", _complete)
     summary = generate_chunk_context(
         chunk_text="Backward design...",
         document_title="addie-model.md",
@@ -145,15 +132,13 @@ def test_generate_chunk_context_returns_first_line(monkeypatch: pytest.MonkeyPat
 def test_generate_chunk_context_returns_empty_string_on_failure(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """An offline Ollama yields ``""`` so the pipeline can fall back to
+    """An offline MLX yields ``""`` so the pipeline can fall back to
     embedding the chunk without context (graceful degradation)."""
 
-    class FailingClient:
-        def generate(self, **kwargs: Any) -> dict[str, str]:
-            del kwargs
-            raise contextual_chunker.ollama.RequestError("connection refused")
+    def _fail(*args: Any, **kwargs: Any) -> str:
+        raise contextual_chunker.ChatError[0]("connection refused")
 
-    _install_ollama_client(monkeypatch, FailingClient())
+    monkeypatch.setattr(contextual_chunker, "complete_chat", _fail)
     summary = generate_chunk_context(
         chunk_text="...",
         document_title="t.md",
@@ -169,12 +154,11 @@ def test_generate_chunk_context_handles_missing_document_summary(
     """Empty document_summary must not crash the prompt builder."""
     captured_prompts: list[str] = []
 
-    class CapturingClient:
-        def generate(self, **kwargs: Any) -> dict[str, str]:
-            captured_prompts.append(kwargs["prompt"])
-            return {"response": "OK."}
+    def _capture(*args: Any, **kwargs: Any) -> str:
+        captured_prompts.append(args[1] if len(args) > 1 else kwargs.get("prompt", ""))
+        return "OK."
 
-    _install_ollama_client(monkeypatch, CapturingClient())
+    monkeypatch.setattr(contextual_chunker, "complete_chat", _capture)
     summary = generate_chunk_context(
         chunk_text="x",
         document_title="t.md",

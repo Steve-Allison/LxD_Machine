@@ -99,7 +99,7 @@ def _parse_paraphrases(raw: str, *, original: str, limit: int) -> list[str]:
 def _safe_json(raw: str) -> dict[str, Any]:
     try:
         payload = json.loads(raw)
-    except (json.JSONDecodeError, TypeError):
+    except json.JSONDecodeError, TypeError:
         return {}
     if not isinstance(payload, dict):
         return {}

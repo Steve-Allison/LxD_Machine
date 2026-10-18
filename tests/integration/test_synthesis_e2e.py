@@ -1,19 +1,13 @@
-"""End-to-end synthesis test against a real local Ollama (B-TEST-1).
+"""End-to-end synthesis test against a real local MLX server.
 
 Marked ``live`` so the default ``pixi run test`` does not run it. Run
 explicitly with ``pixi run test-live`` (or ``pytest -m live``) when an
-Ollama server matching ``config.yaml`` is reachable on localhost.
-
-Why this test exists: every other test in the suite mocks the LLM
-boundary. None of them would catch a regression in
-:func:`lxd.synthesis.answering.synthesize_answer` that depended on the
-actual model ignoring the preamble, or rendering the prompt in a
-broken shape, or returning a no-text response.
+MLX chat server matching ``config.yaml`` is reachable on localhost.
 
 What this test verifies:
 
 * The synthesis prompt is wired correctly to the configured local
-  Ollama instance.
+  MLX instance.
 * The answer envelope reaches ``ANSWERED`` status (not
   ``synthesis_unavailable``).
 * The answer text references the entity name from the seeded
@@ -33,10 +27,10 @@ from lxd.synthesis.answering import EvidenceChunk, synthesize_answer
 pytestmark = [pytest.mark.live, pytest.mark.integration]
 
 
-def _ollama_reachable(url: str) -> bool:
+def _mlx_reachable(url: str) -> bool:
     parsed = urlparse(url)
     host = parsed.hostname or "localhost"
-    port = parsed.port or 11434
+    port = parsed.port or 8080
     try:
         with socket.create_connection((host, port), timeout=1.0):
             return True
@@ -44,12 +38,13 @@ def _ollama_reachable(url: str) -> bool:
         return False
 
 
-def test_synthesize_against_real_local_ollama() -> None:
+def test_synthesize_against_real_local_mlx() -> None:
     repo_root = resolve_repo_root()
     config, _ = load_runtime_config(repo_root)
 
-    if not _ollama_reachable(str(config.ollama.url)):
-        pytest.skip(f"Ollama not reachable at {config.ollama.url}; live test skipped.")
+    if config.mlx is None or not _mlx_reachable(str(config.mlx.chat_url)):
+        url = config.mlx.chat_url if config.mlx else "no MLX config"
+        pytest.skip(f"MLX server not reachable at {url}; live test skipped.")
 
     evidence = [
         EvidenceChunk(

@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING, Any, Final, assert_never
 
 import httpx
 
+from lxd.mlx.rerank import probe_mlx_reranker, score_documents
 from lxd.settings.models import RuntimeConfig
 
 if TYPE_CHECKING:
@@ -45,13 +46,16 @@ def probe_reranker(config: RuntimeConfig) -> tuple[bool, str | None]:
     cached = _probe_cache.get(cache_key)
     if cached is not None:
         return cached
-    try:
-        _ensure_reranker_service(config)
-    except RuntimeError as exc:
-        outcome = (False, str(exc))
-        _probe_cache[cache_key] = outcome
-        return outcome
-    outcome = _probe_reranker_uncached(config)
+
+    if config.reranker.backend == "mlx":
+        outcome = probe_mlx_reranker(config)
+    else:
+        try:
+            _ensure_reranker_service(config)
+            outcome = _probe_reranker_uncached(config)
+        except RuntimeError as exc:
+            outcome = (False, str(exc))
+
     _probe_cache[cache_key] = outcome
     return outcome
 
@@ -119,6 +123,8 @@ def _rerank_primary(
         return _rerank_via_colbert(question, candidates, config)
     if backend == "llama_cpp":
         return _rerank_via_llama_cpp(question, candidates, config)
+    if backend == "mlx":
+        return _rerank_via_mlx(question, candidates, config)
     assert_never(backend)
 
 
@@ -165,10 +171,7 @@ def _rrf_fuse_rankings(
         return (1.0 / (_RRF_K + p)) + (secondary_weight * (1.0 / (_RRF_K + s)))
 
     ordered_ids = sorted(by_id, key=_score, reverse=True)
-    return [
-        replace(by_id[chunk_id], score=_score(chunk_id))
-        for chunk_id in ordered_ids
-    ]
+    return [replace(by_id[chunk_id], score=_score(chunk_id)) for chunk_id in ordered_ids]
 
 
 def _rerank_via_colbert(
@@ -185,6 +188,42 @@ def _rerank_via_colbert(
         return RerankOutcome(ranked=candidates, warnings=[str(exc)], applied=False)
     reranked = [replace(s.chunk, score=s.score) for s in scored]
     return RerankOutcome(ranked=reranked, warnings=[], applied=True)
+
+
+def _rerank_via_mlx(
+    question: str,
+    candidates: list[RankedChunk],
+    config: RuntimeConfig,
+) -> RerankOutcome:
+    """Score candidates with the in-process MLX Qwen3 reranker."""
+    mlx = config.mlx
+    if mlx is None:
+        return RerankOutcome(
+            ranked=candidates,
+            warnings=["reranker.backend=mlx requires an mlx config section."],
+            applied=False,
+        )
+    try:
+        scores = score_documents(
+            question,
+            [candidate.text for candidate in candidates],
+            model_id=config.models.rerank,
+            instruction=mlx.rerank_instruction,
+            max_length=mlx.rerank_max_length,
+        )
+    except (OSError, RuntimeError, ValueError, TypeError) as exc:
+        return RerankOutcome(ranked=candidates, warnings=[str(exc)], applied=False)
+    if len(scores) != len(candidates):
+        return RerankOutcome(
+            ranked=candidates,
+            warnings=[
+                f"MLX reranker returned {len(scores)} scores for {len(candidates)} candidates."
+            ],
+            applied=False,
+        )
+    ordered = sorted(zip(scores, candidates, strict=True), key=itemgetter(0), reverse=True)
+    ranked = [replace(candidate, score=float(score)) for score, candidate in ordered]
+    return RerankOutcome(ranked=ranked, warnings=[], applied=True)
 
 
 def _rerank_via_llama_cpp(
@@ -447,47 +486,7 @@ def _resolve_reranker_model_path(config: RuntimeConfig) -> Path:
                 f"Configured reranker model path does not exist: {launch.model_path}"
             )
         return launch.model_path
-    if launch.model_source == "ollama_blob":
-        return _resolve_ollama_blob_model_path(config.models.rerank)
     raise RuntimeError(f"Unsupported reranker launch model_source: {launch.model_source}")
-
-
-def _resolve_ollama_blob_model_path(model_name: str) -> Path:
-    try:
-        result = subprocess.run(
-            ["ollama", "show", "--modelfile", model_name],
-            check=False,
-            capture_output=True,
-            text=True,
-            timeout=15.0,
-        )
-    except subprocess.TimeoutExpired as exc:
-        raise RuntimeError(
-            f"Timed out invoking 'ollama show' for reranker model '{model_name}'."
-        ) from exc
-    except FileNotFoundError as exc:
-        raise RuntimeError(
-            "Ollama CLI not found on PATH; cannot resolve reranker model blob."
-        ) from exc
-    if result.returncode != 0:
-        stderr = result.stderr.strip()
-        raise RuntimeError(
-            f"Could not resolve local Ollama reranker model '{model_name}'. {stderr}".strip()
-        )
-    for line in result.stdout.splitlines():
-        if not line.startswith("FROM "):
-            continue
-        candidate = Path(line.removeprefix("FROM ").strip())
-        if not candidate.is_absolute():
-            break
-        if not candidate.exists():
-            raise RuntimeError(
-                f"Ollama modelfile for '{model_name}' points to a missing blob: {candidate}"
-            )
-        return candidate
-    raise RuntimeError(
-        f"Could not resolve a local model blob from 'ollama show --modelfile {model_name}'."
-    )
 
 
 def _write_pid_file(pid_path: Path, log_path: Path, pid: int, command: list[str]) -> None:
@@ -510,7 +509,7 @@ def _load_running_pid(pid_path: Path) -> int | None:
         return None
     try:
         payload = json.loads(pid_path.read_text(encoding="utf-8"))
-    except (OSError, ValueError):
+    except OSError, ValueError:
         pid_path.unlink(missing_ok=True)
         return None
     pid = payload.get("pid")

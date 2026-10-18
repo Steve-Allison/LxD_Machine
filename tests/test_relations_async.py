@@ -110,7 +110,6 @@ def _make_config() -> Any:
         relation_extraction=SimpleNamespace(
             backend="openai",
             openai_model="gpt-4o-mini",
-            ollama_model="qwen3:14b",
             max_relations_per_chunk=15,
         ),
     )

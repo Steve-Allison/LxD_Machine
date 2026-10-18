@@ -130,9 +130,7 @@ def test_returns_empty_when_graph_lane_disabled(tmp_path: Path) -> None:
     connection = connect_sqlite(tmp_path / "lxd.sqlite3")
     try:
         ensure_schema(connection)
-        hits = load_graph_lane_hits(
-            connection, ["entity-a"], _config(graph_lane_enabled=False)
-        )
+        hits = load_graph_lane_hits(connection, ["entity-a"], _config(graph_lane_enabled=False))
     finally:
         connection.close()
     assert hits == []

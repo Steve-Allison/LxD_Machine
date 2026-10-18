@@ -1,11 +1,16 @@
+import sqlite3
 from pathlib import Path
 from types import SimpleNamespace
 from typing import cast
 
+import pytest
+
 from lxd.app.status import current_ingest_config
 from lxd.retrieval import query_pipeline as _query_pipeline
 from lxd.retrieval.query_pipeline import RankedChunk
+from lxd.retrieval.rerank import RerankOutcome
 from lxd.settings.models import RuntimeConfig
+from lxd.stores.schema import ensure_schema
 
 # Private helpers exercised intentionally — same logical unit as
 # query_pipeline; the tests below regress its retrieval shape.
@@ -182,7 +187,7 @@ def test_current_ingest_config_excludes_query_time_reranker_settings() -> None:
         models=SimpleNamespace(
             embed="nomic-embed-text",
             embed_dims=768,
-            embed_backend="ollama",
+            embed_backend="mlx",
             rerank="dengcao/Qwen3-Reranker-4B:Q4_K_M",
         ),
         reranker=SimpleNamespace(
@@ -198,3 +203,96 @@ def test_current_ingest_config_excludes_query_time_reranker_settings() -> None:
     assert "reranker.backend" not in snapshot
     assert "reranker.url" not in snapshot
     assert "reranker.endpoint" not in snapshot
+
+
+def test_multi_query_batches_paraphrase_embeddings(monkeypatch: pytest.MonkeyPatch) -> None:
+    embed_texts_calls: list[list[str]] = []
+
+    def fake_embed_texts(cfg: object, texts: list[str]) -> list[list[float]]:
+        del cfg
+        embed_texts_calls.append(list(texts))
+        return [[0.1] * 8 for _ in texts]
+
+    def fake_embed_query(cfg: object, text: str) -> list[float]:
+        del cfg, text
+        return [0.1] * 8
+
+    monkeypatch.setattr(_query_pipeline, "embed_texts", fake_embed_texts)
+    monkeypatch.setattr(_query_pipeline, "embed_query", fake_embed_query)
+    monkeypatch.setattr(
+        _query_pipeline, "generate_query_paraphrases", lambda q, r: ["alt 1", "alt 2"]
+    )
+    monkeypatch.setattr(_query_pipeline, "_hybrid_ranked_candidates", lambda **kw: [_chunk("c1")])
+    monkeypatch.setattr(
+        _query_pipeline,
+        "rerank_chunks",
+        lambda q, c, cfg: RerankOutcome(ranked=c, warnings=[], applied=False),
+    )
+    monkeypatch.setattr(_query_pipeline, "list_allowed_domains", lambda conn: {"guides"})
+    monkeypatch.setattr(_query_pipeline, "_attach_centrality_signals", lambda conn, r: r)
+    monkeypatch.setattr(_query_pipeline, "_diversify_by_community", lambda r, limit_count: r)
+    monkeypatch.setattr(
+        _query_pipeline,
+        "expand_question",
+        lambda q, o: SimpleNamespace(
+            expanded_question=q,
+            matched_entities=[],
+            matched_entity_ids=set(),
+            expansion_terms=[],
+            added_terms=[],
+            original_question=q,
+        ),
+    )
+
+    sqlite_conn = sqlite3.connect(":memory:")
+    sqlite_conn.row_factory = sqlite3.Row
+    ensure_schema(sqlite_conn)
+    sqlite_conn.execute(
+        "INSERT INTO corpus_manifest ("
+        "source_rel_path, absolute_path, source_type, source_domain, blake3_hash, "
+        "file_size_bytes, lifecycle_status, retrieval_status, last_seen_at) "
+        "VALUES ('a.md', '/tmp/a.md', 'markdown', 'guides', 'hash', 10, 'current', 'searchable', '2026-10-18T00:00:00Z');"
+    )
+    sqlite_conn.execute(
+        "INSERT INTO chunk_rows ("
+        "chunk_id, document_id, source_rel_path, source_filename, source_type, "
+        "source_domain, source_hash, citation_label, chunk_index, chunk_occurrence, "
+        "token_count, text, chunk_hash, score_hint, metadata_json, embedding_model, embedding_dims) "
+        "VALUES ('c1', 'd1', 'a.md', 'a.md', 'markdown', 'guides', 'h1', '[c1]', 0, 0, 10, 'text', 'h1', 'c1', '{}', 'm', 8);"
+    )
+
+    stores_mock = SimpleNamespace(
+        paths=SimpleNamespace(
+            sqlite_path=Path("/tmp/fake.sqlite"), lancedb_path=Path("/tmp/fake.lance")
+        ),
+        sqlite=sqlite_conn,
+        chunk_table=None,
+    )
+
+    from contextlib import contextmanager
+
+    @contextmanager
+    def fake_open_retrieval_stores(cfg: object) -> object:
+        del cfg
+        yield stores_mock
+
+    monkeypatch.setattr(_query_pipeline, "open_retrieval_stores", fake_open_retrieval_stores)
+
+    from lxd.settings.models import EmbeddingConfig, RetrievalConfig
+
+    cfg = SimpleNamespace(
+        embedding=EmbeddingConfig(timeout_secs=30.0, retry_attempts=3),
+        retrieval=RetrievalConfig(
+            multi_query_enabled=True, hyde_enabled=False, dense_top_k=5, rerank_top_k=5
+        ),
+        expansion=SimpleNamespace(max_terms=5),
+        knowledge_graph=SimpleNamespace(enabled=False),
+        models=SimpleNamespace(embed_dims=8),
+        paths=SimpleNamespace(data_path=Path("/tmp/data")),
+        chunking=SimpleNamespace(contextual_summary_enabled=False),
+    )
+
+    outcome = _query_pipeline.search_chunks("test query", cast("RuntimeConfig", cfg))
+    assert outcome.ranked
+    assert len(embed_texts_calls) == 1
+    assert embed_texts_calls[0] == ["alt 1", "alt 2"]

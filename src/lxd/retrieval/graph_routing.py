@@ -30,6 +30,14 @@ class GraphContext:
     expansion_hops: int
     conflicts: list[ClaimConflict] = field(default_factory=list)
 
+    def is_empty(self) -> bool:
+        return (
+            not self.entity_profiles
+            and not self.community_reports
+            and not self.claims
+            and not self.conflicts
+        )
+
 
 def build_graph_context(
     connection: sqlite3.Connection,

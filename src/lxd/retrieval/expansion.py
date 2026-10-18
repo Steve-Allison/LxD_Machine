@@ -3,17 +3,17 @@
 import sqlite3
 from collections import deque
 from dataclasses import dataclass
+from functools import lru_cache
+from pathlib import Path
 from typing import Any
 
 from lxd.ingest.mentions import detect_mentions
 from lxd.ontology.graph import OntologyGraph
-from lxd.ontology.loader import OntologyLoadResult, load_configured_ontology
+from lxd.ontology.loader import OntologyLoadResult
 from lxd.ontology.matcher import build_or_load_automaton
 from lxd.settings.models import RuntimeConfig
 from lxd.stores.sqlite.chunks import load_corpus_related_entity_ids
 from lxd.stores.sqlite.connection import build_store_paths, connect_sqlite
-
-_ONTOLOGY_CACHE: dict[tuple[str, str, tuple[str, ...], tuple[str, ...]], _OntologyRuntime] = {}
 
 
 @dataclass(frozen=True, slots=True)
@@ -119,28 +119,41 @@ def _expand_from_corpus(config: RuntimeConfig, entity_ids: list[str]) -> list[st
         return []
 
 
+@lru_cache(maxsize=4)
+def _build_ontology_runtime(
+    ontology_path: str,
+    library_path: str,
+    include_globs: tuple[str, ...],
+    ignore_names: tuple[str, ...],
+    data_path: str,
+) -> _OntologyRuntime:
+    from lxd.ontology.loader import load_ontology
+
+    ontology = load_ontology(
+        Path(ontology_path),
+        list(include_globs),
+        list(ignore_names),
+        library_root=Path(library_path) if library_path else None,
+    )
+    return _OntologyRuntime(
+        ontology=ontology,
+        automaton=build_or_load_automaton(
+            ontology.matcher_records,
+            cache_dir=Path(data_path) / "matcher_cache",
+        ),
+        entity_by_id={entity["canonical_id"]: entity for entity in ontology.entity_definitions},
+    )
+
+
 def _ontology_runtime(config: RuntimeConfig) -> _OntologyRuntime:
     library_path = config.paths.library_path
-    cache_key = (
+    return _build_ontology_runtime(
         str(config.paths.ontology_path),
         str(library_path) if library_path is not None else "",
         tuple(config.ontology.include_globs),
         tuple(config.ontology.ignore_names),
+        str(config.paths.data_path),
     )
-    cached = _ONTOLOGY_CACHE.get(cache_key)
-    if cached is not None:
-        return cached
-    ontology = load_configured_ontology(config)
-    runtime = _OntologyRuntime(
-        ontology=ontology,
-        automaton=build_or_load_automaton(
-            ontology.matcher_records,
-            cache_dir=config.paths.data_path / "matcher_cache",
-        ),
-        entity_by_id={entity["canonical_id"]: entity for entity in ontology.entity_definitions},
-    )
-    _ONTOLOGY_CACHE[cache_key] = runtime
-    return runtime
 
 
 def _expand_entity_ids(

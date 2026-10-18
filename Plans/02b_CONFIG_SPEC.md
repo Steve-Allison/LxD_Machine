@@ -37,7 +37,7 @@ All runtime paths must live inside the YAML config under `paths`.
 Both machine profiles must define the following sections:
 
 - `paths`
-- `ollama`
+- `mlx`
 - `models`
 - `chunking`
 - `embedding`
@@ -77,7 +77,8 @@ reranker:
   launch:
     auto_start: true
     executable: llama-server
-    model_source: ollama_blob
+    model_source: model_path
+    model_path: models/reranker.gguf
     host: 127.0.0.1
     port: 8012
     startup_timeout_secs: 120
@@ -92,7 +93,7 @@ Two backends are supported:
 Autostart contract:
 
 - `reranker.launch.auto_start: true` means query and eval may launch `llama-server` automatically when the configured endpoint is not yet listening
-- `reranker.launch.model_source: ollama_blob` means the runtime resolves the real local model blob via `ollama show --modelfile <models.rerank>` rather than hard-coding a home-directory path
+- `reranker.launch.model_source: model_path` points to a local GGUF file path configured in `model_path`
 - the launch command must include `--embedding --pooling rank --reranking` for reranker models served by `llama.cpp`
 - `reranker.launch.host` and `reranker.launch.port` must match the configured `reranker.url`
 - runtime PID and log files must be namespaced by host, port, and model alias so multiple reranker configs do not collide
@@ -134,13 +135,13 @@ chunking:
   tokenizer_backend: tiktoken
   tokenizer_name: cl100k_base
   # Optional contextual-summary preamble (Anthropic-style chunk-level
-  # context). When enabled the pipeline asks the local Ollama LLM for a
+  # context). When enabled the pipeline asks the local MLX LLM for a
   # 1-sentence summary of what each chunk is about within its document
   # and prepends it to the chunk text before embedding only; the stored
   # chunk text stays clean for citation rendering. Cache is keyed on
   # (chunk_hash, model). Defaults off — opt in and re-ingest.
   contextual_summary_enabled: false
-  contextual_summary_model: qwen3:14b
+  contextual_summary_model: mlx-community/Qwen2.5-7B-Instruct-4bit
   contextual_summary_temperature: 0.0
   contextual_summary_timeout_secs: 60
   contextual_summary_max_tokens: 80
@@ -155,8 +156,8 @@ embedding:
   timeout_secs: 120
   retry_attempts: 3
   retry_backoff: [2, 4, 8]
-  batch_size: 32        # texts per backend request (Ollama batch / OpenAI batch)
-  max_workers: 4        # concurrent batch workers for OpenAI; 1 for Ollama
+  batch_size: 32        # texts per backend request (MLX batch / OpenAI batch)
+  max_workers: 4        # concurrent batch workers for OpenAI
   query_instruction: null
 ```
 
@@ -164,11 +165,8 @@ Batching rules:
 
 - the ingest pipeline always calls `embed_texts_batched`, which uses the
   backend's native batch API
-- on an Ollama `input length exceeds the context length` error the whole
-  batch falls back to per-text embedding to isolate the oversize input
-- OpenAI batches are dispatched concurrently via a thread pool of
-  `max_workers`; Ollama defaults to a single worker to keep the local
-  model warm
+- on a context-length error the batch falls back to per-text embedding to isolate the oversize input
+- OpenAI batches are dispatched concurrently via a thread pool of `max_workers`
 
 ### Optional `mcp` settings
 
@@ -189,7 +187,7 @@ via `anyio.fail_after`. Timeouts and exceptions emit structured
 `synthesis_backend` chooses where the `search_knowledge` /
 `search_knowledge_deep` synthesis call runs:
 
-- `server_llm` (default) — the server calls its own Ollama model. Trust
+- `server_llm` (default) — the server calls its own local MLX model. Trust
   and cost boundary stays server-side; the server owns the API keys.
 - `client_sampling` — the server dispatches the synthesis prompt via
   `fastmcp.Context.sample` so the connected client's own LLM answers
@@ -215,7 +213,6 @@ filter key across the store.
 
 For embedding safety:
 
-- the system must call the Ollama embed API with `truncate=false`
 - the live embedder response is authoritative
 - if the embedder rejects a chunk as oversize, ingest must split that chunk again on text boundaries and retry until accepted or until no further split is possible
 - `tiktoken` counts are advisory for initial chunk construction only; they are not treated as proof that a chunk is safe for a non-OpenAI embedder
@@ -231,8 +228,10 @@ paths:
   library_path: library/vendor/central-library
   data_path: data
 
-ollama:
-  url: http://localhost:11434
+mlx:
+  chat_host: 127.0.0.1
+  chat_port: 8080
+  auto_start_chat: false
 
 models:
   embed: nomic-embed-text
@@ -281,7 +280,8 @@ reranker:
   launch:
     auto_start: true
     executable: llama-server
-    model_source: ollama_blob
+    model_source: model_path
+    model_path: models/reranker.gguf
     host: 127.0.0.1
     port: 8012
     startup_timeout_secs: 120
@@ -317,8 +317,10 @@ paths:
   library_path: library/vendor/central-library
   data_path: data
 
-ollama:
-  url: http://localhost:11434
+mlx:
+  chat_host: 127.0.0.1
+  chat_port: 8080
+  auto_start_chat: false
 
 models:
   embed: nomic-embed-text
@@ -367,7 +369,8 @@ reranker:
   launch:
     auto_start: true
     executable: llama-server
-    model_source: ollama_blob
+    model_source: model_path
+    model_path: models/reranker.gguf
     host: 127.0.0.1
     port: 8012
     startup_timeout_secs: 120
@@ -431,7 +434,7 @@ Validation must fail fast when:
 - `models.embed_dims` is not a valid output width supported by the configured embedder
 - the configured embedder cannot complete an embedding request with `truncate=false`
 - `reranker.launch.auto_start = true`, but `llama-server` is not present on `PATH`
-- `reranker.launch.auto_start = true` and `reranker.launch.model_source = ollama_blob`, but `ollama show --modelfile <models.rerank>` does not resolve to a local blob path
+- `reranker.launch.auto_start = true` and `reranker.launch.model_source = model_path`, but `model_path` does not exist on disk
 
 Validation must not assume that `chunking.chunk_size` is automatically safe for the configured embedder.
 

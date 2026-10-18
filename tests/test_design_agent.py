@@ -1,7 +1,7 @@
 """Unit tests for the design/critique agents (Phase 3b/c SOTA roadmap).
 
 All LLM calls and corpus retrieval are monkeypatched — these tests never
-touch a network, Ollama, or a real SQLite/LanceDB store. They exercise the
+touch a network or a real SQLite/LanceDB store. They exercise the
 step-budget circuit, the retrieval circuit breaker, per-step LLM-failure
 degradation, and the artefact/citation shape.
 """
@@ -74,7 +74,9 @@ def _config() -> RuntimeConfig:
     return cast("RuntimeConfig", SimpleNamespace(design_agent=DesignAgentConfig()))
 
 
-async def _fake_call_with_fallback_async(*, system_prompt: str, user_prompt: str, **kwargs: Any) -> str:
+async def _fake_call_with_fallback_async(
+    *, system_prompt: str, user_prompt: str, **kwargs: Any
+) -> str:
     """Route by the literal JSON-shape marker each system prompt asks for.
 
     Using the exact ``{"key":`` substring (rather than a loose keyword like
@@ -104,7 +106,11 @@ def _patch_llm(monkeypatch: pytest.MonkeyPatch) -> None:
 
 def _patch_search_constant(monkeypatch: pytest.MonkeyPatch, outcome: SearchOutcome) -> None:
     def _search_chunks(
-        question: str, config: object, domain: object = None, limit: object = None, route_breadth: object = None
+        question: str,
+        config: object,
+        domain: object = None,
+        limit: object = None,
+        route_breadth: object = None,
     ) -> SearchOutcome:
         del question, config, domain, limit, route_breadth
         return outcome
@@ -198,7 +204,11 @@ def test_design_learning_folds_brief_into_retrieval_query(monkeypatch: pytest.Mo
     seen_queries: list[str] = []
 
     def _search_chunks(
-        question: str, config: object, domain: object = None, limit: object = None, route_breadth: object = None
+        question: str,
+        config: object,
+        domain: object = None,
+        limit: object = None,
+        route_breadth: object = None,
     ) -> SearchOutcome:
         del config, domain, limit, route_breadth
         seen_queries.append(question)

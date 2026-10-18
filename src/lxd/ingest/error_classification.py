@@ -67,40 +67,44 @@ def classify(exc: BaseException) -> ErrorClass:
     Default is ``DATA`` — per-file failure, log and continue. Only SQL errors
     that look like they will repeat for every file get bumped to ``SYSTEMIC``.
     """
-    if isinstance(exc, sqlite3.Error):
-        message = str(exc).lower()
-        if any(pat in message for pat in _SYSTEMIC_SQLITE_PATTERNS):
+    match exc:
+        case sqlite3.Error():
+            message = str(exc).lower()
+            if any(pat in message for pat in _SYSTEMIC_SQLITE_PATTERNS):
+                return ErrorClass.SYSTEMIC
+            if isinstance(exc, sqlite3.IntegrityError):
+                # UNIQUE / CHECK / FK violations on insert are per-row data
+                # problems. They do not repeat for every file in the corpus, so
+                # they should not trip the systemic circuit-breaker.
+                return ErrorClass.DATA
+            # Anything else from sqlite3 (Operational/Database/Programming/
+            # Interface/NotSupported) is store-level and will repeat for every
+            # subsequent file: classify SYSTEMIC so the circuit-breaker can stop
+            # the run before more API budget is spent.
             return ErrorClass.SYSTEMIC
-        if isinstance(exc, sqlite3.IntegrityError):
-            # UNIQUE / CHECK / FK violations on insert are per-row data
-            # problems. They do not repeat for every file in the corpus, so
-            # they should not trip the systemic circuit-breaker.
-            return ErrorClass.DATA
-        # Anything else from sqlite3 (Operational/Database/Programming/
-        # Interface/NotSupported) is store-level and will repeat for every
-        # subsequent file: classify SYSTEMIC so the circuit-breaker can stop
-        # the run before more API budget is spent.
-        return ErrorClass.SYSTEMIC
 
-    if isinstance(exc, OSError):
-        if exc.errno in _TRANSIENT_OS_ERRNOS:
-            return ErrorClass.TRANSIENT
-        if isinstance(exc, FileNotFoundError):
+        case FileNotFoundError():
             return ErrorClass.DATA
-        return ErrorClass.SYSTEMIC
 
-    if isinstance(exc, RuntimeError):
-        message = str(exc).lower()
-        if "rate limit" in message or "timed out" in message or "timeout" in message:
+        case OSError(errno=errno) if errno in _TRANSIENT_OS_ERRNOS:
             return ErrorClass.TRANSIENT
-        if "schema integrity" in message:
+
+        case OSError():
             return ErrorClass.SYSTEMIC
-        return ErrorClass.DATA
 
-    if isinstance(exc, ValueError):
-        return ErrorClass.DATA
+        case RuntimeError():
+            message = str(exc).lower()
+            if "rate limit" in message or "timed out" in message or "timeout" in message:
+                return ErrorClass.TRANSIENT
+            if "schema integrity" in message:
+                return ErrorClass.SYSTEMIC
+            return ErrorClass.DATA
 
-    return ErrorClass.SYSTEMIC
+        case ValueError():
+            return ErrorClass.DATA
+
+        case _:
+            return ErrorClass.SYSTEMIC
 
 
 class CircuitBreakerTripped(RuntimeError):

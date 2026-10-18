@@ -227,7 +227,6 @@ async def _extract_claims_async(
     cached_prompt = build_cached_system_prompt(_CLAIM_BASE_PROMPT, entity_vocabulary=all_entity_ids)
 
     api_key_env = config.openai.api_key_env if config.openai else "OPENAI_API_KEY"
-    ollama_host = str(config.ollama.url)
 
     async def _extract_one(row: Any) -> list[ClaimRecord]:
         chunk_id = str(row["chunk_id"])
@@ -241,14 +240,11 @@ async def _extract_claims_async(
             user_prompt=_build_user_prompt(chunk_text, entity_ids),
             primary_backend=kg_cfg.claim_extraction_backend,
             openai_model=kg_cfg.claim_extraction_model,
-            ollama_model=kg_cfg.claim_extraction_fallback_model,
             temperature=kg_cfg.claim_extraction_temperature,
             openai_timeout=float(kg_cfg.claim_extraction_timeout_secs),
-            ollama_timeout=float(kg_cfg.claim_extraction_timeout_secs),
             max_tokens=2000,
             response_format={"type": "json_object"},
             api_key_env=api_key_env,
-            ollama_host=ollama_host,
         )
 
         raw_claims = _parse_response(raw_text)
@@ -483,7 +479,5 @@ def _active_model(config: RuntimeConfig) -> str:
     match kg_cfg.claim_extraction_backend:
         case "openai":
             return kg_cfg.claim_extraction_model
-        case "ollama":
-            return kg_cfg.claim_extraction_fallback_model
         case _:
             assert_never(kg_cfg.claim_extraction_backend)

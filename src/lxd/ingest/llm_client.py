@@ -1,6 +1,6 @@
-"""Shared async LLM client for OpenAI and Ollama chat completions.
+"""Shared async LLM client for OpenAI chat completions.
 
-Provides lazy client singletons, async call-with-fallback, concurrent extraction
+Provides lazy client singletons, async call helpers, concurrent extraction
 with sub-batch commits, prompt caching expansion, and OpenAI Batch API helpers.
 """
 
@@ -9,10 +9,10 @@ import json
 import os
 import time
 from collections.abc import Awaitable, Callable, Sequence
+from itertools import batched
 from pathlib import Path
-from typing import Any, Final, Literal, assert_never
+from typing import Any, Final, Literal
 
-import ollama
 import openai
 import structlog
 
@@ -23,15 +23,10 @@ _log = structlog.get_logger(__name__)
 # ---------------------------------------------------------------------------
 #
 # The AsyncOpenAI client is a per-api-key singleton (credentials never change
-# mid-process). The Ollama client is keyed on ``(host, timeout)`` because two
-# pipeline stages may legitimately target different hosts or request longer
-# timeouts, and returning a stale client would silently misroute calls.
+# mid-process).
 
 _async_openai_clients: dict[str, openai.AsyncOpenAI] = {}
 _sync_openai_clients: dict[str, openai.OpenAI] = {}
-_async_ollama_compat_clients: dict[str, openai.AsyncOpenAI] = {}
-_sync_ollama_compat_clients: dict[str, openai.OpenAI] = {}
-_sync_ollama_clients: dict[tuple[str, float], ollama.Client] = {}
 
 # Bump above the SDK default of 2 so 429/5xx bursts (which the SDK backs off
 # through with Retry-After honouring) don't fail after two misses. Applies to
@@ -79,84 +74,10 @@ def get_sync_openai_client(api_key_env: str = "OPENAI_API_KEY") -> openai.OpenAI
     return client
 
 
-def get_ollama_client(host: str, timeout: float) -> ollama.Client:
-    """Return a lazily-initialised Ollama client keyed on ``(host, timeout)``.
-
-    The key ensures that two callers with different hosts or different
-    per-request timeouts do not share a single client: the Ollama client
-    captures both values at construction time.
-
-    Kept for callers that need Ollama-native features not exposed by the
-    OpenAI-compat surface (``generate`` with the ``think`` flag for
-    reasoning models, ``chat`` streaming with Ollama-specific options).
-    Extraction paths that only need ``chat`` with JSON output should use
-    :func:`get_async_ollama_compat_client` /
-    :func:`get_sync_ollama_compat_client` instead so both backends share
-    one client type and the SDK-native retry/backoff.
-    """
-    key = (host, float(timeout))
-    cached = _sync_ollama_clients.get(key)
-    if cached is not None:
-        return cached
-    client = ollama.Client(host=host, timeout=timeout)
-    _sync_ollama_clients[key] = client
-    return client
-
-
-def _ollama_compat_v1(host: str) -> str:
-    return host.rstrip("/") + "/v1"
-
-
-def get_async_ollama_compat_client(host: str) -> openai.AsyncOpenAI:
-    """Return an async ``openai.AsyncOpenAI`` client pointed at Ollama's OpenAI-compat API.
-
-    Ollama exposes an OpenAI-compatible endpoint at ``{host}/v1`` that
-    accepts ``chat.completions.create`` with the standard OpenAI
-    request shape (including ``response_format={"type": "json_object"}``
-    for JSON-mode outputs). Using it here unifies the extraction path
-    on one client type — same async surface, same SDK-native retry
-    behaviour — instead of running Ollama through a separate sync SDK
-    wrapped in ``asyncio.to_thread``.
-
-    ``api_key`` is a required openai-SDK parameter but Ollama ignores
-    it; ``"ollama"`` is the conventional placeholder documented by the
-    Ollama project.
-    """
-    base_url = _ollama_compat_v1(host)
-    cached = _async_ollama_compat_clients.get(base_url)
-    if cached is not None:
-        return cached
-    client = openai.AsyncOpenAI(
-        base_url=base_url, api_key="ollama", max_retries=_OPENAI_MAX_RETRIES
-    )
-    _async_ollama_compat_clients[base_url] = client
-    return client
-
-
-def get_sync_ollama_compat_client(host: str) -> openai.OpenAI:
-    """Return a sync ``openai.OpenAI`` client pointed at Ollama's OpenAI-compat API.
-
-    Mirrors :func:`get_async_ollama_compat_client` for the extraction
-    fallback paths that stay synchronous.
-    """
-    base_url = _ollama_compat_v1(host)
-    cached = _sync_ollama_compat_clients.get(base_url)
-    if cached is not None:
-        return cached
-    client = openai.OpenAI(
-        base_url=base_url, api_key="ollama", max_retries=_OPENAI_MAX_RETRIES
-    )
-    _sync_ollama_compat_clients[base_url] = client
-    return client
-
-
 def reset_clients() -> None:
     """Reset client singletons (for testing)."""
     _async_openai_clients.clear()
     _sync_openai_clients.clear()
-    _async_ollama_compat_clients.clear()
-    _sync_ollama_compat_clients.clear()
-    _sync_ollama_clients.clear()
 
 
 # ---------------------------------------------------------------------------
@@ -196,111 +117,38 @@ async def call_openai_async(
     return response.choices[0].message.content or ""
 
 
-async def call_ollama_compat_async(
-    *,
-    system_prompt: str,
-    user_prompt: str,
-    model: str,
-    host: str,
-    temperature: float = 0.0,
-    timeout: float = 90.0,
-    format_: str | None = "json",
-    max_tokens: int = 2000,
-) -> str:
-    """Call Ollama via its OpenAI-compatible endpoint (async, native).
-
-    Runs through :func:`get_async_ollama_compat_client` so both backends
-    share one client type. ``format_="json"`` maps to
-    ``response_format={"type": "json_object"}`` on the compat surface —
-    same semantic as Ollama-native ``format="json"``. Returns the
-    response content string.
-    """
-    client = get_async_ollama_compat_client(host)
-    kwargs: dict[str, Any] = {
-        "model": model,
-        "messages": [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt},
-        ],
-        "temperature": temperature,
-        "max_tokens": max_tokens,
-        "timeout": timeout,
-    }
-    if format_ == "json":
-        kwargs["response_format"] = {"type": "json_object"}
-    response = await client.chat.completions.create(**kwargs)
-    return response.choices[0].message.content or ""
-
-
 async def call_with_fallback_async(
     *,
     system_prompt: str,
     user_prompt: str,
-    primary_backend: Literal["openai", "ollama"],
+    primary_backend: Literal["openai"] = "openai",
     openai_model: str,
-    ollama_model: str,
-    fallback_backend: Literal["ollama", "none"] = "ollama",
+    fallback_backend: Literal["none"] = "none",
     temperature: float = 0.0,
     openai_timeout: float = 90.0,
-    ollama_timeout: float = 90.0,
     max_tokens: int = 2000,
     response_format: dict[str, str] | None = None,
     api_key_env: str = "OPENAI_API_KEY",
-    ollama_host: str = "http://localhost:11434",
-    ollama_format: str | None = "json",
 ) -> str:
-    """Call primary backend with fallback.
+    """Call primary backend (OpenAI).
 
-    Returns response content string, or empty string if all backends fail.
+    Returns response content string, or empty string on failure.
     """
-    match primary_backend:
-        case "openai":
-            try:
-                return await call_openai_async(
-                    system_prompt=system_prompt,
-                    user_prompt=user_prompt,
-                    model=openai_model,
-                    temperature=temperature,
-                    timeout=openai_timeout,
-                    max_tokens=max_tokens,
-                    response_format=response_format,
-                    api_key_env=api_key_env,
-                )
-            except Exception as exc:
-                _log.warning("openai_call_failed", error=str(exc))
-                if fallback_backend != "ollama":
-                    return ""
-                try:
-                    return await call_ollama_compat_async(
-                        system_prompt=system_prompt,
-                        user_prompt=user_prompt,
-                        model=ollama_model,
-                        host=ollama_host,
-                        temperature=temperature,
-                        timeout=ollama_timeout,
-                        format_=ollama_format,
-                        max_tokens=max_tokens,
-                    )
-                except Exception as fallback_exc:
-                    _log.warning("ollama_fallback_failed", error=str(fallback_exc))
-                    return ""
-        case "ollama":
-            try:
-                return await call_ollama_compat_async(
-                    system_prompt=system_prompt,
-                    user_prompt=user_prompt,
-                    model=ollama_model,
-                    host=ollama_host,
-                    temperature=temperature,
-                    timeout=ollama_timeout,
-                    format_=ollama_format,
-                    max_tokens=max_tokens,
-                )
-            except Exception as exc:
-                _log.warning("ollama_call_failed", error=str(exc))
-                return ""
-        case _:
-            assert_never(primary_backend)
+    del fallback_backend
+    try:
+        return await call_openai_async(
+            system_prompt=system_prompt,
+            user_prompt=user_prompt,
+            model=openai_model,
+            temperature=temperature,
+            timeout=openai_timeout,
+            max_tokens=max_tokens,
+            response_format=response_format,
+            api_key_env=api_key_env,
+        )
+    except Exception as exc:
+        _log.warning("openai_call_failed", error=str(exc))
+        return ""
 
 
 # ---------------------------------------------------------------------------
@@ -345,10 +193,9 @@ async def run_concurrent_extraction[T, R](
                 return exc
 
     total = len(items)
-    for batch_start in range(0, total, sub_batch_size):
-        batch_end = min(batch_start + sub_batch_size, total)
-        batch_items = items[batch_start:batch_end]
-
+    batch_start = 0
+    for batch_items in batched(items, sub_batch_size, strict=False):
+        batch_end = min(batch_start + len(batch_items), total)
         start_time = time.monotonic()
         async with asyncio.TaskGroup() as tg:
             tasks = [tg.create_task(_guarded(item)) for item in batch_items]
@@ -379,6 +226,7 @@ async def run_concurrent_extraction[T, R](
             errors=errors,
             elapsed_secs=round(elapsed, 1),
         )
+        batch_start += len(batch_items)
 
     return all_results
 

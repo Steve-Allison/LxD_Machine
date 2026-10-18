@@ -95,8 +95,8 @@ def test_rerank_chunks_uses_llama_cpp_backend(monkeypatch: pytest.MonkeyPatch) -
                 launch=SimpleNamespace(
                     auto_start=False,
                     executable="llama-server",
-                    model_source="ollama_blob",
-                    model_path=None,
+                    model_source="model_path",
+                    model_path=Path("/tmp/model.gguf"),
                     host="127.0.0.1",
                     port=8012,
                     startup_timeout_secs=30,
@@ -193,7 +193,7 @@ def test_rerank_chunks_falls_back_when_url_not_configured() -> None:
     assert outcome.warnings == ["reranker.url must be configured for the llama.cpp backend."]
 
 
-def test_probe_reranker_autostarts_llama_server_from_ollama_blob(
+def test_probe_reranker_autostarts_llama_server_from_model_path(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     rerank._probe_cache.clear()  # pyright: ignore[reportPrivateUsage]
@@ -224,12 +224,11 @@ def test_probe_reranker_autostarts_llama_server_from_ollama_blob(
     def _resolve_executable(executable: str) -> str:
         return executable
 
-    def _resolve_model_path(_model_name: str) -> Path:
-        return Path("/tmp/local-reranker.gguf")
+    model_file = tmp_path / "local-reranker.gguf"
+    model_file.touch()
 
     monkeypatch.setattr(rerank, "_probe_reranker_http", fake_probe)
     monkeypatch.setattr(rerank, "_resolve_llama_server_executable", _resolve_executable)
-    monkeypatch.setattr(rerank, "_resolve_ollama_blob_model_path", _resolve_model_path)
     monkeypatch.setattr(rerank.subprocess, "Popen", fake_popen)
 
     config = _as_config(
@@ -243,8 +242,8 @@ def test_probe_reranker_autostarts_llama_server_from_ollama_blob(
                 launch=SimpleNamespace(
                     auto_start=True,
                     executable="llama-server",
-                    model_source="ollama_blob",
-                    model_path=None,
+                    model_source="model_path",
+                    model_path=model_file,
                     host="127.0.0.1",
                     port=8012,
                     startup_timeout_secs=2,
@@ -263,7 +262,7 @@ def test_probe_reranker_autostarts_llama_server_from_ollama_blob(
         [
             "llama-server",
             "--model",
-            "/tmp/local-reranker.gguf",
+            str(model_file),
             "--embedding",
             "--pooling",
             "rank",
@@ -490,3 +489,79 @@ def test_ensemble_keeps_primary_when_secondary_fails(monkeypatch: pytest.MonkeyP
     assert outcome.applied is True
     assert outcome.ranked[0].chunk_id == "a"
     assert any("colbert unavailable" in w for w in outcome.warnings)
+
+
+def test_rerank_chunks_uses_mlx_backend(monkeypatch: pytest.MonkeyPatch) -> None:
+    from lxd.mlx.rerank import set_document_scorer
+
+    rerank._probe_cache.clear()  # pyright: ignore[reportPrivateUsage]
+    candidates = _as_ranked(
+        [
+            Candidate(
+                chunk_id="low",
+                document_id="d1",
+                citation_label="low",
+                source_rel_path="low.md",
+                source_filename="low.md",
+                source_type="markdown",
+                source_domain="d",
+                source_hash="h1",
+                chunk_index=0,
+                chunk_occurrence=0,
+                token_count=1,
+                text="document low score",
+                score_hint="",
+                metadata_json="{}",
+                score=0.1,
+            ),
+            Candidate(
+                chunk_id="high",
+                document_id="d2",
+                citation_label="high",
+                source_rel_path="high.md",
+                source_filename="high.md",
+                source_type="markdown",
+                source_domain="d",
+                source_hash="h2",
+                chunk_index=0,
+                chunk_occurrence=0,
+                token_count=1,
+                text="document high score",
+                score_hint="",
+                metadata_json="{}",
+                score=0.2,
+            ),
+        ]
+    )
+
+    def _fake_scorer(query: str, documents: list[str]) -> list[float]:
+        # Return 0.2 for low, 0.9 for high
+        return [0.2 if "low" in d else 0.9 for d in documents]
+
+    set_document_scorer(_fake_scorer)
+    try:
+        config = _as_config(
+            SimpleNamespace(
+                reranker=SimpleNamespace(
+                    backend="mlx",
+                    ensemble_enabled=False,
+                ),
+                models=SimpleNamespace(
+                    rerank="mlx-community/Qwen3-Reranker-4B-mxfp8",
+                ),
+                mlx=SimpleNamespace(
+                    rerank_instruction="Retrieve relevant passages",
+                    rerank_max_length=4096,
+                ),
+            )
+        )
+        outcome = rerank.rerank_chunks("test query", candidates, config)
+        assert outcome.applied is True
+        assert len(outcome.ranked) == 2
+        # Highest score should come first
+        assert outcome.ranked[0].chunk_id == "high"
+        assert outcome.ranked[0].score == 0.9
+        assert outcome.ranked[1].chunk_id == "low"
+        assert outcome.ranked[1].score == 0.2
+    finally:
+        set_document_scorer(None)

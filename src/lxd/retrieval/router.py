@@ -202,8 +202,6 @@ def route_query(
     backend = config.router_backend
     if backend == "openai":
         return _route_openai(question=question, config=config, api_key_env=api_key_env)
-    if backend == "ollama":
-        return _route_ollama(config)
     assert_never(backend)
 
 
@@ -230,19 +228,6 @@ def _route_openai(
         _log.warning("query_router_call_failed", error=str(exc))
         return _fallback_route()
     return _parse_route(raw)
-
-
-def _route_ollama(config: AdaptiveRetrievalConfig) -> QueryRoute:
-    """Placeholder Ollama branch — falls back until an ollama JSON-mode call is wired in.
-
-    Keeping the dispatch table exhaustive (with ``assert_never``) means
-    the openai/ollama Literal stays single-source-of-truth in
-    :class:`AdaptiveRetrievalConfig`. When a real Ollama route is added,
-    this function becomes the implementation. Until then it bypasses
-    rather than silently mis-routing.
-    """
-    _log.info("query_router_ollama_not_implemented", model=config.router_model)
-    return _fallback_route()
 
 
 def _fallback_route() -> QueryRoute:
@@ -281,7 +266,7 @@ def _parse_route(raw: str) -> QueryRoute:
 def _safe_json(raw: str) -> dict[str, Any]:
     try:
         payload = json.loads(raw)
-    except (json.JSONDecodeError, TypeError):
+    except json.JSONDecodeError, TypeError:
         return {}
     if not isinstance(payload, dict):
         return {}

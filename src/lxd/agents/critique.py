@@ -121,11 +121,9 @@ async def critique_design_async(
             user_prompt=user_prompt,
             primary_backend=cfg.backend,
             openai_model=cfg.openai_model,
-            ollama_model=cfg.ollama_model,
             fallback_backend=cfg.fallback_backend,
             temperature=cfg.temperature,
             openai_timeout=cfg.timeout_secs,
-            ollama_timeout=cfg.timeout_secs,
             max_tokens=cfg.max_tokens,
             response_format={"type": "json_object"},
         )

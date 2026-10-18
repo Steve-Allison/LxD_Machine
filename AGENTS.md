@@ -29,11 +29,11 @@ src/lxd/
 │   ├── wiki_metadata.py      # Wiki YAML frontmatter, scope line and [[slug]] parser
 │   ├── wiki_relations.py     # Synthetic `wiki_references` relations from [[slug]] cross-references
 │   ├── chunking.py           # Hybrid Docling chunker; recursive context refinement
-│   ├── embedder.py           # Batched Ollama/OpenAI embedding with context-aware retry
+│   ├── embedder.py           # Batched MLX/OpenAI embedding with context-aware retry
 │   ├── embedding_cache.py    # Content-addressed LanceDB cache: (chunk_hash, model, dims)
 │   ├── error_classification.py # Error → TRANSIENT/DATA/SYSTEMIC; circuit breaker
-│   ├── llm_client.py         # Shared async OpenAI/Ollama client; prompt-cache helper
-│   ├── relations.py          # LLM-based relation extraction (OpenAI primary, Ollama fallback)
+│   ├── llm_client.py         # Shared async OpenAI client; prompt-cache helper
+│   ├── relations.py          # LLM-based relation extraction (OpenAI)
 │   ├── claims.py             # LLM-based claim extraction
 │   ├── mentions.py           # Aho-Corasick mention detection in chunk text
 │   └── assets.py             # Asset (PNG) parent-link inference
@@ -162,7 +162,7 @@ The graph build is a resumable state machine (`pixi run build-graph`). Graph con
 - IDs are deterministic (BLAKE3 hash of content + context), not random UUIDs.
 - Configuration is fully Pydantic v2 validated, loaded from YAML profiles via `settings/loader.py`. Tenancy (`corpus_id`) and observability exporters are first-class config sections.
 - MCP tools are read-only with FastMCP (>=3.0) hints for client compatibility and are invoked through the async runtime with per-call timeouts.
-- Chunking uses recursive context refinement when embedding dimensions exceed limits; the batched embedder (`ingest/embedder.py`) falls back per-text on Ollama context-length errors.
+- Chunking uses recursive context refinement when embedding dimensions exceed limits; the batched embedder (`ingest/embedder.py`) supports context-aware retry on length errors.
 - Graph context is additive — prepended to synthesis prompts as structured framing, not fused via RRF with chunks.
 - Schema evolution runs automatically on bootstrap via numbered migrations keyed by `PRAGMA user_version` (`stores/schema.py`).
 - LanceDB `where` clauses are built through `stores/lance_sql.py`; SQLite `IN (?, ?, …)` clauses through `stores/sql_helpers.py`. No raw string interpolation.

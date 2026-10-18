@@ -1,5 +1,6 @@
 """CLI commands and state machine for the knowledge graph build pipeline."""
 
+import math
 import sqlite3
 from datetime import UTC, datetime
 from pathlib import Path
@@ -610,9 +611,10 @@ def _compute_entity_embeddings(
         if not vectors:
             continue
 
-        mean_vector = [sum(v[i] for v in vectors) / len(vectors) for i in range(vector_size)]
+        count = len(vectors)
+        mean_vector = [sum(components) / count for components in zip(*vectors, strict=True)]
         # L2-normalise so cosine similarity search works correctly
-        magnitude = sum(x * x for x in mean_vector) ** 0.5
+        magnitude = math.hypot(*mean_vector)
         if magnitude > 0:
             mean_vector = [x / magnitude for x in mean_vector]
 

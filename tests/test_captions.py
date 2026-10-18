@@ -88,9 +88,7 @@ def test_caption_png_returns_empty_on_openai_error(
 
     mock_client = MagicMock()
     mock_client.chat.completions.create.side_effect = RuntimeError("upstream 500")
-    monkeypatch.setattr(
-        "lxd.ingest.captions.get_sync_openai_client", lambda _env: mock_client
-    )
+    monkeypatch.setattr("lxd.ingest.captions.get_sync_openai_client", lambda _env: mock_client)
 
     result = caption_png(png_path, _config())
     assert result == ""
@@ -107,9 +105,7 @@ def test_caption_png_returns_stripped_caption_text(
     mock_client.chat.completions.create.return_value = _mock_openai_response(
         "  A funnel diagram showing the ADDIE model stages.  "
     )
-    monkeypatch.setattr(
-        "lxd.ingest.captions.get_sync_openai_client", lambda _env: mock_client
-    )
+    monkeypatch.setattr("lxd.ingest.captions.get_sync_openai_client", lambda _env: mock_client)
 
     result = caption_png(png_path, _config())
     assert result == "A funnel diagram showing the ADDIE model stages."
@@ -130,9 +126,7 @@ def test_caption_png_returns_empty_when_content_is_none(
 
     mock_client = MagicMock()
     mock_client.chat.completions.create.return_value = _mock_openai_response(None)
-    monkeypatch.setattr(
-        "lxd.ingest.captions.get_sync_openai_client", lambda _env: mock_client
-    )
+    monkeypatch.setattr("lxd.ingest.captions.get_sync_openai_client", lambda _env: mock_client)
 
     result = caption_png(png_path, _config())
     assert result == ""
@@ -148,9 +142,7 @@ def test_build_caption_chunk_record_assembles_expected_fields(
 ) -> None:
     """Chunk assembly produces a searchable, clearly-labelled ChunkRecord."""
     fake_vector = [0.1, 0.2, 0.3]
-    monkeypatch.setattr(
-        "lxd.ingest.captions.embed_chunk_text", lambda _config, _text: fake_vector
-    )
+    monkeypatch.setattr("lxd.ingest.captions.embed_chunk_text", lambda _config, _text: fake_vector)
 
     record = build_caption_chunk_record(
         source_rel_path="research/diagrams/addie.png",
@@ -180,9 +172,7 @@ def test_build_caption_chunk_record_assembles_expected_fields(
 
 def test_build_caption_chunk_record_is_deterministic(monkeypatch: pytest.MonkeyPatch) -> None:
     """Re-running against an unchanged caption yields the same chunk_id."""
-    monkeypatch.setattr(
-        "lxd.ingest.captions.embed_chunk_text", lambda _config, _text: [0.0]
-    )
+    monkeypatch.setattr("lxd.ingest.captions.embed_chunk_text", lambda _config, _text: [0.0])
 
     kwargs = dict(
         source_rel_path="a/b.png",
@@ -235,9 +225,7 @@ def test_caption_asset_source_builds_chunk_from_monkeypatched_captioner(
         "lxd.ingest.captions.caption_png",
         lambda _path, _config: "A screenshot of the Adobe Learning Manager dashboard.",
     )
-    monkeypatch.setattr(
-        "lxd.ingest.captions.embed_chunk_text", lambda _config, _text: [1.0, 2.0]
-    )
+    monkeypatch.setattr("lxd.ingest.captions.embed_chunk_text", lambda _config, _text: [1.0, 2.0])
 
     asset_path = tmp_path / "dashboard.png"
     result = caption_asset_source(

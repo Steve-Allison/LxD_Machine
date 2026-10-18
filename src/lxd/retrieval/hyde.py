@@ -8,12 +8,12 @@ HyDE asks the local LLM for a hypothetical answer to the question,
 then embeds *that* — bringing the query vector into the
 neighbourhood of the actual answer chunks.
 
-Local-first: uses the configured Ollama model
+Local-first: uses the configured MLX model
 (``config.retrieval.hyde_model``). One LLM call per query; only
 when ``config.retrieval.hyde_enabled`` is True (default False).
-Adds ~2-5s of query latency on a local 14B model — opt-in.
+Adds ~2-5s of query latency on a local model — opt-in.
 
-Failure-safe: if Ollama is unreachable or returns nothing useful,
+Failure-safe: if MLX is unreachable or returns nothing useful,
 ``generate_hypothetical_answer`` returns the empty string. The
 caller then falls back to embedding the literal question, so HyDE
 turns into a no-op rather than breaking retrieval.
@@ -22,10 +22,9 @@ turns into a no-op rather than breaking retrieval.
 import re
 from typing import Final
 
-import ollama
 import structlog
 
-from lxd.ingest.llm_client import get_ollama_client
+from lxd.mlx.chat import ChatError, complete_chat
 from lxd.settings.models import RuntimeConfig
 
 _THINK_BLOCK_PATTERN: Final = re.compile(r"<think>.*?</think>", flags=re.DOTALL)
@@ -47,7 +46,7 @@ Hypothetical answer:
 
 
 def generate_hypothetical_answer(question: str, config: RuntimeConfig) -> str:
-    """Generate a hypothetical answer for HyDE retrieval.
+    """Generate a hypothetical answer for HyDE retrieval via local MLX.
 
     Returns the answer text, or an empty string on any failure so the
     caller can fall back to embedding the literal question (graceful
@@ -59,18 +58,15 @@ def generate_hypothetical_answer(question: str, config: RuntimeConfig) -> str:
     cfg = config.retrieval
     prompt = _HYDE_PROMPT.format(question=cleaned)
     try:
-        client = get_ollama_client(str(config.ollama.url), float(cfg.hyde_timeout_secs))
-        response = client.generate(
+        raw = complete_chat(
+            config,
+            prompt,
+            temperature=cfg.hyde_temperature,
+            max_tokens=cfg.hyde_max_tokens,
+            timeout_secs=float(cfg.hyde_timeout_secs),
             model=cfg.hyde_model,
-            prompt=prompt,
-            think=False if config.models.llm_no_think else None,
-            options={
-                "temperature": cfg.hyde_temperature,
-                "num_predict": cfg.hyde_max_tokens,
-            },
         )
-    except (ollama.RequestError, ollama.ResponseError) as exc:
+    except ChatError as exc:
         _log.warning("hyde_generation_failed", error=str(exc))
         return ""
-    raw = str(response.get("response") if isinstance(response, dict) else response.response or "")
     return _THINK_BLOCK_PATTERN.sub("", raw).strip()

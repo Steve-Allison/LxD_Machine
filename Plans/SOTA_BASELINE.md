@@ -10,7 +10,7 @@ Frozen before the SOTA Full Vision implementation so later phases can prove lift
 | Eval set | `tests/eval/eval_set.json` (20 core questions at freeze) |
 | Mean Recall@10 | **1.000** |
 | Mean MRR@10 | **0.713** |
-| Notes | Reranker warnings present (Ollama/`qwen3-reranker` unreachable); dense+fusion path still scored. Run id tag: `sota-baseline-2026-07-20`. |
+| Notes | Reranker warnings present (reranker unreachable); dense+fusion path still scored. Run id tag: `sota-baseline-2026-07-20`. |
 
 ## Quality eval (`pixi run eval-quality`)
 

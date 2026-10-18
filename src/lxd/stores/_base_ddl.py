@@ -55,6 +55,12 @@ CREATE TABLE IF NOT EXISTS chunk_rows (
     FOREIGN KEY(source_rel_path) REFERENCES corpus_manifest(source_rel_path) ON DELETE CASCADE
 );
 
+CREATE INDEX IF NOT EXISTS idx_chunk_rows_source_rel_path
+ON chunk_rows(source_rel_path);
+
+CREATE INDEX IF NOT EXISTS idx_chunk_rows_document_id
+ON chunk_rows(document_id);
+
 CREATE TABLE IF NOT EXISTS asset_links (
     asset_rel_path TEXT PRIMARY KEY,
     asset_filename TEXT NOT NULL,
@@ -86,6 +92,12 @@ CREATE TABLE IF NOT EXISTS mention_rows (
 
 CREATE INDEX IF NOT EXISTS idx_mention_rows_entity_id
 ON mention_rows(entity_id);
+
+CREATE INDEX IF NOT EXISTS idx_mention_rows_source_rel_path
+ON mention_rows(source_rel_path);
+
+CREATE INDEX IF NOT EXISTS idx_mention_rows_chunk_id
+ON mention_rows(chunk_id);
 
 CREATE TABLE IF NOT EXISTS ontology_sources (
     file_rel_path TEXT PRIMARY KEY,

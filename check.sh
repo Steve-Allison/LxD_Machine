@@ -1,16 +1,15 @@
 #!/usr/bin/env bash
 set -e
-cd /Users/steveallison/AI_Projects+Code/LxD_Machine
-PIXI_BIN=.pixi/envs/default/bin
+cd "$(dirname "$0")"
 
-echo "=== ruff fix ==="
-$PIXI_BIN/ruff check --fix src tests || true
+echo "=== format ==="
+pixi run fmt
 
 echo "=== lint ==="
-$PIXI_BIN/ruff check src tests && echo "LINT OK" || echo "LINT FAILED"
+pixi run lint
 
 echo "=== typecheck ==="
-$PIXI_BIN/pyright src 2>&1 | tail -5
+pixi run typecheck
 
 echo "=== test ==="
-$PIXI_BIN/pytest tests/ -v --tb=short 2>&1
+pixi run test

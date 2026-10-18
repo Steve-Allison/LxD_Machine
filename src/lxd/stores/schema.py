@@ -35,7 +35,7 @@ from lxd.stores._base_ddl import BASE_SCHEMA_DDL
 
 Migration = Callable[[sqlite3.Connection], None]
 
-CURRENT_SCHEMA_VERSION: Final = 11
+CURRENT_SCHEMA_VERSION: Final = 12
 
 
 class SchemaIntegrityError(sqlite3.DatabaseError):
@@ -590,6 +590,29 @@ def _migration_0010_sessions(connection: sqlite3.Connection) -> None:
     )
 
 
+def _migration_0012_chunk_mention_indexes(connection: sqlite3.Connection) -> None:
+    """Add indexes for chunk_rows and mention_rows joins and lookups.
+
+    Improves performance of chunk lookup by document/source and mention lookups
+    by source_rel_path and chunk_id during incremental ingest and retrieval.
+    """
+    connection.executescript(
+        """
+        CREATE INDEX IF NOT EXISTS idx_chunk_rows_source_rel_path
+        ON chunk_rows(source_rel_path);
+
+        CREATE INDEX IF NOT EXISTS idx_chunk_rows_document_id
+        ON chunk_rows(document_id);
+
+        CREATE INDEX IF NOT EXISTS idx_mention_rows_source_rel_path
+        ON mention_rows(source_rel_path);
+
+        CREATE INDEX IF NOT EXISTS idx_mention_rows_chunk_id
+        ON mention_rows(chunk_id);
+        """
+    )
+
+
 _MIGRATIONS: dict[int, Migration] = {
     1: _migration_0001_baseline,
     2: _migration_0002_drop_chunk_vector_json,
@@ -602,6 +625,7 @@ _MIGRATIONS: dict[int, Migration] = {
     9: _migration_0009_entity_embedding_state,
     10: _migration_0010_sessions,
     11: _migration_0011_relation_qualifier,
+    12: _migration_0012_chunk_mention_indexes,
 }
 
 

@@ -1,10 +1,11 @@
 """Tests for HyDE (Hypothetical Document Embeddings) query rewriting."""
 
 from types import SimpleNamespace
-from typing import Any, cast
+from typing import cast
 
 import pytest
 
+from lxd.mlx.chat import ChatError
 from lxd.retrieval import hyde
 from lxd.retrieval.hyde import generate_hypothetical_answer
 from lxd.settings.models import RuntimeConfig
@@ -16,22 +17,14 @@ def _config() -> RuntimeConfig:
         SimpleNamespace(
             retrieval=SimpleNamespace(
                 hyde_enabled=True,
-                hyde_model="qwen3:14b",
+                hyde_model="mlx-community/Qwen2.5-7B-Instruct-4bit",
                 hyde_temperature=0.0,
                 hyde_timeout_secs=30,
                 hyde_max_tokens=200,
             ),
             models=SimpleNamespace(llm_no_think=True),
-            ollama=SimpleNamespace(url="http://localhost:11434"),
         ),
     )
-
-
-def _install_ollama_client(monkeypatch: pytest.MonkeyPatch, client: object) -> None:
-    def _factory(_url: str, _timeout: float) -> object:
-        return client
-
-    monkeypatch.setattr(hyde, "get_ollama_client", _factory)
 
 
 def test_generate_hypothetical_answer_returns_model_response(
@@ -39,20 +32,18 @@ def test_generate_hypothetical_answer_returns_model_response(
 ) -> None:
     """Happy path: the trimmed model response is returned verbatim."""
 
-    class FakeClient:
-        def generate(self, **kwargs: Any) -> dict[str, str]:
-            assert kwargs["model"] == "qwen3:14b"
-            assert kwargs["options"]["num_predict"] == 200
-            assert "What is backward design?" in kwargs["prompt"]
-            return {
-                "response": (
-                    "Backward design is a curriculum framework that begins "
-                    "with the desired learning outcome and works backward to "
-                    "design assessments and instruction."
-                )
-            }
+    def _mock_complete_chat(config: RuntimeConfig, prompt: str, **kwargs: object) -> str:
+        del config
+        assert kwargs.get("model") == "mlx-community/Qwen2.5-7B-Instruct-4bit"
+        assert kwargs.get("max_tokens") == 200
+        assert "What is backward design?" in prompt
+        return (
+            "Backward design is a curriculum framework that begins "
+            "with the desired learning outcome and works backward to "
+            "design assessments and instruction."
+        )
 
-    _install_ollama_client(monkeypatch, FakeClient())
+    monkeypatch.setattr(hyde, "complete_chat", _mock_complete_chat)
     answer = generate_hypothetical_answer("What is backward design?", _config())
     assert "Backward design" in answer
     assert "outcome" in answer
@@ -65,52 +56,47 @@ def test_generate_hypothetical_answer_strips_think_blocks(
     feeds the embedder — the think text would pollute the query
     embedding."""
 
-    class ThinkingClient:
-        def generate(self, **kwargs: Any) -> dict[str, str]:
-            del kwargs
-            return {
-                "response": (
-                    "<think>let me think about backward design</think>"
-                    "Backward design begins with the outcome."
-                )
-            }
+    def _mock_complete_chat(config: RuntimeConfig, prompt: str, **kwargs: object) -> str:
+        del config, prompt, kwargs
+        return (
+            "<think>let me think about backward design</think>"
+            "Backward design begins with the outcome."
+        )
 
-    _install_ollama_client(monkeypatch, ThinkingClient())
+    monkeypatch.setattr(hyde, "complete_chat", _mock_complete_chat)
     answer = generate_hypothetical_answer("...", _config())
     assert answer == "Backward design begins with the outcome."
 
 
-def test_generate_hypothetical_answer_returns_empty_on_offline_ollama(
+def test_generate_hypothetical_answer_returns_empty_on_offline_mlx(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """Offline Ollama yields "" so the caller falls back to embedding
+    """Offline MLX yields "" so the caller falls back to embedding
     the literal question — HyDE becomes a no-op rather than breaking
     retrieval."""
 
-    class FailingClient:
-        def generate(self, **kwargs: Any) -> dict[str, str]:
-            del kwargs
-            raise hyde.ollama.RequestError("connection refused")
+    def _mock_complete_chat(config: RuntimeConfig, prompt: str, **kwargs: object) -> str:
+        del config, prompt, kwargs
+        raise RuntimeError("connection refused")
 
-    _install_ollama_client(monkeypatch, FailingClient())
+    monkeypatch.setattr(hyde, "complete_chat", _mock_complete_chat)
     answer = generate_hypothetical_answer("What is X?", _config())
     assert answer == ""
 
 
 def test_generate_hypothetical_answer_returns_empty_on_blank_question() -> None:
-    """A whitespace-only question short-circuits without calling Ollama."""
+    """A whitespace-only question short-circuits without calling MLX."""
     answer = generate_hypothetical_answer("   ", _config())
     assert answer == ""
 
 
-def test_generate_hypothetical_answer_returns_empty_on_response_error(
+def test_generate_hypothetical_answer_returns_empty_on_chat_error(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    class BadClient:
-        def generate(self, **kwargs: Any) -> dict[str, str]:
-            del kwargs
-            raise hyde.ollama.ResponseError("model unavailable")
+    def _mock_complete_chat(config: RuntimeConfig, prompt: str, **kwargs: object) -> str:
+        del config, prompt, kwargs
+        raise ChatError[0]("model unavailable")
 
-    _install_ollama_client(monkeypatch, BadClient())
+    monkeypatch.setattr(hyde, "complete_chat", _mock_complete_chat)
     answer = generate_hypothetical_answer("What is Y?", _config())
     assert answer == ""

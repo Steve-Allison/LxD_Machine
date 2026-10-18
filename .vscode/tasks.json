@@ -1,0 +1,125 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Pixi: Preflight",
+      "type": "shell",
+      "command": "pixi run preflight",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Pixi: Test",
+      "type": "shell",
+      "command": "pixi run test",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Pixi: Lint",
+      "type": "shell",
+      "command": "pixi run lint",
+      "group": "build",
+      "problemMatcher": ["$ruff"],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Pixi: Format",
+      "type": "shell",
+      "command": "pixi run fmt",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Pixi: Typecheck",
+      "type": "shell",
+      "command": "pixi run typecheck",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Pixi: Check All",
+      "type": "shell",
+      "command": "./check.sh",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Pixi: Ingest",
+      "type": "shell",
+      "command": "pixi run ingest",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Pixi: Build Graph",
+      "type": "shell",
+      "command": "pixi run build-graph",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Pixi: Corpus Status",
+      "type": "shell",
+      "command": "pixi run status",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Pixi: Graph Status",
+      "type": "shell",
+      "command": "pixi run graph-status",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Pixi: FastMCP Server",
+      "type": "shell",
+      "command": "pixi run mcp",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    }
+  ]
+}

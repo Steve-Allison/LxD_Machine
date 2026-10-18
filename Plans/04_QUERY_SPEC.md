@@ -78,7 +78,7 @@ Source-ranking rule:
 Baseline:
 
 - shipped profiles enable reranking by default through a dedicated `llama.cpp` server
-- the reranker backend is independent from the Ollama embed/synthesis runtime
+- the reranker backend is independent from the embed/synthesis runtime
 - optional **ensemble** (`reranker.ensemble_enabled`, default false): primary backend + secondary scorer (typically ColBERT) fused via RRF; secondary failure keeps the primary ranking with a warning; primary failure still falls back to dense-only
 - if `reranker.launch.auto_start = true`, query may start `llama-server` from the configured local reranker source before the first rerank request
 - if the configured reranker is unavailable, query must fall back to dense-only retrieval and surface a warning in query metadata

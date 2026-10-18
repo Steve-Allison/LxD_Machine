@@ -106,74 +106,53 @@ async def test_call_openai_async_returns_content():
 
 
 @pytest.mark.asyncio
-async def test_fallback_uses_ollama_when_openai_fails():
-    """Fallback calls Ollama when OpenAI raises."""
-    with (
-        patch(
-            "lxd.ingest.llm_client.call_openai_async",
-            side_effect=RuntimeError("API down"),
-        ),
-        patch(
-            "lxd.ingest.llm_client.call_ollama_compat_async",
-            return_value='{"claims": []}',
-        ) as mock_ollama,
-    ):
+async def test_fallback_calls_openai_successfully():
+    """call_with_fallback_async calls OpenAI and returns result."""
+    with patch(
+        "lxd.ingest.llm_client.call_openai_async",
+        return_value='{"claims": []}',
+    ) as mock_openai:
         result = await call_with_fallback_async(
             system_prompt="S",
             user_prompt="U",
             primary_backend="openai",
             openai_model="gpt-4o-mini",
-            ollama_model="qwen3:14b",
         )
         assert result == '{"claims": []}'
-        mock_ollama.assert_called_once()
+        mock_openai.assert_called_once()
 
 
 @pytest.mark.asyncio
 async def test_fallback_returns_empty_when_all_fail():
-    """Returns empty string when both backends fail."""
-    with (
-        patch(
-            "lxd.ingest.llm_client.call_openai_async",
-            side_effect=RuntimeError("API down"),
-        ),
-        patch(
-            "lxd.ingest.llm_client.call_ollama_compat_async",
-            side_effect=RuntimeError("Ollama down"),
-        ),
+    """Returns empty string when OpenAI fails."""
+    with patch(
+        "lxd.ingest.llm_client.call_openai_async",
+        side_effect=RuntimeError("API down"),
     ):
         result = await call_with_fallback_async(
             system_prompt="S",
             user_prompt="U",
             primary_backend="openai",
             openai_model="gpt-4o-mini",
-            ollama_model="qwen3:14b",
         )
         assert result == ""
 
 
 @pytest.mark.asyncio
-async def test_fallback_skips_ollama_when_fallback_is_none():
-    """When fallback_backend='none', no Ollama call is made."""
-    with (
-        patch(
-            "lxd.ingest.llm_client.call_openai_async",
-            side_effect=RuntimeError("API down"),
-        ),
-        patch(
-            "lxd.ingest.llm_client.call_ollama_compat_async",
-        ) as mock_ollama,
+async def test_fallback_skips_when_fallback_is_none():
+    """When fallback_backend='none' and primary fails, empty string returned."""
+    with patch(
+        "lxd.ingest.llm_client.call_openai_async",
+        side_effect=RuntimeError("API down"),
     ):
         result = await call_with_fallback_async(
             system_prompt="S",
             user_prompt="U",
             primary_backend="openai",
             openai_model="gpt-4o-mini",
-            ollama_model="qwen3:14b",
             fallback_backend="none",
         )
         assert result == ""
-        mock_ollama.assert_not_called()
 
 
 # ---------------------------------------------------------------------------

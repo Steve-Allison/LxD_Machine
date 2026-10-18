@@ -390,7 +390,6 @@ async def _enrich_async(
     """Async concurrent enrichment of profiles and community reports."""
     kg_cfg = config.knowledge_graph
     api_key_env = config.openai.api_key_env if config.openai else "OPENAI_API_KEY"
-    ollama_host = str(config.ollama.url)
     enriched = 0
 
     # --- Entity profiles ---
@@ -415,14 +414,10 @@ async def _enrich_async(
                 user_prompt=prompt,
                 primary_backend=kg_cfg.llm_enrichment_backend,
                 openai_model=kg_cfg.llm_enrichment_model,
-                ollama_model=kg_cfg.llm_enrichment_fallback_model,
                 temperature=kg_cfg.llm_enrichment_temperature,
                 openai_timeout=float(kg_cfg.llm_enrichment_timeout_secs),
-                ollama_timeout=float(kg_cfg.llm_enrichment_timeout_secs),
                 max_tokens=500,
                 api_key_env=api_key_env,
-                ollama_host=ollama_host,
-                ollama_format=None,
             )
             summary = raw.strip() if raw else None
             return (profile.entity_id, summary)
@@ -470,14 +465,10 @@ async def _enrich_async(
                 user_prompt=prompt,
                 primary_backend=kg_cfg.llm_enrichment_backend,
                 openai_model=kg_cfg.llm_enrichment_model,
-                ollama_model=kg_cfg.llm_enrichment_fallback_model,
                 temperature=kg_cfg.llm_enrichment_temperature,
                 openai_timeout=float(kg_cfg.llm_enrichment_timeout_secs),
-                ollama_timeout=float(kg_cfg.llm_enrichment_timeout_secs),
                 max_tokens=600,
                 api_key_env=api_key_env,
-                ollama_host=ollama_host,
-                ollama_format=None,
             )
             summary = raw.strip() if raw else None
             return (report.community_id, report.community_level, summary)
