@@ -68,33 +68,31 @@ Relative paths are resolved from the directory containing the selected config fi
 
 ```yaml
 reranker:
-  backend: llama_cpp             # or: colbert
-  url: http://127.0.0.1:8012
+  backend: mlx                   # or: colbert
+  url: http://127.0.0.1:8080
   endpoint: /v1/rerank
   timeout_secs: 30
   colbert_model: BAAI/bge-m3     # only consulted when backend=colbert
   colbert_max_length: 512
   launch:
     auto_start: true
-    executable: llama-server
-    model_source: model_path
-    model_path: models/reranker.gguf
+    executable: python
+    model_source: model_name
+    model_path: mlx-community/Qwen3-Reranker-4B-mxfp8
     host: 127.0.0.1
-    port: 8012
+    port: 8080
     startup_timeout_secs: 120
     extra_args: []
 ```
 
 Two backends are supported:
 
-- `llama_cpp` — cross-encoder reranker served by an external `llama-server` process; the documented endpoint aliases include `/reranking`, `/rerank`, `/v1/rerank`, and `/v1/reranking`; the checked-in default is `/v1/rerank`.
+- `mlx` — native Apple Silicon cross-encoder reranker run in-process or served via local HTTP endpoint; uses `mlx-community/Qwen3-Reranker-4B-mxfp8`.
 - `colbert` — in-process late-interaction (multi-vector) reranker via `retrieval/colbert_reranker.py`; scores documents by MaxSim over token-level vectors, using the HuggingFace model named in `colbert_model` (default `BAAI/bge-m3`) with a per-document token cap of `colbert_max_length`. When `backend=colbert` the `url`, `endpoint`, and `launch` block are ignored.
 
 Autostart contract:
 
-- `reranker.launch.auto_start: true` means query and eval may launch `llama-server` automatically when the configured endpoint is not yet listening
-- `reranker.launch.model_source: model_path` points to a local GGUF file path configured in `model_path`
-- the launch command must include `--embedding --pooling rank --reranking` for reranker models served by `llama.cpp`
+- `reranker.launch.auto_start: true` means query and eval may launch the local reranker service automatically when the configured endpoint is not yet listening
 - `reranker.launch.host` and `reranker.launch.port` must match the configured `reranker.url`
 - runtime PID and log files must be namespaced by host, port, and model alias so multiple reranker configs do not collide
 
@@ -273,17 +271,17 @@ retrieval:
   lexical_fusion_weight: 2.0
 
 reranker:
-  backend: llama_cpp
-  url: http://127.0.0.1:8012
+  backend: mlx
+  url: http://127.0.0.1:8080
   endpoint: /v1/rerank
   timeout_secs: 30
   launch:
     auto_start: true
-    executable: llama-server
-    model_source: model_path
-    model_path: models/reranker.gguf
+    executable: python
+    model_source: model_name
+    model_path: mlx-community/Qwen3-Reranker-4B-mxfp8
     host: 127.0.0.1
-    port: 8012
+    port: 8080
     startup_timeout_secs: 120
     extra_args: []
 
@@ -397,14 +395,9 @@ logging:
 
 ### Recommended model policy
 
-- Default English embedder in the live local runtime: `nomic-embed-text`
-- Default vector width: `768`
-- Storage reduction option after benchmark confirmation: `512` or `256` dimensions using Matryoshka-capable embedders only
-- Default reranker model alias for the `llama.cpp` server: `dengcao/Qwen3-Reranker-4B:Q4_K_M`
-- Best-balance synthesis model in the current local runtime: `mistral-small3.1`
-- Best-quality synthesis model in the current local runtime: `qwen3:30b-a3b`
-
-If the `llama.cpp` server uses local aliases that differ from model-card names, the checked-in config must use the real runnable server alias, not the upstream registry identifier.
+- Primary embedding model: `text-embedding-3-small` (1536 dims) or local `chulcher/Octen-Embedding-8B-mlx`
+- Default cross-encoder reranker: `mlx-community/Qwen3-Reranker-4B-mxfp8` (Apple Silicon native via MLX)
+- Default synthesis model: `mlx-community/Qwen2.5-7B-Instruct-4bit` (in-process / `mlx_lm.server`)
 
 ## 7. What Changing Config Requires
 
@@ -433,8 +426,6 @@ Validation must fail fast when:
 - `corpus.text_extensions` and `corpus.asset_extensions` overlap
 - `models.embed_dims` is not a valid output width supported by the configured embedder
 - the configured embedder cannot complete an embedding request with `truncate=false`
-- `reranker.launch.auto_start = true`, but `llama-server` is not present on `PATH`
-- `reranker.launch.auto_start = true` and `reranker.launch.model_source = model_path`, but `model_path` does not exist on disk
 
 Validation must not assume that `chunking.chunk_size` is automatically safe for the configured embedder.
 

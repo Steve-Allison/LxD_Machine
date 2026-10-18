@@ -82,7 +82,7 @@ Responsibilities:
 - route the query via the adaptive router (`retrieval/router.py`) — decide `retrieve?` and `breadth` (`narrow` | `standard` | `broad`); short-circuit meta / out-of-scope questions with `no_retrieval_needed`
 - expand the question with ontology entities (Aho-Corasick) plus entity-embedding nearest neighbours (mandatory feature, degrades gracefully when the graph isn't built)
 - retrieve via LanceDB native hybrid search (`Table.search(query_type="hybrid").rerank(RRFReranker())`) — engine issues one query, runs dense k-NN and BM25 FTS in parallel, fuses via RRF; the previous two-query split + Python-side lexical-lane fuse is superseded
-- rerank retrieved candidates through the configured backend (`llama_cpp` cross-encoder over HTTP or in-process ColBERT); when the reranker is unavailable the pipeline surfaces a live warning via `ctx.warning` AND records it in the buffered `warnings` list, then continues with the hybrid ranking
+- rerank retrieved candidates through the configured backend (native Apple Silicon MLX cross-encoder in-process or over HTTP); when the reranker is unavailable the pipeline surfaces a live warning via `ctx.warning` AND records it in the buffered `warnings` list, then continues with the hybrid ranking
 - fuse rerank, relation-membership, and centrality lanes on top of the hybrid ranking via source-aware RRF; optionally community-diversify
 - build graph context (entity profiles + community reports + claims) additively for the synthesis prompt
 - synthesise a cited answer either against the server's local MLX model or, when `mcp.synthesis_backend=client_sampling`, via MCP `ctx.sample` (with server-LLM fallback on `SamplerFailure`)
@@ -96,7 +96,7 @@ Query scope rule:
 
 Responsibilities:
 
-- expose 20 read-only tools spanning corpus operations, ontology lookup, knowledge-graph operations, status, and the full answer pipeline
+- expose 23 read-only tools spanning corpus operations, ontology lookup, knowledge-graph operations, design agents, status, and the full answer pipeline
 - expose 3 URI-templated resources (`lxd://corpus/{path*}`, `lxd://entity/{entity_id}`, `lxd://community/{entity_id}`) and 2 prompts (`lxd_synthesis_preamble`, `lxd_query_refinement`)
 - keep tool bodies thin: server-layer tools call lower-level query and store modules and add no business logic
 - use the per-thread SQLite connection pool (`stores/sqlite/_pool.pooled_connection`) instead of opening a fresh connection per request — the pool is initialised once per worker thread with the required PRAGMAs and reused for every subsequent tool call on that thread

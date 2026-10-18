@@ -77,12 +77,11 @@ Source-ranking rule:
 
 Baseline:
 
-- shipped profiles enable reranking by default through a dedicated `llama.cpp` server
+- shipped profiles enable reranking by default through native Apple Silicon MLX (`mlx-community/Qwen3-Reranker-4B-mxfp8`)
 - the reranker backend is independent from the embed/synthesis runtime
 - optional **ensemble** (`reranker.ensemble_enabled`, default false): primary backend + secondary scorer (typically ColBERT) fused via RRF; secondary failure keeps the primary ranking with a warning; primary failure still falls back to dense-only
-- if `reranker.launch.auto_start = true`, query may start `llama-server` from the configured local reranker source before the first rerank request
+- if `reranker.launch.auto_start = true`, query may start the local MLX service from the configured local reranker source before the first rerank request
 - if the configured reranker is unavailable, query must fall back to dense-only retrieval and surface a warning in query metadata
-- alternative rerankers such as `FlashRank` are later optimizations, not the V1 baseline
 
 ### Stage 4b — Graph context + conflicts
 

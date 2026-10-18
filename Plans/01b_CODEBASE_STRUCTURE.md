@@ -73,7 +73,12 @@ src/lxd/
     error_classification.py   # TRANSIENT / DATA / SYSTEMIC classifier + circuit breaker
     budget.py                 # Per-run LLM-spend ceiling
     llm_client.py             # Shared sync/async OpenAI client + Batch API helpers
-    pipeline/                 # Sequential per-source orchestrator subpackage — NO re-export façade
+  mlx/
+    chat.py                   # Local MLX chat/synthesis engine + streaming
+    rerank.py                 # Native MLX cross-encoder reranker
+    embed_server.py           # In-process MLX embedding service
+    rerank_server.py          # In-process MLX reranking service
+  pipeline/                 # Sequential per-source orchestrator subpackage — NO re-export façade
       __init__.py
       orchestrator.py         # run_ingest, build_ingest_plan, IngestPlan, persist+commit loop
       sources.py              # Per-source extract → chunk → embed → assemble records
@@ -81,7 +86,7 @@ src/lxd/
       moves.py                # Move detection, unchanged-source skip, document_id resolution, chunk cloning
   retrieval/
     dense.py
-    rerank.py                 # llama_cpp HTTP + in-process ColBERT backends
+    rerank.py                 # Native MLX cross-encoder / HTTP pooled reranker backends
     colbert_reranker.py       # In-process late-interaction (multi-vector) reranker
     hyde.py                   # Hypothetical Document Embeddings (HyDE) query rewriter
     router.py                 # Adaptive router (retrieve? / breadth: narrow|standard|broad)

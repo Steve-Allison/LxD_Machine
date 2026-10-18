@@ -34,24 +34,24 @@
 - `build_entity_profiles`: Signature remains unchanged, but internal SQL queries for claims, predicates, and community member counts are pre-loaded in single passes.
 - `build_community_reports`: Reuses `load_entity_profile_source_hashes` dictionary rather than executing SQL in loop.
 
-- [ ] **Step 1: Write tests for batch pre-loaded profiling**
+- [x] **Step 1: Write tests for batch pre-loaded profiling**
 Add unit test asserting `build_entity_profiles` produces identical profiles while executing batch queries.
 
-- [ ] **Step 2: Run test to verify current state**
+- [x] **Step 2: Run test to verify current state**
 Run: `pixi run pytest tests/test_community_enrichment_composite_pk.py`
 
-- [ ] **Step 3: Implement batch pre-loading in `src/lxd/ontology/profiles.py`**
+- [x] **Step 3: Implement batch pre-loading in `src/lxd/ontology/profiles.py`**
 1. Add helper `_load_all_top_predicates(connection)` to load relation counts grouped by `subject_entity_id`.
 2. Add helper `_load_claims_grouped_by_entity(connection)` to load claims grouped by entity ID.
 3. Precompute `community_member_counts = Counter(community_assignments.values())`.
 4. Replace per-entity `upsert_entity_profile` with bulk transaction or batched insert.
 5. In `build_community_reports`, pass the pre-loaded `entity_profile_hashes` directly.
 
-- [ ] **Step 4: Run tests and verify**
+- [x] **Step 4: Run tests and verify**
 Run: `pixi run pytest tests/test_community_enrichment_composite_pk.py`
 Expected: PASS
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 ```bash
 git add src/lxd/ontology/profiles.py tests/
 git commit -m "perf: eliminate N+1 query cascades in entity profiling and community reports"
@@ -70,18 +70,18 @@ git commit -m "perf: eliminate N+1 query cascades in entity profiling and commun
 - `score_documents`: Evaluates all documents while retaining cache between candidates; clears cache once at the end of the batch.
 - `_embed`: Processes texts without wiping the memory cache inside the text loop.
 
-- [ ] **Step 1: Run existing rerank tests**
+- [x] **Step 1: Run existing rerank tests**
 Run: `pixi run pytest tests/test_rerank.py`
 Expected: PASS
 
-- [ ] **Step 2: Update `src/lxd/mlx/rerank.py` and `src/lxd/mlx/embed_server.py`**
+- [x] **Step 2: Update `src/lxd/mlx/rerank.py` and `src/lxd/mlx/embed_server.py`**
 Remove `mx.clear_cache()` from inside `for document in documents:` and `for text in texts:`. Move `mx.clear_cache()` to after the loop.
 
-- [ ] **Step 3: Run rerank tests and verify**
+- [x] **Step 3: Run rerank tests and verify**
 Run: `pixi run pytest tests/test_rerank.py`
 Expected: PASS
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 ```bash
 git add src/lxd/mlx/rerank.py src/lxd/mlx/embed_server.py
 git commit -m "perf: eliminate inner-loop mx.clear_cache() memory churn in MLX inference"
@@ -101,19 +101,19 @@ git commit -m "perf: eliminate inner-loop mx.clear_cache() memory churn in MLX i
 - `_client` in `src/lxd/retrieval/rerank.py`: Uses `lxd.net.http.get_sync_client`.
 - `_expand_from_corpus` in `src/lxd/retrieval/expansion.py`: Uses `pooled_connection`.
 
-- [ ] **Step 1: Run query pipeline tests**
+- [x] **Step 1: Run query pipeline tests**
 Run: `pixi run pytest tests/test_query_pipeline.py`
 Expected: PASS
 
-- [ ] **Step 2: Implement pooled client and database connection**
+- [x] **Step 2: Implement pooled client and database connection**
 1. In `src/lxd/retrieval/rerank.py`, update `_client(config)` to return `get_sync_client(base_url=str(config.reranker.url), timeout_secs=float(config.reranker.timeout_secs))`. Note: do not use `with _client(config) as client:` context manager if closing is not desired; or adapt callers to not close the pooled client.
 2. In `src/lxd/retrieval/expansion.py`, use `with pooled_connection(store_paths.sqlite_path) as connection:`.
 
-- [ ] **Step 3: Verify tests pass**
+- [x] **Step 3: Verify tests pass**
 Run: `pixi run pytest tests/test_rerank.py tests/test_query_pipeline.py`
 Expected: PASS
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 ```bash
 git add src/lxd/retrieval/rerank.py src/lxd/retrieval/expansion.py
 git commit -m "perf: reuse pooled HTTP clients and pooled SQLite connections on retrieval hot paths"
@@ -133,19 +133,19 @@ git commit -m "perf: reuse pooled HTTP clients and pooled SQLite connections on 
 - `_persist_ingest_progress`: Called every $N$ files (e.g. 10) and on completion/failure/boundary, not every single file.
 - `load_chunk_centrality_signals`, `load_corpus_related_entity_ids`: Use `in_clause_for` from `stores/sql_helpers.py` with parameter chunking.
 
-- [ ] **Step 1: Run ingest and chunk store tests**
+- [x] **Step 1: Run ingest and chunk store tests**
 Run: `pixi run pytest tests/integration/test_ingest_resilience.py tests/test_dense.py`
 Expected: PASS
 
-- [ ] **Step 2: Implement throttling and chunked SQL helper adoption**
+- [x] **Step 2: Implement throttling and chunked SQL helper adoption**
 1. In `orchestrator.py`, update the loop so progress is persisted only if `files_completed % 10 == 0` or upon loop exit.
 2. In `src/lxd/stores/sqlite/chunks.py`, refactor `load_chunk_centrality_signals` and `load_corpus_related_entity_ids` to use `in_clause_for`.
 
-- [ ] **Step 3: Verify tests pass**
+- [x] **Step 3: Verify tests pass**
 Run: `pixi run pytest tests/integration/test_ingest_resilience.py tests/test_dense.py`
 Expected: PASS
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 ```bash
 git add src/lxd/ingest/pipeline/orchestrator.py src/lxd/stores/sqlite/chunks.py
 git commit -m "perf: throttle ingest progress persistence and harden SQLite dynamic clauses"
@@ -158,23 +158,34 @@ git commit -m "perf: throttle ingest progress persistence and harden SQLite dyna
 **Files:**
 - All modified files
 
-- [ ] **Step 1: Run format check**
+- [x] **Step 1: Run format check**
 Run: `pixi run fmt`
 
-- [ ] **Step 2: Run linter**
+- [x] **Step 2: Run linter**
 Run: `pixi run lint`
 
-- [ ] **Step 3: Run strict typecheck**
+- [x] **Step 3: Run strict typecheck**
 Run: `pixi run typecheck`
 
-- [ ] **Step 4: Run preflight check**
+- [x] **Step 4: Run preflight check**
 Run: `pixi run preflight`
 
-- [ ] **Step 5: Run full test suite**
+- [x] **Step 5: Run full test suite**
 Run: `pixi run test`
 Expected: 556 passed, 0 failures.
 
-- [ ] **Step 6: Push to remote repository**
+- [x] **Step 6: Push to remote repository**
 ```bash
 git push origin main
 ```
+
+---
+
+### Task 6: Latent Bottlenecks & Retrieval Lane Optimizations (Completed)
+
+1. **Eliminated Full-Corpus Manifest & Mention Scans on Every Search Query**: Replaced heavy `summarize_store` call with lightweight `has_chunks(connection)` in `src/lxd/retrieval/query_pipeline.py`.
+2. **Batch Chunk Loading**: Implemented `load_chunk_records_by_ids` and converted sequential `load_chunk_record_by_id` loops in `src/lxd/retrieval/graph_lane.py` and `_append_missing_graph_lane_chunks` in `query_pipeline.py` into $O(1)$ batch queries.
+3. **Batch Profile and Community Report Loading**: Implemented `load_entity_profiles_by_ids` and `load_community_reports_by_ids` in `src/lxd/stores/sqlite/kg_profiles.py` to eliminate N+1 loops in `build_graph_context` and `_matched_community_ids`.
+4. **LanceDB Index Query Deduplication**: Eliminated 4x redundant `table.list_indices()` queries per table open in `src/lxd/stores/lancedb.py`.
+5. **Streaming BLAKE3 Corpus Hashing**: Implemented genuine stream-chunked BLAKE3 hashing in `src/lxd/ingest/scanner.py`.
+6. **All Verified**: Formatted, 0 ruff lint errors, 0 pyright errors, 556/556 tests passing. Committed and pushed to `main`.

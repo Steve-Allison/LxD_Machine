@@ -37,6 +37,11 @@ src/lxd/
 │   ├── claims.py             # LLM-based claim extraction
 │   ├── mentions.py           # Aho-Corasick mention detection in chunk text
 │   └── assets.py             # Asset (PNG) parent-link inference
+├── mlx/                      # Native Apple Silicon acceleration (chat, rerank, embed & rerank servers)
+│   ├── chat.py               # Local MLX chat/synthesis engine + streaming
+│   ├── rerank.py             # Native MLX cross-encoder reranker
+│   ├── embed_server.py       # In-process MLX embedding service
+│   └── rerank_server.py      # In-process MLX reranking service
 ├── ontology/                 # YAML ontology loading, graph building, Aho-Corasick matching
 │   ├── entity_graph.py       # Combined entity graph + 6 centrality metrics
 │   ├── communities.py        # Louvain community detection (Leiden optional)
