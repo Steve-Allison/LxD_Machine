@@ -18,6 +18,7 @@ from pydantic import ValidationError
 
 from lxd.agents._retrieval import citation_labels, format_evidence_block
 from lxd.agents.artefacts import CritiqueResult, DesignArtefactBundle
+from lxd.domain.json_utils import extract_json_dict
 from lxd.ingest.llm_client import call_with_fallback_async
 from lxd.retrieval.query_pipeline import search_chunks
 from lxd.settings.models import RuntimeConfig
@@ -163,11 +164,8 @@ def _render_artefact(
     text = artefact.strip()
     if not text:
         return "", ""
-    try:
-        parsed = json.loads(text)
-    except json.JSONDecodeError, TypeError:
-        return text, ""
-    if isinstance(parsed, dict):
+    parsed = extract_json_dict(text)
+    if parsed:
         return _render_mapping(parsed)
     return text, ""
 
@@ -182,11 +180,7 @@ def _render_mapping(payload: dict[str, Any]) -> tuple[str, str]:
 
 
 def _safe_json(raw: str) -> dict[str, Any]:
-    try:
-        payload = json.loads(raw)
-    except json.JSONDecodeError, TypeError:
-        return {}
-    return payload if isinstance(payload, dict) else {}
+    return extract_json_dict(raw)
 
 
 def _coerce_score(value: object) -> float | None:

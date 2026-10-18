@@ -42,6 +42,10 @@ src/lxd/
     ids.py
     citations.py
     status.py
+    brief.py
+    json_utils.py             # Reasoning model sanitization & robust JSON parsing
+    limits.py
+    time.py
   net/
     http.py                   # Shared httpx.Client / httpx.AsyncClient factories
   ontology/
@@ -167,6 +171,8 @@ Owns:
 - canonical ID construction
 - citation-label formatting
 - status and lifecycle enums or value objects
+- learner brief models
+- robust JSON extraction and reasoning-model sanitization (`json_utils.py`)
 
 Must be:
 

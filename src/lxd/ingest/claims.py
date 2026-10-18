@@ -14,6 +14,7 @@ from typing import Any, Final, assert_never
 import structlog
 
 from lxd.domain.ids import blake3_hex
+from lxd.domain.json_utils import extract_json_dict
 from lxd.ingest.llm_client import (
     build_cached_system_prompt,
     call_with_fallback_async,
@@ -383,15 +384,13 @@ def _parse_response(raw_text: str) -> list[dict[str, Any]]:
     """Parse LLM JSON response into raw claim dicts.
 
     Returns an empty list for any payload that is not a JSON object with a
-    ``claims`` array. Logs parse failures with ``exc_info`` so the silent
-    fallback remains observable.
+    ``claims`` array. Logs parse failures so the silent fallback remains observable.
     """
-    try:
-        data = json.loads(raw_text)
-    except json.JSONDecodeError:
-        _log.warning("claims_response_parse_failed", exc_info=True)
+    data = extract_json_dict(raw_text)
+    if not data:
+        _log.warning("claims_response_parse_failed", raw_prefix=raw_text[:120])
         return []
-    items = data.get("claims", []) if isinstance(data, dict) else []
+    items = data.get("claims", [])
     return [item for item in items if isinstance(item, dict)]
 
 

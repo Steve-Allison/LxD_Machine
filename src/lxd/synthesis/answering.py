@@ -13,21 +13,18 @@ Two modes:
   and the SOTA-plan strike of item ``[#4]``).
 """
 
-import re
 from collections.abc import Iterator, Sequence
 from dataclasses import dataclass, field, replace
 from typing import Final
 
 from lxd.domain.brief import LearnerBrief
+from lxd.domain.json_utils import strip_thinking
 from lxd.domain.status import QueryAnswerStatus
 from lxd.mlx.chat import ChatError, complete_chat, stream_chat
 from lxd.retrieval.graph_routing import GraphContext
 from lxd.settings.models import RuntimeConfig
 from lxd.synthesis.citation_alignment import SentenceCitation, align_citations
 from lxd.synthesis.sampler import Sampler, SamplerFailure, SamplerRequest
-
-_THINK_BLOCK_PATTERN: Final = re.compile(r"<think>.*?</think>", flags=re.DOTALL)
-
 
 # Public, single source of truth for the synthesis preamble. Extracted so
 # the MCP Prompt resource (`mcp/prompts.py`) can surface the exact text
@@ -409,12 +406,8 @@ def _format_evidence_chunk(item: EvidenceChunk) -> str:
 
 
 def _strip_thinking(text: str) -> str:
-    """Remove ``<think>...</think>`` scratchpad blocks emitted by reasoning models.
-
-    Uses a single non-greedy DOTALL regex pass rather than the previous
-    iterative ``index``/slice loop, which was O(n^2) on the number of blocks.
-    """
-    return _THINK_BLOCK_PATTERN.sub("", text).strip()
+    """Remove ``<think>...</think>`` scratchpad blocks emitted by reasoning models."""
+    return strip_thinking(text)
 
 
 def insufficient_evidence_answer() -> AnswerEnvelope:

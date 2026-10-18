@@ -27,13 +27,13 @@ the literal into integer depths the retrieval layer understands.
 """
 
 import asyncio
-import json
 import re
 from typing import Any, Final, Literal, assert_never
 
 import structlog
 from pydantic import BaseModel, ConfigDict, Field
 
+from lxd.domain.json_utils import extract_json_dict
 from lxd.ingest.llm_client import call_openai_async
 from lxd.settings.models import AdaptiveRetrievalConfig
 
@@ -264,13 +264,7 @@ def _parse_route(raw: str) -> QueryRoute:
 
 
 def _safe_json(raw: str) -> dict[str, Any]:
-    try:
-        payload = json.loads(raw)
-    except json.JSONDecodeError, TypeError:
-        return {}
-    if not isinstance(payload, dict):
-        return {}
-    return payload
+    return extract_json_dict(raw)
 
 
 def resolve_dense_top_k(

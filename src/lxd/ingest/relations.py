@@ -17,6 +17,7 @@ import structlog
 from pydantic import BaseModel, ConfigDict, Field
 
 from lxd.domain.ids import blake3_hex
+from lxd.domain.json_utils import extract_json_dict
 from lxd.ingest.llm_client import (
     build_cached_system_prompt,
     call_with_fallback_async,
@@ -469,33 +470,32 @@ def _build_user_prompt(
 
 def _parse_response(raw_text: str) -> list[_RawRelation]:
     """Parse LLM JSON response into raw relation objects."""
-    try:
-        data = json.loads(raw_text)
-        items = data.get("relations", []) if isinstance(data, dict) else []
-        results: list[_RawRelation] = []
-        for item in items:
-            if not isinstance(item, dict):
-                continue
-            subject = item.get("subject")
-            predicate = item.get("predicate")
-            object_ = item.get("object")
-            confidence = item.get("confidence", 0.5)
-            if not (
-                isinstance(subject, str) and isinstance(predicate, str) and isinstance(object_, str)
-            ):
-                continue
-            try:
-                confidence = float(confidence)
-            except TypeError, ValueError:
-                confidence = 0.5
-            results.append(
-                _RawRelation(
-                    subject=subject, predicate=predicate, object_=object_, confidence=confidence
-                )
-            )
-        return results
-    except json.JSONDecodeError, AttributeError:
+    data = extract_json_dict(raw_text)
+    items = data.get("relations", [])
+    if not isinstance(items, list):
         return []
+    results: list[_RawRelation] = []
+    for item in items:
+        if not isinstance(item, dict):
+            continue
+        subject = item.get("subject")
+        predicate = item.get("predicate")
+        object_ = item.get("object")
+        confidence = item.get("confidence", 0.5)
+        if not (
+            isinstance(subject, str) and isinstance(predicate, str) and isinstance(object_, str)
+        ):
+            continue
+        try:
+            confidence = float(confidence)
+        except TypeError, ValueError:
+            confidence = 0.5
+        results.append(
+            _RawRelation(
+                subject=subject, predicate=predicate, object_=object_, confidence=confidence
+            )
+        )
+    return results
 
 
 # ---------------------------------------------------------------------------

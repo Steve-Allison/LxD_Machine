@@ -22,7 +22,6 @@ the whole bundle.
 """
 
 import asyncio
-import json
 from typing import Any, Final
 
 import structlog
@@ -37,6 +36,7 @@ from lxd.agents.artefacts import (
 )
 from lxd.agents.critique import critique_design_async
 from lxd.domain.brief import LearnerBrief
+from lxd.domain.json_utils import extract_json_dict
 from lxd.ingest.llm_client import call_with_fallback_async
 from lxd.retrieval.query_pipeline import RankedChunk, search_chunks
 from lxd.settings.models import RuntimeConfig
@@ -405,8 +405,4 @@ def _empty_bundle(topic: str, steps_completed: int, warnings: list[str]) -> Desi
 
 
 def _safe_json(raw: str) -> dict[str, Any]:
-    try:
-        payload = json.loads(raw)
-    except json.JSONDecodeError, TypeError:
-        return {}
-    return payload if isinstance(payload, dict) else {}
+    return extract_json_dict(raw)

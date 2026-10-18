@@ -17,13 +17,13 @@ plus the OpenAI client's own retry policy. Errors are swallowed into the
 score's ``error`` field so a single bad question doesn't poison the run.
 """
 
-import json
 import math
 from collections.abc import Callable
 from typing import Any, Final
 
 import structlog
 
+from lxd.domain.json_utils import extract_json_dict
 from lxd.eval.models import (
     AnswerRelevanceScore,
     ClaimVerdict,
@@ -435,13 +435,7 @@ def _rank_weighted_precision(judgements: list[ContextJudgement]) -> float:
 
 def _safe_json(raw: str) -> dict[str, Any]:
     """Parse JSON; return empty dict on failure rather than raising."""
-    try:
-        payload = json.loads(raw)
-    except json.JSONDecodeError, TypeError:
-        return {}
-    if not isinstance(payload, dict):
-        return {}
-    return payload
+    return extract_json_dict(raw)
 
 
 # Type alias for the embedding callable used by answer-relevance scoring.

@@ -10,6 +10,7 @@ from typing import Any, Final
 import structlog
 
 from lxd.domain.ids import blake3_hex
+from lxd.domain.json_utils import strip_thinking
 from lxd.ingest.llm_client import call_with_fallback_async, run_concurrent_extraction
 from lxd.ontology.entity_graph import CentralityScores
 from lxd.settings.models import RuntimeConfig
@@ -467,7 +468,8 @@ async def _enrich_async(
                 max_tokens=500,
                 api_key_env=api_key_env,
             )
-            summary = raw.strip() if raw else None
+            clean = strip_thinking(raw).strip() if raw else ""
+            summary = clean if clean else None
             return (profile.entity_id, summary)
 
         def _commit_profiles(results: list[tuple[str, str | None]]) -> None:
@@ -518,7 +520,8 @@ async def _enrich_async(
                 max_tokens=600,
                 api_key_env=api_key_env,
             )
-            summary = raw.strip() if raw else None
+            clean = strip_thinking(raw).strip() if raw else ""
+            summary = clean if clean else None
             return (report.community_id, report.community_level, summary)
 
         def _commit_reports(results: list[tuple[int, int, str | None]]) -> None:

@@ -14,11 +14,11 @@ rather than breaking — multi-query becomes a no-op, not a hard error.
 """
 
 import asyncio
-import json
 from typing import Any, Final
 
 import structlog
 
+from lxd.domain.json_utils import extract_json_dict
 from lxd.ingest.llm_client import call_openai_async
 from lxd.settings.models import RetrievalConfig
 
@@ -97,10 +97,4 @@ def _parse_paraphrases(raw: str, *, original: str, limit: int) -> list[str]:
 
 
 def _safe_json(raw: str) -> dict[str, Any]:
-    try:
-        payload = json.loads(raw)
-    except json.JSONDecodeError, TypeError:
-        return {}
-    if not isinstance(payload, dict):
-        return {}
-    return payload
+    return extract_json_dict(raw)
