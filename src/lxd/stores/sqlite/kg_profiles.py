@@ -1,6 +1,7 @@
 """Entity profiles, entity communities, and community reports."""
 
 import sqlite3
+from collections.abc import Sequence
 
 from lxd.stores._sqlite_rows import (
     community_report_from_row,
@@ -13,6 +14,7 @@ from lxd.stores.models import (
     EntityCommunityRecord,
     EntityProfileRecord,
 )
+from lxd.stores.sql_helpers import in_clause_for
 
 
 def upsert_entity_profile(connection: sqlite3.Connection, record: EntityProfileRecord) -> None:
@@ -150,6 +152,21 @@ def upsert_entity_profiles(
                 for record in records
             ],
         )
+
+
+def load_entity_profiles_by_ids(
+    connection: sqlite3.Connection,
+    entity_ids: Sequence[str],
+) -> dict[str, EntityProfileRecord]:
+    """Batch-load entity profiles for the given IDs in a single query."""
+    if not entity_ids:
+        return {}
+    unique_ids = list(dict.fromkeys(entity_ids))
+    clause, params = in_clause_for(unique_ids)
+    rows = connection.execute(
+        f"SELECT * FROM entity_profiles WHERE entity_id IN {clause}", params
+    ).fetchall()
+    return {str(row["entity_id"]): entity_profile_from_row(row) for row in rows}
 
 
 def load_entity_profile(
@@ -413,6 +430,27 @@ def upsert_community_reports(
                 for record in records
             ],
         )
+
+
+def load_community_reports_by_ids(
+    connection: sqlite3.Connection,
+    community_ids: Sequence[int],
+    *,
+    community_level: int = 0,
+) -> dict[int, CommunityReportRecord]:
+    """Batch-load community reports for multiple community IDs at the given level."""
+    if not community_ids:
+        return {}
+    unique_ids = list(dict.fromkeys(community_ids))
+    clause, params = in_clause_for(unique_ids)
+    rows = connection.execute(
+        f"""
+        SELECT * FROM community_reports
+        WHERE community_level = ? AND community_id IN {clause}
+        """,
+        [community_level, *params],
+    ).fetchall()
+    return {int(row["community_id"]): community_report_from_row(row) for row in rows}
 
 
 def load_community_report(

@@ -20,6 +20,7 @@ class RetrievalStores:
     paths: StorePaths
     sqlite: sqlite3.Connection
     chunk_table: Any
+    database: Any = None
 
 
 @contextmanager
@@ -27,8 +28,9 @@ def open_retrieval_stores(config: RuntimeConfig) -> Generator[RetrievalStores]:
     """Yield SQLite + LanceDB chunk table using pooled SQLite connection."""
     paths = build_store_paths(config.paths.data_path)
     with pooled_connection(paths.sqlite_path) as connection:
+        db = connect_lancedb(paths.lancedb_path)
         table = open_chunk_table(
-            connect_lancedb(paths.lancedb_path),
+            db,
             vector_size=config.models.embed_dims,
         )
-        yield RetrievalStores(paths=paths, sqlite=connection, chunk_table=table)
+        yield RetrievalStores(paths=paths, sqlite=connection, chunk_table=table, database=db)

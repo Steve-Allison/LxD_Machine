@@ -4,7 +4,7 @@ import json
 import sqlite3
 from collections.abc import Callable
 from dataclasses import dataclass, replace
-from typing import Final, Literal
+from typing import Any, Final, Literal
 
 import structlog
 
@@ -45,8 +45,9 @@ from lxd.stores.models import (
     VectorSearchRecord,
 )
 from lxd.stores.sqlite.chunks import (
+    has_chunks,
     load_chunk_centrality_signals,
-    load_chunk_record_by_id,
+    load_chunk_records_by_ids,
     load_relation_chunk_ids,
 )
 from lxd.stores.sqlite.connection import build_store_paths, connect_sqlite
@@ -57,7 +58,6 @@ from lxd.stores.sqlite.sessions import (
     update_last_artefact,
     upsert_session_brief,
 )
-from lxd.stores.sqlite.summary import summarize_store
 from lxd.synthesis.answering import (
     AnswerEnvelope,
     EvidenceChunk,
@@ -233,16 +233,8 @@ def search_chunks(
         allowed_domains = list_allowed_domains(stores.sqlite)
         _validate_domain(domain, allowed_domains)
         drift_warnings = config_drift_warnings(stores.sqlite, config)
-        store_summary = summarize_store(
-            stores.sqlite,
-            ontology_file_count=0,
-            matcher_term_count=0,
-            matcher_termset_hash=None,
-            ontology_snapshot_hash=None,
-            config_drift_warnings=drift_warnings,
-        )
 
-        if store_summary.chunk_count == 0:
+        if not has_chunks(stores.sqlite):
             return SearchOutcome(
                 ranked=[],
                 warnings=["The searchable store is empty. Run ingest first."],
@@ -269,6 +261,7 @@ def search_chunks(
             query_vector=query_vector,
             store_paths=stores.paths,
             config=config,
+            database=getattr(stores, "database", None),
         )
         target_source_count = max(
             requested_limit,
@@ -816,24 +809,32 @@ def _append_missing_graph_lane_chunks(
     if not claim_chunk_ids:
         return dense_prefix
     existing_ids = {item.chunk_id for item in dense_prefix}
-    claim_scores = {hit.chunk_id: hit.score for hit in hits if hit.lane_kind == "claim"}
-    appended: list[RankedChunk] = []
+    needed_ids: list[str] = []
     for chunk_id in claim_chunk_ids:
         if chunk_id in existing_ids:
             continue
-        if len(dense_prefix) + len(appended) >= requested_limit:
+        if len(dense_prefix) + len(needed_ids) >= requested_limit:
             break
-        try:
-            record = load_chunk_record_by_id(connection, chunk_id)
-        except sqlite3.DatabaseError, OSError:
-            _log.warning("load_chunk_record_by_id_failed", exc_info=True)
-            continue
+        needed_ids.append(chunk_id)
+
+    if not needed_ids:
+        return dense_prefix
+
+    claim_scores = {hit.chunk_id: hit.score for hit in hits if hit.lane_kind == "claim"}
+    try:
+        records_by_id = load_chunk_records_by_ids(connection, needed_ids)
+    except sqlite3.DatabaseError, OSError:
+        _log.warning("load_chunk_records_by_ids_failed", exc_info=True)
+        return dense_prefix
+
+    appended: list[RankedChunk] = []
+    for chunk_id in needed_ids:
+        record = records_by_id.get(chunk_id)
         if record is None:
             continue
         appended.append(
             RankedChunk.from_chunk_record(record, score=claim_scores.get(chunk_id, 0.0))
         )
-        existing_ids.add(chunk_id)
     if not appended:
         return dense_prefix
     return [*dense_prefix, *appended]
@@ -863,6 +864,7 @@ def _augment_with_embedding_neighbours(
     query_vector: list[float],
     store_paths: StorePaths,
     config: RuntimeConfig,
+    database: Any = None,
 ) -> ExpansionOutcome:
     """Widen ``expansion.matched_entity_ids`` with the entities nearest to the query vector.
 
@@ -880,8 +882,8 @@ def _augment_with_embedding_neighbours(
     """
     limit = max(1, config.expansion.max_terms)
     try:
-        database = connect_lancedb(store_paths.lancedb_path)
-        entity_table = open_entity_table(database, vector_size=config.models.embed_dims)
+        db = database if database is not None else connect_lancedb(store_paths.lancedb_path)
+        entity_table = open_entity_table(db, vector_size=config.models.embed_dims)
     except (FileNotFoundError, ValueError) as exc:
         _log.debug("embedding_entity_expansion_skipped", error=str(exc))
         return expansion

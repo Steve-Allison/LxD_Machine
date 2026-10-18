@@ -17,9 +17,12 @@ from typing import Literal
 import structlog
 
 from lxd.settings.models import RuntimeConfig
-from lxd.stores.sqlite.chunks import load_chunk_record_by_id
+from lxd.stores.sqlite.chunks import load_chunk_records_by_ids
 from lxd.stores.sqlite.claims import load_claims_for_entities
-from lxd.stores.sqlite.kg_profiles import load_community_report, load_entity_profile
+from lxd.stores.sqlite.kg_profiles import (
+    load_community_reports_by_ids,
+    load_entity_profiles_by_ids,
+)
 
 _log = structlog.get_logger(__name__)
 
@@ -85,9 +88,12 @@ def load_graph_lane_hits(
         _log.warning("graph_lane_claims_load_failed", exc_info=True)
         return []
 
+    claim_chunk_ids = [claim.chunk_id for claim in claims]
+    chunk_map = load_chunk_records_by_ids(connection, claim_chunk_ids)
+
     hits: list[GraphLaneHit] = []
     for claim in claims:
-        chunk = load_chunk_record_by_id(connection, claim.chunk_id)
+        chunk = chunk_map.get(claim.chunk_id)
         if chunk is None:
             continue
         hits.append(
@@ -114,8 +120,10 @@ def load_graph_lane_hits(
     if remaining <= 0:
         return hits
 
-    for community_id in _matched_community_ids(connection, matched_entity_ids):
-        report = load_community_report(connection, community_id)
+    community_ids = list(_matched_community_ids(connection, matched_entity_ids))
+    report_map = load_community_reports_by_ids(connection, community_ids)
+    for community_id in community_ids:
+        report = report_map.get(community_id)
         if report is None:
             continue
         text = report.deterministic_summary
@@ -166,18 +174,19 @@ def graph_lane_chunk_ids(hits: list[GraphLaneHit]) -> list[str]:
 def _matched_community_ids(connection: sqlite3.Connection, entity_ids: list[str]) -> list[int]:
     """Return distinct, ascending community IDs for the given matched entities.
 
-    Reuses :func:`lxd.stores.sqlite.kg_profiles.load_entity_profile` (the
-    same accessor :mod:`lxd.retrieval.graph_routing` uses) rather than a
-    bespoke query, so community membership can never drift between the
+    Reuses :func:`lxd.stores.sqlite.kg_profiles.load_entity_profiles_by_ids`
+    (the batch accessor :mod:`lxd.retrieval.graph_routing` uses) rather than
+    a bespoke query, so community membership can never drift between the
     prompt-framing path and the retrieval-lane path.
     """
-    community_ids: set[int] = set()
-    for entity_id in entity_ids:
-        try:
-            profile = load_entity_profile(connection, entity_id)
-        except sqlite3.DatabaseError, OSError:
-            _log.warning("graph_lane_entity_profile_load_failed", exc_info=True)
-            continue
-        if profile is not None and profile.community_id is not None:
-            community_ids.add(profile.community_id)
+    if not entity_ids:
+        return []
+    try:
+        profiles = load_entity_profiles_by_ids(connection, entity_ids)
+    except sqlite3.DatabaseError, OSError:
+        _log.warning("graph_lane_entity_profile_load_failed", exc_info=True)
+        return []
+    community_ids = {
+        profile.community_id for profile in profiles.values() if profile.community_id is not None
+    }
     return sorted(community_ids)

@@ -1,9 +1,8 @@
-"""Scan filesystem sources and derive metadata for ingest candidates."""
-
-import hashlib
 from collections.abc import Iterator
 from dataclasses import dataclass
 from pathlib import Path
+
+from blake3 import blake3
 
 
 @dataclass(frozen=True, slots=True)
@@ -99,5 +98,8 @@ def _iter_files(root: Path, ignore_names: list[str]) -> Iterator[Path]:
 
 
 def _hash_file(path: Path) -> str:
+    hasher = blake3()
     with path.open("rb") as handle:
-        return hashlib.file_digest(handle, lambda: hashlib.blake2b(digest_size=32)).hexdigest()
+        while chunk := handle.read(65536):
+            hasher.update(chunk)
+    return hasher.hexdigest()

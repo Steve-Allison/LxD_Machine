@@ -3,6 +3,7 @@
 import json
 import sqlite3
 from collections import defaultdict
+from collections.abc import Sequence
 from itertools import batched
 from pathlib import Path
 from typing import Any
@@ -350,16 +351,23 @@ def load_corpus_relations_for_entity(
     ]
 
 
-def load_chunk_record_by_id(connection: sqlite3.Connection, chunk_id: str) -> ChunkRecord | None:
-    """Load a single persisted chunk record by ID, or ``None`` if absent.
+def has_chunks(connection: sqlite3.Connection) -> bool:
+    """Quickly check if the store has any indexed chunks without full table scans."""
+    row = connection.execute("SELECT 1 FROM chunk_rows LIMIT 1").fetchone()
+    return row is not None
 
-    Used by the graph-as-retrieval-lane path to hydrate the chunk text
-    and source metadata backing a claim, and by the query pipeline to
-    append a claim-linked chunk that fell outside the dense/rerank
-    prefix.
-    """
-    row = connection.execute(
-        """
+
+def load_chunk_records_by_ids(
+    connection: sqlite3.Connection,
+    chunk_ids: Sequence[str],
+) -> dict[str, ChunkRecord]:
+    """Batch-load multiple chunk records by ID in a single query."""
+    if not chunk_ids:
+        return {}
+    unique_ids = list(dict.fromkeys(chunk_ids))
+    clause, params = in_clause_for(unique_ids)
+    rows = connection.execute(
+        f"""
         SELECT
             chunk_id,
             document_id,
@@ -381,13 +389,27 @@ def load_chunk_record_by_id(connection: sqlite3.Connection, chunk_id: str) -> Ch
             cited_sources_json,
             wiki_links_json
         FROM chunk_rows
-        WHERE chunk_id = ?
+        WHERE chunk_id IN {clause}
         """,
-        (chunk_id,),
-    ).fetchone()
-    if row is None:
-        return None
-    return chunk_from_row(row)
+        params,
+    ).fetchall()
+    result: dict[str, ChunkRecord] = {}
+    for row in rows:
+        record = chunk_from_row(row)
+        result[record.chunk_id] = record
+    return result
+
+
+def load_chunk_record_by_id(connection: sqlite3.Connection, chunk_id: str) -> ChunkRecord | None:
+    """Load a single persisted chunk record by ID, or ``None`` if absent.
+
+    Used by the graph-as-retrieval-lane path to hydrate the chunk text
+    and source metadata backing a claim, and by the query pipeline to
+    append a claim-linked chunk that fell outside the dense/rerank
+    prefix.
+    """
+    records = load_chunk_records_by_ids(connection, [chunk_id])
+    return records.get(chunk_id)
 
 
 def load_relation_chunk_ids(
@@ -397,15 +419,15 @@ def load_relation_chunk_ids(
     """Return chunk IDs that contain an extracted relation involving any of ``entity_ids``."""
     if not entity_ids:
         return set()
-    placeholders = ",".join("?" * len(entity_ids))
+    clause, params = in_clause_for(entity_ids)
     rows = connection.execute(
         f"""
         SELECT DISTINCT chunk_id
         FROM extracted_relations
-        WHERE subject_entity_id IN ({placeholders})
-           OR object_entity_id IN ({placeholders})
+        WHERE subject_entity_id IN {clause}
+           OR object_entity_id IN {clause}
         """,
-        [*entity_ids, *entity_ids],
+        [*params, *params],
     ).fetchall()
     return {str(row["chunk_id"]) for row in rows}
 

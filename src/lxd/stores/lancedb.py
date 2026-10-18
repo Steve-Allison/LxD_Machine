@@ -27,7 +27,9 @@ _LEGACY_FTS_INDEX_NAME: Final = "text_fts_idx"
 _CHUNK_SCALAR_INDEX_COLUMNS: Final = ("source_rel_path", "chunk_id", "source_domain")
 
 
-def ensure_scalar_index(table: Any, column: str) -> None:
+def ensure_scalar_index(
+    table: Any, column: str, existing_names: set[str | None] | None = None
+) -> None:
     """Create a BTREE scalar index on ``column`` if one does not already exist.
 
     Idempotent: safe to call on every table open. Uses the native LanceDB
@@ -37,9 +39,11 @@ def ensure_scalar_index(table: Any, column: str) -> None:
     Args:
         table: LanceDB table handle.
         column: Column name to index.
+        existing_names: Optional pre-loaded set of index names to avoid redundant queries.
     """
     index_name = f"{column}_idx"
-    existing_names = {getattr(index, "name", None) for index in table.list_indices()}
+    if existing_names is None:
+        existing_names = _index_names(table)
     if index_name in existing_names:
         return
     table.create_index(column, config=BTree(), name=index_name)
@@ -86,14 +90,18 @@ def open_chunk_table(database: Any, *, vector_size: int, refresh_fts: bool = Fal
             mode="create",
         )
         # Fresh table has no FTS yet — create it once.
-        refresh_fts_index(table)
+        existing_names: set[str | None] | None = None
     else:
         if refresh_fts:
             refresh_fts_index(table)
+            existing_names = None
         else:
-            ensure_fts_index(table)
+            existing_names = _index_names(table)
+            ensure_fts_index(table, existing_names=existing_names)
+    if existing_names is None:
+        existing_names = _index_names(table)
     for column in _CHUNK_SCALAR_INDEX_COLUMNS:
-        ensure_scalar_index(table, column)
+        ensure_scalar_index(table, column, existing_names=existing_names)
     return table
 
 
@@ -120,8 +128,9 @@ def reset_chunk_table(database: Any, *, vector_size: int) -> Any:
         mode="create",
     )
     refresh_fts_index(table)
+    existing_names = _index_names(table)
     for column in _CHUNK_SCALAR_INDEX_COLUMNS:
-        ensure_scalar_index(table, column)
+        ensure_scalar_index(table, column, existing_names=existing_names)
     return table
 
 
@@ -140,7 +149,7 @@ def _drop_legacy_fts_index(table: Any, names: set[str | None]) -> None:
     table.drop_index(_LEGACY_FTS_INDEX_NAME)
 
 
-def ensure_fts_index(table: Any) -> None:
+def ensure_fts_index(table: Any, existing_names: set[str | None] | None = None) -> None:
     """Create the position-aware FTS index over ``text`` if it is absent.
 
     Idempotent for the read path: an index that already stores token
@@ -150,7 +159,7 @@ def ensure_fts_index(table: Any) -> None:
     embedding rerun. Call :func:`refresh_fts_index` after ingest writes
     so BM25 sees new rows.
     """
-    names = _index_names(table)
+    names = existing_names if existing_names is not None else _index_names(table)
     if _FTS_INDEX_NAME in names:
         _drop_legacy_fts_index(table, names)
         return

@@ -12,7 +12,10 @@ from lxd.retrieval.conflicts import ClaimConflict, detect_claim_conflicts
 from lxd.settings.models import RuntimeConfig
 from lxd.stores.models import ClaimRecord, CommunityReportRecord, EntityProfileRecord
 from lxd.stores.sqlite.claims import load_claims_for_entities
-from lxd.stores.sqlite.kg_profiles import load_community_report, load_entity_profile
+from lxd.stores.sqlite.kg_profiles import (
+    load_community_reports_by_ids,
+    load_entity_profiles_by_ids,
+)
 
 _log = structlog.get_logger(__name__)
 
@@ -69,11 +72,10 @@ def build_graph_context(
             expansion_hops=0,
         )
 
-    profiles: list[EntityProfileRecord] = []
-    for entity_id in matched_entity_ids:
-        profile = load_entity_profile(connection, entity_id)
-        if profile:
-            profiles.append(profile)
+    profile_map = load_entity_profiles_by_ids(connection, matched_entity_ids)
+    profiles: list[EntityProfileRecord] = [
+        profile_map[entity_id] for entity_id in matched_entity_ids if entity_id in profile_map
+    ]
 
     profiles.sort(key=attrgetter("pagerank"), reverse=True)
     profiles = profiles[: kg_cfg.max_entity_context]
@@ -90,11 +92,10 @@ def build_graph_context(
     community_ids = {p.community_id for p in profiles if p.community_id is not None}
     reports: list[CommunityReportRecord] = []
     if len(community_ids) >= 2:
-        for cid in sorted(community_ids):
-            report = load_community_report(connection, cid)
-            if report:
-                reports.append(report)
-        reports = reports[: kg_cfg.max_community_context]
+        report_map = load_community_reports_by_ids(connection, sorted(community_ids))
+        reports = [report_map[cid] for cid in sorted(community_ids) if cid in report_map][
+            : kg_cfg.max_community_context
+        ]
 
     claims = load_claims_for_entities(
         connection,
