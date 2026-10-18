@@ -3,6 +3,7 @@
 import asyncio
 import json
 import sqlite3
+from collections import Counter
 from datetime import UTC, datetime
 from typing import Any, Final
 
@@ -12,23 +13,68 @@ from lxd.domain.ids import blake3_hex
 from lxd.ingest.llm_client import call_with_fallback_async, run_concurrent_extraction
 from lxd.ontology.entity_graph import CentralityScores
 from lxd.settings.models import RuntimeConfig
-from lxd.stores.models import CommunityReportRecord, EntityProfileRecord
+from lxd.stores._sqlite_rows import claim_from_row
+from lxd.stores.models import ClaimRecord, CommunityReportRecord, EntityProfileRecord
 from lxd.stores.sql_helpers import in_clause
 from lxd.stores.sqlite.chunks import load_entity_mention_stats
 from lxd.stores.sqlite.claims import load_claims_for_entities
 from lxd.stores.sqlite.kg_profiles import (
     load_all_community_reports,
     load_all_entity_profiles,
-    load_community_members,
     load_community_report_source_hashes,
     load_entity_profile_source_hashes,
     update_community_report_llm_summary,
-    upsert_community_report,
-    upsert_entity_profile,
+    upsert_community_reports,
+    upsert_entity_profiles,
 )
-from lxd.stores.sqlite.kg_relations import load_top_predicates_for_entity
 
 _log = structlog.get_logger(__name__)
+
+
+def _load_all_top_predicates(connection: sqlite3.Connection) -> dict[str, list[dict[str, Any]]]:
+    """Return entity_id -> list[dict(predicate, count)] for all entities in one query."""
+    rows = connection.execute(
+        """
+        SELECT subject_entity_id AS entity_id, predicate FROM relations
+        UNION ALL
+        SELECT object_entity_id AS entity_id, predicate FROM relations
+        """
+    ).fetchall()
+    counts_by_entity: dict[str, Counter[str]] = {}
+    for row in rows:
+        eid = str(row["entity_id"])
+        pred = str(row["predicate"])
+        if eid not in counts_by_entity:
+            counts_by_entity[eid] = Counter()
+        counts_by_entity[eid][pred] += 1
+
+    return {
+        eid: [{"predicate": p, "count": cnt} for p, cnt in counter.most_common(10)]
+        for eid, counter in counts_by_entity.items()
+    }
+
+
+def _load_claims_by_entity(connection: sqlite3.Connection) -> dict[str, list[ClaimRecord]]:
+    """Return entity_id -> list[ClaimRecord] sorted by confidence desc, up to 10 per entity."""
+    rows = connection.execute(
+        """
+        SELECT * FROM claims
+        WHERE subject_entity_id IS NOT NULL OR object_entity_id IS NOT NULL
+        ORDER BY confidence DESC
+        """
+    ).fetchall()
+    grouped: dict[str, list[ClaimRecord]] = {}
+    for row in rows:
+        rec = claim_from_row(row)
+        if rec.subject_entity_id:
+            c_list = grouped.setdefault(rec.subject_entity_id, [])
+            if len(c_list) < 10:
+                c_list.append(rec)
+        if rec.object_entity_id and rec.object_entity_id != rec.subject_entity_id:
+            c_list = grouped.setdefault(rec.object_entity_id, [])
+            if len(c_list) < 10:
+                c_list.append(rec)
+    return grouped
 
 
 def build_entity_profiles(
@@ -48,6 +94,9 @@ def build_entity_profiles(
     mention_stats = load_entity_mention_stats(connection)
     existing_hashes = load_entity_profile_source_hashes(connection) if not force else {}
     chunk_ids_by_entity = _load_chunk_ids_by_entity(connection)
+    all_top_predicates = _load_all_top_predicates(connection)
+    all_claims_by_entity = _load_claims_by_entity(connection)
+    community_member_counts = Counter(community_assignments.values())
 
     # Precompute rank dicts once. Profile source_hash uses ranks (small ints)
     # rather than raw centrality floats, so imperceptible 4th-decimal score
@@ -59,7 +108,7 @@ def build_entity_profiles(
     total_entities = len(centrality)
 
     timestamp = datetime.now(UTC).isoformat()
-    profiles_built = 0
+    records_to_upsert: list[EntityProfileRecord] = []
 
     for entity_def in entity_definitions:
         entity_id = str(entity_def.get("canonical_id", ""))
@@ -100,16 +149,16 @@ def build_entity_profiles(
         # Community
         community_id = community_assignments.get(entity_id)
 
-        # Claims
-        claims = load_claims_for_entities(connection, [entity_id], limit=10)
+        # Claims pre-loaded in single batch query
+        claims = all_claims_by_entity.get(entity_id, [])
         claim_count = len(claims)
         top_claims = [
             {"claim_text": c.claim_text, "confidence": c.confidence, "claim_type": c.claim_type}
             for c in claims[:5]
         ]
 
-        # Top predicates from canonical relations
-        top_preds = load_top_predicates_for_entity(connection, entity_id, limit=10)
+        # Top predicates from canonical relations pre-loaded in single batch query
+        top_preds = all_top_predicates.get(entity_id, [])
 
         # Chunk IDs for source hash are preloaded in one grouped query above
         # to avoid an N+1 pattern across the ontology.
@@ -141,11 +190,10 @@ def build_entity_profiles(
         if entity_id in existing_hashes and existing_hashes[entity_id] == source_hash:
             continue
 
-        # Community member count
-        community_member_count = 0
-        if community_id is not None:
-            members = load_community_members(connection, community_id)
-            community_member_count = len(members)
+        # Community member count from in-memory assignment map
+        community_member_count = (
+            community_member_counts.get(community_id, 0) if community_id is not None else 0
+        )
 
         # Top relations as text
         top_rels_text = (
@@ -204,9 +252,12 @@ def build_entity_profiles(
             source_hash=source_hash,
             generated_at=timestamp,
         )
-        upsert_entity_profile(connection, record)
-        profiles_built += 1
+        records_to_upsert.append(record)
 
+    if records_to_upsert:
+        upsert_entity_profiles(connection, records_to_upsert)
+
+    profiles_built = len(records_to_upsert)
     _log.info("entity profiles built", profiles_built=profiles_built)
     return profiles_built
 
@@ -258,27 +309,21 @@ def build_community_reports(
         communities.setdefault(community_id, []).append(entity_id)
 
     existing_hashes = load_community_report_source_hashes(connection) if not force else {}
+    entity_profile_hashes = load_entity_profile_source_hashes(connection)
 
     timestamp = datetime.now(UTC).isoformat()
-    reports_built = 0
     parent_lookup = parent_of or {}
+    reports_to_upsert: list[CommunityReportRecord] = []
 
     for community_id, member_ids in communities.items():
         sorted_members = sorted(member_ids)
 
         # Compute source_hash *before* the deterministic-summary build so an
-        # unchanged community skips both the work and the upsert. The upsert
-        # clobbers llm_summary to NULL, which used to cascade an LLM
-        # re-enrichment on every report regardless of whether anything had
-        # actually changed; the early skip stops the cascade.
+        # unchanged community skips both the work and the upsert.
         if sorted_members:
-            placeholders = in_clause(len(sorted_members))
-            hash_rows = connection.execute(
-                f"SELECT entity_id, source_hash FROM entity_profiles "
-                f"WHERE entity_id IN {placeholders}",
-                sorted_members,
-            ).fetchall()
-            member_hashes = [str(row["source_hash"]) for row in hash_rows]
+            member_hashes = [
+                entity_profile_hashes[eid] for eid in sorted_members if eid in entity_profile_hashes
+            ]
         else:
             member_hashes = []
 
@@ -354,9 +399,12 @@ def build_community_reports(
             source_hash=source_hash,
             generated_at=timestamp,
         )
-        upsert_community_report(connection, record)
-        reports_built += 1
+        reports_to_upsert.append(record)
 
+    if reports_to_upsert:
+        upsert_community_reports(connection, reports_to_upsert)
+
+    reports_built = len(reports_to_upsert)
     _log.info("community reports built", reports_built=reports_built)
     return reports_built
 

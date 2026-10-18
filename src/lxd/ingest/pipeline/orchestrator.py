@@ -462,17 +462,18 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                     manifest_by_rel_path[scanned.relative_path] = committed_manifest
                     files_completed += 1
                     asset_files_processed += 1
-                    _persist_ingest_progress(
-                        sqlite_connection=sqlite_connection,
-                        run_id=run_id,
-                        files_completed=files_completed,
-                        searchable_files_rebuilt=searchable_files_rebuilt,
-                        asset_files_processed=asset_files_processed,
-                        unchanged_files_skipped=unchanged_files_skipped,
-                        failed_files=failed_files,
-                        chunks_written=chunks_written,
-                        warnings=warnings,
-                    )
+                    if files_completed % 10 == 0 or files_completed == len(plan.scanned_files):
+                        _persist_ingest_progress(
+                            sqlite_connection=sqlite_connection,
+                            run_id=run_id,
+                            files_completed=files_completed,
+                            searchable_files_rebuilt=searchable_files_rebuilt,
+                            asset_files_processed=asset_files_processed,
+                            unchanged_files_skipped=unchanged_files_skipped,
+                            failed_files=failed_files,
+                            chunks_written=chunks_written,
+                            warnings=warnings,
+                        )
                     continue
 
                 previous_manifest = existing_by_path.get(scanned.relative_path)
@@ -636,17 +637,34 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                     # May raise CircuitBreakerTripped on the Nth consecutive
                     # systemic failure. Caught at the outer try below.
                     circuit_breaker.record_failure(exc)
-                _persist_ingest_progress(
-                    sqlite_connection=sqlite_connection,
-                    run_id=run_id,
-                    files_completed=files_completed,
-                    searchable_files_rebuilt=searchable_files_rebuilt,
-                    asset_files_processed=asset_files_processed,
-                    unchanged_files_skipped=unchanged_files_skipped,
-                    failed_files=failed_files,
-                    chunks_written=chunks_written,
-                    warnings=warnings,
-                )
+                if (
+                    files_completed % 10 == 0
+                    or files_completed == len(plan.scanned_files)
+                    or failed_files > 0
+                ):
+                    _persist_ingest_progress(
+                        sqlite_connection=sqlite_connection,
+                        run_id=run_id,
+                        files_completed=files_completed,
+                        searchable_files_rebuilt=searchable_files_rebuilt,
+                        asset_files_processed=asset_files_processed,
+                        unchanged_files_skipped=unchanged_files_skipped,
+                        failed_files=failed_files,
+                        chunks_written=chunks_written,
+                        warnings=warnings,
+                    )
+
+            _persist_ingest_progress(
+                sqlite_connection=sqlite_connection,
+                run_id=run_id,
+                files_completed=files_completed,
+                searchable_files_rebuilt=searchable_files_rebuilt,
+                asset_files_processed=asset_files_processed,
+                unchanged_files_skipped=unchanged_files_skipped,
+                failed_files=failed_files,
+                chunks_written=chunks_written,
+                warnings=warnings,
+            )
 
             replace_ingest_config_snapshot(sqlite_connection, _config_snapshot_records(config))
             summary = summarize_store(

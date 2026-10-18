@@ -86,7 +86,7 @@ def score_documents(
         mx.eval(yes_prob)
         scores.append(float(yes_prob))
         del logits, last, pair, yes_prob
-        mx.clear_cache()
+    mx.clear_cache()
     return scores
 
 

@@ -12,8 +12,9 @@ from lxd.ontology.graph import OntologyGraph
 from lxd.ontology.loader import OntologyLoadResult
 from lxd.ontology.matcher import build_or_load_automaton
 from lxd.settings.models import RuntimeConfig
+from lxd.stores.sqlite._pool import pooled_connection
 from lxd.stores.sqlite.chunks import load_corpus_related_entity_ids
-from lxd.stores.sqlite.connection import build_store_paths, connect_sqlite
+from lxd.stores.sqlite.connection import build_store_paths
 
 
 @dataclass(frozen=True, slots=True)
@@ -104,15 +105,12 @@ def _expand_from_corpus(config: RuntimeConfig, entity_ids: list[str]) -> list[st
     if not store_paths.sqlite_path.exists():
         return []
     try:
-        connection = connect_sqlite(store_paths.sqlite_path)
-        try:
+        with pooled_connection(store_paths.sqlite_path) as connection:
             return load_corpus_related_entity_ids(
                 connection,
                 entity_ids,
                 max_results=config.expansion.max_terms,
             )
-        finally:
-            connection.close()
     except sqlite3.DatabaseError:
         # Corpus DB exists but is unreadable / mid-build / corrupted —
         # treat the expansion as a no-op rather than failing the query.

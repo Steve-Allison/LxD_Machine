@@ -104,7 +104,7 @@ def _embed(texts: list[str]) -> list[list[float]]:
         row = row_data[0]
         vectors.append([float(value) for value in row])
         del pooled
-        mx.clear_cache()
+    mx.clear_cache()
     return vectors
 
 

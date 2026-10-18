@@ -14,6 +14,7 @@ from typing import TYPE_CHECKING, Any, Final, assert_never
 import httpx
 
 from lxd.mlx.rerank import probe_mlx_reranker, score_documents
+from lxd.net.http import get_sync_client
 from lxd.settings.models import RuntimeConfig
 
 if TYPE_CHECKING:
@@ -240,17 +241,17 @@ def _rerank_via_llama_cpp(
             applied=False,
         )
     try:
-        with _client(config) as client:
-            response = client.post(
-                _endpoint_path(config),
-                json={
-                    "model": config.models.rerank,
-                    "query": question,
-                    "documents": [candidate.text for candidate in candidates],
-                    "top_n": len(candidates),
-                },
-            )
-            response.raise_for_status()
+        client = _client(config)
+        response = client.post(
+            _endpoint_path(config),
+            json={
+                "model": config.models.rerank,
+                "query": question,
+                "documents": [candidate.text for candidate in candidates],
+                "top_n": len(candidates),
+            },
+        )
+        response.raise_for_status()
     except httpx.HTTPError as exc:
         return RerankOutcome(ranked=candidates, warnings=[str(exc)], applied=False)
     try:
@@ -279,16 +280,16 @@ def _probe_reranker_uncached(config: RuntimeConfig) -> tuple[bool, str | None]:
 
 def _probe_reranker_http(config: RuntimeConfig) -> tuple[bool, str | None]:
     try:
-        with _client(config) as client:
-            response = client.post(
-                _endpoint_path(config),
-                json={
-                    "model": config.models.rerank,
-                    "query": "probe query",
-                    "documents": ["first probe document", "second probe document"],
-                    "top_n": 2,
-                },
-            )
+        client = _client(config)
+        response = client.post(
+            _endpoint_path(config),
+            json={
+                "model": config.models.rerank,
+                "query": "probe query",
+                "documents": ["first probe document", "second probe document"],
+                "top_n": 2,
+            },
+        )
     except httpx.HTTPError as exc:
         return False, str(exc)
     if response.status_code == 404:
@@ -414,9 +415,9 @@ def _cache_key(config: RuntimeConfig) -> tuple[str, str, str, str, str]:
 def _client(config: RuntimeConfig) -> httpx.Client:
     if config.reranker.url is None:
         raise ValueError("reranker.url must be configured.")
-    return httpx.Client(
+    return get_sync_client(
         base_url=str(config.reranker.url),
-        timeout=float(config.reranker.timeout_secs),
+        timeout_secs=float(config.reranker.timeout_secs),
     )
 
 

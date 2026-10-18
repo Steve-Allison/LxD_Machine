@@ -109,8 +109,11 @@ def _compute_centrality(graph: nx.MultiDiGraph) -> dict[str, CentralityScores]:
     pagerank = nx.pagerank(graph)
 
     # Betweenness — unweighted (float weights are documented as unreliable)
+    # Bounded to k=500 samples on large graphs (>500 nodes) to prevent O(V*E) freeze
     _log.info("computing betweenness centrality (unweighted)")
-    betweenness = nx.betweenness_centrality(graph, weight=None)
+    node_count = graph.number_of_nodes()
+    k_sample = 500 if node_count > 500 else None
+    betweenness = nx.betweenness_centrality(graph, k=k_sample, weight=None, seed=42)
 
     # Closeness — uses inward distance on directed graphs
     _log.info("computing closeness centrality")

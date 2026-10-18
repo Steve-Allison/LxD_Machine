@@ -3,6 +3,7 @@
 import json
 import sqlite3
 from collections import defaultdict
+from itertools import batched
 from pathlib import Path
 from typing import Any
 
@@ -14,6 +15,7 @@ from lxd.stores.models import (
     ExtractedRelationRecord,
     MentionRecord,
 )
+from lxd.stores.sql_helpers import in_clause_for
 
 
 def replace_source_chunks(
@@ -292,17 +294,17 @@ def load_corpus_related_entity_ids(
     """Return entity IDs strongly related to ``entity_ids`` via extracted corpus relations."""
     if not entity_ids:
         return []
-    placeholders = ",".join("?" * len(entity_ids))
+    placeholders, params = in_clause_for(entity_ids)
     rows = connection.execute(
         f"""
         SELECT subject_entity_id, object_entity_id, confidence
         FROM extracted_relations
-        WHERE (subject_entity_id IN ({placeholders}) OR object_entity_id IN ({placeholders}))
+        WHERE (subject_entity_id IN {placeholders} OR object_entity_id IN {placeholders})
           AND confidence >= ?
         ORDER BY confidence DESC
         LIMIT ?
         """,
-        [*entity_ids, *entity_ids, min_confidence, max_results * 4],
+        [*params, *params, min_confidence, max_results * 4],
     ).fetchall()
     seed_set = set(entity_ids)
     related: list[str] = []
@@ -428,41 +430,42 @@ def load_chunk_centrality_signals(
     """
     if not chunk_ids:
         return {}
-    placeholders = ",".join("?" * len(chunk_ids))
-    rows = connection.execute(
-        f"""
-        SELECT
-            m.chunk_id AS chunk_id,
-            MAX(p.pagerank) AS max_pagerank,
-            GROUP_CONCAT(DISTINCT p.community_id) AS community_ids
-        FROM mention_rows m
-        JOIN entity_profiles p ON m.entity_id = p.entity_id
-        WHERE m.chunk_id IN ({placeholders})
-        GROUP BY m.chunk_id
-        """,
-        list(chunk_ids),
-    ).fetchall()
     result: dict[str, ChunkCentralitySignals] = {}
-    for row in rows:
-        chunk_id = str(row["chunk_id"])
-        max_pr_value = row["max_pagerank"]
-        max_pr = float(max_pr_value) if max_pr_value is not None else 0.0
-        raw_comm = row["community_ids"]
-        community_ids: tuple[int, ...] = ()
-        if isinstance(raw_comm, str) and raw_comm:
-            community_ids = tuple(
-                sorted(
-                    {
-                        int(token)
-                        for token in raw_comm.split(",")
-                        if token.strip().lstrip("-").isdigit()
-                    }
+    for batch in batched(chunk_ids, 500, strict=False):
+        placeholders, params = in_clause_for(batch)
+        rows = connection.execute(
+            f"""
+            SELECT
+                m.chunk_id AS chunk_id,
+                MAX(p.pagerank) AS max_pagerank,
+                GROUP_CONCAT(DISTINCT p.community_id) AS community_ids
+            FROM mention_rows m
+            JOIN entity_profiles p ON m.entity_id = p.entity_id
+            WHERE m.chunk_id IN {placeholders}
+            GROUP BY m.chunk_id
+            """,
+            params,
+        ).fetchall()
+        for row in rows:
+            chunk_id = str(row["chunk_id"])
+            max_pr_value = row["max_pagerank"]
+            max_pr = float(max_pr_value) if max_pr_value is not None else 0.0
+            raw_comm = row["community_ids"]
+            community_ids: tuple[int, ...] = ()
+            if isinstance(raw_comm, str) and raw_comm:
+                community_ids = tuple(
+                    sorted(
+                        {
+                            int(token)
+                            for token in raw_comm.split(",")
+                            if token.strip().lstrip("-").isdigit()
+                        }
+                    )
                 )
+            result[chunk_id] = ChunkCentralitySignals(
+                max_pagerank=max_pr,
+                community_ids=community_ids,
             )
-        result[chunk_id] = ChunkCentralitySignals(
-            max_pagerank=max_pr,
-            community_ids=community_ids,
-        )
     return result
 
 

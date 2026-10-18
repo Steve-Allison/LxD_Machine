@@ -80,6 +80,78 @@ def upsert_entity_profile(connection: sqlite3.Connection, record: EntityProfileR
         )
 
 
+def upsert_entity_profiles(
+    connection: sqlite3.Connection, records: list[EntityProfileRecord]
+) -> None:
+    """Insert or update multiple entity profiles in a single transaction."""
+    if not records:
+        return
+    with connection:
+        connection.executemany(
+            """
+            INSERT INTO entity_profiles (
+                entity_id, label, entity_type, domain, aliases_json,
+                deterministic_summary, llm_summary,
+                chunk_count, doc_count, mention_count, claim_count,
+                top_predicates_json, top_claims_json,
+                pagerank, betweenness, closeness,
+                in_degree, out_degree, eigenvector,
+                community_id, source_hash, generated_at
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(entity_id) DO UPDATE SET
+                label = excluded.label,
+                entity_type = excluded.entity_type,
+                domain = excluded.domain,
+                aliases_json = excluded.aliases_json,
+                deterministic_summary = excluded.deterministic_summary,
+                llm_summary = excluded.llm_summary,
+                chunk_count = excluded.chunk_count,
+                doc_count = excluded.doc_count,
+                mention_count = excluded.mention_count,
+                claim_count = excluded.claim_count,
+                top_predicates_json = excluded.top_predicates_json,
+                top_claims_json = excluded.top_claims_json,
+                pagerank = excluded.pagerank,
+                betweenness = excluded.betweenness,
+                closeness = excluded.closeness,
+                in_degree = excluded.in_degree,
+                out_degree = excluded.out_degree,
+                eigenvector = excluded.eigenvector,
+                community_id = excluded.community_id,
+                source_hash = excluded.source_hash,
+                generated_at = excluded.generated_at
+            """,
+            [
+                (
+                    record.entity_id,
+                    record.label,
+                    record.entity_type,
+                    record.domain,
+                    record.aliases_json,
+                    record.deterministic_summary,
+                    record.llm_summary,
+                    record.chunk_count,
+                    record.doc_count,
+                    record.mention_count,
+                    record.claim_count,
+                    record.top_predicates_json,
+                    record.top_claims_json,
+                    record.pagerank,
+                    record.betweenness,
+                    record.closeness,
+                    record.in_degree,
+                    record.out_degree,
+                    record.eigenvector,
+                    record.community_id,
+                    record.source_hash,
+                    record.generated_at,
+                )
+                for record in records
+            ],
+        )
+
+
 def load_entity_profile(
     connection: sqlite3.Connection, entity_id: str
 ) -> EntityProfileRecord | None:
@@ -291,6 +363,55 @@ def upsert_community_report(connection: sqlite3.Connection, record: CommunityRep
                 record.source_hash,
                 record.generated_at,
             ),
+        )
+
+
+def upsert_community_reports(
+    connection: sqlite3.Connection, records: list[CommunityReportRecord]
+) -> None:
+    """Insert or update multiple community reports in a single transaction."""
+    if not records:
+        return
+    with connection:
+        connection.executemany(
+            """
+            INSERT INTO community_reports (
+                community_id, community_level, parent_community_id,
+                member_count, member_entity_ids_json,
+                deterministic_summary, llm_summary,
+                top_entities_json, top_claims_json,
+                intra_community_edge_count, source_hash, generated_at
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(community_id, community_level) DO UPDATE SET
+                parent_community_id = excluded.parent_community_id,
+                member_count = excluded.member_count,
+                member_entity_ids_json = excluded.member_entity_ids_json,
+                deterministic_summary = excluded.deterministic_summary,
+                llm_summary = excluded.llm_summary,
+                top_entities_json = excluded.top_entities_json,
+                top_claims_json = excluded.top_claims_json,
+                intra_community_edge_count = excluded.intra_community_edge_count,
+                source_hash = excluded.source_hash,
+                generated_at = excluded.generated_at
+            """,
+            [
+                (
+                    record.community_id,
+                    record.community_level,
+                    record.parent_community_id,
+                    record.member_count,
+                    record.member_entity_ids_json,
+                    record.deterministic_summary,
+                    record.llm_summary,
+                    record.top_entities_json,
+                    record.top_claims_json,
+                    record.intra_community_edge_count,
+                    record.source_hash,
+                    record.generated_at,
+                )
+                for record in records
+            ],
         )
 
 
