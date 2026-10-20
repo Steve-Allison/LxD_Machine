@@ -99,4 +99,4 @@ When complete, report graph stats via `pixi run graph-status`.
 - `.claude/skills/lxd-status` — Phase 1 inventory
 - `.claude/rules/ingest-discipline.md` — preflight-is-a-gate underpins all
   costed phases
-- `~/.claude/CLAUDE.md` §7 — destructive ops need fresh per-session approval
+- `~/.claude/CLAUDE.md` §1 — destructive ops need fresh per-session approval

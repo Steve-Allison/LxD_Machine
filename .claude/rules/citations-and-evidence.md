@@ -89,10 +89,10 @@ You are violating this rule if you write any of:
 
 ## Cross-reference
 
-- `~/.claude/CLAUDE.md` §2 (Read before you speak) — citations are the verify
+- `~/.claude/CLAUDE.md` §3 (Read before you speak) — citations are the verify
   step made structural
-- `~/.claude/CLAUDE.md` §7 (Tests and checks) — same rule, applied to answer
-  generation
+- `~/.claude/CLAUDE.md` §6 (Tests) and §7 (Verification) — same rule, applied
+  to answer generation
 - `Plans/04_QUERY_SPEC.md` — citation contract in the query pipeline
 - `Plans/08_KNOWLEDGE_GRAPH_SPEC.md` — claim/relation provenance contract
 - `.claude/rules/stores-and-paths.md` — corpus-relative paths underpin all

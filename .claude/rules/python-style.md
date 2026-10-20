@@ -1,6 +1,6 @@
 ---
-description: Python code style and type-checking rules for this project
-globs: "**/*.py"
+paths:
+  - "**/*.py"
 ---
 
 # Python Style

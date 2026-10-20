@@ -1,6 +1,6 @@
 ---
-description: Testing conventions and practices
-globs: "tests/**/*.py"
+paths:
+  - "tests/**/*.py"
 ---
 
 # Testing

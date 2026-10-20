@@ -73,6 +73,6 @@ When proposing an ingest run, name the realistic cost ceiling out loud
 
 ## Cross-reference
 
-- `~/.claude/CLAUDE.md` §1 (spending-money and irreversible-action pauses) and §7 (tests and checks)
+- `~/.claude/CLAUDE.md` §1 (spending-money and irreversible-action pauses), §6 (tests) and §7 (verification)
 - `Plans/03_INGEST_SPEC.md` — the canonical pipeline spec
 - `.claude/rules/stores-and-paths.md` — store-layer invariants

@@ -102,7 +102,8 @@ counts (corpus stats + KG stats) when done.
 
 - **Chaining preflight directly into ingest** — the 2026-05-31 incident. The
   user said "yes to preflight then ingest"; agent ran both back-to-back with
-  no human review of preflight output. Counts as a §5 deviation.
+  no human review of preflight output. A spending-money step needs its own
+  pause (`~/.claude/CLAUDE.md` §1).
 - **Treating "yes" to a multi-step proposal as approval for every step** —
   yes-to-preflight is conditional yes-to-ingest only after preflight output
   has been reviewed.
@@ -112,4 +113,4 @@ counts (corpus stats + KG stats) when done.
 
 - `.claude/rules/ingest-discipline.md` — the rule this skill implements
 - `.claude/skills/lxd-rebuild` — full sequence including wipe + build-graph
-- `~/.claude/CLAUDE.md` §5 (Honor decided plan), §7 (Preserve user state)
+- `~/.claude/CLAUDE.md` §1 (an approved plan is an instruction; a paid or irreversible step still pauses), §9 (leave other sessions' state alone)

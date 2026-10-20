@@ -165,7 +165,7 @@ The graph build is a resumable state machine (`pixi run build-graph`). Graph con
 ## Key Patterns
 
 - IDs are deterministic (BLAKE3 hash of content + context), not random UUIDs.
-- Configuration is fully Pydantic v2 validated, loaded from YAML profiles via `settings/loader.py`. Tenancy (`corpus_id`) and observability exporters are first-class config sections.
+- Configuration is fully Pydantic v2 validated, loaded from YAML profiles via `settings/loader.py`. Tenancy (`corpus_id`) and observability exporters are first-class config sections. YAML configs use block style, not flow style.
 - MCP tools are read-only with FastMCP (>=3.0) hints for client compatibility and are invoked through the async runtime with per-call timeouts.
 - Chunking uses recursive context refinement when embedding dimensions exceed limits; the batched embedder (`ingest/embedder.py`) supports context-aware retry on length errors.
 - Graph context is additive — prepended to synthesis prompts as structured framing, not fused via RRF with chunks.
@@ -196,6 +196,6 @@ Detailed specifications live in `Plans/`:
 - `02c_ENTITY_EXTRACTION.md` — ontology entity extraction design
 - `03_INGEST_SPEC.md` — ingestion pipeline detail
 - `04_QUERY_SPEC.md` — query and retrieval pipeline
-- `05_MCP_SPEC.md` — MCP tool interface specification (20 tools)
+- `05_MCP_SPEC.md` — MCP tool interface specification (23 tools)
 - `07_USER_GUIDE.md` — end-user operation guide
 - `08_KNOWLEDGE_GRAPH_SPEC.md` — knowledge graph pipeline specification

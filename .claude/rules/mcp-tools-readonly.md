@@ -122,10 +122,10 @@ Stop and re-think if you write any of:
 
 ## Cross-reference
 
-- `Plans/05_MCP_SPEC.md` — canonical tool catalogue (20 tools, 3 resources,
-  2 prompts as of commit `3381325`)
+- `Plans/05_MCP_SPEC.md` — canonical tool catalogue (23 tools, 3 resources,
+  2 prompts; `tests/golden/mcp_tool_manifest.json` is the live count)
 - `src/lxd/mcp/async_runtime.py` — `run_tool` wrapper detail
 - `src/lxd/mcp/models.py` — typed output models
 - `.claude/skills/lxd-add-mcp-tool/SKILL.md` — scaffolding helper
 - `.claude/agents/mcp-tool-reviewer.md` — independent audit before merging
-- `~/.claude/CLAUDE.md` §3 — don't expand the contract speculatively
+- `~/.claude/CLAUDE.md` §4 (build only what was asked) — don't expand the contract speculatively
