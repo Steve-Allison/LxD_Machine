@@ -286,7 +286,7 @@ def create_server(
             str,
             Field(
                 description=(
-                    "Canonical entity ID to look up (e.g. 'bloom_remember'). "
+                    "Canonical entity ID to look up (e.g. 'coe:C05001'). "
                     "Must be non-empty. Call get_entity_types to list valid IDs."
                 )
             ),
@@ -352,7 +352,7 @@ def create_server(
             str,
             Field(
                 description=(
-                    "Canonical entity ID to find documents for (e.g. 'bloom_apply'). "
+                    "Canonical entity ID to find documents for (e.g. 'coe:C05003'). "
                     "Must be non-empty. Call get_entity_types to list valid IDs."
                 )
             ),
@@ -397,7 +397,7 @@ def create_server(
             Field(
                 description=(
                     "Canonical entity ID to find corpus-extracted relations for "
-                    "(e.g. 'bloom_apply'). Call get_entity_types to list valid IDs."
+                    "(e.g. 'coe:C05003'). Call get_entity_types to list valid IDs."
                 )
             ),
         ],
@@ -411,7 +411,7 @@ def create_server(
 
         Unlike ``get_related_concepts`` (which returns hand-coded ontology edges),
         this tool returns relations learned from document text during ingest —
-        e.g. ``(bloom_apply) → [requires] → (cognitive_load)`` as stated in a
+        e.g. ``(coe:C05003) → [requires] → (coe:C05102)`` as stated in a
         specific chunk. Returns an empty list if relation extraction has not
         been run yet.
         """

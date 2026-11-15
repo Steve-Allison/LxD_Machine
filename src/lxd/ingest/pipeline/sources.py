@@ -1,6 +1,6 @@
 """Per-source pipeline body: chunk → embed → mention/relation detect → assemble records."""
 
-from collections.abc import Callable
+from collections.abc import Mapping
 
 from lxd.domain.status import LifecycleStatus, RetrievalStatus
 from lxd.domain.time import utc_now
@@ -17,7 +17,7 @@ from lxd.ingest.relations import extract_relations_for_chunk
 from lxd.ingest.scanner import ScannedCorpusFile
 from lxd.ingest.wiki_metadata import merge_wiki_page_metadata
 from lxd.ingest.wiki_relations import derive_defer_relations, derive_wiki_link_relations
-from lxd.ontology.loader.types import AnchorConstraint, RecognitionPattern
+from lxd.ontology.disambiguator import DisambiguationCandidate, MentionDisambiguator
 from lxd.settings.models import RuntimeConfig
 from lxd.stores.models import (
     ChunkRecord,
@@ -38,11 +38,8 @@ def build_source_records(
     budget_tracker: IngestBudgetTracker,
     cache_table: object | None = None,
     contextual_summary_table: object | None = None,
-    ambiguous_map: dict[str, list[str]] | None = None,
-    disambiguator: Callable[[str, list[str]], str | None] | None = None,
-    recognition_patterns: tuple[RecognitionPattern, ...] = (),
-    suppressed_terms: dict[str, frozenset[str]] | None = None,
-    anchor_constraints: tuple[AnchorConstraint, ...] = (),
+    disambiguator: MentionDisambiguator | None = None,
+    entity_catalog: Mapping[str, DisambiguationCandidate] | None = None,
 ) -> tuple[
     list[ChunkRecord],
     list[MentionRecord],
@@ -137,11 +134,8 @@ def build_source_records(
             for mention in detect_mentions(
                 chunk.text,
                 automaton,
-                ambiguous_map=ambiguous_map,
                 disambiguator=disambiguator,
-                recognition_patterns=recognition_patterns,
-                suppressed_terms=suppressed_terms,
-                anchor_constraints=anchor_constraints,
+                entity_catalog=entity_catalog,
             )
         )
         mention_records.extend(chunk_mentions)

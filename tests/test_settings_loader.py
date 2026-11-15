@@ -1,4 +1,8 @@
+"""Tests for runtime config loading with Central_Configs v5.0.0 paths and local MLX defaults."""
+
 from pathlib import Path
+
+import pytest
 
 from lxd.settings.loader import load_runtime_config, resolve_repo_root
 
@@ -8,23 +12,29 @@ def test_load_runtime_config_uses_default_config_yaml() -> None:
     config, config_path = load_runtime_config(repo_root)
 
     assert config_path == repo_root / "config.yaml"
-    # corpus_path is configured as an absolute path to the curated wiki;
-    # this test only enforces that the loader returns it absolute and intact.
     assert config.paths.corpus_path.is_absolute()
-    assert config.paths.ontology_path == repo_root / "ontology" / "vendor" / "central-configs"
-    assert config.paths.library_path == repo_root / "library" / "vendor" / "central-library"
+    assert config.paths.central_configs_path == (repo_root / ".." / "Central_Configs").resolve()
+    assert (
+        config.paths.central_duckdb_path
+        == (repo_root / ".." / "Central_Configs" / "dist" / "build" / "central.duckdb").resolve()
+    )
     assert config.paths.data_path == repo_root / "data" / "openai"
+    assert config.models.disambiguation_model == "mlx-community/gemma-4-e4b-it-4bit"
 
 
-def test_load_runtime_config_resolves_relative_paths_from_selected_file(tmp_path: Path) -> None:
+def test_load_runtime_config_resolves_relative_paths_and_env_default(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     repo_root = tmp_path / "repo"
     repo_root.mkdir()
+    env_central = tmp_path / "env-central"
+    monkeypatch.setenv("CENTRAL_CONFIGS_ROOT", str(env_central))
     config_file = repo_root / "portable.yaml"
     config_file.write_text(
         """
 paths:
   corpus_path: corpus
-  ontology_path: ontology
   data_path: data
 models:
   embed: nomic-embed-text
@@ -50,9 +60,6 @@ corpus:
 assets:
   register_png: true
   infer_docling_parent: true
-ontology:
-  include_globs: ["**/*.yaml"]
-  ignore_names: []
 retrieval:
   dense_top_k: 20
   rerank_top_k: 20
@@ -103,7 +110,7 @@ logging:
 
     assert resolved == config_file
     assert config.paths.corpus_path == repo_root / "corpus"
-    assert config.paths.ontology_path == repo_root / "ontology"
+    assert config.paths.central_configs_path == env_central.resolve()
     assert config.paths.data_path == repo_root / "data"
     assert config.reranker.launch is not None
     assert config.reranker.launch.model_path == repo_root / "models" / "reranker.gguf"
@@ -149,19 +156,15 @@ def test_load_runtime_config_rejects_openai_dim_mismatch(tmp_path: Path) -> None
         encoding="utf-8",
     )
 
-    try:
+    with pytest.raises(ValueError, match=r"models\.embed_dims must match openai\.dims"):
         load_runtime_config(repo_root, config_path=config_file)
-    except ValueError as exc:
-        assert "models.embed_dims must match openai.dims" in str(exc)
-    else:
-        raise AssertionError("Expected ValueError for embed_dims/openai.dims mismatch")
 
 
 def _base_openai_config_yaml(*, embed_dims: int, openai_dims: int, query_instruction: str) -> str:
     return f"""
 paths:
   corpus_path: corpus
-  ontology_path: ontology
+  central_configs_path: ../Central_Configs
   data_path: data
 models:
   embed: text-embedding-3-small
@@ -199,9 +202,6 @@ corpus:
 assets:
   register_png: true
   infer_docling_parent: true
-ontology:
-  include_globs: ["**/*.yaml"]
-  ignore_names: []
 retrieval:
   dense_top_k: 20
   rerank_top_k: 20

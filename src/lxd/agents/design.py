@@ -26,6 +26,7 @@ from typing import Any, Final
 
 import structlog
 
+from lxd.agents._governance import format_design_governance_block
 from lxd.agents._retrieval import citation_labels, format_evidence_block
 from lxd.agents.artefacts import (
     AssessmentBlueprint,
@@ -51,32 +52,36 @@ _COUNTED_STEPS: Final = ("retrieve", "objectives", "modality", "outline", "asses
 _OBJECTIVES_SYSTEM_PROMPT: Final = """\
 You are an instructional designer drafting Bloom's-taxonomy-aligned \
 learning objectives for the TOPIC below, grounded in the EVIDENCE \
-provided and tailored to the LEARNER BRIEF. Each objective must be a \
-single, measurable, observable statement (one verb, one outcome).
+provided, governed by CENTRAL CONFIGS GOVERNANCE (when present), and \
+tailored to the LEARNER BRIEF. Each objective must be a single, \
+measurable, observable statement (one verb, one outcome).
 
 Return ONLY a JSON object: {"objectives": ["...", "..."]} with 3-6 \
 objectives. No preamble, no markdown fences."""
 
 _MODALITY_SYSTEM_PROMPT: Final = """\
 You are an instructional designer recommending a delivery modality for \
-the TOPIC below, grounded in the EVIDENCE provided and the LEARNER \
-BRIEF's stated modality preference and constraints (if any).
+the TOPIC below, grounded in the EVIDENCE provided, governed by CENTRAL \
+CONFIGS GOVERNANCE (when present), and tailored to the LEARNER BRIEF's \
+stated modality preference and constraints (if any).
 
 Return ONLY a JSON object: {"modality_plan": "2-4 sentence recommendation \
 with rationale"}. No preamble, no markdown fences."""
 
 _OUTLINE_SYSTEM_PROMPT: Final = """\
 You are an instructional designer sequencing a learning experience for \
-the TOPIC below, grounded in the EVIDENCE provided, in service of the \
-OBJECTIVES already drafted and the LEARNER BRIEF.
+the TOPIC below, grounded in the EVIDENCE provided and CENTRAL CONFIGS \
+GOVERNANCE (when present), in service of the OBJECTIVES already drafted \
+and the LEARNER BRIEF.
 
 Return ONLY a JSON object: {"outline": ["Module 1: ...", "Module 2: ..."]} \
 with 3-8 ordered items. No preamble, no markdown fences."""
 
 _ASSESSMENT_SYSTEM_PROMPT: Final = """\
 You are an instructional designer drafting an assessment blueprint for \
-the TOPIC below, grounded in the EVIDENCE provided, mapped to the \
-OBJECTIVES already drafted, and appropriate for the LEARNER BRIEF.
+the TOPIC below, grounded in the EVIDENCE provided and CENTRAL CONFIGS \
+GOVERNANCE (when present), mapped to the OBJECTIVES already drafted, \
+and appropriate for the LEARNER BRIEF.
 
 Return ONLY a JSON object: {"assessment": ["Item 1: ...", "Item 2: ..."]} \
 with 2-6 items, each naming the objective it measures. No preamble, no \
@@ -136,6 +141,10 @@ async def _design_learning_async(
         return _empty_bundle(topic, steps_completed, warnings)
 
     evidence_block = format_evidence_block(ranked)
+    governance_block = format_design_governance_block(config, brief)
+    governance_suffix = (
+        f"\n\nCENTRAL CONFIGS GOVERNANCE:\n{governance_block}" if governance_block else ""
+    )
     citations = citation_labels(ranked)
 
     objectives = LearningObjectives(citations=citations)
@@ -159,7 +168,8 @@ async def _design_learning_async(
             _draft_json_list(
                 system_prompt=_OBJECTIVES_SYSTEM_PROMPT,
                 user_prompt=(
-                    f"TOPIC:\n{topic}\n\nLEARNER BRIEF:\n{brief_summary}\n\nEVIDENCE:\n{evidence_block}"
+                    f"TOPIC:\n{topic}\n\nLEARNER BRIEF:\n{brief_summary}\n\n"
+                    f"EVIDENCE:\n{evidence_block}{governance_suffix}"
                 ),
                 config=config,
                 json_key="objectives",
@@ -170,7 +180,8 @@ async def _design_learning_async(
             _draft_json_text(
                 system_prompt=_MODALITY_SYSTEM_PROMPT,
                 user_prompt=(
-                    f"TOPIC:\n{topic}\n\nLEARNER BRIEF:\n{brief_summary}\n\nEVIDENCE:\n{evidence_block}"
+                    f"TOPIC:\n{topic}\n\nLEARNER BRIEF:\n{brief_summary}\n\n"
+                    f"EVIDENCE:\n{evidence_block}{governance_suffix}"
                 ),
                 config=config,
                 json_key="modality_plan",
@@ -213,7 +224,8 @@ async def _design_learning_async(
                 system_prompt=_OUTLINE_SYSTEM_PROMPT,
                 user_prompt=(
                     f"TOPIC:\n{topic}\n\nOBJECTIVES:\n{_bullet(objectives.items)}\n\n"
-                    f"LEARNER BRIEF:\n{brief_summary}\n\nEVIDENCE:\n{evidence_block}"
+                    f"LEARNER BRIEF:\n{brief_summary}\n\n"
+                    f"EVIDENCE:\n{evidence_block}{governance_suffix}"
                 ),
                 config=config,
                 json_key="outline",
@@ -225,7 +237,8 @@ async def _design_learning_async(
                 system_prompt=_ASSESSMENT_SYSTEM_PROMPT,
                 user_prompt=(
                     f"TOPIC:\n{topic}\n\nOBJECTIVES:\n{_bullet(objectives.items)}\n\n"
-                    f"LEARNER BRIEF:\n{brief_summary}\n\nEVIDENCE:\n{evidence_block}"
+                    f"LEARNER BRIEF:\n{brief_summary}\n\n"
+                    f"EVIDENCE:\n{evidence_block}{governance_suffix}"
                 ),
                 config=config,
                 json_key="assessment",

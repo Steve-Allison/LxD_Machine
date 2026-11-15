@@ -1,126 +1,304 @@
-"""Embedding-aware mention disambiguator.
+"""Constrained local MLX + ``llguidance`` Stage 2 proper-noun disambiguator.
 
-Given an ambiguous surface form (one that maps to >1 ontology entity)
-and the surrounding chunk text, embed the local window and pick the
-candidate whose entity embedding is most similar by cosine.
+Stage 1 (``pyahocorasick`` over ``match_lexicon``) resolves unambiguous,
+case-exact, and context-anchored proper nouns deterministically on unmodified
+text. Spans that carry ``requires_llm_disambiguation=True`` or map to multiple
+candidate ``coe:Cxxxxx`` CURIEs escalate to Stage 2.
 
-Build dependency: this lane requires the ``entity_embeddings`` LanceDB
-table to exist (built by :mod:`lxd.cli.graph`). On a freshly ingested
-corpus before ``pixi run build-graph`` has been run, the disambiguator
-fails gracefully — :func:`make_disambiguator` returns ``None`` and the
-caller falls back to first-match behaviour.
+Stage 2 runs a local ``mlx-lm`` model (default
+``mlx-community/gemma-4-e4b-it-4bit``) constrained at token level by an
+``llguidance`` regex grammar ``^(:?coe:C...|NIL)$`` at ``temp=0.0``. Offline
+unit tests inject any ``MentionDisambiguator`` protocol implementation so no
+paid external API calls or multi-GB model loads are required in fast CI.
 """
 
-from collections.abc import Callable
+import re
+from collections.abc import Callable, Iterable, Mapping, Sequence
+from dataclasses import dataclass
+from typing import Any, Protocol, runtime_checkable
 
+import llguidance
+import llguidance.hf
+import llguidance.mlx
+import llguidance.numpy
 import structlog
 
-from lxd.retrieval.dense import embed_query
 from lxd.settings.models import RuntimeConfig
-from lxd.stores.lancedb import (
-    connect_lancedb,
-    search_similar_entities,
-)
-from lxd.stores.models import StorePaths
 
 _log = structlog.get_logger(__name__)
 
+DEFAULT_DISAMBIGUATION_MODEL = "mlx-community/gemma-4-e4b-it-4bit"
 
-# A mention disambiguator picks one entity id given the local window text and
-# the candidate set. Returns ``None`` to signal "couldn't decide" — the
-# caller then falls back to whatever the upstream policy is (typically
-# first-match by ontology priority).
-Disambiguator = Callable[[str, list[str]], str | None]
+
+@dataclass(frozen=True, slots=True)
+class DisambiguationCandidate:
+    """Candidate proper-noun entity presented to Stage 2 disambiguation."""
+
+    curie: str
+    pref_label: str = ""
+    collection_name: str = ""
+    definition: str = ""
+
+
+@runtime_checkable
+class MentionDisambiguator(Protocol):
+    """Injectable protocol for Stage 2 proper-noun disambiguation."""
+
+    def disambiguate(
+        self,
+        *,
+        text: str,
+        start: int,
+        end: int,
+        surface: str,
+        candidates: Sequence[DisambiguationCandidate],
+    ) -> str | None:
+        """Return a candidate CURIE, or ``"NIL"`` / ``None`` to abstain."""
+        ...
+
+
+def build_disambiguation_regex(candidate_curies: Sequence[str]) -> str:
+    """Build the exact anchored regex ``^(c1|c2|...|NIL)$`` for ``llguidance``."""
+    unique = list(dict.fromkeys(c.strip() for c in candidate_curies if c.strip() and c != "NIL"))
+    if not unique:
+        raise ValueError("candidate_curies must contain at least one CURIE.")
+    return "^(" + "|".join(re.escape(curie) for curie in [*unique, "NIL"]) + ")$"
+
+
+def build_disambiguation_grammar(candidate_curies: Sequence[str]) -> str:
+    """Compile the ``llguidance`` regex grammar JSON specification."""
+    pattern = build_disambiguation_regex(candidate_curies)
+    return llguidance.LLMatcher.grammar_from_regex(pattern)
+
+
+def compile_llguidance_matcher(
+    ll_tokenizer: llguidance.LLTokenizer,
+    candidate_curies: Sequence[str],
+) -> llguidance.LLMatcher:
+    """Create and validate an ``LLMatcher`` for ``candidate_curies`` + ``NIL``."""
+    grammar = build_disambiguation_grammar(candidate_curies)
+    matcher = llguidance.LLMatcher(ll_tokenizer, grammar)
+    if matcher.is_error():
+        raise ValueError(f"Invalid llguidance disambiguation grammar: {matcher.get_error()}")
+    return matcher
+
+
+def context_window(text: str, *, start: int, end: int, radius: int = 240) -> str:
+    """Format a bounded character window around ``[start, end)`` with ``<<...>>`` markers."""
+    left = max(0, start - radius)
+    right = min(len(text), end + radius)
+    return f"{text[left:start]}<<{text[start:end]}>>{text[end:right]}"
+
+
+def build_disambiguation_prompt(
+    *,
+    text: str,
+    start: int,
+    end: int,
+    surface: str,
+    candidates: Sequence[DisambiguationCandidate],
+    radius: int = 240,
+) -> str:
+    """Build the deterministic Stage 2 disambiguation prompt."""
+    marked = context_window(text, start=start, end=end, radius=radius)
+    option_lines: list[str] = []
+    for candidate in candidates:
+        label = candidate.pref_label or candidate.curie
+        kind = f" ({candidate.collection_name})" if candidate.collection_name else ""
+        desc = f" — {candidate.definition}" if candidate.definition else ""
+        option_lines.append(f"- {candidate.curie}: {label}{kind}{desc}")
+    option_lines.append(
+        "- NIL: Generic English word, non-entity usage, or none of the candidates above."
+    )
+    options_block = "\n".join(option_lines)
+    return (
+        "Identify whether the highlighted mention <<...>> refers to one of the "
+        "listed proper-noun entities or NIL.\n"
+        "Respond with ONLY the exact identifier (e.g. coe:C01008 or NIL).\n\n"
+        f"Mention: {surface}\n"
+        f"Context: {marked}\n\n"
+        f"Candidates:\n{options_block}\n\n"
+        "Identifier:"
+    )
+
+
+def make_mlx_llguidance_processor(
+    matcher: llguidance.LLMatcher,
+    eos_token_id: int,
+) -> Callable[[Any, Any], Any]:
+    """Create an ``mlx_lm`` logits processor backed by ``llguidance.mlx``."""
+    import mlx.core as mx
+
+    prompt_len: int | None = None
+    consumed = 0
+    bitmask_cache: Any = None
+    cached_vocab_size = -1
+
+    def processor(tokens: Any, logits: Any) -> Any:
+        nonlocal prompt_len, consumed, bitmask_cache, cached_vocab_size
+        total_tokens = len(tokens)
+        if prompt_len is None:
+            prompt_len = total_tokens
+        while prompt_len + consumed < total_tokens:
+            tok_id = int(tokens[prompt_len + consumed].item())
+            matcher.consume_token(tok_id)
+            consumed += 1
+
+        if matcher.is_stopped():
+            vocab_size = int(logits.shape[-1])
+            eos_mask = mx.full(logits.shape, -float("inf"), dtype=logits.dtype)
+            if 0 <= eos_token_id < vocab_size:
+                eos_col = mx.zeros((logits.shape[0], 1), dtype=logits.dtype)
+                parts: list[Any] = []
+                if eos_token_id > 0:
+                    parts.append(eos_mask[:, :eos_token_id])
+                parts.append(eos_col)
+                if eos_token_id + 1 < vocab_size:
+                    parts.append(eos_mask[:, eos_token_id + 1 :])
+                return mx.concatenate(parts, axis=-1)
+            return eos_mask
+
+        vocab_size = int(logits.shape[-1])
+        if bitmask_cache is None or cached_vocab_size != vocab_size:
+            bitmask_cache = llguidance.numpy.allocate_token_bitmask(1, vocab_size)
+            cached_vocab_size = vocab_size
+        llguidance.numpy.fill_next_token_bitmask(matcher, bitmask_cache, 0)
+        return llguidance.mlx.apply_token_bitmask(logits, bitmask_cache)
+
+    return processor
+
+
+class MlxGuidedDisambiguator:
+    """Lazy local ``mlx-lm`` + ``llguidance`` Stage 2 proper-noun disambiguator."""
+
+    def __init__(
+        self,
+        *,
+        model_id: str = DEFAULT_DISAMBIGUATION_MODEL,
+        entity_catalog: Mapping[str, DisambiguationCandidate] | None = None,
+        window_chars: int = 240,
+        max_tokens: int = 16,
+    ) -> None:
+        self.model_id = model_id
+        self.entity_catalog: dict[str, DisambiguationCandidate] = dict(entity_catalog or {})
+        self.window_chars = window_chars
+        self.max_tokens = max_tokens
+        self._model: Any = None
+        self._tokenizer: Any = None
+        self._ll_tokenizer: llguidance.LLTokenizer | None = None
+
+    def _ensure_loaded(self) -> tuple[Any, Any, llguidance.LLTokenizer]:
+        if self._model is None or self._tokenizer is None or self._ll_tokenizer is None:
+            import mlx_lm
+            from transformers import PreTrainedTokenizerFast
+
+            loaded = mlx_lm.load(self.model_id)
+            model = loaded[0]
+            tokenizer = loaded[1]
+            hf_tokenizer = getattr(tokenizer, "_tokenizer", tokenizer)
+            if not isinstance(hf_tokenizer, PreTrainedTokenizerFast):
+                raise TypeError(
+                    f"Expected PreTrainedTokenizerFast from {self.model_id}, "
+                    f"got {type(hf_tokenizer).__name__}"
+                )
+            vocab_size: int | None = None
+            model_args = getattr(model, "args", None)
+            raw_vocab_size = getattr(model_args, "vocab_size", None)
+            if isinstance(raw_vocab_size, int) and raw_vocab_size > 0:
+                vocab_size = raw_vocab_size
+            ll_tokenizer = llguidance.hf.from_tokenizer(hf_tokenizer, n_vocab=vocab_size)
+            self._model = model
+            self._tokenizer = tokenizer
+            self._ll_tokenizer = ll_tokenizer
+        return self._model, self._tokenizer, self._ll_tokenizer
+
+    def disambiguate(
+        self,
+        *,
+        text: str,
+        start: int,
+        end: int,
+        surface: str,
+        candidates: Sequence[DisambiguationCandidate],
+    ) -> str | None:
+        """Resolve ``surface`` at ``text[start:end]`` to one candidate CURIE or ``None``."""
+        if not candidates:
+            return None
+        enriched = [self.entity_catalog.get(c.curie, c) for c in candidates]
+        candidate_curies = [c.curie for c in enriched]
+        valid_curies = set(candidate_curies)
+
+        from mlx_lm import generate
+        from mlx_lm.sample_utils import make_sampler
+
+        model, tokenizer, ll_tokenizer = self._ensure_loaded()
+        matcher = compile_llguidance_matcher(ll_tokenizer, candidate_curies)
+        eos_id = int(getattr(tokenizer, "eos_token_id", ll_tokenizer.eos_token))
+        user_prompt = build_disambiguation_prompt(
+            text=text,
+            start=start,
+            end=end,
+            surface=surface,
+            candidates=enriched,
+            radius=self.window_chars,
+        )
+        apply_template = getattr(tokenizer, "apply_chat_template", None)
+        if callable(apply_template):
+            formatted_prompt = str(
+                apply_template(
+                    [{"role": "user", "content": user_prompt}],
+                    tokenize=False,
+                    add_generation_prompt=True,
+                )
+            )
+        else:
+            formatted_prompt = user_prompt
+
+        processor = make_mlx_llguidance_processor(matcher, eos_id)
+        sampler = make_sampler(temp=0.0)
+        raw_output = generate(
+            model,
+            tokenizer,
+            prompt=formatted_prompt,
+            max_tokens=self.max_tokens,
+            sampler=sampler,
+            logits_processors=[processor],
+            verbose=False,
+        )
+        decision = raw_output.strip()
+        if decision == "NIL" or decision not in valid_curies:
+            return None
+        return decision
+
+
+def build_entity_catalog(
+    entity_definitions: Iterable[Mapping[str, Any]],
+) -> dict[str, DisambiguationCandidate]:
+    """Build a CURIE -> ``DisambiguationCandidate`` lookup map from entity definitions."""
+    catalog: dict[str, DisambiguationCandidate] = {}
+    for entity in entity_definitions:
+        curie = entity.get("canonical_id")
+        if not isinstance(curie, str) or not curie:
+            continue
+        label = entity.get("label")
+        kind = entity.get("entity_kind") or entity.get("entity_type")
+        desc = entity.get("description")
+        catalog[curie] = DisambiguationCandidate(
+            curie=curie,
+            pref_label=label if isinstance(label, str) else "",
+            collection_name=kind if isinstance(kind, str) else "",
+            definition=desc if isinstance(desc, str) else "",
+        )
+    return catalog
 
 
 def make_disambiguator(
     *,
     config: RuntimeConfig,
-    store_paths: StorePaths,
-    top_k: int = 8,
-) -> Disambiguator | None:
-    """Build a disambiguator bound to the live entity-embeddings table.
-
-    Returns ``None`` when the LanceDB store, the entity table, or the
-    embedder are not available — the caller MUST treat this as "no
-    disambiguation possible" and not raise. This contract preserves the
-    "always-on, no toggle" rule (`.claude/rules/mandatory-features.md`) while
-    allowing graceful degradation on a fresh ingest before
-    `pixi run build-graph` has populated `entity_embeddings`.
-
-    Args:
-        config: Runtime config; needed for embedder dispatch and dims.
-        store_paths: Resolved data-dir paths; LanceDB lives under here.
-        top_k: How many entity candidates to fetch from the entity table
-            before intersecting with the per-term candidate set. Larger
-            values cope with rare entities that don't make the global
-            top of the cosine ranking.
-
-    Returns:
-        A callable ``(window_text, candidates) -> entity_id | None`` or
-        ``None`` when prerequisites are missing. The caller is
-        responsible for slicing the per-mention context window via
-        :func:`context_window` before invoking it.
-    """
-    if not store_paths.lancedb_path.exists():
-        _log.debug("disambiguator_unavailable", reason="lancedb_missing")
-        return None
-    try:
-        database = connect_lancedb(store_paths.lancedb_path)
-        # IMPORTANT: open WITHOUT creating. The disambiguation lane is a
-        # consumer of the entity_embeddings table, never a producer; the
-        # table is built by `pixi run build-graph`. If we used
-        # `open_entity_table` here, we'd silently create an empty table
-        # as a side effect of every ingest run, which (a) wastes disk,
-        # (b) makes ingest's "no extra LanceDB writes" tests flake, and
-        # (c) gives the disambiguator nothing to search anyway.
-        entity_table = database.open_table("entity_embeddings")
-    except (FileNotFoundError, ValueError) as exc:
-        _log.debug("disambiguator_unavailable", reason=str(exc))
-        return None
-    try:
-        if entity_table.count_rows() == 0:
-            _log.debug("disambiguator_unavailable", reason="entity_table_empty")
-            return None
-    except (AttributeError, RuntimeError) as exc:
-        _log.debug("disambiguator_unavailable", reason=f"count_rows_failed:{exc}")
-        return None
-
-    def disambiguate(window_text: str, candidates: list[str]) -> str | None:
-        if not window_text.strip() or len(candidates) < 2:
-            return None
-        try:
-            query_vector = embed_query(config, window_text)
-        except (RuntimeError, ConnectionError, TimeoutError, ValueError) as exc:
-            _log.debug("disambiguator_embed_failed", error=str(exc))
-            return None
-        try:
-            nearest = search_similar_entities(
-                entity_table,
-                query_vector=query_vector,
-                limit=top_k,
-            )
-        except (FileNotFoundError, ValueError) as exc:
-            _log.debug("disambiguator_search_failed", error=str(exc))
-            return None
-        candidate_set = set(candidates)
-        for row in nearest:
-            entity_id = row.get("entity_id")
-            if isinstance(entity_id, str) and entity_id in candidate_set:
-                return entity_id
-        return None
-
-    return disambiguate
-
-
-def context_window(text: str, *, start: int, end: int, radius: int = 200) -> str:
-    """Slice a ±radius-character window around the mention span.
-
-    Bounded by the text edges. The mention itself is included inside
-    the window — embedding the surface form alongside its context lets
-    the embedder disambiguate based on collocation, not just neighbour
-    words.
-    """
-    left = max(0, start - radius)
-    right = min(len(text), end + radius)
-    return text[left:right]
+    entity_definitions: Iterable[Mapping[str, Any]] = (),
+) -> MlxGuidedDisambiguator:
+    """Create a lazy ``MlxGuidedDisambiguator`` configured from ``config.models``."""
+    return MlxGuidedDisambiguator(
+        model_id=config.models.disambiguation_model,
+        entity_catalog=build_entity_catalog(entity_definitions),
+    )

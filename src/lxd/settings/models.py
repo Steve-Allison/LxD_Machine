@@ -53,6 +53,7 @@ class ModelsConfig(BaseModel):
     llm: str
     llm_backend: Literal["mlx"] = "mlx"
     rerank: str
+    disambiguation_model: str = "mlx-community/gemma-4-e4b-it-4bit"
     llm_no_think: bool = False
 
 
@@ -146,15 +147,6 @@ class MultimodalConfig(BaseModel):
     caption_model: str = "gpt-4o-mini"
     caption_timeout_secs: int = Field(default=60, gt=0)
     caption_max_tokens: int = Field(default=200, gt=0)
-
-
-class OntologyConfig(BaseModel):
-    """Ontology file inclusion and ignore filters."""
-
-    model_config = ConfigDict(extra="forbid")
-
-    include_globs: list[str]
-    ignore_names: list[str]
 
 
 class IngestBudget(BaseModel):
@@ -567,14 +559,20 @@ class MlxConfig(BaseModel):
 
 
 class PathsConfig(BaseModel):
-    """Filesystem paths for corpus, ontology, and data."""
+    """Filesystem paths for corpus, Central_Configs semantic authority, and data."""
 
     model_config = ConfigDict(extra="forbid")
 
     corpus_path: Path
-    ontology_path: Path
-    library_path: Path | None = None
+    central_configs_path: Path
     data_path: Path
+
+    @property
+    def central_duckdb_path(self) -> Path:
+        """Return the compiled ``central.duckdb`` store path."""
+        if self.central_configs_path.suffix == ".duckdb" or self.central_configs_path.is_file():
+            return self.central_configs_path
+        return self.central_configs_path / "dist" / "build" / "central.duckdb"
 
 
 class TenancyConfig(BaseModel):
@@ -610,7 +608,6 @@ class RuntimeConfig(BaseModel):
     corpus: CorpusConfig
     assets: AssetsConfig
     multimodal: MultimodalConfig = Field(default_factory=MultimodalConfig)
-    ontology: OntologyConfig
     retrieval: RetrievalConfig
     reranker: RerankerConfig
     expansion: ExpansionConfig

@@ -1,141 +1,110 @@
-"""Build matcher terms and automata from ontology entries."""
+"""Build proper-noun Aho-Corasick automata strictly over ``match_lexicon``."""
 
 import json
 import pickle
+from collections import defaultdict
 from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
 
 import ahocorasick
 import structlog
 
 from lxd.domain.ids import blake3_hex
-from lxd.ontology.normalization import normalize_match_text
 
 _log = structlog.get_logger(__name__)
 
 
 @dataclass(frozen=True, order=True, slots=True)
-class MatcherTermRecord:
-    """Normalized matcher term mapped to an entity ID."""
+class LexiconRule:
+    """Proper-noun surface rule projected from ``Central_Configs`` ``match_lexicon``.
 
-    normalized_term: str
-    entity_id: str
-    term_source: str
-
-
-def canonical_matcher_term_records(
-    entity_definitions: Iterable[dict[str, Any]],
-) -> list[MatcherTermRecord]:
-    """Build canonical matcher terms from ontology entities.
-
-    Args:
-        entity_definitions: Ontology entity definitions to index.
-
-    Returns:
-        Sorted unique matcher term records.
+    Only ``LinkableProperNoun`` entities appear in ``match_lexicon``. Craft
+    concepts, cognitive principles, rhetorical moves, and rubrics never enter
+    this lexicon.
     """
-    records: set[MatcherTermRecord] = set()
-    for entity in entity_definitions:
-        canonical_id = _coerce_required_str(entity, "canonical_id")
-        for term_source, values in (
-            ("canonical_id", [canonical_id]),
-            ("alias", _coerce_str_list(entity.get("aliases", []))),
-            ("indicator", _coerce_str_list(entity.get("indicators", []))),
-        ):
-            for value in values:
-                if term_source == "canonical_id" and ":" in value:
-                    continue
-                normalized = normalize_match_text(value)
-                if normalized:
-                    records.add(
-                        MatcherTermRecord(
-                            normalized_term=normalized,
-                            entity_id=canonical_id,
-                            term_source=term_source,
-                        )
-                    )
-    return sorted(records)
+
+    surface_lower: str
+    curie: str
+    surface: str
+    pref_label: str = ""
+    collection_name: str = ""
+    match_policy: str = "unambiguous"
+    case_sensitive: bool = False
+    anchor_window_tokens: int = 25
+    context_anchors: tuple[str, ...] = ()
+    negative_phrases: tuple[str, ...] = ()
+    requires_llm_disambiguation: bool = False
 
 
-def matcher_termset_hash(records: Iterable[MatcherTermRecord]) -> str:
-    """Compute a stable hash for matcher term records.
+def offset_preserving_lower(text: str) -> str:
+    """Lowercase ``text`` while guaranteeing 1:1 character offsets with raw ``text``.
 
-    Args:
-        records: Record collection to hash or index.
-
-    Returns:
-        Stable hash for the matcher term set.
+    Standard ASCII and BMP Latin characters preserve length under ``str.lower()``.
+    Any rare character whose ``str.lower()`` expands to multiple codepoints (e.g.
+    ``'İ'`` -> ``'i\\u0307'``) is mapped to its base character so ``len(result) ==
+    len(text)`` always holds.
     """
+    if text.isascii():
+        return text.lower()
+    lowered = text.lower()
+    if len(lowered) == len(text):
+        return lowered
+    return "".join(ch.lower() if len(ch.lower()) == 1 else ch.lower()[0] for ch in text)
+
+
+def matcher_termset_hash(records: Iterable[LexiconRule]) -> str:
+    """Compute a deterministic BLAKE3 digest over sorted ``LexiconRule`` entries."""
+    ordered = sorted(set(records))
     lines = [
         json.dumps(
             {
-                "entity_id": record.entity_id,
-                "term_source": record.term_source,
-                "normalized_term": record.normalized_term,
+                "curie": rule.curie,
+                "surface": rule.surface,
+                "surface_lower": rule.surface_lower,
+                "match_policy": rule.match_policy,
+                "case_sensitive": rule.case_sensitive,
+                "anchor_window_tokens": rule.anchor_window_tokens,
+                "context_anchors": list(rule.context_anchors),
+                "negative_phrases": list(rule.negative_phrases),
+                "requires_llm_disambiguation": rule.requires_llm_disambiguation,
             },
             sort_keys=False,
             separators=(",", ":"),
         )
-        for record in records
+        for rule in ordered
     ]
     return blake3_hex("\n".join(lines))
 
 
-def build_automaton(
-    records: Iterable[MatcherTermRecord],
-) -> ahocorasick.Automaton:  # type: ignore[type-arg]
-    """Build an Aho-Corasick automaton for mention matching.
+def build_automaton(records: Iterable[LexiconRule]) -> ahocorasick.Automaton:
+    """Build a ``pyahocorasick.Automaton`` strictly over ``match_lexicon`` rules.
 
-    Args:
-        records: Record collection to hash or index.
-
-    Returns:
-        Configured automaton ready for mention detection.
+    Keys are ``offset_preserving_lower(rule.surface)`` and values are tuples of
+    all ``LexiconRule`` records sharing that lowercase surface form, allowing
+    Stage 1 to inspect original casing, negative phrases, and context anchors
+    without mutating source text.
     """
+    grouped: dict[str, list[LexiconRule]] = defaultdict(list)
+    for rule in sorted(set(records)):
+        key = offset_preserving_lower(rule.surface)
+        if not key:
+            continue
+        grouped[key].append(rule)
+
     automaton = ahocorasick.Automaton(ahocorasick.STORE_ANY, ahocorasick.KEY_STRING)
-    for record in records:
-        payload = {
-            "entity_id": record.entity_id,
-            "term_source": record.term_source,
-            "normalized_term": record.normalized_term,
-        }
-        automaton.add_word(record.normalized_term, payload)
+    for key, rules in sorted(grouped.items()):
+        automaton.add_word(key, tuple(rules))
     automaton.make_automaton()
     return automaton
 
 
 def build_or_load_automaton(
-    records: Iterable[MatcherTermRecord],
+    records: Iterable[LexiconRule],
     *,
     cache_dir: Path,
-) -> ahocorasick.Automaton:  # type: ignore[type-arg]
-    """Return an Aho-Corasick automaton, hydrated from disk when possible.
-
-    The disk cache is keyed on :func:`matcher_termset_hash` over the input
-    records. A hit avoids the ~1-2 s of automaton construction that
-    short-running CLI commands (status, MCP tool startup) otherwise pay on
-    every invocation; a miss builds via :func:`build_automaton`, persists
-    the pickled automaton under ``cache_dir``, and returns it.
-
-    Hash mismatch is intrinsic invalidation: a different ontology produces a
-    different hash, which produces a different filename, so stale entries
-    fall out of use without explicit purging. Corrupt or unreadable cache
-    files fall through to a fresh build and overwrite themselves.
-
-    Args:
-        records: Matcher term records to index. The records are iterated
-            twice (once for hashing, once for the build path on cache miss),
-            so a non-list iterable is materialised into a list internally.
-        cache_dir: Directory the cache file lives in. Created if missing.
-
-    Returns:
-        Configured automaton ready for mention detection.
-
-    Side Effects:
-        Reads / writes ``cache_dir/matcher-<hash>.pkl``.
-    """
+) -> ahocorasick.Automaton:
+    """Return an Aho-Corasick automaton, hydrated from disk cache when valid."""
     record_list = list(records)
     cache_key = matcher_termset_hash(record_list)
     cache_path = cache_dir / f"matcher-{cache_key}.pkl"
@@ -143,7 +112,7 @@ def build_or_load_automaton(
         try:
             with cache_path.open("rb") as handle:
                 cached = pickle.load(handle)
-        except (pickle.UnpicklingError, EOFError, OSError) as exc:
+        except (pickle.UnpicklingError, AttributeError, EOFError, OSError) as exc:
             _log.warning(
                 "matcher_cache_load_failed",
                 cache_path=str(cache_path),
@@ -175,22 +144,3 @@ def build_or_load_automaton(
         if tmp_path.exists():
             tmp_path.unlink(missing_ok=True)
     return automaton
-
-
-def _coerce_required_str(payload: dict[str, Any], key: str) -> str:
-    value = payload.get(key)
-    if not isinstance(value, str) or not value.strip():
-        raise ValueError(f"Missing required string field: {key}")
-    return value
-
-
-def _coerce_str_list(value: Any) -> list[str]:
-    if value is None:
-        return []
-    if not isinstance(value, list):
-        raise ValueError("Expected list of strings")
-    result: list[str] = []
-    for item in value:
-        if isinstance(item, str) and item.strip():
-            result.append(item)
-    return result

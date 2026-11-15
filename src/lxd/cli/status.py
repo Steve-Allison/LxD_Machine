@@ -95,9 +95,7 @@ def status_command(
     asset_count = sum(1 for item in plan.scanned_files if item.source_type == "image_png")
     typer.echo(f"Config file: {context.config_path}")
     typer.echo(f"Corpus path: {context.config.paths.corpus_path}")
-    typer.echo(f"Ontology path: {context.config.paths.ontology_path}")
-    if context.config.paths.library_path is not None:
-        typer.echo(f"Library path: {context.config.paths.library_path}")
+    typer.echo(f"Central_Configs path: {context.config.paths.central_configs_path}")
     typer.echo(f"Scanned text files: {len(plan.scanned_files) - asset_count}")
     typer.echo(f"Scanned asset files: {asset_count}")
     typer.echo(f"Ontology snapshot hash: {plan.ontology.snapshot_hash}")

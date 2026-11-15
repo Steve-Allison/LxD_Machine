@@ -1,11 +1,14 @@
 """Resolve repository paths and load runtime configuration."""
 
+import os
 from pathlib import Path
 from typing import Any
 
 import yaml
 
 from lxd.settings.models import RuntimeConfig
+
+_DEFAULT_CENTRAL_CONFIGS_REL = "../Central_Configs"
 
 
 def resolve_repo_root(cwd: Path | None = None) -> Path:
@@ -46,7 +49,6 @@ def load_runtime_config(
         config_path=config_path,
     )
     raw = _load_yaml(resolved_config_path)
-    raw.pop("_meta", None)
     _resolve_paths_section(raw, base_dir=resolved_config_path.parent)
     _resolve_reranker_section(raw, base_dir=resolved_config_path.parent)
     return RuntimeConfig.model_validate(raw), resolved_config_path
@@ -88,10 +90,12 @@ def _resolve_paths_section(raw: dict[str, Any], *, base_dir: Path) -> None:
     paths = raw.get("paths")
     if not isinstance(paths, dict):
         raise ValueError("Runtime config must define a top-level 'paths' mapping.")
-    for key in ("corpus_path", "ontology_path", "library_path", "data_path"):
+    raw_central = paths.get("central_configs_path")
+    if raw_central is None:
+        env_default = os.environ.get("CENTRAL_CONFIGS_ROOT", "").strip()
+        paths["central_configs_path"] = env_default or _DEFAULT_CENTRAL_CONFIGS_REL
+    for key in ("corpus_path", "central_configs_path", "data_path"):
         value = paths.get(key)
-        if key == "library_path" and value is None:
-            continue
         if not isinstance(value, str) or not value.strip():
             raise ValueError(f"Runtime config paths.{key} must be a non-empty string.")
         candidate = Path(value).expanduser()

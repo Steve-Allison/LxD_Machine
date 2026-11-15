@@ -120,7 +120,7 @@ def build_entity_profiles(
         label = (
             raw_label.strip()
             if isinstance(raw_label, str) and raw_label.strip()
-            else entity_id.replace("_", " ").title()
+            else (entity_id if ":" in entity_id else entity_id.replace("_", " ").title())
         )
         entity_type = str(entity_def.get("entity_type") or entity_def.get("entity_kind") or "")
         domain = str(entity_def.get("domain") or "")
@@ -311,6 +311,10 @@ def build_community_reports(
 
     existing_hashes = load_community_report_source_hashes(connection) if not force else {}
     entity_profile_hashes = load_entity_profile_source_hashes(connection)
+    profile_labels = {
+        str(row["entity_id"]): str(row["label"])
+        for row in connection.execute("SELECT entity_id, label FROM entity_profiles").fetchall()
+    }
 
     timestamp = datetime.now(UTC).isoformat()
     parent_lookup = parent_of or {}
@@ -376,7 +380,10 @@ def build_community_reports(
         intra_edge_count = int(intra_edges["cnt"]) if intra_edges else 0
 
         # Deterministic summary
-        member_labels = [eid.replace("_", " ").title() for eid in ranked[:5]]
+        member_labels = [
+            profile_labels.get(eid) or (eid if ":" in eid else eid.replace("_", " ").title())
+            for eid in ranked[:5]
+        ]
         claims_text = "; ".join(str(c["claim_text"])[:60] for c in top_claims[:3]) or "none"
 
         deterministic_summary = (

@@ -39,7 +39,7 @@ def test_load_committed_status_uses_live_plan_when_snapshot_lacks_coverage(
         config = SimpleNamespace(
             paths=SimpleNamespace(
                 corpus_path=tmp_path / "corpus",
-                ontology_path=tmp_path / "ontology",
+                central_configs_path=tmp_path / "Central_Configs",
                 data_path=tmp_path,
             ),
             chunking=SimpleNamespace(
@@ -110,7 +110,7 @@ def test_load_committed_status_ignores_malformed_validation_issue_json(
         config = SimpleNamespace(
             paths=SimpleNamespace(
                 corpus_path=tmp_path / "corpus",
-                ontology_path=tmp_path / "ontology",
+                central_configs_path=tmp_path / "Central_Configs",
                 data_path=tmp_path,
             ),
             chunking=SimpleNamespace(

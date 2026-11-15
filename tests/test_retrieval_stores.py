@@ -14,7 +14,7 @@ def _make_config(tmp_path: Path) -> RuntimeConfig:
     data_dir.mkdir(parents=True, exist_ok=True)
     paths = PathsConfig(
         corpus_path=tmp_path / "corpus",
-        ontology_path=tmp_path / "ontology",
+        central_configs_path=tmp_path / "Central_Configs",
         data_path=data_dir,
     )
     models = ModelsConfig(embed="mock-embed", llm="mock-llm", rerank="mock-rerank", embed_dims=8)

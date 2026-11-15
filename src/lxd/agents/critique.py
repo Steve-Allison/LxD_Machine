@@ -16,6 +16,7 @@ from typing import Any, Final
 import structlog
 from pydantic import ValidationError
 
+from lxd.agents._governance import format_critique_governance_block
 from lxd.agents._retrieval import citation_labels, format_evidence_block
 from lxd.agents.artefacts import CritiqueResult, DesignArtefactBundle
 from lxd.domain.json_utils import extract_json_dict
@@ -28,16 +29,20 @@ _log = structlog.get_logger(__name__)
 _CRITIQUE_SYSTEM_PROMPT: Final = """\
 You are a senior instructional designer critiquing a colleague's draft \
 learning-design artefact bundle (objectives, modality plan, outline, \
-assessment) against the ARTEFACT text and grounding EVIDENCE below.
+assessment) against the ARTEFACT text, grounding EVIDENCE, and CENTRAL \
+CONFIGS GOVERNANCE (rubrics, diagnostic detectors, empirical norms, \
+pedagogical boundary rules, cross-domain bridges, and voice registers) \
+below.
 
 Score these dimensions from 0.0 (poor) to 1.0 (excellent):
 - objective_alignment: do the outline and assessment actually serve the
   stated objectives?
-- evidence_grounding: is the artefact consistent with the EVIDENCE, or
-  does it contradict / go well beyond what the evidence supports?
+- evidence_grounding: is the artefact consistent with the EVIDENCE and
+  CENTRAL CONFIGS GOVERNANCE, or does it contradict / violate them?
 - assessment_validity: do the assessment items plausibly measure the
   stated objectives at the right Bloom's level?
-- clarity: is the artefact specific and actionable rather than generic?
+- clarity: is the artefact specific, plain-language, and free of failure
+  modes flagged by the diagnostic detectors?
 
 Give an overall_score (0.0-1.0, your holistic judgement — not necessarily
 the mean of the dimensions) and 2-5 concise, actionable feedback bullets.
@@ -110,11 +115,14 @@ async def critique_design_async(
     if not ranked:
         warnings.append("No corpus evidence retrieved for the critique query.")
 
+    governance_block = format_critique_governance_block(config)
     user_prompt = _CRITIQUE_USER_PROMPT.format(
         artefact=artefact_text,
         evidence=evidence_block,
         focus_question=question_context.strip() or "(none)",
     )
+    if governance_block:
+        user_prompt = f"{user_prompt}\nCENTRAL CONFIGS GOVERNANCE:\n{governance_block}\n"
     cfg = config.design_agent
     try:
         raw = await call_with_fallback_async(

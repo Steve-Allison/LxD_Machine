@@ -1,7 +1,10 @@
+"""Tests for BM25 lexical phrase and expansion query construction."""
+
 from pathlib import Path
 from types import SimpleNamespace
 from typing import cast
 
+import duckdb
 from lancedb.query import BooleanQuery, MatchQuery, PhraseQuery
 
 from lxd.retrieval.lexical import (
@@ -48,27 +51,36 @@ def test_alias_inside_a_matched_phrase_does_not_expand_another_owner() -> None:
     assert phrases == ("cognitive load theory",)
 
 
-def test_canonical_id_does_not_expand_to_a_phrase_the_question_never_used() -> None:
+def test_label_does_not_expand_to_a_phrase_the_question_never_used() -> None:
     terms = (
-        LexicalTerm("design", "ontology:backward_design", "canonical_id"),
-        LexicalTerm("backward design", "ontology:backward_design", "alias"),
+        LexicalTerm("design", "ontology:coe:C05201", "label"),
+        LexicalTerm("backward design", "ontology:coe:C05201", "alias"),
     )
 
     assert phrases_for_question("how do I design a course", terms) == ()
 
 
-def test_build_lexical_query_keeps_the_original_words_and_adds_phrases() -> None:
+def test_build_lexical_query_keeps_words_adds_phrases_and_strips_curies() -> None:
     bare = build_lexical_query("what is backward design", ())
-    quoted = build_lexical_query("what is backward design", ("backward design",))
+    quoted = build_lexical_query(
+        "what is backward design coe:C05201",
+        ("backward design",),
+        expansion_terms=("Understanding by Design", "coe:C05202"),
+    )
 
     assert isinstance(bare, MatchQuery)
     assert bare.query == "what is backward design"
     assert isinstance(quoted, BooleanQuery)
+    match_queries = [clause for _, clause in quoted.queries if isinstance(clause, MatchQuery)]
     phrase_queries = [clause for _, clause in quoted.queries if isinstance(clause, PhraseQuery)]
+    assert [clause.query for clause in match_queries] == [
+        "what is backward design",
+        "Understanding by Design",
+    ]
     assert [clause.query for clause in phrase_queries] == ["backward design"]
 
 
-def test_load_lexical_terms_reads_glossary_aliases(tmp_path: Path) -> None:
+def test_load_lexical_terms_reads_glossary_and_duckdb_terms_without_curies(tmp_path: Path) -> None:
     wiki = tmp_path / "wiki"
     wiki.mkdir()
     (wiki / "_glossary.md").write_text(
@@ -82,11 +94,41 @@ def test_load_lexical_terms_reads_glossary_aliases(tmp_path: Path) -> None:
         ),
         encoding="utf-8",
     )
+    db_path = tmp_path / "central.duckdb"
+    con = duckdb.connect(str(db_path))
+    try:
+        con.execute(
+            """
+            CREATE TABLE all_entities (
+                id VARCHAR,
+                collection_name VARCHAR,
+                pref_label VARCHAR,
+                definition VARCHAR
+            );
+            INSERT INTO all_entities VALUES
+                ('coe:C05201', 'instructional_methods', 'Understanding by Design', 'Three-stage backward design.');
+
+            CREATE TABLE all_terms (
+                resource_id VARCHAR,
+                written_form VARCHAR,
+                term_kind VARCHAR
+            );
+            INSERT INTO all_terms VALUES
+                ('coe:C05201', 'UbD', 'acronym');
+            """
+        )
+    finally:
+        con.close()
+
     config = SimpleNamespace(
-        paths=SimpleNamespace(corpus_path=wiki, ontology_path=tmp_path / "missing-ontology")
+        paths=SimpleNamespace(
+            corpus_path=wiki,
+            central_duckdb_path=db_path,
+            central_configs_path=tmp_path / "missing-central",
+        )
     )
 
     terms = load_lexical_terms(cast("RuntimeConfig", config))
-    phrases = phrases_for_question("what does WMC limit", terms)
-
-    assert "working memory capacity" in phrases
+    assert all("coe:c" not in term.normalized.lower() for term in terms)
+    assert "working memory capacity" in phrases_for_question("what does WMC limit", terms)
+    assert "understanding by design" in phrases_for_question("apply UbD stages", terms)

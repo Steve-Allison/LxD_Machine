@@ -1,156 +1,292 @@
-"""Projection of a Central Configs distribution and library into runtime records."""
+"""Projection of Central_Configs v5.0.0 DuckDB authority into runtime records."""
 
+import json
 from pathlib import Path
 
+import duckdb
+import pytest
+
 from lxd.ingest.mentions import detect_mentions
+from lxd.ontology.central_projection import format_ontology_context, search_central_corpus
 from lxd.ontology.loader import load_ontology
 from lxd.ontology.matcher import build_automaton
-from lxd.settings.loader import resolve_repo_root
+
+CENTRAL_CONFIGS_ROOT = Path(__file__).resolve().parents[2] / "Central_Configs"
 
 
-def _write_distribution(root: Path, library: Path) -> None:
-    (root / "domains" / "learning").mkdir(parents=True)
-    (root / "distribution.yaml").write_text("version: 4.0.0\n", encoding="utf-8")
-    (root / "domains" / "learning" / "methods.yaml").write_text(
-        """
-_meta:
-  file_id: coe:file/domain/learning/methods
-  title: Methods
-  last_updated: '2026-09-23'
-  authority: Central_Configs
-  scope: domain
-  ontology_domain: learning
-  governing_class: coe:DomainModule
-module_id: coe:module/learning/methods
-domain: learning
-entity_collections:
-- id: coe:artifact/learning/methods
-  label: Methods
-  description: A collection.
-  home_domain: learning
-  status: canonical
-  entities:
-  - id: coe:entity/scaffolding
-    label: Scaffolding
-    description: Temporary instructional support.
-    home_domain: learning
-    status: canonical
-    terms:
-    - literal: scaffold
-      term_type: short_form
-      term_status: admitted
-    edges:
-    - subject_id: coe:entity/scaffolding
-      predicate: coe:supports
-      object_id: coe:entity/fading
-      statement_id: coe:edge/scaffolding-supports-fading
-      home_domain: learning
-  - id: coe:entity/fading
-    label: Fading
-    description: Removing support as competence grows.
-    home_domain: learning
-    status: canonical
-""".strip(),
-        encoding="utf-8",
-    )
-    (library / "data" / "learning").mkdir(parents=True)
-    (library / "distribution.yaml").write_text("version: 1.0.0\n", encoding="utf-8")
-    (library / "data" / "learning" / "recognition.yaml").write_text(
-        """
-module_id: lib:module/learning/recognition
-domain: learning
-recognition_calibrations:
-  lib:recognition/learning/scaffolding:
-    label: Scaffolding Recognition
-    description: How to recognise scaffolding.
-    about: [coe:entity/scaffolding]
-    status: canonical
-    confidence_threshold: 0.7
-    surfaces: ["zone of proximal development"]
-    negative_surfaces: ["construction scaffold"]
-    recognition_patterns: ["temporary (support|scaffold)"]
-    context_anchors: ["learner"]
-    anchor_window_tokens: 8
-prescriptions:
-  lib:prescription/learning/fade_support:
-    label: Fade Support
-    description: Withdraw the scaffold.
-    about: [coe:entity/scaffolding]
-    status: canonical
-    statement: Fade the scaffold as the learner's competence grows.
-thresholds:
-  lib:threshold/learning/scaffold_steps:
-    label: Scaffold Steps
-    description: Steps of support.
-    about: [coe:entity/scaffolding]
-    status: canonical
-    quantity: support steps
-    unit: steps
-    bound_kind: ceiling
-    maximum_value: 4
-""".strip(),
-        encoding="utf-8",
-    )
+def _build_fixture_duckdb(db_path: Path) -> Path:
+    con = duckdb.connect(str(db_path))
+    try:
+        con.execute("INSTALL fts; LOAD fts;")
+        con.execute(
+            """
+            CREATE TABLE all_entities (
+                id VARCHAR,
+                collection_name VARCHAR,
+                pref_label VARCHAR,
+                definition VARCHAR,
+                status VARCHAR,
+                replaced_by VARCHAR,
+                volatility_tier VARCHAR,
+                last_verified_date VARCHAR,
+                source_uri VARCHAR,
+                wiki_slug VARCHAR,
+                facets_json VARCHAR
+            );
+            INSERT INTO all_entities VALUES
+                ('coe:C00001', 'organisations', 'Adobe', 'Enterprise software vendor.', 'active', NULL, 'stable', '2026-10-01', NULL, NULL, '["portfolio"]'),
+                ('coe:C01008', 'offerings', 'Adobe Target', 'Personalisation and experimentation offering.', 'active', NULL, 'moderate', '2026-10-01', NULL, NULL, '["portfolio"]'),
+                ('coe:C05105', 'cognitive_principles', 'Worked Example Effect', 'Novices learn faster from worked examples.', 'active', NULL, 'stable', '2026-10-01', NULL, 'worked-example-effect', '["pedagogy"]'),
+                ('coe:C05301', 'pedagogical_effect_rules', 'Expertise Reversal on Worked Examples', 'Fade worked examples for experts.', 'active', NULL, 'stable', '2026-10-01', NULL, NULL, '["pedagogy"]'),
+                ('coe:C09001', 'cross_domain_bridges', 'Worked Example to Demo Script Bridge', 'Operationalise worked examples in product demos.', 'active', NULL, 'stable', '2026-10-01', NULL, NULL, '["pedagogy"]'),
+                ('coe:C06002', 'story_frameworks', 'Minto Pyramid', 'Answer-first structured argument.', 'active', NULL, 'stable', '2026-10-01', NULL, 'pyramid-principle', '["rhetoric"]');
+            """
+        )
+        con.execute(
+            """
+            CREATE TABLE all_terms (
+                resource_id VARCHAR,
+                pref_label VARCHAR,
+                collection_name VARCHAR,
+                written_form VARCHAR,
+                term_kind VARCHAR,
+                term_status VARCHAR,
+                spoken_form VARCHAR,
+                usage_note VARCHAR
+            );
+            INSERT INTO all_terms VALUES
+                ('coe:C05105', 'Worked Example Effect', 'cognitive_principles', 'worked example', 'synonym', 'preferred', NULL, NULL),
+                ('coe:C01008', 'Adobe Target', 'offerings', 'Target', 'short_form', 'context_only', NULL, NULL);
+            """
+        )
+        con.execute(
+            """
+            CREATE TABLE match_lexicon (
+                curie VARCHAR,
+                pref_label VARCHAR,
+                collection_name VARCHAR,
+                surface VARCHAR,
+                match_policy VARCHAR,
+                case_sensitive BOOLEAN,
+                anchor_window_tokens INTEGER,
+                requires_llm_disambiguation BOOLEAN,
+                context_anchors_json VARCHAR,
+                negative_phrases_json VARCHAR
+            );
+            INSERT INTO match_lexicon VALUES
+                ('coe:C00001', 'Adobe', 'organisations', 'Adobe', 'unambiguous', FALSE, 25, FALSE, '[]', '["adobe brick"]'),
+                ('coe:C01008', 'Adobe Target', 'offerings', 'Adobe Target', 'unambiguous', FALSE, 25, FALSE, '[]', '[]'),
+                ('coe:C01008', 'Adobe Target', 'offerings', 'Target', 'context_anchored', TRUE, 12, TRUE, '["Adobe", "A/B"]', '["Target store"]');
+            """
+        )
+        con.execute(
+            """
+            CREATE TABLE offerings (
+                id VARCHAR,
+                offered_by VARCHAR,
+                broader VARCHAR[]
+            );
+            INSERT INTO offerings VALUES ('coe:C01008', 'coe:C00001', []);
+            """
+        )
+        con.execute(
+            """
+            CREATE TABLE pedagogical_effect_rules (
+                id VARCHAR,
+                pref_label VARCHAR,
+                definition VARCHAR,
+                governed_principle_or_method VARCHAR,
+                conditioned_expertise_tier VARCHAR,
+                conditioned_language_baseline VARCHAR,
+                modality_or_task_condition VARCHAR,
+                effect_polarity VARCHAR,
+                adapted_prescription VARCHAR,
+                evidence_grade VARCHAR,
+                citations VARCHAR[]
+            );
+            INSERT INTO pedagogical_effect_rules VALUES (
+                'coe:C05301',
+                'Expertise Reversal on Worked Examples',
+                'Worked examples reverse for experts.',
+                'coe:C05105',
+                'expert',
+                NULL,
+                'problem solving',
+                'reverses_to_harmful',
+                'Replace full worked examples with open problem-solving tasks for experts.',
+                'meta_analysis',
+                ['Kalyuga 2003']
+            );
+            """
+        )
+        con.execute(
+            """
+            CREATE TABLE cross_domain_bridges (
+                id VARCHAR,
+                pref_label VARCHAR,
+                definition VARCHAR,
+                source_concept VARCHAR,
+                target_concept VARCHAR,
+                bridge_kind VARCHAR,
+                applicability_condition VARCHAR,
+                actionable_guidance VARCHAR,
+                evidence_grade VARCHAR,
+                citations VARCHAR[]
+            );
+            INSERT INTO cross_domain_bridges VALUES (
+                'coe:C09001',
+                'Worked Example to Demo Script Bridge',
+                'Connects worked examples to structured storylines.',
+                'coe:C05105',
+                'coe:C06002',
+                'operationalizes',
+                'technical enablement',
+                'State the conclusion first, then walk the worked steps.',
+                'convergent_empirical',
+                ['Sweller 2011']
+            );
+            """
+        )
+        bands_json = json.dumps(
+            [
+                {
+                    "zone": "optimal",
+                    "lower_bound": 130.0,
+                    "upper_bound": 160.0,
+                    "coaching_feedback": "Maintain conversational narration pace.",
+                }
+            ]
+        )
+        con.execute(
+            """
+            CREATE TABLE empirical_norms (
+                id VARCHAR,
+                pref_label VARCHAR,
+                definition VARCHAR,
+                measured_subject VARCHAR,
+                quantity_kind_uri VARCHAR,
+                unit_uri VARCHAR,
+                aggregation_window VARCHAR,
+                applicable_delivery_genres VARCHAR[],
+                applicable_language_baseline VARCHAR,
+                bands VARCHAR,
+                evidence_grade VARCHAR,
+                wiki_slug VARCHAR
+            );
+            INSERT INTO empirical_norms VALUES (
+                'coe:C09102',
+                'Narration Speaking Rate Norm',
+                'Target speaking rate.',
+                'coe:C05105',
+                'qudt:Rate',
+                'unit:WPM',
+                'module',
+                ['video_narration'],
+                'l1_fluent',
+                ?,
+                'convergent_empirical',
+                NULL
+            );
+            """,
+            [bands_json],
+        )
+        con.execute(
+            """
+            CREATE TABLE search_corpus (
+                id VARCHAR,
+                collection_name VARCHAR,
+                pref_label VARCHAR,
+                definition VARCHAR,
+                alt_terms VARCHAR
+            );
+            INSERT INTO search_corpus VALUES
+                ('coe:C05105', 'cognitive_principles', 'Worked Example Effect', 'Novices learn faster from worked examples.', 'worked example'),
+                ('coe:C01008', 'offerings', 'Adobe Target', 'Personalisation and experimentation offering.', 'Target');
+            PRAGMA create_fts_index('search_corpus', 'id', 'pref_label', 'definition', 'alt_terms', overwrite=1);
+            """
+        )
+    finally:
+        con.close()
+    return db_path
 
 
-def test_central_projection_builds_entities_edges_and_craft(tmp_path: Path) -> None:
-    ontology = tmp_path / "ontology"
-    library = tmp_path / "library"
-    _write_distribution(ontology, library)
-
-    result = load_ontology(ontology, ["**/*.yaml"], [], library_root=library)
+def test_central_projection_builds_v5_entities_edges_craft_and_fts(tmp_path: Path) -> None:
+    db_path = _build_fixture_duckdb(tmp_path / "central.duckdb")
+    result = load_ontology(db_path)
 
     by_id = {entity["canonical_id"]: entity for entity in result.entity_definitions}
-    scaffolding = by_id["coe:entity/scaffolding"]
-    assert scaffolding["label"] == "Scaffolding"
-    assert "scaffold" in scaffolding["aliases"]
-    assert "zone of proximal development" in scaffolding["indicators"]
-    assert "Fade the scaffold" in scaffolding["craft_summary"]
-    assert "support steps ceiling 4 steps" in scaffolding["craft_summary"]
-    assert any(record.relation_type == "supports" for record in result.relation_records)
-    assert not any(record.normalized_term.startswith("coe:") for record in result.matcher_records)
-    assert result.recognition_patterns
-    assert "construction scaffold" in result.suppressed_terms["coe:entity/scaffolding"]
+    worked = by_id["coe:C05105"]
+    assert worked["label"] == "Worked Example Effect"
+    assert worked["wiki_slug"] == "worked-example-effect"
+    assert "worked example" in worked["aliases"]
+    assert "Replace full worked examples" in worked["craft_summary"]
+    assert "optimal 130–160" in worked["craft_summary"]
+
+    relation_types = {record.relation_type for record in result.relation_records}
+    assert "offered_by" in relation_types
+    assert "governed_principle_or_method" in relation_types
+    assert "operationalizes" in relation_types
+
+    # LinkableProperNoun firewall: cognitive_principles (coe:C05105) is absent from match_lexicon.
+    lexicon_curies = {rule.curie for rule in result.matcher_records}
+    assert lexicon_curies == {"coe:C00001", "coe:C01008"}
+    assert "coe:C05105" not in lexicon_curies
+
+    context = format_ontology_context(result.entity_definitions, ["coe:C05105"])
+    assert "Worked Example Effect" in context
+    assert "coe:C05105" in context
+
+    bm25_hits = search_central_corpus(db_path, "worked examples", limit=5)
+    assert bm25_hits
+    assert bm25_hits[0]["id"] == "coe:C05105"
+    assert bm25_hits[0]["bm25_score"] != 0.0
 
 
-def test_recognition_pattern_anchor_and_negative_surface(tmp_path: Path) -> None:
-    ontology = tmp_path / "ontology"
-    library = tmp_path / "library"
-    _write_distribution(ontology, library)
-    result = load_ontology(ontology, ["**/*.yaml"], [], library_root=library)
+def test_stage1_anchor_and_negative_phrase_filtering(tmp_path: Path) -> None:
+    db_path = _build_fixture_duckdb(tmp_path / "central.duckdb")
+    result = load_ontology(db_path)
     automaton = build_automaton(result.matcher_records)
 
-    kept = detect_mentions(
-        "The learner needs temporary support during practice.",
-        automaton,
-        recognition_patterns=result.recognition_patterns,
-        suppressed_terms=result.suppressed_terms,
-        anchor_constraints=result.anchor_constraints,
-    )
-    assert any(mention.entity_id == "coe:entity/scaffolding" for mention in kept)
+    kept = detect_mentions("Adobe runs A/B tests in Target.", automaton)
+    assert {m.entity_id for m in kept} == {"coe:C00001", "coe:C01008"}
 
-    rejected = detect_mentions(
-        "A construction scaffold stood beside the building.",
-        automaton,
-        recognition_patterns=result.recognition_patterns,
-        suppressed_terms=result.suppressed_terms,
-        anchor_constraints=result.anchor_constraints,
-    )
-    assert all(mention.entity_id != "coe:entity/scaffolding" for mention in rejected)
+    vetoed = detect_mentions("They built an adobe brick wall near the Target store.", automaton)
+    assert vetoed == []
 
 
-def test_vendored_distribution_projects_central_identifiers() -> None:
-    repo_root = resolve_repo_root(Path.cwd())
-    result = load_ontology(
-        repo_root / "ontology" / "vendor" / "central-configs",
-        ["**/*.yaml"],
-        [],
-        library_root=repo_root / "library" / "vendor" / "central-library",
-    )
+@pytest.mark.skipif(
+    not (CENTRAL_CONFIGS_ROOT / "dist" / "build" / "central.duckdb").is_file(),
+    reason="Central_Configs v5.0.0 authority store not present locally",
+)
+def test_live_central_configs_v5_authority_projects_all_collections() -> None:
+    result = load_ontology(CENTRAL_CONFIGS_ROOT)
+
+    assert len(result.entity_definitions) >= 564
+    assert len(result.matcher_records) >= 330
+    assert result.validation_issues == []
 
     ids = {entity["canonical_id"] for entity in result.entity_definitions}
-    assert "coe:entity/learning/term/scaffolding" in ids
-    assert "coe:concept/argumentation_schemes_taxonomy/scheme/expert_opinion" in ids
-    assert any(record.relation_type == "supports" for record in result.relation_records)
-    assert any(entity.get("craft_summary") for entity in result.entity_definitions)
-    assert result.recognition_patterns
+    assert "coe:C00001" in ids  # Adobe
+    assert "coe:C05301" in ids  # PedagogicalEffectRule
+    assert "coe:C09001" in ids  # CrossDomainBridge
+    assert "coe:C09501" in ids  # Rubric
+    assert "coe:C09601" in ids  # DiagnosticDetector
+    assert "coe:C08504" in ids  # VoiceRegister
+
+    assert len(result.pedagogical_effect_rules) >= 8
+    assert len(result.cross_domain_bridges) >= 18
+    assert len(result.empirical_norms) >= 12
+    assert len(result.rubrics) >= 3
+    assert len(result.diagnostic_detectors) >= 8
+    assert len(result.voice_registers) >= 2
+    assert len(result.learner_archetypes) >= 10
+
+    # Craft concepts never enter match_lexicon.
+    lexicon_collections = {rule.collection_name for rule in result.matcher_records}
+    assert "cognitive_principles" not in lexicon_collections
+    assert "rhetorical_moves" not in lexicon_collections
+    assert "rubrics" not in lexicon_collections
+
+    hits = search_central_corpus(CENTRAL_CONFIGS_ROOT, "cognitive load multimedia", limit=5)
+    assert hits
+    assert all(hit["id"].startswith("coe:C") for hit in hits)

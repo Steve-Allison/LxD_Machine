@@ -2,16 +2,12 @@
 
 Wiki pages already encode hand-curated cross-references between concepts
 (e.g. ``addie-model.md`` links to ``[[backward-design]]``). When the
-slug maps to an ontology canonical_id, we materialise that link as an
+slug maps to a ``Central_Configs`` v5.0.0 ``coe:Cxxxxx`` entity via
+``pref_label``, ``all_terms.written_form`` (``aliases``), or
+``all_entities.wiki_slug``, we materialise that link as an
 ``extracted_relations`` row with predicate ``wiki_references`` so the
 knowledge-graph build sees it alongside LLM-extracted relations — no
 LLM cost, no hallucination risk.
-
-Resolution rule: ontology canonical_ids are snake_case
-(``backward_design``); wiki slugs are kebab-case
-(``backward-design``). The slug index folds both forms so a wiki slug
-resolves regardless of which convention the ontology uses for that
-entity.
 
 Page-level citations (the ``Sources:`` frontmatter, persisted on each
 chunk as ``cited_sources_json``) are NOT mapped here: source filenames
@@ -20,6 +16,7 @@ as entity-graph edges. The chunk-row column already carries them
 through to retrieval and synthesis.
 """
 
+import re
 from collections.abc import Iterable, Mapping
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -33,6 +30,8 @@ _WIKI_REFERENCES_PREDICATE: Final = "wiki_references"
 _DEFERS_TO_PREDICATE: Final = "defers_to"
 _WIKI_RELATION_MODEL: Final = "wiki_metadata"
 _WIKI_ENTITY_PREFIX: Final = "wiki:"
+_APOSTROPHE_RE: Final = re.compile(r"['’`]")
+_NON_ALNUM_RE: Final = re.compile(r"[^A-Za-z0-9]+")
 
 
 @dataclass(frozen=True, slots=True)
@@ -45,35 +44,48 @@ class WikiRelationDerivationResult:
 
 
 def build_slug_index(entity_definitions: Iterable[Mapping[str, Any]]) -> dict[str, str]:
-    """Build a ``slug -> canonical_id`` index for wiki-link resolution.
+    """Build a ``slug -> coe:Cxxxxx`` index for wiki-link resolution.
 
-    Each canonical_id is registered under multiple normalisations so
-    wiki slugs in either kebab-case or snake_case resolve to the same
-    canonical (snake_case) id. Earlier entries win on conflict.
+    Indexes ``Central_Configs`` v5.0.0 entities in deterministic priority order:
+      1. ``label`` (``all_entities.pref_label``)
+      2. ``aliases`` (``all_terms.written_form``)
+      3. ``wiki_slug`` (``all_entities.wiki_slug``)
 
-    Args:
-        entity_definitions: Ontology entity dicts as produced by
-            :func:`lxd.ontology.loader.load_ontology`. Each must carry a
-            ``canonical_id`` string.
-
-    Returns:
-        Mapping from normalised slug forms to canonical_id.
+    Opaque ``coe:Cxxxxx`` identifiers are never indexed as slugs themselves.
     """
+    entities = [
+        entity
+        for entity in entity_definitions
+        if isinstance(entity.get("canonical_id"), str) and str(entity["canonical_id"]).strip()
+    ]
     index: dict[str, str] = {}
-    for entity in entity_definitions:
-        canonical = entity.get("canonical_id")
-        if not isinstance(canonical, str) or not canonical:
-            continue
-        for variant in _slug_variants(canonical):
-            index.setdefault(variant, canonical)
-        tail = canonical.rsplit("/", 1)[-1]
-        if tail != canonical:
-            for variant in _slug_variants(tail):
-                index.setdefault(variant, canonical)
+
+    # Pass 1: primary preferred labels
+    for entity in entities:
+        canonical = str(entity["canonical_id"]).strip()
         label = entity.get("label")
         if isinstance(label, str) and label.strip():
-            for variant in _slug_variants(label.strip().replace(" ", "_")):
+            for variant in _phrase_slug_variants(label):
                 index.setdefault(variant, canonical)
+
+    # Pass 2: controlled lexical terms (all_terms.written_form projected onto aliases)
+    for entity in entities:
+        canonical = str(entity["canonical_id"]).strip()
+        aliases = entity.get("aliases")
+        if isinstance(aliases, Iterable) and not isinstance(aliases, (str, bytes)):
+            for alias in aliases:
+                if isinstance(alias, str) and alias.strip():
+                    for variant in _phrase_slug_variants(alias):
+                        index.setdefault(variant, canonical)
+
+    # Pass 3: explicit all_entities.wiki_slug bridge
+    for entity in entities:
+        canonical = str(entity["canonical_id"]).strip()
+        wiki_slug = entity.get("wiki_slug")
+        if isinstance(wiki_slug, str) and wiki_slug.strip():
+            for variant in _phrase_slug_variants(wiki_slug):
+                index.setdefault(variant, canonical)
+
     return index
 
 
@@ -105,25 +117,7 @@ def derive_wiki_link_relations(
     slug_index: Mapping[str, str],
     extracted_at: str,
 ) -> WikiRelationDerivationResult:
-    """Emit ``wiki_references`` relations from chunk ``wiki_links``.
-
-    For each chunk on a wiki page whose filename resolves to an
-    ontology entity, emit one :class:`ExtractedRelationRecord` per
-    resolved ``[[slug]]`` cross-reference. Output is deduplicated within
-    a chunk (a slug repeated twice in the same chunk yields one
-    relation). Self-references are skipped. Unresolved slugs are
-    reported under ``dangling_slugs`` for caller-side logging.
-
-    Args:
-        chunk_records: Chunk rows about to be persisted for this run.
-        slug_index: Result of :func:`build_slug_index` over the active
-            ontology.
-        extracted_at: ISO-8601 UTC timestamp stamped on each row.
-
-    Returns:
-        Derived relations plus diagnostic counts (dangling slugs,
-        pages whose filename did not resolve to any entity).
-    """
+    """Emit ``wiki_references`` relations from chunk ``wiki_links``."""
     relations: list[ExtractedRelationRecord] = []
     dangling: set[str] = set()
     pages_without_subject: set[str] = set()
@@ -168,21 +162,7 @@ def derive_defer_relations(
     slug_index: Mapping[str, str],
     extracted_at: str,
 ) -> list[ExtractedRelationRecord]:
-    """Emit one ``defers_to`` edge per frontmatter deferral.
-
-    Edges hang off the first chunk of the page so a page-level hand-off
-    is not copied once per chunk. The reason is stored on ``qualifier``.
-    Both ends use :func:`graph_entity_id`.
-
-    Args:
-        chunk_records: Chunk rows for a single source page.
-        defers: Deferrals parsed from that page.
-        slug_index: Ontology slug index from :func:`build_slug_index`.
-        extracted_at: ISO-8601 UTC timestamp stamped on each row.
-
-    Returns:
-        Relation rows. Empty when the page has no chunks or no deferrals.
-    """
+    """Emit one ``defers_to`` edge per frontmatter deferral."""
     if not defers:
         return []
     first = next(iter(chunk_records), None)
@@ -240,11 +220,22 @@ def _wiki_relation(
     )
 
 
-def _slug_variants(canonical: str) -> tuple[str, ...]:
-    lower = canonical.lower()
-    return (
-        canonical,
-        canonical.replace("_", "-"),
-        lower,
-        lower.replace("_", "-"),
-    )
+def _phrase_slug_variants(phrase: str) -> tuple[str, ...]:
+    cleaned = phrase.strip()
+    if not cleaned:
+        return ()
+    variants: list[str] = []
+    for candidate_base in (cleaned, _APOSTROPHE_RE.sub("", cleaned)):
+        kebab = _NON_ALNUM_RE.sub("-", candidate_base).strip("-")
+        snake = kebab.replace("-", "_")
+        for form in (
+            candidate_base,
+            candidate_base.lower(),
+            kebab,
+            kebab.lower(),
+            snake,
+            snake.lower(),
+        ):
+            if form and form not in variants:
+                variants.append(form)
+    return tuple(variants)

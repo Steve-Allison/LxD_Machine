@@ -1,36 +1,41 @@
-"""Compute the set of ambiguous surface forms from matcher term records.
-
-A surface form is *ambiguous* when the ontology maps it to more than one
-canonical entity id. The classic example is the acronym "ID" — it could
-mean ``instructional_design`` or ``identifier`` depending on context.
-Aho-Corasick mention detection cannot resolve that on its own;
-:func:`ambiguous_surface_forms_with_candidates` produces the lookup
-table that the embedding-based disambiguator (`B-KG-2`) consults at
-mention time.
-
-Surface forms with a single canonical id are intentionally left out of
-the result map: the disambiguation lane is opt-in per surface form, so
-unambiguous matches incur zero overhead.
-"""
+"""Stage 2 disambiguation escalation predicates over ``match_lexicon`` rules."""
 
 from collections import defaultdict
-from collections.abc import Iterable
+from collections.abc import Iterable, Sequence
 
-from lxd.ontology.matcher import MatcherTermRecord
+from lxd.ontology.matcher import LexiconRule, offset_preserving_lower
 
 
-def ambiguous_surface_forms_with_candidates(
-    records: Iterable[MatcherTermRecord],
-) -> dict[str, list[str]]:
-    """Return ``{normalized_term: [entity_id, ...]}`` for terms with >1 candidate.
+def requires_stage2_disambiguation(rules: Sequence[LexiconRule]) -> bool:
+    """Return True iff surviving span rules must escalate to Stage 2 disambiguation.
 
-    The candidate list is sorted by ``entity_id`` for deterministic
-    iteration so disambiguator decisions are reproducible across runs.
-    Terms with exactly one candidate are excluded — the caller does not
-    need to disambiguate them, and including them would force a
-    superfluous lookup on every mention.
+    Escalates iff any surviving rule sets ``requires_llm_disambiguation`` or more
+    than one distinct ``coe:Cxxxxx`` CURIE survives Stage 1 filtering.
     """
-    by_term: dict[str, set[str]] = defaultdict(set)
-    for record in records:
-        by_term[record.normalized_term].add(record.entity_id)
-    return {term: sorted(ids) for term, ids in by_term.items() if len(ids) > 1}
+    if not rules:
+        return False
+    if any(rule.requires_llm_disambiguation for rule in rules):
+        return True
+    unique_curies = {rule.curie for rule in rules}
+    return len(unique_curies) > 1
+
+
+def escalated_surface_forms_with_candidates(
+    records: Iterable[LexiconRule],
+) -> dict[str, list[str]]:
+    """Return ``{surface_lower: sorted [curie, ...]}`` for Stage 2 surface forms.
+
+    Includes every lowercase surface form whose ``LexiconRule`` group has
+    ``len(unique_curies) > 1`` or ``any(r.requires_llm_disambiguation)``.
+    """
+    by_surface: dict[str, list[LexiconRule]] = defaultdict(list)
+    for rule in records:
+        key = offset_preserving_lower(rule.surface)
+        if key:
+            by_surface[key].append(rule)
+
+    escalated: dict[str, list[str]] = {}
+    for surface_lower, group in sorted(by_surface.items()):
+        if requires_stage2_disambiguation(group):
+            escalated[surface_lower] = sorted({rule.curie for rule in group})
+    return escalated

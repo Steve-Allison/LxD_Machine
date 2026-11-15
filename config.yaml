@@ -1,21 +1,11 @@
-# yaml-language-server: $schema=https://steve-allison.github.io/Central_Configs/schemas/resource-meta.schema.json
-_meta:
-  file_id: "config"
-  title: "LxD Machine Runtime Configuration"
-  last_updated: "2026-10-18"
-  authority: "LxD_Machine"
-  scope: "Runtime configuration for local LxD Machine pipeline, stores, models, and MCP tools"
-  governing_class: "coe:ConfigurationSpecification"
-
 paths:
   # Curated wiki — synthesised, deduplicated, cross-linked digest of the
   # raw research. Higher signal density and consistent vocabulary provide
   # an optimal RAG surface. Each page carries a Sources: line that the
   # ingest pipeline parses into transitive citations on every chunk.
   corpus_path: /Users/steveallison/AI_Projects+Code/knowledge/wiki
-  # Runtime semantic authority: staged Central distribution, projected at load.
-  ontology_path: ontology/vendor/central-configs
-  library_path: library/vendor/central-library
+  # Runtime semantic authority: Central_Configs v5.0.0 (dist/build/central.duckdb).
+  central_configs_path: ../Central_Configs
   data_path: data/openai
 
 tenancy:
@@ -32,6 +22,8 @@ models:
   llm_backend: mlx
   # In-process MLX cross-encoder reranker
   rerank: mlx-community/Qwen3-Reranker-4B-mxfp8
+  # Local MLX proper-noun disambiguation model (Stage 2 constrained regex via llguidance)
+  disambiguation_model: mlx-community/gemma-4-e4b-it-4bit
   llm_no_think: true
 
 mlx:
@@ -108,11 +100,6 @@ multimodal:
   caption_model: gpt-4o-mini
   caption_timeout_secs: 60
   caption_max_tokens: 200
-
-ontology:
-  include_globs:
-    - "**/*.yaml"
-  ignore_names: []
 
 retrieval:
   dense_top_k: 20

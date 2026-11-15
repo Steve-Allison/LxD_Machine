@@ -34,20 +34,20 @@ from lxd.ingest.relations import build_valid_predicates
 from lxd.ingest.scanner import ScannedCorpusFile, scan_corpus
 from lxd.ingest.wiki_metadata import (
     defers_from_metadata,
-    load_wiki_matcher_phrases,
     wiki_category_warnings,
 )
 from lxd.ingest.wiki_relations import (
     build_slug_index,
     derive_defer_relations,
     derive_wiki_link_relations,
-    graph_entity_id,
 )
-from lxd.ontology.ambiguity import ambiguous_surface_forms_with_candidates
-from lxd.ontology.disambiguator import make_disambiguator
+from lxd.ontology.disambiguator import (
+    MentionDisambiguator,
+    build_entity_catalog,
+    make_disambiguator,
+)
 from lxd.ontology.loader import OntologyLoadResult, load_configured_ontology
-from lxd.ontology.matcher import MatcherTermRecord, build_or_load_automaton
-from lxd.ontology.normalization import normalize_match_text
+from lxd.ontology.matcher import build_or_load_automaton
 from lxd.settings.models import RuntimeConfig
 from lxd.stores.lancedb import (
     compact_chunk_table,
@@ -175,13 +175,17 @@ class IngestRunResult:
 
 
 def validate_project_paths(config: RuntimeConfig) -> None:
-    """Validate configuration and apply runtime settings."""
+    """Validate corpus and ``Central_Configs`` paths and prepare ``data_path``."""
     if not config.paths.corpus_path.exists():
         raise FileNotFoundError(f"Missing corpus path: {config.paths.corpus_path}")
-    if not config.paths.ontology_path.exists():
-        raise FileNotFoundError(f"Missing ontology path: {config.paths.ontology_path}")
-    if config.paths.library_path is not None and not config.paths.library_path.exists():
-        raise FileNotFoundError(f"Missing library path: {config.paths.library_path}")
+    if not config.paths.central_configs_path.exists():
+        raise FileNotFoundError(
+            f"Missing Central_Configs path: {config.paths.central_configs_path}"
+        )
+    if not config.paths.central_duckdb_path.is_file():
+        raise FileNotFoundError(
+            f"Missing Central_Configs DuckDB store: {config.paths.central_duckdb_path}"
+        )
     config.paths.data_path.mkdir(parents=True, exist_ok=True)
 
 
@@ -198,37 +202,38 @@ def build_ingest_plan(config: RuntimeConfig) -> IngestPlan:
     return IngestPlan(scanned_files=scanned_files, ontology=ontology)
 
 
-def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRunResult:
+def run_ingest(
+    config: RuntimeConfig,
+    *,
+    full_rebuild: bool = False,
+    disambiguator: MentionDisambiguator | None = None,
+) -> IngestRunResult:
     """Execute the ingestion pipeline and persist results."""
     plan = build_ingest_plan(config)
     _validate_ingest_dependencies(config)
 
     warnings: list[str] = []
     slug_index = build_slug_index(plan.ontology.entity_definitions)
-    matcher_records = _matcher_records_with_wiki(
-        plan.ontology.matcher_records,
-        corpus_root=config.paths.corpus_path,
-        slug_index=slug_index,
-    )
+    matcher_records = plan.ontology.matcher_records
     automaton = build_or_load_automaton(
         matcher_records,
         cache_dir=config.paths.data_path / "matcher_cache",
     )
-    ambiguous_map = ambiguous_surface_forms_with_candidates(matcher_records)
+    entity_catalog = build_entity_catalog(plan.ontology.entity_definitions)
+    active_disambiguator: MentionDisambiguator = (
+        disambiguator
+        if disambiguator is not None
+        else make_disambiguator(
+            config=config,
+            entity_definitions=plan.ontology.entity_definitions,
+        )
+    )
     warnings.extend(wiki_category_warnings(config.paths.corpus_path))
     valid_predicates = build_valid_predicates(plan.ontology.relation_records)
     budget_tracker = IngestBudgetTracker(config.ingest_budget)
     wiki_dangling_total: set[str] = set()
     wiki_pages_without_subject_total: set[str] = set()
     store_paths = build_store_paths(config.paths.data_path)
-    # B-KG-2: only stand up the embedding-disambiguation lane when the
-    # ontology actually has ambiguous surface forms. The factory creates
-    # an empty `entity_embeddings` LanceDB table as a side effect, which
-    # is wasted work (and disturbs cache-hit tests) on ontologies that
-    # have no ambiguous terms at all.
-    disambiguator = (
-        make_disambiguator(config=config, store_paths=store_paths) if ambiguous_map else None
-    )
     sqlite_connection = connect_sqlite(store_paths.sqlite_path)
     try:
         initialize_schema(sqlite_connection)
@@ -269,7 +274,7 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
             sqlite_connection,
             OntologySnapshotRecord(
                 snapshot_id="current",
-                ontology_root=str(config.paths.ontology_path),
+                ontology_root=str(config.paths.central_configs_path),
                 snapshot_hash=plan.ontology.snapshot_hash,
                 matcher_termset_hash=plan.ontology.matcher_termset_hash,
                 matcher_term_count=len(plan.ontology.matcher_records),
@@ -566,11 +571,8 @@ def run_ingest(config: RuntimeConfig, *, full_rebuild: bool = False) -> IngestRu
                             budget_tracker=budget_tracker,
                             cache_table=cache_table,
                             contextual_summary_table=contextual_summary_table,
-                            ambiguous_map=ambiguous_map,
-                            disambiguator=disambiguator,
-                            recognition_patterns=plan.ontology.recognition_patterns,
-                            suppressed_terms=plan.ontology.suppressed_terms,
-                            anchor_constraints=plan.ontology.anchor_constraints,
+                            disambiguator=active_disambiguator,
+                            entity_catalog=entity_catalog,
                         )
                         cache_hit_total += file_cache_hits
                         cache_miss_total += file_cache_misses
@@ -866,7 +868,7 @@ def _validate_ingest_dependencies(config: RuntimeConfig) -> None:
 def _config_snapshot_records(config: RuntimeConfig) -> list[IngestConfigSnapshotRecord]:
     snapshot = {
         "paths.corpus_path": str(config.paths.corpus_path),
-        "paths.ontology_path": str(config.paths.ontology_path),
+        "paths.central_configs_path": str(config.paths.central_configs_path),
         "paths.data_path": str(config.paths.data_path),
         "models.embed": config.models.embed,
         "models.embed_backend": config.models.embed_backend,
@@ -881,36 +883,3 @@ def _config_snapshot_records(config: RuntimeConfig) -> list[IngestConfigSnapshot
     return [
         IngestConfigSnapshotRecord(key=key, value=value) for key, value in sorted(snapshot.items())
     ]
-
-
-def _matcher_records_with_wiki(
-    ontology_records: list[MatcherTermRecord],
-    *,
-    corpus_root: Path,
-    slug_index: dict[str, str],
-) -> list[MatcherTermRecord]:
-    """Append glossary aliases and ``owns`` phrases, then let ontology terms win.
-
-    Wiki phrases are listed first so a later ontology term for the same
-    surface form replaces them in the automaton. Ambiguous forms stay in
-    the combined list for the disambiguator.
-    """
-    wiki_records: list[MatcherTermRecord] = []
-    seen: set[tuple[str, str, str]] = set()
-    for phrase in load_wiki_matcher_phrases(corpus_root):
-        normalized = normalize_match_text(phrase.term)
-        if not normalized:
-            continue
-        entity_id = graph_entity_id(phrase.slug, slug_index)
-        key = (normalized, entity_id, phrase.term_source)
-        if key in seen:
-            continue
-        seen.add(key)
-        wiki_records.append(
-            MatcherTermRecord(
-                normalized_term=normalized,
-                entity_id=entity_id,
-                term_source=phrase.term_source,
-            )
-        )
-    return [*wiki_records, *ontology_records]

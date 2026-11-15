@@ -61,9 +61,8 @@ from lxd.stores.sqlite.connection import build_store_paths, connect_sqlite
 # ---------------------------------------------------------------------------
 
 
-# Vendored Central distribution. Read-only at ingest time, and the ontology
-# production runs against.
-ONTOLOGY_PATH = Path(__file__).resolve().parents[2] / "ontology" / "vendor" / "central-configs"
+# Shared Central_Configs v5.0.0 authority repository (read-only DuckDB store).
+CENTRAL_CONFIGS_PATH = Path(__file__).resolve().parents[3] / "Central_Configs"
 
 
 def _deterministic_embedding(text: str, dims: int) -> list[float]:
@@ -117,17 +116,17 @@ def _write_config(
     config_path: Path,
     corpus_path: Path,
     data_path: Path,
-    ontology_path: Path,
+    central_configs_path: Path,
     captions_enabled: bool = False,
 ) -> None:
-    """Write a tmp config.yaml shaped exactly like the project's real
+    """Write a tmp config.yaml shaped like the project's real
     ``config.yaml``, with paths swapped for tmp ones and the embed_dims set
     low enough to keep deterministic test vectors readable.
     """
     config = {
         "paths": {
             "corpus_path": str(corpus_path),
-            "ontology_path": str(ontology_path),
+            "central_configs_path": str(central_configs_path),
             "data_path": str(data_path),
         },
         "models": {
@@ -172,7 +171,6 @@ def _write_config(
             "caption_timeout_secs": 60,
             "caption_max_tokens": 200,
         },
-        "ontology": {"include_globs": ["**/*.yaml"], "ignore_names": []},
         "retrieval": {
             "dense_top_k": 5,
             "rerank_top_k": 5,
@@ -262,7 +260,7 @@ def tmp_corpus_env(project_root_with_pixi: Path) -> dict[str, Path]:
         config_path=config,
         corpus_path=corpus,
         data_path=data,
-        ontology_path=ONTOLOGY_PATH,
+        central_configs_path=CENTRAL_CONFIGS_PATH,
     )
     return {
         "root": project_root_with_pixi,
@@ -774,7 +772,7 @@ def test_captioned_png_becomes_a_searchable_chunk(
         config_path=config_path,
         corpus_path=corpus,
         data_path=data,
-        ontology_path=ONTOLOGY_PATH,
+        central_configs_path=CENTRAL_CONFIGS_PATH,
         captions_enabled=True,
     )
     _write_png(corpus, "images/diagram.png")

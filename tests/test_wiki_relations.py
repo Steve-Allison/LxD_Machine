@@ -1,4 +1,6 @@
-"""Tests for the wiki-link → entity-graph relation derivation."""
+"""Tests for the wiki-link -> Central_Configs v5.0.0 coe:Cxxxxx relation derivation."""
+
+from typing import Any
 
 from lxd.ingest.wiki_metadata import WikiDeferral
 from lxd.ingest.wiki_relations import (
@@ -10,8 +12,19 @@ from lxd.ingest.wiki_relations import (
 from lxd.stores.models import ChunkRecord
 
 
-def _entity(canonical_id: str) -> dict[str, str]:
-    return {"canonical_id": canonical_id}
+def _entity(
+    canonical_id: str,
+    *,
+    label: str,
+    aliases: list[str] | None = None,
+    wiki_slug: str | None = None,
+) -> dict[str, Any]:
+    return {
+        "canonical_id": canonical_id,
+        "label": label,
+        "aliases": aliases or [],
+        "wiki_slug": wiki_slug,
+    }
 
 
 def _chunk(
@@ -45,46 +58,81 @@ def _chunk(
     )
 
 
-def test_build_slug_index_folds_kebab_and_snake_case() -> None:
-    """A canonical_id like ``backward_design`` must resolve from either
-    snake_case or kebab-case slugs."""
-    index = build_slug_index([_entity("backward_design"), _entity("ADDIE_Model")])
-    assert index["backward_design"] == "backward_design"
-    assert index["backward-design"] == "backward_design"
-    assert index["ADDIE_Model"] == "ADDIE_Model"
-    assert index["addie_model"] == "ADDIE_Model"
-    assert index["addie-model"] == "ADDIE_Model"
-
-
-def test_build_slug_index_resolves_curie_tail_and_label() -> None:
-    """Wiki slugs match the identifier tail and the human label, not the CURIE."""
+def test_build_slug_index_resolves_wiki_slug_pref_label_and_written_form_to_curie() -> None:
+    """wiki_slug, pref_label, and all_terms.written_form resolve to coe:Cxxxxx; raw CURIEs never enter index."""
     index = build_slug_index(
         [
-            {
-                "canonical_id": "coe:entity/learning/term/scaffolding",
-                "label": "Scaffolding",
-            }
+            _entity(
+                "coe:C05201",
+                label="Backward Design",
+                aliases=["Understanding by Design", "UbD"],
+                wiki_slug="backward-design",
+            ),
+            _entity(
+                "coe:C05202",
+                label="ADDIE Model",
+                aliases=["ADDIE"],
+                wiki_slug="addie-model",
+            ),
         ]
     )
-    assert index["scaffolding"] == "coe:entity/learning/term/scaffolding"
-    assert index["Scaffolding"] == "coe:entity/learning/term/scaffolding"
+    assert index["backward-design"] == "coe:C05201"
+    assert index["backward_design"] == "coe:C05201"
+    assert index["understanding-by-design"] == "coe:C05201"
+    assert index["ubd"] == "coe:C05201"
+    assert index["addie-model"] == "coe:C05202"
+    assert index["addie"] == "coe:C05202"
+    assert "coe:C05201" not in index
+    assert "coe-c05201" not in index
+
+
+def test_build_slug_index_prioritizes_pref_label_before_shared_wiki_slug() -> None:
+    """Parent framework keeps shared wiki_slug while child stages remain reachable by pref_label."""
+    index = build_slug_index(
+        [
+            _entity(
+                "coe:C06002",
+                label="Minto Pyramid & SCQA Architecture",
+                wiki_slug="pyramid-principle",
+            ),
+            _entity(
+                "coe:C06025",
+                label="SCQA Situation",
+                wiki_slug="pyramid-principle",
+            ),
+        ]
+    )
+    assert index["pyramid-principle"] == "coe:C06002"
+    assert index["scqa-situation"] == "coe:C06025"
 
 
 def test_build_slug_index_skips_entities_without_canonical_id() -> None:
-    """Entities missing a ``canonical_id`` are tolerated, not crashed on."""
-    index = build_slug_index([{"canonical_id": "valid"}, {"label": "no-id"}, {}])
-    assert index == {"valid": "valid"}
+    """Entities missing a canonical_id are tolerated, not crashed on."""
+    index = build_slug_index(
+        [
+            _entity("coe:C05105", label="Scaffolding"),
+            {"label": "no-id"},
+            {},
+        ]
+    )
+    assert index["scaffolding"] == "coe:C05105"
+    assert "no-id" not in index
 
 
 def test_resolve_page_subject_strips_extension_and_resolves() -> None:
-    index = build_slug_index([_entity("addie_model")])
-    assert resolve_page_subject("wiki/addie-model.md", index) == "addie_model"
+    index = build_slug_index([_entity("coe:C05202", label="ADDIE Model", wiki_slug="addie-model")])
+    assert resolve_page_subject("wiki/addie-model.md", index) == "coe:C05202"
     assert resolve_page_subject("wiki/unknown-page.md", index) is None
 
 
 def test_derive_wiki_link_relations_keeps_unmatched_slugs() -> None:
-    """A slug with no ontology entity is still an edge, keyed ``wiki:<slug>``."""
-    index = build_slug_index([_entity("addie_model"), _entity("backward_design")])
+    """A slug with no ontology entity is still an edge, keyed wiki:<slug>."""
+    index = build_slug_index(
+        [
+            _entity("coe:C05202", label="ADDIE Model", wiki_slug="addie-model"),
+            _entity("coe:C05201", label="Backward Design", wiki_slug="backward-design"),
+        ]
+    )
     chunks = [
         _chunk(
             chunk_id="c1",
@@ -98,9 +146,9 @@ def test_derive_wiki_link_relations_keeps_unmatched_slugs() -> None:
         extracted_at="2026-05-05T00:00:00+00:00",
     )
     by_object = {rel.object_entity_id: rel for rel in result.relations}
-    assert set(by_object) == {"backward_design", "wiki:unknown-concept"}
-    rel = by_object["backward_design"]
-    assert rel.subject_entity_id == "addie_model"
+    assert set(by_object) == {"coe:C05201", "wiki:unknown-concept"}
+    rel = by_object["coe:C05201"]
+    assert rel.subject_entity_id == "coe:C05202"
     assert rel.predicate == "wiki_references"
     assert rel.extraction_model == "wiki_metadata"
     assert rel.confidence == 1.0
@@ -111,7 +159,7 @@ def test_derive_wiki_link_relations_keeps_unmatched_slugs() -> None:
 
 def test_derive_wiki_link_relations_skips_self_references() -> None:
     """A page that links to itself via [[own-slug]] yields no edge."""
-    index = build_slug_index([_entity("addie_model")])
+    index = build_slug_index([_entity("coe:C05202", label="ADDIE Model", wiki_slug="addie-model")])
     chunks = [
         _chunk(
             chunk_id="c1",
@@ -129,7 +177,12 @@ def test_derive_wiki_link_relations_skips_self_references() -> None:
 
 def test_derive_wiki_link_relations_dedupes_within_chunk() -> None:
     """The same slug appearing twice in one chunk yields a single edge."""
-    index = build_slug_index([_entity("addie_model"), _entity("backward_design")])
+    index = build_slug_index(
+        [
+            _entity("coe:C05202", label="ADDIE Model", wiki_slug="addie-model"),
+            _entity("coe:C05201", label="Backward Design", wiki_slug="backward-design"),
+        ]
+    )
     chunks = [
         _chunk(
             chunk_id="c1",
@@ -142,9 +195,10 @@ def test_derive_wiki_link_relations_dedupes_within_chunk() -> None:
 
 
 def test_derive_wiki_link_relations_records_pages_without_subject() -> None:
-    """A page whose filename has no ontology match is reported, and the
-    edge is still written under ``wiki:<slug>``."""
-    index = build_slug_index([_entity("backward_design")])
+    """A page whose filename has no ontology match is reported under wiki:<slug>."""
+    index = build_slug_index(
+        [_entity("coe:C05201", label="Backward Design", wiki_slug="backward-design")]
+    )
     chunks = [
         _chunk(
             chunk_id="c1",
@@ -155,14 +209,12 @@ def test_derive_wiki_link_relations_records_pages_without_subject() -> None:
     result = derive_wiki_link_relations(chunk_records=chunks, slug_index=index, extracted_at="t")
     assert len(result.relations) == 1
     assert result.relations[0].subject_entity_id == "wiki:orphan-page"
-    assert result.relations[0].object_entity_id == "backward_design"
+    assert result.relations[0].object_entity_id == "coe:C05201"
     assert result.pages_without_subject == ("wiki/orphan-page.md",)
 
 
 def test_derive_wiki_link_relations_handles_chunks_with_no_wiki_links() -> None:
-    """Chunks without wiki_links are skipped silently — no error, no
-    diagnostic noise."""
-    index = build_slug_index([_entity("addie_model")])
+    index = build_slug_index([_entity("coe:C05202", label="ADDIE Model", wiki_slug="addie-model")])
     chunks = [
         _chunk(
             chunk_id="c1",
@@ -177,10 +229,12 @@ def test_derive_wiki_link_relations_handles_chunks_with_no_wiki_links() -> None:
 
 
 def test_derive_wiki_link_relation_ids_are_deterministic() -> None:
-    """The same (chunk_id, subject, predicate, object) tuple must hash
-    to the same relation_id on every run — re-ingest must not generate
-    duplicate KG edges."""
-    index = build_slug_index([_entity("addie_model"), _entity("backward_design")])
+    index = build_slug_index(
+        [
+            _entity("coe:C05202", label="ADDIE Model", wiki_slug="addie-model"),
+            _entity("coe:C05201", label="Backward Design", wiki_slug="backward-design"),
+        ]
+    )
     chunks = [
         _chunk(
             chunk_id="c1",
@@ -198,7 +252,12 @@ def test_derive_wiki_link_relation_ids_are_deterministic() -> None:
 
 
 def test_derive_defer_relations_keeps_reason_and_resolves_slug() -> None:
-    index = build_slug_index([_entity("addie_model"), _entity("backward_design")])
+    index = build_slug_index(
+        [
+            _entity("coe:C05202", label="ADDIE Model", wiki_slug="addie-model"),
+            _entity("coe:C05201", label="Backward Design", wiki_slug="backward-design"),
+        ]
+    )
     chunks = [
         _chunk(chunk_id="c1", source_rel_path="addie-model.md"),
         _chunk(chunk_id="c2", source_rel_path="addie-model.md"),
@@ -212,6 +271,6 @@ def test_derive_defer_relations_keeps_reason_and_resolves_slug() -> None:
     assert len(relations) == 1
     assert relations[0].chunk_id == "c1"
     assert relations[0].predicate == "defers_to"
-    assert relations[0].subject_entity_id == "addie_model"
-    assert relations[0].object_entity_id == "backward_design"
+    assert relations[0].subject_entity_id == "coe:C05202"
+    assert relations[0].object_entity_id == "coe:C05201"
     assert relations[0].qualifier == "Stage 1 design logic"

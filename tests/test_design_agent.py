@@ -7,6 +7,7 @@ degradation, and the artefact/citation shape.
 """
 
 import json
+from pathlib import Path
 from types import SimpleNamespace
 from typing import Any, cast
 
@@ -14,10 +15,20 @@ import pytest
 
 from lxd.agents import critique as critique_module
 from lxd.agents import design as design_module
+from lxd.agents._governance import (
+    CROSS_DOMAIN_BRIDGE_IDS,
+    DIAGNOSTIC_DETECTOR_IDS,
+    EMPIRICAL_NORM_IDS,
+    PEDAGOGICAL_EFFECT_RULE_IDS,
+    RUBRIC_IDS,
+    VOICE_REGISTER_IDS,
+)
 from lxd.agents.artefacts import DesignArtefactBundle
 from lxd.domain.brief import LearnerBrief
 from lxd.retrieval.query_pipeline import RankedChunk, SearchOutcome
 from lxd.settings.models import DesignAgentConfig, RuntimeConfig
+
+CENTRAL_CONFIGS_ROOT = Path(__file__).resolve().parents[2] / "Central_Configs"
 
 _LLM_RESPONSES: dict[str, dict[str, Any]] = {
     "objectives": {
@@ -294,3 +305,53 @@ def test_critique_design_flags_empty_retrieval(monkeypatch: pytest.MonkeyPatch) 
 
     assert result.citations == []
     assert any("no corpus evidence" in w.lower() for w in result.warnings)
+
+
+@pytest.mark.skipif(
+    not (CENTRAL_CONFIGS_ROOT / "dist" / "build" / "central.duckdb").is_file(),
+    reason="Central_Configs v5.0.0 authority store not present locally",
+)
+def test_design_and_critique_inject_v5_central_configs_governance(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _patch_search_constant(monkeypatch, _outcome([_chunk("c1")]))
+    captured_user_prompts: list[str] = []
+
+    async def _capturing_llm(*, system_prompt: str, user_prompt: str, **kwargs: Any) -> str:
+        captured_user_prompts.append(user_prompt)
+        return await _fake_call_with_fallback_async(
+            system_prompt=system_prompt, user_prompt=user_prompt, **kwargs
+        )
+
+    monkeypatch.setattr(design_module, "call_with_fallback_async", _capturing_llm)
+    monkeypatch.setattr(critique_module, "call_with_fallback_async", _capturing_llm)
+
+    cfg = cast(
+        "RuntimeConfig",
+        SimpleNamespace(
+            design_agent=DesignAgentConfig(),
+            paths=SimpleNamespace(central_configs_path=CENTRAL_CONFIGS_ROOT),
+        ),
+    )
+    brief = LearnerBrief(
+        audience="expert practitioners across global L2 English teams",
+        modality="video narration",
+        bloom_target="apply",
+    )
+
+    bundle = design_module.design_learning("Worked examples", brief, cfg)
+    assert bundle.steps_completed == 6
+    assert len(captured_user_prompts) == 5  # 4 drafting steps + 1 critique pass
+
+    combined = "\n".join(captured_user_prompts)
+    for curie in (
+        *PEDAGOGICAL_EFFECT_RULE_IDS,
+        *CROSS_DOMAIN_BRIDGE_IDS,
+        *EMPIRICAL_NORM_IDS,
+        *RUBRIC_IDS,
+        *DIAGNOSTIC_DETECTOR_IDS,
+        *VOICE_REGISTER_IDS,
+    ):
+        assert curie in combined, f"Expected Central_Configs v5 governance CURIE {curie} in prompts"
+    assert "[ACTIVE FOR BRIEF]" in captured_user_prompts[0]
+    assert "[PRIMARY VOICE]" in captured_user_prompts[0]

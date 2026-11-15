@@ -1,16 +1,19 @@
-"""Build the BM25 query from wiki and ontology phrases.
+"""Build the BM25 query from wiki and ``Central_Configs`` v5.0.0 phrases.
 
 The dense lane keeps the literal question, or the HyDE passage when that
 lane fires. This module only shapes the text lane: a bag-of-words match
 plus a phrase clause for each multi-word term the question actually
-names. A short glossary alias such as ``WMC`` also pulls in the longest
-multi-word phrase that shares its owner, so the keyword lane can find
-``working memory capacity``.
+names, plus optional ``pref_label`` / ``all_terms.written_form`` lexical
+expansion terms. Opaque ``coe:Cxxxxx`` CURIEs are never emitted into
+BM25 queries.
 """
 
+import re
 from collections import defaultdict
+from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Final
 
 from lancedb.query import (
     BooleanQuery,
@@ -22,13 +25,14 @@ from lancedb.query import (
 )
 
 from lxd.ingest.wiki_metadata import load_wiki_matcher_phrases
-from lxd.ontology.loader import load_configured_ontology
+from lxd.ontology.loader import load_ontology, resolve_central_duckdb_path
 from lxd.ontology.normalization import normalize_match_text
 from lxd.settings.models import RuntimeConfig
 
-_TEXT_COLUMN = "text"
-_ALIAS_SOURCES = frozenset({"wiki_glossary", "wiki_owns", "alias"})
-_MIN_ALIAS_CHARS = 2
+_TEXT_COLUMN: Final = "text"
+_ALIAS_SOURCES: Final = frozenset({"wiki_glossary", "wiki_owns", "alias"})
+_MIN_ALIAS_CHARS: Final = 2
+_CURIE_TOKEN_RE: Final = re.compile(r"\b[A-Za-z][A-Za-z0-9_.-]*:C\d+\b")
 
 
 @dataclass(frozen=True, slots=True)
@@ -44,10 +48,10 @@ _TERM_CACHE: dict[tuple[str, str, int, int], tuple[LexicalTerm, ...]] = {}
 
 
 def load_lexical_terms(config: RuntimeConfig) -> tuple[LexicalTerm, ...]:
-    """Return wiki and ontology terms used to recognise phrases in a question.
+    """Return wiki and ``Central_Configs`` terms used to recognise phrases in a question.
 
-    Cached until the wiki markdown or ontology YAML mtimes change. A
-    missing corpus or ontology directory contributes no terms.
+    Cached until the wiki markdown or ``central.duckdb`` mtime changes. A
+    missing corpus directory or ``central.duckdb`` file contributes no terms.
     """
     stamp = _term_stamp(config)
     cached = _TERM_CACHE.get(stamp)
@@ -96,17 +100,19 @@ def phrases_for_question(
     return tuple(quoted)
 
 
-def build_lexical_query(question: str, phrases: tuple[str, ...] | list[str]) -> FullTextQuery:
-    """Bag-of-words match, plus one phrase clause per recognised term.
+def build_lexical_query(
+    question: str,
+    phrases: tuple[str, ...] | list[str],
+    expansion_terms: Sequence[str] = (),
+) -> FullTextQuery:
+    """Bag-of-words match, plus phrase clauses and human-readable lexical expansions.
 
-    Both clauses are optional. A chunk that contains the exact phrase
-    scores the phrase and the original words. A chunk that only contains
-    the words still matches.
+    Opaque ``coe:Cxxxxx`` CURIEs are stripped defensively so structured IDs
+    never pollute lexical BM25 scoring.
     """
-    # The installed LanceDB dataclasses type these fields as required.
-    # The values are the library defaults: OR bag-of-words, exact phrases.
+    clean_question = _strip_curies(question).strip() or question.strip()
     match = MatchQuery(
-        query=question.strip(),
+        query=clean_question,
         column=_TEXT_COLUMN,
         boost=1.0,
         fuzziness=0,
@@ -115,17 +121,47 @@ def build_lexical_query(question: str, phrases: tuple[str, ...] | list[str]) -> 
         prefix_length=0,
         document_granularity=None,
     )
-    if not phrases:
+    clean_phrases = [
+        cleaned
+        for phrase in phrases
+        if (cleaned := _strip_curies(phrase).strip())
+    ]
+    clean_expansion = [
+        cleaned
+        for term in expansion_terms
+        if (cleaned := _strip_curies(term).strip())
+    ]
+    if not clean_phrases and not clean_expansion:
         return match
     clauses: list[tuple[Occur, FullTextQuery]] = [(Occur.SHOULD, match)]
+    if clean_expansion:
+        clauses.append(
+            (
+                Occur.SHOULD,
+                MatchQuery(
+                    query=" ".join(clean_expansion),
+                    column=_TEXT_COLUMN,
+                    boost=0.5,
+                    fuzziness=0,
+                    max_expansions=50,
+                    operator=FullTextOperator.OR,
+                    prefix_length=0,
+                    document_granularity=None,
+                ),
+            )
+        )
     clauses.extend(
         (
             Occur.SHOULD,
             PhraseQuery(query=phrase, column=_TEXT_COLUMN, slop=0, document_granularity=None),
         )
-        for phrase in phrases
+        for phrase in clean_phrases
     )
     return BooleanQuery(clauses)
+
+
+def _strip_curies(text: str) -> str:
+    return " ".join(_CURIE_TOKEN_RE.sub(" ", text).split())
 
 
 def _alias_expansion(
@@ -192,32 +228,62 @@ def _wiki_terms(corpus_root: Path) -> tuple[LexicalTerm, ...]:
     return tuple(terms)
 
 
+def _resolve_db_path(config: RuntimeConfig) -> Path | None:
+    paths = getattr(config, "paths", None)
+    if paths is None:
+        return None
+    db_path_attr = getattr(paths, "central_duckdb_path", None)
+    if db_path_attr is not None:
+        return Path(db_path_attr)
+    central_root = getattr(paths, "central_configs_path", None)
+    if central_root is not None:
+        return resolve_central_duckdb_path(Path(central_root))
+    return None
+
+
 def _ontology_terms(config: RuntimeConfig) -> tuple[LexicalTerm, ...]:
-    if not config.paths.ontology_path.is_dir():
+    db_path = _resolve_db_path(config)
+    if db_path is None or not db_path.is_file():
         return ()
-    loaded = load_configured_ontology(config)
+    loaded = load_ontology(db_path)
     terms: list[LexicalTerm] = []
-    for record in loaded.matcher_records:
-        if not record.normalized_term:
+    seen: set[tuple[str, str, str]] = set()
+    for entity in loaded.entity_definitions:
+        curie = str(entity.get("canonical_id") or "").strip()
+        label = str(entity.get("label") or "").strip()
+        if not curie or not label or _CURIE_TOKEN_RE.search(label):
             continue
-        terms.append(
-            LexicalTerm(
-                normalized=record.normalized_term,
-                owner=f"ontology:{record.entity_id}",
-                term_source=record.term_source,
-            )
-        )
+        normalized = normalize_match_text(label)
+        if not normalized:
+            continue
+        owner = f"ontology:{curie}"
+        key = (normalized, owner, "label")
+        if key not in seen:
+            seen.add(key)
+            terms.append(LexicalTerm(normalized=normalized, owner=owner, term_source="label"))
+    for term in loaded.terms:
+        if not term.resource_id or not term.written_form or _CURIE_TOKEN_RE.search(term.written_form):
+            continue
+        normalized = normalize_match_text(term.written_form)
+        if not normalized:
+            continue
+        owner = f"ontology:{term.resource_id}"
+        key = (normalized, owner, "alias")
+        if key not in seen:
+            seen.add(key)
+            terms.append(LexicalTerm(normalized=normalized, owner=owner, term_source="alias"))
     return tuple(terms)
 
 
 def _term_stamp(config: RuntimeConfig) -> tuple[str, str, int, int]:
     corpus = config.paths.corpus_path
-    ontology = config.paths.ontology_path
+    db_path = _resolve_db_path(config)
+    db_mtime = db_path.stat().st_mtime_ns if db_path is not None and db_path.is_file() else 0
     return (
         str(corpus),
-        str(ontology),
+        str(db_path) if db_path is not None else "",
         _newest_mtime(corpus, ".md"),
-        _newest_mtime(ontology, ".yaml"),
+        db_mtime,
     )
 
 

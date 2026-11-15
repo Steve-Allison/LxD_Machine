@@ -1,130 +1,144 @@
-"""Tests for entity disambiguation (B-KG-2)."""
+"""Tests for Stage 1 escalation and Stage 2 proper-noun disambiguation."""
+
+from collections.abc import Sequence
 
 from lxd.ingest.mentions import detect_mentions
-from lxd.ontology.ambiguity import ambiguous_surface_forms_with_candidates
-from lxd.ontology.disambiguator import context_window
-from lxd.ontology.matcher import MatcherTermRecord, build_automaton
+from lxd.ontology.ambiguity import (
+    escalated_surface_forms_with_candidates,
+    requires_stage2_disambiguation,
+)
+from lxd.ontology.disambiguator import (
+    DisambiguationCandidate,
+    MentionDisambiguator,
+    build_disambiguation_regex,
+    context_window,
+)
+from lxd.ontology.matcher import LexiconRule, build_automaton
 
 
-def _records() -> list[MatcherTermRecord]:
+def _records() -> list[LexiconRule]:
     return [
-        MatcherTermRecord(
-            normalized_term="id",
-            entity_id="instructional_design",
-            term_source="alias",
+        LexiconRule(
+            surface_lower="id",
+            curie="coe:C01010",
+            surface="ID",
+            pref_label="Adobe InDesign",
+            collection_name="offerings",
+            match_policy="case_exact",
+            case_sensitive=True,
         ),
-        MatcherTermRecord(
-            normalized_term="id",
-            entity_id="identifier",
-            term_source="alias",
+        LexiconRule(
+            surface_lower="id",
+            curie="coe:C01020",
+            surface="ID",
+            pref_label="Identity Service",
+            collection_name="offerings",
+            match_policy="case_exact",
+            case_sensitive=True,
         ),
-        MatcherTermRecord(
-            normalized_term="bloom",
-            entity_id="bloom_taxonomy",
-            term_source="canonical_id",
+        LexiconRule(
+            surface_lower="adobe",
+            curie="coe:C00001",
+            surface="Adobe",
+            pref_label="Adobe",
+            collection_name="organisations",
+            match_policy="unambiguous",
+        ),
+        LexiconRule(
+            surface_lower="target",
+            curie="coe:C01008",
+            surface="Target",
+            pref_label="Adobe Target",
+            collection_name="offerings",
+            match_policy="context_anchored",
+            case_sensitive=True,
+            anchor_window_tokens=12,
+            context_anchors=("Adobe",),
+            requires_llm_disambiguation=True,
         ),
     ]
 
 
-def test_ambiguous_map_excludes_unambiguous_terms() -> None:
-    ambiguous = ambiguous_surface_forms_with_candidates(_records())
+class _StubDisambiguator:
+    def __init__(self, decision: str | None) -> None:
+        self.decision = decision
+        self.calls: list[tuple[str, list[str]]] = []
 
-    assert "bloom" not in ambiguous, (
-        "Unambiguous surface forms should not appear in the ambiguous map; saw 'bloom' included."
-    )
-    assert ambiguous["id"] == ["identifier", "instructional_design"], (
-        "Candidate list should be sorted by entity_id for deterministic iteration; "
-        f"saw {ambiguous['id']}"
-    )
+    def disambiguate(
+        self,
+        *,
+        text: str,
+        start: int,
+        end: int,
+        surface: str,
+        candidates: Sequence[DisambiguationCandidate],
+    ) -> str | None:
+        assert text[start:end] == surface
+        curies = [c.curie for c in candidates]
+        self.calls.append((surface, curies))
+        return self.decision
 
 
-def test_ambiguous_map_returns_sorted_candidates() -> None:
-    records = [
-        MatcherTermRecord(normalized_term="x", entity_id="zebra", term_source="alias"),
-        MatcherTermRecord(normalized_term="x", entity_id="apple", term_source="alias"),
-        MatcherTermRecord(normalized_term="x", entity_id="mango", term_source="alias"),
+def test_escalated_map_excludes_unambiguous_terms() -> None:
+    escalated = escalated_surface_forms_with_candidates(_records())
+
+    assert "adobe" not in escalated
+    assert escalated["id"] == ["coe:C01010", "coe:C01020"]
+    assert escalated["target"] == ["coe:C01008"]
+
+
+def test_requires_stage2_disambiguation_checks_flag_and_multi_curie() -> None:
+    unambiguous = [
+        LexiconRule(surface_lower="adobe", curie="coe:C00001", surface="Adobe"),
     ]
-    ambiguous = ambiguous_surface_forms_with_candidates(records)
-    assert ambiguous["x"] == ["apple", "mango", "zebra"]
+    flagged = [
+        LexiconRule(
+            surface_lower="target",
+            curie="coe:C01008",
+            surface="Target",
+            requires_llm_disambiguation=True,
+        ),
+    ]
+    assert not requires_stage2_disambiguation(unambiguous)
+    assert requires_stage2_disambiguation(flagged)
 
 
-def test_detect_mentions_calls_disambiguator_only_on_ambiguous_terms() -> None:
-    records = _records()
-    automaton = build_automaton(records)
-    ambiguous_map = ambiguous_surface_forms_with_candidates(records)
+def test_detect_mentions_calls_disambiguator_only_on_escalated_spans() -> None:
+    automaton = build_automaton(_records())
+    stub = _StubDisambiguator(decision="coe:C01010")
+    assert isinstance(stub, MentionDisambiguator)
 
-    calls: list[tuple[str, list[str]]] = []
+    text = "ID integrates with Adobe workflows."
+    mentions = detect_mentions(text, automaton, disambiguator=stub)
 
-    def fake_disambiguator(window: str, candidates: list[str]) -> str | None:
-        calls.append((window, candidates))
-        return "instructional_design"
-
-    text = "id is the framework. bloom is also relevant."
-    mentions = detect_mentions(
-        text,
-        automaton,
-        ambiguous_map=ambiguous_map,
-        disambiguator=fake_disambiguator,
-    )
-
-    assert len(calls) == 1, (
-        f"Disambiguator should fire once for the ambiguous 'id' only; saw {calls}"
-    )
-    assert calls[0][1] == ["identifier", "instructional_design"]
-    id_mentions = [m for m in mentions if m.surface_form == "id"]
-    assert id_mentions, "Expected the 'id' mention to survive."
-    assert id_mentions[0].entity_id == "instructional_design", (
-        "Disambiguator's choice should overwrite the upstream entity_id."
-    )
+    assert len(stub.calls) == 1
+    assert stub.calls[0] == ("ID", ["coe:C01010", "coe:C01020"])
+    by_surface = {m.surface_form: m.entity_id for m in mentions}
+    assert by_surface == {"ID": "coe:C01010", "Adobe": "coe:C00001"}
 
 
-def test_detect_mentions_keeps_upstream_entity_when_disambiguator_returns_none() -> None:
-    records = _records()
-    automaton = build_automaton(records)
-    ambiguous_map = ambiguous_surface_forms_with_candidates(records)
+def test_detect_mentions_abstains_when_disambiguator_returns_nil_or_none() -> None:
+    automaton = build_automaton(_records())
 
-    def undecided_disambiguator(window: str, candidates: list[str]) -> str | None:
-        return None
-
-    text = "id matters here."
-    mentions = detect_mentions(
-        text,
-        automaton,
-        ambiguous_map=ambiguous_map,
-        disambiguator=undecided_disambiguator,
-    )
-
-    id_mentions = [m for m in mentions if m.surface_form == "id"]
-    assert id_mentions
-    # The upstream Aho-Corasick payload wins (last-write or whichever
-    # was registered last); we don't assert which entity, only that
-    # *some* upstream entity is preserved rather than crashing.
-    assert id_mentions[0].entity_id in {"instructional_design", "identifier"}
+    for abstention in ("NIL", None):
+        stub = _StubDisambiguator(decision=abstention)
+        mentions = detect_mentions("ID matters here alongside Adobe.", automaton, disambiguator=stub)
+        assert [m.entity_id for m in mentions] == ["coe:C00001"]
 
 
-def test_detect_mentions_no_op_without_ambiguous_map() -> None:
-    records = _records()
-    automaton = build_automaton(records)
-
-    def should_not_run(window: str, candidates: list[str]) -> str | None:
-        raise AssertionError("disambiguator must not run when ambiguous_map is None")
-
-    mentions = detect_mentions(
-        "id and bloom",
-        automaton,
-        ambiguous_map=None,
-        disambiguator=should_not_run,
-    )
-    assert mentions  # No crash, returns the upstream Aho-Corasick result.
+def test_detect_mentions_without_disambiguator_skips_multi_curie_collision() -> None:
+    automaton = build_automaton(_records())
+    mentions = detect_mentions("ID and Adobe Target", automaton, disambiguator=None)
+    # Multi-CURIE 'ID' abstains without Stage 2; longest span 'Adobe Target' isn't in _records(),
+    # so 'Adobe' (unambiguous) and context-anchored single-CURIE 'Target' resolve cleanly.
+    assert [m.entity_id for m in mentions] == ["coe:C00001", "coe:C01008"]
 
 
-def test_context_window_clips_to_text_bounds() -> None:
+def test_build_disambiguation_regex_escapes_curies_and_appends_nil() -> None:
+    assert build_disambiguation_regex(["coe:C01008", "coe:C01009"]) == r"^(coe:C01008|coe:C01009|NIL)$"
+
+
+def test_context_window_clips_and_marks_exact_span() -> None:
     text = "abcdefghij"
-    assert context_window(text, start=0, end=2, radius=20) == "abcdefghij"
-    assert context_window(text, start=4, end=6, radius=2) == "cdefgh"
-
-
-def test_context_window_includes_mention_span() -> None:
-    text = "lorem ipsum dolor sit amet"
-    window = context_window(text, start=12, end=17, radius=5)
-    assert "dolor" in window
+    assert context_window(text, start=0, end=2, radius=20) == "<<ab>>cdefghij"
+    assert context_window(text, start=4, end=6, radius=2) == "cd<<ef>>gh"

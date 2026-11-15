@@ -1,21 +1,21 @@
-"""Tests for the Aho-Corasick matcher disk cache (B-ROBUST-2)."""
+"""Tests for the Aho-Corasick matcher disk cache over LexiconRule entries."""
 
 from pathlib import Path
 
 import ahocorasick
 
 from lxd.ontology.matcher import (
-    MatcherTermRecord,
+    LexiconRule,
     build_or_load_automaton,
     matcher_termset_hash,
 )
 
 
-def _records() -> list[MatcherTermRecord]:
+def _records() -> list[LexiconRule]:
     return [
-        MatcherTermRecord(normalized_term="alpha", entity_id="alpha", term_source="canonical_id"),
-        MatcherTermRecord(normalized_term="beta", entity_id="beta", term_source="canonical_id"),
-        MatcherTermRecord(normalized_term="gamma", entity_id="gamma", term_source="alias"),
+        LexiconRule(surface_lower="alpha", curie="coe:C00001", surface="Alpha"),
+        LexiconRule(surface_lower="beta", curie="coe:C00002", surface="Beta"),
+        LexiconRule(surface_lower="gamma", curie="coe:C00003", surface="Gamma"),
     ]
 
 
@@ -49,7 +49,7 @@ def test_warm_load_returns_same_term_payloads(tmp_path: Path) -> None:
 def test_hash_mismatch_writes_separate_cache_file(tmp_path: Path) -> None:
     records_a = _records()
     records_b = [
-        MatcherTermRecord(normalized_term="delta", entity_id="delta", term_source="canonical_id"),
+        LexiconRule(surface_lower="delta", curie="coe:C00004", surface="Delta"),
     ]
     cache_dir = tmp_path / "matcher_cache"
 

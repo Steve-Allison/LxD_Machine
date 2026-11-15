@@ -173,7 +173,7 @@ def test_current_ingest_config_excludes_query_time_reranker_settings() -> None:
     config = SimpleNamespace(
         paths=SimpleNamespace(
             corpus_path=Path("/tmp/corpus"),
-            ontology_path=Path("/tmp/ontology"),
+            central_configs_path=Path("/tmp/Central_Configs"),
             data_path=Path("/tmp/data"),
         ),
         chunking=SimpleNamespace(

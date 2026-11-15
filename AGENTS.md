@@ -42,12 +42,14 @@ src/lxd/
 │   ├── rerank.py             # Native MLX cross-encoder reranker
 │   ├── embed_server.py       # In-process MLX embedding service
 │   └── rerank_server.py      # In-process MLX reranking service
-├── ontology/                 # YAML ontology loading, graph building, Aho-Corasick matching
+├── ontology/                 # Central_Configs v5.0.0 DuckDB projection, graph building, proper-noun matching
+│   ├── central_projection.py # Read-only DuckDB 2.0 loader over Central_Configs dist/build/central.duckdb
+│   ├── matcher.py            # pyahocorasick Automaton built strictly over match_lexicon (LinkableProperNoun)
+│   ├── disambiguator.py      # Constrained local mlx-lm + llguidance regex proper-noun disambiguator
 │   ├── entity_graph.py       # Combined entity graph + 6 centrality metrics
 │   ├── communities.py        # Louvain community detection (Leiden optional)
 │   ├── evidence.py           # Canonical relation deduplication + evidence provenance
-│   ├── profiles.py           # Entity profiles, community reports, LLM enrichment
-│   └── schema_models.py      # Pydantic ontology schema (opt-in validation)
+│   └── profiles.py           # Entity profiles, community reports, LLM enrichment
 ├── stores/                   # SQLite + LanceDB (vectors canonical in LanceDB)
 │   ├── schema.py             # Numbered migrations (PRAGMA user_version) + integrity check
 │   ├── _base_ddl.py          # Authoritative CREATE TABLE / CREATE INDEX statements
@@ -83,8 +85,7 @@ src/lxd/
 Key directories outside `src/`:
 
 - Corpus root — set in `config.yaml` (`paths.corpus_path`): the curated wiki at `~/AI_Projects+Code/knowledge/wiki/`, whose pages carry YAML frontmatter (including `sources:`) and `[[slug]]` cross-references.
-- `ontology/vendor/central-configs/` — staged Central distribution (runtime ontology)
-- `library/vendor/central-library/` — staged Central library (recognition, thresholds, prescriptions)
+- `../Central_Configs` (`paths.central_configs_path`, defaulting via `CENTRAL_CONFIGS_ROOT` or `../Central_Configs`) — shared semantic authority read directly from `dist/build/central.duckdb` (`read_only=True`) with zero vendored YAML/JSON copies.
 - `Plans/` — architecture and design specs
 - `tests/` — pytest suite
 - `data/` — SQLite + LanceDB stores (gitignored, rebuildable; `config.yaml` `paths.data_path`). Auto-backups before destructive migrations.
@@ -93,10 +94,10 @@ Key directories outside `src/`:
 
 ## Ontology Integration & Ecosystem Governance
 
-- **Upstream Semantic Authority (`Central_Configs`)**: `Central_Configs` (release `v4.0.0`) is the single source of truth for LinkML ontologies, domain taxonomies, and controlled vocabularies.
-- **Runtime copies**: `ontology/vendor/central-configs/` is the staged YAML distribution and `library/vendor/central-library/` is the staged library. Load projects domain modules and library records into `coe:` and `lib:` identifiers for mention matching, graph edges, and synthesis context. Canonical domains include `learning`, `delivery`, `narrative`, `language_editorial`, and the Adobe portfolio.
-- **`_meta` Frontmatter Standard (Central `METADATA_STANDARD.md` v2.0.0)**:
-  - Authored YAML and JSON instance roots carry the six-field `coe:FileMeta` header: `file_id`, `title`, `last_updated`, `authority` (the resource's MASTER repository — `"LxD_Machine"` for resources mastered here; a copy always keeps its master's stamp), `scope`, and `governing_class` (CURIE). Git records file history and lifecycle, so version and status fields never live in `_meta` — `id`, `version`, `ontology_domain` (non-domain roots), `governing_schema`, `file_version`, `schema_version`, `status`, and `ontology_version` are retired names. LinkML schemas carry no `_meta`; cross-file content pinning is by sha256 digest.
+- **Upstream Semantic Authority (`Central_Configs` v5.0.0)**: `~/AI_Projects+Code/Central_Configs` is the sole shared declarative authority for commercial portfolio semantics, personas, instructional/rhetorical/visual/delivery craft frameworks, calibrated empirical norms, rubrics, diagnostic detectors, voice registers, and proper-noun surface grounding.
+- **Direct DuckDB 2.0 Read-Only Consumption**: `LxD_Machine` reads `Central_Configs/dist/build/central.duckdb` (`read_only=True`) directly at runtime with zero vendored YAML/JSON copies and zero compatibility shims. Every semantic resource uses an immutable opaque alphanumeric CURIE (`coe:Cxxxxx`), joined to `knowledge/wiki` via `all_entities.wiki_slug`, `pref_label`, and `all_terms.written_form`.
+- **Two-Stage Non-Mutating Proper-Noun Grounding**: `pyahocorasick.Automaton` is built strictly over `match_lexicon` (`LinkableProperNoun` firewall — craft concepts never enter NER). Stage 1 applies boundary, case, `negative_phrases`, `context_anchored`, and leftmost-longest span rules directly on unmodified text; ambiguous or flagged spans escalate to Stage 2 constrained local `mlx-lm` (`mlx-community/gemma-4-e4b-it-4bit`) + `llguidance` regex disambiguation.
+- **Lexical vs. Structured Separation**: Opaque `coe:Cxxxxx` CURIEs are used exclusively for structured chunk/graph filters and never injected into lexical BM25 text queries.
 
 ## Common Commands
 
@@ -151,7 +152,7 @@ The graph build is a resumable state machine (`pixi run build-graph`). Graph con
 - **Safe by default**: `pixi run build-graph --full` requires interactive confirmation before re-extracting claims (costs API calls and time). No command unconditionally destroys the knowledge graph.
 - **Rebuildable**: all stores can be rebuilt from source via `pixi run ingest --full` and `pixi run build-graph --full`.
 - **Explicit provenance**: every chunk traces back to source document, page, and extraction method. Every claim and relation traces to source chunk. Wiki pages additionally carry transitive source citations on every chunk so synthesis can attribute back to the original research.
-- **Ontology-first**: entity recognition uses Aho-Corasick automaton built from YAML definitions; relations extracted via LLM. Wiki pages also contribute hand-curated `[[slug]]` cross-references parsed at ingest time and persisted on chunk rows.
+- **Ontology-first**: proper-noun recognition uses Aho-Corasick automaton built strictly from `Central_Configs` `match_lexicon` (`central.duckdb`) with constrained local MLX disambiguation; relations extracted via LLM. Wiki pages also contribute hand-curated `[[slug]]` cross-references parsed at ingest time and persisted on chunk rows.
 - **Graceful degradation**: the system remains usable when the knowledge graph is not yet built or the reranker service is unavailable.
 - **Async MCP surface**: every tool is `async def`; synchronous bodies run through `lxd.mcp.async_runtime.run_tool` with a hard `tool_timeout_secs` cap.
 - **Single source of truth for vectors**: LanceDB is canonical; `chunk_rows.vector_json` was dropped in schema migration 0002.

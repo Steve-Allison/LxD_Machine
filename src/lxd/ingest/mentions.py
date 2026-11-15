@@ -1,17 +1,23 @@
-"""Detect ontology mentions in chunk text spans."""
+"""Two-stage non-mutating proper-noun mention grounding in raw source text."""
 
-from collections.abc import Callable, Mapping, Sequence
-from dataclasses import dataclass, replace
-from operator import attrgetter
+import re
+from collections.abc import Mapping
+from dataclasses import dataclass
 from typing import Any
 
-from lxd.ontology.loader.types import AnchorConstraint, RecognitionPattern
-from lxd.ontology.normalization import normalize_match_text
+import ahocorasick
+
+from lxd.ontology.ambiguity import requires_stage2_disambiguation
+from lxd.ontology.disambiguator import DisambiguationCandidate, MentionDisambiguator
+from lxd.ontology.matcher import LexiconRule, offset_preserving_lower
+
+_TOKEN_RE = re.compile(r"[A-Za-z0-9_.+-]+")
+_NEGATIVE_WINDOW_TOKENS = 25
 
 
 @dataclass(frozen=True, slots=True)
 class Mention:
-    """Detected mention span for an ontology term."""
+    """Detected proper-noun mention span aligned to unmodified ``text``."""
 
     entity_id: str
     term_source: str
@@ -20,196 +26,228 @@ class Mention:
     end_char: int
 
 
+@dataclass(frozen=True, slots=True)
+class Stage1Span:
+    """Accepted non-overlapping Stage 1 proper-noun candidate span."""
+
+    start_char: int
+    end_char: int
+    surface_form: str
+    rules: tuple[LexiconRule, ...]
+    candidate_curies: tuple[str, ...]
+    requires_disambiguation: bool
+
+
+def extract_stage1_spans(text: str, automaton: Any) -> list[Stage1Span]:
+    """Run deterministic Stage 1 proper-noun filtering on unmodified ``text``.
+
+    Enforces all five ``Central_Configs`` v5.0.0 Stage 1 rules:
+      1. Alphanumeric boundary check, dotted package suffix rejection, and
+         hyphenated prefix rejection.
+      2. Exact case gate when ``case_sensitive`` or ``match_policy == 'case_exact'``.
+      3. ``negative_phrases`` veto across ``±25`` tokens inclusive of span.
+      4. ``context_anchored`` gate across ``±anchor_window_tokens`` strictly
+         excluding the matched span itself.
+      5. Leftmost-longest non-overlapping span selection.
+    """
+    if not text or getattr(automaton, "kind", ahocorasick.AHOCORASICK) != ahocorasick.AHOCORASICK:
+        return []
+
+    tokens = [(match.start(), match.end()) for match in _TOKEN_RE.finditer(text)]
+    by_span: dict[tuple[int, int], list[LexiconRule]] = {}
+    lowered = offset_preserving_lower(text)
+    text_len = len(text)
+
+    for end_inclusive, rule_group in automaton.iter(lowered):
+        if not rule_group:
+            continue
+        first_rule: LexiconRule = rule_group[0]
+        end = end_inclusive + 1
+        start = end - len(first_rule.surface)
+        if start < 0 or end > text_len:
+            continue
+
+        # Rule 1: Boundary check + dotted suffix + hyphenated prefix rejections.
+        if start > 0 and text[start - 1].isalnum():
+            continue
+        if end < text_len and text[end].isalnum():
+            continue
+        if end + 1 < text_len and text[end] == "." and text[end + 1].isalnum():
+            continue
+        if start >= 2 and text[start - 1] == "-" and text[start - 2].isalnum():
+            continue
+
+        first_tok, last_tok = _overlapping_token_bounds(tokens, start=start, end=end)
+        raw_surface = text[start:end]
+
+        for rule in rule_group:
+            # Rule 2: Case gate.
+            if (
+                rule.case_sensitive or rule.match_policy == "case_exact"
+            ) and raw_surface != rule.surface:
+                continue
+
+            # Rule 3: negative_phrases veto across ±25 tokens INCLUSIVE of span.
+            if rule.negative_phrases and tokens and first_tok <= last_tok:
+                win_first = max(0, first_tok - _NEGATIVE_WINDOW_TOKENS)
+                win_last = min(len(tokens) - 1, last_tok + _NEGATIVE_WINDOW_TOKENS)
+                win_slice = text[tokens[win_first][0] : tokens[win_last][1]]
+                if any(_contains_boundary_phrase(win_slice, neg) for neg in rule.negative_phrases):
+                    continue
+
+            # Rule 4: context_anchored gate across ±anchor_window_tokens EXCLUDING span.
+            if rule.match_policy == "context_anchored" or rule.context_anchors:
+                if not rule.context_anchors or not tokens or first_tok > last_tok:
+                    continue
+                window = max(1, rule.anchor_window_tokens)
+                left_tokens = tokens[max(0, first_tok - window) : first_tok]
+                right_tokens = tokens[last_tok + 1 : min(len(tokens), last_tok + 1 + window)]
+                left_ctx = text[left_tokens[0][0] : left_tokens[-1][1]] if left_tokens else ""
+                right_ctx = text[right_tokens[0][0] : right_tokens[-1][1]] if right_tokens else ""
+                ctx = f"{left_ctx} {right_ctx}"
+                if not any(_contains_boundary_phrase(ctx, anchor) for anchor in rule.context_anchors):
+                    continue
+
+            by_span.setdefault((start, end), []).append(rule)
+
+    # Rule 5: Leftmost-longest non-overlapping span selection.
+    accepted: list[Stage1Span] = []
+    last_end = -1
+    for start, end in sorted(by_span, key=lambda se: (se[0], -(se[1] - se[0]))):
+        if start < last_end:
+            continue
+        surviving_rules = tuple(by_span[(start, end)])
+        unique_curies = tuple(dict.fromkeys(rule.curie for rule in surviving_rules))
+        accepted.append(
+            Stage1Span(
+                start_char=start,
+                end_char=end,
+                surface_form=text[start:end],
+                rules=surviving_rules,
+                candidate_curies=unique_curies,
+                requires_disambiguation=requires_stage2_disambiguation(surviving_rules),
+            )
+        )
+        last_end = end
+    return accepted
+
+
 def detect_mentions(
     text: str,
     automaton: Any,
     *,
-    ambiguous_map: dict[str, list[str]] | None = None,
-    disambiguator: Callable[[str, list[str]], str | None] | None = None,
-    context_radius: int = 200,
-    recognition_patterns: Sequence[RecognitionPattern] | None = None,
-    suppressed_terms: Mapping[str, frozenset[str]] | None = None,
-    anchor_constraints: Sequence[AnchorConstraint] | None = None,
+    disambiguator: MentionDisambiguator | None = None,
+    entity_catalog: Mapping[str, DisambiguationCandidate] | None = None,
 ) -> list[Mention]:
-    """Detect ontology term mentions in text.
+    """Detect proper-noun entity mentions in unmodified ``text``.
 
     Args:
-        text: Input text to process.
-        automaton: Aho-Corasick automaton built from matcher terms.
-        ambiguous_map: Optional ``{normalized_term: [entity_id, ...]}``
-            for surface forms that map to >1 candidate (built once at
-            ontology load via
-            :func:`lxd.ontology.ambiguity.ambiguous_surface_forms_with_candidates`).
-            When provided alongside ``disambiguator``, ambiguous matches
-            get re-resolved via the surrounding context window. Both
-            ``ambiguous_map`` and ``disambiguator`` must be set together;
-            either one missing falls back to the upstream first-match
-            policy (Aho-Corasick last-write-wins payload).
-        disambiguator: Callable ``(window_text, candidates) -> entity_id |
-            None``. ``None`` return means "could not decide"; the mention
-            keeps the upstream entity_id.
-        context_radius: ±characters of context around the ambiguous
-            mention fed to the disambiguator. ±200 by default (B-KG-2
-            spec).
-        recognition_patterns: Compiled library patterns applied after
-            literal matching.
-        suppressed_terms: Normalized negative surfaces that must not be
-            kept for an entity.
-        anchor_constraints: Context anchors a mention must satisfy.
+        text: Unmodified source text. Returned ``start_char`` and ``end_char``
+            index directly into ``text`` and ``surface_form == text[start:end]``.
+        automaton: ``pyahocorasick.Automaton`` built strictly over
+            ``match_lexicon`` ``LexiconRule`` entries.
+        disambiguator: Optional Stage 2 ``MentionDisambiguator`` invoked iff
+            ``any(r.requires_llm_disambiguation)`` or ``len(unique_curies) > 1``.
+            Returning ``None`` or ``"NIL"`` abstains and drops the mention.
+        entity_catalog: Optional CURIE -> ``DisambiguationCandidate`` metadata
+            used to enrich Stage 2 candidate descriptions.
 
     Returns:
-        Non-overlapping mention spans sorted by position.
+        Sorted, non-overlapping ``Mention`` records.
     """
-    normalized = normalize_match_text(text)
-    matches: list[Mention] = []
-    for end_index, payload in automaton.iter(normalized):
-        matched = payload["normalized_term"]
-        start_index = end_index - len(matched) + 1
-        matches.append(
-            Mention(
-                entity_id=str(payload["entity_id"]),
-                term_source=str(payload["term_source"]),
-                surface_form=matched,
-                start_char=start_index,
-                end_char=end_index + 1,
-            )
-        )
-    if recognition_patterns:
-        matches.extend(_pattern_mentions(normalized, recognition_patterns))
-    resolved = _resolve_overlaps(matches)
-    if suppressed_terms:
-        resolved = [
-            mention
-            for mention in resolved
-            if not _is_suppressed(mention, normalized, suppressed_terms)
-        ]
-    if anchor_constraints:
-        resolved = [
-            mention
-            for mention in resolved
-            if _anchors_allow(mention, normalized, anchor_constraints)
-        ]
-    if ambiguous_map and disambiguator is not None:
-        resolved = _apply_disambiguator(
-            resolved,
-            text=normalized,
-            ambiguous_map=ambiguous_map,
-            disambiguator=disambiguator,
-            context_radius=context_radius,
-        )
-    return resolved
+    stage1_spans = extract_stage1_spans(text, automaton)
+    mentions: list[Mention] = []
 
-
-def _apply_disambiguator(
-    mentions: list[Mention],
-    *,
-    text: str,
-    ambiguous_map: dict[str, list[str]],
-    disambiguator: Callable[[str, list[str]], str | None],
-    context_radius: int,
-) -> list[Mention]:
-    """Re-assign ``entity_id`` on ambiguous mentions using the disambiguator.
-
-    Mentions whose surface form is unambiguous, or whose disambiguator
-    returns ``None``, are left unchanged. The structural fields
-    (``start_char``, ``end_char``, ``surface_form``, ``term_source``)
-    are always preserved so chunk-level alignment is unaffected by the
-    re-assignment.
-    """
-    out: list[Mention] = []
-    for mention in mentions:
-        candidates = ambiguous_map.get(mention.surface_form)
-        if not candidates or len(candidates) < 2:
-            out.append(mention)
-            continue
-        window = text[
-            max(0, mention.start_char - context_radius) : min(
-                len(text), mention.end_char + context_radius
-            )
-        ]
-        chosen = disambiguator(window, candidates)
-        if chosen is None or chosen == mention.entity_id:
-            out.append(mention)
-            continue
-        out.append(replace(mention, entity_id=chosen))
-    return out
-
-
-def _resolve_overlaps(matches: list[Mention]) -> list[Mention]:
-    priority = {"canonical_id": 0, "alias": 1, "indicator": 2, "pattern": 3}
-    ordered = sorted(
-        matches,
-        key=lambda item: (
-            -(item.end_char - item.start_char),
-            priority.get(item.term_source, 99),
-            item.start_char,
-            item.entity_id,
-        ),
-    )
-    accepted: list[Mention] = []
-    occupied: list[tuple[int, int]] = []
-    for match in ordered:
-        if any(not (match.end_char <= start or match.start_char >= end) for start, end in occupied):
-            continue
-        accepted.append(match)
-        occupied.append((match.start_char, match.end_char))
-    return sorted(accepted, key=attrgetter("start_char", "end_char", "entity_id"))
-
-
-def _pattern_mentions(normalized: str, patterns: Sequence[RecognitionPattern]) -> list[Mention]:
-    """Return mentions produced by compiled recognition patterns."""
-    found: list[Mention] = []
-    for spec in patterns:
-        for match in spec.compiled.finditer(normalized):
-            surface = normalize_match_text(match.group(0))
-            if len(surface) < 3:
-                continue
-            found.append(
-                Mention(
-                    entity_id=spec.entity_id,
-                    term_source="pattern",
-                    surface_form=surface,
-                    start_char=match.start(),
-                    end_char=match.end(),
+    for span in stage1_spans:
+        chosen_curie: str | None
+        if span.requires_disambiguation:
+            if disambiguator is not None:
+                candidates = [
+                    _candidate_for_curie(curie, span.rules, entity_catalog)
+                    for curie in span.candidate_curies
+                ]
+                decision = disambiguator.disambiguate(
+                    text=text,
+                    start=span.start_char,
+                    end=span.end_char,
+                    surface=span.surface_form,
+                    candidates=candidates,
                 )
+                if decision is None or decision == "NIL" or decision not in span.candidate_curies:
+                    continue
+                chosen_curie = decision
+            elif len(span.candidate_curies) == 1:
+                chosen_curie = span.candidate_curies[0]
+            else:
+                continue
+        else:
+            chosen_curie = span.candidate_curies[0]
+
+        winning_rule = next((r for r in span.rules if r.curie == chosen_curie), span.rules[0])
+        mentions.append(
+            Mention(
+                entity_id=chosen_curie,
+                term_source=winning_rule.match_policy,
+                surface_form=span.surface_form,
+                start_char=span.start_char,
+                end_char=span.end_char,
             )
-    return found
+        )
+    return mentions
 
 
-def _is_suppressed(
-    mention: Mention,
-    normalized: str,
-    suppressed_terms: Mapping[str, frozenset[str]],
-) -> bool:
-    """Return whether a mention is a library negative surface."""
-    negatives = suppressed_terms.get(mention.entity_id)
-    if not negatives:
+def _overlapping_token_bounds(
+    tokens: list[tuple[int, int]],
+    *,
+    start: int,
+    end: int,
+) -> tuple[int, int]:
+    first_idx = -1
+    last_idx = -2
+    for idx, (tok_start, tok_end) in enumerate(tokens):
+        if tok_end <= start:
+            continue
+        if tok_start >= end:
+            break
+        if first_idx == -1:
+            first_idx = idx
+        last_idx = idx
+    return (first_idx, last_idx) if first_idx != -1 else (0, -1)
+
+
+def _contains_boundary_phrase(haystack: str, phrase: str) -> bool:
+    """Return True iff ``phrase`` occurs case-insensitively at alphanumeric boundaries."""
+    if not haystack or not phrase:
         return False
-    if mention.surface_form in negatives:
-        return True
-    window = normalized[max(0, mention.start_char - 48) : mention.end_char + 48]
-    return any(negative in window and mention.surface_form in negative for negative in negatives)
-
-
-def _anchors_allow(
-    mention: Mention,
-    normalized: str,
-    constraints: Sequence[AnchorConstraint],
-) -> bool:
-    """Return whether every applicable anchor rule is satisfied."""
-    applicable = [
-        rule
-        for rule in constraints
-        if rule.entity_id == mention.entity_id
-        and (rule.surface is None or rule.surface == mention.surface_form)
-    ]
-    if not applicable:
-        return True
-    for rule in applicable:
-        radius = rule.window_tokens * 8
-        window = normalized[
-            max(0, mention.start_char - radius) : min(len(normalized), mention.end_char + radius)
-        ]
-        if not any(anchor in window for anchor in rule.anchors):
+    hay_lower = offset_preserving_lower(haystack)
+    needle = offset_preserving_lower(phrase)
+    needle_len = len(needle)
+    hay_len = len(haystack)
+    search_from = 0
+    while True:
+        pos = hay_lower.find(needle, search_from)
+        if pos == -1:
             return False
-    return True
+        end = pos + needle_len
+        left_ok = pos == 0 or not haystack[pos - 1].isalnum()
+        right_ok = end == hay_len or not haystack[end].isalnum()
+        if left_ok and right_ok:
+            return True
+        search_from = pos + 1
+
+
+def _candidate_for_curie(
+    curie: str,
+    rules: tuple[LexiconRule, ...],
+    entity_catalog: Mapping[str, DisambiguationCandidate] | None,
+) -> DisambiguationCandidate:
+    if entity_catalog and curie in entity_catalog:
+        return entity_catalog[curie]
+    for rule in rules:
+        if rule.curie == curie:
+            return DisambiguationCandidate(
+                curie=curie,
+                pref_label=rule.pref_label,
+                collection_name=rule.collection_name,
+            )
+    return DisambiguationCandidate(curie=curie)

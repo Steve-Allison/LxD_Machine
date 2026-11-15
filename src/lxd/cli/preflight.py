@@ -72,18 +72,16 @@ def preflight_command(
     else:
         notes.append(f"Corpus path: {context.config.paths.corpus_path}")
 
-    if not context.config.paths.ontology_path.exists():
-        issues.append(f"ontology path missing: {context.config.paths.ontology_path}")
+    if not context.config.paths.central_configs_path.exists():
+        issues.append(f"central_configs path missing: {context.config.paths.central_configs_path}")
+    elif not context.config.paths.central_duckdb_path.is_file():
+        issues.append(
+            f"central.duckdb missing: {context.config.paths.central_duckdb_path} "
+            "(run `pixi run build` in Central_Configs)"
+        )
     else:
-        notes.append(f"Ontology path: {context.config.paths.ontology_path}")
-
-    if (
-        context.config.paths.library_path is not None
-        and not context.config.paths.library_path.exists()
-    ):
-        issues.append(f"library path missing: {context.config.paths.library_path}")
-    elif context.config.paths.library_path is not None:
-        notes.append(f"Library path: {context.config.paths.library_path}")
+        notes.append(f"Central_Configs path: {context.config.paths.central_configs_path}")
+        notes.append(f"Central_Configs DuckDB: {context.config.paths.central_duckdb_path}")
 
     store_paths = build_store_paths(context.config.paths.data_path)
     notes.append(f"SQLite store: {store_paths.sqlite_path}")
@@ -132,7 +130,10 @@ def preflight_command(
     for line in notes:
         typer.echo(line)
 
-    if context.config.paths.corpus_path.exists() and context.config.paths.ontology_path.exists():
+    if (
+        context.config.paths.corpus_path.exists()
+        and context.config.paths.central_duckdb_path.is_file()
+    ):
         try:
             plan = build_ingest_plan(context.config)
             estimate = estimate_run_cost(plan.scanned_files, context.config)

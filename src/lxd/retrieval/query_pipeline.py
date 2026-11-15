@@ -290,6 +290,7 @@ def search_chunks(
                     target_source_count=target_source_count,
                     rerank_top_k=config.retrieval.rerank_top_k,
                     config=config,
+                    expansion_terms=expansion.added_terms,
                 )
                 for variant_query, variant_vector in query_variants
             ]
@@ -304,6 +305,7 @@ def search_chunks(
                 target_source_count=target_source_count,
                 rerank_top_k=config.retrieval.rerank_top_k,
                 config=config,
+                expansion_terms=expansion.added_terms,
             )
         ranked = _attach_centrality_signals(stores.sqlite, ranked)
         representative_candidates = _unique_source_prefix(ranked, target_source_count)
@@ -469,10 +471,7 @@ def answer_question(
     # reuse the structured object without a second SQLite round-trip.
     graph_context = _load_graph_context(config, outcome.matched_entity_ids)
     graph_context_prompt = format_graph_context_prompt(graph_context) if graph_context else ""
-    ontology_context = format_ontology_context(
-        load_configured_ontology(config).entity_definitions,
-        outcome.matched_entity_ids,
-    )
+    ontology_context = _load_ontology_context(config, outcome.matched_entity_ids)
     if ontology_context:
         graph_context_prompt = f"{graph_context_prompt}\n{ontology_context}".strip()
     if on_phase is not None:
@@ -548,6 +547,24 @@ def answer_question(
             graph_context=graph_context,
         )
     )
+
+
+def _load_ontology_context(config: RuntimeConfig, matched_entity_ids: list[str]) -> str:
+    """Format ``Central_Configs`` v5.0.0 context for ``matched_entity_ids`` when available."""
+    if not matched_entity_ids:
+        return ""
+    paths = getattr(config, "paths", None)
+    db_path = getattr(paths, "central_duckdb_path", None) if paths is not None else None
+    if db_path is not None and not db_path.is_file():
+        return ""
+    try:
+        return format_ontology_context(
+            load_configured_ontology(config).entity_definitions,
+            matched_entity_ids,
+        )
+    except (FileNotFoundError, OSError, ValueError) as exc:
+        _log.warning("ontology_context_building_failed", exc_info=True, error=str(exc))
+        return ""
 
 
 def _load_graph_context(
@@ -726,12 +743,15 @@ def _hybrid_ranked_candidates(
     target_source_count: int,
     rerank_top_k: int,
     config: RuntimeConfig,
+    expansion_terms: list[str] | tuple[str, ...] = (),
 ) -> list[RankedChunk]:
     """Fuse dense + BM25 candidates via LanceDB native hybrid search.
 
     The dense vector stays on ``query_vector`` (the literal question, or
     the HyDE passage when that lane fired). The text query quotes
-    multi-word wiki and ontology phrases and weights the BM25 rank by
+    multi-word wiki and ontology phrases, adds human-readable
+    ``pref_label`` / ``written_form`` expansions (never opaque ``coe:Cxxxxx``
+    CURIEs), and weights the BM25 rank by
     ``retrieval.lexical_fusion_weight``. Fusion uses the same RRF ``K``
     as :func:`_fuse_ranked_prefix`.
 
@@ -740,7 +760,9 @@ def _hybrid_ranked_candidates(
     guarantee is preserved.
     """
     lexical_query = build_lexical_query(
-        query, phrases_for_question(query, load_lexical_terms(config))
+        query,
+        phrases_for_question(query, load_lexical_terms(config)),
+        expansion_terms=expansion_terms,
     )
     raw_limit = min(_MAX_LIMIT, max(requested_limit, rerank_top_k))
     ranked: list[RankedChunk] = []
