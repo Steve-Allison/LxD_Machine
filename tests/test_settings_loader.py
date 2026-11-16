@@ -19,7 +19,7 @@ def test_load_runtime_config_uses_default_config_yaml() -> None:
         == (repo_root / ".." / "Central_Configs" / "dist" / "build" / "central.duckdb").resolve()
     )
     assert config.paths.data_path == repo_root / "data" / "openai"
-    assert config.models.disambiguation_model == "mlx-community/gemma-4-e4b-it-4bit"
+    assert config.models.disambiguation_model == "mlx-community/gemma-4-26B-A4B-it-4bit"
 
 
 def test_load_runtime_config_resolves_relative_paths_and_env_default(

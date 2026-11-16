@@ -53,7 +53,7 @@ class ModelsConfig(BaseModel):
     llm: str
     llm_backend: Literal["mlx"] = "mlx"
     rerank: str
-    disambiguation_model: str = "mlx-community/gemma-4-e4b-it-4bit"
+    disambiguation_model: str = "mlx-community/gemma-4-26B-A4B-it-4bit"
     llm_no_think: bool = False
 
 

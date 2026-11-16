@@ -6,7 +6,7 @@ text. Spans that carry ``requires_llm_disambiguation=True`` or map to multiple
 candidate ``coe:Cxxxxx`` CURIEs escalate to Stage 2.
 
 Stage 2 runs a local ``mlx-lm`` model (default
-``mlx-community/gemma-4-e4b-it-4bit``) constrained at token level by an
+``mlx-community/gemma-4-26B-A4B-it-4bit``) constrained at token level by an
 ``llguidance`` regex grammar ``^(:?coe:C...|NIL)$`` at ``temp=0.0``. Offline
 unit tests inject any ``MentionDisambiguator`` protocol implementation so no
 paid external API calls or multi-GB model loads are required in fast CI.
@@ -27,7 +27,7 @@ from lxd.settings.models import RuntimeConfig
 
 _log = structlog.get_logger(__name__)
 
-DEFAULT_DISAMBIGUATION_MODEL = "mlx-community/gemma-4-e4b-it-4bit"
+DEFAULT_DISAMBIGUATION_MODEL = "mlx-community/gemma-4-26B-A4B-it-4bit"
 
 
 @dataclass(frozen=True, slots=True)

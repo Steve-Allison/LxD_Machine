@@ -40,6 +40,14 @@ mlx-lm = ">=0.21"
 duckdb = ">=2.0.0,<3"
 llguidance = ">=1.9.0"
 
+[activation.env]
+HF_HOME = "../_models/huggingface"
+HF_HUB_CACHE = "../_models/huggingface/hub"
+HF_ASSETS_CACHE = "../_models/huggingface/assets"
+HF_XET_CACHE = "../_models/huggingface/xet"
+DOCLING_CACHE_DIR = "../_models/docling"
+TORCH_HOME = "../_models/torch"
+
 [tasks]
 ingest    = "python -m lxd.cli ingest"
 status    = "python -m lxd.cli status"
