@@ -96,8 +96,13 @@ Key directories outside `src/`:
 
 - **Upstream Semantic Authority (`Central_Configs` v5.0.0)**: `~/AI_Projects+Code/Central_Configs` is the sole shared declarative authority for commercial portfolio semantics, personas, instructional/rhetorical/visual/delivery craft frameworks, calibrated empirical norms, rubrics, diagnostic detectors, voice registers, and proper-noun surface grounding.
 - **Direct DuckDB 2.0 Read-Only Consumption**: `LxD_Machine` reads `Central_Configs/dist/build/central.duckdb` (`read_only=True`) directly at runtime with zero vendored YAML/JSON copies and zero compatibility shims. Every semantic resource uses an immutable opaque alphanumeric CURIE (`coe:Cxxxxx`), joined to `knowledge/wiki` via `all_entities.wiki_slug`, `pref_label`, and `all_terms.written_form`.
-- **Two-Stage Non-Mutating Proper-Noun Grounding**: `pyahocorasick.Automaton` is built strictly over `match_lexicon` (`LinkableProperNoun` firewall — craft concepts never enter NER). Stage 1 applies boundary, case, `negative_phrases`, `context_anchored`, and leftmost-longest span rules directly on unmodified text; ambiguous or flagged spans escalate to Stage 2 constrained local `mlx-lm` (`mlx-community/gemma-4-e4b-it-4bit`) + `llguidance` regex disambiguation.
+- **Two-Stage Non-Mutating Proper-Noun Grounding**: `pyahocorasick.Automaton` is built strictly over `match_lexicon` (`LinkableProperNoun` firewall — craft concepts never enter NER). Stage 1 applies boundary, case, `negative_phrases`, `context_anchored`, and leftmost-longest span rules directly on unmodified text; ambiguous or flagged spans escalate to Stage 2 constrained local `mlx-lm` (`mlx-community/gemma-4-26B-A4B-it-4bit`) + `llguidance` regex disambiguation.
 - **Lexical vs. Structured Separation**: Opaque `coe:Cxxxxx` CURIEs are used exclusively for structured chunk/graph filters and never injected into lexical BM25 text queries.
+
+## Central model store (`../_models`)
+
+- **Single shared cache**: All local ML/NLP/LLM/embedding models and caches (`HF_HOME`, `HF_HUB_CACHE`, `HF_ASSETS_CACHE`, `HF_XET_CACHE`, `DOCLING_CACHE_DIR`, `TORCH_HOME`) MUST resolve to the workspace-level `../_models` directory (configured in `pixi.toml` `[activation.env]`). Never create per-repo model caches or store model weights in `~/.cache/`.
+- **Reuse before adding**: Before introducing, configuring, or downloading any new model, inspect `../_models` (including `../_models/huggingface/hub` and `../_models/embeddinggemma-2`) to reuse an already-installed model for that capability instead of adding a duplicate or second variant.
 
 ## Common Commands
 
